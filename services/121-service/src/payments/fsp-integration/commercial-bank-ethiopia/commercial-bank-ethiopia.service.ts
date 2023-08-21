@@ -242,10 +242,11 @@ export class CommercialBankEthiopiaService
       payload.status = StatusEnum.success;
     } else {
       paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message =
-        result.resultDescription || result.Status.messages.length > 0
-          ? result.Status.messages[0]._text
-          : result.Status.messages._text;
+      // paTransactionResult.message =
+      //   result.resultDescription || result.Status.messages.length > 0
+      //     ? result.Status.messages[0]._text
+      //     : result.Status.messages._text;
+      paTransactionResult.message = result.resultDescription;
     }
 
     paTransactionResult.customData = {
