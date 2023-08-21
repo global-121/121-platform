@@ -243,9 +243,12 @@ export class CommercialBankEthiopiaService
     } else {
       paTransactionResult.status = StatusEnum.error;
       paTransactionResult.message =
-        result.resultDescription || result.Status.messages.length > 0
-          ? result.Status.messages[0]._text
-          : result.Status.messages._text;
+        result.resultDescription ||
+        (result.Status &&
+          result.Status.messages &&
+          (result.Status.messages.length > 0
+            ? result.Status.messages[0]._text
+            : result.Status.messages._text));
     }
 
     paTransactionResult.customData = {

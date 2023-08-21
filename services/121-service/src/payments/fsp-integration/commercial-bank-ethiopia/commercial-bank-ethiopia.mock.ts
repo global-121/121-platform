@@ -17,9 +17,9 @@ export class CommercialBankEthiopiaMockService {
         messageId: {},
         successIndicator: { _text: 'Success' },
         application: { _text: 'FUNDS.TRANSFER' },
-        messages: [
-          { _text: 'Transaction with number is DUPLICATED Transaction!' },
-        ],
+        // messages: [
+        //   { _text: 'Transaction with number is DUPLICATED Transaction!' },
+        // ],
       },
       IssueCardResponse: {
         ResultCode: { _text: '000' },
