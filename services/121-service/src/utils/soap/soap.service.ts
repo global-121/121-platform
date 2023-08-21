@@ -155,18 +155,15 @@ export class SoapService {
         soapAction: soapAction,
       };
 
-      console.log(soapRequestXml);
       const { response } = await soapRequest({
         headers: headers,
         url: soapUrl,
         xml: soapRequestXml,
         timeout: 150000,
       });
-      console.log(response.body, 'body');
 
       // Parse the SOAP response if needed
       const parsedResponse = convert.xml2js(response.body, { compact: true });
-      console.log(parsedResponse, 'parsedResponse');
 
       if (
         parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
@@ -184,8 +181,6 @@ export class SoapService {
         ];
       }
     } catch (error) {
-      console.log(error);
-      console.error('Error sending SOAP request:', error);
       throw error;
     }
   }

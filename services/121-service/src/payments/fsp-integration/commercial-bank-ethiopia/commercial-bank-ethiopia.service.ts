@@ -225,12 +225,9 @@ export class CommercialBankEthiopiaService
       credentials,
     );
 
-    console.log(result, 'sendPaymentPerPa');
     if (result && result.resultDescription === 'Transaction is DUPLICATED') {
       result = await this.sendDuplicatePaymentPerPa(payload, credentials);
     }
-
-    console.log(result, 'sendDuplicatePaymentPerPa');
 
     if (
       result &&

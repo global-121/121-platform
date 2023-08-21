@@ -11,7 +11,6 @@ export class CommercialBankEthiopiaApiService {
   ) {}
 
   public async creditTransfer(payment: any, credentials): Promise<any> {
-    console.log(credentials);
     const payload = await this.createCreditTransferBody(payment, credentials);
 
     try {
@@ -21,8 +20,6 @@ export class CommercialBankEthiopiaApiService {
             payload,
             process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSFER,
           );
-
-      console.log(responseBody, 'responseBody-creditTransfer');
 
       if (
         responseBody.Status &&
@@ -143,8 +140,6 @@ export class CommercialBankEthiopiaApiService {
         payload,
         process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
       );
-
-      console.log(responseBody, 'responseBody-transactionStatus');
 
       return responseBody;
     } catch (error) {

@@ -13,7 +13,6 @@ import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
-import { CommercialBankEthiopiaController } from './commercial-bank-ethiopia.controller';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 
@@ -39,7 +38,6 @@ import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.servic
     CommercialBankEthiopiaMockService,
     CustomHttpService,
   ],
-  controllers: [CommercialBankEthiopiaController],
   exports: [
     CommercialBankEthiopiaApiService,
     CommercialBankEthiopiaMockService,
