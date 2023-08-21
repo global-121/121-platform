@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -19,6 +20,7 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
       ProgramEntity,
       ProgramFspConfigurationEntity,
       UserEntity,
+      TwilioMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
@@ -43,6 +46,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
     IntersolveVoucherApiService,
     SoapService,
     IntersolveVoucherMockService,
+    IntersolveVoucherCronService,
     CustomHttpService,
   ],
   controllers: [IntersolveVoucherController],
@@ -50,6 +54,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
     IntersolveVoucherService,
     IntersolveVoucherApiService,
     IntersolveVoucherMockService,
+    IntersolveVoucherCronService,
   ],
 })
 export class IntersolveVoucherModule {}

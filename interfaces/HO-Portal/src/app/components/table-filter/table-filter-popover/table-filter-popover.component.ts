@@ -68,8 +68,8 @@ export class TableFilterPopoverComponent implements OnInit {
 
   public initSelectAll(): boolean {
     return (
-      this.filterProps?.allOptions?.filter((o) =>
-        this.filterProps?.currentSelection?.includes(o.value),
+      this.filterProps?.allOptions?.filter(
+        (o) => this.filterProps?.currentSelection?.includes(o.value),
       )?.length === 0
     );
   }

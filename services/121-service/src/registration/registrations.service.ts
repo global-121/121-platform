@@ -5,20 +5,22 @@ import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -33,7 +35,11 @@ import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
-import { Attributes } from './dto/update-attribute.dto';
+import {
+  AdditionalAttributes,
+  Attributes,
+  UpdateRegistrationDto,
+} from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
@@ -47,6 +53,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -83,9 +90,14 @@ export class RegistrationsService {
   private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
   @InjectRepository(IntersolveVoucherEntity)
   private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
+  @InjectRepository(SafaricomRequestEntity)
+  private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
+  @InjectRepository(RegistrationChangeLogEntity)
+  private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
+    private readonly azureLogService: AzureLogService,
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
@@ -218,13 +230,22 @@ export class RegistrationsService {
   public async getRegistrationFromReferenceId(
     referenceId: string,
     relations: string[] = [],
+    programId?: number,
   ): Promise<RegistrationEntity> {
+    if (!referenceId) {
+      const errors = `ReferenceId is not set`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: relations,
     });
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    } else if (programId && registration.programId !== Number(programId)) {
+      const errors = `ReferenceId ${referenceId} is not known for program ${programId}.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -234,6 +255,7 @@ export class RegistrationsService {
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
     programId: number,
+    userId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -248,9 +270,17 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const relation = new RegistrationDataRelation();
-        relation.programQuestionId = programQuestion.id;
-        registration.saveData(answer.programAnswer, { relation });
+        const data = {};
+        data[answer.programQuestionName] = answer.programAnswer;
+        await this.updateRegistration(
+          programId,
+          referenceId,
+          {
+            data,
+            reason: 'Changed from field validation app.',
+          },
+          userId,
+        );
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -371,20 +401,26 @@ export class RegistrationsService {
     }
     if (answersTypeTel.includes(customDataKey)) {
       if (customDataKey === CustomDataAttributes.phoneNumber) {
-        // phoneNumber cannot be empty, and must always be checked
+        // phoneNumber cannot be empty
+        if (!customDataValue) {
+          throw new HttpException(
+            'Phone number cannot be empty',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        // otherwise check
         return await this.lookupService.lookupAndCorrect(
           String(customDataValue),
         );
       } else {
-        if (customDataValue) {
-          // other tel-types (e.g. whatsappPhoneNumber) are only checked if not empty
-          return await this.lookupService.lookupAndCorrect(
-            String(customDataValue),
-          );
-        } else {
-          // allow empty values for other tel-types
+        if (!customDataValue) {
+          // other tel-types (e.g. whatsappPhoneNumber) can be empty
           return customDataValue;
         }
+        // otherwise check
+        return await this.lookupService.lookupAndCorrect(
+          String(customDataValue),
+        );
       }
     } else {
       return customDataValue;
@@ -569,9 +605,9 @@ export class RegistrationsService {
       );
     }
 
-    this.inclusionScoreService.calculateInclusionScore(referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    this.messageService.sendTextMessage(
+    await this.messageService.sendTextMessage(
       registration,
       registration.program.id,
       null,
@@ -990,16 +1026,51 @@ export class RegistrationsService {
     }
   }
 
-  public async setAttribute(
+  public async updateRegistration(
+    programId: number,
     referenceId: string,
-    attribute: Attributes | string,
-    value: string | number | string[],
+    updateRegistrationDto: UpdateRegistrationDto,
+    userId: number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(
+    const partialRegistration = updateRegistrationDto.data;
+    let registration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
+      programId,
     );
 
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      const oldValue = await registration.getRegistrationValueByName(
+        attributeKey,
+      );
+      const attributeValue = partialRegistration[attributeKey];
+      if (String(oldValue) !== String(attributeValue)) {
+        registration = await this.updateAttribute(
+          attributeKey,
+          attributeValue,
+          registration,
+        );
+        const newValue = await registration.getRegistrationValueByName(
+          attributeKey,
+        );
+        await this.registrationChangeLog.save({
+          registration,
+          userId,
+          fieldName: attributeKey,
+          oldValue,
+          newValue,
+          reason: updateRegistrationDto.reason,
+        });
+      }
+    }
+    return registration;
+  }
+
+  private async updateAttribute(
+    attribute: Attributes | string,
+    value: string | number | string[],
+    registration: RegistrationEntity,
+  ): Promise<RegistrationEntity> {
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -1013,9 +1084,9 @@ export class RegistrationsService {
     }
 
     if (
-      attribute !== Attributes.paymentAmountMultiplier &&
-      attribute !== Attributes.preferredLanguage &&
-      attribute !== Attributes.maxPayments
+      !Object.values(AdditionalAttributes).includes(
+        attribute as AdditionalAttributes,
+      )
     ) {
       try {
         await registration.saveData(value, { name: attribute });
@@ -1035,7 +1106,7 @@ export class RegistrationsService {
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         registration.program,
-        referenceId,
+        registration.referenceId,
       );
     if (calculatedRegistration) {
       return this.getRegistrationFromReferenceId(
@@ -1047,7 +1118,9 @@ export class RegistrationsService {
       await this.syncUpdatesWithThirdParties(registration, attribute);
     }
 
-    return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
+    return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
+      'program',
+    ]);
   }
 
   private async syncUpdatesWithThirdParties(
@@ -1134,14 +1207,18 @@ export class RegistrationsService {
             registrationStatus === RegistrationStatusEnum.invited
               ? program.tryWhatsAppFirst
               : false;
-          this.messageService.sendTextMessage(
-            updatedRegistration,
-            programId,
-            message,
-            null,
-            tryWhatsappFirst,
-            messageContentType,
-          );
+          this.messageService
+            .sendTextMessage(
+              updatedRegistration,
+              programId,
+              message,
+              null,
+              tryWhatsappFirst,
+              messageContentType,
+            )
+            .catch((error) => {
+              this.azureLogService.logError(error, true);
+            });
         }
       }
     } else {
@@ -1408,19 +1485,45 @@ export class RegistrationsService {
       registration.note = null;
       await this.registrationRepository.save(registration);
 
+      // FSP-specific
+      // intersolve-voucher
       const voucherImages = await this.imageCodeExportVouchersRepo.find({
         where: { registrationId: registration.id },
         relations: ['voucher'],
       });
+      const vouchersToUpdate = [];
       for await (const voucherImage of voucherImages) {
         const voucher = await this.intersolveVoucherRepo.findOne({
           where: { id: voucherImage.voucher.id },
         });
         voucher.whatsappPhoneNumber = null;
-        await this.intersolveVoucherRepo.save(voucher);
+        vouchersToUpdate.push(voucher);
       }
-
-      // not done, but should: clean up pii fields in at_notification + belcash_request
+      await this.intersolveVoucherRepo.save(vouchersToUpdate);
+      //safaricom
+      const safaricomRequests = await this.safaricomRequestRepo.find({
+        where: { transaction: { registration: { id: registration.id } } },
+        relations: ['transaction', 'transaction.registration'],
+      });
+      const requestsToUpdate = [];
+      for (const request of safaricomRequests) {
+        request.requestResult = JSON.parse(
+          JSON.stringify(request.requestResult).replace(request.partyB, ''),
+        );
+        request.paymentResult = JSON.parse(
+          JSON.stringify(request.paymentResult).replace(request.partyB, ''),
+        );
+        request.transaction.customData = JSON.parse(
+          JSON.stringify(request.transaction.customData).replace(
+            request.partyB,
+            '',
+          ),
+        );
+        request.partyB = '';
+        requestsToUpdate.push(request);
+      }
+      await this.safaricomRequestRepo.save(requestsToUpdate);
+      // TODO: at_notification + belcash_request
     }
   }
 
@@ -1586,11 +1689,13 @@ export class RegistrationsService {
   public async issueValidation(
     payload: ValidationIssueDataDto,
     programId: number,
+    userId: number,
   ): Promise<void> {
     await this.storeProgramAnswers(
       payload.referenceId,
       payload.programAnswers,
       programId,
+      userId,
     );
     await this.setRegistrationStatus(
       payload.referenceId,
@@ -1607,7 +1712,7 @@ export class RegistrationsService {
     );
     for (const data of registration.data) {
       if (data.programQuestion && data.programQuestion.persistence === false) {
-        this.registrationDataRepository.remove(data);
+        await this.registrationDataRepository.remove(data);
       }
     }
   }

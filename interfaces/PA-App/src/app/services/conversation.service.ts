@@ -27,7 +27,10 @@ export class ConversationService {
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor(private paData: PaDataService, private logger: LoggingService) {}
+  constructor(
+    private paData: PaDataService,
+    private logger: LoggingService,
+  ) {}
 
   public async getConversationUpToNow(): Promise<ConversationSection[]> {
     this.startLoading();

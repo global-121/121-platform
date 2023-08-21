@@ -5,4 +5,5 @@ export enum ExportType {
   payment = 'payment',
   selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
+  cardBalances = 'card-balances',
 }

@@ -4,8 +4,11 @@ import { uniq, without } from 'lodash';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -13,7 +16,7 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
-import { Attributes } from '../registration/dto/update-attribute.dto';
+import { Attributes } from '../registration/dto/update-registration.dto';
 import {
   AnswerTypes,
   GenericAttributes,
@@ -57,17 +60,19 @@ export class ExportMetricsService {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly intersolveVisaExportService: IntersolveVisaExportService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
 
-  public getExportList(
+  public async getExportList(
     programId: number,
     type: ExportType,
     userId: number,
     minPayment: number | null = null,
     maxPayment: number | null = null,
   ): Promise<FileDto> {
-    this.actionService.saveAction(userId, programId, type);
+    await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
         return this.getAllPeopleAffectedList(programId);
@@ -89,6 +94,9 @@ export class ExportMetricsService {
       }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
+      }
+      case ExportType.cardBalances: {
+        return this.getCardBalances(programId);
       }
     }
   }
@@ -314,9 +322,8 @@ export class ExportMetricsService {
   }
 
   private async getUnusedVouchers(programId?: number): Promise<FileDto> {
-    const unusedVouchers = await this.paymentsService.getUnusedVouchers(
-      programId,
-    );
+    const unusedVouchers =
+      await this.intersolveVoucherService.getUnusedVouchers(programId);
     for (const v of unusedVouchers) {
       const registration =
         await this.registrationsService.getRegistrationFromReferenceId(
@@ -336,7 +343,7 @@ export class ExportMetricsService {
 
   private async getVouchersWithBalance(programId: number): Promise<FileDto> {
     const vouchersWithBalance =
-      await this.paymentsService.getVouchersWithBalance(programId);
+      await this.intersolveVoucherService.getVouchersWithBalance(programId);
     const response = {
       fileName: ExportType.vouchersWithBalance,
       data: vouchersWithBalance,
@@ -345,7 +352,8 @@ export class ExportMetricsService {
   }
 
   public async getToCancelVouchers(): Promise<FileDto> {
-    const toCancelVouchers = await this.paymentsService.getToCancelVouchers();
+    const toCancelVouchers =
+      await this.intersolveVoucherService.getToCancelVouchers();
 
     const response = {
       fileName: ExportType.toCancelVouchers,
@@ -771,6 +779,22 @@ export class ExportMetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('registration.fsp', 'fsp');
 
+    const additionalFspExportFields = await this.getAdditionalFspExportFields(
+      programId,
+    );
+
+    for (const field of additionalFspExportFields) {
+      const nestedParts = field.split('.');
+      let variabeleSelectQuery = 'transaction."customData"';
+      for (const part of nestedParts) {
+        variabeleSelectQuery += `->'${part}'`;
+      }
+      transactionQuery.addSelect(
+        variabeleSelectQuery,
+        nestedParts[nestedParts.length - 1],
+      );
+    }
+
     for (const r of registrationDataOptions) {
       transactionQuery.select((subQuery) => {
         return this.registrationDataQueryService.customDataEntrySubQuery(
@@ -780,6 +804,22 @@ export class ExportMetricsService {
       }, r.name);
     }
     return await transactionQuery.getRawMany();
+  }
+
+  private async getAdditionalFspExportFields(
+    programId: number,
+  ): Promise<string[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders'],
+    });
+    let fields = [];
+    for (const fsp of program.financialServiceProviders) {
+      if (fsp.fsp === FspName.safaricom) {
+        fields = [...fields, ...['requestResult.OriginatorConversationID']];
+      }
+    }
+    return fields;
   }
 
   public async getPaMetrics(
@@ -1246,6 +1286,17 @@ export class ExportMetricsService {
       includedPeople,
       totalBudget,
       spentMoney,
+    };
+  }
+
+  private async getCardBalances(programId: number): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const data = await this.intersolveVisaExportService.getCards(programId);
+    return {
+      fileName: ExportType.cardBalances,
+      data,
     };
   }
 }

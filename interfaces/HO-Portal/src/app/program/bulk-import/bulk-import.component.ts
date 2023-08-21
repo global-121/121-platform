@@ -48,6 +48,9 @@ export class BulkImportComponent implements OnInit {
   @Input()
   public programId: number;
 
+  @Input()
+  public isTableLoading: boolean;
+
   public isInProgress = false;
 
   public RegistrationStatus = RegistrationStatus;

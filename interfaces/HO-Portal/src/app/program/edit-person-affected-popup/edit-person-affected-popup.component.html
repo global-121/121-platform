@@ -59,7 +59,12 @@
           "
           [value]="attributeValues?.paymentAmountMultiplier"
           (updated)="
-            updatePaAttribute('paymentAmountMultiplier', $event, false)
+            updatePaAttribute(
+              'paymentAmountMultiplier',
+              $event.value,
+              $event.reason,
+              false
+            )
           "
           [inProgress]="inProgress?.paymentAmountMultiplier || false"
           [isDisabled]="
@@ -91,7 +96,14 @@
                 | translate
             "
             [value]="attributeValues?.maxPayments"
-            (updated)="updatePaAttribute('maxPayments', $event, false)"
+            (updated)="
+              updatePaAttribute(
+                'maxPayments',
+                $event.value,
+                $event.reason,
+                false
+              )
+            "
             [inProgress]="inProgress?.maxPayments || false"
             [isDisabled]="!canUpdatePaData"
             [showSubmit]="canUpdatePaData"
@@ -102,7 +114,7 @@
 
         <ng-container *ngIf="canViewPersonalData">
           <app-update-property-item
-            *ngIf="attributeValues?.phoneNumber"
+            *ngIf="attributeValues?.phoneNumber !== undefined"
             type="tel"
             [label]="
               'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
@@ -113,7 +125,14 @@
                 | translate
             "
             [value]="attributeValues?.phoneNumber"
-            (updated)="updatePaAttribute('phoneNumber', $event, false)"
+            (updated)="
+              updatePaAttribute(
+                'phoneNumber',
+                $event.value,
+                $event.reason,
+                false
+              )
+            "
             [inProgress]="inProgress?.phoneNumber || false"
             [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
@@ -130,7 +149,14 @@
             "
             [value]="attributeValues.preferredLanguage"
             [options]="availableLanguages"
-            (updated)="updatePaAttribute('preferredLanguage', $event, false)"
+            (updated)="
+              updatePaAttribute(
+                'preferredLanguage',
+                $event.value,
+                $event.reason,
+                false
+              )
+            "
             [isDisabled]="!canUpdatePaData"
             [showSubmit]="canUpdatePaData"
             [inProgress]="inProgress?.preferredLanguage || false"
@@ -181,7 +207,14 @@
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
             [options]="paTableAttribute.options"
             [explanation]="paTableAttribute.explanation"
-            (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
+            (updated)="
+              updatePaAttribute(
+                paTableAttribute.name,
+                $event.value,
+                $event.reason,
+                true
+              )
+            "
             class="ion-margin-vertical"
           ></app-update-property-item>
         </ng-container>
@@ -229,7 +262,7 @@
             'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
               | translate
                 : {
-                    timestamp: noteLastUpdate | date : DateFormat.dayAndTime
+                    timestamp: noteLastUpdate | date: DateFormat.dayAndTime
                   }
           }}
         </ion-note>

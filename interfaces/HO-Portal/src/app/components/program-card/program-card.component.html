@@ -40,7 +40,7 @@
           <small>
             <strong>
               {{ 'page.programs-list.card.updated' | translate }}
-              {{ program.updated | date : DateFormat.dayAndTime }}
+              {{ program.updated | date: DateFormat.dayAndTime }}
             </strong>
           </small>
         </ion-card-subtitle>
@@ -114,7 +114,7 @@
                 context: {
                   statAmount:
                     programStats?.spentMoney > 0
-                      ? (programStats?.spentMoney | number : '1.0-0')
+                      ? (programStats?.spentMoney | number: '1.0-0')
                       : '-',
                   statName: 'spent'
                 }

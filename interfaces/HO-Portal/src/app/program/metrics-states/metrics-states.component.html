@@ -77,7 +77,7 @@
                     | translate
                       : {
                           number: item.id,
-                          date: item.date | date : DateFormat.dateOnly
+                          date: item.date | date: DateFormat.dateOnly
                         }
                 }}
               </option>
@@ -149,7 +149,7 @@
                 *ngFor="let item of pastMonths"
                 [value]="item.value"
               >
-                {{ item.date | date : DateFormat.monthOnly }}
+                {{ item.date | date: DateFormat.monthOnly }}
               </option>
             </select>
           </th>

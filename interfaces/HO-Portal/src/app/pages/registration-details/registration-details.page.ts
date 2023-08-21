@@ -6,13 +6,13 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { RegistrationPhysicalCardOverviewComponent } from 'src/app/components/registration-physical-card-overview/registration-physical-card-overview.component';
+import { PaymentHistoryPopupComponent } from 'src/app/program/payment-history-popup/payment-history-popup.component';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
 import { RegistrationActivityOverviewComponent } from '../../components/registration-activity-overview/registration-activity-overview.component';
-import { RegistrationPaymentOverviewComponent } from '../../components/registration-payment-overview/registration-payment-overview.component';
 import { RegistrationPersonalInformationComponent } from '../../components/registration-personal-information/registration-personal-information.component';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
@@ -29,7 +29,7 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     TranslateModule,
     ProgramNavigationComponent,
     RegistrationActivityOverviewComponent,
-    RegistrationPaymentOverviewComponent,
+    PaymentHistoryPopupComponent,
     RegistrationPersonalInformationComponent,
     RegistrationPhysicalCardOverviewComponent,
   ],

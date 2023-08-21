@@ -14,7 +14,7 @@ In the 121-portal only PAs with certain status can be deleted, while the API end
 
 1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in)
 2. Look up the right `referenceId`s using the workflow above
-3. Use the endpoint: [`/registrations/delete`](https://test.121.global/docs/#/registrations/post_registrations_delete)
+3. Use the DELETE endpoint: [`/registrations`] (https://test.121.global/docs/#/registrations/post_registrations_delete)
 4. Fill in one or multiple `referenceId`s
 
 ---

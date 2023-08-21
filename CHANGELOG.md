@@ -5,9 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.93.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.96.0...master)
 
 ---
+
+## [1.96.0](https://github.com/global-121/121-platform/compare/v1.95.1...v1.96.0) - 2023-08-16
+
+### Fixed
+
+- Open voucher from registration page
+
+### Changed
+
+- Moved (CI/Lint) tests from Azure Pipelines to GitHub Actions
+
+## [1.95.1](https://github.com/global-121/121-platform/compare/v1.95.0...v1.95.1) - 2023-08-14
+
+### Added
+
+- Added 1 to 1 relation between Twilio message and transaction to improve performance of handling status updates
+
+## [1.95.0](https://github.com/global-121/121-platform/compare/v1.94.1...v1.95.0) - 2023-08-11
+
+### Added
+
+- KRCS: originatorConversationId added in payment export
+- Retry sending WhatsApp messages if it (incorrectly) fails due to a no-template error
+- OCW: Add Visa tokenCode in payment history
+- OCW: send automatic messages on re-issue/pause/unpause card
+- OCW: export report with card usage
+
+### Fixed
+
+- Voucher cannot be opened after changing FSP
+- Server crashing during payment
+
+### Changed
+
+- Payment history details also in PA profile page
+- Enable updating and deleting PAs from Espo differently
+
+## [1.94.1](https://github.com/global-121/121-platform/compare/v1.94.0...v1.94.1) - 2023-08-07
+
+## [1.94.0](https://github.com/global-121/121-platform/compare/v1.93.1...v1.94.0) - 2023-07-27
+
+### Added
+
+- Re-issue visa card
+- Automation of: Update Intersolve Visa phone number & address
+
+### Fixed
+
+- Disappearing columns in PA table
+- Going from end inclusion to completed status
+- Throttling on image endpoint
+- Max payments -1
+
+### Removed
+
+- Get all users endpoint
+- Single KRCS program
 
 ## [1.93.1](https://github.com/global-121/121-platform/compare/v1.93.0...v1.93.1) - 2023-07-21
 

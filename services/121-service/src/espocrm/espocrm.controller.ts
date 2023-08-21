@@ -8,7 +8,7 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import { UpdateRegistrationEspoDto } from '../registration/dto/update-registration.dto';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
@@ -35,11 +35,11 @@ export class EspocrmController {
     status: 403,
     description: 'Forbidden. Signature not correct or IP not whitelisted.',
   })
-  @ApiBody({ isArray: true, type: UpdateRegistrationDto })
+  @ApiBody({ isArray: true, type: UpdateRegistrationEspoDto })
   @Post('update-registration')
   public async updateRegistrations(
-    @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
-    updateRegistrationsDto: UpdateRegistrationDto[],
+    @Body(new ParseArrayPipe({ items: UpdateRegistrationEspoDto }))
+    updateRegistrationsDto: UpdateRegistrationEspoDto[],
   ): Promise<void> {
     return await this.espocrmService.updateRegistrations(
       updateRegistrationsDto,
@@ -81,6 +81,6 @@ export class EspocrmController {
   public async postWebhookIntegration(
     @Body() data: EspocrmWebhookDto,
   ): Promise<void> {
-    this.espocrmService.postWebhookIntegration(data);
+    await this.espocrmService.postWebhookIntegration(data);
   }
 }

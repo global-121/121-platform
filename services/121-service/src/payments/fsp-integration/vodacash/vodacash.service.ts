@@ -43,7 +43,7 @@ export class VodacashService
       };
 
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
-      this.transactionsService.storeTransactionUpdateStatus(
+      await this.transactionsService.storeTransactionUpdateStatus(
         paTransactionResult,
         programId,
         paymentNr,
