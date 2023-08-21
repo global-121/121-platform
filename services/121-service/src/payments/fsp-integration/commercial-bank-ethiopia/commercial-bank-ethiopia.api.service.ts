@@ -18,7 +18,7 @@ export class CommercialBankEthiopiaApiService {
         ? await this.commercialBankEthiopiaMock.post(payload, payment)
         : await this.soapService.postCreate(
             payload,
-            process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSFER,
+            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
           );
 
       if (
@@ -138,7 +138,7 @@ export class CommercialBankEthiopiaApiService {
     try {
       const responseBody = await this.soapService.postCreate(
         payload,
-        process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
+        `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
       );
 
       return responseBody;
