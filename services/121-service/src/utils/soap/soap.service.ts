@@ -163,30 +163,26 @@ export class SoapService {
         timeout: 150000,
       });
       console.log(response.body, 'body');
-      const error = {
-        code: 'ENOTFOUND',
-      };
-      throw error;
 
-      // // Parse the SOAP response if needed
-      // const parsedResponse = convert.xml2js(response.body, { compact: true });
-      // console.log(parsedResponse, 'parsedResponse');
+      // Parse the SOAP response if needed
+      const parsedResponse = convert.xml2js(response.body, { compact: true });
+      console.log(parsedResponse, 'parsedResponse');
 
-      // if (
-      //   parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-      // ) {
-      //   return parsedResponse['S:Envelope']['S:Body'][
-      //     'ns10:RMTFundtransferResponse'
-      //   ];
-      // } else if (
-      //   parsedResponse['S:Envelope']['S:Body'][
-      //     'ns10:CBERemitanceTransactionStatusResponse'
-      //   ]
-      // ) {
-      //   return parsedResponse['S:Envelope']['S:Body'][
-      //     'ns10:CBERemitanceTransactionStatusResponse'
-      //   ];
-      // }
+      if (
+        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:RMTFundtransferResponse'
+        ];
+      } else if (
+        parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ]
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ];
+      }
     } catch (error) {
       console.log(error);
       console.error('Error sending SOAP request:', error);
