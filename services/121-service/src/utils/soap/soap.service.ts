@@ -144,7 +144,7 @@ export class SoapService {
   async postCreate(payload: any, soapAction): Promise<any> {
     try {
       const soapRequestXml = convert.js2xml(payload, {
-        compact: true,
+        compact: false,
         spaces: 4,
       });
 
@@ -165,24 +165,24 @@ export class SoapService {
       console.log(response.body, 'body');
 
       // Parse the SOAP response if needed
-      const parsedResponse = convert.xml2js(response.body, { compact: true });
-      console.log(parsedResponse, 'parsedResponse');
+      // const parsedResponse = convert.xml2js(response.body, { compact: true });
+      // console.log(parsedResponse, 'parsedResponse');
 
-      if (
-        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:RMTFundtransferResponse'
-        ];
-      } else if (
-        parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ]
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ];
-      }
+      // if (
+      //   parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+      // ) {
+      //   return parsedResponse['S:Envelope']['S:Body'][
+      //     'ns10:RMTFundtransferResponse'
+      //   ];
+      // } else if (
+      //   parsedResponse['S:Envelope']['S:Body'][
+      //     'ns10:CBERemitanceTransactionStatusResponse'
+      //   ]
+      // ) {
+      //   return parsedResponse['S:Envelope']['S:Body'][
+      //     'ns10:CBERemitanceTransactionStatusResponse'
+      //   ];
+      // }
     } catch (error) {
       console.log(error);
       console.error('Error sending SOAP request:', error);
