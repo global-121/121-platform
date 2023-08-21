@@ -163,8 +163,12 @@ export class SoapService {
         timeout: 150000,
       });
       console.log(response.body, 'body');
+      const error = {
+        code: 'ENOTFOUND',
+      };
+      throw error;
 
-      // Parse the SOAP response if needed
+      // // Parse the SOAP response if needed
       // const parsedResponse = convert.xml2js(response.body, { compact: true });
       // console.log(parsedResponse, 'parsedResponse');
 
