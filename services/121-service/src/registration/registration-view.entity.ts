@@ -89,7 +89,7 @@ import { RegistrationEntity } from './registration.entity';
       )
       .addSelect([
         'transaction.created AS "lastTransactionCreated"',
-        'transaction.payment AS lastTransactionPaymentNumber',
+        'transaction.payment AS "lastTransactionPaymentNumber"',
         'transaction.status AS "lastTransactionStatus"',
         'transaction.amount AS "lastTransactionAmount"',
         'transaction.errorMessage as "lastTransactionErrorMessage"',
