@@ -1,31 +1,38 @@
-# Intersolve Voucher
+# Commercial Bank Ethiopia Integration Guide
 
-This readme includes additional information / instructions on use of this FSP, that cannot be deduced from code.
+This readme provides detailed instructions for integrating your Dockerized application with the VPN tunnel on Azure Cloud for the Commercial Bank Ethiopia project.
 
-NOTE: Currently the FSP Intersolve, which produces vouchers, is very much intertwined with WhatsApp as a delivery mechanism for delivering these vouchers. In that sense Intersolve is currently a lot more complex than other FSPs.
+## VPN Tunnel and Docker Integration
 
-## Relevant links / documentation
+Follow these steps to successfully integrate your Dockerized application with the VPN tunnel on Azure Cloud for the Commercial Bank Ethiopia project:
 
-1. [Twilio portal](https://www.twilio.com/login)
+1. **VPN Tunnel Setup on Azure Cloud**:
 
-### Use Twilio API during development
+   - Ensure that the VPN tunnel is properly configured on Azure Cloud with the required settings.
+   - Collect the necessary connection details, including the VPN server address and credentials.
 
-See the Twilio API documentation: <https://www.twilio.com/docs>.
+2. **Docker Application Deployment**:
 
-- Make sure the `.env` file contains the correct access keys
-- Use a tool to inspect the responses from the Twilio API, for example:
-  - `ngrok`: <https://ngrok.com>:
-    - See also: <https://www.twilio.com/blog/2015/09/6-awesome-reasons-to-use-ngrok-when-testing-webhooks.html>
-    - Make sure to use the correct port(`3000`) of the 121-service.
-  - `Smee`: <https://smee.io/>
-    - You can use the client with:  
-      `npx smee -u https://smee.io/<unique-url>`
-  - Or any other service that gives a public accessible URL to inspect and/or forward to you local instance of the 121-service.
-- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal url in the [services/.env](../.env)-file.
-  - Make sure to run `npm run start:services` after the changes, so the new value(s) will be used.
+   - Make sure your application is properly containerized using Docker.
+   - Deploy the Docker containers on Azure Cloud where the VPN tunnel is set up.
 
-To also test WhatsApp with Twilio:
+3. **Container Networking**:
 
-- Setup Twilio WhatsApp Sandbox <https://www.twilio.com/docs/whatsapp/sandbox>
-- Be sure to join the sandbox with the WhatsApp number you want to test <https://www.twilio.com/docs/whatsapp/sandbox#how-to-join-a-twilio-sandbox>
-- Set the callback url for `When a Message Comes in` to `<your-url>/api/notifications/whatsapp/incoming`
+   - Ensure that the Docker containers are part of the same network as the VPN tunnel.
+   - This enables seamless communication between your containers and the resources accessible via the VPN.
+
+4. **Configure Application for VPN**:
+
+   - Update your application's configuration to include the VPN server address and port.
+   - Modify any relevant settings to ensure your application communicates through the VPN tunnel.
+
+5. **VPN-Aware API Calls**:
+
+   - Identify the specific API endpoints provided by Commercial Bank Ethiopia that need to be accessed through the VPN.
+   - Update your application's API calls to use the VPN server's address and port.
+
+## Conclusion
+
+By following these instructions, you'll be able to successfully integrate your Dockerized application with the VPN tunnel on Azure Cloud for the Commercial Bank Ethiopia project. If you encounter any challenges or need further assistance, consult the Azure documentation or seek help from your organization's technical support.
+
+Remember to prioritize security and data integrity throughout the integration process, ensuring that your application communicates securely through the established VPN tunnel.

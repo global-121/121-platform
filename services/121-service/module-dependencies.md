@@ -43,9 +43,7 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   PaymentsModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaModule-->ImageCodeModule
   CommercialBankEthiopiaModule-->TransactionsModule
-  CommercialBankEthiopiaModule-->WhatsappModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
   WhatsappIncomingModule-->ImageCodeModule
