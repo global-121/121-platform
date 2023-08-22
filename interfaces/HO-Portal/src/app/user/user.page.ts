@@ -66,7 +66,7 @@ export class UserPage implements OnInit {
       if (typeof val === 'string' && val.includes('Not authorized')) {
         this.showPassCheckFail = true;
         this.passwordChanged = true;
-      } else if (!!val) {
+      } else if (val) {
         this.errorStatusCode = 0;
         this.showPassCheckFail = false;
         this.passwordChanged = true;
