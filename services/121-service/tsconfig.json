@@ -24,7 +24,9 @@
     "resolveJsonModule": true,
     "baseUrl": "./"
   },
-  "watchOptions": { "watchFile": "fixedPollingInterval" },
-  "include": ["src/**/*", ".eslintrc.js"],
+  "watchOptions": {
+    "watchFile": "fixedPollingInterval"
+  },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "test", "**/*.spec.ts"]
 }
