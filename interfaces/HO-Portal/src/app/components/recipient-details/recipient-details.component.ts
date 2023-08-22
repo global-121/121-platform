@@ -164,6 +164,7 @@ export class RecipientDetailsComponent implements OnInit {
       value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
+      //to refactor using EnumService once we expand it to status
       value = this.translateValue(key, value);
     }
     if (this.telKeys.includes(key) && value !== '') {

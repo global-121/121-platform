@@ -1,48 +1,36 @@
 import { HttpStatus } from '@nestjs/common';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
-  getRegistration,
   importRegistrations,
+  searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
 
 describe('Delete PA', () => {
   const programId = 3;
-  const referenceId = 'referenceId-for-delete-pa-test';
-  const registration = {
-    referenceId: referenceId,
-    preferredLanguage: 'en',
-    paymentAmountMultiplier: 1,
-    firstName: 'John',
-    lastName: 'Smith',
-    phoneNumber: '15005550099',
-    fspName: FspName.intersolveVisa,
-    whatsappPhoneNumber: '15005550099',
-  };
-
   let accessToken: string;
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programId, [registration], accessToken);
+    await importRegistrations(programId, [registrationVisa], accessToken);
   });
 
   afterEach(async () => {
     await deleteRegistrations(
       programId,
-      { referenceIds: [referenceId] },
+      { referenceIds: [referenceIdVisa] },
       accessToken,
     );
   });
 
   it('should not delete unknown registrations', async () => {
     // Arrange
-    const wrongReferenceId = referenceId + '-fail-test';
+    const wrongReferenceId = referenceIdVisa + '-fail-test';
 
     // Act
     const response = await deleteRegistrations(
@@ -57,7 +45,7 @@ describe('Delete PA', () => {
   });
 
   it('should succesfully delete', async () => {
-    const rightReferenceId = referenceId;
+    const rightReferenceId = referenceIdVisa;
 
     // Act
     const response = await deleteRegistrations(
@@ -69,10 +57,14 @@ describe('Delete PA', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
 
-    const registration = await getRegistration(referenceId, accessToken);
-
-    expect(registration.body.registrationStatus).toBe(
-      RegistrationStatusEnum.deleted,
+    const registration = await searchRegistrationByReferenceId(
+      referenceIdVisa,
+      programId,
+      accessToken,
     );
+    expect(registration.body[0].status).toBe(RegistrationStatusEnum.deleted);
+    // Expect PII to be deleted
+    expect(registration.body[0].phoneNumber).toBe(null);
+    expect(registration.body[0].firstName).toBe(null);
   });
 });

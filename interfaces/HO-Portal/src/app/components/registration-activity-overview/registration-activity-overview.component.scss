@@ -5,3 +5,8 @@
     box-shadow: 0px 2px var(--ion-color-primary);
   }
 }
+
+.activity-overview--item--description {
+  overflow-wrap: anywhere; // prevent long user generated description from breaking layout
+  white-space: pre-wrap; // keep line breaks from text-area
+}

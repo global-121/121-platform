@@ -363,10 +363,7 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "Transfer value multiplier",
-              "explanation": "The transfer value will be multiplied by this number for this Person Affected",
-              "error": {
-                "not-an-integer": "Input should be an integer"
-              }
+              "explanation": "The transfer value will be multiplied by this number for this Person Affected"
             },
             "phoneNumber": {
               "label": "Phone number",
@@ -397,11 +394,12 @@
             "maxPayments": {
               "label-payments": "Max payments ({{alreadyReceivedPayments}} already sent)",
               "label-no-payments": "Max payments",
-              "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.",
-              "error": {
-                "not-an-integer": "Input should be an integer",
-                "too-low": "Input should be higher than the number of payments that have already been sent"
-              }
+              "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving."
+            },
+            "error": {
+              "not-an-integer": "Input should be an integer",
+              "too-low": "Input should be higher than the number of payments that have already been sent",
+              "not-empty": "Input cannot be empty"
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
@@ -415,6 +413,12 @@
           },
           "error-alert": {
             "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
+          },
+          "reason-popup": {
+            "subheader": "Reason for update",
+            "explanation": "Please provide a reason why this change was made.",
+            "max-length": "Do not use more than {{maxLength}} characters.",
+            "unsaved-changes-explanation": "Your changes have not been saved."
           }
         },
         "message-history-popup": {
@@ -663,7 +667,7 @@
     "payment-history": {
       "message-sent": "Message sent",
       "money-sent": "Money sent",
-      "transfer": "Transfer #{{paymentNr}}"
+      "transfer": "Payment #{{paymentNr}}"
     }
   },
   "registration-details": {
@@ -717,6 +721,7 @@
       "title": "Activity overview",
       "filters": {
         "null": "All",
+        "dataChanges": "Data changes",
         "message": "Messages",
         "status": "Status history",
         "payment": "Payments"
@@ -732,6 +737,11 @@
         "payment": {
           "label": "Payment #{{number}}",
           "description": "Payment #{{number}} is {{status}}."
+        },
+        "data-changes": {
+          "label": "Data change",
+          "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}",
+          "reason": "<br><b>Reason:</b> {{reason}}"
         }
       }
     },

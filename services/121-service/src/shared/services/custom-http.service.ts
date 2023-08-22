@@ -40,11 +40,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: null }, response);
+            this.logMessageRequest({ headers, url, payload: null }, response);
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: null }, err.response);
+            this.logErrorRequest({ headers, url, payload: null }, err.response);
             return of(err.response);
           }),
         ),
@@ -63,11 +63,17 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: payload }, response);
+            this.logMessageRequest(
+              { headers, url, payload: payload },
+              response,
+            );
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: payload }, err.response);
+            this.logErrorRequest(
+              { headers, url, payload: payload },
+              err.response,
+            );
             return of(err.response);
           }),
         ),
@@ -86,11 +92,17 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: payload }, response);
+            this.logMessageRequest(
+              { headers, url, payload: payload },
+              response,
+            );
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: payload }, err.response);
+            this.logErrorRequest(
+              { headers, url, payload: payload },
+              err.response,
+            );
             return of(err.response);
           }),
         ),
@@ -109,7 +121,7 @@ export class CustomHttpService {
     return returnHeaders;
   }
 
-  public logMessage(request: Request, response: Response): void {
+  public logMessageRequest(request: Request, response: Response): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
@@ -118,17 +130,22 @@ export class CustomHttpService {
         const responseContent = `Response: ${response.status} ${
           response.statusText
         } - Body: ${JSON.stringify(response.data)}`;
+        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
         this.defaultClient.trackTrace({
-          message: `${requestContent} - ${responseContent}`,
+          message: `${requestContent.substring(
+            0,
+            16000,
+          )} - ${responseContent.substring(0, 16000)}`,
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {
-        console.log('An error occured in logMessage: ', error);
+        console.log('An error occured in logMessageRequest: ', error);
       }
     }
   }
 
-  public logError(request: Request, error: Response): void {
+  public logErrorRequest(request: Request, error: Response): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
@@ -138,11 +155,18 @@ export class CustomHttpService {
           error.statusText
         } - Body: ${JSON.stringify(error.data)}`;
         this.defaultClient.trackException({
-          exception: new Error(`${requestContent} - ${responseContent}}`),
+          // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+          exception: new Error(
+            `${requestContent.substring(
+              0,
+              16000,
+            )} - ${responseContent.substring(0, 16000)}}`,
+          ),
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {
-        console.log('An error occured in logError: ', error);
+        console.log('An error occured in logErrorRequest: ', error);
       }
     }
   }

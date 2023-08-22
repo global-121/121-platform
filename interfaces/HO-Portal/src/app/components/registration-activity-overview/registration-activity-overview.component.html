@@ -60,21 +60,38 @@
             </div>
             <ion-col>
               <ion-row class="ion-justify-content-between">
-                <ion-row class="ion-margin-bottom">
+                <ion-row>
                   <ion-label class="ion-margin-end">
-                    <strong>{{ item.label | uppercase }}</strong>
+                    <strong
+                      >{{ item.label | uppercase
+                      }}<span *ngIf="item.subLabel"> - </span>
+                      {{ item.subLabel }}</strong
+                    >
                   </ion-label>
                   <ion-note>
                     <small>
-                      {{ item.date | date : DateFormat.dayAndTime }}
+                      {{ item.date | date: DateFormat.dayAndTime }}
                     </small>
                   </ion-note>
                 </ion-row>
               </ion-row>
               <div>
-                <ion-text class="ion-text-end">{{ item.description }}</ion-text>
+                <ion-text
+                  class="activity-overview--item--description"
+                  [innerHTML]="item.description"
+                ></ion-text>
               </div>
             </ion-col>
+
+            <ion-label
+              *ngIf="item.chipText"
+              class="ion-text-right ion-float-right"
+              ><ion-chip class="chip">
+                <b>
+                  {{ item.chipText }}
+                </b>
+              </ion-chip>
+            </ion-label>
           </ion-row>
 
           <!-- payments -->
@@ -82,9 +99,16 @@
             <!-- Accordion -->
             <ion-accordion-group [multiple]="true">
               <app-payment-history-accordion
-                [paymentRow]="item.data"
-                [enableSinglePayment]="enableSinglePayment(item.data)"
-                (rowClick)="rowClick($event)"
+                [paymentRow]="item.paymentRowDetail"
+                [enableSinglePayment]="
+                  enableSinglePayment(item.paymentRowDetail)
+                "
+                [person]="person"
+                [program]="program"
+                [paymentRows]="enableSinglePayment(paymentRow)"
+                [canViewVouchers]="canViewVouchers"
+                [canDoSinglePayment]="canDoSinglePayment"
+                [lastPaymentId]="lastPaymentId"
               ></app-payment-history-accordion>
             </ion-accordion-group>
           </div>

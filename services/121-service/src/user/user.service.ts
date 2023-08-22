@@ -282,10 +282,10 @@ export class UserService {
     // If 0 roles are posted remove aidworker assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
-        this.assignmentRepository.remove(programAssignment);
+        await this.assignmentRepository.remove(programAssignment);
         // Also remove user without assignments
         if (user.programAssignments.length <= 1) {
-          this.userRepository.remove(user);
+          await this.userRepository.remove(user);
         }
         return;
       }

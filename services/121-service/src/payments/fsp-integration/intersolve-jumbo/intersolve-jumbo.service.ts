@@ -247,7 +247,7 @@ export class IntersolveJumboService
     transactionStep: number,
     programId: number,
   ): Promise<void> {
-    this.transactionsService.storeTransactionUpdateStatus(
+    await this.transactionsService.storeTransactionUpdateStatus(
       paTransactionResult,
       programId,
       paymentNr,

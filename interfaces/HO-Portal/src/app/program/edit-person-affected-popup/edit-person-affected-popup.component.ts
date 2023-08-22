@@ -18,6 +18,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
+import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { actionResult } from '../../shared/action-result';
 
@@ -58,7 +59,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public program: Program;
   public attributeValues: any = {};
-  public paTableAttributes: {}[] = [];
+  public paTableAttributes: Attribute[] = [];
   private paTableAttributesInput: Program['editableAttributes'];
 
   public fspList: Fsp[] = [];
@@ -83,6 +84,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private alertController: AlertController,
     private pubSub: PubSubService,
     private errorHandlerService: ErrorHandlerService,
+    private enumService: EnumService,
   ) {}
 
   async ngOnInit() {
@@ -136,6 +138,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string | number | string[],
+    reason: string,
     isPaTableAttribute: boolean,
   ): Promise<void> {
     let valueToStore: string | number | string[];
@@ -157,6 +160,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     }
 
     if (attribute === PersonDefaultAttributes.phoneNumber) {
+      if (!value || value === '') {
+        this.showAttributeErrorAlert('not-empty', attribute);
+        return;
+      }
       valueToStore = value;
     }
 
@@ -187,6 +194,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.person.referenceId,
         attribute,
         valueToStore,
+        reason,
       )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
@@ -221,9 +229,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     const errorKeyPrefix =
       'page.program.program-people-affected.edit-person-affected-popup.properties';
     const errorMessage = this.translate.instant('common.update-error', {
-      error: this.translate.instant(
-        `${errorKeyPrefix}.${attribute}.error.${errorType}`,
-      ),
+      error: this.translate.instant(`${errorKeyPrefix}.error.${errorType}`),
     });
     actionResult(this.alertController, this.translate, errorMessage);
     this.inProgress[attribute] = false;
@@ -282,14 +288,14 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       const fspQuestion = this.personFsp.questions.find(
         (attr: FspQuestion) => attr.name === paTableAttribute.name,
       );
-      return !!fspQuestion.options ? fspQuestion.options : [];
+      return fspQuestion.options ? fspQuestion.options : [];
     }
 
     const programQuestion = this.program.programQuestions.find(
       (question: ProgramQuestion) => question.name === paTableAttribute.name,
     );
 
-    return !!programQuestion.options ? programQuestion.options : [];
+    return programQuestion.options ? programQuestion.options : [];
   }
 
   private async getNote() {
@@ -344,9 +350,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private getAvailableLanguages(): object[] {
     return this.program.languages.map((key) => ({
       option: key,
-      label: this.translate.instant(
-        'page.program.program-people-affected.language.' + key,
-      ),
+      label: this.enumService.getEnumLabel('preferredLanguage', key),
     }));
   }
 

@@ -6,7 +6,6 @@ import { Person } from 'src/app/models/person.model';
 import { PhysicalCard } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { WalletStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import RegistrationStatus from '../../enums/registration-status.enum';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
 
@@ -56,12 +55,16 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       return;
     }
 
-    this.physicalCards = (
-      await this.programsService.getPhysicalCards(
+    try {
+      this.physicalCards = await this.programsService.getPhysicalCards(
         this.programId,
         this.referenceId,
-      )
-    ).sort((a, b) => {
+      );
+    } catch (error) {
+      this.physicalCards = [];
+    }
+
+    this.physicalCards.sort((a, b) => {
       if (a.issuedDate < b.issuedDate) {
         return 1;
       }
@@ -93,17 +96,6 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   }
 
   public showPhysicalCardOverview(): boolean {
-    const acceptedStatuses = [
-      RegistrationStatus.included,
-      RegistrationStatus.completed,
-      RegistrationStatus.inclusionEnded,
-      RegistrationStatus.rejected,
-    ];
-
-    if (acceptedStatuses.includes(this.registrationStatus)) {
-      return true;
-    }
-
-    return false;
+    return this.physicalCards?.length > 0;
   }
 }

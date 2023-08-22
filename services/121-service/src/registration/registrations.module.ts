@@ -20,9 +20,12 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
+import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -39,6 +42,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       ActionEntity,
       RegistrationEntity,
       RegistrationDataEntity,
+      RegistrationChangeLogEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,
@@ -61,8 +65,14 @@ import { InclusionScoreService } from './services/inclusion-score.service';
     FspModule,
     MessageModule,
     IntersolveVisaModule,
+    RegistrationChangeLogModule,
   ],
-  providers: [RegistrationsService, BulkImportService, InclusionScoreService],
+  providers: [
+    RegistrationsService,
+    BulkImportService,
+    InclusionScoreService,
+    AzureLogService,
+  ],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],
 })

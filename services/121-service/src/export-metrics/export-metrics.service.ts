@@ -16,7 +16,7 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
-import { Attributes } from '../registration/dto/update-attribute.dto';
+import { Attributes } from '../registration/dto/update-registration.dto';
 import {
   AnswerTypes,
   GenericAttributes,
@@ -65,14 +65,14 @@ export class ExportMetricsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  public getExportList(
+  public async getExportList(
     programId: number,
     type: ExportType,
     userId: number,
     minPayment: number | null = null,
     maxPayment: number | null = null,
   ): Promise<FileDto> {
-    this.actionService.saveAction(userId, programId, type);
+    await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
         return this.getAllPeopleAffectedList(programId);

@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageService } from '../../notifications/message.service';
+import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
@@ -29,6 +30,8 @@ export class TransactionsService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(TwilioMessageEntity)
+  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -194,6 +197,14 @@ export class TransactionsService {
     const resultTransaction = await this.transactionRepository.save(
       transaction,
     );
+    if (transactionResponse.messageSid) {
+      await this.twilioMessageRepository.update(
+        { sid: transactionResponse.messageSid },
+        {
+          transactionId: resultTransaction.id,
+        },
+      );
+    }
 
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
