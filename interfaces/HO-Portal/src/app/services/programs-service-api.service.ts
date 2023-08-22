@@ -507,6 +507,9 @@ export class ProgramsServiceApiService {
     attributes?: string[],
   ): Promise<Person[]> {
     let params = new HttpParams();
+    if (personalData) {
+      params = params.append('registrationData', 'registrationData');
+    }
     params = params.append('personalData', personalData);
     params = params.append('paymentData', paymentData);
     if (referenceId) {
@@ -520,7 +523,7 @@ export class ProgramsServiceApiService {
     }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations`,
+      `/programs/${programId}/registrations/paginate`,
       false,
       params,
     );

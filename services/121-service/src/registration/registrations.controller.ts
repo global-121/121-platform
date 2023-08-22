@@ -249,6 +249,11 @@ export class RegistrationsController {
     }
   }
 
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'page', required: false, type: 'number' })
+  @ApiQuery({ name: 'limit', required: false, type: 'number' })
+  @ApiQuery({ name: 'sortBy', required: false, type: 'string' })
+  @ApiQuery({ name: 'select', required: false, type: 'string' })
   @Get('programs/:programId/registrations/paginate')
   public findAll(@Paginate() query: PaginateQuery): Promise<any> {
     return this.registrationsService.getPaginate(query);

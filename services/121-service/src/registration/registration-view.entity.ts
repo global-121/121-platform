@@ -29,7 +29,7 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('registration.noteUpdated', 'noteUpdated')
-      .addSelect('fsp.fsp', 'fsp')
+      .addSelect('fsp.fsp', 'financialServiceProvider')
       .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
       .addSelect(
         'registration.paymentAmountMultiplier',
@@ -44,7 +44,7 @@ import { RegistrationEntity } from './registration.entity';
           qb
             .from(TransactionEntity, 'transactions')
             .select('MAX("payment")', 'payment')
-            .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
+            .addSelect('COUNT(DISTINCT(payment))', 'amountPaymentsReceived')
             .addSelect('"registrationId"', 'registrationId')
             .groupBy('"registrationId"'),
         'transaction_max_payment',
@@ -88,13 +88,13 @@ import { RegistrationEntity } from './registration.entity';
       AND transaction."created" = transaction_max_created."created"`,
       )
       .addSelect([
-        'transaction.created AS "paymentDate"',
-        'transaction.payment AS payment',
-        'transaction.status AS "transactionStatus"',
-        'transaction.amount AS "transactionAmount"',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-        'transaction_max_payment."nrPayments" as "nrPayments"',
+        'transaction.created AS "lastTransactionCreated"',
+        'transaction.payment AS lastTransactionPaymentNumber',
+        'transaction.status AS "lastTransactionStatus"',
+        'transaction.amount AS "lastTransactionAmount"',
+        'transaction.errorMessage as "lastTransactionErrorMessage"',
+        'transaction.customData as "lastTransactionCustomData"',
+        'transaction_max_payment."amountPaymentsReceived" as "amountPaymentsReceived"',
       ])
       .addSelect(`"imported".created`, 'importedDate')
       .addSelect(`"registered".created`, 'registeredDate')
@@ -224,10 +224,10 @@ export class RegistrationViewEntity {
   public note: string;
 
   @ViewColumn()
-  public fsp: FspName;
+  public noteUpdated: Date;
 
   @ViewColumn()
-  public noteUpdated: Date;
+  public financialServiceProvider: FspName;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
@@ -237,25 +237,25 @@ export class RegistrationViewEntity {
   public maxPayments: number;
 
   @ViewColumn()
-  public paymentDate: Date;
+  public lastTransactionCreated: Date;
 
   @ViewColumn()
-  public payment: number;
+  public lastTransactionPaymentNumber: number;
 
   @ViewColumn()
-  public transactionStatus: string;
+  public lastTransactionStatus: string;
 
   @ViewColumn()
-  public transactionAmount: string;
+  public lastTransactionAmount: number;
 
   @ViewColumn()
-  public errorMessage: string;
+  public lastTransactionErrorMessage: string;
 
   @ViewColumn()
-  public customData: string;
+  public lastTransactionCustomData: string;
 
   @ViewColumn()
-  public nrPayments: number;
+  public amountPaymentsReceived: number;
 
   @OneToMany(
     () => RegistrationDataEntity,
