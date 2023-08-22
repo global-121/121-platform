@@ -16,7 +16,7 @@ export class CommercialBankEthiopiaApiService {
     try {
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
         ? await this.commercialBankEthiopiaMock.post(payload, payment)
-        : await this.soapService.postCreate(
+        : await this.soapService.postCBERequest(
             payload,
             `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
           );
@@ -136,7 +136,7 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = await this.soapService.postCreate(
+      const responseBody = await this.soapService.postCBERequest(
         payload,
         `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
       );

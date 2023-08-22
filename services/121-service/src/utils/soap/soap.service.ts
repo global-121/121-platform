@@ -141,7 +141,7 @@ export class SoapService {
     return xml;
   }
 
-  async postCreate(payload: any, soapAction): Promise<any> {
+  async postCBERequest(payload: any, soapAction): Promise<any> {
     try {
       const soapRequestXml = convert.js2xml(payload, {
         compact: false,
