@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../notifications/message-type.enum';
+import { MessageContentType } from '../../../notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
+import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -48,9 +50,13 @@ export class IntersolveVoucherService
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(TwilioMessageEntity)
+  public twilioMessageRepository: Repository<TwilioMessageEntity>;
+
+  private readonly fallbackLanguage = 'en';
 
   public constructor(
-    private readonly intersolveApiService: IntersolveVoucherApiService,
+    private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
@@ -232,7 +238,7 @@ export class IntersolveVoucherService
     password: string,
   ): Promise<IntersolveIssueCardResponse> {
     const amountInCents = amount * 100;
-    return await this.intersolveApiService.issueCard(
+    return await this.intersolveVoucherApiService.issueCard(
       amountInCents,
       intersolveRefPos,
       username,
@@ -304,7 +310,8 @@ export class IntersolveVoucherService
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
-    let whatsappPayment = program.notifications[language]['whatsappPayment'];
+    let whatsappPayment =
+      program.notifications[language][ProgramNotificationEnum.whatsappPayment];
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
     await this.whatsappService
@@ -377,23 +384,8 @@ export class IntersolveVoucherService
 
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
+    transactionId: number,
   ): Promise<void> {
-    const transaction = await this.dataSource
-      .getRepository(TransactionEntity)
-      .createQueryBuilder('transaction')
-      .select(['transaction.id', 'transaction.payment'])
-      .leftJoinAndSelect('transaction.registration', 'registration')
-      .where('transaction.customData ::jsonb @> :customData', {
-        customData: {
-          messageSid: statusCallbackData.MessageSid,
-        },
-      })
-      .getOne();
-    if (!transaction) {
-      // If no transaction found, it cannot (and should not have to) be updated
-      return;
-    }
-
     const succesStatuses = [TwilioStatus.delivered, TwilioStatus.read];
     const failStatuses = [TwilioStatus.undelivered, TwilioStatus.failed];
     let status: string;
@@ -407,7 +399,7 @@ export class IntersolveVoucherService
     }
 
     await this.transactionRepository.update(
-      { id: transaction.id },
+      { id: transactionId },
       {
         status: status,
         errorMessage:
@@ -490,7 +482,9 @@ export class IntersolveVoucherService
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
     intersolveInstructionsEntity.programId = programId;
 
-    this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
+    await this.intersolveInstructionsRepository.save(
+      intersolveInstructionsEntity,
+    );
   }
 
   private async markVoucherAsToCancel(
@@ -499,9 +493,12 @@ export class IntersolveVoucherService
     refPos: number,
   ): Promise<void> {
     if (cardId && transactionId) {
-      await this.intersolveApiService.markAsToCancel(cardId, transactionId);
+      await this.intersolveVoucherApiService.markAsToCancel(
+        cardId,
+        transactionId,
+      );
     } else if (refPos) {
-      await this.intersolveApiService.markAsToCancelByRefPos(refPos);
+      await this.intersolveVoucherApiService.markAsToCancelByRefPos(refPos);
     }
   }
 
@@ -546,7 +543,7 @@ export class IntersolveVoucherService
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    const getCard = await this.intersolveApiService.getCard(
+    const getCard = await this.intersolveVoucherApiService.getCard(
       intersolveVoucher.barcode,
       intersolveVoucher.pin,
       credentials.username,
@@ -619,7 +616,7 @@ export class IntersolveVoucherService
         } else {
           voucher.balanceUsed = true;
           voucher.send = true;
-          this.intersolveVoucherRepository.save(voucher);
+          await this.intersolveVoucherRepository.save(voucher);
         }
       }
 
@@ -647,7 +644,7 @@ export class IntersolveVoucherService
       errorMessage,
       messageSid,
     );
-    this.transactionsService.storeTransactionUpdateStatus(
+    await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
       programId,
       paymentNr,
@@ -676,7 +673,7 @@ export class IntersolveVoucherService
     transactionResult.message = errorMessage;
     transactionResult.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
-      transactionResult.customData['messageSid'] = messageSid;
+      transactionResult.messageSid = messageSid;
     }
     if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =

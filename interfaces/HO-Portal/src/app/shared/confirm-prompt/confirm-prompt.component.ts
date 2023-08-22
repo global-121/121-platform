@@ -66,6 +66,12 @@ export class ConfirmPromptComponent {
   @Input()
   public action: BulkActionId;
 
+  @Input()
+  public class?: string;
+
+  @Input()
+  public bypassModalComponent = false;
+
   @Output()
   private confirm = new EventEmitter<string>();
 
@@ -79,6 +85,11 @@ export class ConfirmPromptComponent {
 
   public async showPrompt() {
     this.disabled = true;
+
+    if (this.bypassModalComponent) {
+      this.confirm.emit();
+      return;
+    }
 
     let modal: HTMLIonModalElement;
     if (this.filePickerProps) {

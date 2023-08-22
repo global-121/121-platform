@@ -40,7 +40,9 @@ export class OnlyAllowedInputDirective {
     let invertedPattern = new RegExp('');
     try {
       invertedPattern = new RegExp(pattern, 'g');
-    } catch (error) {}
+    } catch (error) {
+      /* empty */
+    }
 
     const pasteData: string = event.clipboardData.getData('text/plain');
     const stripped = pasteData.replace(invertedPattern, '');

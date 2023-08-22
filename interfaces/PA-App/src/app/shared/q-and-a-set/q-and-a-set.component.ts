@@ -135,7 +135,7 @@ export class QAndASetComponent implements OnChanges {
 
   public onAnswerChange(
     questionCode: string,
-    answerValue: string,
+    answerValue: string | string[],
     forceChange = false,
   ) {
     // Remove 'false positive' change-events on load/initiation of the component with data
@@ -162,8 +162,7 @@ export class QAndASetComponent implements OnChanges {
     questionCode: string,
     answerInput: { checked: boolean; value: string },
   ) {
-    let answerStore;
-    let answerValue;
+    let answerStore: Set<Answer['value']>;
 
     if (this.answers[questionCode] && this.answers[questionCode].value) {
       answerStore = new Set(this.answers[questionCode].value);
@@ -177,7 +176,7 @@ export class QAndASetComponent implements OnChanges {
       answerStore.delete(answerInput.value);
     }
 
-    answerValue = Array.from(answerStore).sort();
+    const answerValue = Array.from(answerStore).sort().flat();
 
     if (!answerValue || answerValue.length === 0) {
       // Reset previously stored answer(s)

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -207,7 +208,7 @@ export class IntersolveJumboService
       for (const paymentInfo of preOrderInfoArray) {
         const calculatedAmount = paymentInfo.transactionAmount;
         const transactionNotification = {
-          notificationKey: 'jumboCardSent',
+          notificationKey: ProgramNotificationEnum.jumboCardSent,
           dynamicContent: [String(calculatedAmount)],
         };
         const transactionResult = this.createTransactionResult(
@@ -246,7 +247,7 @@ export class IntersolveJumboService
     transactionStep: number,
     programId: number,
   ): Promise<void> {
-    this.transactionsService.storeTransactionUpdateStatus(
+    await this.transactionsService.storeTransactionUpdateStatus(
       paTransactionResult,
       programId,
       paymentNr,

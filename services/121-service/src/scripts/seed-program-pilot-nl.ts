@@ -20,7 +20,7 @@ export class SeedPilotNLProgram implements InterfaceScript {
     const program = await this.seedHelper.addProgram(programPilotNL);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(program, false);
+    await this.seedHelper.addDefaultUsers(program, false);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotNL);

@@ -15,6 +15,7 @@ export class PaTransactionResultDto {
   public customData?: any;
   public calculatedAmount: number;
   public fspName: FspName;
+  public messageSid?: string;
 }
 
 export class TransactionNotificationObject {

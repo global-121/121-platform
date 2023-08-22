@@ -28,7 +28,7 @@
       >
         {{
           'page.program.program-payout.payment-nr'
-            | translate : { number: payment.id }
+            | translate: { number: payment.id }
         }}
 
         <ng-container *ngIf="payment.statusOpen">
@@ -38,13 +38,13 @@
           {{ 'page.program.program-payout.closed' | translate }}
         </ng-container>
         -
-        {{ payment.paymentDate | date : DateFormat.dateOnly }}
+        {{ payment.paymentDate | date: DateFormat.dateOnly }}
       </option>
     </select>
 
     <app-export-list
       [programId]="programId"
-      [exportType]="exportType"
+      [exportType]="exportPaymentType"
       [minPayment]="minPayment"
       [maxPayment]="maxPayment"
       [disabled]="!exportPaymentAvailable"
@@ -65,15 +65,22 @@
       [fspIds]="fspIdsWithReconciliation"
     ></app-import-fsp-reconciliation>
   </ion-row>
-  <ion-row
-    *ngIf="programHasVoucherSupport"
-    class="ion-margin-vertical"
-  >
+  <ion-row class="ion-margin-vertical">
     <app-export-list
+      *ngIf="programHasVoucherSupport"
       [programId]="programId"
       [exportType]="enumExportType.unusedVouchers"
+      class="ion-margin-end"
     >
     </app-export-list>
+
+    <app-export-list
+      *ngIf="canExportCardBalances"
+      [programId]="programId"
+      [exportType]="exportCardUsageType"
+      [minPayment]="minPayment"
+      [maxPayment]="maxPayment"
+    ></app-export-list>
   </ion-row>
 </div>
 
@@ -89,7 +96,7 @@
     <h3>
       {{
         'page.program.program-payout.last-payment.last-payment'
-          | translate : { nr: lastPaymentId ? '#' + lastPaymentId : '-' }
+          | translate: { nr: lastPaymentId ? '#' + lastPaymentId : '-' }
       }}
     </h3>
     <p *ngIf="lastPaymentResults">
@@ -107,7 +114,7 @@
       (confirm)="retryLastPayment()"
       [subHeader]="
         'page.program.program-payout.last-payment.confirm-prompt'
-          | translate : { number: lastPaymentResults?.error }
+          | translate: { number: lastPaymentResults?.error }
       "
       fill="outline"
       color="danger"
@@ -120,7 +127,7 @@
       ></ion-icon>
       {{
         'page.program.program-payout.last-payment.retry-all'
-          | translate : { number: lastPaymentResults?.error }
+          | translate: { number: lastPaymentResults?.error }
       }}
     </app-confirm-prompt>
   </ion-col>

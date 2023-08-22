@@ -62,13 +62,18 @@ export class SafaricomService {
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        programId,
-        paymentNr,
-      );
+      const transaction =
+        await this.transactionsService.storeTransactionUpdateStatus(
+          paymentRequestResultPerPa,
+          programId,
+          paymentNr,
+        );
 
-      await this.processSafaricomRequest(payload, paymentRequestResultPerPa);
+      await this.processSafaricomRequest(
+        payload,
+        paymentRequestResultPerPa,
+        transaction,
+      );
     }
     return fspTransactionResult;
   }
@@ -95,9 +100,9 @@ export class SafaricomService {
   }
 
   public createPayloadPerPa(
-    payment,
-    programId,
-    paymentNr,
+    paymentData: PaPaymentDataDto,
+    programId: number,
+    paymentNr: number,
     userInfo: { id: string; referenceId: string; value: string },
   ): SafaricomTransferPayload {
     function padTo2Digits(num: number): string {
@@ -116,13 +121,13 @@ export class SafaricomService {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'BusinessPayment',
-      Amount: payment.transactionAmount,
+      Amount: paymentData.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A,
-      PartyB: payment.paymentAddress,
+      PartyB: paymentData.paymentAddress,
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: payment.referenceId,
+      Occassion: paymentData.referenceId,
       OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
         new Date(),
       )}_${this.generateRandomString(3)}`,
@@ -163,6 +168,7 @@ export class SafaricomService {
   public async processSafaricomRequest(
     payload,
     paymentRequestResultPerPa,
+    transaction: TransactionEntity,
   ): Promise<any> {
     const payloadResult = Object.fromEntries(
       Object.entries(payload).map(([k, v]) => [
@@ -172,17 +178,6 @@ export class SafaricomService {
     );
 
     const safaricomCustomData = { ...paymentRequestResultPerPa.customData };
-    const transaction = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .where('transaction.customData ::jsonb @> :customData', {
-        customData: {
-          requestResult: {
-            OriginatorConversationID:
-              safaricomCustomData.requestResult.OriginatorConversationID,
-          },
-        },
-      })
-      .getMany();
 
     payloadResult.requestResult = safaricomCustomData.requestResult;
     payloadResult.conversationID =
@@ -191,7 +186,7 @@ export class SafaricomService {
       safaricomCustomData.requestResult.ConversationID
         ? safaricomCustomData.requestResult.ConversationID
         : 'Invalid Request';
-    payloadResult.transaction = transaction[0];
+    payloadResult.transaction = transaction;
     await this.safaricomRequestRepository.save(payloadResult);
   }
 

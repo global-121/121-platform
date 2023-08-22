@@ -61,7 +61,7 @@ export class BelcashService
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
-      this.transactionsService.storeTransactionUpdateStatus(
+      await this.transactionsService.storeTransactionUpdateStatus(
         paymentRequestResultPerPa,
         programId,
         paymentNr,
@@ -165,7 +165,7 @@ export class BelcashService
         paTransactionResult.message = belcashRequest.status;
         paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
 
-        this.transactionsService.storeTransactionUpdateStatus(
+        await this.transactionsService.storeTransactionUpdateStatus(
           paTransactionResult,
           programId,
           payment,

@@ -19,7 +19,7 @@ export class SeedProgramUkr implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programPilotUkr);
 
-    this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program, true);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceUkr);

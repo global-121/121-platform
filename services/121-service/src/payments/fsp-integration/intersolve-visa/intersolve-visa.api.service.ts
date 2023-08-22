@@ -129,6 +129,7 @@ export class IntersolveVisaApiService {
 
   public async getTransactions(
     tokenCode: string,
+    dateFrom?: Date,
   ): Promise<GetTransactionsDetailsResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.getTransactionsMock(
@@ -139,7 +140,9 @@ export class IntersolveVisaApiService {
       const apiPath = process.env.INTERSOLVE_VISA_PROD
         ? 'wallet-payments'
         : 'wallet';
-      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/transactions`;
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/transactions${
+        dateFrom ? `?dateFrom=${dateFrom.toISOString()}` : ''
+      }`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },

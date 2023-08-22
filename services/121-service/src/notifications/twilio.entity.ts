@@ -1,7 +1,15 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Base121Entity } from './../base.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
-import { MessageContentType } from './message-type.enum';
+import { MessageContentType } from './enum/message-type.enum';
 
 export enum NotificationType {
   Sms = 'sms',
@@ -58,4 +66,13 @@ export class TwilioMessageEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
+
+  @Column({ type: 'int', default: 0 })
+  public retryCount: number;
+
+  @OneToOne(() => TransactionEntity)
+  @JoinColumn({ name: 'transactionId' })
+  public transaction: TransactionEntity;
+  @Column({ type: 'int', nullable: true })
+  public transactionId: number;
 }

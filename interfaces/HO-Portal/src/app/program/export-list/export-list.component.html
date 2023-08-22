@@ -1,19 +1,21 @@
-<app-confirm-prompt
-  [disabled]="disabled"
-  (confirm)="getExportList()"
-  [subHeader]="subHeader"
-  [message]="message"
-  [duplicateAttributesProps]="duplicateAttributesProps"
->
-  <ion-icon
-    name="download"
-    slot="start"
-    aria-hidden="true"
-  ></ion-icon>
-  {{ btnText }}
-</app-confirm-prompt>
-<ion-spinner
-  *ngIf="isInProgress"
-  color="primary"
-  class="ion-margin-start"
-></ion-spinner>
+<ion-row class="ion-align-items-center">
+  <app-confirm-prompt
+    [disabled]="disabled"
+    (confirm)="getExportList()"
+    [subHeader]="subHeader"
+    [message]="message"
+    [duplicateAttributesProps]="duplicateAttributesProps"
+  >
+    <ion-icon
+      name="download"
+      slot="start"
+      aria-hidden="true"
+    ></ion-icon>
+    {{ btnText }}
+  </app-confirm-prompt>
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
+</ion-row>

@@ -15,6 +15,7 @@ import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { BulkImportService } from '../registration/services/bulk-import.service';
 import { InclusionScoreService } from '../registration/services/inclusion-score.service';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
 import { UserEntity } from './../user/user.entity';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
@@ -68,6 +69,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     BulkImportService,
     LookupService,
     InclusionScoreService,
+    AzureLogService,
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService],

@@ -218,5 +218,6 @@
   },
   "fullnameNamingConvention": ["name"],
   "languages": ["en"],
-  "tryWhatsAppFirst": true
+  "tryWhatsAppFirst": true,
+  "enableMaxPayments": false
 }

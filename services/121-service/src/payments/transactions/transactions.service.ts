@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { MessageContentType } from '../../notifications/message-type.enum';
+import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageService } from '../../notifications/message.service';
+import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
@@ -29,6 +30,8 @@ export class TransactionsService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(TwilioMessageEntity)
+  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -168,7 +171,7 @@ export class TransactionsService {
     programId: number,
     payment: number,
     transactionStep?: number,
-  ): Promise<void> {
+  ): Promise<TransactionEntity> {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
@@ -191,7 +194,17 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
-    await this.transactionRepository.save(transaction);
+    const resultTransaction = await this.transactionRepository.save(
+      transaction,
+    );
+    if (transactionResponse.messageSid) {
+      await this.twilioMessageRepository.update(
+        { sid: transactionResponse.messageSid },
+        {
+          transactionId: resultTransaction.id,
+        },
+      );
+    }
 
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
@@ -221,6 +234,7 @@ export class TransactionsService {
         );
       }
     }
+    return resultTransaction;
   }
 
   private getMessageText(

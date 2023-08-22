@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
   Param,
   ParseArrayPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -24,12 +26,14 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { MessageContentType } from '../notifications/message-type.enum';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
@@ -45,7 +49,10 @@ import { RegistrationResponse } from './dto/registration-response.model';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
-import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import {
+  UpdateAttributeDto,
+  UpdateRegistrationDto,
+} from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
@@ -297,6 +304,47 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
+    summary: 'Update provided attributes of registration (Used by Aidworker)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Updated provided attributes of registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Patch('programs/:programId/registrations/:referenceId')
+  public async updateRegistration(
+    @Param() params,
+    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
+    @User('id') userId: number,
+  ): Promise<RegistrationEntity> {
+    const partialRegistration = updateRegistrationDataDto.data;
+    // first validate all attributes and return error if any
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      const attributeDto: UpdateAttributeDto = {
+        referenceId: params.referenceId,
+        attribute: attributeKey,
+        value: partialRegistration[attributeKey],
+      };
+      const errors = await validate(
+        plainToClass(UpdateAttributeDto, attributeDto),
+      );
+      if (errors.length > 0) {
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    // if all valid, process update
+    return await this.registrationsService.updateRegistration(
+      params.programId,
+      params.referenceId,
+      updateRegistrationDataDto,
+      userId,
+    );
+  }
+
+  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
+  @ApiOperation({
     summary: 'Update attribute for registration (Used by Aidworker)',
   })
   @ApiResponse({
@@ -307,11 +355,19 @@ export class RegistrationsController {
   @Post('programs/:programId/registrations/attribute')
   public async setAttribute(
     @Body() updateAttributeDto: UpdateAttributeDto,
+    @Param() params,
+    @User('id') userId: number,
   ): Promise<RegistrationEntity> {
-    return await this.registrationsService.setAttribute(
+    const data = {};
+    data[updateAttributeDto.attribute] = updateAttributeDto.value;
+    return await this.registrationsService.updateRegistration(
+      params.programId,
       updateAttributeDto.referenceId,
-      updateAttributeDto.attribute,
-      updateAttributeDto.value,
+      {
+        data,
+        reason: null,
+      },
+      userId,
     );
   }
 
@@ -492,8 +548,18 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
+  @Delete('programs/:programId/registrations')
   public async delete(
+    @Body() referenceIdsData: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.registrationsService.deleteBatch(referenceIdsData);
+  }
+
+  @Permissions(PermissionEnum.RegistrationDELETE)
+  @ApiOperation({ summary: 'Delete set of registrations' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/delete')
+  public async deletePost(
     @Body() referenceIdsData: ReferenceIdsDto,
   ): Promise<void> {
     await this.registrationsService.deleteBatch(referenceIdsData);
@@ -568,10 +634,12 @@ export class RegistrationsController {
   public async issue(
     @Body() validationIssueData: ValidationIssueDataDto,
     @Param('programId') programId,
+    @User('id') userId: number,
   ): Promise<void> {
     return await this.registrationsService.issueValidation(
       validationIssueData,
       programId,
+      userId,
     );
   }
 

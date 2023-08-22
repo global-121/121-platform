@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
+import { Brackets, DataSource, In, IsNull, Not, Repository } from 'typeorm';
 import { API_PATHS, EXTERNAL_API } from '../../config';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
@@ -10,7 +10,11 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { MessageContentType } from '../message-type.enum';
+import {
+  MessageContentType,
+  TemplatedMessages,
+} from '../enum/message-type.enum';
+import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -59,7 +63,7 @@ export class WhatsappIncomingService {
     language: string,
     program: ProgramEntity,
   ): string {
-    const key = 'whatsappGenericMessage';
+    const key = ProgramNotificationEnum.whatsappGenericMessage;
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
@@ -94,6 +98,30 @@ export class WhatsappIncomingService {
         await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
       }
     }
+
+    // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
+    if (
+      callbackData.ErrorCode === '63016' &&
+      [TwilioStatus.undelivered, TwilioStatus.failed].includes(
+        callbackData.MessageStatus,
+      )
+    ) {
+      const message = await this.twilioMessageRepository.findOne({
+        where: { sid: callbackData.MessageSid },
+      });
+      if (
+        message &&
+        !TemplatedMessages.includes(message.contentType) &&
+        message.retryCount < 3
+      ) {
+        if (callbackData.MessageStatus === TwilioStatus.undelivered) {
+          await this.handleFaultyTemplateError(callbackData, message);
+        }
+        return;
+      }
+    }
+
+    // Update message status
     await this.twilioMessageRepository.update(
       {
         sid: callbackData.MessageSid,
@@ -106,15 +134,52 @@ export class WhatsappIncomingService {
       },
     );
 
-    const statuses = [
+    // Update intersolve voucher transaction status if applicable
+    const relevantStatuses = [
       TwilioStatus.delivered,
       TwilioStatus.read,
       TwilioStatus.failed,
       TwilioStatus.undelivered,
     ];
-    if (statuses.includes(callbackData.MessageStatus)) {
-      await this.intersolveVoucherService.processStatus(callbackData);
+    if (relevantStatuses.includes(callbackData.MessageStatus)) {
+      const messageWithTransaction = await this.twilioMessageRepository.findOne(
+        {
+          where: { sid: callbackData.MessageSid, transactionId: Not(IsNull()) },
+          select: ['transactionId'],
+        },
+      );
+      if (messageWithTransaction) {
+        await this.intersolveVoucherService.processStatus(
+          callbackData,
+          messageWithTransaction.transactionId,
+        );
+      }
     }
+  }
+
+  private async handleFaultyTemplateError(
+    callbackData: TwilioStatusCallbackDto,
+    message: TwilioMessageEntity,
+  ): Promise<void> {
+    await this.twilioMessageRepository.update(
+      {
+        sid: callbackData.MessageSid,
+      },
+      {
+        retryCount: message.retryCount + 1,
+      },
+    );
+    // Wait for 30 seconds before retrying
+    await new Promise((resolve) => setTimeout(resolve, 30000));
+    await this.whatsappService.sendWhatsapp(
+      message.body,
+      callbackData.To.replace(/\D/g, ''),
+      null,
+      message.mediaUrl,
+      message.registrationId,
+      message.contentType,
+      callbackData.MessageSid,
+    );
   }
 
   private async handleWhatsappTestResult(
@@ -165,7 +230,7 @@ export class WhatsappIncomingService {
       await savedRegistration.saveData(tryWhatsapp.registration.phoneNumber, {
         name: CustomDataAttributes.whatsappPhoneNumber,
       });
-      this.tryWhatsappRepository.remove(tryWhatsapp);
+      await this.tryWhatsappRepository.remove(tryWhatsapp);
     }
   }
 
@@ -257,9 +322,6 @@ export class WhatsappIncomingService {
       );
     }
 
-    // Wait for 5 seconds to allow Twilio to 'open the (message)window'.
-    await new Promise((res) => setTimeout(res, 5000));
-
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
     // Get (potentially multiple) registrations on incoming phonenumber
@@ -305,7 +367,9 @@ export class WhatsappIncomingService {
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
         const whatsappDefaultReply =
-          program.notifications[language]['whatsappReply'];
+          program.notifications[language][
+            ProgramNotificationEnum.whatsappReply
+          ];
         await this.whatsappService.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
@@ -351,7 +415,9 @@ export class WhatsappIncomingService {
         // Only include text with first voucher (across PA's and payments)
         let message = firstVoucherSent
           ? ''
-          : program.notifications[language]['whatsappVoucher'];
+          : program.notifications[language][
+              ProgramNotificationEnum.whatsappVoucher
+            ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.whatsappService.sendWhatsapp(
           message,
@@ -396,7 +462,7 @@ export class WhatsappIncomingService {
       registrationsWithPendingMessage &&
       registrationsWithPendingMessage.length > 0
     ) {
-      this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
+      await this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
     }
   }
 
@@ -406,7 +472,7 @@ export class WhatsappIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          this.whatsappService
+          await this.whatsappService
             .sendWhatsapp(
               message.body,
               message.to,
@@ -417,8 +483,8 @@ export class WhatsappIncomingService {
               message.registrationId,
               message.contentType,
             )
-            .then(() => {
-              this.whatsappPendingMessageRepo.remove(message);
+            .then(async () => {
+              await this.whatsappPendingMessageRepo.remove(message);
             });
           await new Promise((resolve) => setTimeout(resolve, 2000));
         }
