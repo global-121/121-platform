@@ -6,7 +6,7 @@ import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import {
   changePhase,
   doPayment,
-  getVisaReport,
+  exportList,
 } from '../helpers/program.helper';
 import {
   changePaStatus,
@@ -71,7 +71,7 @@ describe('Export Visa debit card report', () => {
 
     await getVisaWalletsAndDetails(programId, referenceIdVisa, accessToken);
 
-    const exportResult = await getVisaReport(programId, accessToken);
+    const exportResult = await exportList(programId, 'card-balances', accessToken);
 
     // Assert
     expect(exportResult.body.fileName).toBe('card-balances');

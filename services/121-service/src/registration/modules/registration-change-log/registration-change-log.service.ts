@@ -38,17 +38,20 @@ export class RegistrationChangeLogService {
       },
       relations: ['registration', 'user'],
     });
-    return dataChanges.map((dataChange) => {
-      return {
-        paId: dataChange.registration.registrationProgramId,
-        referenceId: dataChange.registration.referenceId,
-        fullName: dataChange.registration.getFullName(),
-        fieldName: dataChange.fieldName,
-        oldValue: dataChange.oldValue || '-',
-        newValue: dataChange.newValue || '-',
-        changedBy: dataChange.user.username,
-        changedAt: dataChange.created,
-      };
-    });
+    return await Promise.all(
+      dataChanges.map(async (dataChange) => {
+        return {
+          paId: dataChange.registration.registrationProgramId,
+          referenceId: dataChange.registration.referenceId,
+          fullName: await dataChange.registration.getFullName(),
+          fieldName: dataChange.fieldName,
+          oldValue: dataChange.oldValue || '-',
+          newValue: dataChange.newValue || '-',
+          reason: dataChange.reason,
+          changedBy: dataChange.user.username,
+          changedAt: dataChange.created,
+        };
+      }),
+    );
   }
 }

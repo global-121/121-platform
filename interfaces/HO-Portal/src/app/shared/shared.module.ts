@@ -27,6 +27,7 @@ import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navi
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
+import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
@@ -58,6 +59,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TableFilterPopoverComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
+    DatetimePickerComponent,
   ],
   imports: [
     CommonModule,
