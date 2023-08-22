@@ -83,7 +83,7 @@ export class ImportRegistrationsDto extends BulkImportDto {
     example: languageArray.join(' | '),
   })
   @IsIn(languageArray)
-  public preferredLanguage: LanguageEnum;
+  public declare preferredLanguage: LanguageEnum;
 
   @ApiProperty({
     enum: fspArray,
