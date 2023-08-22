@@ -6,6 +6,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -174,7 +175,26 @@ import { RegistrationEntity } from './registration.entity';
         RegistrationStatusChangeEntity,
         'completed',
         `registration.id = "completed"."registrationId" AND "completed"."registrationStatus" = 'completed'`,
-      ),
+      )
+      .leftJoin(
+        (qb) =>
+          qb
+            .from(TwilioMessageEntity, 'messages')
+            .select('MAX("created")', 'created')
+            .addSelect('"registrationId"', 'registrationId')
+            .groupBy('"registrationId"'),
+        'messages_max_created',
+        'messages_max_created."registrationId" = registration.id',
+      )
+      .leftJoin(
+        'registration.twilioMessages',
+        'twilioMessages',
+        `twilioMessages.created = messages_max_created.created`,
+      )
+      .addSelect([
+        '"twilioMessages"."status" AS "lastMessageStatus"',
+        '"twilioMessages"."type" AS "lastMessageType"',
+      ]),
 })
 export class RegistrationViewEntity {
   @ViewColumn()
@@ -283,4 +303,10 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public completedDate: Date;
+
+  @ViewColumn()
+  public lastMessageStatus: Date;
+
+  @ViewColumn()
+  public lastMessageType: Date;
 }
