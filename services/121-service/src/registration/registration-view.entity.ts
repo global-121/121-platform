@@ -28,6 +28,7 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
+      .addSelect('registration.noteUpdated', 'noteUpdated')
       .addSelect('fsp.fsp', 'fsp')
       .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
       .addSelect(
@@ -225,8 +226,8 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public fsp: FspName;
 
-  // @ViewColumn( )
-  // public noteUpdated: Date;
+  @ViewColumn()
+  public noteUpdated: Date;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
