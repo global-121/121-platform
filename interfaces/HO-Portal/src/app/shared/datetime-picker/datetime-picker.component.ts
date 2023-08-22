@@ -47,7 +47,7 @@ export class DatetimePickerComponent {
   }
 
   public getStartDate(): string {
-    if (!this.datetimeProps.dateFrom) {
+    if (!this.datetimeProps?.dateFrom) {
       return '';
     }
 
@@ -59,7 +59,7 @@ export class DatetimePickerComponent {
   }
 
   public getEndDate(): string {
-    if (!this.datetimeProps.dateTo) {
+    if (!this.datetimeProps?.dateTo) {
       return '';
     }
     return formatDate(
