@@ -144,17 +144,13 @@ export class AuthService {
     newPassword: string,
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      console.log('setPassword: Starting password change process...');
-      this.programsService
-        .changePassword(username, password, newPassword)
-        .then(() => {
-          console.log('setPassword: Password change successful.');
-          resolve();
-        })
-        .catch((error) => {
-          console.error('setPassword: Password change error: ', error);
-          reject(error);
-        });
+      this.programsService.changePassword(username, password, newPassword).then(
+        () => resolve(),
+        (error) => {
+          console.error('AuthService: change-password error: ', error);
+          return reject(error);
+        },
+      );
     });
   }
 

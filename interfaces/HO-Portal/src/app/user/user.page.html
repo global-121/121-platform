@@ -57,17 +57,18 @@
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  (ionBlur)="checkPassword()"
+                  (ionBlur)="onPasswordBlur()"
                   [ngClass]="passwordBorder"
                   class="ion-margin-vertical"
                   fill="outline"
                 >
                 </ion-input>
               </div>
-              <div class="validation-message">
-                <ion-text
-                  *ngIf="emptyPassword"
-                  color="danger"
+              <div
+                *ngIf="emptyPassword"
+                class="validation-message"
+              >
+                <ion-text color="danger"
                   ><small
                     ><strong
                       >{{
@@ -185,33 +186,34 @@
             </div>
           </form>
         </div>
-        {{ showPassCheckFail | json }}
-        <div
-          *ngIf="passwordChanged && !showPassCheckFail"
-          class="ion-text-center"
-        >
-          <ion-icon
-            name="checkmark-circle"
-            color="success"
-            size="large"
-            aria-hidden="true"
-          ></ion-icon>
-          <br />
-          <strong>{{ 'page.user.change-password.success'|translate }}</strong>
-        </div>
-        <div
-          *ngIf="showPassCheckFail"
-          class="ion-text-center"
-        >
-          <ion-icon
-            name="close-circle"
-            color="danger"
-            size="large"
-            aria-hidden="true"
-          ></ion-icon>
-          <br />
-          <strong>{{ 'page.user.change-password.failed'|translate }}</strong>
-        </div>
+        <ng-container *ngIf="passwordChanged">
+          <div
+            *ngIf="!showPassCheckFail"
+            class="ion-text-center"
+          >
+            <ion-icon
+              name="checkmark-circle"
+              color="success"
+              size="large"
+              aria-hidden="true"
+            ></ion-icon>
+            <br />
+            <strong>{{ 'page.user.change-password.success'|translate }}</strong>
+          </div>
+          <div
+            *ngIf="showPassCheckFail"
+            class="ion-text-center"
+          >
+            <ion-icon
+              name="close-circle"
+              color="danger"
+              size="large"
+              aria-hidden="true"
+            ></ion-icon>
+            <br />
+            <strong>{{ 'page.user.change-password.failed'|translate }}</strong>
+          </div>
+        </ng-container>
       </ion-col>
       <ion-col size="4"></ion-col>
     </ion-row>

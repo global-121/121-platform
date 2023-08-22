@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { from } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
   selector: 'app-user',
@@ -32,11 +34,13 @@ export class UserPage implements OnInit {
   public newPasswordBorder = this.borderValues.normal;
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
-  public passwordBorder = this.borderValues.normal;
 
   private userName: string;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly programsService: ProgramsServiceApiService,
+  ) {}
 
   ngOnInit() {
     this.authService.authenticationState$.subscribe((user: User | null) => {
@@ -44,7 +48,7 @@ export class UserPage implements OnInit {
     });
   }
 
-  public async updatePassword() {
+  public updatePassword() {
     console.log('updatePassword: Starting password update process...');
 
     if (!this.newPasswordForm.form.valid) {
@@ -52,47 +56,27 @@ export class UserPage implements OnInit {
       return;
     }
 
-    try {
-      await this.authService.setPassword(
+    from(
+      this.programsService.changePassword(
         this.userName,
         this.password,
         this.newPassword,
-      );
-      console.log('updatePassword: Password set successfully.');
-
-      this.errorStatusCode = 0;
-      this.showPassCheckFail = false;
-      this.passwordChanged = true;
-
-      this.newPasswordForm.resetForm();
+      ),
+    ).subscribe((val: any) => {
+      if (typeof val === 'string' && val.includes('Not authorized')) {
+        this.showPassCheckFail = true;
+        this.passwordChanged = true;
+      } else if (!!val) {
+        this.errorStatusCode = 0;
+        this.showPassCheckFail = false;
+        this.passwordChanged = true;
+        this.showPassCheckFail = false;
+        this.newPasswordForm.resetForm();
+      }
       window.setTimeout(() => {
         this.passwordChanged = false;
       }, 3000);
-
-      console.log('updatePassword: Password update process completed.');
-    } catch (error) {
-      console.error(
-        'updatePassword: An error occurred while updating password: ',
-        error,
-      );
-      console.log('updatePassword: Error Object:', error);
-
-      this.errorStatusCode = error?.statusCode;
-      console.log('updatePassword: Error Status Code:', this.errorStatusCode);
-
-      if (error?.statusCode !== 0) {
-        this.showPassCheckFail = true;
-        console.log('updatePassword: Setting showPassCheckFail to true.');
-      }
-    }
-  }
-
-  public checkPassword() {
-    this.validExistinPassword =
-      this.newPasswordForm?.form?.get('current-password')?.valid;
-    this.passwordBorder = this.validExistinPassword
-      ? this.borderValues.valid
-      : this.borderValues.invalid;
+    });
   }
 
   public checkNewPassword() {
@@ -123,5 +107,13 @@ export class UserPage implements OnInit {
       this.samePassword = true;
       this.confirmPasswordBorder = this.borderValues.valid;
     }
+  }
+
+  public onPasswordBlur() {
+    this.checkEmptyPassword();
+  }
+
+  private checkEmptyPassword() {
+    this.emptyPassword = this.password === '';
   }
 }
