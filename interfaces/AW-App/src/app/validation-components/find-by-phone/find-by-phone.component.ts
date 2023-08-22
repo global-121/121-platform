@@ -69,14 +69,12 @@ export class FindByPhoneComponent implements ValidationComponent {
   }
 
   private async getPaRegistrationId(phoneNumber: string): Promise<any> {
-    let foundRegistrations = await this.getRegistrationForPhoneOffline(
-      phoneNumber,
-    );
+    let foundRegistrations =
+      await this.getRegistrationForPhoneOffline(phoneNumber);
     if (!foundRegistrations) {
       try {
-        foundRegistrations = await this.getRegistrationForPhoneOnline(
-          phoneNumber,
-        );
+        foundRegistrations =
+          await this.getRegistrationForPhoneOnline(phoneNumber);
       } catch {
         return null;
       }
@@ -190,9 +188,8 @@ export class FindByPhoneComponent implements ValidationComponent {
     phoneNumber: string,
   ): Promise<PaToValidateOption[]> {
     try {
-      const rawRegistrations = await this.programsService.getPaByPhoneNr(
-        phoneNumber,
-      );
+      const rawRegistrations =
+        await this.programsService.getPaByPhoneNr(phoneNumber);
       const registrations = rawRegistrations.filter((r) =>
         this.validatableStatuses.includes(r.status),
       );
