@@ -17,6 +17,7 @@ import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 class ActivityOverviewItem {
@@ -92,6 +93,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private authService: AuthService,
     private pastPaymentsService: PastPaymentsService,
     private translatableString: TranslatableStringService,
+    private enumService: EnumService,
   ) {}
 
   async ngOnInit() {
@@ -305,6 +307,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         if (attribute?.type === AnswerType.Boolean) {
           oldValue = booleanLabel[oldValue];
           newValue = booleanLabel[newValue];
+        }
+
+        if (this.enumService.isEnumerableAttribute(change.fieldName)) {
+          oldValue = this.enumService.getEnumLabel(change.fieldName, oldValue);
+          newValue = this.enumService.getEnumLabel(change.fieldName, newValue);
         }
 
         let description = this.translate.instant(

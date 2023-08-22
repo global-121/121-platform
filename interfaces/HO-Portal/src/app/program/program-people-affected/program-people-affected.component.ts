@@ -55,6 +55,7 @@ import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
+import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
@@ -354,6 +355,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private router: Router,
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
+    private enumService: EnumService,
   ) {
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
@@ -1011,9 +1013,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : null,
       name: person.name,
       preferredLanguage: person.preferredLanguage
-        ? this.translate.instant(
-            'page.program.program-people-affected.language.' +
-              person.preferredLanguage,
+        ? this.enumService.getEnumLabel(
+            'preferredLanguage',
+            person.preferredLanguage,
           )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),

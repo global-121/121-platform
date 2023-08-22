@@ -18,6 +18,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
+import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { actionResult } from '../../shared/action-result';
 
@@ -83,6 +84,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private alertController: AlertController,
     private pubSub: PubSubService,
     private errorHandlerService: ErrorHandlerService,
+    private enumService: EnumService,
   ) {}
 
   async ngOnInit() {
@@ -348,9 +350,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private getAvailableLanguages(): object[] {
     return this.program.languages.map((key) => ({
       option: key,
-      label: this.translate.instant(
-        'page.program.program-people-affected.language.' + key,
-      ),
+      label: this.enumService.getEnumLabel('preferredLanguage', key),
     }));
   }
 
