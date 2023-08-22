@@ -550,7 +550,13 @@
         },
         "pa-data-changes": {
           "btn-text": "Export data changes",
-          "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program."
+          "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program.",
+          "confirm-prompt": {
+            "choose-dates": "Choose dates",
+            "date-from": "Start date {{ date }}",
+            "date-to": "End date {{ date }}",
+            "wrong-dates": "The end date must be greater than the start date"
+          }
         }
       },
       "export-fsp-intructions": {

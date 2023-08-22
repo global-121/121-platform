@@ -406,13 +406,23 @@ export class ProgramsServiceApiService {
   exportList(
     programId: number,
     type: ExportType,
+    toDate?: string,
+    fromDate?: string,
     minPayment?: number,
     maxPayment?: number,
   ): Promise<any> {
+    let dateQuery = '';
+    if (toDate) {
+      dateQuery += `?toDate=${toDate}`;
+    }
+    if (fromDate) {
+      dateQuery += toDate ? '&' : '?';
+      dateQuery += `fromDate=${fromDate}`;
+    }
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/export-list`,
+        `/programs/${programId}/export-metrics/export-list${dateQuery}`,
         {
           type,
           ...(minPayment && { minPayment }),
