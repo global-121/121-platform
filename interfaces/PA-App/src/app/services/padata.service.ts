@@ -74,9 +74,8 @@ export class PaDataService {
     programIdsToFilter?: number[],
   ): Promise<Program[]> {
     if (!this.isOffline) {
-      const allPrograms = await this.programService.getAllPrograms(
-        programIdsToFilter,
-      );
+      const allPrograms =
+        await this.programService.getAllPrograms(programIdsToFilter);
       localStorage.setItem(this.allProgramsKey, JSON.stringify(allPrograms));
       return allPrograms;
     }
@@ -90,9 +89,8 @@ export class PaDataService {
   public async getProgram(programId: number): Promise<Program> {
     const programKey = this.detailProgramKeyPrefix + programId;
     if (!this.isOffline) {
-      const detailedProgram = await this.programService.getProgramById(
-        programId,
-      );
+      const detailedProgram =
+        await this.programService.getProgramById(programId);
       localStorage.setItem(programKey, JSON.stringify(detailedProgram));
       return detailedProgram;
     }
