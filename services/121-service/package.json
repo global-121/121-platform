@@ -20,8 +20,6 @@
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node index.js",
     "prestart:dev": "npm install --no-fund --no-audit --no-save",
     "start:dev": "tsc-watch --noClear --onSuccess \"  node --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
-    "prestart:prod": "tsc",
-    "start:prod": "node dist/main.js",
     "seed:dev": "ts-node src/scripts seed-dev",
     "seed:program-demo": "ts-node src/scripts seed-program-demo",
     "seed:program-validation": "ts-node src/scripts seed-program-validation",
