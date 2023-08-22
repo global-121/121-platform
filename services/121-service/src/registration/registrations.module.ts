@@ -58,7 +58,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
 
-      RegistrationViewEntity
+      RegistrationViewEntity,
     ]),
     UserModule,
     HttpModule,

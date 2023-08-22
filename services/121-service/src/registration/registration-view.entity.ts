@@ -10,8 +10,8 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationEntity } from './registration.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationEntity } from './registration.entity';
 
 @ViewEntity({
   expression: (dataSource: DataSource) =>
@@ -103,7 +103,10 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
       .addSelect(`"included".created`, 'inclusionDate')
       .addSelect(`"rejected".created`, 'rejectionDate')
       .addSelect(`"noLongerEligible".created`, 'noLongerEligibleDate')
-      .addSelect(`"registeredWhileNoLongerEligible".created`, 'registeredWhileNoLongerEligibleDate')
+      .addSelect(
+        `"registeredWhileNoLongerEligible".created`,
+        'registeredWhileNoLongerEligibleDate',
+      )
       .addSelect(`"inclusionEnded".created`, 'inclusionEndDate')
       .addSelect(`"deleted".created`, 'deleteDate')
       .addSelect(`"completed".created`, 'completedDate')
@@ -171,9 +174,8 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
         RegistrationStatusChangeEntity,
         'completed',
         `registration.id = "completed"."registrationId" AND "completed"."registrationStatus" = 'completed'`,
-      )
+      ),
 })
-
 export class RegistrationViewEntity {
   @ViewColumn()
   @PrimaryColumn()
