@@ -31,9 +31,9 @@ export class UserPage implements OnInit {
 
   public validPassword = true;
   public validExistinPassword = true;
-  public newPasswordBorder = this.borderValues.normal;
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
+  public newPasswordBorder = this.borderValues.normal;
 
   private userName: string;
 
