@@ -36,7 +36,7 @@ export class CommercialBankEthiopiaService
   ) {}
 
   public async sendPayment(
-    paymentList: PaPaymentDataDto[],
+    paPaymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
@@ -45,7 +45,7 @@ export class CommercialBankEthiopiaService
       .select('name')
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', { fspName: paymentList[0].fspName })
+      .andWhere('fsp.fsp = :fspName', { fspName: paPaymentList[0].fspName })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
 
@@ -62,17 +62,26 @@ export class CommercialBankEthiopiaService
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.commercialBankEthiopia;
 
-    const referenceIds = paymentList.map((payment) => payment.referenceId);
-    const userInfo = await this.getUserInfo(referenceIds);
+    const referenceIds = paPaymentList.map(
+      (paPayment) => paPayment.referenceId,
+    );
+    const registrationData = await this.getRegistrationData(referenceIds);
 
-    for (const payment of paymentList) {
-      const resultUser = await this.getObjectByReferenceId(payment, userInfo);
+    for (const paPayment of paPaymentList) {
+      const paRegistrationData = await this.getPaRegistrationData(
+        paPayment,
+        registrationData,
+      );
 
-      const payload = this.createPayloadPerPa(payment, resultUser, program);
+      const payload = this.createPayloadPerPa(
+        paPayment,
+        paRegistrationData,
+        program,
+      );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
-        payment.referenceId,
+        paPayment.referenceId,
         credentials,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
@@ -86,51 +95,50 @@ export class CommercialBankEthiopiaService
     return fspTransactionResult;
   }
 
-  public async getObjectByReferenceId(
-    payment: any,
-    data: any,
+  public async getPaRegistrationData(
+    paPayment: any,
+    registrationData: any,
   ): Promise<
     [
       {
         referenceId: string;
-        programname?: string;
-        fspname?: string;
+        fieldName: string;
         value: string;
         debitTheIrRef?: string;
       },
     ]
   > {
-    const results = data.filter(
-      (item) => item.referenceId === payment.referenceId,
+    const paRegistrationData = registrationData.filter(
+      (item) => item.referenceId === paPayment.referenceId,
     );
 
-    if (payment.transactionId) {
+    if (paPayment.transactionId) {
       const transaction = await this.transactionRepository.findOneBy({
-        id: payment.transactionId,
+        id: paPayment.transactionId,
       });
       const customData = {
         ...transaction.customData,
       };
-      results[0].debitTheIrRef = customData['requestResult'].debitTheIrRef;
+      paRegistrationData[0].debitTheIrRef =
+        customData['requestResult'].debitTheIrRef;
     }
 
-    return results;
+    return paRegistrationData;
   }
 
-  public async getUserInfo(referenceIds: string[]): Promise<any> {
-    const results = await this.registrationRepository
+  public async getRegistrationData(referenceIds: string[]): Promise<any> {
+    const registrationData = await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
-        'programQuestion.name AS programName',
-        'fspQuestion.name AS fspName',
+        'COALESCE("programQuestion".name, "fspQuestion".name) AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds: referenceIds,
       })
       .andWhere(
-        'programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names)',
+        '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
         {
           names: ['name', 'bankAccountNumber'],
         },
@@ -141,24 +149,23 @@ export class CommercialBankEthiopiaService
       .getRawMany();
 
     // Filter out properties with null values from each object
-    const filteredResults = results.map((result) => {
-      for (const key in result) {
-        if (result.hasOwnProperty(key) && result[key] === null) {
-          delete result[key];
+    const nonEmptyRegistrationData = registrationData.map((data) => {
+      for (const key in data) {
+        if (data.hasOwnProperty(key) && data[key] === null) {
+          delete data[key];
         }
       }
-      return result;
+      return data;
     });
 
-    return filteredResults;
+    return nonEmptyRegistrationData;
   }
 
   public createPayloadPerPa(
     payment,
-    userInfo: [
+    paRegistrationData: [
       {
-        programname?: string;
-        fspname?: string;
+        fieldName: string;
         value: string;
         referenceId: string;
         debitTheIrRef?: string;
@@ -170,15 +177,15 @@ export class CommercialBankEthiopiaService
     let bankAccountNumber;
     let debitTheIrRefRetry;
 
-    userInfo.forEach((info) => {
-      if (info.programname === 'name') {
-        name = info.value;
-      } else if (info.fspname === 'bankAccountNumber') {
-        bankAccountNumber = info.value;
+    paRegistrationData.forEach((data) => {
+      if (data.fieldName === 'name') {
+        name = data.value;
+      } else if (data.fieldName === 'bankAccountNumber') {
+        bankAccountNumber = data.value;
       }
 
-      if (info.debitTheIrRef) {
-        debitTheIrRefRetry = info.debitTheIrRef;
+      if (data.debitTheIrRef) {
+        debitTheIrRefRetry = data.debitTheIrRef;
       }
     });
 
@@ -226,7 +233,10 @@ export class CommercialBankEthiopiaService
     );
 
     if (result && result.resultDescription === 'Transaction is DUPLICATED') {
-      result = await this.sendDuplicatePaymentPerPa(payload, credentials);
+      result = await this.commercialBankEthiopiaApiService.getTransactionStatus(
+        payload,
+        credentials,
+      );
     }
 
     if (
@@ -253,16 +263,6 @@ export class CommercialBankEthiopiaService
       paymentResult: result,
     };
     return paTransactionResult;
-  }
-
-  public async sendDuplicatePaymentPerPa(
-    payload: any,
-    credentials,
-  ): Promise<any> {
-    return await this.commercialBankEthiopiaApiService.transactionStatus(
-      payload,
-      credentials,
-    );
   }
 
   private generateRandomNumerics(length: number): string {

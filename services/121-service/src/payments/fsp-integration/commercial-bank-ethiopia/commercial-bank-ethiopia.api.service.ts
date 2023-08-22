@@ -11,7 +11,10 @@ export class CommercialBankEthiopiaApiService {
   ) {}
 
   public async creditTransfer(payment: any, credentials): Promise<any> {
-    const payload = await this.createCreditTransferBody(payment, credentials);
+    const payload = await this.createCreditTransferPayload(
+      payment,
+      credentials,
+    );
 
     try {
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
@@ -57,7 +60,7 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  public async createCreditTransferBody(
+  public async createCreditTransferPayload(
     payment: any,
     credentials,
   ): Promise<any> {
@@ -129,8 +132,8 @@ export class CommercialBankEthiopiaApiService {
     return payload;
   }
 
-  public async transactionStatus(payment: any, credentials): Promise<any> {
-    const payload = await this.createtransactionStatusBody(
+  public async getTransactionStatus(payment: any, credentials): Promise<any> {
+    const payload = await this.createTransactionStatusPayload(
       payment,
       credentials,
     );
@@ -163,7 +166,7 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  public async createtransactionStatusBody(
+  public async createTransactionStatusPayload(
     payment: any,
     credentials,
   ): Promise<any> {
