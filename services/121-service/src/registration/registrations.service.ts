@@ -1044,20 +1044,15 @@ export class RegistrationsService {
         attributeKey,
       );
       const attributeValue = partialRegistration[attributeKey];
-      let newValue = String(attributeValue);
-      const hasPlus = newValue.startsWith('+');
-      if (hasPlus) {
-        newValue = newValue.replace('+', '');
-      }
-      if (String(oldValue) !== newValue) {
-        registration = await this.updateAttribute(
-          attributeKey,
-          attributeValue,
-          registration,
-        );
-        const newValue = await registration.getRegistrationValueByName(
-          attributeKey,
-        );
+      registration = await this.updateAttribute(
+        attributeKey,
+        attributeValue,
+        registration,
+      );
+      const newValue = await registration.getRegistrationValueByName(
+        attributeKey,
+      );
+      if (String(oldValue) !== String(newValue)) {
         await this.registrationChangeLog.save({
           registration,
           userId,
