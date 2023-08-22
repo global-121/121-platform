@@ -57,7 +57,7 @@
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  (ionBlur)="onPasswordBlur()"
+                  (ionBlur)="checkPassword()"
                   [ngClass]="passwordBorder"
                   class="ion-margin-vertical"
                   fill="outline"
@@ -185,8 +185,9 @@
             </div>
           </form>
         </div>
+        {{ showPassCheckFail | json }}
         <div
-          *ngIf="passwordChanged"
+          *ngIf="passwordChanged && !showPassCheckFail"
           class="ion-text-center"
         >
           <ion-icon
@@ -199,7 +200,7 @@
           <strong>{{ 'page.user.change-password.success'|translate }}</strong>
         </div>
         <div
-          *ngIf="isError"
+          *ngIf="showPassCheckFail"
           class="ion-text-center"
         >
           <ion-icon

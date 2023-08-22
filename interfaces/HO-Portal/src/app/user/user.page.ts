@@ -17,8 +17,8 @@ export class UserPage implements OnInit {
   public confirmPassword = '';
   public passwordChanged = false;
   public emptyPassword = false;
-  public isError: boolean = false;
-
+  public errorStatusCode = 0;
+  public showPassCheckFail = false;
   public minLength = 8;
 
   private borderValues = {
@@ -28,9 +28,11 @@ export class UserPage implements OnInit {
   };
 
   public validPassword = true;
+  public validExistinPassword = true;
   public newPasswordBorder = this.borderValues.normal;
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
+  public passwordBorder = this.borderValues.normal;
 
   private userName: string;
 
@@ -43,47 +45,55 @@ export class UserPage implements OnInit {
   }
 
   public async updatePassword() {
+    console.log('updatePassword: Starting password update process...');
+
     if (!this.newPasswordForm.form.valid) {
+      console.log('updatePassword: Form is not valid. Aborting.');
+      return;
     }
+
     try {
       await this.authService.setPassword(
         this.userName,
         this.password,
         this.newPassword,
       );
+      console.log('updatePassword: Password set successfully.');
+
+      this.errorStatusCode = 0;
+      this.showPassCheckFail = false;
       this.passwordChanged = true;
+
       this.newPasswordForm.resetForm();
       window.setTimeout(() => {
         this.passwordChanged = false;
       }, 3000);
+
+      console.log('updatePassword: Password update process completed.');
     } catch (error) {
-      console.error('An error occurred while updating password: ', error);
-      this.isError = true;
+      console.error(
+        'updatePassword: An error occurred while updating password: ',
+        error,
+      );
+      console.log('updatePassword: Error Object:', error);
+
+      this.errorStatusCode = error?.statusCode;
+      console.log('updatePassword: Error Status Code:', this.errorStatusCode);
+
+      if (error?.statusCode !== 0) {
+        this.showPassCheckFail = true;
+        console.log('updatePassword: Setting showPassCheckFail to true.');
+      }
     }
   }
 
-  // public async updatePassword() {
-  //   try {
-  //     if (!this.newPasswordForm.form.valid) {
-  //       return;
-  //     }
-
-  //     await this.authService.setPassword(
-  //       this.userName,
-  //       this.password,
-  //       this.newPassword,
-  //     );
-
-  //     this.passwordChanged = true;
-  //     this.newPasswordForm.resetForm();
-  //     window.setTimeout(() => {
-  //       this.passwordChanged = false;
-  //     }, 3000);
-  //   } catch (error) {
-  //     console.error('An error occurred while updating password: ', error);
-  //     this.isError = true;
-  //   }
-  // }
+  public checkPassword() {
+    this.validExistinPassword =
+      this.newPasswordForm?.form?.get('current-password')?.valid;
+    this.passwordBorder = this.validExistinPassword
+      ? this.borderValues.valid
+      : this.borderValues.invalid;
+  }
 
   public checkNewPassword() {
     this.validPassword = this.newPasswordForm?.form?.get('new-password')?.valid;
@@ -113,13 +123,5 @@ export class UserPage implements OnInit {
       this.samePassword = true;
       this.confirmPasswordBorder = this.borderValues.valid;
     }
-  }
-
-  public onPasswordBlur() {
-    this.checkEmptyPassword();
-  }
-
-  private checkEmptyPassword() {
-    this.emptyPassword = this.password === '';
   }
 }
