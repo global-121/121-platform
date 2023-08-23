@@ -22,7 +22,7 @@ export class CommercialBankEthiopiaApiService {
 
     try {
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.post(payload, payment)
+        ? await this.commercialBankEthiopiaMock.postCBETransfer(payment)
         : await this.soapService.postCBERequest(
             payload,
             `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
@@ -146,10 +146,12 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = await this.soapService.postCBERequest(
-        payload,
-        `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
-      );
+      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+        ? await this.commercialBankEthiopiaMock.postCBETransaction(payment)
+        : await this.soapService.postCBERequest(
+            payload,
+            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
+          );
 
       return responseBody;
     } catch (error) {

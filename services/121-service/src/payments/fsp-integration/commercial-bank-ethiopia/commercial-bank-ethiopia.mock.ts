@@ -9,23 +9,44 @@ export class CommercialBankEthiopiaMockService {
     return new Promise((resolve) => setTimeout(resolve, randomNumber));
   }
 
-  public async post(payload: any, payment): Promise<any> {
+  public async postCBETransfer(payment): Promise<any> {
     await this.waitForRandomDelay();
+
+    // Define the duplicated transaction Status object
+    const duplicatedTransactionStatus = {
+      transactionId: { _text: 'FT212435G2ZD' },
+      messageId: {},
+      successIndicator: { _text: 'T24Error' },
+      application: { _text: 'FUNDS.TRANSFER' },
+      messages: [
+        { _text: 'Transaction with number is DUPLICATED Transaction!' },
+      ],
+    };
+
+    // Define the success transaction Status object
+    const successTransactionStatus = {
+      transactionId: { _text: 'FT212435G2ZD' },
+      messageId: {},
+      successIndicator: { _text: 'Success' },
+      application: { _text: 'FUNDS.TRANSFER' },
+    };
+
+    // Switch between duplicated and success transactions by uncommenting/commenting
+    const useDuplicatedTransaction = false; // Set to true for duplicated transaction, false for success transaction
+
+    let Status;
+
+    if (useDuplicatedTransaction) {
+      // Use the duplicated transaction status
+      Status = duplicatedTransactionStatus;
+    } else {
+      // Use the success transaction status
+      Status = successTransactionStatus;
+    }
+
     const response = {
-      Status: {
-        transactionId: { _text: 'FT212435G2ZD' },
-        messageId: {},
-        successIndicator: { _text: 'Success' },
-        application: { _text: 'FUNDS.TRANSFER' },
-        // messages: [
-        //   { _text: 'Transaction with number is DUPLICATED Transaction!' },
-        // ],
-      },
-      IssueCardResponse: {
-        ResultCode: { _text: '000' },
-        ResultDescription: { _text: 'Success' },
-        TransactionId: { _text: 'FT21243423L4' },
-        successIndicator: { _text: 'Success' },
+      Status,
+      FUNDSTRANSFERType: {
         FUNDSTRANSFERType: { _text: 'FT21243423L4' },
         TRANSACTIONTYPE: { _text: 'AC' },
         DEBITACCTNO: { _text: '1000001046296' },
@@ -97,6 +118,28 @@ export class CommercialBankEthiopiaMockService {
         DEPTCODE: { _text: '1' },
         REMNAME: { _text: String(payment.remitterName) },
         BENNME: { _text: String(payment.beneficiaryName) },
+      },
+    };
+    return new Promise((resolve) => resolve(response));
+  }
+
+  public async postCBETransaction(payment): Promise<any> {
+    await this.waitForRandomDelay();
+
+    const response = {
+      Status: {
+        successIndicator: { _text: 'Success' },
+      },
+      ETXNSTATUSCBEREMITANCEType: {
+        gETXNSTATUSCBEREMITANCEDetailType: {
+          mETXNSTATUSCBEREMITANCEDetailType: {
+            SENDERREFERENCE: { _text: String(payment.debitTheIrRef) },
+            TXNREFERENCE: { _text: 'FT21243423L4' },
+            TXNAMOUNT: { _text: '' },
+            TXNSTATUS: { _text: '' },
+            CLEAREDBAL: { _text: 0 },
+          },
+        },
       },
     };
     return new Promise((resolve) => resolve(response));
