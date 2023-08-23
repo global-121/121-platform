@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CommercialBankEthiopiaMockService {
@@ -12,6 +12,15 @@ export class CommercialBankEthiopiaMockService {
   public async postCBETransfer(payment): Promise<any> {
     await this.waitForRandomDelay();
 
+    const mockScenario: string = 'no-response'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
+
+    // Define the success transaction Status object
+    const successTransactionStatus = {
+      transactionId: { _text: 'FT212435G2ZD' },
+      messageId: {},
+      successIndicator: { _text: 'Success' },
+      application: { _text: 'FUNDS.TRANSFER' },
+    };
     // Define the duplicated transaction Status object
     const duplicatedTransactionStatus = {
       transactionId: { _text: 'FT212435G2ZD' },
@@ -22,26 +31,26 @@ export class CommercialBankEthiopiaMockService {
         { _text: 'Transaction with number is DUPLICATED Transaction!' },
       ],
     };
-
-    // Define the success transaction Status object
-    const successTransactionStatus = {
+    // Define the duplicated transaction Status object
+    const otherFailureStatus = {
       transactionId: { _text: 'FT212435G2ZD' },
       messageId: {},
-      successIndicator: { _text: 'Success' },
+      successIndicator: { _text: 'T24Error' },
       application: { _text: 'FUNDS.TRANSFER' },
+      messages: [{ _text: 'Other failure' }],
     };
 
-    // Switch between duplicated and success transactions by uncommenting/commenting
-    const useDuplicatedTransaction = false; // Set to true for duplicated transaction, false for success transaction
-
+    // Switch between mock scenarios
     let Status;
-
-    if (useDuplicatedTransaction) {
-      // Use the duplicated transaction status
-      Status = duplicatedTransactionStatus;
-    } else {
-      // Use the success transaction status
+    if (mockScenario === 'success') {
       Status = successTransactionStatus;
+    } else if (mockScenario === 'duplicated') {
+      Status = duplicatedTransactionStatus;
+    } else if (mockScenario === 'other-failure') {
+      Status = otherFailureStatus;
+    } else if (mockScenario === 'no-response') {
+      const errors = 'No response';
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const response = {
