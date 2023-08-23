@@ -59,7 +59,6 @@ describe('Update attribute of PA', () => {
 
   it('should keep a log of registration data changes', async () => {
     // Act
-
     const response = await exportList(
       programId,
       'pa-data-changes',
@@ -67,9 +66,8 @@ describe('Update attribute of PA', () => {
     );
 
     // Assert
-
     const body = response.body;
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
+    expect(response.statusCode).toBe(HttpStatus.OK);
     const data = body.data;
     expect(data.length).toBe(3);
     const admin = 'admin@example.org';
@@ -123,7 +121,7 @@ describe('Update attribute of PA', () => {
 
     // Assert
     const body = response.body;
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
+    expect(response.statusCode).toBe(HttpStatus.OK);
     const data = body.data;
     expect(data.length).toBe(0);
   });
