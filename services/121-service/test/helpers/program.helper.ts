@@ -70,7 +70,7 @@ export async function exportList(
   fromDate?: string,
   toDate?: string,
 ): Promise<request.Response> {
-  const body = { type: exportType }
+  const body = { type: exportType };
   // if (toDate) {
   //   body['toDate'] = toDate
   // }

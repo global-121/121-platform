@@ -3,11 +3,7 @@ import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-v
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import {
-  changePhase,
-  doPayment,
-  exportList,
-} from '../helpers/program.helper';
+import { changePhase, doPayment, exportList } from '../helpers/program.helper';
 import {
   changePaStatus,
   getVisaWalletsAndDetails,
@@ -71,7 +67,11 @@ describe('Export Visa debit card report', () => {
 
     await getVisaWalletsAndDetails(programId, referenceIdVisa, accessToken);
 
-    const exportResult = await exportList(programId, 'card-balances', accessToken);
+    const exportResult = await exportList(
+      programId,
+      'card-balances',
+      accessToken,
+    );
 
     // Assert
     expect(exportResult.body.fileName).toBe('card-balances');

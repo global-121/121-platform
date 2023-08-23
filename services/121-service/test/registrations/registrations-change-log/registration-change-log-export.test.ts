@@ -1,6 +1,6 @@
-
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
+import { exportList } from '../../helpers/program.helper';
 import {
   importRegistrations,
   updateRegistrationPatch,
@@ -10,14 +10,13 @@ import {
   referenceIdVisa,
   registrationVisa,
 } from '../../visa-card/visa-card.data';
-import { exportList } from '../../helpers/program.helper';
 
 const reason1 = 'automated test 1';
 const reason2 = 'automated test 2';
 const programId = 3;
 const registrationVisa2 = { ...registrationVisa };
-registrationVisa2.referenceId = `${referenceIdVisa}2`
-registrationVisa2.firstName = 'Jack'
+registrationVisa2.referenceId = `${referenceIdVisa}2`;
+registrationVisa2.firstName = 'Jack';
 
 const dataUpdatePa1 = {
   phoneNumber: '15005550099', //changed value
@@ -25,19 +24,21 @@ const dataUpdatePa1 = {
 
 const dataUpdatePa2 = {
   lastName: 'Snow', //changed value
-  paymentAmountMultiplier: 2
+  paymentAmountMultiplier: 2,
 };
 
 describe('Update attribute of PA', () => {
-
   let accessToken: string;
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programId, [registrationVisa, registrationVisa2], accessToken);
-
+    await importRegistrations(
+      programId,
+      [registrationVisa, registrationVisa2],
+      accessToken,
+    );
 
     await updateRegistrationPatch(
       programId,
@@ -54,12 +55,9 @@ describe('Update attribute of PA', () => {
       reason2,
       accessToken,
     );
-
-
   });
 
   it('should keep a log of registration data changes', async () => {
-
     // Act
 
     const response = await exportList(
@@ -74,7 +72,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
     const data = body.data;
     expect(data.length).toBe(3);
-    const admin = 'admin@example.org'
+    const admin = 'admin@example.org';
     const checkingMap1 = {
       paId: 1,
       changedBy: admin,
@@ -114,13 +112,12 @@ describe('Update attribute of PA', () => {
   });
 
   it('should not return data changes for date range of 2-1 hour ago', async () => {
-
     // Act
     const response = await exportList(
       programId,
       'pa-data-changes',
       accessToken,
-      new Date(Date.now() - 120  * 60 * 1000).toISOString(),
+      new Date(Date.now() - 120 * 60 * 1000).toISOString(),
       new Date(Date.now() - 60 * 60 * 1000).toISOString(),
     );
 
@@ -132,13 +129,12 @@ describe('Update attribute of PA', () => {
   });
 
   it('should give a 400 on to date is larger than from date', async () => {
-
     // Act
     const response = await exportList(
       programId,
       'pa-data-changes',
       accessToken,
-      new Date(Date.now() -  60 * 60 * 1000).toISOString(),
+      new Date(Date.now() - 60 * 60 * 1000).toISOString(),
       new Date(Date.now() - 120 * 60 * 1000).toISOString(),
     );
 
