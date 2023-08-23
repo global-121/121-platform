@@ -103,15 +103,25 @@ export class ExportListComponent implements OnChanges {
   public async getExportList() {
     this.isInProgress = true;
 
-    const dateFrom = this.datetimeProps?.dateFrom || null;
-    const dateTo = this.datetimeProps?.dateTo || null;
+    const dateFrom = this.datetimeProps?.dateFrom
+      ? new Date(this.datetimeProps?.dateFrom).toISOString()
+      : null;
+    const dateTo = this.datetimeProps?.dateTo
+      ? new Date(this.datetimeProps?.dateTo)
+      : null;
+    let dateToAdjusted: string;
+    if (dateTo) {
+      dateToAdjusted = new Date(
+        dateTo.setDate(dateTo.getDate() + 1),
+      ).toISOString(); // Add one day to include the selected date as the time is otherwise set to 00:00:00
+    }
 
     this.programsService
       .exportList(
         Number(this.programId),
         this.exportType,
-        dateTo,
         dateFrom,
+        dateToAdjusted,
         Number(this.minPayment),
         Number(this.maxPayment),
       )
