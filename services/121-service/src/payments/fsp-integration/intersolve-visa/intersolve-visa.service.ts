@@ -86,7 +86,7 @@ export class IntersolveVisaService
 
     if (walletTransactions && walletTransactions.length > 0) {
       const sortedByDate = walletTransactions
-        .filter((t) => t.type === 'CHARGE')
+        .filter((t) => t.type === 'RESERVATION')
         .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
       if (sortedByDate.length > 0) {
         const dateString = sortedByDate[0].createdAt;
