@@ -96,7 +96,7 @@ export class CommercialBankEthiopiaService
   }
 
   public async getPaRegistrationData(
-    paPayment: any,
+    paPayment: PaPaymentDataDto,
     registrationData: any,
   ): Promise<
     [
@@ -126,7 +126,9 @@ export class CommercialBankEthiopiaService
     return paRegistrationData;
   }
 
-  public async getRegistrationData(referenceIds: string[]): Promise<any> {
+  public async getRegistrationData(
+    referenceIds: string[],
+  ): Promise<RegistrationEntity[]> {
     const registrationData = await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
@@ -149,20 +151,22 @@ export class CommercialBankEthiopiaService
       .getRawMany();
 
     // Filter out properties with null values from each object
-    const nonEmptyRegistrationData = registrationData.map((data) => {
-      for (const key in data) {
-        if (data.hasOwnProperty(key) && data[key] === null) {
-          delete data[key];
+    const nonEmptyRegistrationData = registrationData.map(
+      (data: RegistrationEntity) => {
+        for (const key in data) {
+          if (data.hasOwnProperty(key) && data[key] === null) {
+            delete data[key];
+          }
         }
-      }
-      return data;
-    });
+        return data;
+      },
+    );
 
     return nonEmptyRegistrationData;
   }
 
   public createPayloadPerPa(
-    payment,
+    payment: PaPaymentDataDto,
     paRegistrationData: [
       {
         fieldName: string;
@@ -171,7 +175,7 @@ export class CommercialBankEthiopiaService
         debitTheIrRef?: string;
       },
     ],
-    program,
+    program: any,
   ): CommercialBankEthiopiaTransferPayload {
     let name;
     let bankAccountNumber;
@@ -217,9 +221,9 @@ export class CommercialBankEthiopiaService
   }
 
   public async sendPaymentPerPa(
-    payload: any,
+    payload: CommercialBankEthiopiaTransferPayload,
     referenceId: string,
-    credentials,
+    credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName = FspName.commercialBankEthiopia;

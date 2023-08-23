@@ -49,10 +49,10 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "name"
+        "en": "Name"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -68,11 +68,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "What is your phonenumber"
+        "en": "What is your Phone number"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -92,7 +92,7 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "ID card number"
+        "en": "ID Card number"
       },
       "duplicateCheck": true,
       "placeholder": null
@@ -108,7 +108,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -141,7 +141,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -161,7 +161,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -181,7 +181,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -201,7 +201,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -221,7 +221,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -241,7 +241,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -261,7 +261,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -281,7 +281,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -301,7 +301,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -321,7 +321,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -341,7 +341,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
@@ -361,7 +361,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {

@@ -5,4 +5,5 @@ export class PaPaymentDataDto {
   public paymentAddress: string;
   public fspName: FspName;
   public transactionAmount: number;
+  public transactionId?: number;
 }

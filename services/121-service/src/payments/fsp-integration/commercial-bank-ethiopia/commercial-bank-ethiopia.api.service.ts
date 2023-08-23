@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
+import { CommercialBankEthiopiaTransferPayload } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from './enum/commercial-bank-ethiopia.enum';
 
 @Injectable()
@@ -10,7 +11,10 @@ export class CommercialBankEthiopiaApiService {
     private commercialBankEthiopiaMock: CommercialBankEthiopiaMockService,
   ) {}
 
-  public async creditTransfer(payment: any, credentials): Promise<any> {
+  public async creditTransfer(
+    payment: CommercialBankEthiopiaTransferPayload,
+    credentials: { username: string; password: string },
+  ): Promise<any> {
     const payload = await this.createCreditTransferPayload(
       payment,
       credentials,
@@ -61,8 +65,8 @@ export class CommercialBankEthiopiaApiService {
   }
 
   public async createCreditTransferPayload(
-    payment: any,
-    credentials,
+    payment: CommercialBankEthiopiaTransferPayload,
+    credentials: { username: string; password: string },
   ): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
@@ -132,7 +136,10 @@ export class CommercialBankEthiopiaApiService {
     return payload;
   }
 
-  public async getTransactionStatus(payment: any, credentials): Promise<any> {
+  public async getTransactionStatus(
+    payment: CommercialBankEthiopiaTransferPayload,
+    credentials: { username: string; password: string },
+  ): Promise<any> {
     const payload = await this.createTransactionStatusPayload(
       payment,
       credentials,
@@ -167,8 +174,8 @@ export class CommercialBankEthiopiaApiService {
   }
 
   public async createTransactionStatusPayload(
-    payment: any,
-    credentials,
+    payment: CommercialBankEthiopiaTransferPayload,
+    credentials: { username: string; password: string },
   ): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
