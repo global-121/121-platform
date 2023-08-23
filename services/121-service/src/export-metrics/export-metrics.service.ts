@@ -764,7 +764,6 @@ export class ExportMetricsService {
       .select([
         'registration.referenceId as "referenceId"',
         'transaction.payment as "payment"',
-        'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
         'transaction.status as "status"',
