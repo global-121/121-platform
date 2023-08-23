@@ -70,16 +70,15 @@ export async function exportList(
   fromDate?: string,
   toDate?: string,
 ): Promise<request.Response> {
-  const body = { type: exportType };
-  // if (toDate) {
-  //   body['toDate'] = toDate
-  // }
-  // if (fromDate) {
-  //   body['fromDate'] = fromDate
-  // }
+  const queryParams = {};
+  if (fromDate) {
+    queryParams['fromDate'] = fromDate;
+  }
+  if (toDate) {
+    queryParams['toDate'] = toDate;
+  }
   return await getServer()
-    .post(`/programs/${programId}/export-metrics/export-list`)
+    .get(`/programs/${programId}/export-metrics/export-list/${exportType}}`)
     .set('Cookie', [access_token])
-    .query({ toDate: toDate, fromDate: fromDate })
-    .send(body);
+    .query(queryParams);
 }
