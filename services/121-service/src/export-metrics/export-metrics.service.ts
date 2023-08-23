@@ -778,7 +778,7 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin('transaction.financialServiceProvider', 'fsp');
+      .leftJoin('registration.fsp', 'fsp');
 
     const additionalFspExportFields = await this.getAdditionalFspExportFields(
       programId,
