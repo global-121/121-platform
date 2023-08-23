@@ -12,38 +12,39 @@ export interface DatetimeProps {
 @Component({
   selector: 'app-datetime-picker',
   templateUrl: './datetime-picker.component.html',
-  styleUrls: ['./datetime-picker.component.css'],
+  styleUrls: ['./datetime-picker.component.scss'],
 })
 export class DatetimePickerComponent {
   @Input()
   public datetimeProps: DatetimeProps;
 
-  public disableOkButton = false;
+  public disableConfirmButton = false;
 
   constructor(private modalController: ModalController) {}
 
   public dateFromChanged() {
     if (!this.datetimeProps.dateFrom) {
       this.datetimeProps.dateFrom = null;
-      this.disableOkButton = false;
+      this.disableConfirmButton = false;
       return;
     }
     this.datetimeProps.dateFrom = this.datetimeProps.dateFrom.split('T')[0];
-
-    this.disableOkButton =
-      this.datetimeProps.dateTo <= this.datetimeProps.dateFrom;
+    this.compareDates();
   }
 
   public dateToChanged() {
     if (!this.datetimeProps.dateTo) {
       this.datetimeProps.dateTo = null;
-      this.disableOkButton = false;
+      this.disableConfirmButton = false;
       return;
     }
     this.datetimeProps.dateTo = this.datetimeProps.dateTo.split('T')[0];
+    this.compareDates();
+  }
 
-    this.disableOkButton =
-      this.datetimeProps.dateTo <= this.datetimeProps.dateFrom;
+  private compareDates() {
+    this.disableConfirmButton =
+      this.datetimeProps.dateTo < this.datetimeProps.dateFrom;
   }
 
   public getStartDate(): string {

@@ -1,8 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>{{
-      'page.program.export-list.pa-data-changes.confirm-prompt.choose-dates'
-        | translate
+      'page.program.export-list.pa-data-changes.btn-text' | translate
     }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -22,6 +21,12 @@
 
 <ion-content class="ion-padding">
   <ion-row>
+    <p
+      [innerHtml]="
+        'page.program.export-list.pa-data-changes.confirm-prompt.choose-dates'
+          | translate
+      "
+    ></p>
     <ion-col size="6">
       <ion-item
         button
@@ -88,7 +93,7 @@
     </ion-col>
   </ion-row>
   <div class="ion-padding">
-    <ion-text *ngIf="disableOkButton">{{
+    <ion-text *ngIf="disableConfirmButton">{{
       'page.program.export-list.pa-data-changes.confirm-prompt.wrong-dates'
         | translate
     }}</ion-text>
@@ -108,10 +113,13 @@
       <ion-button
         fill="solid"
         color="primary"
-        [disabled]="disableOkButton"
+        [disabled]="disableConfirmButton"
         (click)="submitConfirm()"
         data-cy="input-prompt-confirm"
-        >{{ 'common.ok' | translate }}
+        >{{
+          'page.program.export-list.pa-data-changes.confirm-prompt.confirm-btn'
+            | translate
+        }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
