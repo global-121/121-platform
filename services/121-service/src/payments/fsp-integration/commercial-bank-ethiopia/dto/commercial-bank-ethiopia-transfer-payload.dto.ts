@@ -6,4 +6,5 @@ export class CommercialBankEthiopiaTransferPayload {
   public creditCurrency: string;
   public remitterName: string;
   public beneficiaryName: string;
+  public status?: string;
 }
