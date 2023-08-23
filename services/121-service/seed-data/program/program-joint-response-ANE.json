@@ -72,7 +72,7 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "What is your Phone number"
+        "en": "Phone number"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -88,7 +88,7 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {

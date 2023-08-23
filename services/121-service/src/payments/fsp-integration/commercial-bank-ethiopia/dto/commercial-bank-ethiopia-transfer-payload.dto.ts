@@ -8,3 +8,9 @@ export class CommercialBankEthiopiaTransferPayload {
   public beneficiaryName: string;
   public status?: string;
 }
+
+export class CommercialBankEthiopiaRegistrationData {
+  public fieldName: string;
+  public value: string;
+  public referenceId: string;
+}

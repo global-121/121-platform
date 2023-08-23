@@ -15,7 +15,10 @@ import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
-import { CommercialBankEthiopiaTransferPayload } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import {
+  CommercialBankEthiopiaRegistrationData,
+  CommercialBankEthiopiaTransferPayload,
+} from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -97,17 +100,8 @@ export class CommercialBankEthiopiaService
 
   public async getPaRegistrationData(
     paPayment: PaPaymentDataDto,
-    registrationData: any,
-  ): Promise<
-    [
-      {
-        referenceId: string;
-        fieldName: string;
-        value: string;
-        debitTheIrRef?: string;
-      },
-    ]
-  > {
+    registrationData: CommercialBankEthiopiaRegistrationData[],
+  ): Promise<CommercialBankEthiopiaRegistrationData[]> {
     const paRegistrationData = registrationData.filter(
       (item) => item.referenceId === paPayment.referenceId,
     );
@@ -119,8 +113,11 @@ export class CommercialBankEthiopiaService
       const customData = {
         ...transaction.customData,
       };
-      paRegistrationData[0].debitTheIrRef =
-        customData['requestResult'].debitTheIrRef;
+      paRegistrationData.push({
+        referenceId: paPayment.referenceId,
+        fieldName: 'debitTheIrRef',
+        value: customData['requestResult'].debitTheIrRef,
+      });
     }
 
     return paRegistrationData;
@@ -128,7 +125,7 @@ export class CommercialBankEthiopiaService
 
   public async getRegistrationData(
     referenceIds: string[],
-  ): Promise<RegistrationEntity[]> {
+  ): Promise<CommercialBankEthiopiaRegistrationData[]> {
     const registrationData = await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
@@ -152,7 +149,7 @@ export class CommercialBankEthiopiaService
 
     // Filter out properties with null values from each object
     const nonEmptyRegistrationData = registrationData.map(
-      (data: RegistrationEntity) => {
+      (data: CommercialBankEthiopiaRegistrationData) => {
         for (const key in data) {
           if (data.hasOwnProperty(key) && data[key] === null) {
             delete data[key];
@@ -167,15 +164,8 @@ export class CommercialBankEthiopiaService
 
   public createPayloadPerPa(
     payment: PaPaymentDataDto,
-    paRegistrationData: [
-      {
-        fieldName: string;
-        value: string;
-        referenceId: string;
-        debitTheIrRef?: string;
-      },
-    ],
-    program: any,
+    paRegistrationData: CommercialBankEthiopiaRegistrationData[],
+    program: ProgramEntity,
   ): CommercialBankEthiopiaTransferPayload {
     let name;
     let bankAccountNumber;
@@ -186,10 +176,8 @@ export class CommercialBankEthiopiaService
         name = data.value;
       } else if (data.fieldName === 'bankAccountNumber') {
         bankAccountNumber = data.value;
-      }
-
-      if (data.debitTheIrRef) {
-        debitTheIrRefRetry = data.debitTheIrRef;
+      } else if ((data.fieldName = 'debitTheIrRef')) {
+        debitTheIrRefRetry = data.value;
       }
     });
 
@@ -213,7 +201,7 @@ export class CommercialBankEthiopiaService
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
-      remitterName: program.titlePaApp.en.substring(0, 35),
+      remitterName: program.titlePaApp['en'].substring(0, 35),
       beneficiaryName: `${name}`,
     };
 
