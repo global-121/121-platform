@@ -29,10 +29,11 @@ Feature: Export payment data
     Then the "export report" button is enabled
     When the user clicks the "export report" button
     Then an Excel-file is dowloaded
-    And it shows a list of the registrations that have been paid out
-    And "transaction" data: "payment", "timestamp", "amount" (multiplication of "paymentAmountMultiplier" and "transfer value"), "status", "errorMessage", "financialServiceProvider"
-    And "registration" data: "referenceId", "phoneNumber" and any defined program-questions, fsp-questions and program-custom-attributes that have "payment" as part of the "export" attribute
-    And any FSP-specific fields (currently only "OriginatorConversationID" for FSP "Safaricom")
+    And it shows a list of the registrations that are "included"
+    And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
+    And the "payment-number"
+    And the known "phonenumber"
+    And it shows all program custom attributes which have "payment" as "export" attribute
 
   Scenario: Viewing the export options without permission
     Given a logged-in user without "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions
