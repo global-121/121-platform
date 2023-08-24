@@ -41,7 +41,7 @@ export class IntersolveVoucherCronService {
   public async cacheUnusedVouchers(): Promise<void> {
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      await this.intersolveVoucherService.getUnusedVouchers(program.id);
+      await this.intersolveVoucherService.updateUnusedVouchers(program.id);
     }
   }
 

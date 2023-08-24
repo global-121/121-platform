@@ -574,6 +574,35 @@ export class IntersolveVoucherService
   public async getUnusedVouchers(
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
+    const unusedVouchersEntities = await this.intersolveVoucherRepository
+    .createQueryBuilder('voucher')
+    .leftJoinAndSelect('voucher.image', 'image')
+    .leftJoinAndSelect('image.registration', 'registration')
+    .where('voucher.balanceUsed = false')
+    .andWhere('registration.programId = :programId', {
+      programId: programId,
+    })
+      .getMany();
+
+    const unusedVouchersDtos: UnusedVoucherDto[] = [];
+    for await (const voucher of unusedVouchersEntities) {
+      if (voucher.lastRequestedBalance === voucher.amount) {
+          const unusedVoucher = new UnusedVoucherDto();
+          unusedVoucher.payment = voucher.payment;
+          unusedVoucher.issueDate = voucher.created;
+          unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+          unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
+          unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
+          unusedVoucher.lastExternalUpdate = voucher.updatedLastRequestedBalance;
+          unusedVouchersDtos.push(unusedVoucher);
+        }
+      }
+    return unusedVouchersDtos;
+  }
+
+  public async updateUnusedVouchers(
+    programId?: number,
+  ): Promise<void> {
     const maxId = (
       await this.intersolveVoucherRepository
         .createQueryBuilder('voucher')
@@ -585,10 +614,12 @@ export class IntersolveVoucherService
         })
         .getRawOne()
     )?.max;
+    if (!maxId) {
+      // No vouchers found yet
+      return;
+    }
 
-    const unusedVouchers = [];
     let id = 1;
-
     // Run this in batches of 1,000 as it is performance-heavy
     while (id <= maxId) {
       const previouslyUnusedVouchers = await this.intersolveVoucherRepository
@@ -605,25 +636,14 @@ export class IntersolveVoucherService
         .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
         const balance = await this.getBalance(voucher, programId);
-        if (balance === voucher.amount) {
-          const unusedVoucher = new UnusedVoucherDto();
-          unusedVoucher.payment = voucher.payment;
-          unusedVoucher.issueDate = voucher.created;
-          unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-          unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-          unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
-          unusedVouchers.push(unusedVoucher);
-        } else {
+        if (balance !== voucher.amount) {
           voucher.balanceUsed = true;
           voucher.send = true;
           await this.intersolveVoucherRepository.save(voucher);
         }
       }
-
       id += 1000;
     }
-
-    return unusedVouchers;
   }
 
   public async storeTransactionResult(
