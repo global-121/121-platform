@@ -27,6 +27,7 @@ export class RegistrationChangeLogController {
     private registrationChangeLogService: RegistrationChangeLogService,
   ) {}
 
+  // NOTE: REFACTOR: rename endpoint to /api/programs/:programid/registration-changes with OPTIONAL referenceID query param (OR: only rename AND add endpoint /api/programs/:programid/registration/:registrationid/changes)
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ summary: 'Get changelog for registration' })
   @ApiResponse({ status: 200, description: 'Get changelog for registration' })

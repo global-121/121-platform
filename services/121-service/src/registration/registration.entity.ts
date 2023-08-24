@@ -100,6 +100,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public noteUpdated: Date;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
+  // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
   @Column()
   public registrationProgramId: number;
 

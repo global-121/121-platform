@@ -3,6 +3,7 @@ import { Base121Entity } from '../../../base.entity';
 import { UserEntity } from '../../../user/user.entity';
 import { RegistrationEntity } from '../../registration.entity';
 
+// NOTE: REFACTOR: rename Entity to registration_change
 @Entity('registration_change_log')
 export class RegistrationChangeLogEntity extends Base121Entity {
   @ManyToOne(
