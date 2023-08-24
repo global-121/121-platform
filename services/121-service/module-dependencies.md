@@ -45,6 +45,8 @@ graph LR
   VodacashModule-->TransactionsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
+  PaymentsModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
   ExportMetricsModule-->IntersolveVisaModule
