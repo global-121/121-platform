@@ -177,7 +177,7 @@
   [selected]="selectedPeople"
   (select)="onSelect($event.selected)"
   [selectCheck]="isRowSelectable"
-  rowHeight="auto"
+  [rowHeight]="65"
   [externalPaging]="true"
   [count]="page.totalItems"
   [offset]="page.currentPage"

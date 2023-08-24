@@ -359,7 +359,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private errorHandlerService: ErrorHandlerService,
   ) {
     this.page.currentPage = 0;
-    this.page.itemsPerPage = 20;
+    this.page.itemsPerPage = 7;
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -1880,10 +1880,5 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.visiblePeopleAffected = this.createTableData(data);
     this.page.totalItems = meta.totalItems;
     this.page.currentPage = meta.currentPage - 1;
-
-    // this.serverResultsService.getResults(this.page).subscribe((pagedData) => {
-    //   this.page = pagedData.page;
-    //   this.rows = pagedData.data;
-    // });
   }
 }
