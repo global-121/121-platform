@@ -575,34 +575,32 @@ export class IntersolveVoucherService
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
     const unusedVouchersEntities = await this.intersolveVoucherRepository
-    .createQueryBuilder('voucher')
-    .leftJoinAndSelect('voucher.image', 'image')
-    .leftJoinAndSelect('image.registration', 'registration')
-    .where('voucher.balanceUsed = false')
-    .andWhere('registration.programId = :programId', {
-      programId: programId,
-    })
+      .createQueryBuilder('voucher')
+      .leftJoinAndSelect('voucher.image', 'image')
+      .leftJoinAndSelect('image.registration', 'registration')
+      .where('voucher.balanceUsed = false')
+      .andWhere('registration.programId = :programId', {
+        programId: programId,
+      })
       .getMany();
 
     const unusedVouchersDtos: UnusedVoucherDto[] = [];
     for await (const voucher of unusedVouchersEntities) {
       if (voucher.lastRequestedBalance === voucher.amount) {
-          const unusedVoucher = new UnusedVoucherDto();
-          unusedVoucher.payment = voucher.payment;
-          unusedVoucher.issueDate = voucher.created;
-          unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-          unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-          unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
-          unusedVoucher.lastExternalUpdate = voucher.updatedLastRequestedBalance;
-          unusedVouchersDtos.push(unusedVoucher);
-        }
+        const unusedVoucher = new UnusedVoucherDto();
+        unusedVoucher.payment = voucher.payment;
+        unusedVoucher.issueDate = voucher.created;
+        unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+        unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
+        unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
+        unusedVoucher.lastExternalUpdate = voucher.updatedLastRequestedBalance;
+        unusedVouchersDtos.push(unusedVoucher);
       }
+    }
     return unusedVouchersDtos;
   }
 
-  public async updateUnusedVouchers(
-    programId?: number,
-  ): Promise<void> {
+  public async updateUnusedVouchers(programId?: number): Promise<void> {
     const maxId = (
       await this.intersolveVoucherRepository
         .createQueryBuilder('voucher')
