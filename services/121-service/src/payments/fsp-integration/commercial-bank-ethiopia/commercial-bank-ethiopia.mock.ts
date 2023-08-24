@@ -12,7 +12,7 @@ export class CommercialBankEthiopiaMockService {
   public async postCBETransfer(payment): Promise<any> {
     await this.waitForRandomDelay();
 
-    const mockScenario: string = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
+    const mockScenario = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
 
     // Define the success transaction Status object
     const successTransactionStatus = {
