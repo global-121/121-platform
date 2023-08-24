@@ -266,4 +266,16 @@ export class UserController {
       Number(params.userId),
     );
   }
+
+  @Admin()
+  @ApiOperation({ summary: 'Get all users' })
+  @Get('users')
+  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.userService.getUsers();
+  }
 }

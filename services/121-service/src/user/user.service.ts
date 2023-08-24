@@ -91,6 +91,8 @@ export class UserService {
     };
 
     const cookieSettings = this.buildCookieByRequest(token);
+    userEntity.lastLogin = new Date();
+    await this.userRepository.save(userEntity);
     return { userRo: user, cookieSettings: cookieSettings, token: token };
   }
 
@@ -460,5 +462,17 @@ export class UserService {
       expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
       httpOnly: true,
     };
+  }
+
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.find({
+      select: {
+        id: true,
+        username: true,
+        admin: true,
+        active: true,
+        lastLogin: true,
+      },
+    });
   }
 }
