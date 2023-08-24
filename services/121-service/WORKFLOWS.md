@@ -40,7 +40,7 @@ This workflow explains how to get out a list of 'to cancel' vouchers.
 
 1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`registration:personal.export`"-permission
 2. Use the endpoint: [`/export-metrics/export-list`](https://test.121.global/docs/#/export-metrics/post_export_metrics_export_list)
-   Fill in `type` = "to-cancel-vouchers" and `programId` = 1. Delete the other (optional) properties.
+   Fill in `exportType` = "to-cancel-vouchers" and `programId` = 1. Delete the other (optional) properties.
 
    This will return an object which includes the relevant 'data' property in json-format
 

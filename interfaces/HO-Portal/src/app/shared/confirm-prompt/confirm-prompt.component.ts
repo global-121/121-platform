@@ -5,6 +5,10 @@ import { BulkActionId } from '../../models/bulk-actions.models';
 import { ExportDuplicatesPopupComponent } from '../../program/export-duplicates-popup/export-duplicates-popup.component';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import {
+  DatetimePickerComponent,
+  DatetimeProps,
+} from '../datetime-picker/datetime-picker.component';
+import {
   FilePickerPromptComponent,
   FilePickerProps,
 } from '../file-picker-prompt/file-picker-prompt.component';
@@ -64,6 +68,9 @@ export class ConfirmPromptComponent {
   public duplicateAttributesProps?: string;
 
   @Input()
+  public datetimeProps?: DatetimeProps;
+
+  @Input()
   public action: BulkActionId;
 
   @Input()
@@ -120,6 +127,13 @@ export class ConfirmPromptComponent {
           subHeader: this.subHeader,
           message: this.message,
           duplicateAttributesProps: this.duplicateAttributesProps,
+        },
+      });
+    } else if (this.datetimeProps) {
+      modal = await this.modalController.create({
+        component: DatetimePickerComponent,
+        componentProps: {
+          datetimeProps: this.datetimeProps,
         },
       });
     } else {
