@@ -101,6 +101,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.programId,
         this.canViewPersonalData,
         this.canViewPaymentData,
+        // TODO: Is this fine to be 'hardcoded'?
+        1,
+        1,
         this.referenceId,
       )
     )[0];

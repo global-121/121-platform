@@ -163,12 +163,9 @@
 <ngx-datatable
   #people
   class="bootstrap data-table--max-height"
-  [rowHeight]="65"
-  [scrollbarV]="true"
   [scrollbarH]="true"
   [headerHeight]="95"
   [footerHeight]="50"
-  [virtualization]="true"
   [reorderable]="false"
   sortType="single"
   [sorts]="[{ prop: 'pa', dir: 'asc' }]"
@@ -180,6 +177,12 @@
   [selected]="selectedPeople"
   (select)="onSelect($event.selected)"
   [selectCheck]="isRowSelectable"
+  rowHeight="auto"
+  [externalPaging]="true"
+  [count]="page.totalItems"
+  [offset]="page.currentPage"
+  [limit]="page.itemsPerPage"
+  (page)="setPage($event)"
 >
   <ngx-datatable-column
     prop="selected"

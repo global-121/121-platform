@@ -254,7 +254,7 @@ export class RegistrationsController {
   @ApiQuery({ name: 'limit', required: false, type: 'number' })
   @ApiQuery({ name: 'sortBy', required: false, type: 'string' })
   @ApiQuery({ name: 'select', required: false, type: 'string' })
-  @Get('programs/:programId/registrations/paginate')
+  @Get('programs/:programId/registrations')
   public findAll(@Paginate() query: PaginateQuery): Promise<any> {
     return this.registrationsService.getPaginate(query);
   }
@@ -264,21 +264,28 @@ export class RegistrationsController {
     summary: 'Get all registrations for program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
-  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
-  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
+  // @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
+  // @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
+  // @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
+  // @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
+  // @ApiQuery({ name: 'attributes', required: false, type: 'string' })
+  @ApiQuery({ name: 'limit', required: false, type: 'number' })
+  @ApiQuery({ name: 'page', required: false, type: 'number' })
   @ApiResponse({
     status: 201,
     description: 'Got all People Affected for program EXCLUDING personal data',
   })
-  @Get('programs/:programId/registrations')
+  @Get('programs/:programId/registrations/paginate')
   public async getPeopleAffected(
     @Param('programId') programId: number,
     @User('id') userId: number,
     @Query() queryParams,
   ): Promise<any[]> {
+    const limit = queryParams.limit ? Number(queryParams.limit) : 15;
+    const page = queryParams.page ? Number(queryParams.page) : 1;
+    console.log('limit: ', limit);
+    console.log('page: ', page);
+
     const personalData = queryParams.personalData === 'true';
     const paymentData = queryParams.paymentData === 'true';
     if (personalData) {

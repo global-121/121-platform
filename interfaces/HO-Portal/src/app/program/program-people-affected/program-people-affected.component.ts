@@ -55,6 +55,7 @@ import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
+import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
@@ -107,7 +108,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
-  private phaseSpecificPeopleAffected: PersonRow[] = [];
+  // private phaseSpecificPeopleAffected: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
@@ -340,6 +341,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private messageColumnStatus = MessageStatusMapping;
 
+  page = new PaginationMetadata();
+
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
@@ -355,6 +358,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
   ) {
+    this.page.currentPage = 0;
+    this.page.itemsPerPage = 20;
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -586,6 +591,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   async initComponent() {
+    this.setPage({ offset: 0 });
+
     this.isLoading = true;
 
     this.columns = [];
@@ -635,7 +642,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isCompleted.emit(true);
   }
 
-  private async refreshData(refresh: boolean = false) {
+  private async refreshData(refresh = false) {
     this.isLoading = true;
     await this.loadData(refresh);
     await this.resetBulkAction();
@@ -885,7 +892,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return enabledActions.length > 0;
   }
 
-  private async loadData(refresh: boolean = false) {
+  private async loadData(refresh = false) {
+    console.log('refresh: ', refresh);
     const attributeNames = (
       await this.programsService.getPaTableAttributes(
         this.programId,
@@ -896,34 +904,39 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       attributeNames.push(nameElem);
     }
 
-    this.allPeopleData = await this.programsService.getPeopleAffected(
-      this.programId,
-      this.canViewPersonalData,
-      this.canViewPaymentData &&
-        [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
-      null,
-      null,
-      attributeNames,
-    );
+    // const { data, meta, links } = await this.programsService.getPeopleAffected(
+    //   this.programId,
+    //   this.canViewPersonalData,
+    //   this.canViewPaymentData &&
+    //     [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
+    //   this.page.itemsPerPage,
+    //   this.page.currentPage,
+    //   null,
+    //   null,
+    //   attributeNames,
+    // );
+    // this.allPeopleData = data;
+    // this.page = meta;
+    // console.log('links: ', links);
 
-    this.allPeopleAffected = this.createTableData(this.allPeopleData);
+    // this.allPeopleAffected = this.createTableData(this.allPeopleData);
 
-    if (refresh) {
-      this.setDefaultTableFilterOptions();
-      this.filterPeopleAffectedByPhase();
-      return;
-    }
+    // if (refresh) {
+    //   this.setDefaultTableFilterOptions();
+    //   this.filterPeopleAffectedByPhase();
+    //   return;
+    // }
 
-    this.updateVisiblePeopleAffectedByFilter();
+    // this.updateVisiblePeopleAffectedByFilter();
   }
 
-  private filterPeopleAffectedByPhase() {
-    this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      this.tableFilterState.paStatus.default.includes(pa.status),
-    );
-    this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-    this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-  }
+  // private filterPeopleAffectedByPhase() {
+  //   this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
+  //     this.tableFilterState.paStatus.default.includes(pa.status),
+  //   );
+  //   this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+  //   this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+  // }
 
   private createTableData(source: Person[]): PersonRow[] {
     if (!source || source.length === 0) {
@@ -1323,7 +1336,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           null,
           payment,
         )
-      ).map((r) => r.referenceId);
+      ).data.map((r) => r.referenceId);
     }
     return people.map((person) =>
       this.bulkActionService.updateCheckbox(
@@ -1547,48 +1560,48 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
   }
 
-  private setDefaultTableFilterOptions() {
-    // text
-    this.filterRowsVisibleQuery = '';
-    this.tableFilterState.text = '';
-    // pa status
-    const paStatusDefaults = {
-      [ProgramPhase.registrationValidation]: [
-        RegistrationStatus.imported,
-        RegistrationStatus.invited,
-        RegistrationStatus.startedRegistration,
-        RegistrationStatus.selectedForValidation,
-        RegistrationStatus.registered,
-        RegistrationStatus.noLongerEligible,
-        RegistrationStatus.registeredWhileNoLongerEligible,
-      ],
-      [ProgramPhase.inclusion]: [
-        RegistrationStatus.validated,
-        RegistrationStatus.registered,
-        RegistrationStatus.selectedForValidation,
-        RegistrationStatus.rejected,
-        RegistrationStatus.inclusionEnded,
-      ],
-      [ProgramPhase.payment]: [
-        RegistrationStatus.included,
-        RegistrationStatus.completed,
-      ],
-    };
-    this.tableFilterState.paStatus.default = paStatusDefaults[this.thisPhase];
-    this.tableFilterState.paStatus.visible =
-      this.setTableFilterVisibleOptions('paStatus');
-    this.tableFilterState.paStatus.selected = [
-      ...this.tableFilterState.paStatus.default,
-    ];
+  // private setDefaultTableFilterOptions() {
+  //   // text
+  //   this.filterRowsVisibleQuery = '';
+  //   this.tableFilterState.text = '';
+  //   // pa status
+  //   const paStatusDefaults = {
+  //     [ProgramPhase.registrationValidation]: [
+  //       RegistrationStatus.imported,
+  //       RegistrationStatus.invited,
+  //       RegistrationStatus.startedRegistration,
+  //       RegistrationStatus.selectedForValidation,
+  //       RegistrationStatus.registered,
+  //       RegistrationStatus.noLongerEligible,
+  //       RegistrationStatus.registeredWhileNoLongerEligible,
+  //     ],
+  //     [ProgramPhase.inclusion]: [
+  //       RegistrationStatus.validated,
+  //       RegistrationStatus.registered,
+  //       RegistrationStatus.selectedForValidation,
+  //       RegistrationStatus.rejected,
+  //       RegistrationStatus.inclusionEnded,
+  //     ],
+  //     [ProgramPhase.payment]: [
+  //       RegistrationStatus.included,
+  //       RegistrationStatus.completed,
+  //     ],
+  //   };
+  //   this.tableFilterState.paStatus.default = paStatusDefaults[this.thisPhase];
+  //   this.tableFilterState.paStatus.visible =
+  //     this.setTableFilterVisibleOptions('paStatus');
+  //   this.tableFilterState.paStatus.selected = [
+  //     ...this.tableFilterState.paStatus.default,
+  //   ];
 
-    // payments left
-    this.tableFilterState.paymentsLeft.default = this.PAYMENTS_LEFT_ORDER;
-    this.tableFilterState.paymentsLeft.visible =
-      this.setTableFilterVisibleOptions('paymentsLeft');
-    this.tableFilterState.paymentsLeft.selected = [
-      ...this.tableFilterState.paymentsLeft.default,
-    ];
-  }
+  //   // payments left
+  //   this.tableFilterState.paymentsLeft.default = this.PAYMENTS_LEFT_ORDER;
+  //   this.tableFilterState.paymentsLeft.visible =
+  //     this.setTableFilterVisibleOptions('paymentsLeft');
+  //   this.tableFilterState.paymentsLeft.selected = [
+  //     ...this.tableFilterState.paymentsLeft.default,
+  //   ];
+  // }
 
   public setTableFilterVisibleOptions(prop): TableFilterMultipleChoiceOption[] {
     switch (prop) {
@@ -1844,5 +1857,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     return value;
+  }
+
+  public async setPage(pageInfo: {
+    count?: number;
+    pageSize?: number;
+    limit?: number;
+    offset?: number;
+  }) {
+    this.page.currentPage = pageInfo.offset;
+    const { data, meta } = await this.programsService.getPeopleAffected(
+      this.programId,
+      // TODO: Fix this with permission
+      true,
+      // TODO: Fix this with permission
+      true,
+      this.page.itemsPerPage,
+      this.page.currentPage + 1,
+      null,
+      null,
+    );
+    this.visiblePeopleAffected = this.createTableData(data);
+    this.page.totalItems = meta.totalItems;
+    this.page.currentPage = meta.currentPage - 1;
+
+    // this.serverResultsService.getResults(this.page).subscribe((pagedData) => {
+    //   this.page = pagedData.page;
+    //   this.rows = pagedData.data;
+    // });
   }
 }

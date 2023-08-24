@@ -9,6 +9,7 @@ import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
+import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { PhysicalCard } from '../models/physical-card.model';
@@ -498,20 +499,25 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getPeopleAffected(
+  async getPeopleAffected(
     programId: number | string,
     personalData: boolean,
     paymentData: boolean,
+    limit: number,
+    page: number,
     referenceId?: string,
     filterOnPayment?: number,
     attributes?: string[],
-  ): Promise<Person[]> {
+    // TODO: Fix the 'any' for the 'links' parameter
+  ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
     if (personalData) {
       params = params.append('registrationData', 'registrationData');
     }
     params = params.append('personalData', personalData);
     params = params.append('paymentData', paymentData);
+    params = params.append('limit', limit);
+    params = params.append('page', page);
     if (referenceId) {
       params = params.append('referenceId', referenceId);
     }
@@ -521,12 +527,16 @@ export class ProgramsServiceApiService {
     if (attributes) {
       params = params.append('attributes', attributes.join());
     }
-    return this.apiService.get(
+    const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/paginate`,
+      `/programs/${programId}/registrations`,
       false,
       params,
     );
+    console.log('data: ', data);
+    console.log('meta: ', meta);
+    console.log('links: ', links);
+    return { data, meta, links };
   }
 
   private updatePaStatus(

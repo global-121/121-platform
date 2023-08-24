@@ -119,6 +119,9 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         this.programId,
         this.canViewPersonalData,
         this.canViewPaymentData,
+        // TODO: Is this fine to be 'hardcoded'?
+        1,
+        1,
         this.referenceId,
       )
     )[0];

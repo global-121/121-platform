@@ -24,7 +24,7 @@ export class ApiService {
     return anonymous ? '🌐' : '🔐';
   }
 
-  private createHeaders(isUpload: boolean = false): HttpHeaders {
+  private createHeaders(isUpload = false): HttpHeaders {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export class ApiService {
   get(
     endpoint: string,
     path: string,
-    anonymous: boolean = false,
+    anonymous = false,
     params = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
@@ -83,9 +83,9 @@ export class ApiService {
     endpoint: string,
     path: string,
     body: object,
-    anonymous: boolean = false,
-    responseAsBlob: boolean = false,
-    isUpload: boolean = false,
+    anonymous = false,
+    responseAsBlob = false,
+    isUpload = false,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
@@ -126,9 +126,9 @@ export class ApiService {
     endpoint: string,
     path: string,
     body: object,
-    anonymous: boolean = false,
-    responseAsBlob: boolean = false,
-    isUpload: boolean = false,
+    anonymous = false,
+    responseAsBlob = false,
+    isUpload = false,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService PUT: ${security} ${endpoint}${path}`, body);
@@ -169,9 +169,9 @@ export class ApiService {
     endpoint: string,
     path: string,
     body: object,
-    anonymous: boolean = false,
-    responseAsBlob: boolean = false,
-    isUpload: boolean = false,
+    anonymous = false,
+    responseAsBlob = false,
+    isUpload = false,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService PATCH: ${security} ${endpoint}${path}`, body);
@@ -212,7 +212,7 @@ export class ApiService {
     endpoint: string,
     path: string,
     body?: object,
-    anonymous: boolean = false,
+    anonymous = false,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
 
