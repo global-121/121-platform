@@ -517,7 +517,7 @@
       },
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
-        "no-data": "There are currently no People Affected to download",
+        "no-data": "There is currently no data to download",
         "all-people-affected": {
           "btn-text": "Export People Affected",
           "confirm-message": "This will download an Excel file with all People Affected."
@@ -547,6 +547,17 @@
         "card-balances": {
           "btn-text": "Export debit card usage",
           "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
+        },
+        "pa-data-changes": {
+          "btn-text": "Export data changes",
+          "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program.",
+          "confirm-prompt": {
+            "choose-dates": "Optionally pass a Start date and/or an End date to filter the data changes.",
+            "date-from": "Start date {{ date }}",
+            "date-to": "End date {{ date }}",
+            "wrong-dates": "The end date must be greater than the start date",
+            "confirm-btn": "Export"
+          }
         }
       },
       "export-fsp-intructions": {

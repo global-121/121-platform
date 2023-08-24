@@ -63,12 +63,22 @@ export async function getTransactions(
     .query({ minPayment: paymentNr, referenceId: referenceId });
 }
 
-export async function getVisaReport(
+export async function exportList(
   programId: number,
+  exportType: string,
   access_token: string,
+  fromDate?: string,
+  toDate?: string,
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (fromDate) {
+    queryParams['fromDate'] = fromDate;
+  }
+  if (toDate) {
+    queryParams['toDate'] = toDate;
+  }
   return await getServer()
-    .post(`/programs/${programId}/export-metrics/export-list`)
+    .get(`/programs/${programId}/export-metrics/export-list/${exportType}`)
     .set('Cookie', [access_token])
-    .send({ type: 'card-balances' });
+    .query(queryParams);
 }

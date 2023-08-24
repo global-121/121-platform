@@ -6,4 +6,5 @@ export enum ExportType {
   selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
   cardBalances = 'card-balances',
+  paDataChanges = 'pa-data-changes',
 }

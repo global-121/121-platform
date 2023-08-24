@@ -49,6 +49,7 @@ graph LR
   ExportMetricsModule-->TransactionsModule
   ExportMetricsModule-->IntersolveVisaModule
   ExportMetricsModule-->IntersolveVoucherModule
+  ExportMetricsModule-->RegistrationChangeLogModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

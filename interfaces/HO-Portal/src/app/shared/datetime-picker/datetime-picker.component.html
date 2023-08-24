@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{
+      'page.program.export-list.pa-data-changes.btn-text' | translate
+    }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-row>
+    <p
+      [innerHtml]="
+        'page.program.export-list.pa-data-changes.confirm-prompt.choose-dates'
+          | translate
+      "
+    ></p>
+    <ion-col size="6">
+      <ion-item
+        button
+        id="dateFromButton"
+      >
+        <ion-label>
+          {{
+            'page.program.export-list.pa-data-changes.confirm-prompt.date-from'
+              | translate: { date: getStartDate() }
+          }}</ion-label
+        >
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </ion-item>
+
+      <ion-popover
+        trigger="dateFromButton"
+        side="bottom"
+        alignment="end"
+        size="cover"
+      >
+        <ng-template>
+          <ion-datetime
+            [(ngModel)]="datetimeProps.dateFrom"
+            presentation="date"
+            showDefaultButtons="true"
+            showClearButton="true"
+            (ionChange)="dateFromChanged()"
+          >
+          </ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-col>
+    <ion-col size="6">
+      <ion-item
+        button
+        id="dateToButton"
+      >
+        <ion-label>
+          {{
+            'page.program.export-list.pa-data-changes.confirm-prompt.date-to'
+              | translate: { date: getEndDate() }
+          }}</ion-label
+        >
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </ion-item>
+
+      <ion-popover
+        trigger="dateToButton"
+        side="bottom"
+        alignment="end"
+        size="cover"
+      >
+        <ng-template>
+          <ion-datetime
+            [(ngModel)]="datetimeProps.dateTo"
+            presentation="date"
+            showDefaultButtons="true"
+            showClearButton="true"
+            (ionChange)="dateToChanged()"
+          >
+          </ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </ion-col>
+  </ion-row>
+  <div class="ion-padding">
+    <ion-text *ngIf="disableConfirmButton">{{
+      'page.program.export-list.pa-data-changes.confirm-prompt.wrong-dates'
+        | translate
+    }}</ion-text>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button
+        fill="clear"
+        color="danger"
+        (click)="closeModal()"
+      >
+        {{ 'common.cancel' | translate }}
+      </ion-button>
+      <ion-button
+        fill="solid"
+        color="primary"
+        [disabled]="disableConfirmButton"
+        (click)="submitConfirm()"
+        data-cy="input-prompt-confirm"
+        >{{
+          'page.program.export-list.pa-data-changes.confirm-prompt.confirm-btn'
+            | translate
+        }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
