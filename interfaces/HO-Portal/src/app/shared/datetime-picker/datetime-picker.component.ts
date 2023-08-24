@@ -19,6 +19,8 @@ export class DatetimePickerComponent {
   public datetimeProps: DatetimeProps;
 
   public disableConfirmButton = false;
+  openFromPopover = false;
+  openToPopover = false;
 
   constructor(private modalController: ModalController) {}
 
@@ -30,6 +32,7 @@ export class DatetimePickerComponent {
     }
     this.datetimeProps.dateFrom = this.datetimeProps.dateFrom.split('T')[0];
     this.compareDates();
+    this.openFromPopover = false;
   }
 
   public dateToChanged() {
@@ -40,6 +43,7 @@ export class DatetimePickerComponent {
     }
     this.datetimeProps.dateTo = this.datetimeProps.dateTo.split('T')[0];
     this.compareDates();
+    this.openToPopover = false;
   }
 
   private compareDates() {
