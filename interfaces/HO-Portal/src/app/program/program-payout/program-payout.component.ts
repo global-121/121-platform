@@ -46,6 +46,7 @@ export class ProgramPayoutComponent implements OnInit {
   public fspIdsWithReconciliation: number[];
   public canMakeFspInstructions: boolean;
 
+  public canViewPayment: boolean;
   public canMakePayment: boolean;
   public canMakeExport: boolean;
 
@@ -91,9 +92,10 @@ export class ProgramPayoutComponent implements OnInit {
       .filter((fsp) => fsp.integrationType === FspIntegrationType.xml)
       .map((fsp) => fsp.id);
     this.canMakePayment = this.checkCanMakePayment();
+    this.canViewPayment = this.checkCanViewPayment();
     this.canMakeExport = this.checkCanMakeExport();
 
-    if (!this.canMakeExport && !this.canMakePayment) {
+    if (!this.canViewPayment && !this.canMakeExport && !this.canMakePayment) {
       return;
     }
     this.canMakeFspInstructions = this.checkCanMakeFspInstructions();
@@ -103,6 +105,16 @@ export class ProgramPayoutComponent implements OnInit {
     this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
+  }
+
+  private checkCanViewPayment(): boolean {
+    return (
+      this.program.phase === ProgramPhase.payment &&
+      this.authService.hasAllPermissions(this.program.id, [
+        Permission.PaymentREAD,
+        Permission.PaymentTransactionREAD,
+      ])
+    );
   }
 
   private checkCanMakePayment(): boolean {

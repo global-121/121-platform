@@ -47,11 +47,11 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Reject or End Inclusion of people affected](121-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export duplicate People Affected list](121-Portal/Export_duplicate_people_affected_list.feature)
 - [Make a new payment](121-Portal/Make_new_payment.feature)
+- [See last payment aggregate overview](121-Portal/View_last_payment_overview.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
 - [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
 - [Export unused vouchers](121-Portal/Export_unused_vouchers.feature)
 - [Export Intersolve Visa cards](121-Portal/Export_Intersolve_Visa_cards.feature)
-- Retry individual/all payment(s)
 - Get voucher balance
 - View/Download/Print voucher
 - [View PA profile page](121-Portal/View_PA_profile_page.feature)

@@ -85,7 +85,7 @@
 </div>
 
 <ion-row
-  *ngIf="canMakePayment"
+  *ngIf="canViewPayment"
   class="ion-margin-vertical"
 >
   <ion-col
@@ -110,7 +110,7 @@
       <strong>{{ lastPaymentResults.error }}</strong>
     </p>
     <app-confirm-prompt
-      *ngIf="lastPaymentResults?.error > 0"
+      *ngIf="canMakePayment && lastPaymentResults?.error > 0"
       (confirm)="retryLastPayment()"
       [subHeader]="
         'page.program.program-payout.last-payment.confirm-prompt'
