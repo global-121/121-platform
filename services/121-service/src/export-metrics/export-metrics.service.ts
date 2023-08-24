@@ -771,6 +771,7 @@ export class ExportMetricsService {
       .select([
         'registration.referenceId as "referenceId"',
         'transaction.payment as "payment"',
+        'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
         'transaction.status as "status"',
@@ -784,7 +785,7 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin('registration.fsp', 'fsp');
+      .leftJoin('transaction.financialServiceProvider', 'fsp');
 
     const additionalFspExportFields = await this.getAdditionalFspExportFields(
       programId,
