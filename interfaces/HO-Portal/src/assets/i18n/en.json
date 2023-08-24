@@ -597,11 +597,11 @@
       "pageTitle": "User",
       "change-password": {
         "title": "Change password",
-        "existing-password": "Existing password",
+        "current-password": "Current password",
         "new-password": "New password",
         "confirm-password": "Confirm password",
         "success": "Password changed",
-        "failed": "Failed attempt"
+        "failed": "Failed attempt: current password incorrect"
       },
       "notification-messages": {
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",

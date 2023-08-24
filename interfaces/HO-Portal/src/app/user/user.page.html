@@ -32,7 +32,7 @@
             (ngSubmit)="updatePassword()"
             (keyup.enter)="updatePassword()"
           >
-            <!-- existing password -->
+            <!-- current password -->
 
             <div
               class="input-item auth-item ion-margin-bottom ion-padding-bottom"
@@ -42,7 +42,7 @@
                 class="input-item--label auth-label"
                 (click)="passwordInput.setFocus()"
               >
-                {{ 'page.user.change-password.existing-password'|translate }}
+                {{ 'page.user.change-password.current-password'|translate }}
               </label>
               <div class="input-item--content">
                 <ion-input
@@ -57,7 +57,7 @@
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  (ionBlur)="onPasswordBlur()"
+                  (ionBlur)="checkEmptyPassword()"
                   [ngClass]="passwordBorder"
                   class="ion-margin-vertical"
                   fill="outline"
@@ -106,8 +106,9 @@
                   ngDefaultControl
                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
                   (ionBlur)="checkNewPassword()"
+                  (ionChange)="checkNewPassword()"
                   [ngClass]="newPasswordBorder"
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical custom-border"
                   fill="outline"
                 >
                 </ion-input>
@@ -150,10 +151,10 @@
                   [(ngModel)]="confirmPassword"
                   ngDefaultControl
                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
+                  (ionInput)="checkConfirmPasswords()"
                   (ionBlur)="checkConfirmPasswords()"
-                  (ionChange)="onChange()"
                   [ngClass]="confirmPasswordBorder"
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical custom-border"
                   fill="outline"
                 >
                 </ion-input>
@@ -165,8 +166,8 @@
                   ><small
                     ><strong
                       >{{ "page.user.notification-messages.different-passwords"
-                      |translate }}</strong
-                    ></small
+                      |translate }}
+                    </strong></small
                   ></ion-note
                 >
               </div>
@@ -178,7 +179,7 @@
                 type="submit"
                 expand="block"
                 size="default"
-                [disabled]="!newPasswordForm?.form?.valid"
+                [disabled]="!newPasswordForm?.form?.valid || !samePassword"
                 color="secondary"
               >
                 {{ 'common.update'|translate }}

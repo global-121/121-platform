@@ -30,7 +30,6 @@ export class UserPage implements OnInit {
   };
 
   public validPassword = true;
-  public validExistinPassword = true;
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
   public newPasswordBorder = this.borderValues.normal;
@@ -49,10 +48,7 @@ export class UserPage implements OnInit {
   }
 
   public updatePassword() {
-    console.log('updatePassword: Starting password update process...');
-
     if (!this.newPasswordForm.form.valid) {
-      console.log('updatePassword: Form is not valid. Aborting.');
       return;
     }
 
@@ -66,12 +62,13 @@ export class UserPage implements OnInit {
       if (typeof val === 'string' && val.includes('Not authorized')) {
         this.showPassCheckFail = true;
         this.passwordChanged = true;
+        this.newPasswordForm.resetForm();
       } else if (val) {
         this.errorStatusCode = 0;
         this.showPassCheckFail = false;
         this.passwordChanged = true;
-        this.showPassCheckFail = false;
         this.newPasswordForm.resetForm();
+        // navigate to home
       }
       window.setTimeout(() => {
         this.passwordChanged = false;
@@ -84,6 +81,7 @@ export class UserPage implements OnInit {
     this.newPasswordBorder = this.validPassword
       ? this.borderValues.valid
       : this.borderValues.invalid;
+    this.checkConfirmPasswords();
   }
 
   public checkConfirmPasswords() {
@@ -99,21 +97,7 @@ export class UserPage implements OnInit {
     }
   }
 
-  public onChange() {
-    if (
-      this.confirmPassword !== '' &&
-      this.confirmPassword === this.newPassword
-    ) {
-      this.samePassword = true;
-      this.confirmPasswordBorder = this.borderValues.valid;
-    }
-  }
-
-  public onPasswordBlur() {
-    this.checkEmptyPassword();
-  }
-
-  private checkEmptyPassword() {
+  public checkEmptyPassword() {
     this.emptyPassword = this.password === '';
   }
 }
