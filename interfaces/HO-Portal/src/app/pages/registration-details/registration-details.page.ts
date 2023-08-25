@@ -118,12 +118,11 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     const person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        // TODO: Is this fine to be 'hardcoded'?
         1,
         1,
         this.referenceId,
       )
-    )[0];
+    ).data[0];
 
     if (person.status === RegistrationStatusEnum.deleted) {
       return null;

@@ -101,12 +101,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        // TODO: Is this fine to be 'hardcoded'?
         1,
         1,
         this.referenceId,
       )
-    )[0];
+    ).data[0];
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
