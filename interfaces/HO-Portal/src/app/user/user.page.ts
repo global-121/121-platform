@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { from } from 'rxjs';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
@@ -39,6 +41,7 @@ export class UserPage implements OnInit {
   constructor(
     private authService: AuthService,
     private readonly programsService: ProgramsServiceApiService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -62,18 +65,20 @@ export class UserPage implements OnInit {
       if (typeof val === 'string' && val.includes('Not authorized')) {
         this.showPassCheckFail = true;
         this.passwordChanged = true;
-        this.newPasswordForm.resetForm();
       } else if (val) {
         this.errorStatusCode = 0;
         this.showPassCheckFail = false;
         this.passwordChanged = true;
-        this.newPasswordForm.resetForm();
         // navigate to home
+        window.setTimeout(() => {
+          this.router.navigate(['/', AppRoutes.home]);
+        }, 3000);
       }
       window.setTimeout(() => {
         this.passwordChanged = false;
       }, 3000);
     });
+    this.newPasswordForm.resetForm();
   }
 
   public checkNewPassword() {

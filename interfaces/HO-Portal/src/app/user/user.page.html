@@ -24,16 +24,47 @@
             {{ 'page.login.portalTitle'|translate }}
           </h1>
         </div>
+
+        <ion-item
+          *ngIf="passwordChanged"
+          [color]="showPassCheckFail ? 'danger' : 'success'"
+          lines="none"
+          class="login-notification ion-margin-vertical"
+        >
+          <div
+            *ngIf="showPassCheckFail"
+            color="warning"
+          >
+            <small>
+              <strong>
+                <ion-text>
+                  {{ 'page.user.change-password.failed'|translate }}
+                </ion-text>
+              </strong>
+            </small>
+          </div>
+          <div
+            *ngIf="!showPassCheckFail"
+            color="success"
+          >
+            <small>
+              <strong>
+                <ion-text>
+                  {{ 'page.user.change-password.success'|translate }}
+                </ion-text>
+              </strong>
+            </small>
+          </div>
+        </ion-item>
+
         <div class="ion-padding auth-form-container">
           <form
-            *ngIf="!passwordChanged"
             method="POST"
             #newPasswordForm="ngForm"
             (ngSubmit)="updatePassword()"
             (keyup.enter)="updatePassword()"
           >
             <!-- current password -->
-
             <div
               class="input-item auth-item ion-margin-bottom ion-padding-bottom"
             >
@@ -58,8 +89,7 @@
                   [(ngModel)]="password"
                   ngDefaultControl
                   (ionBlur)="checkEmptyPassword()"
-                  [ngClass]="passwordBorder"
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical custom-border regular-border"
                   fill="outline"
                 >
                 </ion-input>
@@ -187,34 +217,6 @@
             </div>
           </form>
         </div>
-        <ng-container *ngIf="passwordChanged">
-          <div
-            *ngIf="!showPassCheckFail"
-            class="ion-text-center"
-          >
-            <ion-icon
-              name="checkmark-circle"
-              color="success"
-              size="large"
-              aria-hidden="true"
-            ></ion-icon>
-            <br />
-            <strong>{{ 'page.user.change-password.success'|translate }}</strong>
-          </div>
-          <div
-            *ngIf="showPassCheckFail"
-            class="ion-text-center"
-          >
-            <ion-icon
-              name="close-circle"
-              color="danger"
-              size="large"
-              aria-hidden="true"
-            ></ion-icon>
-            <br />
-            <strong>{{ 'page.user.change-password.failed'|translate }}</strong>
-          </div>
-        </ng-container>
       </ion-col>
       <ion-col size="4"></ion-col>
     </ion-row>
