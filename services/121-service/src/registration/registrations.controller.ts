@@ -275,8 +275,6 @@ export class RegistrationsController {
   @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
   @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'attributes', required: false, type: 'string' })
-  @ApiQuery({ name: 'limit', required: false, type: 'number' })
-  @ApiQuery({ name: 'page', required: false, type: 'number' })
   @ApiResponse({
     status: 201,
     description: 'Got all People Affected for program EXCLUDING personal data',
@@ -287,11 +285,6 @@ export class RegistrationsController {
     @User('id') userId: number,
     @Query() queryParams,
   ): Promise<any[]> {
-    const limit = queryParams.limit ? Number(queryParams.limit) : 15;
-    const page = queryParams.page ? Number(queryParams.page) : 1;
-    console.log('limit: ', limit);
-    console.log('page: ', page);
-
     const personalData = queryParams.personalData === 'true';
     const paymentData = queryParams.paymentData === 'true';
     if (personalData) {
