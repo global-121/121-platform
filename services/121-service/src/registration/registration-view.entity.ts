@@ -1,6 +1,7 @@
 import {
   Column,
   DataSource,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -19,11 +20,11 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 import { RegistrationEntity } from './registration.entity';
 
 @ViewEntity({
+  materialized: true ,
   expression: (dataSource: DataSource) =>
     dataSource
       .createQueryBuilder()
       .select('registration.id', 'id')
-      .where('1 = 1')
       .from(RegistrationEntity, 'registration')
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
@@ -205,6 +206,7 @@ import { RegistrationEntity } from './registration.entity';
 export class RegistrationViewEntity {
   @ViewColumn()
   @PrimaryColumn()
+  @Index({unique: true})
   public id: number;
 
   @ViewColumn()
@@ -214,9 +216,11 @@ export class RegistrationViewEntity {
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
   @Column()
+  @Index()
   public programId: number;
 
   @ViewColumn()
+  @Index()
   public referenceId: string;
 
   @ViewColumn()

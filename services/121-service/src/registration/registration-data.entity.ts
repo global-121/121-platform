@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
@@ -69,6 +69,7 @@ export class RegistrationDataEntity extends Base121Entity {
   @Column({ nullable: true })
   public monitoringQuestionId: number;
 
+  @Index()
   @Column()
   public value: string;
 
