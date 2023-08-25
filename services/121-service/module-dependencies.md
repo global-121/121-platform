@@ -46,6 +46,7 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
+  PaymentsModule-->ProgramModule
   ExportMetricsModule-->TransactionsModule
   ExportMetricsModule-->IntersolveVisaModule
   ExportMetricsModule-->IntersolveVoucherModule

@@ -154,10 +154,10 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   }
 
   public fspHasPhysicalCard(): boolean {
-    if (!this.person || !this.person.fsp) {
+    if (!this.person || !this.person.financialServiceProvider) {
       return false;
     }
 
-    return this.physicalCardFsps.includes(this.person.fsp);
+    return this.physicalCardFsps.includes(this.person.financialServiceProvider);
   }
 }

@@ -15,6 +15,7 @@ import { CustomAttributeType } from '../../programs/dto/create-program-custom-at
 import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { ProgramEntity } from '../../programs/program.entity';
+import { ProgramService } from '../../programs/programs.service';
 import {
   BulkImportDto,
   BulkImportResult,
@@ -64,6 +65,7 @@ export class BulkImportService {
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
+    private readonly programService: ProgramService,
   ) {}
 
   public async importBulk(
@@ -321,9 +323,8 @@ export class BulkImportService {
     });
 
     // Save registration data in bulk for performance
-    const dynamicAttributeRelations = await this.getAllRelationProgram(
-      program.id,
-    );
+    const dynamicAttributeRelations =
+      await this.programService.getAllRelationProgram(program.id);
     let registrationDataArrayAllPa: RegistrationDataEntity[] = [];
     for (const [i, registration] of savedRegistrations.entries()) {
       const registrationDataArray = this.prepareRegistrationData(
@@ -370,59 +371,6 @@ export class BulkImportService {
       }
     }
     return false;
-  }
-
-  private async getAllRelationProgram(
-    programId: number,
-  ): Promise<RegistrationDataInfo[]> {
-    const relations: RegistrationDataInfo[] = [];
-    const programCustomAttributes =
-      await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
-      });
-    for (const attribute of programCustomAttributes) {
-      relations.push({
-        name: attribute.name,
-        type: attribute.type,
-        relation: {
-          programCustomAttributeId: attribute.id,
-        },
-      });
-    }
-
-    const programQuestions = await this.programQuestionRepository.find({
-      where: { program: { id: programId } },
-    });
-
-    for (const question of programQuestions) {
-      relations.push({
-        name: question.name,
-        type: question.answerType,
-        relation: {
-          programQuestionId: question.id,
-        },
-      });
-    }
-
-    const fspAttributes = await this.fspAttributeRepository.find({
-      relations: ['fsp', 'fsp.program'],
-    });
-    const programFspAttributes = fspAttributes.filter((a) =>
-      a.fsp.program.map((p) => p.id).includes(programId),
-    );
-
-    for (const attribute of programFspAttributes) {
-      relations.push({
-        name: attribute.name,
-        type: attribute.answerType,
-        relation: {
-          fspQuestionId: attribute.id,
-        },
-        fspId: attribute.fspId,
-      });
-    }
-
-    return relations;
   }
 
   private prepareRegistrationData(

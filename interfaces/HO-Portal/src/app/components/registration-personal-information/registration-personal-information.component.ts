@@ -143,7 +143,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       }
     }
 
-    if (!this.person.fsp) {
+    if (!this.person.financialServiceProvider) {
       return;
     }
 

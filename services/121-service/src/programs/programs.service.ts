@@ -6,6 +6,7 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import {
   Attribute,
   QuestionType,
@@ -617,5 +618,58 @@ export class ProgramService {
     });
 
     return [...customAttributes, ...programQuestions];
+  }
+
+  public async getAllRelationProgram(
+    programId: number,
+  ): Promise<RegistrationDataInfo[]> {
+    const relations: RegistrationDataInfo[] = [];
+    const programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
+    for (const attribute of programCustomAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.type,
+        relation: {
+          programCustomAttributeId: attribute.id,
+        },
+      });
+    }
+
+    const programQuestions = await this.programQuestionRepository.find({
+      where: { program: { id: programId } },
+    });
+
+    for (const question of programQuestions) {
+      relations.push({
+        name: question.name,
+        type: question.answerType,
+        relation: {
+          programQuestionId: question.id,
+        },
+      });
+    }
+
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp', 'fsp.program'],
+    });
+    const programFspAttributes = fspAttributes.filter((a) =>
+      a.fsp.program.map((p) => p.id).includes(programId),
+    );
+
+    for (const attribute of programFspAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.answerType,
+        relation: {
+          fspQuestionId: attribute.id,
+        },
+        fspId: attribute.fspId,
+      });
+    }
+
+    return relations;
   }
 }

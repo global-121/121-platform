@@ -9,6 +9,7 @@ import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -61,6 +62,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     VodacashModule,
     SafaricomModule,
     RegistrationsModule,
+    ProgramModule,
   ],
   providers: [
     PaymentsService,

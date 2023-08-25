@@ -255,8 +255,11 @@ export class RegistrationsController {
   @ApiQuery({ name: 'sortBy', required: false, type: 'string' })
   @ApiQuery({ name: 'select', required: false, type: 'string' })
   @Get('programs/:programId/registrations')
-  public findAll(@Paginate() query: PaginateQuery): Promise<any> {
-    return this.registrationsService.getPaginate(query);
+  public findAll(
+    @Paginate() query: PaginateQuery,
+    @Param('programId') programId: number,
+  ): Promise<any> {
+    return this.registrationsService.getPaginate(query, Number(programId));
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
@@ -264,18 +267,18 @@ export class RegistrationsController {
     summary: 'Get all registrations for program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
-  // @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
-  // @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
-  // @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
-  // @ApiQuery({ name: 'attributes', required: false, type: 'string' })
+  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
+  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
+  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
   @ApiQuery({ name: 'limit', required: false, type: 'number' })
   @ApiQuery({ name: 'page', required: false, type: 'number' })
   @ApiResponse({
     status: 201,
     description: 'Got all People Affected for program EXCLUDING personal data',
   })
-  @Get('programs/:programId/registrations/paginate')
+  @Get('programs/:programId/registrations/old')
   public async getPeopleAffected(
     @Param('programId') programId: number,
     @User('id') userId: number,

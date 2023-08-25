@@ -130,7 +130,7 @@ export class RecipientDetailsComponent implements OnInit {
       }
       const column = this.getColumn(key);
       const fsp = this.program.financialServiceProviders.find(
-        (f) => f.fsp === this.recipient.fsp,
+        (f) => f.fsp === this.recipient.financialServiceProvider,
       );
       const fspQuestion = fsp.questions.find((q) => q.name === key);
       const customAttribute = this.program.programCustomAttributes.find(

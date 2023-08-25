@@ -1034,7 +1034,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         ? `${person.paymentAmountMultiplier}×`
         : '',
       paymentsLeft: person.maxPayments
-        ? person.maxPayments - person.nrPayments
+        ? person.maxPayments - person.amountPaymentsReceived
         : null,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
@@ -1042,14 +1042,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               this.thisPhase,
             )
               ? `(${
-                  person.maxPayments - person.nrPayments
+                  person.maxPayments - person.amountPaymentsReceived
                 } ${this.translate.instant(
                   'page.program.program-people-affected.max-payments.left',
                 )})`
               : ''
           }`
         : '',
-      fsp: person.fsp,
+      fsp: person.financialServiceProvider,
       fspDisplayNamePortal: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       messages: person.lastMessageStatus
@@ -1068,10 +1068,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     };
 
     const lastPaymentInfo = {
-      lastPaymentNumber: person.payment,
-      lastPaymentAmount: person.transactionAmount,
-      lastPaymentStatus: person.transactionStatus,
-      lastPaymentErrorMessage: person.errorMessage,
+      lastPaymentNumber: person.lastTransactionPaymentNumber,
+      lastPaymentAmount: person.lastTransactionAmount,
+      lastPaymentStatus: person.lastTransactionStatus,
+      lastPaymentErrorMessage: person.lastTransactionErrorMessage,
     };
 
     if (this.canViewPaymentData) {

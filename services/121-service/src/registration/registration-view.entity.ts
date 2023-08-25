@@ -1,5 +1,8 @@
 import {
+  Column,
   DataSource,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryColumn,
   ViewColumn,
@@ -8,6 +11,7 @@ import {
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
@@ -26,6 +30,7 @@ import { RegistrationEntity } from './registration.entity';
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
+      .addSelect('registration.programId', 'programId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('registration.noteUpdated', 'noteUpdated')
@@ -204,6 +209,12 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public status: RegistrationStatusEnum;
+
+  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
+  @JoinColumn({ name: 'programId' })
+  public program: ProgramEntity;
+  @Column()
+  public programId: number;
 
   @ViewColumn()
   public referenceId: string;

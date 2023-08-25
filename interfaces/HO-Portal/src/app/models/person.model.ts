@@ -26,18 +26,18 @@ export class Person {
   status: RegistrationStatus;
   hasNote?: boolean;
   hasPhoneNumber?: boolean;
-  fsp?: string;
+  financialServiceProvider?: string;
   fspDisplayNamePortal?: string;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
   registrationProgramId: number;
-  payment?: number;
-  nrPayments?: number;
-  paymentDate?: string;
-  transactionAmount?: number;
-  transactionStatus?: string;
-  errorMessage?: string;
+  lastTransactionPaymentNumber?: number;
+  amountPaymentsReceived?: number;
+  lastTransactionCreated?: string;
+  lastTransactionAmount?: number;
+  lastTransactionStatus?: string;
+  lastTransactionErrorMessage?: string;
   lastMessageStatus?: string;
   lastMessageType?: string;
 }
