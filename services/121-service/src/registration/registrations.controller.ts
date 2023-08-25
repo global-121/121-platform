@@ -28,7 +28,13 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import {
+  Paginate,
+  Paginated,
+  PaginatedSwaggerDocs,
+  PaginateQuery,
+} from 'nestjs-paginate';
+import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
@@ -57,7 +63,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { RegistrationsService } from './registrations.service';
+import { paginateConfig, RegistrationsService } from './registrations.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -250,12 +256,8 @@ export class RegistrationsController {
   }
 
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'page', required: false, type: 'number' })
-  @ApiQuery({ name: 'limit', required: false, type: 'number' })
-  @ApiQuery({ name: 'sortBy', required: false, type: 'string' })
-  @ApiQuery({ name: 'select', required: false, type: 'string' })
-  @ApiQuery({ name: 'filter', required: false, type: 'string' })
   @Get('programs/:programId/registrations')
+  @PaginatedSwaggerDocs(RegistrationViewEntity, paginateConfig)
   public findAll(
     @Paginate() query: PaginateQuery,
     @Param('programId') programId: number,
