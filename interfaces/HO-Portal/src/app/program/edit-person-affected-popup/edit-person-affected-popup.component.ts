@@ -99,8 +99,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        this.canViewPersonalData,
-        this.canViewPaymentData,
         // TODO: Is this fine to be 'hardcoded'?
         1,
         1,
@@ -120,7 +118,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
 
-      const fspObject = this.fspList.find((f) => f.fsp === this.person?.financialServiceProvider);
+      const fspObject = this.fspList.find(
+        (f) => f.fsp === this.person?.financialServiceProvider,
+      );
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
           this.paTableAttributesInput,
@@ -176,7 +176,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
       if (
         value !== '' &&
-        (Number(value) === 0 || Number(value) <= this.person.amountPaymentsReceived)
+        (Number(value) === 0 ||
+          Number(value) <= this.person.amountPaymentsReceived)
       ) {
         this.showAttributeErrorAlert('too-low', attribute);
         return;

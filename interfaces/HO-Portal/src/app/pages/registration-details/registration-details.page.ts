@@ -61,6 +61,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private pubSub: PubSubService,
   ) {
+    console.log('canViewPaymentData: ', this.canViewPaymentData);
     if (!this.pubSubSubscription) {
       this.pubSubSubscription = this.pubSub.subscribe(
         PubSubEvent.dataRegistrationChanged,
@@ -117,8 +118,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     const person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        this.canViewPersonalData,
-        this.canViewPaymentData,
         // TODO: Is this fine to be 'hardcoded'?
         1,
         1,

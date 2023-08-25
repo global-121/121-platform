@@ -501,8 +501,6 @@ export class ProgramsServiceApiService {
 
   async getPeopleAffected(
     programId: number | string,
-    personalData: boolean,
-    paymentData: boolean,
     limit: number,
     page: number,
     referenceId?: string,
@@ -511,13 +509,9 @@ export class ProgramsServiceApiService {
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
-    if (personalData) {
-      params = params.append('registrationData', 'registrationData');
-    }
-    params = params.append('personalData', personalData);
-    params = params.append('paymentData', paymentData);
     params = params.append('limit', limit);
     params = params.append('page', page);
+    // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
       params = params.append('referenceId', referenceId);
     }
@@ -525,7 +519,7 @@ export class ProgramsServiceApiService {
       params = params.append('filterOnPayment', filterOnPayment);
     }
     if (attributes) {
-      params = params.append('attributes', attributes.join());
+      params = params.append('select', attributes.join());
     }
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
