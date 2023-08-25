@@ -168,7 +168,7 @@
           *ngIf="
             (!canUpdatePaData || !canUpdatePaFsp) &&
             fspList.length === programFspLength &&
-            person?.fsp
+            person?.financialServiceProvider
           "
           class="ion-margin-vertical"
         >
@@ -185,7 +185,7 @@
             canUpdatePaData &&
             canUpdatePaFsp &&
             fspList.length === programFspLength &&
-            person?.fsp
+            person?.financialServiceProvider
           "
           [fspList]="fspList"
           [label]="

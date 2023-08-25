@@ -240,6 +240,9 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public financialServiceProvider: FspName;
 
+  @ViewColumn()
+  public fspDisplayNamePortal: string;
+
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
   public registrationProgramId: number;

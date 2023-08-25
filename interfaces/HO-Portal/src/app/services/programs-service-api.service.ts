@@ -539,9 +539,6 @@ export class ProgramsServiceApiService {
       false,
       params,
     );
-    console.log('data: ', data);
-    console.log('meta: ', meta);
-    console.log('links: ', links);
     return { data, meta, links };
   }
 
