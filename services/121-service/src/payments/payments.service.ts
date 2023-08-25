@@ -25,6 +25,7 @@ import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
+import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -57,6 +58,7 @@ export class PaymentsService {
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
+    private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly bulkImportService: BulkImportService,
   ) {}
 
@@ -195,6 +197,7 @@ export class PaymentsService {
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
     const safaricomPaPayment = [];
+    const commercialBankEthiopiaPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
@@ -216,6 +219,8 @@ export class PaymentsService {
         vodacashPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.safaricom) {
         safaricomPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.commercialBankEthiopia) {
+        commercialBankEthiopiaPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -232,6 +237,7 @@ export class PaymentsService {
       ukrPoshtaPaPayment,
       vodacashPaPayment,
       safaricomPaPayment,
+      commercialBankEthiopiaPaPayment,
     };
   }
 
@@ -316,6 +322,14 @@ export class PaymentsService {
     if (paLists.vodacashPaPayment.length) {
       await this.vodacashService.sendPayment(
         paLists.vodacashPaPayment,
+        programId,
+        payment,
+      );
+    }
+
+    if (paLists.commercialBankEthiopiaPaPayment.length) {
+      await this.commercialBankEthiopiaService.sendPayment(
+        paLists.commercialBankEthiopiaPaPayment,
         programId,
         payment,
       );

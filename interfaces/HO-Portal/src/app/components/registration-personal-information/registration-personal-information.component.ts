@@ -10,6 +10,7 @@ import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { PaTableAttribute, ProgramPhase } from '../../models/program.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
+import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
@@ -60,6 +61,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     private authService: AuthService,
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
+    private enumService: EnumService,
   ) {
     this.locale = environment.defaultLocale;
   }
@@ -107,8 +109,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       },
       {
         label: this.getLabel('primaryLanguage'),
-        value: this.translate.instant(
-          `page.program.program-people-affected.language.${this.person.preferredLanguage}`,
+        value: this.enumService.getEnumLabel(
+          'preferredLanguage',
+          this.person.preferredLanguage,
         ),
       },
       {

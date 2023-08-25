@@ -8,6 +8,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { LatestActionService } from '../../services/latest-action.service';
 import { actionResult } from '../../shared/action-result';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
+import { DatetimeProps } from '../../shared/datetime-picker/datetime-picker.component';
 
 @Component({
   selector: 'app-export-list',
@@ -39,6 +40,7 @@ export class ExportListComponent implements OnChanges {
   public subHeader: string;
 
   public duplicateAttributesProps: DuplicateAttributesProps;
+  public datetimeProps: DatetimeProps;
 
   constructor(
     private authService: AuthService,
@@ -82,6 +84,12 @@ export class ExportListComponent implements OnChanges {
         timestamp: actionTimestamp,
       };
     }
+    if (this.exportType === ExportType.paDataChanges) {
+      this.datetimeProps = {
+        dateFrom: null,
+        dateTo: null,
+      };
+    }
   }
 
   private async updateHeaderAndMessage() {
@@ -94,10 +102,26 @@ export class ExportListComponent implements OnChanges {
 
   public async getExportList() {
     this.isInProgress = true;
+
+    const dateFrom = this.datetimeProps?.dateFrom
+      ? new Date(this.datetimeProps?.dateFrom).toISOString()
+      : null;
+    const dateTo = this.datetimeProps?.dateTo
+      ? new Date(this.datetimeProps?.dateTo)
+      : null;
+    let dateToAdjusted: string;
+    if (dateTo) {
+      dateToAdjusted = new Date(
+        dateTo.setDate(dateTo.getDate() + 1),
+      ).toISOString(); // Add one day to include the selected date as the time is otherwise set to 00:00:00
+    }
+
     this.programsService
       .exportList(
         Number(this.programId),
         this.exportType,
+        dateFrom,
+        dateToAdjusted,
         Number(this.minPayment),
         Number(this.maxPayment),
       )
