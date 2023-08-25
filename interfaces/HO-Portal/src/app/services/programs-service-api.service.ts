@@ -513,7 +513,7 @@ export class ProgramsServiceApiService {
     params = params.append('page', page);
     // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
-      params = params.append('referenceId', referenceId);
+      params = params.append('filter.referenceId', referenceId);
     }
     if (filterOnPayment) {
       params = params.append('filterOnPayment', filterOnPayment);

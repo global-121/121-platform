@@ -28,8 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
@@ -56,6 +55,7 @@ import {
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
 
@@ -254,11 +254,12 @@ export class RegistrationsController {
   @ApiQuery({ name: 'limit', required: false, type: 'number' })
   @ApiQuery({ name: 'sortBy', required: false, type: 'string' })
   @ApiQuery({ name: 'select', required: false, type: 'string' })
+  @ApiQuery({ name: 'filter', required: false, type: 'string' })
   @Get('programs/:programId/registrations')
   public findAll(
     @Paginate() query: PaginateQuery,
     @Param('programId') programId: number,
-  ): Promise<any> {
+  ): Promise<Paginated<RegistrationViewEntity>> {
     return this.registrationsService.getPaginate(query, Number(programId));
   }
 
