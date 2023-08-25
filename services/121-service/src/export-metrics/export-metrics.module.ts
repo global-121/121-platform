@@ -11,6 +11,7 @@ import { TransactionsModule } from '../payments/transactions/transactions.module
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramModule } from '../programs/programs.module';
+import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { UserModule } from '../user/user.module';
 import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
@@ -44,6 +45,7 @@ import { ExportMetricsService } from './export-metrics.service';
     TransactionsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
+    RegistrationChangeLogModule,
   ],
   providers: [ExportMetricsService, RegistrationDataQueryService],
   controllers: [ExportMetricsController],

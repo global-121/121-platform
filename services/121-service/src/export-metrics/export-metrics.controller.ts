@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -20,7 +22,10 @@ import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { Admin } from './../guards/admin.decorator';
-import { ExportDetailsDto } from './dto/export-details.dto';
+import {
+  ExportDetailsQueryParamsDto,
+  ExportType,
+} from './dto/export-details.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
@@ -36,29 +41,41 @@ export class ExportMetricsController {
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
-    summary: 'Get an exported list of people',
+    summary: 'Retrieve data for export',
   })
   @ApiResponse({
-    status: 201,
-    description: 'List of people exported',
+    status: 200,
+    description: 'Retrieved data for export',
   })
-  @ApiParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @Post('programs/:programId/export-metrics/export-list')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'exportType', required: true, type: 'string' })
+  @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
+  @ApiQuery({ name: 'toDate', required: false, type: 'string' })
+  @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
+  @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
+  @Get('programs/:programId/export-metrics/export-list/:exportType')
   public async getExportList(
-    @Body() data: ExportDetailsDto,
-    @Param('programId') programId,
+    @Param('programId') programId: number,
+    @Param('exportType') exportType: ExportType,
+    @Query() queryParams: ExportDetailsQueryParamsDto,
     @User('id') userId: number,
   ): Promise<any> {
+    if (
+      queryParams.toDate &&
+      queryParams.fromDate &&
+      queryParams.toDate <= queryParams.fromDate
+    ) {
+      const errors = 'toDate must be greater than fromDate';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     return await this.exportMetricsService.getExportList(
       Number(programId),
-      data.type,
+      exportType as ExportType,
       userId,
-      data.minPayment,
-      data.maxPayment,
+      queryParams.minPayment,
+      queryParams.maxPayment,
+      queryParams.fromDate,
+      queryParams.toDate,
     );
   }
 

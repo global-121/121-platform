@@ -407,18 +407,30 @@ export class ProgramsServiceApiService {
   exportList(
     programId: number,
     type: ExportType,
+    fromDate?: string,
+    toDate?: string,
     minPayment?: number,
     maxPayment?: number,
   ): Promise<any> {
+    let params = new HttpParams();
+    if (fromDate) {
+      params = params.append('fromDate', fromDate);
+    }
+    if (toDate) {
+      params = params.append('toDate', toDate);
+    }
+    if (minPayment) {
+      params = params.append('minPayment', minPayment);
+    }
+    if (maxPayment) {
+      params = params.append('maxPayment', maxPayment);
+    }
     return this.apiService
-      .post(
+      .get(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/export-list`,
-        {
-          type,
-          ...(minPayment && { minPayment }),
-          ...(maxPayment && { maxPayment }),
-        },
+        `/programs/${programId}/export-metrics/export-list/${type}`,
+        false,
+        params,
       )
       .then((response) => {
         if (response.data && response.data.length > 0) {

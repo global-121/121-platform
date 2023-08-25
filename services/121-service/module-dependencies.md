@@ -45,11 +45,14 @@ graph LR
   VodacashModule-->TransactionsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
+  PaymentsModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   ExportMetricsModule-->TransactionsModule
   ExportMetricsModule-->IntersolveVisaModule
   ExportMetricsModule-->IntersolveVoucherModule
+  ExportMetricsModule-->RegistrationChangeLogModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

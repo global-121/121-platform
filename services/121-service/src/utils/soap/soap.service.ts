@@ -140,4 +140,48 @@ export class SoapService {
     }
     return xml;
   }
+
+  async postCBERequest(payload: any, soapAction: string): Promise<any> {
+    try {
+      const soapRequestXml = convert.js2xml(payload, {
+        compact: false,
+        spaces: 4,
+      });
+
+      // Configure and send the SOAP request
+      const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+      const headers = {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        soapAction: soapAction,
+      };
+
+      const { response } = await soapRequest({
+        headers: headers,
+        url: soapUrl,
+        xml: soapRequestXml,
+        timeout: 150000,
+      });
+
+      // Parse the SOAP response if needed
+      const parsedResponse = convert.xml2js(response.body, { compact: true });
+
+      if (
+        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:RMTFundtransferResponse'
+        ];
+      } else if (
+        parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ]
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ];
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }
