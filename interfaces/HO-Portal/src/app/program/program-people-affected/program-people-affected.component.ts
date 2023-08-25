@@ -359,7 +359,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private errorHandlerService: ErrorHandlerService,
   ) {
     this.page.currentPage = 0;
-    this.page.itemsPerPage = 7;
+    this.page.itemsPerPage = 12;
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -591,8 +591,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   async initComponent() {
-    this.setPage({ offset: 0 });
-
     this.isLoading = true;
 
     this.columns = [];
@@ -600,6 +598,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.loadProgram();
 
     await this.loadPermissions();
+
+    this.setPage({ offset: 0 });
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
@@ -610,7 +610,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.loadColumns();
 
-    await this.refreshData(true);
+    // await this.refreshData(true);
 
     await this.updateBulkActions();
 
@@ -1865,13 +1865,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     limit?: number;
     offset?: number;
   }) {
+    this.isLoading = true;
     this.page.currentPage = pageInfo.offset;
+
     const { data, meta } = await this.programsService.getPeopleAffected(
       this.programId,
-      // TODO: Fix this with permission
-      true,
-      // TODO: Fix this with permission
-      true,
+      this.canViewPersonalData,
+      this.canViewPaymentData &&
+        [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
       this.page.itemsPerPage,
       this.page.currentPage + 1,
       null,
@@ -1880,5 +1881,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.visiblePeopleAffected = this.createTableData(data);
     this.page.totalItems = meta.totalItems;
     this.page.currentPage = meta.currentPage - 1;
+    this.isLoading = false;
   }
 }
