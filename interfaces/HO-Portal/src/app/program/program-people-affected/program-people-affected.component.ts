@@ -1328,15 +1328,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ) {
     let registrationsWithPayment;
     if (payment) {
-      registrationsWithPayment = (
-        await this.programsService.getPeopleAffected(
-          this.programId,
-          false,
-          false,
-          null,
-          payment,
-        )
-      ).data.map((r) => r.referenceId);
+      // registrationsWithPayment = (
+      //   await this.programsService.getPeopleAffected(
+      //     this.programId,
+      //     null,
+      //     payment,
+      //   )
+      // ).data.map((r) => r.referenceId);
     }
     return people.map((person) =>
       this.bulkActionService.updateCheckbox(
@@ -1870,9 +1868,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     const { data, meta } = await this.programsService.getPeopleAffected(
       this.programId,
-      this.canViewPersonalData,
-      this.canViewPaymentData &&
-        [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
       this.page.itemsPerPage,
       this.page.currentPage + 1,
       null,
