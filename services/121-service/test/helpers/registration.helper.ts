@@ -39,12 +39,18 @@ export function getRegistrations(
   programId: number,
   attributes: string[],
   accessToken: string,
+  page?: number,
+  limit?: number,
 ): Promise<request.Response> {
-  const queryParams = {
-    personalData: true,
-  };
+  const queryParams = {};
   if (attributes) {
-    queryParams['attributes'] = attributes.join(',');
+    queryParams['select'] = attributes.join(',');
+  }
+  if (page) {
+    queryParams['page'] = String(page);
+  }
+  if (limit) {
+    queryParams['limit'] = String(limit);
   }
   return getServer()
     .get(`/programs/${programId}/registrations`)
