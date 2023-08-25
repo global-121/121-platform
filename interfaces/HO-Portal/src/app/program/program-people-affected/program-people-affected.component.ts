@@ -896,6 +896,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async loadData(refresh = false) {
     console.log('refresh: ', refresh);
+    // TODO: Are these attributes needed?
     const attributeNames = (
       await this.programsService.getPaTableAttributes(
         this.programId,
@@ -906,30 +907,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       attributeNames.push(nameElem);
     }
 
-    // const { data, meta, links } = await this.programsService.getPeopleAffected(
-    //   this.programId,
-    //   this.canViewPersonalData,
-    //   this.canViewPaymentData &&
-    //     [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
-    //   this.page.itemsPerPage,
-    //   this.page.currentPage,
-    //   null,
-    //   null,
-    //   attributeNames,
-    // );
-    // this.allPeopleData = data;
-    // this.page = meta;
-    // console.log('links: ', links);
-
-    // this.allPeopleAffected = this.createTableData(this.allPeopleData);
+    this.setPage({ offset: this.page.currentPage });
 
     // if (refresh) {
     //   this.setDefaultTableFilterOptions();
     //   this.filterPeopleAffectedByPhase();
     //   return;
     // }
-
-    // this.updateVisiblePeopleAffectedByFilter();
   }
 
   // private filterPeopleAffectedByPhase() {
@@ -1860,10 +1844,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async setPage(pageInfo: {
+    offset: number;
     count?: number;
     pageSize?: number;
     limit?: number;
-    offset?: number;
   }) {
     this.isLoading = true;
     this.page.currentPage = pageInfo.offset;
