@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.97.0...master)
 
+### Changed
+
+- Upgrade Node.js version of 121-service to v20
+
+
 ---
 
 ## [1.97.0](https://github.com/global-121/121-platform/compare/v1.97.0...v1.96.0) - 2023-08-24
