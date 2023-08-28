@@ -66,12 +66,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  changePassword(newPassword: string): Promise<null> {
+  changePassword(
+    username: string,
+    password: string,
+    newPassword: string,
+  ): Promise<null> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/user/change-password',
       {
-        password: newPassword,
+        username,
+        password,
+        newPassword,
       },
     );
   }
