@@ -1862,6 +1862,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.visiblePeopleAffected = this.createTableData(data);
     this.page.totalItems = meta.totalItems;
     this.page.currentPage = meta.currentPage - 1;
+
+    this.updateProxyScrollbarSize();
     this.isLoading = false;
   }
 }
