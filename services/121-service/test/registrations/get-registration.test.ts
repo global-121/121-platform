@@ -29,7 +29,7 @@ describe('Load PA table', () => {
 
   const attribute1 = 'whatsappPhoneNumber';
   const attribute2 = 'addressCity';
-  const attribute3 = 'referenceId'
+  const attribute3 = 'referenceId';
 
   const exepectedAttributes = [
     'id',
@@ -43,29 +43,6 @@ describe('Load PA table', () => {
     'noteUpdated',
     'financialServiceProvider',
     'registrationProgramId',
-    'maxPayments',
-    'lastTransactionCreated',
-    'lastTransactionPaymentNumber',
-    'lastTransactionStatus',
-    'lastTransactionAmount',
-    'lastTransactionErrorMessage',
-    'lastTransactionCustomData',
-    'amountPaymentsReceived',
-    'importedDate',
-    'invitedDate',
-    'startedRegistrationDate',
-    'registeredWhileNoLongerEligibleDate',
-    'registeredDate',
-    'rejectionDate',
-    'noLongerEligibleDate',
-    'validationDate',
-    'inclusionDate',
-    'inclusionEndDate',
-    'selectedForValidationDate',
-    'deleteDate',
-    'completedDate',
-    'lastMessageStatus',
-    'lastMessageType',
   ];
 
   describe('getting registration using paginate', () => {
@@ -87,9 +64,10 @@ describe('Load PA table', () => {
     it('should return all dynamic attributes if param not supplied', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
-      const expectedValueObject = { ...registration }
-      expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName
-      delete expectedValueObject.fspName
+      const expectedValueObject = { ...registration };
+      expectedValueObject['financialServiceProvider'] =
+        expectedValueObject.fspName;
+      delete expectedValueObject.fspName;
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
@@ -113,7 +91,6 @@ describe('Load PA table', () => {
       // Arrange
       const requestedDynamicAttributes = [attribute1];
 
-
       // Act
       const getRegistrationsResponse = await getRegistrations(
         programId,
@@ -131,14 +108,14 @@ describe('Load PA table', () => {
     it('Should return specified amount of PA per page', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
-      const programId2 = 2
+      const programId2 = 2;
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
         programId2,
         requestedDynamicAttributes,
         accessToken,
-        );
+      );
       const data = getRegistrationsResponse.body.data;
       // Assert
       expect(data.length).toBe(0);
@@ -146,17 +123,19 @@ describe('Load PA table', () => {
 
     it('should be able to specify page attributes', async () => {
       // Arrange
-      const registration1 = { ...registration }
-      const registration2 = { ...registration }
+      const registration1 = { ...registration };
+      const registration2 = { ...registration };
       registration2.referenceId = '63e62864557597e0e';
       registration2.firstName = 'Anna';
       const requestedDynamicAttributes = null;
-      const expectedValueObject1 = { ...registration1 }
-      expectedValueObject1['financialServiceProvider'] = expectedValueObject1.fspName
-      delete expectedValueObject1.fspName
-      const expectedValueObject2 = { ...registration2 }
-      expectedValueObject2['financialServiceProvider'] = expectedValueObject2.fspName
-      delete expectedValueObject2.fspName
+      const expectedValueObject1 = { ...registration1 };
+      expectedValueObject1['financialServiceProvider'] =
+        expectedValueObject1.fspName;
+      delete expectedValueObject1.fspName;
+      const expectedValueObject2 = { ...registration2 };
+      expectedValueObject2['financialServiceProvider'] =
+        expectedValueObject2.fspName;
+      delete expectedValueObject2.fspName;
       await importRegistrations(programId, [registration2], accessToken);
 
       // Act
@@ -165,7 +144,7 @@ describe('Load PA table', () => {
         requestedDynamicAttributes,
         accessToken,
         1,
-        1
+        1,
       );
       const data1 = getRegistrationsResponse1.body.data;
       const meta1 = getRegistrationsResponse1.body.meta;
@@ -174,18 +153,17 @@ describe('Load PA table', () => {
         requestedDynamicAttributes,
         accessToken,
         2,
-        1
+        1,
       );
       const data2 = getRegistrationsResponse2.body.data;
       const meta2 = getRegistrationsResponse2.body.meta;
-
 
       const getRegistrationsResponseAll = await getRegistrations(
         programId,
         requestedDynamicAttributes,
         accessToken,
         1,
-        2
+        2,
       );
       const dataAll = getRegistrationsResponseAll.body.data;
       const metaAll = getRegistrationsResponseAll.body.meta;

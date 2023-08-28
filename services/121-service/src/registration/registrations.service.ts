@@ -84,28 +84,6 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     'financialServiceProvider',
     'registrationProgramId',
     'maxPayments',
-    'lastTransactionCreated',
-    'lastTransactionPaymentNumber',
-    'lastTransactionStatus',
-    'lastTransactionAmount',
-    'lastTransactionErrorMessage',
-    'lastTransactionCustomData',
-    'amountPaymentsReceived',
-    'importedDate',
-    'invitedDate',
-    'startedRegistrationDate',
-    'registeredWhileNoLongerEligibleDate',
-    'registeredDate',
-    'rejectionDate',
-    'noLongerEligibleDate',
-    'validationDate',
-    'inclusionDate',
-    'inclusionEndDate',
-    'selectedForValidationDate',
-    'deleteDate',
-    'completedDate',
-    'lastMessageStatus',
-    'lastMessageType',
   ],
   sortableColumns: [
     'id',
@@ -120,28 +98,6 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     'financialServiceProvider',
     'registrationProgramId',
     'maxPayments',
-    'lastTransactionCreated',
-    'lastTransactionPaymentNumber',
-    'lastTransactionStatus',
-    'lastTransactionAmount',
-    'lastTransactionErrorMessage',
-    'lastTransactionCustomData',
-    'amountPaymentsReceived',
-    'importedDate',
-    'invitedDate',
-    'startedRegistrationDate',
-    'registeredWhileNoLongerEligibleDate',
-    'registeredDate',
-    'rejectionDate',
-    'noLongerEligibleDate',
-    'validationDate',
-    'inclusionDate',
-    'inclusionEndDate',
-    'selectedForValidationDate',
-    'deleteDate',
-    'completedDate',
-    'lastMessageStatus',
-    'lastMessageType',
   ],
   filterableColumns: {
     referenceId: true,
@@ -792,12 +748,13 @@ export class RegistrationsService {
     const queryBuilder = this.registrationViewRepository
       .createQueryBuilder('registration')
       .where('"programId" = :programId', { programId: programId });
-
+    console.time('Paginate query');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfig,
     );
+    console.timeEnd('Paginate query');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelations =
