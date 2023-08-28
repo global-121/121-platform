@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { from } from 'rxjs';
 import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
@@ -55,30 +54,26 @@ export class UserPage implements OnInit {
       return;
     }
 
-    from(
-      this.programsService.changePassword(
-        this.userName,
-        this.password,
-        this.newPassword,
-      ),
-    ).subscribe((val: any) => {
-      if (typeof val === 'string' && val.includes('Not authorized')) {
-        this.showPassCheckFail = true;
-        this.passwordChanged = true;
-      } else if (val) {
-        this.errorStatusCode = 0;
-        this.showPassCheckFail = false;
-        this.passwordChanged = true;
-        // navigate to home
+    this.programsService
+      .changePassword(this.userName, this.password, this.newPassword)
+      .then((val: any) => {
+        if (typeof val === 'string' && val.includes('Not authorized')) {
+          this.showPassCheckFail = true;
+          this.passwordChanged = true;
+        } else if (val) {
+          this.errorStatusCode = 0;
+          this.showPassCheckFail = false;
+          this.passwordChanged = true;
+          // navigate to home
+          window.setTimeout(() => {
+            this.router.navigate(['/', AppRoutes.home]);
+          }, 3000);
+        }
         window.setTimeout(() => {
-          this.router.navigate(['/', AppRoutes.home]);
+          this.passwordChanged = false;
         }, 3000);
-      }
-      window.setTimeout(() => {
-        this.passwordChanged = false;
-      }, 3000);
-    });
-    this.newPasswordForm.resetForm();
+        this.newPasswordForm.resetForm();
+      });
   }
 
   public checkNewPassword() {
