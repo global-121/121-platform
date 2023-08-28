@@ -31,7 +31,7 @@ describe('Load PA table', () => {
   const attribute2 = 'addressCity';
   const attribute3 = 'referenceId';
 
-  const exepectedAttributes = [
+  const expectedAttributes = [
     'id',
     'status',
     'referenceId',
@@ -81,7 +81,7 @@ describe('Load PA table', () => {
       for (const [key, value] of Object.entries(expectedValueObject)) {
         expect(data[0][key]).toBe(value);
       }
-      for (const attribute of exepectedAttributes) {
+      for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
       expect(meta.totalItems).toBe(1);
@@ -174,7 +174,7 @@ describe('Load PA table', () => {
       for (const [key, value] of Object.entries(expectedValueObject1)) {
         expect(data1[0][key]).toBe(value);
       }
-      for (const attribute of exepectedAttributes) {
+      for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
       }
       expect(meta1.currentPage).toBe(1);
@@ -186,7 +186,7 @@ describe('Load PA table', () => {
       for (const [key, value] of Object.entries(expectedValueObject2)) {
         expect(data2[0][key]).toBe(value);
       }
-      for (const attribute of exepectedAttributes) {
+      for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
       }
       expect(meta2.currentPage).toBe(2);
