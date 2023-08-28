@@ -60,7 +60,7 @@ describe('Update attribute of PA', () => {
       programId,
       accessToken,
     );
-    const registration = result.body[0];
+    const registration = result.body.data[0];
     expect(registration.phoneNumber).toBe(updatePhoneNumber);
   });
 
@@ -114,7 +114,7 @@ describe('Update attribute of PA', () => {
       programId,
       accessToken,
     );
-    const registration = result.body[0];
+    const registration = result.body.data[0];
     expect(registration.phoneNumber).toBe(updatePhoneNumber);
     expect(registration.firstName).toBe(dataUpdateSucces.firstName);
     expect(registration.maxPayments).toBe(dataUpdateSucces.maxPayments);
@@ -150,7 +150,7 @@ describe('Update attribute of PA', () => {
       programId,
       accessToken,
     );
-    const registration = result.body[0];
+    const registration = result.body.data[0];
 
     // Is old data still the same?
     expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
