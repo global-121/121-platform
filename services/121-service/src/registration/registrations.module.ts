@@ -27,6 +27,7 @@ import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.enti
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from './registration-data.entity';
+import { RegistrationMaterializedViewEntity } from './registration-materialized-view.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -57,8 +58,8 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
-
       RegistrationViewEntity,
+      RegistrationMaterializedViewEntity,
     ]),
     UserModule,
     HttpModule,

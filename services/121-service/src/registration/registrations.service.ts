@@ -794,11 +794,13 @@ export class RegistrationsService {
       .createQueryBuilder('registration')
       .where('"programId" = :programId', { programId: programId });
 
+    console.time('query');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfig,
     );
+    console.timeEnd('query');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelations =
