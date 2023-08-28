@@ -211,7 +211,7 @@ jobs:
 
       - name: Run integration tests with Cypress
         # See documentation: https://github.com/cypress-io/github-action/#readme
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           browser: chrome
           config: 'video=false,screenshotOnRunFailure=false,defaultCommandTimeout=30000,requestTimeout=30000'
