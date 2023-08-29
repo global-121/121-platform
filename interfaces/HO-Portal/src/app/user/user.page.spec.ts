@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +16,11 @@ describe('UserPage', () => {
     TestBed.configureTestingModule({
       declarations: [UserPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [FormsModule, TranslateModule.forRoot()],
+      imports: [
+        FormsModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+      ],
       providers: [provideMagicalMock(AuthService)],
     }).compileComponents();
   }));
