@@ -50,13 +50,11 @@
           <!-- Other tabs -->
           <ion-row *ngIf="item.type !== 'payment'">
             <div class="ion-padding-horizontal">
-              <div style="height: 100%; display: flex; align-items: center">
-                <ion-icon
-                  [name]="getIconName(item.type)"
-                  size="large"
-                  [attr.aria-hidden]="true"
-                ></ion-icon>
-              </div>
+              <ion-icon
+                [name]="getIconName(item.type)"
+                size="large"
+                [attr.aria-hidden]="true"
+              ></ion-icon>
             </div>
             <ion-col>
               <ion-row class="ion-justify-content-between">

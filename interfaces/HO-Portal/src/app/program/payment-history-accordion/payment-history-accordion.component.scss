@@ -1,43 +1,13 @@
-.full-width {
-  width: 100%;
-}
-
 .ion-accordion-toggle-icon {
   --ionicon-stroke-width: 1px;
   color: var(--ion-color-accordion-text);
 }
 
-.accordion-label {
-  height: 40px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.accordion-label-two {
-  min-height: 20px;
-  margin-left: 60px;
-}
-
-.money-icon {
-  width: 40px;
-  height: 40px;
-}
-
-.transfer {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 30px;
-  color: var(--ion-color-accordion-text);
-  margin-left: 18.5px;
-}
-
 ion-chip {
   height: 20px;
   font-size: 14px;
-  margin-left: 16px;
   opacity: 1;
+  margin: 0;
 
   &.success {
     --background: var(--ion-color-status-successful);
@@ -59,22 +29,14 @@ ion-chip {
   font-weight: 600;
   font-size: 12px;
   color: var(--ion-color-purple-button);
-  margin-left: 18px;
   --border-width: 1px;
+  padding-left: 10px;
 }
 
 .open-voucher-button {
   font-size: 12px;
   text-decoration-line: underline;
   color: var(--ion-color-purple-button);
-  margin-left: 16px;
-}
-
-.date {
-  font-weight: 400;
-  font-size: 12px;
-  text-decoration-line: underline;
-  color: var(--ion-color-accordion-text);
 }
 
 .accordion-text {
@@ -90,4 +52,12 @@ ion-chip {
 
 ion-item::part(native) {
   box-sizing: content-box;
+}
+
+.padding {
+  padding: 5px;
+}
+
+.min-height {
+  min-height: 40px;
 }
