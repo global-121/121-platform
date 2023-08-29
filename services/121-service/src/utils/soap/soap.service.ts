@@ -149,7 +149,7 @@ export class SoapService {
         spaces: 4,
       });
 
-      //  Configure and send the SOAP request
+      // Configure and send the SOAP request
       const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
       const headers = {
         'Content-Type': 'text/xml;charset=UTF-8',
