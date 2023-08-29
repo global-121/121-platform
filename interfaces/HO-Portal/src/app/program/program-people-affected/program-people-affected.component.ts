@@ -24,7 +24,6 @@ import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
-  PA_STATUS_ORDER,
   Person,
   PersonRow,
   PersonTableColumn,
@@ -35,12 +34,7 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
-import {
-  TableFilterMultipleChoiceOption,
-  TableFilterType,
-} from 'src/app/models/table-filter.model';
-import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
-import { Transaction } from 'src/app/models/transaction.model';
+import { TableFilterType } from 'src/app/models/table-filter.model';
 import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -109,7 +103,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
-  // private phaseSpecificPeopleAffected: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
@@ -313,7 +306,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private pubSubSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
-  private PAYMENTS_LEFT_ORDER = [0, 1, 2, 3, -1, -2];
   public tableFilters = [
     {
       prop: 'paymentsLeft',
@@ -342,7 +334,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private messageColumnStatus = MessageStatusMapping;
 
-  page = new PaginationMetadata();
+  public pageMetaData = new PaginationMetadata();
 
   constructor(
     private authService: AuthService,
@@ -360,8 +352,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
   ) {
-    this.page.currentPage = 0;
-    this.page.itemsPerPage = 12;
+    this.pageMetaData.currentPage = 0;
+    this.pageMetaData.itemsPerPage = 12;
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -601,8 +593,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.loadPermissions();
 
-    this.setPage({ offset: 0 });
-
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
@@ -612,7 +602,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.loadColumns();
 
-    // await this.refreshData(true);
+    await this.refreshData();
 
     await this.updateBulkActions();
 
@@ -644,9 +634,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isCompleted.emit(true);
   }
 
-  private async refreshData(refresh = false) {
+  private async refreshData() {
     this.isLoading = true;
-    await this.loadData(refresh);
+    await this.loadData();
     await this.resetBulkAction();
     this.updateProxyScrollbarSize();
     this.isLoading = false;
@@ -894,35 +884,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return enabledActions.length > 0;
   }
 
-  private async loadData(refresh = false) {
-    console.log('refresh: ', refresh);
-    // TODO: Are these attributes needed?
-    const attributeNames = (
-      await this.programsService.getPaTableAttributes(
-        this.programId,
-        this.thisPhase,
-      )
-    ).map((c) => c.name);
-    for (const nameElem of this.program.fullnameNamingConvention) {
-      attributeNames.push(nameElem);
-    }
-
-    this.setPage({ offset: this.page.currentPage });
-
-    // if (refresh) {
-    //   this.setDefaultTableFilterOptions();
-    //   this.filterPeopleAffectedByPhase();
-    //   return;
-    // }
+  private async loadData() {
+    // TODO: How do we get people per phase now..
+    this.setPage({ offset: this.pageMetaData.currentPage });
   }
-
-  // private filterPeopleAffectedByPhase() {
-  //   this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-  //     this.tableFilterState.paStatus.default.includes(pa.status),
-  //   );
-  //   this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-  //   this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-  // }
 
   private createTableData(source: Person[]): PersonRow[] {
     if (!source || source.length === 0) {
@@ -1154,25 +1119,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
-  public enableMessageSentIcon(transaction: Transaction): boolean {
-    return (
-      transaction.customData &&
-      [
-        IntersolvePayoutStatus.initialMessage,
-        IntersolvePayoutStatus.voucherSent,
-      ].includes(transaction.customData.IntersolvePayoutStatus)
-    );
-  }
-
-  public enableMoneySentIconTable(transaction: Transaction): boolean {
-    return (
-      (!transaction.customData.IntersolvePayoutStatus ||
-        transaction.customData.IntersolvePayoutStatus ===
-          IntersolvePayoutStatus.voucherSent) &&
-      transaction.status === StatusEnum.success
-    );
-  }
-
   public hasVoucherSupport(fsp: string): boolean {
     const voucherFsps = [
       'Intersolve-voucher-paper',
@@ -1313,15 +1259,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     payment?: number,
   ) {
     let registrationsWithPayment;
-    if (payment) {
-      // registrationsWithPayment = (
-      //   await this.programsService.getPeopleAffected(
-      //     this.programId,
-      //     null,
-      //     payment,
-      //   )
-      // ).data.map((r) => r.referenceId);
-    }
+    // if (payment) {
+    // registrationsWithPayment = (
+    //   await this.programsService.getPeopleAffected(
+    //     this.programId,
+    //     null,
+    //     payment,
+    //   )
+    // ).data.map((r) => r.referenceId);
+    // }
     return people.map((person) =>
       this.bulkActionService.updateCheckbox(
         action,
@@ -1544,106 +1490,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
   }
 
-  // private setDefaultTableFilterOptions() {
-  //   // text
-  //   this.filterRowsVisibleQuery = '';
-  //   this.tableFilterState.text = '';
-  //   // pa status
-  //   const paStatusDefaults = {
-  //     [ProgramPhase.registrationValidation]: [
-  //       RegistrationStatus.imported,
-  //       RegistrationStatus.invited,
-  //       RegistrationStatus.startedRegistration,
-  //       RegistrationStatus.selectedForValidation,
-  //       RegistrationStatus.registered,
-  //       RegistrationStatus.noLongerEligible,
-  //       RegistrationStatus.registeredWhileNoLongerEligible,
-  //     ],
-  //     [ProgramPhase.inclusion]: [
-  //       RegistrationStatus.validated,
-  //       RegistrationStatus.registered,
-  //       RegistrationStatus.selectedForValidation,
-  //       RegistrationStatus.rejected,
-  //       RegistrationStatus.inclusionEnded,
-  //     ],
-  //     [ProgramPhase.payment]: [
-  //       RegistrationStatus.included,
-  //       RegistrationStatus.completed,
-  //     ],
-  //   };
-  //   this.tableFilterState.paStatus.default = paStatusDefaults[this.thisPhase];
-  //   this.tableFilterState.paStatus.visible =
-  //     this.setTableFilterVisibleOptions('paStatus');
-  //   this.tableFilterState.paStatus.selected = [
-  //     ...this.tableFilterState.paStatus.default,
-  //   ];
-
-  //   // payments left
-  //   this.tableFilterState.paymentsLeft.default = this.PAYMENTS_LEFT_ORDER;
-  //   this.tableFilterState.paymentsLeft.visible =
-  //     this.setTableFilterVisibleOptions('paymentsLeft');
-  //   this.tableFilterState.paymentsLeft.selected = [
-  //     ...this.tableFilterState.paymentsLeft.default,
-  //   ];
-  // }
-
-  public setTableFilterVisibleOptions(prop): TableFilterMultipleChoiceOption[] {
-    switch (prop) {
-      case 'paStatus':
-        return this.getPaStatusVisibleOptions();
-      case 'paymentsLeft':
-        return this.getPaymentsLeftVisibleOptions();
-    }
-  }
-
-  public getPaStatusVisibleOptions(): TableFilterMultipleChoiceOption[] {
-    return PA_STATUS_ORDER.map(({ value }) => {
-      const option: TableFilterMultipleChoiceOption = {
-        value,
-        label: this.translate.instant(
-          'page.program.program-people-affected.status.' + value,
-        ),
-        count: this.getPaStatusCount(value),
-      };
-      return option;
-    }).filter((o) => o.count > 0);
-  }
-
-  private getPaStatusCount(paStatus): number {
-    return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
-  }
-
-  public getPaymentsLeftVisibleOptions(): TableFilterMultipleChoiceOption[] {
-    const labelPrefix =
-      'page.program.program-people-affected.filter-btn.payments-left-option.';
-
-    const otherKeys = {
-      '-2': 'no-maximum',
-      '-1': 'more-than-three',
-    };
-
-    return this.PAYMENTS_LEFT_ORDER.map((value) => ({
-      value,
-      label:
-        value < 0
-          ? this.translate.instant(`${labelPrefix}${otherKeys[value]}`)
-          : value + this.translate.instant(`${labelPrefix}zero-three`),
-      count: this.getPaymentsLeftCount(value),
-    })).filter((o) => o.count > 0);
-  }
-
-  private getPaymentsLeftCount(value): number {
-    return this.allPeopleAffected.filter((pa) => {
-      if (value === -2) {
-        return !pa.paymentsLeft && pa.maxPayments === '';
-      }
-      if (value === -1) {
-        return pa.paymentsLeft > 3;
-      }
-      return pa.paymentsLeft === value;
-    }).length;
-  }
-
   private paPaymentsLeftValue(paymentsLeft, maxPayments): number {
     if (!paymentsLeft && maxPayments === '') {
       return -2;
@@ -1850,18 +1696,18 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     limit?: number;
   }) {
     this.isLoading = true;
-    this.page.currentPage = pageInfo.offset;
+    this.pageMetaData.currentPage = pageInfo.offset;
 
     const { data, meta } = await this.programsService.getPeopleAffected(
       this.programId,
-      this.page.itemsPerPage,
-      this.page.currentPage + 1,
+      this.pageMetaData.itemsPerPage,
+      this.pageMetaData.currentPage + 1,
       null,
       null,
     );
     this.visiblePeopleAffected = this.createTableData(data);
-    this.page.totalItems = meta.totalItems;
-    this.page.currentPage = meta.currentPage - 1;
+    this.pageMetaData.totalItems = meta.totalItems;
+    this.pageMetaData.currentPage = meta.currentPage - 1;
 
     this.updateProxyScrollbarSize();
     this.isLoading = false;
