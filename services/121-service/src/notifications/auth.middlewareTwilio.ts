@@ -56,16 +56,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       return next();
     }
 
-    const validVoice = twilio.validateRequest(
-      process.env.TWILIO_AUTHTOKEN,
-      twilioSignature,
-      EXTERNAL_API.voiceStatus,
-      req.body,
-    );
-    if (validVoice) {
-      return next();
-    }
-
     throw new HttpException(
       'Could not validate Twilio request',
       HttpStatus.UNAUTHORIZED,
