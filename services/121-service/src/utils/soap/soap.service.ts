@@ -3,6 +3,7 @@ import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
 import { CustomHttpService } from '../../shared/services/custom-http.service';
+import https from 'https';
 
 @Injectable()
 export class SoapService {
@@ -154,12 +155,20 @@ export class SoapService {
         'Content-Type': 'text/xml;charset=UTF-8',
         soapAction: soapAction,
       };
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
+      const cert = fs.readFileSync(certPath);
+      const agent = new https.Agent({
+        ca: cert,
+      });
 
       const { response } = await soapRequest({
         headers: headers,
         url: soapUrl,
         xml: soapRequestXml,
         timeout: 150000,
+        extraOpts: {
+          httpsAgent: agent,
+        },
       });
 
       // Parse the SOAP response if needed
