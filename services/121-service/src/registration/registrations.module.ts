@@ -57,7 +57,6 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
-
       RegistrationViewEntity,
     ]),
     UserModule,
