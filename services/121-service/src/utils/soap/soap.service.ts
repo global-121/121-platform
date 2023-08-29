@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
+import https from 'https';
 import * as convert from 'xml-js';
 import { CustomHttpService } from '../../shared/services/custom-http.service';
-import https from 'https';
 
 @Injectable()
 export class SoapService {

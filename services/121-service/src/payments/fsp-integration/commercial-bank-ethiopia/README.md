@@ -32,9 +32,10 @@ Follow these steps to successfully integrate your Dockerized application with th
    - Update your application's API calls to use the VPN server's address and port.
 
 6. **TLS Certificate Handling**
-    - To enable loading Certificate files via ENV-variables in the Azure App-Service Configuration needs to have set `WEBSITE_LOAD_CERTIFICATES=*`.
-    - In the Azure Potal, in the instance's App-Service/Settings/Certificates the public key certificate (.cer) can be uploaded (and named). This will result in a "thumbprint", which will be used as the filename for the Certificate.
-    - The location of the certificate needs to be set in the ENV-variable: `COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH=/var/ssl/certs/<thumbprint>.der`.
+   - To enable loading Certificate files via ENV-variables in the Azure App-Service Configuration needs to have set `WEBSITE_LOAD_CERTIFICATES=*`.
+   - In the Azure Potal, in the instance's App-Service/Settings/Certificates the public key certificate (.cer) can be uploaded (and named). This will result in a "thumbprint", which will be used as the filename for the Certificate.
+   - The location of the certificate needs to be set in the ENV-variable: `COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH=/var/ssl/certs/<thumbprint>.der`.
+
 ## Conclusion
 
 By following these instructions, you'll be able to successfully integrate your Dockerized application with the VPN tunnel on Azure Cloud for the Commercial Bank Ethiopia project. If you encounter any challenges or need further assistance, consult the Azure documentation or seek help from your organization's technical support.
