@@ -247,7 +247,7 @@
     .datatable-body-row {
       outline: none;
 
-      >div {
+      > div {
         display: -webkit-box;
         display: -moz-box;
         display: -ms-flexbox;
@@ -298,7 +298,6 @@
       }
 
       .pager {
-
         li,
         li a {
           outline: none;
