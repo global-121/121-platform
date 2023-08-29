@@ -47,8 +47,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
   public loading = true;
 
-  public canViewPersonalData: boolean;
-  private canViewPaymentData: boolean;
   public canViewPhysicalCards: boolean;
 
   private pubSubSubscription: Subscription;
@@ -61,7 +59,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private pubSub: PubSubService,
   ) {
-    console.log('canViewPaymentData: ', this.canViewPaymentData);
     if (!this.pubSubSubscription) {
       this.pubSubSubscription = this.pubSub.subscribe(
         PubSubEvent.dataRegistrationChanged,
@@ -132,15 +129,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   }
 
   private loadPermissions() {
-    this.canViewPersonalData = this.authService.hasAllPermissions(
-      this.programId,
-      [Permission.RegistrationPersonalREAD],
-    );
-
-    this.canViewPaymentData = this.authService.hasAllPermissions(
-      this.programId,
-      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
-    );
     this.canViewPhysicalCards = this.authService.hasAllPermissions(
       this.programId,
       [
