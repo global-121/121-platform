@@ -61,7 +61,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private pubSub: PubSubService,
   ) {
-    console.log('canViewPaymentData: ', this.canViewPaymentData);
     if (!this.pubSubSubscription) {
       this.pubSubSubscription = this.pubSub.subscribe(
         PubSubEvent.dataRegistrationChanged,
