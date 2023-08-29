@@ -255,12 +255,14 @@ export class RegistrationsController {
     }
   }
 
+  @ApiOperation({
+    summary:
+      'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. IMPORTANT: you can also filter on any program-specific fields, even though not specified here in Swagger.',
+  })
   @ApiParam({
     name: 'programId',
     required: true,
     type: 'integer',
-    description:
-      'Underneath programId, you will find all the default paginate options, including filtering on any generic fields. IMPORTANT: you can also filter on any program-specific fields, even though not specified here in Swagger.',
   })
   @Get('programs/:programId/registrations')
   @PaginatedSwaggerDocs(RegistrationViewEntity, paginateConfig)
