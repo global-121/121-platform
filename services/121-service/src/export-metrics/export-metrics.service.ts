@@ -1335,7 +1335,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select(`registration."registrationStatus" AS status`)
-      .addSelect(`COUNT(registration."registrationStatus") AS statusCount`)
+      .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
       .andWhere({ programId: programId })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();

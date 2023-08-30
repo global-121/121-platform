@@ -34,7 +34,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
-import { TableFilterType } from 'src/app/models/table-filter.model';
+import {
+  TableFilterMultipleChoiceOption,
+  TableFilterType,
+} from 'src/app/models/table-filter.model';
 import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -622,6 +625,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.activePhase = this.program.phase;
 
+    await this.setupStatusFilter();
+
     await this.loadColumns();
 
     await this.refreshData();
@@ -654,6 +659,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
+  }
+
+  private async setupStatusFilter() {
+    this.tableFilterState.paStatus.default =
+      this.paStatusDefaultsPerPhase[this.thisPhase];
+    this.tableFilterState.paStatus.visible =
+      await this.getStatusFilterOptions();
+    this.tableFilterState.paStatus.selected = [
+      ...this.tableFilterState.paStatus.default,
+    ];
+  }
+
+  private async getStatusFilterOptions(): Promise<
+    TableFilterMultipleChoiceOption[]
+  > {
+    const registrationStatusesWithCount =
+      await this.programsService.getRegistrationStatusCount(this.programId);
+    return registrationStatusesWithCount.map(({ status, statusCount }) => {
+      const option: TableFilterMultipleChoiceOption = {
+        value: status,
+        label: this.translate.instant(
+          'page.program.program-people-affected.status.' + status,
+        ),
+        count: Number(statusCount),
+      };
+      return option;
+    });
   }
 
   private async refreshData() {
@@ -1537,7 +1569,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.tableFilterState[prop].selected = filter;
-    this.updateVisiblePeopleAffectedByFilter();
+    this.setPage({ offset: 0, pageSize: this.pageMetaData.itemsPerPage });
   }
 
   private updateVisiblePeopleAffectedByFilter() {
@@ -1711,15 +1743,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return value;
   }
 
-  public async setPage(
-    pageInfo: {
-      offset: number;
-      count?: number;
-      pageSize?: number;
-      limit?: number;
-    },
-    statuses?: RegistrationStatus[],
-  ) {
+  public async setPage(pageInfo: {
+    offset: number;
+    count?: number;
+    pageSize?: number;
+    limit?: number;
+  }) {
     this.isLoading = true;
     this.pageMetaData.currentPage = pageInfo.offset;
 
@@ -1730,7 +1759,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       null,
       null,
       null,
-      statuses ? statuses : this.paStatusDefaultsPerPhase[this.thisPhase],
+      this.tableFilterState['paStatus'].selected,
     );
     this.visiblePeopleAffected = this.createTableData(data);
     this.pageMetaData.totalItems = meta.totalItems;
