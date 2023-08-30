@@ -28,6 +28,7 @@ import {
 } from './dto/export-details.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
+import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { ExportMetricsService } from './export-metrics.service';
 
@@ -203,6 +204,22 @@ export class ExportMetricsController {
   @Get('programs/:programId/export-metrics/program-stats-summary')
   public async getProgramStats(@Param() params): Promise<ProgramStats> {
     return await this.exportMetricsService.getProgramStats(
+      Number(params.programId),
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @ApiOperation({ summary: 'Get registration statuses with count' })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: 200,
+    description: 'Registration statuses with count',
+  })
+  @Get('programs/:programId/export-metrics/registration-status')
+  public async getRegistrationStatusStats(
+    @Param() params,
+  ): Promise<RegistrationStatusStats[]> {
+    return await this.exportMetricsService.getRegistrationStatusStats(
       Number(params.programId),
     );
   }

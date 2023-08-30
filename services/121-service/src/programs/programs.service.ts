@@ -87,6 +87,21 @@ export class ProgramService {
       program['paTableAttributes'] = await this.getPaTableAttributes(
         program.id,
       );
+      // TODO: Get these columns from some enum or something
+      program['filterableColumns'] = [
+        'id',
+        'status',
+        'referenceId',
+        'phoneNumber',
+        'preferredLanguage',
+        'inclusionScore',
+        'paymentAmountMultiplier',
+        'note',
+        'noteUpdated',
+        'financialServiceProvider',
+        'registrationProgramId',
+        'maxPayments',
+      ];
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;

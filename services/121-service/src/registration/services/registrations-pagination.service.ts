@@ -108,8 +108,7 @@ export class RegistrationsPaginationService {
     }
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
-    // That why we wrote come manual code to do the selection
-    // console.log('queryBuilder: ', queryBuilder.getQuery());
+    // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
@@ -184,7 +183,7 @@ export class RegistrationsPaginationService {
           );
           queryBuilder.andWhere(
             new Brackets((qb) => {
-              this.whereRegsitrationDataIsOneOfIds(
+              this.whereRegistrationDataIsOneOfIds(
                 relationInfoArray,
                 qb,
                 uniqueJoinId,
@@ -225,7 +224,7 @@ export class RegistrationsPaginationService {
     }
   }
 
-  private whereRegsitrationDataIsOneOfIds(
+  private whereRegistrationDataIsOneOfIds(
     relationInfoArray: RegistrationDataInfo[],
     qb: WhereExpressionBuilder,
     uniqueJoinId: string,

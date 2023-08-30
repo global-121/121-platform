@@ -1462,7 +1462,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.tableFilterState.text = value;
   }
 
-  public applyTextFieldFilter(value: string) {
+  public applyFilter(value: string) {
     this.setTextFieldFilter(value?.toLowerCase().trim());
     this.updateVisiblePeopleAffectedByFilter();
   }

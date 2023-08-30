@@ -84,6 +84,12 @@
           style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
           color="black"
         ></ion-icon>
+        <ion-select interface="popover">
+          <ion-select-option
+            *ngFor="let filterOption of program.filterableColumns"
+            >{{ filterOption }}</ion-select-option
+          >
+        </ion-select>
         <ion-input
           [placeholder]="
             'page.program.program-people-affected.filter-placeholder'
@@ -97,7 +103,7 @@
             'page.program.program-people-affected.filter-placeholder'
               | translate
           "
-          (ionInput)="applyTextFieldFilter($event.detail.value)"
+          (ionInput)="applyFilter($event.detail.value)"
           [debounce]="1000"
           [value]="filterRowsVisibleQuery"
           [clearInput]="true"
