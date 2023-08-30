@@ -105,7 +105,7 @@ export class ProgramsServiceApiService {
     for (const programId of programIds) {
       const stats = await this.apiService.get(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/program-stats-summary`,
+        `/programs/${programId}/metrics/program-stats-summary`,
       );
 
       programStats.push(stats);
@@ -144,7 +144,7 @@ export class ProgramsServiceApiService {
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/person-affected`,
+      `/programs/${programId}/metrics/person-affected`,
     );
   }
 
@@ -154,7 +154,7 @@ export class ProgramsServiceApiService {
   ): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/person-affected?${condition}`,
+      `/programs/${programId}/metrics/person-affected?${condition}`,
     );
   }
 
@@ -164,7 +164,7 @@ export class ProgramsServiceApiService {
   ): Promise<TotalTransferAmounts> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/total-transfer-amounts`,
+      `/programs/${programId}/metrics/total-transfer-amounts`,
       { referenceIds },
     );
   }
@@ -429,7 +429,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/export-list/${type}`,
+        `/programs/${programId}/metrics/export-list/${type}`,
         false,
         params,
       )
@@ -685,7 +685,7 @@ export class ProgramsServiceApiService {
   getPaymentsWithStateSums(programId: number | string): Promise<any> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/payment-state-sums`,
+      `/programs/${programId}/metrics/payment-state-sums`,
     );
   }
 
@@ -771,7 +771,7 @@ export class ProgramsServiceApiService {
   ): Promise<{ status: RegistrationStatusEnum; statusCount: number }[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/registration-status`,
+      `/programs/${programId}/metrics/registration-status`,
       false,
     );
   }

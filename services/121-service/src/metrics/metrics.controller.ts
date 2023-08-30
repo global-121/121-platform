@@ -16,12 +16,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { Admin } from './../guards/admin.decorator';
 import {
   ExportDetailsQueryParamsDto,
   ExportType,
@@ -30,15 +30,15 @@ import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
-import { ExportMetricsService } from './export-metrics.service';
+import { MetricsService } from './metrics.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('export-metrics')
+@ApiTags('metrics')
 @Controller()
-export class ExportMetricsController {
-  private readonly exportMetricsService: ExportMetricsService;
-  public constructor(exportMetricsService: ExportMetricsService) {
-    this.exportMetricsService = exportMetricsService;
+export class MetricsController {
+  private readonly metricsService: MetricsService;
+  public constructor(metricsService: MetricsService) {
+    this.metricsService = metricsService;
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
@@ -54,7 +54,7 @@ export class ExportMetricsController {
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
-  @Get('programs/:programId/export-metrics/export-list/:exportType')
+  @Get('programs/:programId/metrics/export-list/:exportType')
   public async getExportList(
     @Param('programId') programId: number,
     @Param('exportType') exportType: ExportType,
@@ -69,7 +69,7 @@ export class ExportMetricsController {
       const errors = 'toDate must be greater than fromDate';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    return await this.exportMetricsService.getExportList(
+    return await this.metricsService.getExportList(
       Number(programId),
       exportType as ExportType,
       userId,
@@ -88,9 +88,9 @@ export class ExportMetricsController {
     status: 201,
     description: 'Get list of to cancel vouchers only used by admin',
   })
-  @Post('export-metrics/to-cancel-vouchers')
+  @Post('metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<any> {
-    return await this.exportMetricsService.getToCancelVouchers();
+    return await this.metricsService.getToCancelVouchers();
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
@@ -124,13 +124,13 @@ export class ExportMetricsController {
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
   })
-  @Get('programs/:programId/export-metrics/person-affected')
+  @Get('programs/:programId/metrics/person-affected')
   public async getPAMetrics(
     @Param() params,
     @Query() query,
   ): Promise<ProgramMetrics> {
     return {
-      pa: await this.exportMetricsService.getPaMetrics(
+      pa: await this.metricsService.getPaMetrics(
         Number(params.programId),
         query.payment ? Number(query.payment) : undefined,
         query.month ? Number(query.month) : undefined,
@@ -153,9 +153,9 @@ export class ExportMetricsController {
     description:
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet',
   })
-  @Get('programs/:programId/export-metrics/payment-state-sums')
+  @Get('programs/:programId/metrics/payment-state-sums')
   public async getPaymentsWithStateSums(@Param() params): Promise<any> {
-    return await this.exportMetricsService.getPaymentsWithStateSums(
+    return await this.metricsService.getPaymentsWithStateSums(
       Number(params.programId),
     );
   }
@@ -167,9 +167,9 @@ export class ExportMetricsController {
     description: 'All monitoring data of a program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('programs/:programId/export-metrics/monitoring')
+  @Get('programs/:programId/metrics/monitoring')
   public async getMonitoringData(@Param() params): Promise<any[]> {
-    return await this.exportMetricsService.getMonitoringData(
+    return await this.metricsService.getMonitoringData(
       Number(params.programId),
     );
   }
@@ -183,12 +183,12 @@ export class ExportMetricsController {
     status: 201,
     description: 'Total number of included per program',
   })
-  @Post('programs/:programId/export-metrics/total-transfer-amounts')
+  @Post('programs/:programId/metrics/total-transfer-amounts')
   public async getTotalTransferAmounts(
     @Param() params,
     @Body() referenceIdsDto: ReferenceIdsDto,
   ): Promise<TotalTransferAmounts> {
-    return await this.exportMetricsService.getTotalTransferAmounts(
+    return await this.metricsService.getTotalTransferAmounts(
       Number(params.programId),
       referenceIdsDto,
     );
@@ -201,11 +201,9 @@ export class ExportMetricsController {
     status: 200,
     description: 'Program stats summary',
   })
-  @Get('programs/:programId/export-metrics/program-stats-summary')
+  @Get('programs/:programId/metrics/program-stats-summary')
   public async getProgramStats(@Param() params): Promise<ProgramStats> {
-    return await this.exportMetricsService.getProgramStats(
-      Number(params.programId),
-    );
+    return await this.metricsService.getProgramStats(Number(params.programId));
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
@@ -215,11 +213,11 @@ export class ExportMetricsController {
     status: 200,
     description: 'Registration statuses with count',
   })
-  @Get('programs/:programId/export-metrics/registration-status')
+  @Get('programs/:programId/metrics/registration-status')
   public async getRegistrationStatusStats(
     @Param() params,
   ): Promise<RegistrationStatusStats[]> {
-    return await this.exportMetricsService.getRegistrationStatusStats(
+    return await this.metricsService.getRegistrationStatusStats(
       Number(params.programId),
     );
   }

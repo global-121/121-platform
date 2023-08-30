@@ -8,7 +8,7 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { ExportType } from '../export-metrics/dto/export-details.dto';
+import { ExportType } from '../metrics/dto/export-details.dto';
 import { NameConstraintQuestions } from '../shared/const';
 import { CascadeDeleteEntity } from './../base.entity';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';

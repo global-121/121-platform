@@ -13,24 +13,24 @@ import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { TransactionsService } from '../payments/transactions/transactions.service';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { Attributes } from '../registration/dto/update-registration.dto';
 import {
   AnswerTypes,
+  CustomDataAttributes,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { RegistrationsService } from '../registration/registrations.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
-import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
-import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
-import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
-import { RegistrationsService } from './../registration/registrations.service';
 import { ExportType } from './dto/export-details.dto';
 import { FileDto } from './dto/file.dto';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -40,7 +40,7 @@ import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 
 @Injectable()
-export class ExportMetricsService {
+export class MetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationDataEntity)
