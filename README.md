@@ -26,7 +26,6 @@ See: [status.121.global](https://status.121.global/)
 ### Integration Tests Status
 
 [![API tests](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml)  
-[![Cypress tests](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml)  
 See: [Testing](#testing)
 
 ---
@@ -275,20 +274,10 @@ When new Node.js dependencies are added to a service since it is last build on y
 ## Testing
 
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
-- Automated integrations tests for the interfaces of the whole platform are described in [`/interfaces/tests`](interfaces/tests/#readme).
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 - Integration (API) tests to test the endpoints of the 121-service; Run with `docker exec 121-service npm run test:e2e` `services/121-service`-folder.
-
-### When to use a Cypress E2E Integration test?
-
-- Is the feature/component part of the essential happy-flow of the 121-platform?
-- Is it not already covered by other tests?
-- Are we still within the limit of +/- 10 tests?
-- Example scenarios:
-  - DO: Import/invite PAs, Include them, make payment
-  - DON'T: log-in. Reason: can be API-test + component-test
 
 ### When to use an API-test? (back-end + db? only)
 
@@ -297,7 +286,6 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Often used (with different parameters) endpoints: PATCH /registration etc.
 - Is there actual business-logic performed?
 - Not necessary:
-  - Change program-status (already covered by Cypress)
   - update single (program) properties?
 - Examples:
   - import registrations -> change PA-status (with list of refIds) -> export included PAs
