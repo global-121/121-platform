@@ -36,6 +36,7 @@ import { FileDto } from './dto/file.dto';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
+import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 
 @Injectable()
@@ -1325,5 +1326,19 @@ export class ExportMetricsService {
       fileName: ExportType.paDataChanges,
       data,
     };
+  }
+
+  public async getRegistrationStatusStats(
+    programId: number,
+  ): Promise<RegistrationStatusStats[]> {
+    const query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.fsp', 'fsp')
+      .select(`registration."registrationStatus" AS status`)
+      .addSelect(`COUNT(registration."registrationStatus") AS statusCount`)
+      .andWhere({ programId: programId })
+      .groupBy(`registration."registrationStatus"`);
+    const res = await query.getRawMany<RegistrationStatusStats>();
+    return res;
   }
 }
