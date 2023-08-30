@@ -21,7 +21,10 @@ import { RegistrationEntity } from './registration.entity';
       .createQueryBuilder()
       .select('registration.id', 'id')
       .from(RegistrationEntity, 'registration')
-      .addSelect('registration.registrationProgramId', 'registrationProgramId')
+      .addSelect(
+        `CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR)`,
+        'registrationProgramId',
+      )
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')

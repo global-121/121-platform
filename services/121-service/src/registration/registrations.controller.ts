@@ -77,15 +77,10 @@ export class FileUploadDto {
 @ApiTags('registrations')
 @Controller()
 export class RegistrationsController {
-  private readonly registrationsService: RegistrationsService;
-  private readonly registrationsPaginateService: RegistrationsPaginationService;
   public constructor(
-    registrationsService: RegistrationsService,
-    registrationsPaginateService: RegistrationsPaginationService,
-  ) {
-    this.registrationsService = registrationsService;
-    this.registrationsPaginateService = registrationsPaginateService;
-  }
+    private readonly registrationsService: RegistrationsService,
+    private readonly registrationsPaginateService: RegistrationsPaginationService,
+  ) {}
 
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
