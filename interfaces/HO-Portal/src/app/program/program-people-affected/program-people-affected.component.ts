@@ -335,6 +335,28 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private messageColumnStatus = MessageStatusMapping;
 
   public pageMetaData = new PaginationMetadata();
+  private paStatusDefaultsPerPhase = {
+    [ProgramPhase.registrationValidation]: [
+      RegistrationStatus.imported,
+      RegistrationStatus.invited,
+      RegistrationStatus.startedRegistration,
+      RegistrationStatus.selectedForValidation,
+      RegistrationStatus.registered,
+      RegistrationStatus.noLongerEligible,
+      RegistrationStatus.registeredWhileNoLongerEligible,
+    ],
+    [ProgramPhase.inclusion]: [
+      RegistrationStatus.validated,
+      RegistrationStatus.registered,
+      RegistrationStatus.selectedForValidation,
+      RegistrationStatus.rejected,
+      RegistrationStatus.inclusionEnded,
+    ],
+    [ProgramPhase.payment]: [
+      RegistrationStatus.included,
+      RegistrationStatus.completed,
+    ],
+  };
 
   constructor(
     private authService: AuthService,
@@ -1689,12 +1711,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return value;
   }
 
-  public async setPage(pageInfo: {
+  public async setPage(
+    pageInfo: {
     offset: number;
     count?: number;
     pageSize?: number;
     limit?: number;
-  }) {
+    },
+    statuses?: RegistrationStatus[],
+  ) {
     this.isLoading = true;
     this.pageMetaData.currentPage = pageInfo.offset;
 
@@ -1704,6 +1729,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.pageMetaData.currentPage + 1,
       null,
       null,
+      null,
+      statuses ? statuses : this.paStatusDefaultsPerPhase[this.thisPhase],
     );
     this.visiblePeopleAffected = this.createTableData(data);
     this.pageMetaData.totalItems = meta.totalItems;
