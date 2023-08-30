@@ -220,7 +220,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue.transaction ||
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
-          // this.canDoSinglePayment, - to show or false to hide single payments in activity overview
           false,
           this.person,
           this.lastPaymentId,
