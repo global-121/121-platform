@@ -1713,10 +1713,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public async setPage(
     pageInfo: {
-    offset: number;
-    count?: number;
-    pageSize?: number;
-    limit?: number;
+      offset: number;
+      count?: number;
+      pageSize?: number;
+      limit?: number;
     },
     statuses?: RegistrationStatus[],
   ) {
