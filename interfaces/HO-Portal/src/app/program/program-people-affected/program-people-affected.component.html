@@ -179,9 +179,9 @@
   [selectCheck]="isRowSelectable"
   [rowHeight]="65"
   [externalPaging]="true"
-  [count]="page.totalItems"
-  [offset]="page.currentPage"
-  [limit]="page.itemsPerPage"
+  [count]="pageMetaData.totalItems"
+  [offset]="pageMetaData.currentPage"
+  [limit]="pageMetaData.itemsPerPage"
   (page)="setPage($event)"
 >
   <ngx-datatable-column

@@ -518,6 +518,7 @@ export class ProgramsServiceApiService {
     referenceId?: string,
     filterOnPayment?: number,
     attributes?: string[],
+    statuses?: RegistrationStatus[],
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
@@ -532,6 +533,9 @@ export class ProgramsServiceApiService {
     }
     if (attributes) {
       params = params.append('select', attributes.join());
+    }
+    if (statuses) {
+      params = params.append('filter.status', `$in:${statuses.join(',')}`);
     }
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,

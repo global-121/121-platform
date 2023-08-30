@@ -58,7 +58,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
-
       RegistrationViewEntity,
     ]),
     UserModule,

@@ -105,7 +105,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         1,
         this.referenceId,
       )
-    ).data[0];
+    ).data?.[0];
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
