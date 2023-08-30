@@ -63,7 +63,11 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { paginateConfig, RegistrationsService } from './registrations.service';
+import { RegistrationsService } from './registrations.service';
+import {
+  paginateConfig,
+  RegistrationsPaginationService,
+} from './services/registrations-pagination.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -73,10 +77,10 @@ export class FileUploadDto {
 @ApiTags('registrations')
 @Controller()
 export class RegistrationsController {
-  private readonly registrationsService: RegistrationsService;
-  public constructor(registrationsService: RegistrationsService) {
-    this.registrationsService = registrationsService;
-  }
+  public constructor(
+    private readonly registrationsService: RegistrationsService,
+    private readonly registrationsPaginateService: RegistrationsPaginationService,
+  ) {}
 
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
@@ -270,7 +274,10 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Param('programId') programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    return this.registrationsService.getPaginate(query, Number(programId));
+    return this.registrationsPaginateService.getPaginate(
+      query,
+      Number(programId),
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)

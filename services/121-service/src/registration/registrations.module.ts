@@ -34,6 +34,7 @@ import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
     BulkImportService,
     InclusionScoreService,
     AzureLogService,
+    RegistrationsPaginationService,
   ],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],
