@@ -62,6 +62,8 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     financialServiceProvider: allowedFilterOperators,
     registrationProgramId: allowedFilterOperators,
     maxPayments: allowedFilterOperators,
+    amountPaymentsReceived: allowedFilterOperators,
+    amountPaymentsRemaining: allowedFilterOperators,
   },
 };
 
@@ -109,11 +111,13 @@ export class RegistrationsPaginationService {
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
+    console.time('query');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfig,
     );
+    console.timeEnd('query');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];

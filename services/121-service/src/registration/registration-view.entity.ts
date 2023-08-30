@@ -9,6 +9,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -41,7 +42,26 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.note', 'note')
-      .leftJoin('registration.fsp', 'fsp'),
+      .leftJoin('registration.fsp', 'fsp')
+      .leftJoin(
+        (qb) =>
+          qb
+            .from(TransactionEntity, 'transactions')
+            .select('MAX("payment")', 'payment')
+            .addSelect('COUNT(DISTINCT(payment))', 'amountPaymentsReceived')
+            .addSelect('"registrationId"', 'registrationId')
+            .groupBy('"registrationId"'),
+        'transaction_max_payment',
+        'transaction_max_payment."registrationId" = registration.id',
+      )
+      .addSelect(
+        '"amountPaymentsReceived" - "maxPayments"',
+        'amountPaymentsRemaining',
+      )
+      .addSelect(
+        'transaction_max_payment."amountPaymentsReceived"',
+        'amountPaymentsReceived',
+      ),
 })
 export class RegistrationViewEntity {
   @ViewColumn()
@@ -99,4 +119,10 @@ export class RegistrationViewEntity {
     },
   )
   public data: RegistrationDataEntity[];
+
+  @ViewColumn()
+  public amountPaymentsReceived: number;
+
+  @ViewColumn()
+  public amountPaymentsRemaining: number;
 }
