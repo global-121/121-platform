@@ -1333,7 +1333,6 @@ export class MetricsService {
   ): Promise<RegistrationStatusStats[]> {
     const query = this.registrationRepository
       .createQueryBuilder('registration')
-      .leftJoin('registration.fsp', 'fsp')
       .select(`registration."registrationStatus" AS status`)
       .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
       .andWhere({ programId: programId })
