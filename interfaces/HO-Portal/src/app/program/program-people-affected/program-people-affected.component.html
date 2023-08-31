@@ -86,6 +86,7 @@
         class="ion-align-items-start"
       >
         <ion-icon
+          *ngIf="!isLoading"
           name="funnel"
           [attr.title]="
             'page.program.program-people-affected.filter-placeholder'
@@ -98,11 +99,20 @@
           style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
           color="black"
         ></ion-icon>
+        <ion-spinner
+          *ngIf="isLoading"
+          size="small"
+          slot="start"
+          class="ion-margin-end"
+          style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
+          color="black"
+        ></ion-spinner>
         <ion-select
           style="min-height: 40px; margin-right: 8px"
           interface="popover"
           [value]="undefined"
           [(ngModel)]="textFilterOption"
+          [class.text-filter-option-danger]="textFilterOption === undefined && filterRowsVisibleQuery?.length > 0"
         >
           <ion-select-option>{{ undefined }}</ion-select-option>
           <ion-select-option
@@ -125,11 +135,11 @@
               | translate
           "
           (keyup.enter)="applyFilter()"
-          [debounce]="1000"
           [(ngModel)]="filterRowsVisibleQuery"
           [clearInput]="true"
           class="filter-input"
           data-cy="table-text-filter"
+          [disabled]="isLoading"
         >
         </ion-input>
       </ion-item>
