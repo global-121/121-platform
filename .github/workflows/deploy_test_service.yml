@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat.paginate
+      - master
     paths:
       - '.github/workflows/deploy_test_service.yml'
       - 'services/121-service/**'
@@ -55,5 +55,5 @@ jobs:
 
       - name: Finish
         run: |
-          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
-          echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
+           echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+           echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
