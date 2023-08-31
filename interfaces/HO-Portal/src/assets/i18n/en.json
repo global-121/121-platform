@@ -604,6 +604,7 @@
       "page-description": "In this page you can manage users, create roles and define responsibilities.",
       "title": "USERS PAGE",
       "users-tab": "Users",
+      "add-new-user": "Add new user",
       "roles-and-permissions-tab": "Roles and Permissions"
     },
     "user": {

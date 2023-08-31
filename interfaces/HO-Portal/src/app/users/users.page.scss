@@ -1,0 +1,24 @@
+.tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 30px;
+  padding-left: 32px;
+  border-bottom: 1px solid var(--fiveten-neutral-600);
+}
+
+.tab {
+  --background: #f4f7fa;
+  margin-right: 16px;
+  --color-checked: #4f22d7;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  --border-width: 0.5px;
+  padding: 28px 28px 0px 0px;
+}
