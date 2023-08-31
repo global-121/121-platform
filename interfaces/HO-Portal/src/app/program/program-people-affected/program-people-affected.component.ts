@@ -56,6 +56,7 @@ import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { TableService } from '../../services/table.service';
 import { actionResult } from '../../shared/action-result';
 import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -322,7 +323,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   ];
   public tableFilterState = {
-    text: '',
+    text: { column: null, value: '' },
     paStatus: {
       default: [],
       selected: [],
@@ -336,8 +337,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   };
 
   private messageColumnStatus = MessageStatusMapping;
-
-  public pageMetaData = new PaginationMetadata();
+  public pageMetaData: PaginationMetadata;
   private paStatusDefaultsPerPhase = {
     [ProgramPhase.registrationValidation]: [
       RegistrationStatus.imported,
@@ -376,9 +376,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
+    private tableService: TableService,
   ) {
-    this.pageMetaData.currentPage = 0;
-    this.pageMetaData.itemsPerPage = 12;
+    this.tableService?.setCurrentPage(0);
+    this.tableService?.setItemsPerPage(12);
+    this.pageMetaData = this.tableService?.getPageMetadata();
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -940,7 +942,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async loadData() {
     // TODO: How do we get people per phase now..
-    this.setPage({ offset: this.pageMetaData.currentPage });
+    this.setPage({ offset: this.tableService?.getPageMetadata().currentPage });
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1490,8 +1492,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private setTextFieldFilter(value: string) {
-    this.tableFilterState.text = value;
+  private async setTextFieldFilter(value: string) {
+    // this.tableFilterState.text.value = value;
+    this.tableService?.setTextFilterValue(value);
+    await this.getPage();
   }
 
   public applyFilter(value: string) {
@@ -1569,7 +1573,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.tableFilterState[prop].selected = filter;
-    this.setPage({ offset: 0, pageSize: this.pageMetaData.itemsPerPage });
+    this.setPage({
+      offset: 0,
+      pageSize: this.tableService?.getPageMetadata().itemsPerPage,
+    });
   }
 
   private updateVisiblePeopleAffectedByFilter() {
@@ -1750,22 +1757,35 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     limit?: number;
   }) {
     this.isLoading = true;
-    this.pageMetaData.currentPage = pageInfo.offset;
+    this.tableService?.setCurrentPage(pageInfo.offset);
 
-    const { data, meta } = await this.programsService.getPeopleAffected(
+    await this.getPage();
+
+    this.isLoading = false;
+  }
+
+  public async selectTextFilterOption(column: string) {
+    // this.tableFilterState.text.column = column;
+    this.tableService?.setTextFilterColumn(column);
+
+    await this.getPage();
+  }
+
+  private async getPage(): Promise<void> {
+    const { data, meta } = await this.tableService.getPage(
       this.programId,
-      this.pageMetaData.itemsPerPage,
-      this.pageMetaData.currentPage + 1,
       null,
       null,
       null,
       this.tableFilterState['paStatus'].selected,
     );
+
     this.visiblePeopleAffected = this.createTableData(data);
-    this.pageMetaData.totalItems = meta.totalItems;
-    this.pageMetaData.currentPage = meta.currentPage - 1;
+    this.tableService?.setTotalItems(meta.totalItems);
+    this.tableService?.setCurrentPage(meta.currentPage - 1);
 
     this.updateProxyScrollbarSize();
-    this.isLoading = false;
+
+    return;
   }
 }
