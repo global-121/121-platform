@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
@@ -10,18 +11,17 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { TransactionsModule } from '../payments/transactions/transactions.module';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { RegistrationsModule } from '../registration/registrations.module';
+import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
-import { ActionModule } from './../actions/action.module';
-import { ProgramEntity } from './../programs/program.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
-import { RegistrationsModule } from './../registration/registrations.module';
-import { UserEntity } from './../user/user.entity';
-import { ExportMetricsController } from './export-metrics.controller';
-import { ExportMetricsService } from './export-metrics.service';
+import { MetricsController } from './metrics.controller';
+import { MetricsService } from './metrics.service';
 
 @Module({
   imports: [
@@ -47,8 +47,8 @@ import { ExportMetricsService } from './export-metrics.service';
     IntersolveVoucherModule,
     RegistrationChangeLogModule,
   ],
-  providers: [ExportMetricsService, RegistrationDataQueryService],
-  controllers: [ExportMetricsController],
+  providers: [MetricsService, RegistrationDataQueryService],
+  controllers: [MetricsController],
   exports: [],
 })
-export class ExportMetricsModule {}
+export class MetricsModule {}

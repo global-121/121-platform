@@ -84,7 +84,10 @@
           style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
           color="black"
         ></ion-icon>
-        <ion-select interface="popover">
+        <ion-select
+          interface="popover"
+          (ionChange)="selectTextFilterOption($event.detail.value)"
+        >
           <ion-select-option
             *ngFor="let filterOption of program.filterableColumns"
             >{{ filterOption }}</ion-select-option
@@ -185,9 +188,9 @@
   [selectCheck]="isRowSelectable"
   [rowHeight]="65"
   [externalPaging]="true"
-  [count]="pageMetaData.totalItems"
-  [offset]="pageMetaData.currentPage"
-  [limit]="pageMetaData.itemsPerPage"
+  [count]="pageMetaData?.totalItems"
+  [offset]="pageMetaData?.currentPage"
+  [limit]="pageMetaData?.itemsPerPage"
   (page)="setPage($event)"
 >
   <ngx-datatable-column

@@ -78,7 +78,7 @@ export async function exportList(
     queryParams['toDate'] = toDate;
   }
   return await getServer()
-    .get(`/programs/${programId}/export-metrics/export-list/${exportType}`)
+    .get(`/programs/${programId}/metrics/export-list/${exportType}`)
     .set('Cookie', [access_token])
     .query(queryParams);
 }

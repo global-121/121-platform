@@ -41,6 +41,7 @@ export function getRegistrations(
   accessToken: string,
   page?: number,
   limit?: number,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (attributes) {
@@ -51,6 +52,11 @@ export function getRegistrations(
   }
   if (limit) {
     queryParams['limit'] = String(limit);
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
   }
   return getServer()
     .get(`/programs/${programId}/registrations`)

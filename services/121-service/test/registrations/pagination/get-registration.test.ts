@@ -1,52 +1,26 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import { changePhase } from '../helpers/program.helper';
+import { SeedScript } from '../../../src/scripts/seed-script.enum';
+import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
+import { changePhase } from '../../helpers/program.helper';
 import {
   getRegistrations,
   importRegistrations,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '../../helpers/registration.helper';
+import { getAccessToken, resetDB } from '../../helpers/utility.helper';
+import {
+  expectedAttributes,
+  expectedValueObject1,
+  expectedValueObject2,
+  programId,
+  registration1,
+  registration2,
+} from './pagination-data';
 
 describe('Load PA table', () => {
-  const programId = 3;
-  const referenceId = '63e62864557597e0d';
-  const registration = {
-    referenceId: referenceId,
-    preferredLanguage: 'en',
-    paymentAmountMultiplier: 1,
-    firstName: 'John',
-    lastName: 'Smith',
-    phoneNumber: '14155238886',
-    fspName: FspName.intersolveJumboPhysical,
-    whatsappPhoneNumber: '14155238886',
-    addressStreet: 'Teststraat',
-    addressHouseNumber: '1',
-    addressHouseNumberAddition: '',
-    addressPostalCode: '1234AB',
-    addressCity: 'Stad',
-  };
-
-  const attribute1 = 'whatsappPhoneNumber';
-  const attribute2 = 'addressCity';
-  const attribute3 = 'referenceId';
-
-  const expectedAttributes = [
-    'id',
-    'status',
-    'referenceId',
-    'phoneNumber',
-    'preferredLanguage',
-    'inclusionScore',
-    'paymentAmountMultiplier',
-    'note',
-    'noteUpdated',
-    'financialServiceProvider',
-    'registrationProgramId',
-  ];
-
   describe('getting registration using paginate', () => {
     let accessToken: string;
+    const attribute1 = 'whatsappPhoneNumber';
+    const attribute2 = 'addressCity';
+    const attribute3 = 'referenceId';
 
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
@@ -58,16 +32,12 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      await importRegistrations(programId, [registration], accessToken);
+      await importRegistrations(programId, [registration1], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
-      const expectedValueObject = { ...registration };
-      expectedValueObject['financialServiceProvider'] =
-        expectedValueObject.fspName;
-      delete expectedValueObject.fspName;
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
@@ -78,7 +48,7 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject)) {
+      for (const [key, value] of Object.entries(expectedValueObject1)) {
         expect(data[0][key]).toBe(value);
       }
       for (const attribute of expectedAttributes) {
@@ -123,19 +93,7 @@ describe('Load PA table', () => {
 
     it('should be able to specify page attributes', async () => {
       // Arrange
-      const registration1 = { ...registration };
-      const registration2 = { ...registration };
-      registration2.referenceId = '63e62864557597e0e';
-      registration2.firstName = 'Anna';
       const requestedDynamicAttributes = null;
-      const expectedValueObject1 = { ...registration1 };
-      expectedValueObject1['financialServiceProvider'] =
-        expectedValueObject1.fspName;
-      delete expectedValueObject1.fspName;
-      const expectedValueObject2 = { ...registration2 };
-      expectedValueObject2['financialServiceProvider'] =
-        expectedValueObject2.fspName;
-      delete expectedValueObject2.fspName;
       await importRegistrations(programId, [registration2], accessToken);
 
       // Act
