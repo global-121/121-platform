@@ -601,8 +601,10 @@
     },
     "users": {
       "pageTitle": "Users",
+      "page-description": "In this page you can manage users, create roles and define responsibilities.",
       "title": "USERS PAGE",
-      "content": "users | roles"
+      "users-tab": "Users",
+      "roles-and-permissions-tab": "Roles and Permissions"
     },
     "user": {
       "pageTitle": "User",
