@@ -415,17 +415,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.standardColumns = [
       {
-        prop: 'name',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.name',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 768,
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
-      },
-      {
         prop: 'phoneNumber',
         name: this.translate.instant(
           'page.program.program-people-affected.column.phone-number',
@@ -796,6 +785,28 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadColumns() {
+    for (const nameColumn of this.program.fullnameNamingConvention) {
+      const searchableColumns = [
+        ...this.program.programQuestions,
+        ...this.program.programCustomAttributes,
+      ];
+
+      const nameQuestion = searchableColumns.find(
+        (question) => question.name === nameColumn,
+      );
+      const addCol = {
+        prop: nameColumn,
+        name: this.translatableStringService.get(
+          nameQuestion.shortLabel || nameQuestion.label,
+        ),
+        ...this.columnDefaults,
+        frozenLeft: this.platform.width() > 768,
+        permissions: [Permission.RegistrationPersonalREAD],
+        minWidth: this.columnWidthPerType[AnswerType.Text],
+        width: this.columnWidthPerType[AnswerType.Text],
+      };
+      this.columns.push(addCol);
+    }
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
