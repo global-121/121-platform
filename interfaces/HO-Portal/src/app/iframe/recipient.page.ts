@@ -56,7 +56,7 @@ export class RecipientPage implements OnDestroy {
     this.recipients = this.recipients.map((recipient) => {
       recipient.name = recipient.name
         ? recipient.name
-        : recipient.registrationProgramId;
+        : recipient.personAffectedSequence;
       return recipient;
     });
 

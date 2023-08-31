@@ -31,7 +31,8 @@ export class Person {
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
-  registrationProgramId: string;
+  registrationProgramId: number;
+  personAffectedSequence: string;
   lastTransactionPaymentNumber?: number;
   amountPaymentsReceived?: number;
   lastTransactionCreated?: string;
@@ -44,7 +45,7 @@ export class Person {
 
 // Model for display (in table)
 export class PersonRow {
-  id: string;
+  id: number;
   referenceId: string;
   checkboxVisible: boolean;
   pa: string; // Display label

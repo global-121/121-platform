@@ -366,7 +366,7 @@
       <ng-container *ngIf="column.prop === 'name'">
         <a
           class="registration-details-link ion-text-nowrap"
-          [routerLink]="['..', 'registration', row.id.substr(4)]"
+          [routerLink]="['..', 'registration', row.id]"
         >
           {{ value }}
         </a>

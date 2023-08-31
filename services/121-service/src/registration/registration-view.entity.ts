@@ -23,6 +23,10 @@ import { RegistrationEntity } from './registration.entity';
       .from(RegistrationEntity, 'registration')
       .addSelect(
         `CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR)`,
+        'personAffectedSequence',
+      )
+      .addSelect(
+        `registration."registrationProgramId"`,
         'registrationProgramId',
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
@@ -87,6 +91,9 @@ export class RegistrationViewEntity {
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
   public registrationProgramId: number;
+
+  @ViewColumn()
+  public personAffectedSequence: string;
 
   @ViewColumn()
   public maxPayments: number;
