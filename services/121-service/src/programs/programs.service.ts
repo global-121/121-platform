@@ -89,8 +89,7 @@ export class ProgramService {
       );
       // TODO: Get these columns from some enum or something
       program['filterableColumns'] = [
-        'id',
-        'status',
+        'personAffectedSequence',
         'referenceId',
         'phoneNumber',
         'preferredLanguage',
@@ -98,8 +97,7 @@ export class ProgramService {
         'paymentAmountMultiplier',
         'note',
         'noteUpdated',
-        'financialServiceProvider',
-        'registrationProgramId',
+        'fspDisplayNamePortal',
         'maxPayments',
       ];
     }

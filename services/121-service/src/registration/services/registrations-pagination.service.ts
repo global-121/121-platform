@@ -61,6 +61,7 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     note: allowedFilterOperators,
     noteUpdated: allowedFilterOperators,
     financialServiceProvider: allowedFilterOperators,
+    fspDisplayNamePortal: allowedFilterOperators,
     registrationProgramId: allowedFilterOperators,
     maxPayments: allowedFilterOperators,
     personAffectedSequence: allowedFilterOperators,

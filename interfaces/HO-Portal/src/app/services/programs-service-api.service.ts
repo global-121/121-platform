@@ -541,7 +541,7 @@ export class ProgramsServiceApiService {
     }
     if (filters) {
       for (const filter of filters) {
-        params = params.append(`filter.${filter[0]}`, filter[1]);
+        params = params.append(`filter.${filter[0]}`, `$ilike:${filter[1]}`);
       }
     }
     const { data, meta, links } = await this.apiService.get(
