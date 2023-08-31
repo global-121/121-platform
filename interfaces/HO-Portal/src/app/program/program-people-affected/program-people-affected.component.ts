@@ -794,18 +794,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       const nameQuestion = searchableColumns.find(
         (question) => question.name === nameColumn,
       );
-      const addCol = {
-        prop: nameColumn,
-        name: this.translatableStringService.get(
-          nameQuestion.shortLabel || nameQuestion.label,
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 768,
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
-      };
-      this.columns.push(addCol);
+      if (nameQuestion) {
+        const addCol = {
+          prop: nameColumn,
+          name: this.translatableStringService.get(
+            nameQuestion.shortLabel || nameQuestion.label,
+          ),
+          ...this.columnDefaults,
+          frozenLeft: this.platform.width() > 768,
+          permissions: [Permission.RegistrationPersonalREAD],
+          minWidth: this.columnWidthPerType[AnswerType.Text],
+          width: this.columnWidthPerType[AnswerType.Text],
+        };
+        this.columns.push(addCol);
+      }
     }
     for (const column of this.standardColumns) {
       if (
