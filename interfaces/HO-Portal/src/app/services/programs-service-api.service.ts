@@ -520,7 +520,7 @@ export class ProgramsServiceApiService {
     filterOnPayment?: number,
     attributes?: string[],
     statuses?: RegistrationStatus[],
-    filters?: string[][],
+    filters?: { column: string; value: string }[],
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
@@ -541,7 +541,10 @@ export class ProgramsServiceApiService {
     }
     if (filters) {
       for (const filter of filters) {
-        params = params.append(`filter.${filter[0]}`, `$ilike:${filter[1]}`);
+        params = params.append(
+          `filter.${filter.column}`,
+          `$ilike:${filter.value}`,
+        );
       }
     }
     const { data, meta, links } = await this.apiService.get(

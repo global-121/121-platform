@@ -109,7 +109,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public selectedPeople: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
+
+  public textFilter: {
+    column: string;
+    value: string;
+  }[];
   public filterRowsVisibleQuery: string;
+  public textFilterOption: string | undefined;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -1494,12 +1500,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async setTextFieldFilter(value: string) {
     // this.tableFilterState.text.value = value;
-    this.tableService?.setTextFilterValue(value);
+    console.log('=== value: ', typeof value);
+    this.tableService?.addTextFilter(this.textFilterOption, value);
     await this.getPage();
+    this.filterRowsVisibleQuery = '';
+    this.textFilterOption = undefined;
+    console.log('=== filterRowsVisibleQuery: ', this.filterRowsVisibleQuery);
+    console.log('=== textFilterOption: ', this.textFilterOption);
   }
 
-  public applyFilter(value: string) {
-    this.setTextFieldFilter(value?.toLowerCase().trim());
+  public applyFilter() {
+    if (
+      !this.textFilterOption ||
+      !this.filterRowsVisibleQuery ||
+      this.filterRowsVisibleQuery.trim() === ''
+    ) {
+      return;
+    }
+    this.setTextFieldFilter(this.filterRowsVisibleQuery?.toLowerCase().trim());
     this.updateVisiblePeopleAffectedByFilter();
   }
 
@@ -1764,12 +1782,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isLoading = false;
   }
 
-  public async selectTextFilterOption(column: string) {
-    // this.tableFilterState.text.column = column;
-    this.tableService?.setTextFilterColumn(column);
+  // public async selectTextFilterOption(column: string) {
+  //   // this.tableFilterState.text.column = column;
+  //   // this.tableService?.setTextFilterColumn(column);
 
-    await this.getPage();
-  }
+  //   await this.getPage();
+  // }
 
   private async getPage(): Promise<void> {
     const { data, meta } = await this.tableService.getPage(
@@ -1786,6 +1804,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.updateProxyScrollbarSize();
 
-    return;
+    this.textFilter = this.tableService?.getTextFilter();
+  }
+
+  public removeTextFilter(column: string) {
+    this.tableService?.removeTextFilter(column);
+    this.getPage();
   }
 }

@@ -11,8 +11,8 @@ export class TableService {
   private textFilter: {
     column: string;
     value: string;
-  };
-  private DEFAULT_TEXT_FILTER = { column: null, value: null };
+  }[];
+  private DEFAULT_TEXT_FILTER = [];
 
   private pageMetaData = new PaginationMetadata();
 
@@ -20,12 +20,8 @@ export class TableService {
     this.resetTextFilter();
   }
 
-  public setTextFilterColumn(column: string) {
-    this.textFilter.column = column;
-  }
-
-  public setTextFilterValue(value: string) {
-    this.textFilter.value = value;
+  public addTextFilter(column: string, value: string) {
+    this.textFilter.push({ column, value });
   }
 
   public setCurrentPage(currentPage: number) {
@@ -51,11 +47,11 @@ export class TableService {
       return null;
     }
 
-    let filters: string[][] = null;
+    // let filters: string[][] = null;
 
-    if (this.textFilter?.column && this.textFilter?.value) {
-      filters = [[this.textFilter.column, this.textFilter.value]];
-    }
+    // if (this.textFilter?.column && this.textFilter?.value) {
+    //   filters = [[this.textFilter.column, this.textFilter.value]];
+    // }
 
     const { data, meta } = await this.programsService.getPeopleAffected(
       programId,
@@ -65,7 +61,7 @@ export class TableService {
       filterOnPayment,
       attributes,
       statuses,
-      filters,
+      this.textFilter,
     );
 
     this.pageMetaData.totalItems = meta.totalItems;
@@ -80,5 +76,16 @@ export class TableService {
 
   private resetTextFilter() {
     this.textFilter = this.DEFAULT_TEXT_FILTER;
+  }
+
+  public getTextFilter(): {
+    column: string;
+    value: string;
+  }[] {
+    return this.textFilter;
+  }
+
+  public removeTextFilter(column: string) {
+    this.textFilter = this.textFilter.filter((f) => f.column !== column);
   }
 }

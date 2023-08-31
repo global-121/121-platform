@@ -60,6 +60,20 @@
       *ngIf="program"
       class="ion-align-items-center"
     >
+      <ion-chip
+        *ngFor="let filter of textFilter"
+        size="small"
+      >
+        <ion-label
+          >{{ filter.column + ': '
+          }}<strong>{{ filter.value }}</strong></ion-label
+        >
+        <ion-icon
+          name="close"
+          size="small"
+          (click)="removeTextFilter(filter.column)"
+        ></ion-icon>
+      </ion-chip>
       <ion-button
         class="ion-padding-end"
         (click)="refreshData()"
@@ -87,10 +101,13 @@
         <ion-select
           style="min-height: 40px; margin-right: 8px"
           interface="popover"
-          (ionChange)="selectTextFilterOption($event.detail.value)"
+          [value]="undefined"
+          [(ngModel)]="textFilterOption"
         >
+          <ion-select-option>{{ undefined }}</ion-select-option>
           <ion-select-option
             *ngFor="let filterOption of program.filterableColumns"
+            [value]="filterOption"
             >{{ filterOption }}</ion-select-option
           >
         </ion-select>
@@ -107,9 +124,9 @@
             'page.program.program-people-affected.filter-placeholder'
               | translate
           "
-          (ionInput)="applyFilter($event.detail.value)"
+          (keyup.enter)="applyFilter()"
           [debounce]="1000"
-          [value]="filterRowsVisibleQuery"
+          [(ngModel)]="filterRowsVisibleQuery"
           [clearInput]="true"
           class="filter-input"
           data-cy="table-text-filter"
