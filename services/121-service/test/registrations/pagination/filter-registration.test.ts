@@ -79,7 +79,6 @@ describe('Load PA table', () => {
         null,
         { 'filter.whatsappPhoneNumber': registration4.whatsappPhoneNumber },
       );
-      console.log('getRegistrationsResponse: ', getRegistrationsResponse.body);
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
       // Assert
@@ -146,5 +145,5 @@ describe('Load PA table', () => {
       }
       expect(meta.totalItems).toBe(1);
     });
-
+  });
 });
