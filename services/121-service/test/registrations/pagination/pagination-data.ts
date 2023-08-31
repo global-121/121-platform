@@ -20,6 +20,10 @@ export const registration1 = {
 const expectedValueObject1 = { ...registration1 };
 expectedValueObject1['financialServiceProvider'] = expectedValueObject1.fspName;
 delete expectedValueObject1.fspName;
+expectedValueObject1['registrationProgramId'] = 1;
+expectedValueObject1[
+  'personAffectedSequence'
+] = `PA #${expectedValueObject1['registrationProgramId']}`;
 
 export const referenceId2 = '22e62864557597e0d';
 export const registration2 = {
@@ -40,6 +44,10 @@ export const registration2 = {
 const expectedValueObject2 = { ...registration2 };
 expectedValueObject2['financialServiceProvider'] = expectedValueObject2.fspName;
 delete expectedValueObject2.fspName;
+expectedValueObject2['registrationProgramId'] = 2;
+expectedValueObject2[
+  'personAffectedSequence'
+] = `PA #${expectedValueObject2['registrationProgramId']}`;
 
 export const referenceId3 = '43e62864557597e0d';
 export const registration3 = {
@@ -60,6 +68,10 @@ export const registration3 = {
 const expectedValueObject3 = { ...registration3 };
 expectedValueObject3['financialServiceProvider'] = expectedValueObject3.fspName;
 delete expectedValueObject3.fspName;
+expectedValueObject3['registrationProgramId'] = 3;
+expectedValueObject3[
+  'personAffectedSequence'
+] = `PA #${expectedValueObject3['registrationProgramId']}`;
 
 export const referenceId4 = '54e62864557597e0d';
 export const registration4 = {
@@ -80,6 +92,10 @@ export const registration4 = {
 const expectedValueObject4 = { ...registration4 };
 expectedValueObject4['financialServiceProvider'] = expectedValueObject4.fspName;
 delete expectedValueObject4.fspName;
+expectedValueObject4['registrationProgramId'] = 4;
+expectedValueObject4[
+  'personAffectedSequence'
+] = `PA #${expectedValueObject4['registrationProgramId']}`;
 
 export const expectedAttributes = [
   'id',
@@ -93,6 +109,7 @@ export const expectedAttributes = [
   'noteUpdated',
   'financialServiceProvider',
   'registrationProgramId',
+  'personAffectedSequence',
 ];
 
 export { expectedValueObject1 };

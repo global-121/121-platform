@@ -973,7 +973,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
-      pa: `PA #${String(person.registrationProgramId)}`,
+      pa: person.personAffectedSequence,
       status: person.status,
       statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,

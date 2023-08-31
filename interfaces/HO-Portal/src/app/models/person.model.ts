@@ -32,6 +32,7 @@ export class Person {
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
   registrationProgramId: number;
+  personAffectedSequence: string;
   lastTransactionPaymentNumber?: number;
   amountPaymentsReceived?: number;
   lastTransactionCreated?: string;

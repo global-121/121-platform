@@ -46,6 +46,7 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     'noteUpdated',
     'financialServiceProvider',
     'registrationProgramId',
+    'personAffectedSequence',
     'maxPayments',
     'data.(value)',
   ],
@@ -62,6 +63,7 @@ export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
     financialServiceProvider: allowedFilterOperators,
     registrationProgramId: allowedFilterOperators,
     maxPayments: allowedFilterOperators,
+    personAffectedSequence: allowedFilterOperators,
   },
 };
 
