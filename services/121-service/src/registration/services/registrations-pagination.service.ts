@@ -15,6 +15,7 @@ import {
   SelectQueryBuilder,
   WhereExpressionBuilder,
 } from 'typeorm';
+import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import {
   RegistrationDataInfo,
@@ -78,6 +79,8 @@ type ColumnsFilters = { [columnName: string]: Filter[] };
 export class RegistrationsPaginationService {
   @InjectRepository(RegistrationViewEntity)
   private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(private readonly programService: ProgramService) {}
 
@@ -85,6 +88,19 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
+    // This is needed to add the columns in fullnameNamingConvention to the select
+
+    const orignalSelect = query.select ? [...query.select] : [];
+    const fullnameNamingConvention = await this.getFullNameNamingConvention(
+      programId,
+    );
+
+    if (query.select && query.select.includes('name')) {
+      if (fullnameNamingConvention) {
+        query.select = query.select.concat(fullnameNamingConvention);
+      }
+    }
+
     let queryBuilder = this.registrationViewRepository
       .createQueryBuilder('registration')
       .where('"programId" = :programId', { programId: programId });
@@ -130,8 +146,24 @@ export class RegistrationsPaginationService {
       result,
       registrationDataRelationsSelect,
       query.select,
+      orignalSelect,
+      fullnameNamingConvention,
     );
     return result;
+  }
+
+  private async getFullNameNamingConvention(
+    programId: number,
+  ): Promise<string[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      select: ['fullnameNamingConvention'],
+    });
+    if (program.fullnameNamingConvention)
+      return JSON.parse(JSON.stringify(program.fullnameNamingConvention));
+    else {
+      return [];
+    }
   }
 
   private filterOnRegistrationData(
@@ -253,6 +285,8 @@ export class RegistrationsPaginationService {
     paginatedResult: Paginated<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
     select: string[],
+    orignalSelect: string[],
+    fullnameNamingConvention: string[],
   ): RegistrationViewEntity[] {
     const mappedData: RegistrationViewEntity[] = [];
     for (const registration of paginatedResult.data) {
@@ -261,12 +295,21 @@ export class RegistrationsPaginationService {
         select,
       );
       // Add personal data permission check here
-      const mappedRegistration = this.mapRegistrationData(
+      let mappedRegistration = this.mapRegistrationData(
         registration.data,
         mappedRootRegistration,
         registrationDataRelations,
       );
       mappedData.push(mappedRegistration);
+
+      if (!select || select.includes('name')) {
+        mappedRegistration = this.mapRegistrationName(
+          mappedRegistration,
+          select,
+          orignalSelect,
+          fullnameNamingConvention,
+        );
+      }
     }
     return mappedData;
   }
@@ -327,5 +370,35 @@ export class RegistrationsPaginationService {
       }
     }
     return mappedRegistration;
+  }
+
+  private mapRegistrationName(
+    registration: RegistrationViewEntity,
+    select: string[],
+    orignalSelect: string[],
+    fullnameNamingConvention: string[],
+  ): RegistrationViewEntity {
+    registration['name'] = this.getName(registration, fullnameNamingConvention);
+    if (select && select.includes('name')) {
+      const differenceOrignalSelect = select.filter(
+        (x) => !orignalSelect.includes(x),
+      );
+      for (const key of differenceOrignalSelect) {
+        delete registration[key];
+      }
+    }
+    return registration;
+  }
+
+  private getName(
+    registrationRow: object,
+    fullnameNamingConvention: string[],
+  ): string {
+    const fullnameConcat = [];
+    const nameColumns = JSON.parse(JSON.stringify(fullnameNamingConvention));
+    for (const nameColumn of nameColumns) {
+      fullnameConcat.push(registrationRow[nameColumn]);
+    }
+    return fullnameConcat.join(' ');
   }
 }

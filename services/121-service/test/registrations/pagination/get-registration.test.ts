@@ -21,6 +21,9 @@ describe('Load PA table', () => {
     const attribute1 = 'whatsappPhoneNumber';
     const attribute2 = 'addressCity';
     const attribute3 = 'referenceId';
+    const attributeName = 'name';
+    const attributeFirstName = 'firstName';
+    const attributeLastName = 'lastName';
 
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
@@ -32,7 +35,12 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      await importRegistrations(programId, [registration1], accessToken);
+      const result = await importRegistrations(
+        programId,
+        [registration1],
+        accessToken,
+      );
+      console.log('result: ', result.body);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
@@ -45,6 +53,7 @@ describe('Load PA table', () => {
         requestedDynamicAttributes,
         accessToken,
       );
+      console.log('getRegistrationsResponse: ', getRegistrationsResponse.body);
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
       // Assert
@@ -73,6 +82,42 @@ describe('Load PA table', () => {
       expect(data[0]).toHaveProperty(attribute1);
       expect(data[0]).not.toHaveProperty(attribute2);
       expect(data[0]).not.toHaveProperty(attribute3);
+    });
+
+    it('should only return full name and firstname', async () => {
+      // Arrange
+      const requestedDynamicAttributes = [attributeName, attributeFirstName];
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations(
+        programId,
+        requestedDynamicAttributes,
+        accessToken,
+      );
+      const data = getRegistrationsResponse.body.data;
+
+      // Assert
+      expect(data[0]).toHaveProperty(attributeName);
+      expect(data[0]).toHaveProperty(attributeFirstName);
+      expect(data[0]).not.toHaveProperty(attributeLastName);
+    });
+
+    it('should only return full name', async () => {
+      // Arrange
+      const requestedDynamicAttributes = [attributeName];
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations(
+        programId,
+        requestedDynamicAttributes,
+        accessToken,
+      );
+      const data = getRegistrationsResponse.body.data;
+
+      // Assert
+      expect(data[0]).toHaveProperty(attributeName);
+      expect(data[0]).not.toHaveProperty(attributeFirstName);
+      expect(data[0]).not.toHaveProperty(attributeLastName);
     });
 
     it('Should return specified amount of PA per page', async () => {
