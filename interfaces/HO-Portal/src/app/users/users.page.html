@@ -59,25 +59,22 @@
     </div>
 
     <!--tab 1 users-->
-    <ion-list
+    <div
       *ngIf="segment === 'users'"
       class="ion-padding"
     >
-      <ion-item *ngFor="let item of arr; let index = index">
-        <ion-label>Users {{ index + 1 }}</ion-label>
-      </ion-item>
-    </ion-list>
+      <!--users table-->
+      <div class="ion-padding">
+        <app-users-table></app-users-table>
+      </div>
+    </div>
 
     <!--tab 2 roles-->
     <div
       *ngIf="segment === 'roles'"
       class="ion-padding"
     >
-      <ion-card *ngFor="let item of arr; let index = index">
-        <ion-card-content>
-          <h2>Roles {{ index + 1 }}</h2>
-        </ion-card-content>
-      </ion-card>
+      <ion-item>Roles</ion-item>
     </div>
   </section>
 </ion-content>
