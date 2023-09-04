@@ -88,6 +88,7 @@
           style="min-height: 40px; margin-right: 8px"
           interface="popover"
           (ionChange)="selectTextFilterOption($event.detail.value)"
+          placeholder="Select..."
         >
           <ion-select-option
             *ngFor="let filterOption of program.filterableColumns"
