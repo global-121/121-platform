@@ -91,7 +91,11 @@
         >
           <ion-select-option
             *ngFor="let filterOption of program.filterableColumns"
-            >{{ filterOption }}</ion-select-option
+            value="{{ filterOption }}"
+            >{{
+              'page.program.program-people-affected.filter.' + filterOption
+                | translate
+            }}</ion-select-option
           >
         </ion-select>
         <ion-input

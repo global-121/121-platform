@@ -226,6 +226,18 @@
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
+        "filter": {
+          "personAffectedSequence": "PA #",
+          "referenceId": "Reference ID",
+          "phoneNumber": "Phone number",
+          "preferredLanguage": "Preferred language",
+          "inclusionScore": "Inclusion score",
+          "paymentAmountMultiplier": "Transfer value(s)",
+          "note": "Note",
+          "noteUpdated": "Note updated",
+          "fspDisplayNamePortal": "Financial Service Provider",
+          "maxPayments": "Max payments"
+        },
         "filter-placeholder": "Type to filter...",
         "filter-toggle": "Show all",
         "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
