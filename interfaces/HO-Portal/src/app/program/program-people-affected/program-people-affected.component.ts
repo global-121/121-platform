@@ -785,30 +785,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadColumns() {
-    for (const nameColumn of this.program.fullnameNamingConvention) {
-      const searchableColumns = [
-        ...this.program.programQuestions,
-        ...this.program.programCustomAttributes,
-      ];
-
-      const nameQuestion = searchableColumns.find(
-        (question) => question.name === nameColumn,
-      );
-      if (nameQuestion) {
-        const addCol = {
-          prop: nameColumn,
-          name: this.translatableStringService.get(
-            nameQuestion.shortLabel || nameQuestion.label,
-          ),
-          ...this.columnDefaults,
-          frozenLeft: this.platform.width() > 768,
-          permissions: [Permission.RegistrationPersonalREAD],
-          minWidth: this.columnWidthPerType[AnswerType.Text],
-          width: this.columnWidthPerType[AnswerType.Text],
-        };
-        this.columns.push(addCol);
-      }
-    }
+    this.loadNameColumns();
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
@@ -860,6 +837,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
       this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
+  }
+
+  private loadNameColumns() {
+    for (const nameColumn of this.program.fullnameNamingConvention) {
+      const searchableColumns = [
+        ...this.program.programQuestions,
+        ...this.program.programCustomAttributes,
+      ];
+
+      const nameQuestion = searchableColumns.find(
+        (question) => question.name === nameColumn,
+      );
+      if (nameQuestion) {
+        const addCol = {
+          prop: nameColumn,
+          name: this.translatableStringService.get(
+            nameQuestion.shortLabel || nameQuestion.label,
+          ),
+          ...this.columnDefaults,
+          frozenLeft: this.platform.width() > 768,
+          permissions: [Permission.RegistrationPersonalREAD],
+          minWidth: this.columnWidthPerType[AnswerType.Text],
+          width: this.columnWidthPerType[AnswerType.Text],
+        };
+        this.columns.push(addCol);
+      }
     }
   }
 
@@ -1042,7 +1046,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             this.locale,
           )
         : null,
-      name: person.name,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
             'preferredLanguage',
@@ -1102,6 +1105,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
       personRow = this.fillPaTableAttributeRows(person, personRow);
+      personRow = this.fillNameColumns(person, personRow);
     }
 
     return personRow;
@@ -1120,6 +1124,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         value = false;
       }
       personRow[paTableAttribute.name] = value;
+    }
+    return personRow;
+  }
+
+  private fillNameColumns(person: Person, personRow: PersonRow): PersonRow {
+    for (const key of this.program.fullnameNamingConvention) {
+      const value = person[key];
+      personRow[key] = value;
     }
     return personRow;
   }
