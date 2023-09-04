@@ -10,6 +10,19 @@ export enum IntersolveVisaWalletStatus {
   Expired = 'EXPIRED',
   Disabled = 'DISABLED',
 }
+
+export enum IntersolveVisaCardStatus {
+  Active = 'CARD_OK',
+  Inactive = 'CARD_BLOCKED',
+  Redeemed = 'SUSPECTED_FRAUD',
+  Substituted = 'CARD_CLOSE_DUE_TO_FRAUD',
+  Expired = 'CARD_NO_RENEWAL',
+  CardStolen = 'CARD_STOLEN',
+  CardLost = 'CARD_LOST',
+  CardClosed = 'CARD_CLOSED',
+  CardExpired = 'CARD_EXPIRED',
+}
+
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
@@ -29,7 +42,10 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   public balance: number;
 
   @Column({ nullable: true })
-  public status: IntersolveVisaWalletStatus;
+  public walletStatus: IntersolveVisaWalletStatus;
+
+  @Column({ nullable: true })
+  public cardStatus: IntersolveVisaCardStatus;
 
   @Column({ nullable: true })
   public lastUsedDate: Date;
