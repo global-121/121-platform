@@ -541,10 +541,16 @@ export class IntersolveVisaService
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
     );
+    const cardDetails = await this.intersolveVisaApiService.getCard(
+      wallet.tokenCode,
+    );
     wallet.balance = walletDetails.data.data.balances.find(
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
     ).quantity.value;
     wallet.walletStatus = walletDetails.data.data.status;
+    if (cardDetails?.data?.data?.status) {
+      wallet.cardStatus = cardDetails.data.data.status;
+    }
 
     const lastUsedDate = await this.getLastChargeTransactionDate(
       wallet.tokenCode,
