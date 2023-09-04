@@ -50,11 +50,13 @@
           <!-- Other tabs -->
           <ion-row *ngIf="item.type !== 'payment'">
             <div class="ion-padding-horizontal">
-              <ion-icon
-                [name]="getIconName(item.type)"
-                size="large"
-                [attr.aria-hidden]="true"
-              ></ion-icon>
+              <div style="height: 100%; display: flex; align-items: center">
+                <ion-icon
+                  [name]="getIconName(item.type)"
+                  size="large"
+                  [attr.aria-hidden]="true"
+                ></ion-icon>
+              </div>
             </div>
             <ion-col>
               <ion-row class="ion-justify-content-between">
@@ -68,7 +70,7 @@
                   </ion-label>
                   <ion-note>
                     <small>
-                      {{ item.date | date: DateFormat.dayAndTime }}
+                      {{ item.date | date: DateFormat.dayAndTimeReverse }}
                     </small>
                   </ion-note>
                 </ion-row>
