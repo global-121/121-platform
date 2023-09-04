@@ -73,13 +73,6 @@ The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
 
 For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/payments/fsp-integration/intersolve/README.md)
 
-### Upload voice mp3
-
-See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice.service.ts`).
-
-- Mp3's that are used when sending voice notifications can be added to the `voice`-folder:
-  The folder structure follows the pattern: `voice/<programId>/<language>/<notification-key>.mp3`
-
 ## Development
 
 ### Testing

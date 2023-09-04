@@ -44,37 +44,8 @@ export class UserService {
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
-    const saltCheck = await this.dataSource
-      .getRepository(UserEntity)
-      .createQueryBuilder('user')
-      .addSelect('user.salt')
-      .where({ username: loginUserDto.username })
-      .getOne();
+    const userEntity = await this.matchPassword(loginUserDto);
 
-    if (!saltCheck) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-
-    const userSalt = saltCheck.salt;
-
-    const findOneOptions = {
-      username: loginUserDto.username,
-      password: userSalt
-        ? crypto
-            .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
-            .toString('hex')
-        : crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
-    };
-    const userEntity = await this.dataSource
-      .getRepository(UserEntity)
-      .createQueryBuilder('user')
-      .addSelect('password')
-      .leftJoinAndSelect('user.programAssignments', 'assignment')
-      .leftJoinAndSelect('assignment.program', 'program')
-      .leftJoinAndSelect('assignment.roles', 'roles')
-      .leftJoinAndSelect('roles.permissions', 'permissions')
-      .where(findOneOptions)
-      .getOne();
     if (!userEntity) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
@@ -216,19 +187,20 @@ export class UserService {
     return await this.buildUserRO(savedUser);
   }
 
-  public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
-    const toUpdate = await this.userRepository.findOne({
-      where: { id: id },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
-    });
-    const updated = toUpdate;
+  public async update(dto: UpdateUserDto): Promise<UserRO> {
+    const userEntity = await this.matchPassword(dto);
+
+    if (!userEntity) {
+      throw new HttpException(
+        'Your password was incorrect.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const updated = userEntity;
     updated.salt = crypto.randomBytes(16).toString('hex');
     updated.password = crypto
-      .pbkdf2Sync(dto.password, updated.salt, 1, 32, 'sha256')
+      .pbkdf2Sync(dto.newPassword, updated.salt, 1, 32, 'sha256')
       .toString('hex');
     await this.userRepository.save(updated);
     return await this.buildUserRO(updated);
@@ -460,5 +432,41 @@ export class UserService {
       expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
       httpOnly: true,
     };
+  }
+
+  public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const saltCheck = await this.dataSource
+      .getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .addSelect('user.salt')
+      .where({ username: loginUserDto.username })
+      .getOne();
+
+    if (!saltCheck) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const userSalt = saltCheck.salt;
+
+    const findOneOptions = {
+      username: loginUserDto.username,
+      password: userSalt
+        ? crypto
+            .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
+            .toString('hex')
+        : crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
+    };
+    const userEntity = await this.dataSource
+      .getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .addSelect('password')
+      .leftJoinAndSelect('user.programAssignments', 'assignment')
+      .leftJoinAndSelect('assignment.program', 'program')
+      .leftJoinAndSelect('assignment.roles', 'roles')
+      .leftJoinAndSelect('roles.permissions', 'permissions')
+      .where(findOneOptions)
+      .getOne();
+
+    return userEntity;
   }
 }

@@ -59,7 +59,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - Generic 121-Portal components/features
   - Login
   - Logout
-  - Change password
+  - [Change password] (121-Portal/Change_password.feature)
   - [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
   - [Navigate program phases](121-Portal/Navigate_program_phases.feature)
 
@@ -78,7 +78,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 
 Using Redline WhatsApp Helpdesk
 
-- View iframe with PA details based on phone number: This is automatically tested via [Cypress](../interfaces/tests/cypress/e2e/HO-Portal/src/pa-details-iframe.cy.js) and therefore not also included here.
+- View iframe with PA details based on phone number
 
 Using EspoCRM
 

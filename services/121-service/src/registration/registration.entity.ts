@@ -1,4 +1,10 @@
-import { IsEnum, IsInt, IsOptional, IsPositive } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 import {
   BeforeRemove,
   Brackets,
@@ -90,7 +96,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: false, default: 1 })
   @IsInt()
   @IsPositive()
-  @IsOptional()
+  @IsNotEmpty()
   public paymentAmountMultiplier: number;
 
   @Column({ nullable: true })
