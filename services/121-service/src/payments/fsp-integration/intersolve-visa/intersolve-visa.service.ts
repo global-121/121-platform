@@ -230,7 +230,7 @@ export class IntersolveVisaService
       intersolveVisaWallet.tokenBlocked =
         createWalletResult.data.data.token.blocked;
       intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
-      intersolveVisaWallet.status = createWalletResult.data.data.token
+      intersolveVisaWallet.walletStatus = createWalletResult.data.data.token
         .status as IntersolveVisaWalletStatus;
       intersolveVisaWallet.balance =
         createWalletResult.data.data.token.balances.find(
@@ -544,7 +544,7 @@ export class IntersolveVisaService
     wallet.balance = walletDetails.data.data.balances.find(
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
     ).quantity.value;
-    wallet.status = walletDetails.data.data.status;
+    wallet.walletStatus = walletDetails.data.data.status;
 
     const lastUsedDate = await this.getLastChargeTransactionDate(
       wallet.tokenCode,
@@ -576,7 +576,7 @@ export class IntersolveVisaService
 
       // Map Intersolve status to 121 status for the frontend
       walletDetailsResponse.status = this.intersolveTo121WalletStatus(
-        wallet.status,
+        wallet.walletStatus,
         wallet.tokenBlocked,
         wallet.tokenCode === _visaCustomer.visaWallets[0].tokenCode,
       );
@@ -921,7 +921,7 @@ export class IntersolveVisaService
     newWallet.tokenCode = createWalletResult.data.data.token.code;
     newWallet.tokenBlocked = createWalletResult.data.data.token.blocked;
     newWallet.intersolveVisaCustomer = _visaCustomer;
-    newWallet.status = createWalletResult.data.data.token
+    newWallet.walletStatus = createWalletResult.data.data.token
       .status as IntersolveVisaWalletStatus;
     newWallet.balance = createWalletResult.data.data.token.balances.find(
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
