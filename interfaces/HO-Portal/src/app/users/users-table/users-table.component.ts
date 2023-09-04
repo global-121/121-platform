@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { User } from 'src/app/models/user.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
@@ -12,22 +14,16 @@ import { SharedModule } from 'src/app/shared/shared.module';
   styleUrls: ['./users-table.component.scss'],
 })
 export class UsersTableComponent implements OnInit {
-  rows = [
-    {
-      name: 'John',
-      role: 'CVA Officer',
-      status: 'Active',
-      lastActivity: '23/01/22',
-    },
-    {
-      name: 'Linda',
-      role: 'Officer',
-      status: 'Active',
-      lastActivity: '05/09/22',
-    },
-  ];
+  rows = [];
 
-  constructor() {}
+  constructor(private programsService: ProgramsServiceApiService) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.loadData();
+  }
+
+  public async loadData() {
+    const users: User[] = await this.programsService.getAllUsers();
+    this.rows = users;
+  }
 }

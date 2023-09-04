@@ -756,4 +756,8 @@ export class ProgramsServiceApiService {
       false,
     );
   }
+
+  getAllUsers(): Promise<User[] | null> {
+    return this.apiService.get(environment.url_121_service_api, '/users');
+  }
 }
