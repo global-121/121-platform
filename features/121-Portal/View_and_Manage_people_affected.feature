@@ -36,7 +36,7 @@ Feature: View and manage people affected (generic features)
     When the user views the PA-table
     Then the user sees all columns available in previous scenario
     And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA
-    And for each person a "name" is shown
+    And for each person the columns that make up the "name" are shown
     And for each person a "phone number" is shown
     And all above columns are fixed when scrolling horizontally
     And "custom attribute" columns are shown if configured to be showing for that phase
@@ -188,7 +188,7 @@ Feature: View and manage people affected (generic features)
     Then the PA-table updates to only filtered rows quickly and without problem
 
   Scenario: View Message History
-  >> This is tested with Cypress. See message-history.cy.ts 
+  >> This is tested with Cypress. See message-history.cy.ts
 
   Scenario: Export current PA Table view
-  >> This is tested with Cypress. See pa-export.cy.ts 
+>> This is tested with Cypress. See pa-export.cy.ts
