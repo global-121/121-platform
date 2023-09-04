@@ -1,30 +1,82 @@
-<div #proxyScrollbar class="proxy-scrollbar" data-target-scroll-element-selector="datatable-body"
-  data-target-width-element-selector="datatable-scroller">
+<div
+  #proxyScrollbar
+  class="proxy-scrollbar"
+  data-target-scroll-element-selector="datatable-body"
+  data-target-width-element-selector="datatable-scroller"
+>
   <div class="proxy-scrollbar--content"></div>
 </div>
-<ngx-datatable class="bootstrap data-table--max-height" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
-  [footerHeight]="50" [rowHeight]="'auto'" [limit]="8">
+<ngx-datatable
+  class="bootstrap data-table--max-height"
+  [rows]="rows"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="'auto'"
+  [limit]="8"
+>
+  <!-- username -->
   <ngx-datatable-column name="Name">
-    <ng-template let-row="row" ngx-datatable-cell-template>
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
       {{ row.username }}
     </ng-template>
   </ngx-datatable-column>
 
+  <!-- role -->
   <ngx-datatable-column name="Role">
-    <ng-template let-row="row" ngx-datatable-cell-template>
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
       {{ row.admin ? 'Admin' : 'Regular' }}
     </ng-template>
   </ngx-datatable-column>
 
+  <!-- status-->
   <ngx-datatable-column name="Status">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      {{ row.active ? 'Active' : 'Inactive' }}
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <ng-container>
+        <ion-chip
+          [disabled]="true"
+          *ngIf="row?.active"
+          [class.active]="row.active === true"
+          [class.inactive]="row.active === false"
+        >
+          <ion-label>
+            <strong>{{
+              'page.users.status.' + row?.active | translate
+            }}</strong>
+          </ion-label>
+        </ion-chip>
+      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
+  <!-- last activity -->
   <ngx-datatable-column name="Last activity">
-    <ng-template let-row="row" ngx-datatable-cell-template>
-      {{ row.lastLogin }}
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.lastLogin | date: DateFormat.dateOnly }}
     </ng-template>
   </ngx-datatable-column>
+
+  <!--footer-->
+  <ngx-datatable-footer>
+    <ng-template
+      ngx-datatable-footer-template
+      let-rowCount="rowCount"
+    >
+      <div style="padding: 5px 10px">
+        <div>{{ rowCount }} {{ 'page.users.team-members' | translate }}</div>
+      </div>
+    </ng-template>
+  </ngx-datatable-footer>
 </ngx-datatable>

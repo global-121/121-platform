@@ -605,7 +605,12 @@
       "title": "USERS PAGE",
       "users-tab": "Users",
       "add-new-user": "Add new user",
-      "roles-and-permissions-tab": "Roles and Permissions"
+      "roles-and-permissions-tab": "Roles and Permissions",
+      "team-members": "Team members",
+      "status": {
+        "true": "Active",
+        "false": "Inactive"
+      }
     },
     "user": {
       "pageTitle": "User",

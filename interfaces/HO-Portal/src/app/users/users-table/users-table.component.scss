@@ -2,8 +2,19 @@
   height: 72vh;
 }
 
-.ngx-datatable-column {
-  background-color: #333;
-  color: white;
-  font-weight: bold;
+ion-chip {
+  height: 22px;
+  font-size: 14px;
+  opacity: 1;
+  margin: 0;
+
+  &.active {
+    --background: var(--fiveten-success-200);
+    --color: var(--ion-color-status-successful-text);
+  }
+
+  &.inactive {
+    --background: var(--ion-color-medium);
+    --color: var(--ion-color-medium-shade);
+  }
 }
