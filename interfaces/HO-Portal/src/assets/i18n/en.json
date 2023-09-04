@@ -236,7 +236,9 @@
           "note": "Note",
           "noteUpdated": "Note updated",
           "fspDisplayNamePortal": "Financial Service Provider",
-          "maxPayments": "Max payments"
+          "maxPayments": "Max payments",
+          "firstName": "First name",
+          "lastName": "Last name"
         },
         "filter-placeholder": "Type to filter...",
         "filter-toggle": "Show all",

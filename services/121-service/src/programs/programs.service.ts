@@ -96,10 +96,14 @@ export class ProgramService {
         'inclusionScore',
         'paymentAmountMultiplier',
         'note',
-        'noteUpdated',
         'fspDisplayNamePortal',
         'maxPayments',
       ];
+      for (const nameColumn of Object.values(
+        program.fullnameNamingConvention,
+      )) {
+        program['filterableColumns'].push(nameColumn);
+      }
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
