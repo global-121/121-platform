@@ -3,7 +3,6 @@
 ```mermaid
 graph LR
   ProgramModule-->SmsModule
-  ProgramModule-->VoiceModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule

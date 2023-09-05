@@ -289,3 +289,12 @@ ion-button {
   background-color: var(--fiveten-neutral-100);
   height: 27px;
 }
+
+ion-input.custom-border {
+  &.invalid-border {
+    --border-color: var(--ion-color-danger) !important;
+  }
+  &.regular-border.has-focus {
+    --border-color: var(--ion-color-primary) !important;
+  }
+}

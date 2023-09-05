@@ -100,21 +100,6 @@ See their status on the [main README](../README.md#status).
 
 The appropriate tests will run automatically when relevant files are changed in a PR.
 
-## Integration tests with Cypress
-
-First, it has to be made sure that latest packages (including cypress) is installed within the `node_modules` by running the `npm install` within each of interfaces folders.
-
-Once that is done, we can start building the integration tests with cypress.
-
-- Before you launch the cypress test suite, make sure the cypress.json file located at `/Interfaces/**/cypress.json` is pointing towards the correct port and URL for the corresponding angular application
-- Run `./node_modules/.bin/cypress open` from within the application under interfaces (eg. `/AW-app`)
-- You will see the test suite and details of all the test files that are written
-- The test files are under `interfaces/*/*/cypress/integration/src`
-- To store fake data for testing use fixtures files (`interfaces/*/*/cypress/fixtures/*.json`)
-
-In order to learn how to write test cases and assert conditions please check out:
-<https://docs.cypress.io/guides/getting-started/writing-your-first-test.html#Add-a-test-file>
-
 ## Deployment
 
 ### Building for production

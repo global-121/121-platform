@@ -27,7 +27,8 @@ updates:
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ionic/cli'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: '@ionic/storage'
         versions: ['>= 2.3.0']
       - dependency-name: '@ngx-translate/core'
@@ -37,13 +38,15 @@ updates:
       - dependency-name: '@swimlane/ngx-datatable'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/*'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
       - dependency-name: tslib
       - dependency-name: typescript
       - dependency-name: rxjs
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'zone.js'
 
   - package-ecosystem: npm
@@ -66,7 +69,8 @@ updates:
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ionic/cli'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: '@ngx-translate/core'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
@@ -74,13 +78,15 @@ updates:
       - dependency-name: '@swimlane/ngx-datatable'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/*'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
       - dependency-name: tslib
       - dependency-name: typescript
       - dependency-name: rxjs
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'zone.js'
 
   - package-ecosystem: npm
@@ -103,39 +109,23 @@ updates:
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ionic/cli'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: '@ngx-translate/core'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/*'
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
       - dependency-name: ngx-translate-lint
-        update-types: ['version-update:semver-major', 'version-update:semver-patch']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: tslib
       - dependency-name: typescript
       - dependency-name: rxjs
-        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'zone.js'
-
-  - package-ecosystem: npm
-    directory: '/interfaces/tests'
-    schedule:
-      interval: weekly
-      day: tuesday
-    versioning-strategy: increase
-    groups:
-      angular:
-        patterns: ['@angular*']
-      eslint:
-        patterns: ['*eslint*']
-    ignore:
-      - dependency-name: '@types/*'
-        update-types: ['version-update:semver-patch']
-      - dependency-name: cypress
-        update-types: ['version-update:semver-major']
-      - dependency-name: typescript
-        update-types: ['version-update:semver-major']
-

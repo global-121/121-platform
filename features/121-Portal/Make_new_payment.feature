@@ -1,8 +1,6 @@
 @portal
 Feature: Make a new payment
 
-  >> These scenarios are also (partly) done with Cypress. See: payment.cy.ts
-
   Background:
     Given a logged-in user with the "PaymentCREATE" permission
     And the user views the "payment" page
@@ -237,14 +235,14 @@ Feature: Make a new payment
     And after correcting the data, the payment can be retried
     And for all other PAs a successful payment appears and notifications are sent (see scenario above)
 
---"Safaricom Kenya"
+  --"Safaricom Kenya"
 
   Scenario: Successfully make a payment to a Person Affected with Financial Service provider "Safaricom"
     Given the Person Affected has been imported as registered
     Given all fields have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
     Given age is not under 18
     Given PA requests valid transaction value
-    When payment is successfully requested 
+    When payment is successfully requested
     Then a successful payment appears in the payment column and the payment history popup
     And payment details are displayed with accordion open
 
@@ -256,15 +254,15 @@ Feature: Make a new payment
     When payment is requested
     Then a failed payment appears for the PA with the missing data
     And error is displayed
-    
---"Commercial Bank of Ethiopia"
+
+  --"Commercial Bank of Ethiopia"
 
   Scenario: Successfully make a payment to a Person Affected with Financial Service provider "Commercial Bank of Ethiopia"
     Given the Person Affected has been imported as registered
     Given all PAs have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Bank Account Number")
     Given age is not under 18
     Given PA requests valid transaction value
-    When payment is successfully requested 
+    When payment is successfully requested
     Then a successful payment appears in the payment column and the payment history popup
     And payment details are displayed with accordion open
 
