@@ -1,5 +1,6 @@
 import { WalletStatus121 } from '../enum/wallet-status-121.enum';
 import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
+import { VisaCardActionLink } from '../services/intersolve-visa-status-mapping.service';
 import {
   IntersolveCreateWalletResponseAssetDto,
   IntersolveCreateWalletResponseBalanceDto,
@@ -16,6 +17,8 @@ export class GetWalletDetailsResponseDto {
   public balance: number;
   public issuedDate: Date;
   public lastUsedDate?: Date;
+  public links: VisaCardActionLink[];
+  public explanation: string;
 }
 
 export class IntersolveGetWalletResponseDto {

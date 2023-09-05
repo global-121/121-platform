@@ -38,26 +38,41 @@ export class IntersolveVisaExportService {
       .where('registration."programId" = :programId', { programId })
       .getRawMany();
 
-    const mappedWallets = this.mapToDto(wallets);
+    const mappedWallets = this.mapToDto(wallets, programId);
     return mappedWallets;
   }
 
-  private mapToDto(wallets: ExportWalletData[]): ExportCardsDto[] {
-    return wallets.map((wallet) => ({
-      paId: wallet.paId,
-      referenceId: wallet.referenceId,
-      registrationStatus: wallet.registrationStatus,
-      cardNumber: wallet.cardNumber,
-      cardStatus121: this.intersolveVisaStatusMappingService.determine121Status(
-        wallet.tokenBlocked,
-        wallet.walletStatus,
-        wallet.cardStatus,
-        wallet.isCurrentWallet,
-      ),
-      issuedDate: wallet.issuedDate,
-      lastUsedDate: wallet.lastUsedDate,
-      balance: wallet.balance,
-    }));
+  private mapToDto(
+    wallets: ExportWalletData[],
+    programId: number,
+  ): ExportCardsDto[] {
+    const exportWalletData = [];
+    for (const wallet of wallets) {
+      const statusInfo =
+        this.intersolveVisaStatusMappingService.determine121StatusInfo(
+          wallet.tokenBlocked,
+          wallet.walletStatus,
+          wallet.cardStatus,
+          wallet.isCurrentWallet,
+          {
+            programId,
+            tokenCode: wallet.cardNumber,
+            referenceId: wallet.referenceId,
+          },
+        );
+      exportWalletData.push({
+        paId: wallet.paId,
+        referenceId: wallet.referenceId,
+        registrationStatus: wallet.registrationStatus,
+        cardNumber: wallet.cardNumber,
+        cardStatus121: statusInfo.walletStatus121,
+        issuedDate: wallet.issuedDate,
+        lastUsedDate: wallet.lastUsedDate,
+        balance: wallet.balance,
+        explanation: statusInfo.explanation,
+      });
+    }
+    return exportWalletData;
   }
 
   private getLatestWalletsSubquery(alias: string): any {

@@ -568,13 +568,13 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<GetWalletsResponseDto> {
-    const { _registration, _visaCustomer } =
+    const { registration: _registration, visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
 
     const walletsResponse = new GetWalletsResponseDto();
     walletsResponse.wallets = [];
 
-    for await (let wallet of _visaCustomer.visaWallets) {
+    for await (let wallet of visaCustomer.visaWallets) {
       wallet = await this.getWalletDetails(wallet);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
@@ -582,14 +582,21 @@ export class IntersolveVisaService
       walletDetailsResponse.balance = wallet.balance;
 
       // Map Intersolve status to 121 status for the frontend
-      walletDetailsResponse.status =
-        this.intersolveVisaStatusMappingService.determine121Status(
+      const statusInfo =
+        this.intersolveVisaStatusMappingService.determine121StatusInfo(
           wallet.tokenBlocked,
           wallet.walletStatus,
           wallet.cardStatus,
-          wallet.tokenCode === _visaCustomer.visaWallets[0].tokenCode,
+          wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
+          {
+            tokenCode: wallet.tokenCode,
+            programId: programId,
+            referenceId: referenceId,
+          },
         );
-
+      walletDetailsResponse.status = statusInfo.walletStatus121;
+      walletDetailsResponse.explanation = statusInfo.explanation;
+      walletDetailsResponse.links = statusInfo.links;
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
 
@@ -602,8 +609,8 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<{
-    _registration: RegistrationEntity;
-    _visaCustomer: IntersolveVisaCustomerEntity;
+    registration: RegistrationEntity;
+    visaCustomer: IntersolveVisaCustomerEntity;
   }> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
@@ -623,7 +630,7 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
-    return { _registration: registration, _visaCustomer: visaCustomer };
+    return { registration: registration, visaCustomer: visaCustomer };
   }
 
   public async toggleBlockWallet(
@@ -737,17 +744,17 @@ export class IntersolveVisaService
       return;
     }
 
-    const { _registration, _visaCustomer } =
+    const { registration: registration, visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
     const errors = [];
 
     const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
       type: 'MOBILE',
-      value: _registration.phoneNumber,
+      value: registration.phoneNumber,
     };
     const phoneNumberResult =
       await this.intersolveVisaApiService.updateCustomerPhoneNumber(
-        _visaCustomer.holderId,
+        visaCustomer.holderId,
         phoneNumberPayload,
       );
     if (phoneNumberResult.status !== 200) {
@@ -764,7 +771,7 @@ export class IntersolveVisaService
     const addressPayload = this.createCustomerAddressPayload(paymentDetails[0]);
     const addressResult =
       await this.intersolveVisaApiService.updateCustomerAddress(
-        _visaCustomer.holderId,
+        visaCustomer.holderId,
         addressPayload,
       );
     if (addressResult.status !== 200) {
@@ -783,14 +790,14 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<any> {
-    const { _registration, _visaCustomer } =
+    const { registration: _registration, visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
-    if (_visaCustomer.visaWallets.length === 0) {
+    if (visaCustomer.visaWallets.length === 0) {
       const errors = `No wallet available yet for PA with this referenceId ${referenceId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const oldWallets = _visaCustomer.visaWallets.sort((a, b) =>
+    const oldWallets = visaCustomer.visaWallets.sort((a, b) =>
       a.created < b.created ? 1 : -1,
     );
     const oldWallet = oldWallets[0];
@@ -887,7 +894,7 @@ export class IntersolveVisaService
 
     // 4. create new wallet
     const createWalletResult = await this.createWallet(
-      _visaCustomer,
+      visaCustomer,
       currentBalance / 100,
     );
     if (!createWalletResult.data?.success) {
@@ -910,7 +917,7 @@ export class IntersolveVisaService
     const newWallet = new IntersolveVisaWalletEntity();
     newWallet.tokenCode = createWalletResult.data.data.token.code;
     newWallet.tokenBlocked = createWalletResult.data.data.token.blocked;
-    newWallet.intersolveVisaCustomer = _visaCustomer;
+    newWallet.intersolveVisaCustomer = visaCustomer;
     newWallet.walletStatus = createWalletResult.data.data.token
       .status as IntersolveVisaWalletStatus;
     newWallet.balance = createWalletResult.data.data.token.balances.find(
@@ -921,7 +928,7 @@ export class IntersolveVisaService
 
     // 5. register new wallet to customer
     const registerResult = await this.linkWalletToCustomer(
-      _visaCustomer,
+      visaCustomer,
       newWallet,
     );
     if (registerResult.status !== 204) {
