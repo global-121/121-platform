@@ -300,7 +300,12 @@
           ></ion-icon>
         </button>
         &nbsp;&nbsp;
-        <span>{{ value }}</span>
+        <a
+          class="registration-details-link ion-text-nowrap"
+          [routerLink]="['..', 'registration', row.id]"
+        >
+          <span>{{ value }}</span>
+        </a>
       </div>
     </ng-template>
   </ngx-datatable-column>
@@ -371,14 +376,6 @@
         <span *ngIf="!row.lastMessageStatus">
           {{ value }}
         </span>
-      </ng-container>
-      <ng-container *ngIf="column.prop === 'name'">
-        <a
-          class="registration-details-link ion-text-nowrap"
-          [routerLink]="['..', 'registration', row.id]"
-        >
-          {{ value }}
-        </a>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
