@@ -51,13 +51,13 @@ import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
-import { WalletStatus121 } from './enum/wallet-status-121.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
   IntersolveVisaWalletEntity,
   IntersolveVisaWalletStatus,
 } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
 @Injectable()
 export class IntersolveVisaService
@@ -74,6 +74,7 @@ export class IntersolveVisaService
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly messageService: MessageService,
+    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
   public async getLastChargeTransactionDate(
@@ -581,11 +582,13 @@ export class IntersolveVisaService
       walletDetailsResponse.balance = wallet.balance;
 
       // Map Intersolve status to 121 status for the frontend
-      walletDetailsResponse.status = this.intersolveTo121WalletStatus(
-        wallet.walletStatus,
-        wallet.tokenBlocked,
-        wallet.tokenCode === _visaCustomer.visaWallets[0].tokenCode,
-      );
+      walletDetailsResponse.status =
+        this.intersolveVisaStatusMappingService.determine121Status(
+          wallet.tokenBlocked,
+          wallet.walletStatus,
+          wallet.cardStatus,
+          wallet.tokenCode === _visaCustomer.visaWallets[0].tokenCode,
+        );
 
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
@@ -621,25 +624,6 @@ export class IntersolveVisaService
     }
     visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
     return { _registration: registration, _visaCustomer: visaCustomer };
-  }
-
-  public intersolveTo121WalletStatus(
-    intersolveStatus: IntersolveVisaWalletStatus,
-    blocked: boolean,
-    isCurrentWallet: boolean,
-  ): WalletStatus121 {
-    if (blocked) {
-      return isCurrentWallet ? WalletStatus121.Paused : WalletStatus121.Blocked;
-    } else if (intersolveStatus === IntersolveVisaWalletStatus.Active) {
-      return WalletStatus121.Active;
-    } else if (intersolveStatus === IntersolveVisaWalletStatus.Inactive) {
-      return WalletStatus121.Issued;
-    } else {
-      console.log(
-        `Got unexpected status from intersolve '${intersolveStatus}'. Storing the wallet with WalletStatus121 as Blocked`,
-      );
-      return WalletStatus121.Blocked;
-    }
   }
 
   public async toggleBlockWallet(
