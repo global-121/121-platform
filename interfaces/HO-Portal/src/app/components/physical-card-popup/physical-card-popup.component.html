@@ -36,10 +36,7 @@
     <!-- Status -->
     <ion-item>
       <ion-label class="card-key-value">
-        {{
-          'registration-details.physical-cards-overview.card-status'
-            | translate
-        }}:
+        {{ 'registration-details.physical-cards-overview.status' | translate }}:
       </ion-label>
       <ion-label class="ion-text-right"
         ><ion-chip
@@ -59,7 +56,7 @@
         }}:
       </ion-label>
       <ion-label class="ion-text-right">
-        <strong>{{ card?.explanation }}</strong>
+        <strong>{{ card?.explanation ? card?.explanation : '-' }}</strong>
       </ion-label>
     </ion-item>
 
