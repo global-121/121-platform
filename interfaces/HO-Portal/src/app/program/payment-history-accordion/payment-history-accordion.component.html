@@ -42,7 +42,9 @@
                 <!-- Transaction Date -->
                 <ion-note class="date">
                   <small>
-                    {{ paymentRow.sentDate | date: DateFormat.dayAndTime }}
+                    {{
+                      paymentRow.sentDate | date: DateFormat.dayAndTimeReverse
+                    }}
                   </small>
                 </ion-note>
               </ion-row>
@@ -129,7 +131,9 @@
                     *ngIf="paymentRow.transaction"
                     class="padding"
                   >
-                    {{ paymentRow.sentDate | date: DateFormat.dayAndTime }}
+                    {{
+                      paymentRow.sentDate | date: DateFormat.dayAndTimeReverse
+                    }}
                   </ion-text>
                 </ion-label>
               </ion-item>
