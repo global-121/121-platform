@@ -10,13 +10,13 @@
   class="bootstrap data-table--max-height"
   [rows]="rows"
   [columnMode]="'force'"
-  [headerHeight]="50"
+  [rowHeight]="50"
+  [scrollbarV]="true"
+  [headerHeight]="40"
   [footerHeight]="50"
-  [rowHeight]="'auto'"
-  [limit]="8"
 >
   <!-- username -->
-  <ngx-datatable-column name="Name">
+  <ngx-datatable-column [name]="'page.users.table-headers.name' | translate">
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -26,7 +26,7 @@
   </ngx-datatable-column>
 
   <!-- role -->
-  <ngx-datatable-column name="Role">
+  <ngx-datatable-column [name]="'page.users.table-headers.role' | translate">
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -36,7 +36,7 @@
   </ngx-datatable-column>
 
   <!-- status-->
-  <ngx-datatable-column name="Status">
+  <ngx-datatable-column [name]="'page.users.table-headers.status' | translate">
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -59,7 +59,9 @@
   </ngx-datatable-column>
 
   <!-- last activity -->
-  <ngx-datatable-column name="Last activity">
+  <ngx-datatable-column
+    [name]="'page.users.table-headers.last-activity' | translate"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template

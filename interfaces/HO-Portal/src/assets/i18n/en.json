@@ -607,6 +607,12 @@
       "add-new-user": "Add new user",
       "roles-and-permissions-tab": "Roles and Permissions",
       "team-members": "Team members",
+      "table-headers": {
+        "name": "Name",
+        "role": "Role",
+        "status": "Status",
+        "last-activity": "Last activity"
+      },
       "status": {
         "true": "Active",
         "false": "Inactive"
