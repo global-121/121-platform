@@ -9,7 +9,7 @@ export class ExportCardsDto {
   paId: number;
   referenceId: string;
   registrationStatus: RegistrationStatusEnum;
-  cardNumber: number;
+  cardNumber: string;
   cardStatus121: WalletStatus121;
   issuedDate: Date;
   lastUsedDate: Date;
@@ -20,7 +20,7 @@ export interface ExportWalletData {
   paId: number;
   referenceId: string;
   registrationStatus: RegistrationStatusEnum;
-  cardNumber: number;
+  cardNumber: string;
   issuedDate: Date;
   lastUsedDate: Date;
   balance: number;
@@ -29,4 +29,5 @@ export interface ExportWalletData {
   isCurrentWallet?: boolean;
   walletStatus: IntersolveVisaWalletStatus;
   cardStatus: IntersolveVisaCardStatus;
+  explanation: string;
 }

@@ -582,14 +582,21 @@ export class IntersolveVisaService
       walletDetailsResponse.balance = wallet.balance;
 
       // Map Intersolve status to 121 status for the frontend
-      walletDetailsResponse.status =
-        this.intersolveVisaStatusMappingService.determine121Status(
+      const statusInfo =
+        this.intersolveVisaStatusMappingService.determine121StatusInfo(
           wallet.tokenBlocked,
           wallet.walletStatus,
           wallet.cardStatus,
           wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
+          {
+            tokenCode: wallet.tokenCode,
+            programId: programId,
+            referenceId: referenceId,
+          },
         );
-
+      walletDetailsResponse.status = statusInfo.walletStatus121;
+      walletDetailsResponse.explanation = statusInfo.explanation;
+      walletDetailsResponse.links = statusInfo.links;
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
 
