@@ -50,6 +50,19 @@
       >
     </ion-item>
 
+    <!-- Explanation -->
+    <ion-item>
+      <ion-label class="card-key-value">
+        {{
+          'registration-details.physical-cards-overview.explanation'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right">
+        <strong>{{ card?.explanation }}</strong>
+      </ion-label>
+    </ion-item>
+
     <!-- Current balance -->
     <ion-item>
       <ion-label class="card-key-value"

@@ -7,6 +7,7 @@ export class PhysicalCard {
 
   status: WalletStatus121;
   statusLabel?: string;
+  explanation?: string;
 
   issuedDate: string | Date;
   lastUsedDate: string | Date;
