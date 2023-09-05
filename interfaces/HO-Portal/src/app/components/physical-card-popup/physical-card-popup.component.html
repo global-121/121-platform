@@ -55,7 +55,10 @@
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">
+      <ion-label
+        class="card-key-value ion-text-right"
+        [title]="card?.explanation ? card?.explanation : '-'"
+      >
         <strong>{{ card?.explanation ? card?.explanation : '-' }}</strong>
       </ion-label>
     </ion-item>
