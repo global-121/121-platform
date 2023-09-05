@@ -1086,7 +1086,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : this.translate.instant(
             'page.program.program-people-affected.last-message.no-message',
           ),
-      hasNote: !!person.hasNote,
+      hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
