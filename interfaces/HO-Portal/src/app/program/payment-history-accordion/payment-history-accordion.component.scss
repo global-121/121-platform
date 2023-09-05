@@ -55,9 +55,14 @@ ion-item::part(native) {
 }
 
 .padding {
-  padding: 5px;
+  padding: 7px 5px 5px 5px;
 }
 
 .min-height {
   min-height: 40px;
+}
+
+.mx-auto {
+  margin-top: auto;
+  margin-bottom: auto;
 }
