@@ -12,11 +12,11 @@ export enum IntersolveVisaWalletStatus {
 }
 
 export enum IntersolveVisaCardStatus {
-  Active = 'CARD_OK',
-  Inactive = 'CARD_BLOCKED',
-  Redeemed = 'SUSPECTED_FRAUD',
-  Substituted = 'CARD_CLOSE_DUE_TO_FRAUD',
-  Expired = 'CARD_NO_RENEWAL',
+  CardOk = 'CARD_OK',
+  CardBlocked = 'CARD_BLOCKED',
+  SuspectedFraud = 'SUSPECTED_FRAUD',
+  CardClosedDueToFraud = 'CARD_CLOSED_DUE_TO_FRAUD',
+  CardNoRenewal = 'CARD_NO_RENEWAL',
   CardStolen = 'CARD_STOLEN',
   CardLost = 'CARD_LOST',
   CardClosed = 'CARD_CLOSED',

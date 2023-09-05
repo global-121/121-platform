@@ -133,11 +133,10 @@ export class IntersolveVisaApiService {
     tokenCode: string,
   ): Promise<IntersolveGetCardResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      // return await this.intersolveVisaApiMockService.getWalletMock(tokenCode);
+      return await this.intersolveVisaApiMockService.getCardMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
-      console.log('url: ', url);
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
