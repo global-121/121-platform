@@ -699,7 +699,7 @@
     "physical-cards-overview": {
       "title": "Debit cards",
       "subtitle": "...",
-      "card-status": "Card status",
+      "card-status": "Status",
       "status": {
         "active": "Active",
         "inactive": "Inactive",
