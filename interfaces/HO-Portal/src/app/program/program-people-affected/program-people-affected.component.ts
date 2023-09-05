@@ -336,6 +336,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
 
+  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public columnsPerPhase: PaTableAttribute[];
+
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
   private paStatusDefaultsPerPhase = {
@@ -417,7 +420,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       {
         prop: 'phoneNumber',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.phone-number',
+          'page.program.program-people-affected.column.phoneNumber',
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
@@ -569,7 +572,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       {
         prop: 'fspDisplayNamePortal',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fsp',
+          'page.program.program-people-affected.column.fspDisplayNamePortal',
         ),
         ...this.columnDefaults,
         minWidth: 220,
@@ -623,6 +626,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.refreshData();
 
     await this.updateBulkActions();
+
+    await this.updateTableFiltersPerColumn();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -800,16 +805,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
     }
 
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+    this.columnsPerPhase = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
 
-    if (!columnsPerPhase) {
+    if (this.columnsPerPhase) {
       return;
     }
 
-    for (const colPerPhase of columnsPerPhase) {
+    for (const colPerPhase of this.columnsPerPhase) {
       const addCol = {
         prop: colPerPhase.name,
         name: this.createColumnNameLabel(
@@ -923,6 +928,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
+  private async updateTableFiltersPerColumn() {
+    for (const columnName of this.program.filterableColumns) {
+      const column = this.columns.find((column) => column.prop === columnName);
+      let label: string;
+      if (column) {
+        label = column.name;
+      } else {
+        label = this.translate.instant(
+          `page.program.program-people-affected.column.${columnName}`,
+        );
+      }
+      this.tableFiltersPerColumn.push({ name: columnName, label: label });
+    }
+  }
   private async addPaymentBulkActions() {
     // filter out all dopayment actions to avoid duplication
     this.bulkActions = this.bulkActions.filter(
@@ -1687,7 +1706,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       columnsToExport.unshift({
         prop: 'pa',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.person',
+          'page.program.program-people-affected.column.personAffectedSequence',
         ),
       });
 
@@ -1701,7 +1720,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         columnsToExport.push({
           prop: 'inclusionScore',
           name: this.translate.instant(
-            'page.program.program-people-affected.column.inclusion-score',
+            'page.program.program-people-affected.column.inclusionScore',
           ),
         });
       }
