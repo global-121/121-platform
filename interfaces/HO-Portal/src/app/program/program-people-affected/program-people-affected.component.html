@@ -112,7 +112,9 @@
           interface="popover"
           [value]="undefined"
           [(ngModel)]="textFilterOption"
-          [class.text-filter-option-danger]="textFilterOption === undefined && filterRowsVisibleQuery?.length > 0"
+          [class.text-filter-option-danger]="
+            textFilterOption === undefined && filterRowsVisibleQuery?.length > 0
+          "
         >
           <ion-select-option>{{ undefined }}</ion-select-option>
           <ion-select-option
