@@ -87,8 +87,9 @@ export class ProgramService {
       program['paTableAttributes'] = await this.getPaTableAttributes(
         program.id,
       );
+
       // TODO: Get these columns from some enum or something
-      program['filterableColumns'] = [
+      const defaultFilterableColumns = [
         'personAffectedSequence',
         'referenceId',
         'phoneNumber',
@@ -99,11 +100,13 @@ export class ProgramService {
         'fspDisplayNamePortal',
         'maxPayments',
       ];
-      for (const nameColumn of Object.values(
-        program.fullnameNamingConvention,
-      )) {
-        program['filterableColumns'].push(nameColumn);
-      }
+
+      const paAttributesNameArray = program['paTableAttributes'].map(
+        (paAttribute: Attribute) => paAttribute.name,
+      );
+      program['filterableColumns'] = [
+        ...new Set([...defaultFilterableColumns, ...paAttributesNameArray]),
+      ];
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;

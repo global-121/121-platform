@@ -810,7 +810,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.thisPhase,
     );
 
-    if (this.columnsPerPhase) {
+    if (!this.columnsPerPhase) {
       return;
     }
 
@@ -930,10 +930,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async updateTableFiltersPerColumn() {
     for (const columnName of this.program.filterableColumns) {
-      const column = this.columns.find((column) => column.prop === columnName);
+      const column = this.program.paTableAttributes.find((column) => column.name === columnName);
       let label: string;
-      if (column) {
-        label = column.name;
+      if (column && column.shortLabel) {
+        label = this.translatableStringService.get(column.shortLabel);
       } else {
         label = this.translate.instant(
           `page.program.program-people-affected.column.${columnName}`,
