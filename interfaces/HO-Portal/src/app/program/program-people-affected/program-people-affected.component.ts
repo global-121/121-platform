@@ -929,8 +929,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async updateTableFiltersPerColumn() {
+    this.tableFiltersPerColumn = [];
     for (const columnName of this.program.filterableColumns) {
-      const column = this.program.paTableAttributes.find((column) => column.name === columnName);
+      const column = this.program.paTableAttributes.find(
+        (column) => column.name === columnName,
+      );
       let label: string;
       if (column && column.shortLabel) {
         label = this.translatableStringService.get(column.shortLabel);
