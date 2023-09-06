@@ -930,6 +930,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async updatetableFiltersDropdown() {
+    this.tableFiltersDropdownOptions = [];
     for (const attribute of this.program.filterableAttributes) {
       const column = this.program.paTableAttributes.find(
         (column) => column.name === attribute.name,
