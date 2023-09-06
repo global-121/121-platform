@@ -942,6 +942,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.tableFiltersPerColumn.push({ name: columnName, label: label });
     }
   }
+
   private async addPaymentBulkActions() {
     // filter out all dopayment actions to avoid duplication
     this.bulkActions = this.bulkActions.filter(
