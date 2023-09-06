@@ -41,7 +41,10 @@
       <ion-label class="ion-text-right"
         ><ion-chip
           class="physical-card-status-chip"
-          [ngClass]="'physical-card-status-chip-' + card?.status.toLowerCase()"
+          [ngClass]="
+            'physical-card-status-chip-' +
+            card?.status.replace(' ', '-').toLowerCase()
+          "
           >{{ card?.status }}</ion-chip
         ></ion-label
       >
