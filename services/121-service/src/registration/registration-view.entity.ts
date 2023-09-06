@@ -15,8 +15,8 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationEntity } from './registration.entity';
 
-// TODO: REFACTOR: rename to RegistrationView, common practice is not to suffix an Entity class with "Entity" (also goes for non-view Entities), so that the default view or table name gets no suffix either
 @ViewEntity({
+  name: 'registration_view',
   expression: (dataSource: DataSource) =>
     dataSource
       .createQueryBuilder()
