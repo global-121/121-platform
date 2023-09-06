@@ -10,6 +10,10 @@ import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+} from '../models/pagination-filter.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
@@ -526,7 +530,7 @@ export class ProgramsServiceApiService {
     filterOnPayment?: number,
     attributes?: string[],
     statuses?: RegistrationStatus[],
-    filters?: string[][],
+    filters?: PaginationFilter[],
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
@@ -547,7 +551,12 @@ export class ProgramsServiceApiService {
     }
     if (filters) {
       for (const filter of filters) {
-        params = params.append(`filter.${filter[0]}`, `$ilike:${filter[1]}`);
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `$${operator}:${filter.value}`,
+        );
       }
     }
     const { data, meta, links } = await this.apiService.get(

@@ -52,6 +52,7 @@ import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
+import { FilterOperatorEnum } from '../../models/pagination-filter.model';
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
@@ -336,7 +337,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
 
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public tableFiltersDropdownOptions: { name: string; label: string }[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private messageColumnStatus = MessageStatusMapping;
@@ -627,7 +628,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    await this.updateTableFiltersPerColumn();
+    await this.updatetableFiltersDropdown();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -928,18 +929,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
-  private async updateTableFiltersPerColumn() {
-    for (const columnName of this.program.filterableColumns) {
-      const column = this.program.paTableAttributes.find((column) => column.name === columnName);
+  private async updatetableFiltersDropdown() {
+    for (const attribute of this.program.filterableAttributes) {
+      const column = this.program.paTableAttributes.find(
+        (column) => column.name === attribute.name,
+      );
       let label: string;
       if (column && column.shortLabel) {
         label = this.translatableStringService.get(column.shortLabel);
       } else {
         label = this.translate.instant(
-          `page.program.program-people-affected.column.${columnName}`,
+          `page.program.program-people-affected.column.${attribute.name}`,
         );
       }
-      this.tableFiltersPerColumn.push({ name: columnName, label: label });
+      this.tableFiltersDropdownOptions.push({
+        name: attribute.name,
+        label: label,
+      });
     }
   }
 
@@ -1538,7 +1544,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async setTextFieldFilter(value: string) {
-    // this.tableFilterState.text.value = value;
     this.tableService?.setTextFilterValue(value);
     await this.getPage();
   }
@@ -1810,9 +1815,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async selectTextFilterOption(column: string) {
-    // this.tableFilterState.text.column = column;
-    this.tableService?.setTextFilterColumn(column);
-
+    const attribute = this.program.filterableAttributes.find(
+      (attribute) => attribute.name === column,
+    );
+    const operator = attribute.allowedOperators.includes(
+      FilterOperatorEnum.ilike,
+    )
+      ? FilterOperatorEnum.ilike
+      : FilterOperatorEnum.eq;
+    this.tableService?.setTextFilterOperator(operator);
+    this.tableService?.setTextFilterName(column);
     await this.getPage();
   }
 

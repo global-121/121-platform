@@ -1,5 +1,6 @@
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
+import { FilterOperatorEnum } from './pagination-filter.model';
 import { LanguageEnum } from './person.model';
 import { TranslatableString } from './translatable-string.model';
 
@@ -35,7 +36,12 @@ export class Program {
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
-  filterableColumns: string[];
+  filterableAttributes: FilterableAttributeDefinition[];
+}
+
+class FilterableAttributeDefinition {
+  name: string;
+  allowedOperators: FilterOperatorEnum[];
 }
 
 export class ProgramStats {
