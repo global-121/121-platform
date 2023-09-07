@@ -24,7 +24,7 @@ export class Person {
   rejectionDate?: string;
   completedDate?: string;
   status: RegistrationStatus;
-  hasNote?: boolean;
+  note?: string;
   hasPhoneNumber?: boolean;
   financialServiceProvider?: string;
   fspDisplayNamePortal?: string;

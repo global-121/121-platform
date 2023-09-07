@@ -118,9 +118,9 @@
         >
           <ion-select-option>{{ undefined }}</ion-select-option>
           <ion-select-option
-            *ngFor="let filterOption of program.filterableColumns"
-            [value]="filterOption"
-            >{{ filterOption }}</ion-select-option
+            *ngFor="let filterOption of tableFiltersPerColumn"
+            value="{{ filterOption.name }}"
+            >{{ filterOption.label }}</ion-select-option
           >
         </ion-select>
         <ion-input
@@ -266,7 +266,10 @@
 
   <ngx-datatable-column
     prop="pa"
-    [name]="'page.program.program-people-affected.column.person' | translate"
+    [name]="
+      'page.program.program-people-affected.column.personAffectedSequence'
+        | translate
+    "
     [minWidth]="130"
     [width]="130"
     frozenLeft="true"
@@ -324,7 +327,12 @@
           ></ion-icon>
         </button>
         &nbsp;&nbsp;
-        <span>{{ value }}</span>
+        <a
+          class="registration-details-link ion-text-nowrap"
+          [routerLink]="['..', 'registration', row.id]"
+        >
+          <span>{{ value }}</span>
+        </a>
       </div>
     </ng-template>
   </ngx-datatable-column>
@@ -396,14 +404,6 @@
           {{ value }}
         </span>
       </ng-container>
-      <ng-container *ngIf="column.prop === 'name'">
-        <a
-          class="registration-details-link ion-text-nowrap"
-          [routerLink]="['..', 'registration', row.id]"
-        >
-          {{ value }}
-        </a>
-      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
@@ -429,7 +429,7 @@
     "
     prop="inclusionScore"
     [name]="
-      'page.program.program-people-affected.column.inclusion-score' | translate
+      'page.program.program-people-affected.column.inclusionScore' | translate
     "
     minWidth="80"
     [draggable]="columnDefaults.draggable"

@@ -31,6 +31,7 @@ export class IntersolveIssueVoucherRequestEntity extends Base121Entity {
   @Column({ nullable: true })
   public balance: number;
 
+  // TODO: REFACTOR: into a JoinColumn with the Transaction Entity
   @Column({ nullable: true })
   public transactionId: number;
 

@@ -16,6 +16,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationEntity } from './registration.entity';
 
 @ViewEntity({
+  name: 'registration_view',
   expression: (dataSource: DataSource) =>
     dataSource
       .createQueryBuilder()

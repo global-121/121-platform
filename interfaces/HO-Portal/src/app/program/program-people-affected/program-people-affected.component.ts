@@ -342,6 +342,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
 
+  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public columnsPerPhase: PaTableAttribute[];
+
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
   private paStatusDefaultsPerPhase = {
@@ -421,20 +424,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.standardColumns = [
       {
-        prop: 'name',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.name',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 768,
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
-      },
-      {
         prop: 'phoneNumber',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.phone-number',
+          'page.program.program-people-affected.column.phoneNumber',
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
@@ -586,7 +578,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       {
         prop: 'fspDisplayNamePortal',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fsp',
+          'page.program.program-people-affected.column.fspDisplayNamePortal',
         ),
         ...this.columnDefaults,
         minWidth: 220,
@@ -640,6 +632,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.refreshData();
 
     await this.updateBulkActions();
+
+    await this.updateTableFiltersPerColumn();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -802,6 +796,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadColumns() {
+    this.loadNameColumns();
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
@@ -816,16 +811,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
     }
 
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+    this.columnsPerPhase = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
 
-    if (!columnsPerPhase) {
+    if (!this.columnsPerPhase) {
       return;
     }
 
-    for (const colPerPhase of columnsPerPhase) {
+    for (const colPerPhase of this.columnsPerPhase) {
       const addCol = {
         prop: colPerPhase.name,
         name: this.createColumnNameLabel(
@@ -853,6 +848,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
       this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
+  }
+
+  private loadNameColumns() {
+    for (const nameColumn of this.program.fullnameNamingConvention) {
+      const searchableColumns = [
+        ...this.program.programQuestions,
+        ...this.program.programCustomAttributes,
+      ];
+
+      const nameQuestion = searchableColumns.find(
+        (question) => question.name === nameColumn,
+      );
+      if (nameQuestion) {
+        const addCol = {
+          prop: nameColumn,
+          name: this.translatableStringService.get(
+            nameQuestion.shortLabel || nameQuestion.label,
+          ),
+          ...this.columnDefaults,
+          frozenLeft: this.platform.width() > 768,
+          permissions: [Permission.RegistrationPersonalREAD],
+          minWidth: this.columnWidthPerType[AnswerType.Text],
+          width: this.columnWidthPerType[AnswerType.Text],
+        };
+        this.columns.push(addCol);
+      }
     }
   }
 
@@ -910,6 +932,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.checkValidationColumnOrAction(action);
       return action;
     });
+  }
+
+  private async updateTableFiltersPerColumn() {
+    this.tableFiltersPerColumn = [];
+    for (const columnName of this.program.filterableColumns) {
+      const column = this.program.paTableAttributes.find(
+        (column) => column.name === columnName,
+      );
+      let label: string;
+      if (column && column.shortLabel) {
+        label = this.translatableStringService.get(column.shortLabel);
+      } else {
+        label = this.translate.instant(
+          `page.program.program-people-affected.column.${columnName}`,
+        );
+      }
+      this.tableFiltersPerColumn.push({ name: columnName, label: label });
+    }
   }
 
   private async addPaymentBulkActions() {
@@ -1035,7 +1075,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             this.locale,
           )
         : null,
-      name: person.name,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
             'preferredLanguage',
@@ -1076,7 +1115,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : this.translate.instant(
             'page.program.program-people-affected.last-message.no-message',
           ),
-      hasNote: !!person.hasNote,
+      hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
@@ -1095,6 +1134,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
       personRow = this.fillPaTableAttributeRows(person, personRow);
+      personRow = this.fillNameColumns(person, personRow);
     }
 
     return personRow;
@@ -1113,6 +1153,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         value = false;
       }
       personRow[paTableAttribute.name] = value;
+    }
+    return personRow;
+  }
+
+  private fillNameColumns(person: Person, personRow: PersonRow): PersonRow {
+    for (const key of this.program.fullnameNamingConvention) {
+      const value = person[key];
+      personRow[key] = value;
     }
     return personRow;
   }
@@ -1680,7 +1728,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       columnsToExport.unshift({
         prop: 'pa',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.person',
+          'page.program.program-people-affected.column.personAffectedSequence',
         ),
       });
 
@@ -1694,7 +1742,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         columnsToExport.push({
           prop: 'inclusionScore',
           name: this.translate.instant(
-            'page.program.program-people-affected.column.inclusion-score',
+            'page.program.program-people-affected.column.inclusionScore',
           ),
         });
       }

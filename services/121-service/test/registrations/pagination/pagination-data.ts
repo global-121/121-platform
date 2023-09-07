@@ -110,6 +110,7 @@ export const expectedAttributes = [
   'financialServiceProvider',
   'registrationProgramId',
   'personAffectedSequence',
+  'name',
 ];
 
 export { expectedValueObject1 };

@@ -1,20 +1,27 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../models/user.model';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.page.html',
   styleUrls: ['./user.page.scss'],
 })
-export class UserPage {
+export class UserPage implements OnInit {
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
+  public password = '';
   public newPassword = '';
   public confirmPassword = '';
   public passwordChanged = false;
-
+  public emptyPassword = false;
+  public errorStatusCode = 0;
+  public showPassCheckFail = false;
   public minLength = 8;
 
   private borderValues = {
@@ -24,24 +31,49 @@ export class UserPage {
   };
 
   public validPassword = true;
-  public newPasswordBorder = this.borderValues.normal;
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
+  public newPasswordBorder = this.borderValues.normal;
 
-  constructor(private authService: AuthService) {}
+  private userName: string;
+
+  constructor(
+    private authService: AuthService,
+    private readonly programsService: ProgramsServiceApiService,
+    private router: Router,
+  ) {}
+
+  ngOnInit() {
+    this.authService.authenticationState$.subscribe((user: User | null) => {
+      this.userName = user && user.username ? user.username : '';
+    });
+  }
 
   public updatePassword() {
     if (!this.newPasswordForm.form.valid) {
       return;
     }
 
-    this.authService.setPassword(this.newPassword).then(() => {
-      this.passwordChanged = true;
-      this.newPasswordForm.resetForm();
-      window.setTimeout(() => {
-        this.passwordChanged = false;
-      }, 3000);
-    });
+    this.programsService
+      .changePassword(this.userName, this.password, this.newPassword)
+      .then((val: any) => {
+        if (typeof val === 'string' && val.includes('Not authorized')) {
+          this.showPassCheckFail = true;
+          this.passwordChanged = true;
+        } else if (val) {
+          this.errorStatusCode = 0;
+          this.showPassCheckFail = false;
+          this.passwordChanged = true;
+          // navigate to home
+          window.setTimeout(() => {
+            this.router.navigate(['/', AppRoutes.home]);
+          }, 3000);
+        }
+        window.setTimeout(() => {
+          this.passwordChanged = false;
+        }, 3000);
+        this.newPasswordForm.resetForm();
+      });
   }
 
   public checkNewPassword() {
@@ -49,6 +81,7 @@ export class UserPage {
     this.newPasswordBorder = this.validPassword
       ? this.borderValues.valid
       : this.borderValues.invalid;
+    this.checkConfirmPasswords();
   }
 
   public checkConfirmPasswords() {
@@ -64,13 +97,7 @@ export class UserPage {
     }
   }
 
-  public onChange() {
-    if (
-      this.confirmPassword !== '' &&
-      this.confirmPassword === this.newPassword
-    ) {
-      this.samePassword = true;
-      this.confirmPasswordBorder = this.borderValues.valid;
-    }
+  public checkEmptyPassword() {
+    this.emptyPassword = this.password === '';
   }
 }
