@@ -36,6 +36,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({ status: 201, description: 'Wallets and details retrieved' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Get('programs/:programId/fsp-integration/intersolve-visa/wallets')
   public async getVisaWalletsAndDetails(
     @Query('referenceId') referenceId,
@@ -58,6 +59,7 @@ export class IntersolveVisaController {
     description:
       'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Post(
     'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/block',
   )
@@ -82,6 +84,7 @@ export class IntersolveVisaController {
     description:
       'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked)',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Post(
     'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/unblock',
   )
@@ -106,6 +109,7 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Customer data updated',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Put(
     'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId',
   )
@@ -126,6 +130,7 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Issued new wallet and card',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   // TODO: is PUT and path correct?
   @Put(
     'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId/wallets',

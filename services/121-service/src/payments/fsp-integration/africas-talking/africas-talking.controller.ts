@@ -6,6 +6,7 @@ import { AfricasTalkingNotificationDto } from './dto/africas-talking-notificatio
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @ApiTags('callbacks/africas-talking')
+// TODO: REFACTOR: rename to callbacks/africas-talking
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {
   public constructor(private africasTalkingService: AfricasTalkingService) {}

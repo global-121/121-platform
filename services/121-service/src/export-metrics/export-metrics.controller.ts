@@ -53,6 +53,7 @@ export class ExportMetricsController {
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Get('programs/:programId/export-metrics/export-list/:exportType')
   public async getExportList(
     @Param('programId') programId: number,
@@ -87,6 +88,7 @@ export class ExportMetricsController {
     status: 201,
     description: 'Get list of to cancel vouchers only used by admin',
   })
+  // TODO: REFACTOR: rename to /metrics/
   @Post('export-metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<any> {
     return await this.exportMetricsService.getToCancelVouchers();
@@ -123,6 +125,7 @@ export class ExportMetricsController {
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Get('programs/:programId/export-metrics/person-affected')
   public async getPAMetrics(
     @Param() params,
@@ -152,6 +155,7 @@ export class ExportMetricsController {
     description:
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Get('programs/:programId/export-metrics/payment-state-sums')
   public async getPaymentsWithStateSums(@Param() params): Promise<any> {
     return await this.exportMetricsService.getPaymentsWithStateSums(
@@ -166,6 +170,7 @@ export class ExportMetricsController {
     description: 'All monitoring data of a program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Get('programs/:programId/export-metrics/monitoring')
   public async getMonitoringData(@Param() params): Promise<any[]> {
     return await this.exportMetricsService.getMonitoringData(
@@ -182,6 +187,7 @@ export class ExportMetricsController {
     status: 201,
     description: 'Total number of included per program',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Post('programs/:programId/export-metrics/total-transfer-amounts')
   public async getTotalTransferAmounts(
     @Param() params,
@@ -200,6 +206,7 @@ export class ExportMetricsController {
     status: 200,
     description: 'Program stats summary',
   })
+  // TODO: REFACTOR: rename to /programs/:programid/metrics/
   @Get('programs/:programId/export-metrics/program-stats-summary')
   public async getProgramStats(@Param() params): Promise<ProgramStats> {
     return await this.exportMetricsService.getProgramStats(

@@ -10,6 +10,7 @@ import {
 import { APP_VERSION } from './config';
 
 @ApiTags('instance')
+// TODO: REFACTOR: rename to instance
 @Controller('health')
 export class HealthController {
   public constructor(

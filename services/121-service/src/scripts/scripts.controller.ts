@@ -22,6 +22,7 @@ export class SecretDto {
 }
 
 @ApiTags('instance')
+// TODO: REFACTOR: rename to instance
 @Controller('scripts')
 export class ScriptsController {
   public constructor(private dataSource: DataSource) {}
