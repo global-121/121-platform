@@ -269,7 +269,7 @@ export class UserController {
 
   @Admin()
   @ApiOperation({ summary: 'Get all users' })
-  @Get('users')
+  @Get('programs/:programId/users')
   public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
