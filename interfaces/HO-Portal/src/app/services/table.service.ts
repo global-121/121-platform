@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+} from '../models/pagination-filter.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -8,11 +12,8 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
   providedIn: 'root',
 })
 export class TableService {
-  private textFilter: {
-    column: string;
-    value: string;
-  };
-  private DEFAULT_TEXT_FILTER = { column: null, value: null };
+  private textFilter: PaginationFilter;
+  private DEFAULT_TEXT_FILTER = { name: null, value: null };
 
   private pageMetaData = new PaginationMetadata();
 
@@ -20,12 +21,16 @@ export class TableService {
     this.resetTextFilter();
   }
 
-  public setTextFilterColumn(column: string) {
-    this.textFilter.column = column;
+  public setTextFilterName(name: string) {
+    this.textFilter.name = name;
   }
 
   public setTextFilterValue(value: string) {
     this.textFilter.value = value;
+  }
+
+  public setTextFilterOperator(operator: FilterOperatorEnum) {
+    this.textFilter.operator = operator;
   }
 
   public setCurrentPage(currentPage: number) {
@@ -51,10 +56,16 @@ export class TableService {
       return null;
     }
 
-    let filters: string[][] = null;
+    let filters: PaginationFilter[] = null;
 
-    if (this.textFilter?.column && this.textFilter?.value) {
-      filters = [[this.textFilter.column, this.textFilter.value]];
+    if (this.textFilter?.name && this.textFilter?.value) {
+      filters = [
+        {
+          name: this.textFilter.name,
+          value: this.textFilter.value,
+          operator: this.textFilter.operator,
+        },
+      ];
     }
 
     const { data, meta } = await this.programsService.getPeopleAffected(

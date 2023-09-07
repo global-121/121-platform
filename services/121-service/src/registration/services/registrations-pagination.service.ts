@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   FilterOperator,
   paginate,
-  PaginateConfig,
   Paginated,
   PaginateQuery,
 } from 'nestjs-paginate';
@@ -18,56 +17,15 @@ import {
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import {
+  AllowedFilterOperatorsString,
+  PaginateConfigRegistrationView,
+} from '../const/filter-operation.const';
+import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '../dto/registration-data-relation.model';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
-
-const allowedFilterOperators = [
-  FilterOperator.EQ,
-  FilterOperator.IN,
-  FilterOperator.ILIKE,
-  FilterOperator.NULL,
-];
-
-export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
-  maxLimit: 10000,
-  relations: ['data'],
-  searchableColumns: ['data.(value)'],
-  sortableColumns: [
-    'id',
-    'status',
-    'referenceId',
-    'phoneNumber',
-    'preferredLanguage',
-    'inclusionScore',
-    'paymentAmountMultiplier',
-    'note',
-    'noteUpdated',
-    'financialServiceProvider',
-    'registrationProgramId',
-    'personAffectedSequence',
-    'maxPayments',
-    'data.(value)',
-  ],
-  filterableColumns: {
-    referenceId: allowedFilterOperators,
-    status: allowedFilterOperators,
-    id: allowedFilterOperators,
-    phoneNumber: allowedFilterOperators,
-    preferredLanguage: allowedFilterOperators,
-    inclusionScore: allowedFilterOperators,
-    paymentAmountMultiplier: allowedFilterOperators,
-    note: allowedFilterOperators,
-    noteUpdated: allowedFilterOperators,
-    financialServiceProvider: allowedFilterOperators,
-    fspDisplayNamePortal: allowedFilterOperators,
-    registrationProgramId: allowedFilterOperators,
-    maxPayments: allowedFilterOperators,
-    personAffectedSequence: allowedFilterOperators,
-  },
-};
 
 type Filter = {
   comparator: FilterComparator;
@@ -131,7 +89,7 @@ export class RegistrationsPaginationService {
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
-      paginateConfig,
+      PaginateConfigRegistrationView,
     );
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
@@ -188,7 +146,7 @@ export class RegistrationsPaginationService {
   ): { [column: string]: FilterOperator[] | true } {
     const filterObject = {};
     for (const name of registrationDataNamesProgram) {
-      filterObject[name] = allowedFilterOperators;
+      filterObject[name] = AllowedFilterOperatorsString;
     }
     return filterObject;
   }

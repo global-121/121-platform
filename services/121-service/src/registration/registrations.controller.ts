@@ -43,6 +43,7 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
+import { PaginateConfigRegistrationView } from './const/filter-operation.const';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -64,10 +65,7 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
-import {
-  paginateConfig,
-  RegistrationsPaginationService,
-} from './services/registrations-pagination.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -269,7 +267,7 @@ export class RegistrationsController {
     type: 'integer',
   })
   @Get('programs/:programId/registrations')
-  @PaginatedSwaggerDocs(RegistrationViewEntity, paginateConfig)
+  @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
   public findAll(
     @Paginate() query: PaginateQuery,
     @Param('programId') programId: number,

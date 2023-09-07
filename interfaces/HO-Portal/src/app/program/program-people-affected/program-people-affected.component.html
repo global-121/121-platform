@@ -91,7 +91,7 @@
           placeholder="Select..."
         >
           <ion-select-option
-            *ngFor="let filterOption of tableFiltersPerColumn"
+            *ngFor="let filterOption of tableFiltersDropdownOptions"
             value="{{ filterOption.name }}"
             >{{ filterOption.label }}</ion-select-option
           >
