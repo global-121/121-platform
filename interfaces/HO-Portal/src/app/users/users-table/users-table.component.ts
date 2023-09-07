@@ -15,18 +15,17 @@ import { SharedModule } from 'src/app/shared/shared.module';
   styleUrls: ['./users-table.component.scss'],
 })
 export class UsersTableComponent implements OnInit {
-  programId: number;
   DateFormat = DateFormat;
   rows = [];
 
   constructor(private programsService: ProgramsServiceApiService) {}
 
   ngOnInit() {
-    this.loadData(this.programId);
+    this.loadData();
   }
 
-  public async loadData(programId: number) {
-    const users: User[] = await this.programsService.getAllUsers(programId);
+  public async loadData() {
+    const users: User[] = await this.programsService.getAllUsers();
     this.rows = users;
   }
 }
