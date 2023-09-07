@@ -4,7 +4,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { BelcashService } from './belcash.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
-@ApiTags('payments/belcash')
+@ApiTags('callbacks/belcash')
 @Controller('payments/belcash')
 export class BelcashController {
   public constructor(private belcashService: BelcashService) {}

@@ -17,7 +17,7 @@ import { FspQuestionEntity } from './fsp-question.entity';
 import { FspService } from './fsp.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('fsp')
+@ApiTags('financial-service-providers')
 @Controller('fsp')
 export class FspController {
   public constructor(private readonly fspService: FspService) {}

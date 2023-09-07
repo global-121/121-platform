@@ -33,7 +33,7 @@ import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('user')
+@ApiTags('users')
 @Controller()
 export class UserController {
   private readonly userService: UserService;

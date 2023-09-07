@@ -5,7 +5,7 @@ import { AfricasTalkingService } from './africas-talking.service';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
-@ApiTags('payments/africas-talking')
+@ApiTags('callbacks/africas-talking')
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {
   public constructor(private africasTalkingService: AfricasTalkingService) {}

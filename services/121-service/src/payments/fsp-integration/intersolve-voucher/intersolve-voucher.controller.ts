@@ -32,7 +32,7 @@ import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('payments/intersolve')
+@ApiTags('financial-service-providers/intersolve-voucher')
 @Controller()
 export class IntersolveVoucherController {
   public constructor(

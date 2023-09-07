@@ -32,7 +32,7 @@ import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { ExportMetricsService } from './export-metrics.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('export-metrics')
+@ApiTags('metrics')
 @Controller()
 export class ExportMetricsController {
   private readonly exportMetricsService: ExportMetricsService;

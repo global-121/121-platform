@@ -24,7 +24,7 @@ import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('fsp-integration/intersolve-visa')
+@ApiTags('financial-service-providers/intersolve-visa')
 @Controller()
 export class IntersolveVisaController {
   public constructor(private intersolveVisaService: IntersolveVisaService) {}

@@ -20,7 +20,7 @@ import { PermissionEnum } from '../../../user/permission.enum';
 import { RegistrationChangeLogService } from './registration-change-log.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('registration-change-log')
+@ApiTags('programs/registrations')
 @Controller()
 export class RegistrationChangeLogController {
   public constructor(
