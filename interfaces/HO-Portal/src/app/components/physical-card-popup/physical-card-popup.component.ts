@@ -92,6 +92,10 @@ export class PhysicalCardPopupComponent implements OnInit {
       : false;
   }
 
+  public checkActionsInclude(actions: string[]) {
+    return this.card.links.some((link) => actions.includes(link.action));
+  }
+
   togglePauseButton() {
     this.pauseLoading = true;
     const block = this.card.status !== WalletStatus121.Paused;

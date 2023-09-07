@@ -11,4 +11,10 @@ export class PhysicalCard {
 
   issuedDate: string | Date;
   lastUsedDate: string | Date;
+
+  links: {
+    action: string;
+    href: string;
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  }[];
 }
