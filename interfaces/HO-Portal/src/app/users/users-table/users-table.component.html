@@ -44,7 +44,7 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
-          *ngIf="row?.active"
+          *ngIf="row?.active !== undefined || row?.active !== null"
           [class.active]="row.active === true"
           [class.inactive]="row.active === false"
         >

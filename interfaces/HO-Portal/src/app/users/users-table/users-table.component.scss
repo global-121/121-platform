@@ -14,7 +14,7 @@ ion-chip {
   }
 
   &.inactive {
-    --background: var(--ion-color-medium);
-    --color: var(--ion-color-medium-shade);
+    --background: var(--ion-color-light-shade);
+    --color: var(--ion-color-medium);
   }
 }
