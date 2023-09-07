@@ -24,6 +24,10 @@ export class UsersTableComponent implements OnInit {
     this.loadData();
   }
 
+  onSort(event) {
+    console.log(event);
+  }
+
   public async loadData() {
     const users: User[] = await this.programsService.getAllUsers();
     this.rows = users;
