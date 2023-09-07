@@ -21,7 +21,7 @@ class BaseProgramQuestionDto {
   @IsString()
   public readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @ValidateIf((o) => o.answerType === AnswerTypes.dropdown)
   @ValidateNested()
   @IsOptional()
@@ -30,11 +30,11 @@ class BaseProgramQuestionDto {
   @ApiProperty()
   @IsOptional()
   public readonly scoring: JSON;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
   public readonly persistence: boolean;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   public pattern: string;
   @ApiProperty({
@@ -43,6 +43,7 @@ class BaseProgramQuestionDto {
       ProgramPhase.inclusion,
       ProgramPhase.payment,
     ],
+    required: false,
   })
   @IsOptional()
   public phases: JSON;
@@ -55,6 +56,7 @@ class BaseProgramQuestionDto {
       ExportType.included,
       ExportType.selectedForValidation,
     ],
+    required: false,
   })
   @IsOptional()
   @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
@@ -63,6 +65,7 @@ class BaseProgramQuestionDto {
     example: {
       en: 'Last Name',
     },
+    required: false,
   })
   @IsOptional()
   public shortLabel: JSON;
@@ -70,10 +73,14 @@ class BaseProgramQuestionDto {
     example: {
       en: '+31 6 00 00 00 00',
     },
+    required: false,
   })
   @IsOptional()
   public placeholder: JSON;
-  @ApiProperty({ example: false })
+  @ApiProperty({
+    example: false,
+    required: false,
+  })
   @IsOptional()
   public duplicateCheck: boolean;
 }
@@ -111,6 +118,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
       en: 'Please enter your last name:',
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
+    required: false,
   })
   @IsOptional()
   public readonly label: JSON;
@@ -123,6 +131,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
       AnswerTypes.text,
       AnswerTypes.date,
     ],
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -135,7 +144,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
   ])
   public readonly answerType: string;
 
-  @ApiProperty({ example: 'standard' })
+  @ApiProperty({ example: 'standard', required: false })
   @IsIn(['standard', 'custom'])
   @IsOptional()
   public readonly questionType: string;

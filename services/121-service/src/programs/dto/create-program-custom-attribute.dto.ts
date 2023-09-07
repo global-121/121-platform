@@ -47,7 +47,7 @@ export class CreateProgramCustomAttributeDto {
   @IsNotEmpty()
   public phases: JSON;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: false })
   @IsOptional()
   @IsBoolean()
   public duplicateCheck: boolean;
