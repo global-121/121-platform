@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { WalletStatus121 } from '../enum/wallet-status-121.enum';
 import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '../services/intersolve-visa-status-mapping.service';
@@ -7,18 +8,26 @@ import {
 } from './intersolve-create-wallet-response.dto';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
-export class GetWalletsResponseDto {
-  public wallets: GetWalletDetailsResponseDto[];
+export class GetWalletDetailsResponseDto {
+  @ApiProperty()
+  public tokenCode: string;
+  @ApiProperty({ enum: WalletStatus121 })
+  public status: WalletStatus121;
+  @ApiProperty()
+  public balance: number;
+  @ApiProperty()
+  public issuedDate: Date;
+  @ApiProperty()
+  public lastUsedDate?: Date;
+  @ApiProperty({ type: [VisaCardActionLink] })
+  public links: VisaCardActionLink[];
+  @ApiProperty()
+  public explanation: string;
 }
 
-export class GetWalletDetailsResponseDto {
-  public tokenCode: string;
-  public status: WalletStatus121;
-  public balance: number;
-  public issuedDate: Date;
-  public lastUsedDate?: Date;
-  public links: VisaCardActionLink[];
-  public explanation: string;
+export class GetWalletsResponseDto {
+  @ApiProperty({ type: [GetWalletDetailsResponseDto] })
+  public wallets: GetWalletDetailsResponseDto[];
 }
 
 export class IntersolveGetWalletResponseDto {

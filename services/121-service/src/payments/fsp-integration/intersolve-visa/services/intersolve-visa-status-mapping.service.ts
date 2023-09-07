@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
@@ -31,12 +32,6 @@ class VisaCardLinkCreationInfo {
   public tokenCode: string;
 }
 
-export class VisaCardActionLink {
-  href: string;
-  action: VisaCardAction;
-  method: VisaCardMethod;
-}
-
 enum VisaCardMethod {
   POST = 'POST',
   PUT = 'PUT',
@@ -46,6 +41,15 @@ enum VisaCardAction {
   pause = 'pause',
   unpause = 'unpause',
   reissue = 'reissue',
+}
+
+export class VisaCardActionLink {
+  @ApiProperty()
+  href: string;
+  @ApiProperty({ enum: VisaCardAction })
+  action: VisaCardAction;
+  @ApiProperty({ enum: VisaCardMethod })
+  method: VisaCardMethod;
 }
 
 const VisaCardActionsMapping = {
