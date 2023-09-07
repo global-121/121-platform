@@ -1,12 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import {
-  paginate,
-  PaginateConfig,
-  Paginated,
-  PaginateQuery,
-} from 'nestjs-paginate';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
@@ -38,10 +32,7 @@ import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { NoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import {
-  RegistrationDataInfo,
-  RegistrationDataRelation,
-} from './dto/registration-data-relation.model';
+import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
@@ -65,45 +56,10 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
-export const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
-  relations: ['data'],
-  searchableColumns: [
-    'id',
-    'status',
-    'referenceId',
-    'phoneNumber',
-    'preferredLanguage',
-    'inclusionScore',
-    'paymentAmountMultiplier',
-    'note',
-    'noteUpdated',
-    'financialServiceProvider',
-    'registrationProgramId',
-    'maxPayments',
-  ],
-  sortableColumns: [
-    'id',
-    'status',
-    'referenceId',
-    'phoneNumber',
-    'preferredLanguage',
-    'inclusionScore',
-    'paymentAmountMultiplier',
-    'note',
-    'noteUpdated',
-    'financialServiceProvider',
-    'registrationProgramId',
-    'maxPayments',
-  ],
-  filterableColumns: {
-    referenceId: true,
-    status: true,
-  },
-};
+
 @Injectable()
 export class RegistrationsService {
   @InjectRepository(RegistrationEntity)
@@ -138,8 +94,6 @@ export class RegistrationsService {
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
-  @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -736,121 +690,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
-  }
-
-  public async getPaginate(
-    query: PaginateQuery,
-    programId: number,
-  ): Promise<Paginated<RegistrationViewEntity>> {
-    // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
-    // I think the query builder can be used to make selection
-
-    const queryBuilder = this.registrationViewRepository
-      .createQueryBuilder('registration')
-      .where('"programId" = :programId', { programId: programId });
-    console.time('Paginate query');
-    const result = await paginate<RegistrationViewEntity>(
-      query,
-      queryBuilder,
-      paginateConfig,
-    );
-    console.timeEnd('Paginate query');
-
-    // Custom code is written here to filter on query.select since it does not work with query.relations
-    let registrationDataRelations =
-      await this.programService.getAllRelationProgram(programId);
-    if (query.select && query.select.length > 0) {
-      registrationDataRelations = registrationDataRelations.filter((relation) =>
-        query.select.includes(relation.name),
-      );
-    }
-
-    result.data = this.mapPaginatedEntity(
-      result,
-      registrationDataRelations,
-      query.select,
-    );
-    return result;
-  }
-
-  private mapPaginatedEntity(
-    paginatedResult: Paginated<RegistrationViewEntity>,
-    registrationDataRelations: RegistrationDataInfo[],
-    select: string[],
-  ): RegistrationViewEntity[] {
-    const mappedData: RegistrationViewEntity[] = [];
-    for (const registration of paginatedResult.data) {
-      const mappedRootRegistration = this.mapRootRegistration(
-        registration,
-        select,
-      );
-      // Add personal data permission check here
-      const mappedRegistration = this.mapRegistrationData(
-        registration.data,
-        mappedRootRegistration,
-        registrationDataRelations,
-      );
-      mappedData.push(mappedRegistration);
-    }
-    return mappedData;
-  }
-
-  private mapRootRegistration(
-    registration: RegistrationViewEntity,
-    select: string[],
-  ): RegistrationViewEntity {
-    let mappedRegistration: RegistrationViewEntity;
-    if (select && select.length > 0) {
-      mappedRegistration = new RegistrationViewEntity();
-      for (const selectKey of select) {
-        if (registration[selectKey] !== undefined) {
-          mappedRegistration[selectKey] = registration[selectKey];
-        }
-      }
-    } else {
-      mappedRegistration = { ...registration };
-    }
-    delete mappedRegistration.data;
-    return mappedRegistration;
-  }
-
-  private mapRegistrationData(
-    registrationDataArray: RegistrationDataEntity[],
-    mappedRegistration: RegistrationViewEntity,
-    registrationDataInfoArray: RegistrationDataInfo[],
-  ): RegistrationViewEntity {
-    if (!registrationDataArray || registrationDataArray.length <= 1) {
-      return mappedRegistration;
-    }
-    const findRelation = (
-      dataRelation: RegistrationDataRelation,
-      data: RegistrationDataEntity,
-    ): boolean => {
-      const propertiesToCheck = [
-        'programQuestionId',
-        'fspQuestionId',
-        'programCustomAttributeId',
-        'monitoringQuestionId',
-      ];
-      for (const property of propertiesToCheck) {
-        if (
-          dataRelation[property] === data[property] &&
-          data[property] !== null
-        ) {
-          return true;
-        }
-      }
-      return false;
-    };
-    for (const registrationData of registrationDataArray) {
-      const dataRelation = registrationDataInfoArray.find((x) =>
-        findRelation(x.relation, registrationData),
-      );
-      if (dataRelation && dataRelation.name) {
-        mappedRegistration[dataRelation.name] = registrationData.value;
-      }
-    }
-    return mappedRegistration;
   }
 
   public async getRegistrations(

@@ -52,7 +52,7 @@ export class PayoutDetails {
 }
 
 export class SinglePayoutDetails {
-  paNr: number;
+  paNr: string;
   amount: number;
   currency: string;
   multiplier: number;

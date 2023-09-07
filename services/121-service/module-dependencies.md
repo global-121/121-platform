@@ -3,7 +3,6 @@
 ```mermaid
 graph LR
   ProgramModule-->SmsModule
-  ProgramModule-->VoiceModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule
@@ -24,9 +23,9 @@ graph LR
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
-  ExportMetricsModule-->ProgramModule
-  ExportMetricsModule-->RegistrationsModule
-  ExportMetricsModule-->PaymentsModule
+  MetricsModule-->ProgramModule
+  MetricsModule-->RegistrationsModule
+  MetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
@@ -49,10 +48,10 @@ graph LR
   CommercialBankEthiopiaModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
-  ExportMetricsModule-->TransactionsModule
-  ExportMetricsModule-->IntersolveVisaModule
-  ExportMetricsModule-->IntersolveVoucherModule
-  ExportMetricsModule-->RegistrationChangeLogModule
+  MetricsModule-->TransactionsModule
+  MetricsModule-->IntersolveVisaModule
+  MetricsModule-->IntersolveVoucherModule
+  MetricsModule-->RegistrationChangeLogModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

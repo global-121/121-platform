@@ -94,8 +94,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   }
 
   private fillPersonalInfoTable() {
-    this.personalInfoTable = [
-      {
+    this.personalInfoTable = [];
+    if (this.person[StatusDate[this.person.status]]) {
+      this.personalInfoTable.push({
         label: this.getLabel('status', {
           status: this.translate.instant(
             'page.program.program-people-affected.status.' + this.person.status,
@@ -106,7 +107,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
           DateFormat.dateOnly,
           this.locale,
         ),
-      },
+      });
+    }
+    this.personalInfoTable.push(
       {
         label: this.getLabel('primaryLanguage'),
         value: this.enumService.getEnumLabel(
@@ -121,7 +124,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
             ? this.person.phoneNumber
             : `+${this.person.phoneNumber}`,
       },
-    ];
+    );
 
     if (this.person) {
       for (const ta of this.tableAttributes) {

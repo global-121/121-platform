@@ -24,14 +24,92 @@
             {{ 'page.login.portalTitle'|translate }}
           </h1>
         </div>
+
+        <ion-item
+          *ngIf="passwordChanged"
+          [color]="showPassCheckFail ? 'danger' : 'success'"
+          lines="none"
+          class="login-notification ion-margin-vertical"
+        >
+          <div
+            *ngIf="showPassCheckFail"
+            color="warning"
+          >
+            <small>
+              <strong>
+                <ion-text>
+                  {{ 'page.user.change-password.failed'|translate }}
+                </ion-text>
+              </strong>
+            </small>
+          </div>
+          <div
+            *ngIf="!showPassCheckFail"
+            color="success"
+          >
+            <small>
+              <strong>
+                <ion-text>
+                  {{ 'page.user.change-password.success'|translate }}
+                </ion-text>
+              </strong>
+            </small>
+          </div>
+        </ion-item>
+
         <div class="ion-padding auth-form-container">
           <form
-            *ngIf="!passwordChanged"
             method="POST"
             #newPasswordForm="ngForm"
             (ngSubmit)="updatePassword()"
             (keyup.enter)="updatePassword()"
           >
+            <!-- current password -->
+            <div
+              class="input-item auth-item ion-margin-bottom ion-padding-bottom"
+            >
+              <label
+                color="medium"
+                class="input-item--label auth-label"
+                (click)="passwordInput.setFocus()"
+              >
+                {{ 'page.user.change-password.current-password'|translate }}
+              </label>
+              <div class="input-item--content">
+                <ion-input
+                  #passwordInput
+                  type="password"
+                  autocomplete="password"
+                  autocapitalize="off"
+                  clearInput="true"
+                  clearOnEdit="false"
+                  required
+                  name="password"
+                  [(ngModel)]="password"
+                  ngDefaultControl
+                  (ionBlur)="checkEmptyPassword()"
+                  class="ion-margin-vertical custom-border regular-border"
+                  fill="outline"
+                >
+                </ion-input>
+              </div>
+              <div
+                *ngIf="emptyPassword"
+                class="validation-message"
+              >
+                <ion-text color="danger"
+                  ><small
+                    ><strong
+                      >{{
+                      'page.login.form.error-messages.empty-password'|translate
+                      }}</strong
+                    ></small
+                  ></ion-text
+                >
+              </div>
+            </div>
+
+            <!-- new password -->
             <div
               class="input-item auth-item ion-margin-bottom ion-padding-bottom"
             >
@@ -57,8 +135,9 @@
                   ngDefaultControl
                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
                   (ionBlur)="checkNewPassword()"
+                  (ionChange)="checkNewPassword()"
                   [ngClass]="newPasswordBorder"
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical custom-border"
                   fill="outline"
                 >
                 </ion-input>
@@ -75,6 +154,8 @@
                 </div>
               </div>
             </div>
+
+            <!-- confirm password -->
             <div
               class="input-item auth-item ion-margin-bottom ion-padding-bottom"
             >
@@ -99,10 +180,10 @@
                   [(ngModel)]="confirmPassword"
                   ngDefaultControl
                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
+                  (ionInput)="checkConfirmPasswords()"
                   (ionBlur)="checkConfirmPasswords()"
-                  (ionChange)="onChange()"
                   [ngClass]="confirmPasswordBorder"
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical custom-border"
                   fill="outline"
                 >
                 </ion-input>
@@ -114,37 +195,26 @@
                   ><small
                     ><strong
                       >{{ "page.user.notification-messages.different-passwords"
-                      |translate }}</strong
-                    ></small
+                      |translate }}
+                    </strong></small
                   ></ion-note
                 >
               </div>
             </div>
+
+            <!-- button on submit -->
             <div class="ion-margin-top ion-no-padding">
               <ion-button
                 type="submit"
                 expand="block"
                 size="default"
-                [disabled]="!newPasswordForm?.form?.valid"
+                [disabled]="!newPasswordForm?.form?.valid || !samePassword"
                 color="secondary"
               >
                 {{ 'common.update'|translate }}
               </ion-button>
             </div>
           </form>
-        </div>
-        <div
-          *ngIf="passwordChanged"
-          class="ion-text-center"
-        >
-          <ion-icon
-            name="checkmark-circle"
-            color="success"
-            size="large"
-            aria-hidden="true"
-          ></ion-icon>
-          <br />
-          <strong>{{ 'page.user.change-password.success'|translate }}</strong>
         </div>
       </ion-col>
       <ion-col size="4"></ion-col>

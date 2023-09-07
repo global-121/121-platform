@@ -43,6 +43,7 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
+import { PaginateConfigRegistrationView } from './const/filter-operation.const';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -63,7 +64,8 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { paginateConfig, RegistrationsService } from './registrations.service';
+import { RegistrationsService } from './registrations.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -73,10 +75,10 @@ export class FileUploadDto {
 @ApiTags('registrations')
 @Controller()
 export class RegistrationsController {
-  private readonly registrationsService: RegistrationsService;
-  public constructor(registrationsService: RegistrationsService) {
-    this.registrationsService = registrationsService;
-  }
+  public constructor(
+    private readonly registrationsService: RegistrationsService,
+    private readonly registrationsPaginateService: RegistrationsPaginationService,
+  ) {}
 
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
@@ -255,14 +257,25 @@ export class RegistrationsController {
     }
   }
 
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({
+    summary:
+      'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
   @Get('programs/:programId/registrations')
-  @PaginatedSwaggerDocs(RegistrationViewEntity, paginateConfig)
+  @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
   public findAll(
     @Paginate() query: PaginateQuery,
     @Param('programId') programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    return this.registrationsService.getPaginate(query, Number(programId));
+    return this.registrationsPaginateService.getPaginate(
+      query,
+      Number(programId),
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)

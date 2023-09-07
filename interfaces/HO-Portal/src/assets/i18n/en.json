@@ -226,7 +226,7 @@
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
-        "filter-placeholder": "Type to filter on any column...",
+        "filter-placeholder": "Type to filter...",
         "filter-toggle": "Show all",
         "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
         "filter-btn": {
@@ -258,7 +258,7 @@
         },
         "column": {
           "select": "Select",
-          "person": "Person Affected",
+          "personAffectedSequence": "Person Affected",
           "status": "Status",
           "imported": "Imported",
           "invited": "Invited",
@@ -267,23 +267,25 @@
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
-          "inclusion-score": "Inclusion score",
+          "inclusionScore": "Inclusion score",
           "included": "Included",
           "rejected": "Rejected",
           "inclusion-ended": "Inclusion ended",
           "name": "Name",
           "dob": "Date of birth",
-          "phone-number": "Phonenumber",
+          "phoneNumber": "Phonenumber",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
           "maxPayments": "Max payments",
-          "fsp": "Financial Service Provider",
+          "fspDisplayNamePortal": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
           "payment-history": "Payment history",
           "last-message-status": "Messages",
-          "hasNote": "Has Note"
+          "hasNote": "Has Note",
+          "referenceId": "Reference ID",
+          "note": "Note"
         },
         "language": {
           "en": "English",
@@ -477,7 +479,7 @@
           "download-voucher": "Download voucher",
           "single-payment": {
             "intro": "Do payment for 1 PA only",
-            "start-payout": "Start payout now for PA #{{paNr}}",
+            "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
@@ -608,9 +610,11 @@
       "pageTitle": "User",
       "change-password": {
         "title": "Change password",
+        "current-password": "Current password",
         "new-password": "New password",
         "confirm-password": "Confirm password",
-        "success": "Password changed"
+        "success": "Password changed",
+        "failed": "Failed attempt: current password incorrect"
       },
       "notification-messages": {
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",

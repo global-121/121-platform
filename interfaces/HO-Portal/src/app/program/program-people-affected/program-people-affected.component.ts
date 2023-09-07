@@ -34,7 +34,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
-import { TableFilterType } from 'src/app/models/table-filter.model';
+import {
+  TableFilterMultipleChoiceOption,
+  TableFilterType,
+} from 'src/app/models/table-filter.model';
 import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -49,10 +52,12 @@ import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
+import { FilterOperatorEnum } from '../../models/pagination-filter.model';
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { TableService } from '../../services/table.service';
 import { actionResult } from '../../shared/action-result';
 import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -319,7 +324,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   ];
   public tableFilterState = {
-    text: '',
+    text: { column: null, value: '' },
     paStatus: {
       default: [],
       selected: [],
@@ -332,9 +337,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
 
-  private messageColumnStatus = MessageStatusMapping;
+  public tableFiltersDropdownOptions: { name: string; label: string }[] = [];
+  public columnsPerPhase: PaTableAttribute[];
 
-  public pageMetaData = new PaginationMetadata();
+  private messageColumnStatus = MessageStatusMapping;
+  public pageMetaData: PaginationMetadata;
   private paStatusDefaultsPerPhase = {
     [ProgramPhase.registrationValidation]: [
       RegistrationStatus.imported,
@@ -373,9 +380,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
+    private tableService: TableService,
   ) {
-    this.pageMetaData.currentPage = 0;
-    this.pageMetaData.itemsPerPage = 12;
+    this.tableService?.setCurrentPage(0);
+    this.tableService?.setItemsPerPage(12);
+    this.pageMetaData = this.tableService?.getPageMetadata();
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -410,20 +419,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.standardColumns = [
       {
-        prop: 'name',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.name',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 768,
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
-      },
-      {
         prop: 'phoneNumber',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.phone-number',
+          'page.program.program-people-affected.column.phoneNumber',
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
@@ -575,7 +573,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       {
         prop: 'fspDisplayNamePortal',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fsp',
+          'page.program.program-people-affected.column.fspDisplayNamePortal',
         ),
         ...this.columnDefaults,
         minWidth: 220,
@@ -622,11 +620,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.activePhase = this.program.phase;
 
+    await this.setupStatusFilter();
+
     await this.loadColumns();
 
     await this.refreshData();
 
     await this.updateBulkActions();
+
+    await this.updatetableFiltersDropdown();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -654,6 +656,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
+  }
+
+  private async setupStatusFilter() {
+    this.tableFilterState.paStatus.default =
+      this.paStatusDefaultsPerPhase[this.thisPhase];
+    this.tableFilterState.paStatus.visible =
+      await this.getStatusFilterOptions();
+    this.tableFilterState.paStatus.selected = [
+      ...this.tableFilterState.paStatus.default,
+    ];
+  }
+
+  private async getStatusFilterOptions(): Promise<
+    TableFilterMultipleChoiceOption[]
+  > {
+    const registrationStatusesWithCount =
+      await this.programsService.getRegistrationStatusCount(this.programId);
+    return registrationStatusesWithCount.map(({ status, statusCount }) => {
+      const option: TableFilterMultipleChoiceOption = {
+        value: status,
+        label: this.translate.instant(
+          'page.program.program-people-affected.status.' + status,
+        ),
+        count: Number(statusCount),
+      };
+      return option;
+    });
   }
 
   private async refreshData() {
@@ -762,6 +791,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadColumns() {
+    this.loadNameColumns();
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
@@ -776,16 +806,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
     }
 
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+    this.columnsPerPhase = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
 
-    if (!columnsPerPhase) {
+    if (!this.columnsPerPhase) {
       return;
     }
 
-    for (const colPerPhase of columnsPerPhase) {
+    for (const colPerPhase of this.columnsPerPhase) {
       const addCol = {
         prop: colPerPhase.name,
         name: this.createColumnNameLabel(
@@ -813,6 +843,33 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
       this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
+  }
+
+  private loadNameColumns() {
+    for (const nameColumn of this.program.fullnameNamingConvention) {
+      const searchableColumns = [
+        ...this.program.programQuestions,
+        ...this.program.programCustomAttributes,
+      ];
+
+      const nameQuestion = searchableColumns.find(
+        (question) => question.name === nameColumn,
+      );
+      if (nameQuestion) {
+        const addCol = {
+          prop: nameColumn,
+          name: this.translatableStringService.get(
+            nameQuestion.shortLabel || nameQuestion.label,
+          ),
+          ...this.columnDefaults,
+          frozenLeft: this.platform.width() > 768,
+          permissions: [Permission.RegistrationPersonalREAD],
+          minWidth: this.columnWidthPerType[AnswerType.Text],
+          width: this.columnWidthPerType[AnswerType.Text],
+        };
+        this.columns.push(addCol);
+      }
     }
   }
 
@@ -872,6 +929,27 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
+  private async updatetableFiltersDropdown() {
+    this.tableFiltersDropdownOptions = [];
+    for (const attribute of this.program.filterableAttributes) {
+      const column = this.program.paTableAttributes.find(
+        (column) => column.name === attribute.name,
+      );
+      let label: string;
+      if (column && column.shortLabel) {
+        label = this.translatableStringService.get(column.shortLabel);
+      } else {
+        label = this.translate.instant(
+          `page.program.program-people-affected.column.${attribute.name}`,
+        );
+      }
+      this.tableFiltersDropdownOptions.push({
+        name: attribute.name,
+        label: label,
+      });
+    }
+  }
+
   private async addPaymentBulkActions() {
     // filter out all dopayment actions to avoid duplication
     this.bulkActions = this.bulkActions.filter(
@@ -908,7 +986,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async loadData() {
     // TODO: How do we get people per phase now..
-    this.setPage({ offset: this.pageMetaData.currentPage });
+    this.setPage({ offset: this.tableService?.getPageMetadata().currentPage });
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -939,7 +1017,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
-      pa: `PA #${String(person.registrationProgramId)}`,
+      pa: person.personAffectedSequence,
       status: person.status,
       statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
@@ -995,7 +1073,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             this.locale,
           )
         : null,
-      name: person.name,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
             'preferredLanguage',
@@ -1036,7 +1113,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : this.translate.instant(
             'page.program.program-people-affected.last-message.no-message',
           ),
-      hasNote: !!person.hasNote,
+      hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
@@ -1055,6 +1132,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
       personRow = this.fillPaTableAttributeRows(person, personRow);
+      personRow = this.fillNameColumns(person, personRow);
     }
 
     return personRow;
@@ -1073,6 +1151,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         value = false;
       }
       personRow[paTableAttribute.name] = value;
+    }
+    return personRow;
+  }
+
+  private fillNameColumns(person: Person, personRow: PersonRow): PersonRow {
+    for (const key of this.program.fullnameNamingConvention) {
+      const value = person[key];
+      personRow[key] = value;
     }
     return personRow;
   }
@@ -1458,11 +1544,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private setTextFieldFilter(value: string) {
-    this.tableFilterState.text = value;
+  private async setTextFieldFilter(value: string) {
+    this.tableService?.setTextFilterValue(value);
+    await this.getPage();
   }
 
-  public applyTextFieldFilter(value: string) {
+  public applyFilter(value: string) {
     this.setTextFieldFilter(value?.toLowerCase().trim());
     this.updateVisiblePeopleAffectedByFilter();
   }
@@ -1537,7 +1624,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.tableFilterState[prop].selected = filter;
-    this.updateVisiblePeopleAffectedByFilter();
+    this.setPage({
+      offset: 0,
+      pageSize: this.tableService?.getPageMetadata().itemsPerPage,
+    });
   }
 
   private updateVisiblePeopleAffectedByFilter() {
@@ -1623,7 +1713,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       columnsToExport.unshift({
         prop: 'pa',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.person',
+          'page.program.program-people-affected.column.personAffectedSequence',
         ),
       });
 
@@ -1637,7 +1727,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         columnsToExport.push({
           prop: 'inclusionScore',
           name: this.translate.instant(
-            'page.program.program-people-affected.column.inclusion-score',
+            'page.program.program-people-affected.column.inclusionScore',
           ),
         });
       }
@@ -1711,32 +1801,49 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return value;
   }
 
-  public async setPage(
-    pageInfo: {
-      offset: number;
-      count?: number;
-      pageSize?: number;
-      limit?: number;
-    },
-    statuses?: RegistrationStatus[],
-  ) {
+  public async setPage(pageInfo: {
+    offset: number;
+    count?: number;
+    pageSize?: number;
+    limit?: number;
+  }) {
     this.isLoading = true;
-    this.pageMetaData.currentPage = pageInfo.offset;
+    this.tableService?.setCurrentPage(pageInfo.offset);
 
-    const { data, meta } = await this.programsService.getPeopleAffected(
-      this.programId,
-      this.pageMetaData.itemsPerPage,
-      this.pageMetaData.currentPage + 1,
-      null,
-      null,
-      null,
-      statuses ? statuses : this.paStatusDefaultsPerPhase[this.thisPhase],
+    await this.getPage();
+
+    this.isLoading = false;
+  }
+
+  public async selectTextFilterOption(column: string) {
+    const attribute = this.program.filterableAttributes.find(
+      (attribute) => attribute.name === column,
     );
+    const operator = attribute.allowedOperators.includes(
+      FilterOperatorEnum.ilike,
+    )
+      ? FilterOperatorEnum.ilike
+      : FilterOperatorEnum.eq;
+    this.tableService?.setTextFilterOperator(operator);
+    this.tableService?.setTextFilterName(column);
+    await this.getPage();
+  }
+
+  private async getPage(): Promise<void> {
+    const { data, meta } = await this.tableService.getPage(
+      this.programId,
+      null,
+      null,
+      null,
+      this.tableFilterState['paStatus'].selected,
+    );
+
     this.visiblePeopleAffected = this.createTableData(data);
-    this.pageMetaData.totalItems = meta.totalItems;
-    this.pageMetaData.currentPage = meta.currentPage - 1;
+    this.tableService?.setTotalItems(meta.totalItems);
+    this.tableService?.setCurrentPage(meta.currentPage - 1);
 
     this.updateProxyScrollbarSize();
-    this.isLoading = false;
+
+    return;
   }
 }

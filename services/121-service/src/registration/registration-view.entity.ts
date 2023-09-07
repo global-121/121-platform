@@ -16,12 +16,20 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationEntity } from './registration.entity';
 
 @ViewEntity({
+  name: 'registration_view',
   expression: (dataSource: DataSource) =>
     dataSource
       .createQueryBuilder()
       .select('registration.id', 'id')
       .from(RegistrationEntity, 'registration')
-      .addSelect('registration.registrationProgramId', 'registrationProgramId')
+      .addSelect(
+        `CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR)`,
+        'personAffectedSequence',
+      )
+      .addSelect(
+        `registration."registrationProgramId"`,
+        'registrationProgramId',
+      )
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
@@ -84,6 +92,9 @@ export class RegistrationViewEntity {
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
   public registrationProgramId: number;
+
+  @ViewColumn()
+  public personAffectedSequence: string;
 
   @ViewColumn()
   public maxPayments: number;

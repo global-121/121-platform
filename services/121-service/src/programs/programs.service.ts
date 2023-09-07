@@ -1,11 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilterOperator } from 'nestjs-paginate';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import {
+  AllowedFilterOperatorsString,
+  PaginateConfigRegistrationView,
+} from '../registration/const/filter-operation.const';
+import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import {
   Attribute,
@@ -87,9 +93,54 @@ export class ProgramService {
       program['paTableAttributes'] = await this.getPaTableAttributes(
         program.id,
       );
+
+      // TODO: Get these attributes from some enum or something
+      program['filterableAttributes'] = this.getFilterableAttributes(program);
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
+  }
+
+  public getFilterableAttributes(program: ProgramEntity): FilterAttributeDto[] {
+    const defaultFilterableInUI = [
+      'personAffectedSequence',
+      'referenceId',
+      'phoneNumber',
+      'preferredLanguage',
+      'inclusionScore',
+      'paymentAmountMultiplier',
+      'note',
+      'fspDisplayNamePortal',
+      'maxPayments',
+    ];
+
+    const paAttributesNameArray = program['paTableAttributes'].map(
+      (paAttribute: Attribute) => paAttribute.name,
+    );
+    const filterableAttributeNames = [
+      ...new Set([...defaultFilterableInUI, ...paAttributesNameArray]),
+    ];
+
+    const filterableAttributes: FilterAttributeDto[] = [];
+    for (const name of filterableAttributeNames) {
+      if (PaginateConfigRegistrationView.filterableColumns[name]) {
+        filterableAttributes.push({
+          name: name,
+          allowedOperators: PaginateConfigRegistrationView.filterableColumns[
+            name
+          ] as FilterOperator[],
+        });
+      } else {
+        // If no allowed operators are defined than the attribute is
+        // registration data which is store as a string
+        filterableAttributes.push({
+          name: name,
+          allowedOperators: AllowedFilterOperatorsString,
+        });
+      }
+    }
+
+    return filterableAttributes;
   }
 
   public async getCreateProgramDto(
