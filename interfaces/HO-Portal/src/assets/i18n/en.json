@@ -608,7 +608,7 @@
       "roles-and-permissions-tab": "Roles and Permissions",
       "team-members": "Team members",
       "table-headers": {
-        "name": "Name",
+        "username": "Username",
         "user-type": "User type",
         "status": "Status",
         "last-activity": "Last activity"

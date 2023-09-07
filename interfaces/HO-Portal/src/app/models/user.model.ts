@@ -7,3 +7,11 @@ export class User {
   };
   expires: string;
 }
+
+export interface TableData {
+  active: boolean;
+  admin: boolean;
+  id: number;
+  lastLogin: string;
+  username: string;
+}

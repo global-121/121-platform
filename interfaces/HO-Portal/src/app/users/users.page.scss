@@ -13,12 +13,24 @@
   --color-checked: #4f22d7;
 }
 
-.button-container {
+.filter-and-button {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter {
+  margin-left: 18px;
+}
+
+.filter-input {
+  min-width: 16em;
+  max-width: 30%;
+  min-height: 40px;
 }
 
 .button {
   --border-width: 0.5px;
-  padding: 28px 28px 0px 0px;
+  margin-right: 20px;
 }
