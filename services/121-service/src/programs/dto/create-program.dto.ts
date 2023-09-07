@@ -60,7 +60,7 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description: JSON;
+  public readonly description?: JSON;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
@@ -94,7 +94,7 @@ export class CreateProgramDto {
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
   @IsString()
-  public readonly paymentAmountMultiplierFormula: string;
+  public readonly paymentAmountMultiplierFormula?: string;
 
   @ApiProperty({
     example: [

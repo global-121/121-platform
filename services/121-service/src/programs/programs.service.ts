@@ -103,6 +103,11 @@ export class ProgramService {
     programId: number,
   ): Promise<CreateProgramDto> {
     const programEntity = await this.findOne(programId);
+    if (!programEntity) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     return {
       published: programEntity.published,
       validation: programEntity.validation,
@@ -224,29 +229,41 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    for (const name of Object.values(programData.fullnameNamingConvention)) {
-      const fspAttributes = [];
-      for (const fsp of programData.financialServiceProviders) {
-        const fspEntity = await this.financialServiceProviderRepository.findOne(
-          {
-            where: { fsp: fsp.fsp },
-            relations: ['questions'],
-          },
-        );
-        for (const question of fspEntity.questions) {
-          fspAttributes.push(question.name);
-        }
+    const fspAttributeNames = [];
+    for (const fsp of programData.financialServiceProviders) {
+      const fspEntity = await this.financialServiceProviderRepository.findOne({
+        where: { fsp: fsp.fsp },
+        relations: ['questions'],
+      });
+      for (const question of fspEntity.questions) {
+        fspAttributeNames.push(question.name);
       }
-      if (
-        !programData.programQuestions.map((q) => q.name).includes(name) &&
-        !programData.programCustomAttributes
-          .map((ca) => ca.name)
-          .includes(name) &&
-        !fspAttributes.includes(name)
-      ) {
+    }
+    const programQuestionNames = programData.programQuestions.map(
+      (q) => q.name,
+    );
+    const customAttributeNames = programData.programCustomAttributes.map(
+      (ca) => ca.name,
+    );
+    const allAttributeNames = programQuestionNames.concat(
+      customAttributeNames,
+      [...new Set(fspAttributeNames)],
+    );
+    for (const name of Object.values(programData.fullnameNamingConvention)) {
+      if (!allAttributeNames.includes(name)) {
         const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
+    }
+    // Check if allAttributeNames has duplicate values
+    const duplicateNames = allAttributeNames.filter(
+      (item, index) => allAttributeNames.indexOf(item) !== index,
+    );
+    if (duplicateNames.length > 0) {
+      const errors = `The names ${duplicateNames.join(
+        ', ',
+      )} are used more than once program question, custom attribute or fsp attribute`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -257,7 +274,6 @@ export class ProgramService {
     let newProgram;
 
     await this.validateProgram(programData);
-
     const program = new ProgramEntity();
     program.published = programData.published;
     program.validation = programData.validation;
