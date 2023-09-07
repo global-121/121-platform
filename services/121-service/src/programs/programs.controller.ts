@@ -29,7 +29,10 @@ import { AdminAuthGuard } from './../guards/admin.guard';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
+import {
+  CreateProgramQuestionDto,
+  UpdateProgramQuestionDto,
+} from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -171,6 +174,20 @@ export class ProgramController {
     return await this.programService.updateProgram(
       Number(params.programId),
       updateProgramDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramUPDATE)
+  @ApiOperation({ summary: 'Create program question' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/program-question')
+  public async createProgramQuestion(
+    @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
+    @Param() params,
+  ): Promise<ProgramQuestionEntity> {
+    return await this.programService.createProgramQuestion(
+      Number(params.programId),
+      updateProgramQuestionDto,
     );
   }
 

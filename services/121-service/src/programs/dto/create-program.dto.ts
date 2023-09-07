@@ -19,7 +19,7 @@ import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from './create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from './create-program-question.dto';
+import { CreateProgramQuestionDto } from './program-question.dto';
 
 export class SetFspDto {
   @ApiProperty()

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
+import { ExportType } from '../export-metrics/dto/export-details.dto';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -17,7 +18,10 @@ import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
+import {
+  CreateProgramQuestionDto,
+  UpdateProgramQuestionDto,
+} from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -148,7 +152,7 @@ export class ProgramService {
             pattern: programQuestion.pattern,
             phases: programQuestion.phases,
             editableInPortal: programQuestion.editableInPortal,
-            export: programQuestion.export,
+            export: programQuestion.export as unknown as ExportType[],
             shortLabel: programQuestion.shortLabel,
             duplicateCheck: programQuestion.duplicateCheck,
             placeholder: programQuestion.placeholder,
@@ -303,9 +307,11 @@ export class ProgramService {
 
       savedProgram.programQuestions = [];
       for (const programQuestion of programData.programQuestions) {
-        programQuestion['programId'] = savedProgram.id;
+        const programQuestionEntity =
+          this.programQuestionDtoToEntity(programQuestion);
+        programQuestionEntity['programId'] = savedProgram.id;
         const programQuestionReturn = await programQuestionRepository.save(
-          programQuestion,
+          programQuestionEntity,
         );
         savedProgram.programQuestions.push(programQuestionReturn);
       }
@@ -412,6 +418,63 @@ export class ProgramService {
     }
     await this.programRepository.save(program);
     return savedAttributes;
+  }
+
+  public async createProgramQuestion(
+    programId: number,
+    createProgramQuestionDto: CreateProgramQuestionDto,
+  ): Promise<ProgramQuestionEntity> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['programQuestions'],
+    });
+    if (!program) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const existingAttributes = await this.getPaTableAttributes(programId);
+    const existingNames = existingAttributes.map((attr) => {
+      return attr.name;
+    });
+    if (existingNames.includes(createProgramQuestionDto.name)) {
+      const errors = `Unable to create program question with name ${
+        createProgramQuestionDto.name
+      }. The names ${existingNames.join(', ')} are already in use`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
+    const programQuestion = this.programQuestionDtoToEntity(
+      createProgramQuestionDto,
+    );
+    programQuestion.program = program;
+
+    const savedProgramQuestion = await this.programQuestionRepository.save(
+      programQuestion,
+    );
+
+    return savedProgramQuestion;
+  }
+
+  private programQuestionDtoToEntity(
+    dto: CreateProgramQuestionDto,
+  ): ProgramQuestionEntity {
+    const programQuestion = new ProgramQuestionEntity();
+    programQuestion.name = dto.name;
+    programQuestion.label = dto.label;
+    programQuestion.answerType = dto.answerType;
+    programQuestion.questionType = dto.questionType;
+    programQuestion.options = dto.options;
+    programQuestion.scoring = dto.scoring;
+    programQuestion.persistence = dto.persistence;
+    programQuestion.pattern = dto.pattern;
+    programQuestion.phases = dto.phases;
+    programQuestion.editableInPortal = dto.editableInPortal;
+    programQuestion.export = dto.export as unknown as JSON;
+    programQuestion.shortLabel = dto.shortLabel;
+    programQuestion.duplicateCheck = dto.duplicateCheck;
+    programQuestion.placeholder = dto.placeholder;
+    return programQuestion;
   }
 
   public async updateProgramQuestion(
