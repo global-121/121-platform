@@ -5,4 +5,5 @@ export class UnusedVoucherDto {
   public phoneNumber: string;
   public referenceId?: string;
   public name?: string;
+  public lastExternalUpdate?: Date;
 }

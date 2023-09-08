@@ -1,4 +1,5 @@
 import { Controller, Get, Module } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckResult,
@@ -8,6 +9,8 @@ import {
 } from '@nestjs/terminus';
 import { APP_VERSION } from './config';
 
+@ApiTags('instance')
+// TODO: REFACTOR: rename to instance
 @Controller('health')
 export class HealthController {
   public constructor(

@@ -20,13 +20,14 @@ import { PermissionEnum } from '../../../user/permission.enum';
 import { RegistrationChangeLogService } from './registration-change-log.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('registration-change-log')
+@ApiTags('programs/registrations')
 @Controller()
 export class RegistrationChangeLogController {
   public constructor(
     private registrationChangeLogService: RegistrationChangeLogService,
   ) {}
 
+  // NOTE: REFACTOR: rename endpoint to /api/programs/:programid/registration-changes with OPTIONAL referenceID query param (OR: only rename AND add endpoint /api/programs/:programid/registration/:registrationid/changes)
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ summary: 'Get changelog for registration' })
   @ApiResponse({ status: 200, description: 'Get changelog for registration' })

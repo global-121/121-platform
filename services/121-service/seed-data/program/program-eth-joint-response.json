@@ -1,0 +1,96 @@
+{
+  "published": false,
+  "validation": false,
+  "phase": "registrationValidation",
+  "location": "Demoland",
+  "ngo": "Demo NGO",
+  "titlePortal": {
+    "en": "Demo Cash Aid Project"
+  },
+  "titlePaApp": {
+    "en": "Demo Cash Aid Project"
+  },
+  "description": {
+    "en": ""
+  },
+  "startDate": "2022-09-29T12:00:00Z",
+  "endDate": "2030-11-30T12:00:00Z",
+  "currency": "ETB",
+  "distributionFrequency": "month",
+  "distributionDuration": 6,
+  "fixedTransferValue": 1.0,
+  "financialServiceProviders": [
+    {
+      "fsp": "Commercial-bank-ethiopia"
+    }
+  ],
+  "targetNrRegistrations": 870,
+  "tryWhatsAppFirst": false,
+  "meetingDocuments": {
+    "en": ""
+  },
+  "notifications": {
+    "en": {
+      "registered": "This is a message from KRCS.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+    }
+  },
+  "bankAccountNumberPlaceholder": "1000263499216",
+  "programCustomAttributes": [],
+  "programQuestions": [
+    {
+      "name": "name",
+      "label": {
+        "en": "What is your first name?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "First name"
+      }
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "4. What is your gender?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Masculin ",
+          "label": {
+            "en": "Male",
+            "fr": "Masculin"
+          }
+        },
+        {
+          "option": "Féminin",
+          "label": {
+            "en": "Female",
+            "fr": "Féminin"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Gender"
+      }
+    }
+  ],
+  "aboutProgram": {
+    "en": "[about aid program]"
+  },
+  "fullnameNamingConvention": ["name"],
+  "languages": ["en"],
+  "enableMaxPayments": true
+}
