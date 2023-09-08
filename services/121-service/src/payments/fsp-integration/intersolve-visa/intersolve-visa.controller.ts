@@ -40,11 +40,6 @@ export class IntersolveVisaController {
     description: 'Wallets and details retrieved',
     type: GetWalletsResponseDto,
   })
-  //   @ApiOkResponse({
-  //     description: 'The user records',
-  //     type: User,
-  //     isArray: true
-  // })
   @Get('programs/:programId/fsp-integration/intersolve-visa/wallets')
   public async getVisaWalletsAndDetails(
     @Query('referenceId') referenceId,
