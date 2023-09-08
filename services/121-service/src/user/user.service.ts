@@ -436,7 +436,7 @@ export class UserService {
     };
   }
 
-public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const saltCheck = await this.dataSource
       .getRepository(UserEntity)
       .createQueryBuilder('user')
