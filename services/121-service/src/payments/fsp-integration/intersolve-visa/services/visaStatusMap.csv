@@ -35,6 +35,15 @@
 "TRUE";"INACTIVE";"CARD_STOLEN";"TRUE";"Blocked";"Visa marked card as stolen";"Issue New Card"
 "TRUE";"INACTIVE";"CARD_CLOSED";"TRUE";"Blocked";"Visa marked card as closed";"Issue New Card"
 "TRUE";"INACTIVE";"CARD_EXPIRED";"TRUE";"Blocked";"Card has expired";"Issue New Card"
+"TRUE";"ACTIVE";"CARD_OK";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_BLOCKED";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"SUSPECTED_FRAUD";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_CLOSED_DUE_TO_FRAUD";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_NO_RENEWAL";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_LOST";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_STOLEN";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_CLOSED";"FALSE";"Blocked";;
+"TRUE";"ACTIVE";"CARD_EXPIRED";"FALSE";"Blocked";;
 "TRUE";"INACTIVE";"CARD_OK";"FALSE";"Blocked";;
 "TRUE";"INACTIVE";"CARD_BLOCKED";"FALSE";"Blocked";;
 "TRUE";"INACTIVE";"SUSPECTED_FRAUD";"FALSE";"Blocked";;

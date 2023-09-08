@@ -1,5 +1,5 @@
 import { RegistrationStatusEnum } from '../../../../registration/enum/registration-status.enum';
-import { WalletStatus121 } from '../enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
@@ -10,7 +10,7 @@ export class ExportCardsDto {
   referenceId: string;
   registrationStatus: RegistrationStatusEnum;
   cardNumber: string;
-  cardStatus121: WalletStatus121;
+  cardStatus121: WalletCardStatus121;
   issuedDate: Date;
   lastUsedDate: Date;
   balance: number;

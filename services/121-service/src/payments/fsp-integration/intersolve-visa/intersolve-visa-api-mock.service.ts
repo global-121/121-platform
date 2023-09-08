@@ -26,8 +26,8 @@ import {
 @Injectable()
 export class IntersolveVisaApiMockService {
   public async waitForRandomDelay(): Promise<void> {
-    const min = 100;
-    const max = 300;
+    const min = 50;
+    const max = 100;
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     return new Promise((resolve) => setTimeout(resolve, randomNumber));
   }
@@ -187,21 +187,22 @@ export class IntersolveVisaApiMockService {
       },
     ];
 
+    // uuid is need to not run into unqiue constraint on token code
     if (holderId.toLowerCase().includes('mock-fail-link-customer-wallet')) {
       // pass different token to be later used again in mock link-customer-wallet call
-      response.data.data.token.code = 'mock-fail-link-customer-wallet';
+      response.data.data.token.code = `${uuid()}mock-fail-link-customer-wallet`;
     }
     if (holderId.toLowerCase().includes('mock-fail-create-debit-card')) {
       // pass different token to be later used again in mock create-debit-card call
-      response.data.data.token.code = 'mock-fail-create-debit-card';
+      response.data.data.token.code = `${uuid()}mock-fail-create-debit-card`;
     }
     if (holderId.toLowerCase().includes('mock-fail-load-balance')) {
       // pass different token to be later used again in mock load-balance call
-      response.data.data.token.code = 'mock-fail-load-balance';
+      response.data.data.token.code = `${uuid()}mock-fail-load-balance`;
     }
     if (holderId.toLowerCase().includes('mock-fail-get-card')) {
       // pass different token to be later used again in mock load-balance call
-      response.data.data.token.code = holderId;
+      response.data.data.token.code = `${uuid()}${holderId}`;
     }
 
     if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {

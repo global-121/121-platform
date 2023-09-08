@@ -616,11 +616,12 @@ export class IntersolveVisaService
       where: { referenceId: referenceId, programId: programId },
       relations: ['fsp'],
     });
-    const visaCustomer = await this.getCustomerEntity(registration.id);
     if (!registration) {
       const errors = `No registration found with referenceId ${referenceId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    const visaCustomer = await this.getCustomerEntity(registration.id);
     if (registration.fsp.fsp !== FspName.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);

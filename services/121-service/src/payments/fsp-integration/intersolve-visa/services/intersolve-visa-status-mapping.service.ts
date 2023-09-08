@@ -3,7 +3,7 @@ import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
 import { EXTERNAL_API } from '../../../../config';
-import { WalletStatus121 } from '../enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
@@ -21,7 +21,7 @@ interface VisaStatusMapInterface {
 }
 
 class VisaStatusInfoDto {
-  public walletStatus121: WalletStatus121;
+  public walletStatus121: WalletCardStatus121;
   public explanation: string;
   public links: VisaCardActionLink[];
 }
@@ -79,7 +79,7 @@ export class IntersolveVisaStatusMappingService {
             : false,
           '121Status': row['121Status']
             ? row['121Status'].trim()
-            : WalletStatus121.Unknown,
+            : WalletCardStatus121.Unknown,
           Explanation: row.Explanation ? row.Explanation.trim() : '',
           Actions: row.Actions ? row.Actions.trim() : null,
         };
@@ -103,13 +103,13 @@ export class IntersolveVisaStatusMappingService {
     );
     if (matchingRow) {
       return {
-        walletStatus121: matchingRow['121Status'] as WalletStatus121,
+        walletStatus121: matchingRow['121Status'] as WalletCardStatus121,
         explanation: matchingRow['Explanation'],
         links: this.getLinks(matchingRow['Actions'], linkCreationInfo),
       };
     } else {
       return {
-        walletStatus121: WalletStatus121.Unknown,
+        walletStatus121: WalletCardStatus121.Unknown,
         explanation: StatusUnknownExplain,
         links: [],
       };

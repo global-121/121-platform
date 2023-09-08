@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { WalletStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { PhysicalCard } from '../../models/physical-card.model';
@@ -25,7 +25,7 @@ export class PhysicalCardPopupComponent implements OnInit {
 
   @Input({ required: true })
   public card: PhysicalCard = {
-    status: WalletStatus121.Active,
+    status: WalletCardStatus121.Active,
   } as PhysicalCard;
 
   @Input({ required: true })
@@ -38,7 +38,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   public showButtons: boolean;
 
   public DateFormat = DateFormat;
-  public WalletStatus121 = WalletStatus121;
+  public WalletCardStatus121 = WalletCardStatus121;
 
   public isCardPaused: boolean;
 
@@ -54,7 +54,7 @@ export class PhysicalCardPopupComponent implements OnInit {
     private authService: AuthService,
   ) {}
   ngOnInit(): void {
-    this.isCardPaused = this.card.status === WalletStatus121.Paused;
+    this.isCardPaused = this.card.status === WalletCardStatus121.Paused;
   }
 
   public closeModal() {
@@ -83,7 +83,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   public canUsePauseButton() {
-    return this.card.status === WalletStatus121.Paused
+    return this.card.status === WalletCardStatus121.Paused
       ? this.canUnpause()
         ? true
         : false
@@ -98,7 +98,7 @@ export class PhysicalCardPopupComponent implements OnInit {
 
   togglePauseButton() {
     this.pauseLoading = true;
-    const block = this.card.status !== WalletStatus121.Paused;
+    const block = this.card.status !== WalletCardStatus121.Paused;
     this.progamsServiceApiService
       .toggleBlockWallet(this.programId, this.card.tokenCode, block)
       .then((response) => {

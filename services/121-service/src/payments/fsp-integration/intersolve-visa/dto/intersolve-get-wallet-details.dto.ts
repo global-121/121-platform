@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { WalletStatus121 } from '../enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
 import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '../services/intersolve-visa-status-mapping.service';
 import {
@@ -11,8 +11,8 @@ import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public tokenCode: string;
-  @ApiProperty({ enum: WalletStatus121 })
-  public status: WalletStatus121;
+  @ApiProperty({ enum: WalletCardStatus121 })
+  public status: WalletCardStatus121;
   @ApiProperty()
   public balance: number;
   @ApiProperty()
