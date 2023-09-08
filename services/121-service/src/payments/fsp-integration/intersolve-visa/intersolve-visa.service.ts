@@ -9,6 +9,7 @@ import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
+import { ErrorEnum } from '../../../registration/errors/registration-data.error';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -739,25 +740,26 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
     attribute?: Attributes | string,
-  ): Promise<any> {
+  ): Promise<void> {
     if (
       attribute &&
       !this.doesAttributeRequireSync(attribute as CustomDataAttributes)
     ) {
       return;
     }
-
-    const { _registration, _visaCustomer } =
-      await this.getRegistrationAndVisaCustomer(referenceId, programId);
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId, programId: programId },
+    });
+    const visaCustomer = await this.getCustomerEntity(registration.id);
     const errors = [];
 
     const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
       type: 'MOBILE',
-      value: _registration.phoneNumber,
+      value: registration.phoneNumber,
     };
     const phoneNumberResult =
       await this.intersolveVisaApiService.updateCustomerPhoneNumber(
-        _visaCustomer.holderId,
+        visaCustomer.holderId,
         phoneNumberPayload,
       );
     if (phoneNumberResult.status !== 200) {
@@ -766,26 +768,42 @@ export class IntersolveVisaService
       );
     }
 
-    const relationOptions = await this.getRelationOptionsForVisa(referenceId);
-    const paymentDetails = await this.registrationDataQueryService.getPaDetails(
-      [referenceId],
-      relationOptions,
-    );
-    const addressPayload = this.createCustomerAddressPayload(paymentDetails[0]);
-    const addressResult =
-      await this.intersolveVisaApiService.updateCustomerAddress(
-        _visaCustomer.holderId,
-        addressPayload,
-      );
-    if (addressResult.status !== 200) {
-      errors.push(`Address update failed: ${addressResult?.data?.code}`);
-    }
+    try {
+      const relationOptions = await this.getRelationOptionsForVisa(referenceId);
+      const paymentDetails =
+        await this.registrationDataQueryService.getPaDetails(
+          [referenceId],
+          relationOptions,
+        );
 
-    if (errors.length > 0) {
-      throw new HttpException(
-        { errors: errors.join(', ') },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      const addressPayload = this.createCustomerAddressPayload(
+        paymentDetails[0],
       );
+      const addressResult =
+        await this.intersolveVisaApiService.updateCustomerAddress(
+          visaCustomer.holderId,
+          addressPayload,
+        );
+      if (addressResult.status !== 200) {
+        errors.push(`Address update failed: ${addressResult?.data?.code}`);
+      }
+
+      if (errors.length > 0) {
+        throw new HttpException(
+          { errors: errors.join(', ') },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    } catch (error) {
+      if (error.name === ErrorEnum.RegistrationDataError) {
+        console.info(
+          `Unable to sync address data because this registration does not have this data anymore.\n
+          This is most likely because this registration first had the FSP Intersolve Visa, and then switched to another FSP\n
+          This new fsp does not have the attributes needed for Intersolve Visa, so the data is removed from the registration`,
+        );
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -1054,5 +1072,13 @@ export class IntersolveVisaService
     for (const wallet of wallets) {
       await this.getWalletDetails(wallet);
     }
+  }
+
+  public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
+    const count = await this.intersolveVisaCustomerRepo
+      .createQueryBuilder('customer')
+      .where('customer.registrationId = :registrationId', { registrationId })
+      .getCount();
+    return count > 0;
   }
 }
