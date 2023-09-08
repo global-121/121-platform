@@ -14,37 +14,37 @@ export class CronjobService {
   public async cronCancelByRefposIntersolve(): Promise<void> {
     // This function periodically checks if some of the IssueCard calls failed.
     // and tries to cancel the
-    console.log('CronjobService - Started: cancelByRefposIntersolve');
+    console.info('CronjobService - Started: cancelByRefposIntersolve');
 
     await this.intersolveVoucherCronService.cancelByRefposIntersolve();
 
-    console.log('CronjobService - Complete: cancelByRefposIntersolve');
+    console.info('CronjobService - Complete: cancelByRefposIntersolve');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   public async cronCacheUnusedVouchers(): Promise<void> {
-    console.log('CronjobService - Started: cronCacheUnusedVouchers');
+    console.info('CronjobService - Started: cronCacheUnusedVouchers');
 
     await this.intersolveVoucherCronService.cacheUnusedVouchers();
 
-    console.log('CronjobService - Complete: cronCacheUnusedVouchers');
+    console.info('CronjobService - Complete: cronCacheUnusedVouchers');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
-    console.log('CronjobService - Started: updateVisaDebitWalletDetailsCron');
+    console.info('CronjobService - Started: updateVisaDebitWalletDetailsCron');
 
     await this.intersolveVisaService.updateVisaDebitWalletDetails();
 
-    console.log('CronjobService - Complete: updateVisaDebitWalletDetailsCron');
+    console.info('CronjobService - Complete: updateVisaDebitWalletDetailsCron');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
   public async cronSendWhatsappReminders(): Promise<void> {
-    console.log('CronjobService - Started: cronSendWhatsappReminders');
+    console.info('CronjobService - Started: cronSendWhatsappReminders');
 
     await this.intersolveVoucherCronService.sendWhatsappReminders();
 
-    console.log('CronjobService - Complete: cronSendWhatsappReminders');
+    console.info('CronjobService - Complete: cronSendWhatsappReminders');
   }
 }
