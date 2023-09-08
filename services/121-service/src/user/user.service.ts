@@ -471,7 +471,7 @@ export class UserService {
 
     return userEntity;
   }
-  
+
   public async getUsers(): Promise<UserEntity[]> {
     return await this.userRepository.find({
       select: {
@@ -481,6 +481,6 @@ export class UserService {
         active: true,
         lastLogin: true,
       },
-   });
+    });
   }
 }
