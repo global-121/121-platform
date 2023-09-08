@@ -257,6 +257,7 @@ export class RegistrationsController {
     }
   }
 
+  @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
     summary:
       'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
@@ -268,13 +269,24 @@ export class RegistrationsController {
   })
   @Get('programs/:programId/registrations')
   @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
-  public findAll(
+  public async findAll(
     @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
     @Param('programId') programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    return this.registrationsPaginateService.getPaginate(
+    const hasPersonalRead =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        PermissionEnum.RegistrationPersonalREAD,
+      );
+
+    // TODO: Add check for transaction read
+
+    return await this.registrationsPaginateService.getPaginate(
       query,
       Number(programId),
+      hasPersonalRead,
     );
   }
 

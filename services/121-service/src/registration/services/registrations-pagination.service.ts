@@ -16,6 +16,8 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { PermissionEnum } from '../../user/permission.enum';
+import { UserEntity } from '../../user/user.entity';
 import {
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
@@ -39,14 +41,17 @@ export class RegistrationsPaginationService {
   private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor(private readonly programService: ProgramService) {}
 
   public async getPaginate(
     query: PaginateQuery,
     programId: number,
+    hasPersonalReadPermission: boolean,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    // This is needed to add the columns in fullnameNamingConvention to the select
+    const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention = await this.getFullNameNamingConvention(
@@ -71,6 +76,7 @@ export class RegistrationsPaginationService {
 
     // Check if the filter contains at least one registration data name
     if (
+      hasPersonalReadPermission &&
       query.filter &&
       registrationDataNamesProgram.some((key) =>
         Object.keys(query.filter).includes(key),
@@ -83,13 +89,17 @@ export class RegistrationsPaginationService {
         registrationDataNamesProgram,
       );
     }
+    if (hasPersonalReadPermission) {
+      paginateConfigCopy.relations = ['data'];
+      paginateConfigCopy.searchableColumns = ['data.(value)'];
+    }
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
-      PaginateConfigRegistrationView,
+      paginateConfigCopy,
     );
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
@@ -106,8 +116,29 @@ export class RegistrationsPaginationService {
       query.select,
       orignalSelect,
       fullnameNamingConvention,
+      hasPersonalReadPermission,
     );
     return result;
+  }
+
+  public async userHasPermissionForProgram(
+    userId: number,
+    programId: number,
+    permission: PermissionEnum,
+  ): Promise<boolean> {
+    const count = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.programAssignments', 'assignment')
+      .leftJoin('assignment.program', 'program')
+      .leftJoin('assignment.roles', 'roles')
+      .leftJoin('roles.permissions', 'permissions')
+      .where('user.id = :userId', { userId: userId })
+      .andWhere('program.id = :programId', { programId: programId })
+      .andWhere('permissions.name = :permissions', {
+        permissions: permission,
+      })
+      .getCount();
+    return count > 0;
   }
 
   private async getFullNameNamingConvention(
@@ -245,12 +276,14 @@ export class RegistrationsPaginationService {
     select: string[],
     orignalSelect: string[],
     fullnameNamingConvention: string[],
+    hasPersonalReadPermission: boolean,
   ): RegistrationViewEntity[] {
     const mappedData: RegistrationViewEntity[] = [];
     for (const registration of paginatedResult.data) {
       const mappedRootRegistration = this.mapRootRegistration(
         registration,
         select,
+        hasPersonalReadPermission,
       );
       // Add personal data permission check here
       let mappedRegistration = this.mapRegistrationData(
@@ -260,7 +293,7 @@ export class RegistrationsPaginationService {
       );
       mappedData.push(mappedRegistration);
 
-      if (!select || select.includes('name')) {
+      if ((!select || select.includes('name')) && hasPersonalReadPermission) {
         mappedRegistration = this.mapRegistrationName(
           mappedRegistration,
           select,
@@ -275,6 +308,7 @@ export class RegistrationsPaginationService {
   private mapRootRegistration(
     registration: RegistrationViewEntity,
     select: string[],
+    hasPersonalReadPermission: boolean,
   ): RegistrationViewEntity {
     let mappedRegistration: RegistrationViewEntity;
     if (select && select.length > 0) {
@@ -288,6 +322,9 @@ export class RegistrationsPaginationService {
       mappedRegistration = { ...registration };
     }
     delete mappedRegistration.data;
+    if (!hasPersonalReadPermission) {
+      delete mappedRegistration.phoneNumber;
+    }
     return mappedRegistration;
   }
 
