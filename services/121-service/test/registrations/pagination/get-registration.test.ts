@@ -53,7 +53,6 @@ describe('Load PA table', () => {
         requestedDynamicAttributes,
         accessToken,
       );
-      console.log('getRegistrationsResponse: ', getRegistrationsResponse.body);
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
       // Assert
