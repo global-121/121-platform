@@ -14,6 +14,7 @@ import {
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
+import { IntersolveGetCardResponseDto } from './dto/intersolve-get-card-details.dto';
 import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
@@ -121,6 +122,26 @@ export class IntersolveVisaApiService {
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.get<IntersolveGetWalletResponseDto>(
+        url,
+        headers,
+      );
+    }
+  }
+
+  // Swagger docs https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
+  public async getCard(
+    tokenCode: string,
+  ): Promise<IntersolveGetCardResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getCardMock(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetCardResponseDto>(
         url,
         headers,
       );

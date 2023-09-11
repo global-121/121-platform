@@ -1,5 +1,5 @@
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
-import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
@@ -74,10 +74,10 @@ describe('Issue new Visa debit card', () => {
     expect(visaWalletResponse.body.wallets.length).toBe(2);
     // mock returns hard-coded 'active', while non-mock would return 'inactive', so either way not 'blocked'
     expect(visaWalletResponse.body.wallets[0].status).not.toBe(
-      WalletStatus121.Blocked,
+      WalletCardStatus121.Blocked,
     );
     expect(visaWalletResponse.body.wallets[1].status).toBe(
-      WalletStatus121.Blocked,
+      WalletCardStatus121.Blocked,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(programOCW.notifications.en.reissueVisaCard);
