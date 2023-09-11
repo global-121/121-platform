@@ -847,28 +847,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private loadNameColumns() {
-    for (const nameColumn of this.program.fullnameNamingConvention) {
-      const searchableColumns = [
-        ...this.program.programQuestions,
-        ...this.program.programCustomAttributes,
-      ];
+    if (this.canViewPersonalData) {
+      for (const nameColumn of this.program.fullnameNamingConvention) {
+        const searchableColumns = [
+          ...this.program.programQuestions,
+          ...this.program.programCustomAttributes,
+        ];
 
-      const nameQuestion = searchableColumns.find(
-        (question) => question.name === nameColumn,
-      );
-      if (nameQuestion) {
-        const addCol = {
-          prop: nameColumn,
-          name: this.translatableStringService.get(
-            nameQuestion.shortLabel || nameQuestion.label,
-          ),
-          ...this.columnDefaults,
-          frozenLeft: this.platform.width() > 768,
-          permissions: [Permission.RegistrationPersonalREAD],
-          minWidth: this.columnWidthPerType[AnswerType.Text],
-          width: this.columnWidthPerType[AnswerType.Text],
-        };
-        this.columns.push(addCol);
+        const nameQuestion = searchableColumns.find(
+          (question) => question.name === nameColumn,
+        );
+        if (nameQuestion) {
+          const addCol = {
+            prop: nameColumn,
+            name: this.translatableStringService.get(
+              nameQuestion.shortLabel || nameQuestion.label,
+            ),
+            ...this.columnDefaults,
+            frozenLeft: this.platform.width() > 768,
+            permissions: [Permission.RegistrationPersonalREAD],
+            minWidth: this.columnWidthPerType[AnswerType.Text],
+            width: this.columnWidthPerType[AnswerType.Text],
+          };
+          this.columns.push(addCol);
+        }
       }
     }
   }

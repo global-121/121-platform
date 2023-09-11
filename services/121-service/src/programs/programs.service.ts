@@ -564,7 +564,21 @@ export class ProgramService {
   public async getPaTableAttributes(
     programId: number,
     phase?: ProgramPhase,
+    userId?: number,
   ): Promise<Attribute[]> {
+    if (userId) {
+      const hasPersonalRead = await this.userService.canActivate(
+        [PermissionEnum.RegistrationPersonalREAD],
+        programId,
+        userId,
+      );
+      if (!hasPersonalRead) {
+        // If a person does not have personal read permission we should
+        // not show registration data columns in the portal
+        return [];
+      }
+    }
+
     let queryCustomAttr = this.dataSource
       .getRepository(ProgramCustomAttributeEntity)
       .createQueryBuilder('programCustomAttribute')
