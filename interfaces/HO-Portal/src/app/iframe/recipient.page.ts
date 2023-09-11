@@ -77,9 +77,8 @@ export class RecipientPage implements OnDestroy, OnInit {
   private async getPaDetailsByPhoneNumber(
     phoneNumber: string,
   ): Promise<Recipient[]> {
-    const paList = await this.progamsServiceApiService.getPaByPhoneNr(
-      phoneNumber,
-    );
+    const paList =
+      await this.progamsServiceApiService.getPaByPhoneNr(phoneNumber);
     return paList.map((pa) => {
       return {
         ...pa,

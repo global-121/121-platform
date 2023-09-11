@@ -15,6 +15,7 @@
 
   <ng-container *ngIf="recipients?.length > 0 && programsMap">
     <app-banner [text]="searchResultText"></app-banner>
+
     <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
@@ -29,6 +30,7 @@
             <strong>{{ recipient.name }}</strong>
           </ion-label>
         </ion-item>
+
         <app-recipient-details
           class="ion-padding"
           slot="content"
