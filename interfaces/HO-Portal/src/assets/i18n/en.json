@@ -713,13 +713,7 @@
     "physical-cards-overview": {
       "title": "Debit cards",
       "subtitle": "...",
-      "card-status": "Card status",
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive",
-        "blocked": "Blocked",
-        "paused": "Paused"
-      },
+      "status": "Status",
       "date-issued": "Issued",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
@@ -740,7 +734,8 @@
         "new-card-error": "<span class=\"status-failed-text\">Something went wrong</span><br><br>{{error}}",
         "pause-success": "Successfully paused debit card",
         "unpause-success": "Successfully unpaused debit card"
-      }
+      },
+      "explanation": "Explanation"
     },
     "activity-overview": {
       "title": "Activity overview",

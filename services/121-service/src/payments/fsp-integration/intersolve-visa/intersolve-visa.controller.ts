@@ -35,7 +35,11 @@ export class IntersolveVisaController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiResponse({ status: 201, description: 'Wallets and details retrieved' })
+  @ApiResponse({
+    status: 201,
+    description: 'Wallets and details retrieved',
+    type: GetWalletsResponseDto,
+  })
   // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Get('programs/:programId/fsp-integration/intersolve-visa/wallets')
   public async getVisaWalletsAndDetails(
