@@ -1,0 +1,9 @@
+<ion-card *ngFor="let role of rolesList; let index = index">
+  <ion-card-header>
+    <ion-card-title>{{ role?.role | titlecase }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    {{ role?.label }}
+  </ion-card-content>
+</ion-card>

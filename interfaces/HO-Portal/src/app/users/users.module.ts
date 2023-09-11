@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '../shared/shared.module';
+import { RolesListComponent } from './rolesList/roles-list/roles-list.component';
 import { UsersPage } from './users.page';
 
 @NgModule({
@@ -11,6 +12,7 @@ import { UsersPage } from './users.page';
     CommonModule,
     IonicModule,
     SharedModule,
+    RolesListComponent,
     RouterModule.forChild([
       {
         path: '',

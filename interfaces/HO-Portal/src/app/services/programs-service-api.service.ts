@@ -21,7 +21,7 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
-import { User } from '../models/user.model';
+import { Roles, User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -761,5 +761,9 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
       false,
     );
+  }
+
+  getRoles(): Promise<Roles[] | null> {
+    return this.apiService.get(environment.url_121_service_api, '/roles');
   }
 }

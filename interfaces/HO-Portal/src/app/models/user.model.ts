@@ -7,3 +7,9 @@ export class User {
   };
   expires: string;
 }
+
+export interface Roles {
+  id: number;
+  role: string;
+  label: string;
+}
