@@ -32,7 +32,7 @@ import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('payments/intersolve')
+@ApiTags('financial-service-providers/intersolve-voucher')
 @Controller()
 export class IntersolveVoucherController {
   public constructor(
@@ -45,6 +45,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 201, description: 'Vouchers exported' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
   @Post('programs/:programId/payments/intersolve/export-voucher')
   public async exportVouchers(
     @Param() params,
@@ -70,6 +71,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 201, description: 'Vouchers balance retrieved' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
   @Post('programs/:programId/payments/intersolve/balance')
   public async getBalance(
     @Param() params,
@@ -87,6 +89,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
   @Get('programs/:programId/payments/intersolve/instruction')
   public async intersolveInstructions(
     @Res() response: Response,
@@ -111,6 +114,7 @@ export class IntersolveVoucherController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({ status: 201, description: 'Post intersolve instructions' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
   @Post('programs/:programId/payments/intersolve/instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
@@ -129,6 +133,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 201, description: 'Voucher update job started' })
+  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
   @Post('/programs/:programId/payments/intersolve/batch-jobs')
   public async createJob(
     @Body() jobDetails: IntersolveVoucherJobDetails,

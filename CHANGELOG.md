@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.97.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.97.1...master)
 
 ---
+## [1.97.1](https://github.com/global-121/121-platform/compare/v1.97.0...v1.97.1) - 2023-09-11
+
+### Fixed
+
+- Fixed reissue inactive blocked wallet
+
 
 ## [1.97.0](https://github.com/global-121/121-platform/compare/v1.97.0...v1.96.0) - 2023-08-24
 

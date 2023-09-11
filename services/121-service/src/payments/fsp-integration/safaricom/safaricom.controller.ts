@@ -2,7 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SafaricomService } from './safaricom.service';
 
-@ApiTags('payments/safaricom')
+@ApiTags('callbacks/safaricom')
+// TODO: REFACTOR: rename to /callbacks/safaricom
 @Controller('payments/safaricom')
 export class SafaricomController {
   public constructor(private safaricomService: SafaricomService) {}

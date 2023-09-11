@@ -283,6 +283,14 @@ ion-button {
     background-color: var(--fiveten-warning-100);
     color: var(--fiveten-warning-700);
   }
+  &.physical-card-status-chip-unknown {
+    background-color: var(--fiveten-warning-100);
+    color: var(--fiveten-warning-700);
+  }
+  &.physical-card-status-chip-suspected-fraud {
+    background-color: var(--fiveten-error-100);
+    color: var(--fiveten-error-700);
+  }
 }
 .chip {
   pointer-events: none;

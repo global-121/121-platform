@@ -15,6 +15,7 @@ import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
+import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { IntersolveVisaExportService } from './services/intersolve-visa-export.s
     CustomHttpService,
     RegistrationDataQueryService,
     IntersolveVisaExportService,
+    IntersolveVisaStatusMappingService,
   ],
   controllers: [IntersolveVisaController],
   exports: [
