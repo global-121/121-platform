@@ -9,6 +9,7 @@ export enum FspName {
   bobFinance = 'BoB-finance',
   ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
+  commercialBankEthiopia = 'Commercial-bank-ethiopia',
   //The values below are for testing purposes
   fspAllAttributes = 'FSP - all attributes',
   fspNoAttributes = 'FSP - no attributes',

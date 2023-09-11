@@ -220,7 +220,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue.transaction ||
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
-          this.canDoSinglePayment,
+          false,
           this.person,
           this.lastPaymentId,
           false,

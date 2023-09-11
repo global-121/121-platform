@@ -52,8 +52,50 @@
       *ngIf="segment === 'users'"
       class="ion-padding"
     >
-      <!--button add new user-->
-      <div class="button-container">
+      <!--filter and add new user button-->
+      <div class="filter-and-button">
+        <!--filter-->
+        <ion-item
+          lines="none"
+          style="border: 1px solid #d1d4d7; border-radius: 4px; height: 40px"
+          class="ion-align-items-start filter"
+        >
+          <ion-icon
+            name="funnel"
+            [attr.title]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+            aria-hidden="true"
+            size="small"
+            slot="start"
+            class="ion-margin-end"
+            style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
+            color="black"
+          ></ion-icon>
+          <ion-input
+            [placeholder]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+            [attr.title]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+            [attr.aria-label]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+            (ionInput)="onInput($event.detail.value)"
+            [debounce]="1000"
+            [clearInput]="true"
+            class="filter-input"
+            data-cy="table-text-filter"
+          >
+          </ion-input>
+        </ion-item>
+
+        <!--add new user button-->
         <ion-button
           shape="round"
           fill="outline"
@@ -68,7 +110,7 @@
 
       <!--users table-->
       <div class="ion-padding">
-        <app-users-table></app-users-table>
+        <app-users-table [filterValue]="filterInput"></app-users-table>
       </div>
     </div>
 

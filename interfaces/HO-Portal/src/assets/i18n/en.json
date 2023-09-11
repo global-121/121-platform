@@ -536,7 +536,7 @@
         },
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
-          "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
+          "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher's last external update."
         },
         "duplicates": {
           "btn-text": "Export duplicate People Affected",
@@ -608,8 +608,8 @@
       "roles-and-permissions-tab": "Roles and Permissions",
       "team-members": "Team members",
       "table-headers": {
-        "name": "Name",
-        "role": "Role",
+        "username": "Username",
+        "user-type": "User type",
         "status": "Status",
         "last-activity": "Last activity"
       },
@@ -622,9 +622,11 @@
       "pageTitle": "User",
       "change-password": {
         "title": "Change password",
+        "current-password": "Current password",
         "new-password": "New password",
         "confirm-password": "Confirm password",
-        "success": "Password changed"
+        "success": "Password changed",
+        "failed": "Failed attempt: current password incorrect"
       },
       "notification-messages": {
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
@@ -711,13 +713,7 @@
     "physical-cards-overview": {
       "title": "Debit cards",
       "subtitle": "...",
-      "card-status": "Card status",
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive",
-        "blocked": "Blocked",
-        "paused": "Paused"
-      },
+      "status": "Status",
       "date-issued": "Issued",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
@@ -738,7 +734,8 @@
         "new-card-error": "<span class=\"status-failed-text\">Something went wrong</span><br><br>{{error}}",
         "pause-success": "Successfully paused debit card",
         "unpause-success": "Successfully unpaused debit card"
-      }
+      },
+      "explanation": "Explanation"
     },
     "activity-overview": {
       "title": "Activity overview",

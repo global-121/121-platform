@@ -21,7 +21,7 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
-import { User } from '../models/user.model';
+import { TableData, User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -66,12 +66,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  changePassword(newPassword: string): Promise<null> {
+  changePassword(
+    username: string,
+    password: string,
+    newPassword: string,
+  ): Promise<null> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/user/change-password',
       {
-        password: newPassword,
+        username,
+        password,
+        newPassword,
       },
     );
   }
@@ -757,7 +763,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getAllUsers(): Promise<User[] | null> {
+  getAllUsers(): Promise<TableData[] | null> {
     return this.apiService.get(environment.url_121_service_api, '/users');
   }
 }

@@ -1,0 +1,25 @@
+{
+  "fsp": "Commercial-bank-ethiopia",
+  "integrationType": "api",
+  "fspDisplayNamePaApp": {
+    "en": "Commercial Bank of Ethiopia"
+  },
+  "fspDisplayNamePortal": "Commercial Bank of Ethiopia",
+  "questions": [
+    {
+      "name": "bankAccountNumber",
+      "label": {
+        "en": "Which bank account do you want to receive your money transfer from Commercial Bank of Ethiopia on?"
+      },
+      "placeholder": {
+        "en": "1000263499216"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null,
+      "shortLabel": {
+        "en": "Bank Account Number"
+      }
+    }
+  ]
+}

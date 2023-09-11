@@ -8,15 +8,20 @@
 </div>
 <ngx-datatable
   class="bootstrap data-table--max-height"
-  [rows]="rows"
+  [rows]="filteredRows"
   [columnMode]="'force'"
   [rowHeight]="50"
   [scrollbarV]="true"
   [headerHeight]="40"
   [footerHeight]="50"
+  (sort)="onSort($event)"
+  [sorts]="[{ prop: 'username', dir: 'asc' }]"
 >
   <!-- username -->
-  <ngx-datatable-column [name]="'page.users.table-headers.name' | translate">
+  <ngx-datatable-column
+    prop="username"
+    [name]="'page.users.table-headers.username' | translate"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -25,18 +30,24 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- role -->
-  <ngx-datatable-column [name]="'page.users.table-headers.role' | translate">
+  <!-- user type -->
+  <ngx-datatable-column
+    prop="admin"
+    [name]="'page.users.table-headers.user-type' | translate"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.admin ? 'Admin' : 'Regular' }}
+      {{ row.userType }}
     </ng-template>
   </ngx-datatable-column>
 
   <!-- status-->
-  <ngx-datatable-column [name]="'page.users.table-headers.status' | translate">
+  <ngx-datatable-column
+    prop="active"
+    [name]="'page.users.table-headers.status' | translate"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -44,7 +55,6 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
-          *ngIf="row?.active"
           [class.active]="row.active === true"
           [class.inactive]="row.active === false"
         >
@@ -60,6 +70,7 @@
 
   <!-- last activity -->
   <ngx-datatable-column
+    prop="lastLogin"
     [name]="'page.users.table-headers.last-activity' | translate"
   >
     <ng-template

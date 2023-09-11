@@ -30,6 +30,7 @@
     <ion-col size="6">
       <ion-item
         button
+        (click)="openFromPopover = true"
         id="dateFromButton"
       >
         <ion-label>
@@ -46,12 +47,14 @@
         side="bottom"
         alignment="end"
         size="cover"
+        [isOpen]="openFromPopover"
+        (didDismiss)="openFromPopover = false"
       >
         <ng-template>
           <ion-datetime
             [(ngModel)]="datetimeProps.dateFrom"
             presentation="date"
-            showDefaultButtons="true"
+            showDefaultButtons="false"
             showClearButton="true"
             (ionChange)="dateFromChanged()"
           >
@@ -62,6 +65,7 @@
     <ion-col size="6">
       <ion-item
         button
+        (click)="openToPopover = true"
         id="dateToButton"
       >
         <ion-label>
@@ -78,12 +82,14 @@
         side="bottom"
         alignment="end"
         size="cover"
+        [isOpen]="openToPopover"
+        (didDismiss)="openToPopover = false"
       >
         <ng-template>
           <ion-datetime
             [(ngModel)]="datetimeProps.dateTo"
             presentation="date"
-            showDefaultButtons="true"
+            showDefaultButtons="false"
             showClearButton="true"
             (ionChange)="dateToChanged()"
           >

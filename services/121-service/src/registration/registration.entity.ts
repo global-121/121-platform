@@ -1,4 +1,10 @@
-import { IsEnum, IsInt, IsOptional, IsPositive } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 import {
   BeforeRemove,
   Brackets,
@@ -90,7 +96,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: false, default: 1 })
   @IsInt()
   @IsPositive()
-  @IsOptional()
+  @IsNotEmpty()
   public paymentAmountMultiplier: number;
 
   @Column({ nullable: true })
@@ -100,6 +106,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public noteUpdated: Date;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
+  // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
   @Column()
   public registrationProgramId: number;
 

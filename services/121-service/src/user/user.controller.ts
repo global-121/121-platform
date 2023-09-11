@@ -33,7 +33,7 @@ import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('user')
+@ApiTags('users')
 @Controller()
 export class UserController {
   private readonly userService: UserService;
@@ -43,6 +43,7 @@ export class UserController {
 
   @Admin()
   @ApiOperation({ summary: 'Get all user roles' })
+  // TODO: REFACTOR: rename to /users/roles/
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleEntity[]> {
     return await this.userService.getUserRoles();
@@ -50,6 +51,7 @@ export class UserController {
 
   @Admin()
   @ApiOperation({ summary: 'Create new user role' })
+  // TODO: REFACTOR: rename to /users/roles
   @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
@@ -60,6 +62,7 @@ export class UserController {
   @Admin()
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
+  // TODO: REFACTOR: rename to /users/roles/
   @Put('roles/:userRoleId')
   public async updateUserRole(
     @Param() params,
@@ -74,12 +77,14 @@ export class UserController {
   @Admin()
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
+  // TODO: REFACTOR: rename to /users/roles/
   @Delete('roles/:userRoleId')
   public async deleteUserRole(@Param() params): Promise<UserRoleEntity> {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
+  // TODO: REFACTOR: rename to /users
   @Post('user/aidworker')
   public async createAw(
     @Body() userData: CreateUserAidWorkerDto,
@@ -88,6 +93,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
+  // TODO: REFACTOR: rename to /users/person-affected
   @Post('user/person-affected')
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
@@ -128,6 +134,7 @@ export class UserController {
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
   @ApiOperation({ summary: 'Log in existing user' })
+  // TODO: REFACTOR: rename to /users/login
   @Post('user/login')
   public async login(
     @Body() loginUserDto: LoginUserDto,
@@ -165,6 +172,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Log out existing user' })
+  // TODO: REFACTOR: rename to /users/logout
   @Post('user/logout')
   public async logout(@Res() res): Promise<UserRO> {
     try {
@@ -182,6 +190,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Change password of logged in user' })
+  // TODO: REFACTOR: rename to /users/password
   @Post('user/change-password')
   @ApiResponse({ status: 201, description: 'Changed password of user' })
   @ApiResponse({
@@ -196,11 +205,12 @@ export class UserController {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return this.userService.update(userId, userData);
+    return this.userService.update(userData);
   }
 
   @Admin()
   @ApiOperation({ summary: 'Delete user by userId' })
+  // TODO: REFACTOR: rename to /users/:userid
   @Post('user/delete/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(@Param() params): Promise<UserEntity> {
@@ -208,6 +218,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'User deletes itself' })
+  // TODO: REFACTOR: rename to /users/
   @Post('user/delete')
   @ApiResponse({ status: 201, description: 'User deleted' })
   @ApiResponse({
@@ -225,6 +236,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get current user' })
+  // TODO: REFACTOR: rename to /users
   @Get('user')
   @ApiResponse({ status: 200, description: 'User returned' })
   @ApiResponse({

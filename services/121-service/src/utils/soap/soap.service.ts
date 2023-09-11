@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
+import https from 'https';
 import * as convert from 'xml-js';
 import { CustomHttpService } from '../../shared/services/custom-http.service';
 
@@ -139,5 +140,57 @@ export class SoapService {
       }
     }
     return xml;
+  }
+
+  async postCBERequest(payload: any, soapAction: string): Promise<any> {
+    try {
+      const soapRequestXml = convert.js2xml(payload, {
+        compact: false,
+        spaces: 4,
+      });
+
+      // Configure and send the SOAP request
+      const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+      const headers = {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        soapAction: soapAction,
+      };
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
+      const cert = fs.readFileSync(certPath);
+      const agent = new https.Agent({
+        ca: cert,
+      });
+
+      const { response } = await soapRequest({
+        headers: headers,
+        url: soapUrl,
+        xml: soapRequestXml,
+        timeout: 150000,
+        extraOpts: {
+          httpsAgent: agent,
+        },
+      });
+
+      // Parse the SOAP response if needed
+      const parsedResponse = convert.xml2js(response.body, { compact: true });
+
+      if (
+        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:RMTFundtransferResponse'
+        ];
+      } else if (
+        parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ]
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ];
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 }
