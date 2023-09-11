@@ -5,8 +5,8 @@ export class PaginationFilter {
 }
 
 export enum FilterOperatorEnum {
-  eq = 'eq',
-  in = 'in',
-  ilike = 'ilike',
-  null = 'null',
+  eq = '$eq',
+  in = '$in',
+  ilike = '$ilike',
+  null = '$null',
 }

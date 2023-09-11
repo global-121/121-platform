@@ -555,7 +555,7 @@ export class ProgramsServiceApiService {
         const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
           `filter.${filter.name}`,
-          `$${operator}:${filter.value}`,
+          `${operator}:${filter.value}`,
         );
       }
     }
