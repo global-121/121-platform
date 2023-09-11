@@ -1,20 +1,29 @@
-import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { IntersolveVisaCardStatus } from './../../src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+/* eslint-disable jest/no-conditional-expect */
+import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import { changePhase, doPayment } from '../helpers/program.helper';
+import {
+  changePhase,
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '../helpers/program.helper';
 import {
   changePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
+  issueNewVisaCard,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-  referenceIdVisa,
   registrationVisa,
 } from './visa-card.data';
+
+// This test takes a lot of time because there are my statusses to check
+jest.setTimeout(40000);
 
 describe('Load Visa debit cards and details', () => {
   let accessToken: string;
@@ -34,40 +43,93 @@ describe('Load Visa debit cards and details', () => {
   });
 
   it('should succesfully show a Visa Debit card', async () => {
-    // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await changePaStatus(
-      programIdVisa,
-      [referenceIdVisa],
-      'include',
-      accessToken,
+    const registrations = [registrationVisa];
+    for (const status of Object.values(IntersolveVisaCardStatus)) {
+      const copyRegistration = { ...registrationVisa };
+      copyRegistration.lastName = `mock-fail-get-card-${status}`;
+      copyRegistration.referenceId = `copyRegistration.referenceId-${status}`;
+      copyRegistration.whatsappPhoneNumber = '14155238887';
+      registrations.push(copyRegistration);
+    }
+    const referenceIds = registrations.map(
+      (registration) => registration.referenceId,
     );
-    const paymentReferenceIds = [referenceIdVisa];
+    await importRegistrations(programIdVisa, registrations, accessToken);
+    await changePaStatus(programIdVisa, referenceIds, 'include', accessToken);
     await doPayment(
       programIdVisa,
       paymentNrVisa,
       amountVisa,
-      paymentReferenceIds,
+      referenceIds,
       accessToken,
     );
 
     // Act
-    await waitFor(2_000);
-    const visaWalletResponse = await getVisaWalletsAndDetails(
+    await waitForPaymentTransactionsToComplete(
       programIdVisa,
-      referenceIdVisa,
+      referenceIds,
+      accessToken,
+      30000,
+    );
+    for (const registration of registrations) {
+      await issueNewVisaCard(
+        programIdVisa,
+        registration.referenceId,
+        accessToken,
+      );
+
+      const visaWalletResponse = await getVisaWalletsAndDetails(
+        programIdVisa,
+        registration.referenceId,
+        accessToken,
+      );
+
+      // Assert
+      expect(visaWalletResponse.status).toBe(200);
+      expect(visaWalletResponse.body.wallets).toBeDefined();
+      expect(visaWalletResponse.body.wallets.length).toBe(2);
+      const sortedWallets = visaWalletResponse.body.wallets.sort(
+        (a, b) => a.issuedDate - b.issuedDate,
+      );
+      for (const [index, wallet] of sortedWallets.entries()) {
+        if (index === 1) {
+          expect(wallet.links.length).toBe(0);
+        } else {
+          expect(wallet.links.length).toBeGreaterThan(0);
+        }
+        expect(wallet.tokenCode).toBeDefined();
+        expect(wallet.balance).toBeDefined();
+        expect(wallet.balance).toBe(amountVisa * 100);
+        expect(Object.values(WalletCardStatus121)).toContain(wallet.status);
+        expect(wallet.status).not.toBe(WalletCardStatus121.Unknown);
+        expect(wallet.issuedDate).toBeDefined();
+        expect(wallet.lastUsedDate).toBeDefined();
+      }
+    }
+  });
+
+  it('should throw a 404 if wallet or registration does not exist', async () => {
+    const registrations = [registrationVisa];
+    await importRegistrations(programIdVisa, registrations, accessToken);
+    const referenceIds = registrations.map(
+      (registration) => registration.referenceId,
+    );
+    await changePaStatus(programIdVisa, referenceIds, 'include', accessToken);
+
+    // Act
+    const unknownResponse = await getVisaWalletsAndDetails(
+      programIdVisa,
+      'unknown-reference-id',
+      accessToken,
+    );
+    const noCustomerReponse = await getVisaWalletsAndDetails(
+      programIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
     // Assert
-    expect(visaWalletResponse.body.wallets).toBeDefined();
-    expect(visaWalletResponse.body.wallets.length).toBe(1);
-    expect(visaWalletResponse.body.wallets[0].tokenCode).toBeDefined();
-    expect(visaWalletResponse.body.wallets[0].balance).toBeDefined();
-    expect(Object.keys(WalletStatus121)).toContain(
-      visaWalletResponse.body.wallets[0].status,
-    );
-    expect(visaWalletResponse.body.wallets[0].issuedDate).toBeDefined();
-    expect(visaWalletResponse.body.wallets[0].lastUsedDate).toBeDefined();
+    expect(unknownResponse.status).toBe(404);
+    expect(noCustomerReponse.status).toBe(404);
   });
 });

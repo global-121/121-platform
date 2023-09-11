@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import { getServer } from './utility.helper';
+import { getServer, waitFor } from './utility.helper';
 
 export async function publishProgram(
   programId: number,
@@ -81,4 +81,41 @@ export async function exportList(
     .get(`/programs/${programId}/export-metrics/export-list/${exportType}`)
     .set('Cookie', [access_token])
     .query(queryParams);
+}
+
+export async function waitForPaymentTransactionsToComplete(
+  programId: number,
+  paymentReferences: string[],
+  accessToken: string,
+  maxWaitTimeMs: number,
+): Promise<void> {
+  const startTime = Date.now();
+  let allTransactionsSuccessful = false;
+
+  while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsSuccessful) {
+    // Get payment transactions
+    const paymentTransactions = await getTransactions(
+      programId,
+      null,
+      null,
+      accessToken,
+    );
+
+    // Check if all transactions have a status of "success"
+    allTransactionsSuccessful = paymentReferences.every((referenceId) => {
+      const transaction = paymentTransactions.body.find(
+        (txn) => txn.referenceId === referenceId,
+      );
+      return transaction && transaction.status === 'success';
+    });
+
+    // If not all transactions are successful, wait for a short interval before checking again
+    if (!allTransactionsSuccessful) {
+      await waitFor(1000); // Wait for 1 second (adjust as needed)
+    }
+  }
+
+  if (!allTransactionsSuccessful) {
+    throw new Error(`Timeout waiting for payment transactions to complete`);
+  }
 }
