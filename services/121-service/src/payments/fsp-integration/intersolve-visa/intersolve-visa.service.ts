@@ -817,6 +817,14 @@ export class IntersolveVisaService
       );
     }
 
+    // 0. Try to unblock wallet to be able to activate it
+    try {
+      await this.toggleBlockWallet(oldWallet.tokenCode, false);
+    } catch (error) {
+      if (error.status !== 405 && error.data?.code !== 'TOKEN_IS_NOT_BLOCKED') {
+        throw error;
+      }
+    }
     // 1. activate old wallet (if needed) to be able to get & unload balance
     try {
       await this.intersolveVisaApiService.activateWallet(oldWallet.tokenCode, {
