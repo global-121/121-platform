@@ -62,9 +62,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private person: Person;
 
   @Input()
-  private referenceId: string;
-
-  @Input()
   public canViewVouchers = false;
 
   public DateFormat = DateFormat;
@@ -97,7 +94,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (!this.person || !this.program.id || !this.referenceId) {
+    if (!this.person || !this.program.id || !this.person.referenceId) {
       return;
     }
 
@@ -250,7 +247,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     if (this.canViewMessageHistory) {
       const messageHistory = await this.programsService.retrieveMsgHistory(
         this.program.id,
-        this.referenceId,
+        this.person.referenceId,
       );
 
       for (const message of messageHistory) {

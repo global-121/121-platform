@@ -31,7 +31,7 @@
             <div class="ion-margin-vertical ion-padding-vertical">
               <app-registration-physical-card-overview
                 [programId]="programId"
-                [referenceId]="referenceId"
+                [referenceId]="person.referenceId"
                 [currency]="program.currency"
                 [nrPayments]="person.nrPayments"
                 [registrationStatus]="person.status"
@@ -47,9 +47,7 @@
         >
           <app-registration-activity-overview
             [person]="person"
-            [paId]="paId"
             [program]="program"
-            [referenceId]="referenceId"
           ></app-registration-activity-overview>
         </ion-col>
       </ion-row>
