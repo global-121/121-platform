@@ -1127,7 +1127,9 @@ export class RegistrationsService {
     registration: RegistrationEntity,
     attribute: Attributes | string,
   ): Promise<void> {
-    if (registration.fsp?.fsp === FspName.intersolveVisa) {
+    const registrationHasVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    if (registrationHasVisaCustomer) {
       try {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
@@ -1136,7 +1138,7 @@ export class RegistrationsService {
         );
       } catch (error) {
         // don't throw error if the reason is that the customer doesn't exist yet
-        if (!error.response.errors.includes(VisaErrorCodes.NoCustomerYet)) {
+        if (!error?.response?.errors?.includes(VisaErrorCodes.NoCustomerYet)) {
           const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
