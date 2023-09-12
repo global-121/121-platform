@@ -44,7 +44,12 @@
     <ion-list class="ion-no-padding">
       <ion-item
         *ngFor="let item of getFilteredActivityOverview()"
-        style="font-size: 14px; --padding-start: 0"
+        style="
+          font-size: 14px;
+          --padding-start: 0;
+          --padding-end: 0;
+          --inner-padding-end: 0;
+        "
       >
         <ion-grid>
           <!-- Other tabs -->
@@ -95,7 +100,10 @@
           </ion-row>
 
           <!-- payments -->
-          <div *ngIf="item.type === 'payment'">
+          <div
+            *ngIf="item.type === 'payment'"
+            style="width: 100%"
+          >
             <!-- Accordion -->
             <ion-accordion-group [multiple]="true">
               <app-payment-history-accordion
