@@ -39,7 +39,7 @@
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "name",
+      "name": "fullName",
       "label": {
         "en": "What is your first name?"
       },
@@ -50,7 +50,7 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": ["registrationValidation", "inclusion", "payment"],
-      "editableInPortal": false,
+      "editableInPortal": true,
       "shortLabel": {
         "en": "First Name"
       }
@@ -2869,7 +2869,7 @@
   "aboutProgram": {
     "en": "KRCS BHA Scale-up Program June 23 - June 24"
   },
-  "fullnameNamingConvention": ["name"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["en"],
   "enableMaxPayments": true
 }
