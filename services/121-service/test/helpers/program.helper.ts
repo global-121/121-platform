@@ -1,6 +1,51 @@
 import * as request from 'supertest';
+import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getServer, waitFor } from './utility.helper';
+
+export async function postProgram(
+  program: CreateProgramDto,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/`)
+    .set('Cookie', [accessToken])
+    .send(program);
+}
+
+export async function getProgram(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}`)
+    .query({ formatCreateProgramDto: true })
+    .set('Cookie', [accessToken]);
+}
+
+export async function postProgramQuestion(
+  programQuestion: CreateProgramQuestionDto,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/program-questions`)
+    .set('Cookie', [accessToken])
+    .send(programQuestion);
+}
+
+export async function postCustomAttribute(
+  customAttribute: CreateProgramCustomAttributeDto,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/custom-attributes`)
+    .set('Cookie', [accessToken])
+    .send(customAttribute);
+}
 
 export async function publishProgram(
   programId: number,
@@ -13,11 +58,11 @@ export async function publishProgram(
 export async function changePhase(
   programId: number,
   newPhase: ProgramPhase,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/change-phase`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({ newPhase: newPhase });
 }
 
@@ -26,11 +71,11 @@ export async function doPayment(
   paymentNr: number,
   amount: number,
   referenceIds: string[],
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/payments`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
       amount: amount,
@@ -41,11 +86,11 @@ export async function doPayment(
 export async function retryPayment(
   programId: number,
   paymentNr: number,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
     });
@@ -55,18 +100,18 @@ export async function getTransactions(
   programId: number,
   paymentNr: number,
   referenceId: string,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/payments/transactions`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .query({ minPayment: paymentNr, referenceId: referenceId });
 }
 
 export async function exportList(
   programId: number,
   exportType: string,
-  access_token: string,
+  accessToken: string,
   fromDate?: string,
   toDate?: string,
 ): Promise<request.Response> {
@@ -79,10 +124,36 @@ export async function exportList(
   }
   return await getServer()
     .get(`/programs/${programId}/metrics/export-list/${exportType}`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .query(queryParams);
 }
 
+export const assertArraysAreEqual = (
+  actualArray: any[],
+  expectedArray: any[],
+  keyToIgnore: string[],
+): void => {
+  expect(actualArray.length).toBe(expectedArray.length);
+  for (let i = 0; i < actualArray.length; i++) {
+    for (const subKey in expectedArray[i]) {
+      if (!keyToIgnore.includes(subKey)) {
+        expect(actualArray[i][subKey]).toStrictEqual(expectedArray[i][subKey]);
+      }
+    }
+  }
+};
+
+export const assertObjectsAreEqual = (
+  actualObject: any,
+  expectedObject: any,
+  keyToIgnore: string[],
+): void => {
+  for (const subKey in expectedObject) {
+    if (!keyToIgnore.includes(subKey)) {
+      expect(actualObject[subKey]).toStrictEqual(expectedObject[subKey]);
+    }
+  }
+};
 export async function waitForPaymentTransactionsToComplete(
   programId: number,
   paymentReferences: string[],

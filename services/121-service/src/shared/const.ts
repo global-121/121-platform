@@ -1,4 +1,4 @@
-const nameConstraintQuestionsArray = [
+export const nameConstraintQuestionsArray = [
   'id',
   'status',
   'referenceId',

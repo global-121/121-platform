@@ -107,12 +107,6 @@
         "en": "First name"
       },
       "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
       "phases": []
     },
     {
@@ -121,12 +115,6 @@
         "en": "Last name"
       },
       "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
       "phases": []
     }
   ],
