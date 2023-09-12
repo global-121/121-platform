@@ -697,6 +697,7 @@ export class ProgramService {
       relations.push({
         name: question.name,
         type: question.answerType,
+        options: question.options,
         relation: {
           programQuestionId: question.id,
         },

@@ -21,11 +21,23 @@ import { UserEntity } from '../../user/user.entity';
 import {
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
+  RegistrationViewColumnsEnum,
 } from '../const/filter-operation.const';
+import {
+  LanguageLabelEnum,
+  LanguageMapping,
+} from '../const/language-mapping.const';
+import {
+  RegistrationStatusLabel,
+  RegistrationStatusLabelMapping,
+} from '../const/registration-status-mapping.const';
+import { GetRegistrationDto } from '../dto/get-registration.dto';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '../dto/registration-data-relation.model';
+import { LanguageEnum } from '../enum/language.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
@@ -58,7 +70,10 @@ export class RegistrationsPaginationService {
       programId,
     );
 
-    if (query.select && query.select.includes('name')) {
+    if (
+      query.select &&
+      query.select.includes(RegistrationViewColumnsEnum.name)
+    ) {
       if (fullnameNamingConvention) {
         query.select = query.select.concat(fullnameNamingConvention);
       }
@@ -117,7 +132,7 @@ export class RegistrationsPaginationService {
       orignalSelect,
       fullnameNamingConvention,
       hasPersonalReadPermission,
-    );
+    ) as unknown as RegistrationViewEntity[]; // This is needed a pagination package cannot work with DTO objects
     return result;
   }
 
@@ -277,8 +292,8 @@ export class RegistrationsPaginationService {
     orignalSelect: string[],
     fullnameNamingConvention: string[],
     hasPersonalReadPermission: boolean,
-  ): RegistrationViewEntity[] {
-    const mappedData: RegistrationViewEntity[] = [];
+  ): GetRegistrationDto[] {
+    const mappedData: GetRegistrationDto[] = [];
     for (const registration of paginatedResult.data) {
       const mappedRootRegistration = this.mapRootRegistration(
         registration,
@@ -309,19 +324,40 @@ export class RegistrationsPaginationService {
     registration: RegistrationViewEntity,
     select: string[],
     hasPersonalReadPermission: boolean,
-  ): RegistrationViewEntity {
-    let mappedRegistration: RegistrationViewEntity;
+  ): GetRegistrationDto {
+    const mappedRegistration = new GetRegistrationDto();
+    let keysToMap = [];
     if (select && select.length > 0) {
-      mappedRegistration = new RegistrationViewEntity();
-      for (const selectKey of select) {
-        if (registration[selectKey] !== undefined) {
+      keysToMap = [...select];
+    } else {
+      keysToMap = Object.keys(registration);
+    }
+
+    for (const selectKey of keysToMap) {
+      if (registration[selectKey] !== undefined) {
+        if (selectKey === RegistrationViewColumnsEnum.preferredLanguage) {
+          mappedRegistration[RegistrationViewColumnsEnum.preferredLanguage] =
+            this.getPreferredLanguageLabel(
+              registration[RegistrationViewColumnsEnum.preferredLanguage],
+            );
+        } else if (selectKey === RegistrationViewColumnsEnum.status) {
+          mappedRegistration[RegistrationViewColumnsEnum.status] =
+            this.getRegistrationStatusLabel(
+              registration[RegistrationViewColumnsEnum.status],
+            );
+        } else if (
+          selectKey === RegistrationViewColumnsEnum.paymentAmountMultiplier
+        ) {
+          mappedRegistration[
+            RegistrationViewColumnsEnum.paymentAmountMultiplier
+          ] = this.getMultiplierLabel(
+            registration[RegistrationViewColumnsEnum.paymentAmountMultiplier],
+          );
+        } else if (selectKey !== 'data') {
           mappedRegistration[selectKey] = registration[selectKey];
         }
       }
-    } else {
-      mappedRegistration = { ...registration };
     }
-    delete mappedRegistration.data;
     if (!hasPersonalReadPermission) {
       delete mappedRegistration.phoneNumber;
     }
@@ -330,9 +366,9 @@ export class RegistrationsPaginationService {
 
   private mapRegistrationData(
     registrationDataArray: RegistrationDataEntity[],
-    mappedRegistration: RegistrationViewEntity,
+    mappedRegistration: GetRegistrationDto,
     registrationDataInfoArray: RegistrationDataInfo[],
-  ): RegistrationViewEntity {
+  ): GetRegistrationDto {
     if (!registrationDataArray || registrationDataArray.length < 1) {
       return mappedRegistration;
     }
@@ -361,18 +397,21 @@ export class RegistrationsPaginationService {
         findRelation(x.relation, registrationData),
       );
       if (dataRelation && dataRelation.name) {
-        mappedRegistration[dataRelation.name] = registrationData.value;
+        mappedRegistration[dataRelation.name] = this.getRegistrationDataLabel(
+          registrationData.value,
+          dataRelation,
+        );
       }
     }
     return mappedRegistration;
   }
 
   private mapRegistrationName(
-    registration: RegistrationViewEntity,
+    registration: GetRegistrationDto,
     select: string[],
     orignalSelect: string[],
     fullnameNamingConvention: string[],
-  ): RegistrationViewEntity {
+  ): GetRegistrationDto {
     registration['name'] = this.getName(registration, fullnameNamingConvention);
     if (select && select.includes('name')) {
       const differenceOrignalSelect = select.filter(
@@ -395,5 +434,36 @@ export class RegistrationsPaginationService {
       fullnameConcat.push(registrationRow[nameColumn]);
     }
     return fullnameConcat.join(' ');
+  }
+
+  private getPreferredLanguageLabel(language: LanguageEnum): LanguageLabelEnum {
+    return LanguageMapping[language]
+      ? LanguageMapping[language]
+      : LanguageLabelEnum.English;
+  }
+
+  private getRegistrationStatusLabel(
+    status: RegistrationStatusEnum,
+  ): RegistrationStatusLabel {
+    return RegistrationStatusLabelMapping[status];
+  }
+
+  private getMultiplierLabel(multiplier: number): string {
+    return `${multiplier}x`;
+  }
+
+  private getRegistrationDataLabel(
+    value: string,
+    dataRelationInfo: RegistrationDataInfo,
+  ): string {
+    if (!dataRelationInfo.options) {
+      return value;
+    }
+    const option = dataRelationInfo.options.find((x) => x.option === value);
+    if (option) {
+      return option.label[LanguageEnum.en];
+    } else {
+      value;
+    }
   }
 }
