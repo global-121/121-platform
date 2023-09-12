@@ -5,14 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { RegistrationPhysicalCardOverviewComponent } from 'src/app/components/registration-physical-card-overview/registration-physical-card-overview.component';
+import { RegistrationProfileComponent } from 'src/app/components/registration-profile/registration-profile.component';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
-import { RegistrationActivityOverviewComponent } from '../../components/registration-activity-overview/registration-activity-overview.component';
-import { RegistrationPersonalInformationComponent } from '../../components/registration-personal-information/registration-personal-information.component';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -27,9 +25,7 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     HeaderComponent,
     TranslateModule,
     ProgramNavigationComponent,
-    RegistrationActivityOverviewComponent,
-    RegistrationPersonalInformationComponent,
-    RegistrationPhysicalCardOverviewComponent,
+    RegistrationProfileComponent,
   ],
   selector: 'app-registration-details',
   templateUrl: './registration-details.page.html',
@@ -94,11 +90,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     this.loadPermissions();
 
     this.person = await this.loadPerson();
-
-    if (!this.person) {
-      this.loading = false;
-      return;
-    }
 
     this.loading = false;
   }
