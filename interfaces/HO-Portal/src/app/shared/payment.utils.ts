@@ -1,4 +1,4 @@
-import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
+import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import {
   PaymentRowDetail,

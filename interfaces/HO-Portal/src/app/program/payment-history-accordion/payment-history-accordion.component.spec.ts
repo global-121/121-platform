@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { PaymentHistoryAccordionComponent } from './payment-history-accordion.component';
 
 describe('PaymentHistoryAccordionComponent', () => {
@@ -22,7 +23,7 @@ describe('PaymentHistoryAccordionComponent', () => {
       amount: 22,
       customData: {},
       errorMessage: null,
-      fsp: 'Intersolve-jumbo-physical',
+      fsp: FspName.intersolveJumboPhysical,
       fspName: 'Jumbo card',
       payment: 1,
       paymentDate: '2023-08-04T08:51:53.726Z',
