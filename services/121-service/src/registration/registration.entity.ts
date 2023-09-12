@@ -142,6 +142,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
+        entityClass: RegistrationChangeLogEntity,
+        columnName: 'registration',
+      },
+      {
         entityClass: TransactionEntity,
         columnName: 'registration',
       },
