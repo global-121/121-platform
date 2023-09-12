@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -16,15 +16,15 @@ class Recipient extends Person {
   templateUrl: './recipient.page.html',
   styleUrls: ['./recipient.page.scss'],
 })
-export class RecipientPage implements OnDestroy, OnInit {
+export class RecipientPage implements OnDestroy {
   public recipients: Recipient[];
-  public programsMap: { [programId: number]: Program };
 
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
   public searchResultText: string;
 
   private paramsSubscription: Subscription;
+  private programsMap: { [programId: number]: Program };
 
   constructor(
     private progamsServiceApiService: ProgramsServiceApiService,
@@ -38,13 +38,9 @@ export class RecipientPage implements OnDestroy, OnInit {
           return;
         }
         this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
+        this.getRecipientData();
       },
     );
-  }
-
-  public async ngOnInit(): Promise<void> {
-    this.programsMap = await this.createProgramsMap();
-    await this.getRecipientData();
   }
 
   ngOnDestroy(): void {
@@ -87,6 +83,11 @@ export class RecipientPage implements OnDestroy, OnInit {
   ): Promise<Recipient[]> {
     const paList =
       await this.progamsServiceApiService.getPaByPhoneNr(phoneNumber);
+
+    if (!this.programsMap) {
+      this.programsMap = await this.createProgramsMap();
+    }
+
     return paList.map((pa) => {
       return {
         ...pa,

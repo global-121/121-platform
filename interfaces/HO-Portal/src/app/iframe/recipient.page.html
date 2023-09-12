@@ -13,7 +13,7 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="recipients?.length > 0 && programsMap">
+  <ng-container *ngIf="recipients?.length > 0">
     <app-banner [text]="searchResultText"></app-banner>
 
     <ion-accordion-group [value]="accordionGroupValue">
@@ -33,7 +33,7 @@
 
         <app-registration-profile
           [person]="recipient"
-          [program]="programsMap[recipient.programId]"
+          [program]="recipient.program"
           slot="content"
         ></app-registration-profile>
       </ion-accordion>

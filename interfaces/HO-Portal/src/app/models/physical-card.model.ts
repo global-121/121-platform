@@ -1,4 +1,5 @@
 import { WalletCardStatus121 } from '../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+
 export class PhysicalCard {
   tokenCode: string;
   cardNumber?: string;
