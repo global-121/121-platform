@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BannerComponent } from '../components/banner/banner.component';
-import { RecipientDetailsComponent } from '../components/recipient-details/recipient-details.component';
+import { RegistrationProfileComponent } from '../components/registration-profile/registration-profile.component';
 import { SharedModule } from '../shared/shared.module';
 import { RecipientPage } from './recipient.page';
 
@@ -20,8 +20,9 @@ import { RecipientPage } from './recipient.page';
       },
     ]),
     TranslateModule.forChild(),
+    RegistrationProfileComponent,
   ],
   providers: [DatePipe],
-  declarations: [RecipientPage, RecipientDetailsComponent, BannerComponent],
+  declarations: [RecipientPage, BannerComponent],
 })
 export class IframeModule {}

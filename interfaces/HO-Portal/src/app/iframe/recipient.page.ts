@@ -19,9 +19,11 @@ class Recipient extends Person {
 export class RecipientPage implements OnDestroy, OnInit {
   public recipients: Recipient[];
   public programsMap: { [programId: number]: Program };
+
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
   public searchResultText: string;
+
   private paramsSubscription: Subscription;
 
   constructor(

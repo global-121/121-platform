@@ -13,44 +13,10 @@
       {{ 'registration-details.error' | translate}}
     </ion-text>
 
-    <ion-grid *ngIf="person">
-      <ion-row>
-        <ion-col
-          [size]="12"
-          [sizeMd]="5"
-          [sizeLg]="4"
-        >
-          <app-registration-personal-information
-            [person]="person"
-            [programId]="programId"
-            class="ion-margin-bottom"
-            style="display: block"
-          ></app-registration-personal-information>
-
-          <ng-container *ngIf="canViewPhysicalCards && fspHasPhysicalCard()">
-            <div class="ion-margin-vertical ion-padding-vertical">
-              <app-registration-physical-card-overview
-                [programId]="programId"
-                [referenceId]="person.referenceId"
-                [currency]="program.currency"
-                [nrPayments]="person.nrPayments"
-                [registrationStatus]="person.status"
-              ></app-registration-physical-card-overview>
-            </div>
-          </ng-container>
-        </ion-col>
-
-        <ion-col
-          [size]="12"
-          [sizeMd]="7"
-          [sizeLg]="8"
-        >
-          <app-registration-activity-overview
-            [person]="person"
-            [program]="program"
-          ></app-registration-activity-overview>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <app-registration-profile
+      *ngIf="person"
+      [person]="person"
+      [program]="program"
+    ></app-registration-profile>
   </ng-container>
 </ion-content>

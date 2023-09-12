@@ -31,12 +31,11 @@
           </ion-label>
         </ion-item>
 
-        <app-recipient-details
-          class="ion-padding"
-          slot="content"
-          [recipient]="recipient"
+        <app-registration-profile
+          [person]="recipient"
           [program]="programsMap[recipient.programId]"
-        ></app-recipient-details>
+          slot="content"
+        ></app-registration-profile>
       </ion-accordion>
     </ion-accordion-group>
   </ng-container>
