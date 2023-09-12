@@ -116,15 +116,20 @@ export class RegistrationPersonalInformationComponent implements OnInit {
           'preferredLanguage',
           this.person.preferredLanguage,
         ),
-      },
-      {
-        label: this.getLabel('phone'),
-        value:
-          this.person.phoneNumber === ''
-            ? this.person.phoneNumber
-            : `+${this.person.phoneNumber}`,
-      },
+      }
     );
+
+    if (this.canViewPersonalData) {
+      this.personalInfoTable.push(
+        {
+          label: this.getLabel('phone'),
+          value:
+            this.person.phoneNumber === ''
+              ? this.person.phoneNumber
+              : `+${this.person.phoneNumber}`,
+        },
+      );
+    }
 
     if (this.person) {
       for (const ta of this.tableAttributes) {

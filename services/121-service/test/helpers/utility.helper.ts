@@ -41,6 +41,23 @@ export async function getAccessToken(): Promise<string> {
   return accessToken;
 }
 
+export function loginAsProgramManager(): Promise<request.Response> {
+  return getServer().post(`/user/login`).send({
+    username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+  });
+}
+
+export async function getAccessTokenProgramManager(): Promise<string> {
+  const login = await loginAsProgramManager();
+  const cookies = login.get('Set-Cookie');
+  const accessToken = cookies
+    .find((cookie: string) => cookie.startsWith(CookieNames.general))
+    .split(';')[0];
+
+  return accessToken;
+}
+
 export async function waitFor(timeInMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, timeInMs));
 }
