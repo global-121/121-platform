@@ -38,13 +38,13 @@ export class RecipientPage implements OnDestroy, OnInit {
           return;
         }
         this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
-        this.getRecipientData();
       },
     );
   }
 
   public async ngOnInit(): Promise<void> {
     this.programsMap = await this.createProgramsMap();
+    await this.getRecipientData();
   }
 
   ngOnDestroy(): void {
@@ -71,6 +71,12 @@ export class RecipientPage implements OnDestroy, OnInit {
     const programs = await this.progamsServiceApiService.getAllPrograms();
 
     for (const program of programs) {
+      const paTableAttributes =
+        (await this.progamsServiceApiService.getPaTableAttributes(
+          program.id,
+          null,
+        )) as any;
+      program.paTableAttributes = paTableAttributes;
       programsMap[program.id] = program;
     }
     return programsMap;
@@ -88,6 +94,7 @@ export class RecipientPage implements OnDestroy, OnInit {
         programTitle: this.translatableString.get(
           this.programsMap[pa.programId].titlePortal,
         ),
+        program: this.programsMap[pa.programId],
       } as Recipient;
     });
   }

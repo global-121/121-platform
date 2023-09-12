@@ -1242,6 +1242,11 @@ export class RegistrationsService {
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
+    const transactionPermissionsProgramIds =
+      await this.getProgramIdsUserHasPermission(
+        userId,
+        PermissionEnum.PaymentTransactionREAD,
+      );
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1292,7 +1297,9 @@ export class RegistrationsService {
           await this.getRegistrations(
             uniqueRegistration.programId,
             true,
-            false,
+            transactionPermissionsProgramIds.includes(
+              uniqueRegistration.programId,
+            ),
             true,
             uniqueRegistration.referenceId,
           )
