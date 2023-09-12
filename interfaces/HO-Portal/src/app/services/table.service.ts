@@ -71,7 +71,7 @@ export class TableService {
     const { data, meta } = await this.programsService.getPeopleAffected(
       programId,
       this.pageMetaData.itemsPerPage,
-      this.pageMetaData.currentPage,
+      this.pageMetaData.currentPage + 1,
       referenceId,
       filterOnPayment,
       attributes,
