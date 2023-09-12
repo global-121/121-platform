@@ -35,7 +35,7 @@ describe('Load PA table', () => {
       );
     });
 
-    it('should only return return 1 registration', async () => {
+    it('should only return 1 registration', async () => {
       // Act
       const searchResponse = await searchRegistrationByPhoneNumber(
         registration2.phoneNumber,
@@ -47,7 +47,7 @@ describe('Load PA table', () => {
       expect(searchResponse.body.length).toBe(1);
     });
 
-    it('should only return return 2 registrations', async () => {
+    it('should only return 2 registrations', async () => {
       // Act
       const searchResponse = await searchRegistrationByPhoneNumber(
         registration1.phoneNumber,
@@ -71,7 +71,7 @@ describe('Load PA table', () => {
       expect(searchResponse.body.length).toBe(1);
     });
 
-    it('should find registrations cross program', async () => {
+    it('should find registrations across program', async () => {
       //Arrange
       const registration4 = { ...registrationVisa };
       registration4.referenceId = '63e62864557597e0aasdas1123s';
