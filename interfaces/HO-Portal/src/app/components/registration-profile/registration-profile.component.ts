@@ -8,6 +8,7 @@ import { Program } from 'src/app/models/program.model';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { RegistrationActivityOverviewComponent } from '../registration-activity-overview/registration-activity-overview.component';
 import { RegistrationPersonalInformationComponent } from '../registration-personal-information/registration-personal-information.component';
+import { RegistrationPhysicalCardOverviewComponent } from '../registration-physical-card-overview/registration-physical-card-overview.component';
 
 @Component({
   selector: 'app-registration-profile',
@@ -16,6 +17,7 @@ import { RegistrationPersonalInformationComponent } from '../registration-person
     CommonModule,
     IonicModule,
     RegistrationPersonalInformationComponent,
+    RegistrationPhysicalCardOverviewComponent,
     RegistrationActivityOverviewComponent,
   ],
   templateUrl: './registration-profile.component.html',
