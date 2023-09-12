@@ -47,6 +47,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
@@ -1176,14 +1177,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
   }
 
-  public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
-    ];
-    return voucherFsps.includes(fsp);
-  }
-
   public showInclusionScore(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
@@ -1198,7 +1191,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public showWhatsappNumber(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
-      show = this.hasVoucherSupport(pa.fsp);
+      show = PaymentUtils.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
       }

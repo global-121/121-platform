@@ -17,6 +17,7 @@ import {
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
@@ -318,12 +319,8 @@ export class ProgramPayoutComponent implements OnInit {
   private checkProgramHasVoucherSupport(
     fsps: Program['financialServiceProviders'],
   ): boolean {
-    const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
-    ];
     for (const fsp of fsps || []) {
-      if (fsp && voucherFsps.includes(fsp.fsp)) {
+      if (fsp && PaymentUtils.hasVoucherSupport(fsp.fsp)) {
         return true;
       }
     }

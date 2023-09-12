@@ -41,12 +41,17 @@ export class PaymentUtils {
     );
   }
 
-  static hasVoucherSupport(fsp: FspName): boolean {
-    const voucherFsps = [
+  static hasVoucherSupport(fsp: FspName | string): boolean {
+    const supportedFsps = [
       FspName.intersolveVoucherPaper,
       FspName.intersolveVoucherWhatsapp,
     ];
-    return voucherFsps.includes(fsp);
+    return supportedFsps.includes(fsp as FspName);
+  }
+
+  static hasPhysicalCardSupport(fsp: FspName | string): boolean {
+    const supportedFsps = [FspName.intersolveVisa];
+    return supportedFsps.includes(fsp as FspName);
   }
 
   static enableSinglePayment(
