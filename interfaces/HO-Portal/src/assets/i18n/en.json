@@ -487,10 +487,6 @@
         "pa-moved-phase": "These People Affected might be visible in another phase after this status change.",
         "payment-history-popup": {
           "title": "Payment history"
-        },
-        "export-list": {
-          "button-label": "Export list",
-          "success-message": "Export list successful. You can find the Excel file in the downloads folder."
         }
       },
       "program-modal": {

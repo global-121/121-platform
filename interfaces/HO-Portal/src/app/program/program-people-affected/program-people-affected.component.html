@@ -146,21 +146,6 @@
           }"
         ></app-table-filter>
       </ng-container>
-
-      <ion-button
-        (click)="exportTableView()"
-        [disabled]="visiblePeopleAffected.length === 0"
-        data-cy="export-table-view"
-      >
-        <ion-icon
-          name="download"
-          slot="start"
-        ></ion-icon>
-        {{
-          'page.program.program-people-affected.export-list.button-label'
-            | translate
-        }}</ion-button
-      >
     </ion-row>
   </div>
 </ion-row>
