@@ -109,26 +109,22 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         ),
       });
     }
-    this.personalInfoTable.push(
-      {
-        label: this.getLabel('primaryLanguage'),
-        value: this.enumService.getEnumLabel(
-          'preferredLanguage',
-          this.person.preferredLanguage,
-        ),
-      }
-    );
+    this.personalInfoTable.push({
+      label: this.getLabel('primaryLanguage'),
+      value: this.enumService.getEnumLabel(
+        'preferredLanguage',
+        this.person.preferredLanguage,
+      ),
+    });
 
     if (this.canViewPersonalData) {
-      this.personalInfoTable.push(
-        {
-          label: this.getLabel('phone'),
-          value:
-            this.person.phoneNumber === ''
-              ? this.person.phoneNumber
-              : `+${this.person.phoneNumber}`,
-        },
-      );
+      this.personalInfoTable.push({
+        label: this.getLabel('phone'),
+        value:
+          this.person.phoneNumber === ''
+            ? this.person.phoneNumber
+            : `+${this.person.phoneNumber}`,
+      });
     }
 
     if (this.person) {
