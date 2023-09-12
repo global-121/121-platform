@@ -600,13 +600,14 @@
       "user-manual-content": "Needs to be added."
     },
     "users": {
-      "pageTitle": "Users",
-      "page-description": "In this page you can manage users, create roles and define responsibilities.",
+      "pageTitle": "All users",
+      "page-description": "In this page you can add and manage users and see roles and permissions.",
       "title": "USERS PAGE",
       "users-tab": "Users",
       "add-new-user": "Add new user",
       "roles-and-permissions-tab": "Roles and Permissions",
       "team-members": "Team members",
+      "search": "Search...",
       "table-headers": {
         "username": "Username",
         "user-type": "User type",

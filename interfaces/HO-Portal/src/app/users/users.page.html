@@ -11,9 +11,7 @@
           class="ion-no-margin ion-padding-top"
           class="users-title"
         >
-          <strong>
-            {{ 'page.users.pageTitle' | translate | uppercase }}
-          </strong>
+          <strong> {{ 'page.users.pageTitle' | translate }} </strong>
         </h2>
         <p class="ion-no-margin">
           {{ 'page.users.page-description' | translate }}
@@ -61,9 +59,9 @@
           class="ion-align-items-start filter"
         >
           <ion-icon
-            name="funnel"
+            name="search"
             [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
+            'page.users.search'
               | translate
           "
             aria-hidden="true"
@@ -75,15 +73,15 @@
           ></ion-icon>
           <ion-input
             [placeholder]="
-            'page.program.program-people-affected.filter-placeholder'
+            'page.users.search'
               | translate
           "
             [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
+            'page.users.search'
               | translate
           "
             [attr.aria-label]="
-            'page.program.program-people-affected.filter-placeholder'
+            'page.users.search'
               | translate
           "
             (ionInput)="onInput($event.detail.value)"
