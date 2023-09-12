@@ -1,5 +1,5 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
 import SeedEthJointResponse from './seed-eth-joint-response';
@@ -21,6 +21,8 @@ export class SecretDto {
   public readonly secret: string;
 }
 
+@ApiTags('instance')
+// TODO: REFACTOR: rename to instance
 @Controller('scripts')
 export class ScriptsController {
   public constructor(private dataSource: DataSource) {}

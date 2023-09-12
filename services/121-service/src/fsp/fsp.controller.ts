@@ -17,13 +17,14 @@ import { FspQuestionEntity } from './fsp-question.entity';
 import { FspService } from './fsp.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('fsp')
+@ApiTags('financial-service-providers')
+// TODO: REFACTOR: rename to financial-service-providers
 @Controller('fsp')
 export class FspController {
   public constructor(private readonly fspService: FspService) {}
 
   @Admin()
-  @ApiOperation({ summary: 'Get all Financial Service Providers' })
+  @ApiOperation({ summary: 'Get all Financial Service Providers.' })
   @ApiResponse({
     status: 200,
     description: 'All Financial Service Providers with attributes',
@@ -33,7 +34,7 @@ export class FspController {
     return await this.fspService.getAllFsps();
   }
 
-  @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId' })
+  @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId.' })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
@@ -47,7 +48,7 @@ export class FspController {
   }
 
   @Admin()
-  @ApiOperation({ summary: 'Update FSP' })
+  @ApiOperation({ summary: 'Update FSP.' })
   @Post('update/fsp')
   public async updateFsp(
     @Body() updateFspDto: UpdateFspDto,
