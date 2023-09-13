@@ -4,6 +4,7 @@ export enum MessageContentType {
   inclusionEnded = 'inclusion-ended',
   rejected = 'rejected',
   invited = 'invited',
+  paused = 'paused',
   custom = 'custom',
   genericTemplated = 'generic-templated',
   paymentTemplated = 'payment-templated',

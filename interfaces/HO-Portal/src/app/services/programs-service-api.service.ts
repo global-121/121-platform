@@ -607,6 +607,14 @@ export class ProgramsServiceApiService {
     return this.updatePaStatus('reject', programId, referenceIds, message);
   }
 
+  pause(
+    programId: number | string,
+    referenceIds: string[],
+    message: string,
+  ): Promise<any> {
+    return this.updatePaStatus('pause', programId, referenceIds, message);
+  }
+
   sendMessage(
     referenceIds: string[],
     message: string,
