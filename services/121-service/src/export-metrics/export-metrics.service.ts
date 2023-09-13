@@ -964,6 +964,16 @@ export class ExportMetricsService {
           year,
           fromStart,
         ),
+      [RegistrationStatusEnum.paused]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.paused,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
       [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         programId,
         payment,
