@@ -123,7 +123,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const programDto = {
+    const programDto: CreateProgramDto = {
       published: programEntity.published,
       validation: programEntity.validation,
       phase: programEntity.phase,
@@ -187,8 +187,6 @@ export class ProgramService {
       fullnameNamingConvention: programEntity.fullnameNamingConvention,
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
-      monitoringDashboardUrl: programEntity.monitoringDashboardUrl,
-      evaluationDashboardUrl: programEntity.evaluationDashboardUrl,
     };
     if (programEntity.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
@@ -324,6 +322,8 @@ export class ProgramService {
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
+    program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
+    program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();

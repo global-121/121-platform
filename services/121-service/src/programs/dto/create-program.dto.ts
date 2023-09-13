@@ -287,9 +287,9 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
-  public readonly evaluationDashboardUrl?: string;
+  public evaluationDashboardUrl?: string;
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
-  public readonly monitoringDashboardUrl?: string;
+  public monitoringDashboardUrl?: string;
 }
