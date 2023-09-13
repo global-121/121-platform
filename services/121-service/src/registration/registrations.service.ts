@@ -1138,9 +1138,17 @@ export class RegistrationsService {
         );
       } catch (error) {
         // don't throw error if the reason is that the customer doesn't exist yet
-        if (!error?.response?.errors?.includes(VisaErrorCodes.NoCustomerYet)) {
-          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
+        if (error?.response?.errors?.includes(VisaErrorCodes.NoCustomerYet)) {
+          console.info(
+            'Tried to do a sync with intersolve, but customer does not exist yet.',
+          );
+        } else if (error?.response?.errors?.length > 0) {
+          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors.join(
+            ', ',
+          )}. The update in 121 did not succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          throw error;
         }
       }
     }
