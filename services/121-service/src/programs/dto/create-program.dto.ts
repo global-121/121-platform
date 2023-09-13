@@ -284,4 +284,12 @@ export class CreateProgramDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   public readonly enableMaxPayments: boolean;
+
+  @ApiProperty({ example: 'example.org' })
+  @IsOptional()
+  public readonly evaluationDashboardUrl?: string;
+
+  @ApiProperty({ example: 'example.org' })
+  @IsOptional()
+  public readonly monitoringDashboardUrl?: string;
 }
