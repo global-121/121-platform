@@ -321,7 +321,7 @@
           "send-message": "Send Message to PA's",
           "delete-pa": "Delete PA",
           "do-payment": "Do payment",
-          "pause": "Pause"
+          "pause": "Pause PA's"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
