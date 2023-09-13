@@ -70,6 +70,7 @@ export enum PermissionEnum {
   RegistrationStatusRejectedUPDATE = 'registration:status:rejected.update',
   RegistrationStatusInclusionEndedUPDATE = 'registration:status:inclusionEnded.update',
   RegistrationStatusInvitedUPDATE = 'registration:status:invited.update',
+  RegistrationStatusPausedUPDATE = 'registration:status:paused.update',
 
   // Registration(s) - Import
   RegistrationImportTemplateREAD = 'registration:import-template.read',

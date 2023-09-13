@@ -223,6 +223,14 @@ export class RegistrationsService {
       case RegistrationStatusEnum.completed:
         result = [RegistrationStatusEnum.included].includes(currentStatus);
         break;
+      case RegistrationStatusEnum.paused:
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.inclusionEnded,
+          RegistrationStatusEnum.rejected,
+          RegistrationStatusEnum.completed,
+        ].includes(currentStatus);
+        break;
     }
     return result;
   }
@@ -1023,6 +1031,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
         return RegistrationStatusTimestampField.completedDate;
+      case RegistrationStatusEnum.paused:
+        return RegistrationStatusTimestampField.pausedDate;
     }
   }
 
