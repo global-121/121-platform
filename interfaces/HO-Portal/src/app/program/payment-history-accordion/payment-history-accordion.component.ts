@@ -5,7 +5,6 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import {
   PaymentRowDetail,
   PayoutDetails,
@@ -100,7 +99,7 @@ export class PaymentHistoryAccordionComponent {
 
     if (
       this.canViewVouchers &&
-      PaymentUtils.hasVoucherSupport(paymentRow.fsp as FspName) &&
+      PaymentUtils.hasVoucherSupport(paymentRow.fsp) &&
       !!paymentRow.transaction
     ) {
       await this.programsService

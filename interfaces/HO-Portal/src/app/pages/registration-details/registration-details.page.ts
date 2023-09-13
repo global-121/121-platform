@@ -5,15 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { RegistrationPhysicalCardOverviewComponent } from 'src/app/components/registration-physical-card-overview/registration-physical-card-overview.component';
-import { PaymentHistoryPopupComponent } from 'src/app/program/payment-history-popup/payment-history-popup.component';
+import { RegistrationProfileComponent } from 'src/app/components/registration-profile/registration-profile.component';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
-import { RegistrationActivityOverviewComponent } from '../../components/registration-activity-overview/registration-activity-overview.component';
-import { RegistrationPersonalInformationComponent } from '../../components/registration-personal-information/registration-personal-information.component';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -28,32 +25,27 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     HeaderComponent,
     TranslateModule,
     ProgramNavigationComponent,
-    RegistrationActivityOverviewComponent,
-    PaymentHistoryPopupComponent,
-    RegistrationPersonalInformationComponent,
-    RegistrationPhysicalCardOverviewComponent,
+    RegistrationProfileComponent,
   ],
   selector: 'app-registration-details',
   templateUrl: './registration-details.page.html',
   styleUrls: ['./registration-details.page.scss'],
 })
 export class RegistrationDetailsPage implements OnInit, OnDestroy {
-  public programId = this.route.snapshot.params.id;
-  public paId = this.route.snapshot.params.paId;
+  private programId = this.route.snapshot.params.id;
+  private paId = this.route.snapshot.params.paId;
 
   private program: Program;
-  public person: Person;
   private referenceId: string;
 
   public loading = true;
+  public person: Person;
 
   public canViewPersonalData: boolean;
   private canViewPaymentData: boolean;
   public canViewPhysicalCards: boolean;
 
   private pubSubSubscription: Subscription;
-
-  private physicalCardFsps = ['Intersolve-visa'];
 
   constructor(
     private route: ActivatedRoute,
@@ -99,11 +91,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
     this.person = await this.loadPerson();
 
-    if (!this.person) {
-      this.loading = false;
-      return;
-    }
-
     this.loading = false;
   }
 
@@ -140,21 +127,5 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       this.programId,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
-    this.canViewPhysicalCards = this.authService.hasAllPermissions(
-      this.programId,
-      [
-        Permission.PaymentREAD,
-        Permission.PaymentTransactionREAD,
-        Permission.FspDebitCardREAD,
-      ],
-    );
-  }
-
-  public fspHasPhysicalCard(): boolean {
-    if (!this.person || !this.person.fsp) {
-      return false;
-    }
-
-    return this.physicalCardFsps.includes(this.person.fsp);
   }
 }

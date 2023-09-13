@@ -491,9 +491,6 @@
           "success-message": "Export list successful. You can find the Excel file in the downloads folder."
         }
       },
-      "program-modal": {
-        "pageTitle": "Program JSON"
-      },
       "bulk-import": {
         "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
         "import-result": {
@@ -647,40 +644,6 @@
     "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
     "answer-is-required": "An answer is required for this question."
   },
-  "recipient-details": {
-    "columnPersonalInformation": "Personal information",
-    "columnStatusHistory": "Status history",
-    "columnPaymentHistory": "Payment history",
-    "columnNotes": "Notes",
-    "status": "Status",
-    "registeredDate": "Registered",
-    "inclusionDate": "Included",
-    "registrationProgramId": "PA#",
-    "startedRegistrationDate": "Started registration",
-    "phone-number": "Phonenumber",
-    "whatsappPhoneNumber": "WhatsApp nr.",
-    "preferredLanguage": "Preferred language",
-    "paymentAmountMultiplier": "Transfer value multiplier",
-    "fspDisplayNamePortal": "Financial Service Provider",
-    "phoneNumber": "Phone number",
-    "inclusionScore": "Inclusion score",
-    "importedDate": "Imported",
-    "invitedDate": "Invited",
-    "noLongerEligibleDate": "No longer eligible",
-    "registeredWhileNoLongerEligibleDate": "Registered while no longer eligible",
-    "selectedForValidationDate": "Selected for validation",
-    "validationDate": "Validated",
-    "inclusionEndDate": "Inclusion ended",
-    "rejectionDate": "Rejected",
-    "note": "Note",
-    "name": "Name",
-    "statusText": "Status: <b> {{status}} </b>",
-    "payment-history": {
-      "message-sent": "Message sent",
-      "money-sent": "Money sent",
-      "transfer": "Payment #{{paymentNr}}"
-    }
-  },
   "registration-details": {
     "pageTitle": "Registration details",
     "show-all": "Show All",
@@ -750,6 +713,9 @@
           "reason": "<br><b>Reason:</b> {{reason}}"
         }
       }
+    },
+    "payment-history": {
+      "transfer": "Payment #{{paymentNr}}"
     },
     "error": "Person not found"
   },

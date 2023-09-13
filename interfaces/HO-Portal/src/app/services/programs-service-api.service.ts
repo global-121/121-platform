@@ -129,9 +129,10 @@ export class ProgramsServiceApiService {
     programId: number | string,
     phase: ProgramPhase,
   ): Promise<PaTableAttribute[]> {
+    const phaseString = phase ? phase : '';
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/pa-table-attributes/${phase}`,
+      `/programs/${programId}/pa-table-attributes/${phaseString}`,
     );
   }
 

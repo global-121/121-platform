@@ -1,4 +1,4 @@
-import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
+import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import {
   PaymentRowDetail,
@@ -41,12 +41,17 @@ export class PaymentUtils {
     );
   }
 
-  static hasVoucherSupport(fsp: FspName): boolean {
-    const voucherFsps = [
+  static hasVoucherSupport(fsp: FspName | string): boolean {
+    const supportedFsps = [
       FspName.intersolveVoucherPaper,
       FspName.intersolveVoucherWhatsapp,
     ];
-    return voucherFsps.includes(fsp);
+    return supportedFsps.includes(fsp as FspName);
+  }
+
+  static hasPhysicalCardSupport(fsp: FspName | string): boolean {
+    const supportedFsps = [FspName.intersolveVisa];
+    return supportedFsps.includes(fsp as FspName);
   }
 
   static enableSinglePayment(
