@@ -244,6 +244,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       },
     },
     {
+      id: BulkActionId.pause,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.pause',
+      ),
+      permissions: [Permission.RegistrationStatusPausedUPDATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
       id: BulkActionId.sendMessage,
       enabled: false,
       label: this.translate.instant(
@@ -1444,6 +1468,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           [BulkActionId.reject]: RegistrationStatus.rejected,
           [BulkActionId.markNoLongerEligible]:
             RegistrationStatus.noLongerEligible,
+          [BulkActionId.pause]: RegistrationStatus.paused,
         };
         if (!actionStatus[this.action]) {
           return;
@@ -1563,6 +1588,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         RegistrationStatus.selectedForValidation,
         RegistrationStatus.rejected,
         RegistrationStatus.inclusionEnded,
+        RegistrationStatus.paused,
       ],
       [ProgramPhase.payment]: [
         RegistrationStatus.included,

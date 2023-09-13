@@ -308,7 +308,8 @@
           "included": "Included",
           "inclusionEnded": "Inclusion ended",
           "rejected": "Rejected",
-          "completed": "Completed"
+          "completed": "Completed",
+          "paused": "Paused"
         },
         "actions": {
           "invite": "Invite for registration",
@@ -319,7 +320,8 @@
           "end-inclusion": "End inclusion in program",
           "send-message": "Send Message to PA's",
           "delete-pa": "Delete PA",
-          "do-payment": "Do payment"
+          "do-payment": "Do payment",
+          "pause": "Pause"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
