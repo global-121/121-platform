@@ -10,11 +10,9 @@
   class="bootstrap data-table--max-height"
   [rows]="filteredRows"
   [columnMode]="'force'"
-  [rowHeight]="50"
-  [scrollbarV]="true"
+  [rowHeight]="'auto'"
   [headerHeight]="40"
   [footerHeight]="50"
-  (sort)="onSort($event)"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
 >
   <!-- username -->
