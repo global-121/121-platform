@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -28,6 +28,5 @@ import { UsersPage } from './users.page';
     TranslateModule.forChild(),
   ],
   declarations: [UsersPage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class UsersPageModule {}

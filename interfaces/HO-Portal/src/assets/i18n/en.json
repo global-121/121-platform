@@ -614,6 +614,10 @@
         "status": "Status",
         "last-login": "Last login"
       },
+      "user-type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      },
       "status": {
         "true": "Active",
         "false": "Inactive"

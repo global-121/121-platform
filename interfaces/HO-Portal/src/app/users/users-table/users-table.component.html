@@ -37,7 +37,7 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.userType }}
+      {{ 'page.users.user-type.' + row?.userType | translate }}
     </ng-template>
   </ngx-datatable-column>
 

@@ -306,3 +306,18 @@ ion-input.custom-border {
     --border-color: var(--ion-color-primary) !important;
   }
 }
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 30px;
+  padding-left: 32px;
+  border-bottom: 1px solid var(--fiveten-neutral-600);
+}
+
+.tab {
+  --background: #f4f7fa;
+  margin-right: 16px;
+  --color-checked: #4f22d7;
+}

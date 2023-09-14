@@ -8,18 +8,18 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { SharedModule } from 'src/app/shared/shared.module';
 
 enum StatusName {
-  active = 'Active',
-  inactive = 'Inactive',
+  active = 'active',
+  inactive = 'inactive',
 }
 
 enum UserType {
-  admin = 'Admin',
-  regular = 'Regular',
+  admin = 'admin',
+  regular = 'regular',
 }
 
 interface NewTableData {
-  status: 'Active' | 'Inactive';
-  userType: 'Admin' | 'Regular';
+  status: StatusName;
+  userType: UserType;
   id: number;
   lastLogin: string;
   username: string;
@@ -46,7 +46,6 @@ export class UsersTableComponent implements OnInit {
   ngOnInit() {
     this.loadData();
   }
-
 
   public async loadData() {
     const users: TableData[] = await this.programsService.getAllUsers();
