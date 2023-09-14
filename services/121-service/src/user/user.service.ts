@@ -481,6 +481,9 @@ export class UserService {
         active: true,
         lastLogin: true,
       },
+      where: {
+        userType: UserType.aidWorker,
+      },
     });
   }
 }
