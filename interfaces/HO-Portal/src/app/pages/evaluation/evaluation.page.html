@@ -4,10 +4,8 @@
 <app-program-navigation></app-program-navigation>
 
 <ion-content class="ion-padding">
-  <app-phase-next
-    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
-    [programId]="programId"
-    [thisPhaseName]="thisPhase"
-    [phaseReady]="true"
-  ></app-phase-next>
+  <app-dashboard-iframe
+    [url]="evaluationDashboardUrl"
+    class="ion-margin-vertical"
+  ></app-dashboard-iframe>
 </ion-content>

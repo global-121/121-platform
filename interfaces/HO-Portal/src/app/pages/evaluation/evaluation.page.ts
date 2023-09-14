@@ -1,18 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import Permission from 'src/app/auth/permission.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { Program } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-evaluation',
   templateUrl: './evaluation.page.html',
   styleUrls: ['./evaluation.page.scss'],
 })
-export class EvaluationPage {
-  public Permission = Permission;
-
+export class EvaluationPage implements OnInit {
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramPhase.evaluation;
+  private program: Program;
 
-  constructor(private route: ActivatedRoute) {}
+  public evaluationDashboardUrl: string;
+
+  constructor(
+    private route: ActivatedRoute,
+    private programsService: ProgramsServiceApiService,
+  ) {}
+
+  public async ngOnInit() {
+    this.program = await this.programsService.getProgramById(this.programId);
+
+    if (this.program && this.program.evaluationDashboardUrl) {
+      this.evaluationDashboardUrl = this.program.evaluationDashboardUrl;
+    }
+  }
 }

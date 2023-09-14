@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,7 +12,11 @@ describe('EvaluationPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [EvaluationPage],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
