@@ -5,9 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.97.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.98.1...master)
 
 ---
+## [1.98.1](https://github.com/global-121/121-platform/compare/v1.98.0...v1.98.1) - 2023-09-13
+
+### Fixed
+
+- Get pa attributes without phase fix
+
+## [1.98.0](https://github.com/global-121/121-platform/compare/v1.97.2...v1.98.0) - 2023-09-13
+
+### Added
+
+- Let recipient page in portal use the profile page
+- Api endpoint to post program questions and custom attributes
+- Sync with intersolve for registrations that no longer have the Visa FSP but still have a Visa card
+
 ## [1.97.2](https://github.com/global-121/121-platform/compare/v1.97.1...v1.97.2) - 2023-09-12
 
 ### Fixed

@@ -14,6 +14,7 @@ export enum BulkActionId {
   deletePa = 'delete-pa',
   divider = 'divider',
   doPayment = 'do-payment',
+  pause = 'pause',
 }
 
 export class BulkAction {

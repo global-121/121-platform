@@ -47,6 +47,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
@@ -232,6 +233,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.pause,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.pause',
+      ),
+      permissions: [Permission.RegistrationStatusPausedUPDATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: false,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
@@ -1176,14 +1201,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
   }
 
-  public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
-    ];
-    return voucherFsps.includes(fsp);
-  }
-
   public showInclusionScore(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
@@ -1198,7 +1215,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public showWhatsappNumber(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
-      show = this.hasVoucherSupport(pa.fsp);
+      show = PaymentUtils.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
       }
@@ -1451,6 +1468,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           [BulkActionId.reject]: RegistrationStatus.rejected,
           [BulkActionId.markNoLongerEligible]:
             RegistrationStatus.noLongerEligible,
+          [BulkActionId.pause]: RegistrationStatus.paused,
         };
         if (!actionStatus[this.action]) {
           return;
@@ -1570,6 +1588,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         RegistrationStatus.selectedForValidation,
         RegistrationStatus.rejected,
         RegistrationStatus.inclusionEnded,
+        RegistrationStatus.paused,
       ],
       [ProgramPhase.payment]: [
         RegistrationStatus.included,
