@@ -721,13 +721,46 @@ export class ExportMetricsService {
       }
     }
 
-    const registrations = await this.getRegistrationsFieldsForDuplicates(
-      programId,
-      relationOptions,
-      Array.from(uniqueRegistrationIds),
+    let registrations = [];
+    for (const fspQuestionId of fspQuestionIds) {
+      const registrationsPerFsp =
+        await this.getRegistrationsFieldsForDuplicates(
+          programId,
+          relationOptions.filter((option) => {
+            return (
+              (option.relation.fspQuestionId === fspQuestionId &&
+                option.name === 'whatsappPhoneNumber') ||
+              option.name !== 'whatsappPhoneNumber'
+            );
+          }),
+          Array.from(uniqueRegistrationIds),
+        );
+
+      registrations = registrations.concat(registrationsPerFsp);
+    }
+    const filteredRegistrations = registrations.reduce(
+      (accumulator, currentObject) => {
+        const existingObject = accumulator.find(
+          (obj) => obj.id === currentObject.id,
+        );
+
+        if (!existingObject) {
+          accumulator.push(currentObject);
+        } else {
+          // Combine non-null properties
+          for (const key in currentObject) {
+            if (currentObject[key] !== null && key !== 'id') {
+              existingObject[key] = currentObject[key];
+            }
+          }
+        }
+
+        return accumulator;
+      },
+      [],
     );
 
-    const result = registrations.map((registration) => {
+    const result = filteredRegistrations.map((registration) => {
       registration =
         this.registrationsService.transformRegistrationByNamingConvention(
           JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
