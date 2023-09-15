@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import SeedEthJointResponse from './seed-eth-joint-response';
 import SeedMultipleKRCS from './seed-multiple-krcs';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
+import { SeedMultipleNLRCDummy } from './seed-multiple-nlrc-dummy';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
@@ -30,11 +31,30 @@ export class ScriptsController {
     enum: SeedScript,
     isArray: true,
   })
+  @ApiQuery({
+    name: 'dummySquareNumberRegistrations',
+    required: false,
+    description: 'Only for nlrc-multiple-dummy',
+  })
+  @ApiQuery({
+    name: 'dummyNumberPayment',
+    required: false,
+    description: 'Only for nlrc-multiple-dummy',
+  })
+  @ApiQuery({
+    name: 'dummySquareNumberMessages',
+    required: false,
+    description: 'Only for nlrc-multiple-dummy',
+  })
   @ApiOperation({ summary: 'Reset database' })
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
     @Query('script') script: SeedScript,
+    @Query('dummySquareNumberRegistrations')
+    dummySquareNumberRegistrations: number,
+    @Query('dummyNumberPayment') dummyNumberPayment: number,
+    @Query('dummySquareNumberMessages') dummySquareNumberMessages: number,
     @Res() res,
   ): Promise<string> {
     if (body.secret !== process.env.RESET_SECRET) {
@@ -61,10 +81,21 @@ export class ScriptsController {
       seed = new SeedEthJointResponse(this.dataSource);
     } else if (script == SeedScript.krcsMultiple) {
       seed = new SeedMultipleKRCS(this.dataSource);
+    } else if (
+      script == SeedScript.nlrcMultipleDummy &&
+      process.env.NODE_ENV == 'development'
+    ) {
+      seed = new SeedMultipleNLRCDummy(this.dataSource);
     } else {
-      return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .send('Not a known program (seed dummy only works in development)');
     }
-    await seed.run();
+    await seed.run(
+      dummySquareNumberRegistrations,
+      dummyNumberPayment,
+      dummySquareNumberMessages,
+    );
     return res
       .status(HttpStatus.ACCEPTED)
       .send('Request received. Database should be reset.');
