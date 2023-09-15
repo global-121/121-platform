@@ -650,7 +650,7 @@
     "pageTitle": "Registration details",
     "show-all": "Show All",
     "personal-information-table": {
-      "subtitle": "Personal information",
+      "subtitle": "PA #{{ paNumber }}",
       "status": "Status: <b>{{status}}</b>",
       "registeredDate": "Registered date",
       "lastUpdateDate": "Last update",
