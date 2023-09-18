@@ -6,5 +6,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./users.page.scss'],
 })
 export class UsersPage {
+  public segment: string = 'users';
+  public arr = new Array(3);
+  public filterInput = '';
+
   constructor() {}
+
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
+  }
+
+  onInput(ev): void {
+    this.filterInput = ev || '';
+  }
 }

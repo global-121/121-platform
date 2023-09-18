@@ -26,6 +26,7 @@ export enum PermissionEnum {
   ProgramQuestionDELETE = 'program:question.delete',
   ProgramCustomAttributeUPDATE = 'program:custom-attribute.update',
   ProgramMetricsREAD = 'program:metrics.read',
+  ProgramUsersREAD = 'program:users.read',
 
   // Payment(s)
   PaymentREAD = 'payment.read',

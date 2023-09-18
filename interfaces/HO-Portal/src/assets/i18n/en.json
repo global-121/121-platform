@@ -599,9 +599,28 @@
       "user-manual-content": "Needs to be added."
     },
     "users": {
-      "pageTitle": "Users",
+      "pageTitle": "Users and roles",
+      "page-description": "In this page you can add and manage users, and see roles and permissions.",
       "title": "USERS PAGE",
-      "content": "users | roles"
+      "users-tab": "Users",
+      "add-new-user": "Add new user",
+      "roles-tab": "Roles",
+      "team-members": "Team members",
+      "search": "Search...",
+      "table-headers": {
+        "username": "Username",
+        "user-type": "User type",
+        "status": "Status",
+        "last-login": "Last login"
+      },
+      "user-type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      },
+      "status": {
+        "true": "Active",
+        "false": "Inactive"
+      }
     },
     "user": {
       "pageTitle": "User",
