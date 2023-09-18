@@ -9,13 +9,14 @@
     {
       "name": "bankAccountNumber",
       "label": {
-        "en": "Which bank account do you want to receive your money transfer from Commercial Bank of Ethiopia on?"
+        "en": "What is your CBE bank account number?"
       },
       "placeholder": {
-        "en": "1000263499216"
+        "en": "Please type your bank account number"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
+      "phases": ["registrationValidation", "inclusion", "payment"],
       "options": null,
       "shortLabel": {
         "en": "Bank Account Number"

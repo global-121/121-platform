@@ -17,18 +17,23 @@ export enum CustomAttributeType {
 }
 
 export class CreateProgramCustomAttributeDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'district' })
   @IsNotEmpty()
   @IsString()
   public readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'text' })
   @IsNotEmpty()
   @IsString()
   @IsEnum(CustomAttributeType)
   public readonly type: CustomAttributeType;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: {
+      en: 'District',
+      fr: 'Département',
+    },
+  })
   @IsNotEmpty()
   public label: JSON;
 
@@ -42,7 +47,7 @@ export class CreateProgramCustomAttributeDto {
   @IsNotEmpty()
   public phases: JSON;
 
-  @ApiProperty()
+  @ApiProperty({ example: true, required: false })
   @IsOptional()
   @IsBoolean()
   public duplicateCheck: boolean;

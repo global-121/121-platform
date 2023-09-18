@@ -1,31 +1,35 @@
-import { DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { BannerComponent } from '../banner/banner.component';
-import { RecipientDetailsComponent } from './recipient-details.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { UsersTableComponent } from './users-table.component';
 
-describe('RecipientDetailsComponent', () => {
-  let component: RecipientDetailsComponent;
-  let fixture: ComponentFixture<RecipientDetailsComponent>;
+describe('UsersTableComponent', () => {
+  let component: UsersTableComponent;
+  let fixture: ComponentFixture<UsersTableComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RecipientDetailsComponent, BannerComponent],
       imports: [
-        IonicModule.forRoot(),
-        TranslateModule.forRoot(),
+        UsersTableComponent,
+        CommonModule,
+        IonicModule,
+        SharedModule,
         HttpClientTestingModule,
+        TranslateModule.forRoot(),
       ],
-      providers: [ProgramsServiceApiService, DatePipe],
+      providers: [ProgramsServiceApiService],
     }).compileComponents();
+  }));
 
-    fixture = TestBed.createComponent(RecipientDetailsComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(UsersTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
