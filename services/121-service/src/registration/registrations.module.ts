@@ -6,6 +6,7 @@ import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
+import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { MessageModule } from '../notifications/message.module';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -76,6 +77,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     InclusionScoreService,
     AzureLogService,
     RegistrationsPaginationService,
+    LastMessageStatusService,
   ],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],

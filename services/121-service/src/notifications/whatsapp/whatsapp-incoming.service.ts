@@ -15,6 +15,7 @@ import {
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
+import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -57,6 +58,7 @@ export class WhatsappIncomingService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
+    private readonly lastMessageService: LastMessageStatusService,
   ) {}
 
   public getGenericNotificationText(
@@ -132,6 +134,9 @@ export class WhatsappIncomingService {
         errorCode: callbackData.ErrorCode,
         errorMessage: callbackData.ErrorMessage,
       },
+    );
+    await this.lastMessageService.updateLastMessageStatus(
+      callbackData.MessageSid,
     );
 
     // Update intersolve voucher transaction status if applicable

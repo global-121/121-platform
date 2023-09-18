@@ -9,6 +9,7 @@ import { API_PATHS } from '../../config';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
+import { LastMessageStatusService } from '../last-message-status.service';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { ProgramEntity } from './../../programs/program.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
@@ -36,7 +37,7 @@ import { WhatsappService } from './whatsapp.service';
     ImageCodeModule,
     UserModule,
   ],
-  providers: [WhatsappService, SmsService],
+  providers: [WhatsappService, SmsService, LastMessageStatusService],
   controllers: [WhatsappController],
   exports: [WhatsappService],
 })
