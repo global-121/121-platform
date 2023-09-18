@@ -27,7 +27,6 @@ And Notification with "You've succsessfully added a team member" message is disp
 And user clicks on "X" on popup
 And Popup is closed
 
-<<<<<<< HEAD
 Scenario: Edit Team members Role
 
 Given There is a team member on the list
@@ -57,6 +56,3 @@ Scenario:View roles permissions tab
 When User clicks on "Roles and permissions" tab
 Then Admin and Regular roles are displayed
 And Under admin "Admin can view and edit data, add new user and create new project"
-Then "You've succsessfully removed a team member" message is displayed
-And user clicks on "X" on popup
-And Popup is closed
