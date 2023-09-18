@@ -9,6 +9,7 @@ import { TranslatableStringService } from '../services/translatable-string.servi
   styleUrls: ['./programs-list.component.scss'],
 })
 export class ProgramsListComponent implements OnInit {
+  public loading: boolean;
   public items: Program[];
   private programStats: ProgramStats[];
 
@@ -17,7 +18,15 @@ export class ProgramsListComponent implements OnInit {
     private translatableString: TranslatableStringService,
   ) {}
 
-  async ngOnInit() {
+  public ngOnInit(): void {
+    // Skip refreshing if already loading
+    if (!this.loading) {
+      this.refresh();
+    }
+  }
+
+  private async refresh() {
+    this.loading = true;
     const programs = await this.programsService.getAllPrograms();
     this.programStats = await this.programsService.getAllProgramsStats(
       programs.map((p) => p.id),
@@ -25,6 +34,7 @@ export class ProgramsListComponent implements OnInit {
     this.items = this.translateProperties(programs).sort((a, b) =>
       a.created <= b.created ? -1 : 1,
     );
+    this.loading = false;
   }
 
   private translateProperties(programs: Program[]): Program[] {
@@ -36,7 +46,7 @@ export class ProgramsListComponent implements OnInit {
     });
   }
 
-  public getProgramStatsById(programId): ProgramStats {
+  public getProgramStatsById(programId: number): ProgramStats {
     return this.programStats.find((p) => p.programId === programId);
   }
 }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import Permission from '../auth/permission.enum';
+import { Component, ViewChild } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,5 +7,15 @@ import Permission from '../auth/permission.enum';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public Permission = Permission;
+  @ViewChild('list')
+  public list: any;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      // When returning to the home page, refresh the Programs-list
+      if (event instanceof NavigationEnd && event.url === '/home') {
+        this.list.ngOnInit();
+      }
+    });
+  }
 }
