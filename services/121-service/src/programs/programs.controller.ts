@@ -27,9 +27,15 @@ import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
 import { ChangePhaseDto } from './dto/change-phase.dto';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CreateProgramCustomAttributesDto,
+} from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
+import {
+  CreateProgramQuestionDto,
+  UpdateProgramQuestionDto,
+} from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -174,6 +180,20 @@ export class ProgramController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
+  @ApiOperation({ summary: 'Create program question' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/program-questions')
+  public async createProgramQuestion(
+    @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
+    @Param() params,
+  ): Promise<ProgramQuestionEntity> {
+    return await this.programService.createProgramQuestion(
+      Number(params.programId),
+      updateProgramQuestionDto,
+    );
+  }
+
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ summary: 'Update program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -207,6 +227,20 @@ export class ProgramController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
+  @ApiOperation({ summary: 'Create program custom attribute' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/custom-attributes')
+  public async createProgramCustomAttribute(
+    @Body() updateProgramQuestionDto: CreateProgramCustomAttributeDto,
+    @Param() params,
+  ): Promise<ProgramCustomAttributeEntity> {
+    return await this.programService.createProgramCustomAttribute(
+      Number(params.programId),
+      updateProgramQuestionDto,
+    );
+  }
+
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -229,7 +263,7 @@ export class ProgramController {
     status: 200,
     description: 'Return PA-table attributes by program-id.',
   })
-  @Get(':programId/pa-table-attributes/:phase')
+  @Get(':programId/pa-table-attributes/:phase?')
   public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
     return await this.programService.getPaTableAttributes(
       Number(params.programId),

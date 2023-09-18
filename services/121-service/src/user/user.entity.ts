@@ -83,4 +83,10 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true, select: false })
   public salt: string;
+
+  @Column({ default: true })
+  public active: boolean;
+
+  @Column({ nullable: true })
+  public lastLogin: Date;
 }

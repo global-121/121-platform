@@ -34,7 +34,7 @@ export class Program {
   languages: LanguageEnum[];
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
-  paTableAttributes: Attribute[];
+  paTableAttributes: PaTableAttribute[];
 }
 
 export class ProgramStats {
@@ -74,7 +74,9 @@ export class ProgramCustomAttribute {
   phases: ProgramPhase[];
 }
 
-export class PaTableAttribute extends ProgramCustomAttribute {}
+export class PaTableAttribute extends Attribute {
+  phases?: ProgramPhase[];
+}
 
 export class ProgramQuestion {
   id: number;

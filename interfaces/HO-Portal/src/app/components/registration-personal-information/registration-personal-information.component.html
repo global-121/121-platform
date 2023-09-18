@@ -4,11 +4,11 @@
       {{ person.name }}
     </ion-card-title>
     <ion-card-subtitle>
-      <ion-row class="ion-justify-content-between">
+      <ion-row class="ion-justify-content-between ion-align-items-center">
         <ion-note>
           {{
             'registration-details.personal-information-table.subtitle'
-              | translate
+              | translate: { paNumber: person.registrationProgramId }
           }}
         </ion-note>
         <ion-button
