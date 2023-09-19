@@ -33,8 +33,8 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken(): Promise<string> {
-    // Check expires_at
     if (this.isTokenValid(this.tokenSet)) {
+      // Return cached token
       return this.tokenSet.access_token;
     }
     // If not valid, request new token
@@ -57,11 +57,10 @@ export class IntersolveVisaApiService {
     if (!tokenSet || !tokenSet.expires_at) {
       return false;
     }
-    // Convert expires_at to millisecondss
+    // Convert expires_at to milliseconds
     const expiresAtInMs = tokenSet.expires_at * 1000;
     const timeLeftBeforeExpire = expiresAtInMs - Date.now();
-    // If the token expires in less than 1 minute, it is considered invalid
-    // and a new token will be requested
+    // If more than 1 minute left before expiration, the token is considered valid
     return timeLeftBeforeExpire > 60000;
   }
 
