@@ -35,6 +35,19 @@ export function searchRegistrationByReferenceId(
     .set('Cookie', [accessToken]);
 }
 
+export function searchRegistrationByPhoneNumber(
+  phoneNumber: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    phonenumber: phoneNumber,
+  };
+  return getServer()
+    .get(`/registrations`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
+
 export function getRegistrations(
   programId: number,
   attributes: string[],

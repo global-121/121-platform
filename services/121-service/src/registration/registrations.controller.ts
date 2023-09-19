@@ -473,6 +473,23 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationStatusPausedUPDATE)
+  @ApiOperation({ summary: 'Pause set of PAs' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/pause')
+  public async pause(
+    @Body() referenceIdsData: ReferenceIdsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      referenceIdsData,
+      RegistrationStatusEnum.paused,
+      messageData.message,
+      MessageContentType.paused,
+    );
+  }
+
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({

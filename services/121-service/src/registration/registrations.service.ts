@@ -198,6 +198,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
@@ -221,6 +222,9 @@ export class RegistrationsService {
         result = currentStatus !== RegistrationStatusEnum.deleted;
         break;
       case RegistrationStatusEnum.completed:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.paused:
         result = [RegistrationStatusEnum.included].includes(currentStatus);
         break;
     }
@@ -1023,6 +1027,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
         return RegistrationStatusTimestampField.completedDate;
+      case RegistrationStatusEnum.paused:
+        return RegistrationStatusTimestampField.pausedDate;
     }
   }
 
@@ -1242,6 +1248,11 @@ export class RegistrationsService {
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
+    const transactionPermissionsProgramIds =
+      await this.getProgramIdsUserHasPermission(
+        userId,
+        PermissionEnum.PaymentTransactionREAD,
+      );
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1292,7 +1303,9 @@ export class RegistrationsService {
           await this.getRegistrations(
             uniqueRegistration.programId,
             true,
-            false,
+            transactionPermissionsProgramIds.includes(
+              uniqueRegistration.programId,
+            ),
             true,
             uniqueRegistration.referenceId,
           )

@@ -263,7 +263,7 @@ export class ProgramController {
     status: 200,
     description: 'Return PA-table attributes by program-id.',
   })
-  @Get(':programId/pa-table-attributes/:phase')
+  @Get(':programId/pa-table-attributes/:phase?')
   public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
     return await this.programService.getPaTableAttributes(
       Number(params.programId),
