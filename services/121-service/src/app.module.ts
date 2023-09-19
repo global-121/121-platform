@@ -7,7 +7,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
-import { EspocrmModule } from './espocrm/espocrm.module';
 import { ExportMetricsModule } from './export-metrics/export-metrics.module';
 import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
@@ -51,7 +50,6 @@ import { UserModule } from './user/user.module';
       ttl: +process.env.GENERIC_THROTTLING_TTL || 60,
       limit: +process.env.GENERIC_THROTTLING_LIMIT || 300,
     }),
-    EspocrmModule,
   ],
   controllers: [AppController],
   providers: [
