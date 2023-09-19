@@ -1145,7 +1145,7 @@ export class RegistrationsService {
         } else if (error?.response?.errors?.length > 0) {
           const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors.join(
             ', ',
-          )}. The update in 121 did not succeed.`;
+          )}. The update in 121 did succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
           throw error;
