@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -12,10 +12,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
   templateUrl: './roles-list.component.html',
   styleUrls: ['./roles-list.component.scss'],
 })
-export class RolesListComponent {
+export class RolesListComponent implements OnInit {
+  public rolesList = [];
+
   constructor(private programsService: ProgramsServiceApiService) {}
 
-  rolesList = [];
   ngOnInit() {
     this.loadRoles();
   }

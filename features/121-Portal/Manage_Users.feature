@@ -9,7 +9,7 @@ Given Users tab is open
 When Details are displayed in table in order (Name, Role, Status, Last activity)
 Then under Name user emails are displayed
 And possible Roles are Admin and Regular
-And status cangi be Active
+And status can be Active
 And user clicks on "Name" users are sorted by emails alphabetically
 And user clicks on "Role" users are sorted by user types alphabetically
 And user clicks on "Status" users are sorted by status alphabetically

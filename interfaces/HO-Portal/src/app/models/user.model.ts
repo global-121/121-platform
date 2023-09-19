@@ -16,16 +16,8 @@ export interface TableData {
   username: string;
 }
 
-export interface Roles {
+export interface Role {
   id: number;
   role: string;
   label: string;
-}
-
-export interface TableData {
-  active: boolean;
-  admin: boolean;
-  id: number;
-  lastLogin: string;
-  username: string;
 }
