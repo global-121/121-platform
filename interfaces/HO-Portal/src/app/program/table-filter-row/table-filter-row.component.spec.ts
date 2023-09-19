@@ -8,7 +8,7 @@ describe('TableFilterRowComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TableFilterRowComponent]
+      declarations: [TableFilterRowComponent],
     });
     fixture = TestBed.createComponent(TableFilterRowComponent);
     component = fixture.componentInstance;
