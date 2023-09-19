@@ -2,26 +2,23 @@ import { Injectable } from '@angular/core';
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
+import { FilterService, TableTextFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TableService {
-  private textFilter: {
-    column: string;
-    value: string;
-  }[];
-  private DEFAULT_TEXT_FILTER = [];
-
+export class RegistrationsService {
   private pageMetaData = new PaginationMetadata();
+  private textFilter: TableTextFilter[];
 
-  constructor(private programsService: ProgramsServiceApiService) {
-    this.resetTextFilter();
-  }
-
-  public addTextFilter(column: string, value: string) {
-    this.textFilter.push({ column, value });
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private filterService: FilterService,
+  ) {
+    this.filterService
+      .getTextFilterSubscription()
+      .subscribe(this.onTextFilterChange);
   }
 
   public setCurrentPage(currentPage: number) {
@@ -34,6 +31,10 @@ export class TableService {
 
   public setTotalItems(totalItems: number) {
     this.pageMetaData.totalItems = totalItems;
+  }
+
+  private onTextFilterChange(filter: TableTextFilter[]) {
+    this.textFilter = filter;
   }
 
   public async getPage(
@@ -72,20 +73,5 @@ export class TableService {
 
   public getPageMetadata(): PaginationMetadata {
     return this.pageMetaData;
-  }
-
-  private resetTextFilter() {
-    this.textFilter = this.DEFAULT_TEXT_FILTER;
-  }
-
-  public getTextFilter(): {
-    column: string;
-    value: string;
-  }[] {
-    return this.textFilter;
-  }
-
-  public removeTextFilter(column: string) {
-    this.textFilter = this.textFilter.filter((f) => f.column !== column);
   }
 }
