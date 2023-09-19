@@ -2,10 +2,10 @@ import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
-import SeedEthJointResponse from './seed-eth-joint-response';
-import SeedMultipleKRCS from './seed-multiple-krcs';
-import SeedMultipleNLRC from './seed-multiple-nlrc';
-import { SeedMultipleNLRCDummy } from './seed-multiple-nlrc-dummy';
+import { SeedEthJointResponse } from './seed-eth-joint-response';
+import { SeedMultipleKRCS } from './seed-multiple-krcs';
+import { SeedMultipleNLRC } from './seed-multiple-nlrc';
+import { SeedMultipleNLRCMockData } from './seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
@@ -32,29 +32,29 @@ export class ScriptsController {
     isArray: true,
   })
   @ApiQuery({
-    name: 'dummySquareNumberRegistrations',
+    name: 'mockPowerNumberRegistrations',
     required: false,
-    description: 'Only for nlrc-multiple-dummy',
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
   })
   @ApiQuery({
-    name: 'dummyNumberPayment',
+    name: 'mockNumberPayments',
     required: false,
-    description: 'Only for nlrc-multiple-dummy',
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of payments per PA to create`,
   })
   @ApiQuery({
-    name: 'dummySquareNumberMessages',
+    name: 'mockPowerNumberMessages',
     required: false,
-    description: 'Only for nlrc-multiple-dummy',
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x, e.g. 4=16 messages per PA)`,
   })
   @ApiOperation({ summary: 'Reset database' })
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
     @Query('script') script: SeedScript,
-    @Query('dummySquareNumberRegistrations')
-    dummySquareNumberRegistrations: number,
-    @Query('dummyNumberPayment') dummyNumberPayment: number,
-    @Query('dummySquareNumberMessages') dummySquareNumberMessages: number,
+    @Query('mockPowerNumberRegistrations')
+    mockPowerNumberRegistrations: number,
+    @Query('mockNumberPayments') mockNumberPayments: number,
+    @Query('mockPowerNumberMessages') mockPowerNumberMessages: number,
     @Res() res,
   ): Promise<string> {
     if (body.secret !== process.env.RESET_SECRET) {
@@ -82,19 +82,19 @@ export class ScriptsController {
     } else if (script == SeedScript.krcsMultiple) {
       seed = new SeedMultipleKRCS(this.dataSource);
     } else if (
-      script == SeedScript.nlrcMultipleDummy &&
+      script == SeedScript.nlrcMultipleMock &&
       process.env.NODE_ENV == 'development'
     ) {
-      seed = new SeedMultipleNLRCDummy(this.dataSource);
+      seed = new SeedMultipleNLRCMockData(this.dataSource);
     } else {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .send('Not a known program (seed dummy only works in development)');
     }
     await seed.run(
-      dummySquareNumberRegistrations,
-      dummyNumberPayment,
-      dummySquareNumberMessages,
+      mockPowerNumberRegistrations,
+      mockNumberPayments,
+      mockPowerNumberMessages,
     );
     return res
       .status(HttpStatus.ACCEPTED)

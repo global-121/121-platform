@@ -25,56 +25,60 @@ const readSqlFile = (filepath: string): string => {
 };
 
 @Injectable()
-export class SeedMultipleNLRCDummy implements InterfaceScript {
+export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
 
   public async run(
-    squareRegistrationsString?: string,
+    powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
-    squareMessageString?: string,
+    powerNrMessagesString?: string,
   ): Promise<void> {
-    const squareNumberRegistrations = Number(squareRegistrationsString) || 2;
+    const powerNrRegistrations = Number(powerNrRegistrationsString) || 2;
     const nrPayments = Number(nrPaymentsString) || 2;
-    const squareNumberBulkMessage = Number(squareMessageString) || 1;
+    const powerNrMessages = Number(powerNrMessagesString) || 1;
 
     const min = 1;
-    const maxSquareRegistration = 17;
-    const maxSquareMessages = 6;
-    const maxBulk = 30;
+    const maxPowerNrRegistrations = 17;
+    const maxPowerNrMessages = 6;
+    const maxNrPayments = 30;
     if (
-      isNaN(squareNumberRegistrations) ||
-      squareNumberRegistrations < min ||
-      squareNumberRegistrations > maxSquareRegistration
+      isNaN(powerNrRegistrations) ||
+      powerNrRegistrations < min ||
+      powerNrRegistrations > maxPowerNrRegistrations
     ) {
       // Throw an error if "pageNumber" is not a valid number between 1 and 17.
       throw new HttpException(
-        `dummySquareNumberRegistrations must be a number between ${min} and ${maxSquareRegistration}`,
+        `mockPowerNumberRegistrations must be a number between ${min} and ${maxPowerNrRegistrations}`,
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (isNaN(nrPayments) || nrPayments < min || nrPayments > maxBulk) {
+    if (isNaN(nrPayments) || nrPayments < min || nrPayments > maxNrPayments) {
       // Throw an error if "pageNumber" is not a valid number between 1 and 17.
       throw new HttpException(
-        `nrPayments must be a number between ${min} and ${maxBulk}`,
+        `nrPayments must be a number between ${min} and ${maxNrPayments}`,
         HttpStatus.BAD_REQUEST,
       );
     }
     if (
-      isNaN(squareNumberBulkMessage) ||
-      squareNumberBulkMessage < min ||
-      squareNumberBulkMessage > maxSquareMessages
+      isNaN(powerNrMessages) ||
+      powerNrMessages < min ||
+      powerNrMessages > maxPowerNrMessages
     ) {
       // Throw an error if "pageNumber" is not a valid number between 1 and 17.
       throw new HttpException(
-        `squareNumberBulkMessage must be a number between ${min} and ${maxSquareMessages}`,
+        `squareNumberBulkMessage must be a number between ${min} and ${maxPowerNrMessages}`,
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const seedMultiple = await new SeedMultipleNLRC(this.dataSource);
-    await seedMultiple.run();
 
     // ************************
+
+    // Set up instance and program
+    const seedMultiple = new SeedMultipleNLRC(this.dataSource);
+    await seedMultiple.run();
+
+    // Set up 1 registration with 1 payment and 1 message
+    // TODO: this uses helper functions from the API-test folder, move this to a shared location
     const programIdVisa = 3;
     const accessToken = await getAccessToken();
     await changePhase(
@@ -99,83 +103,81 @@ export class SeedMultipleNLRCDummy implements InterfaceScript {
       accessToken,
     );
     await new Promise((r) => setTimeout(r, 3000));
-    await this.multiplyRegistrations(squareNumberRegistrations);
+
+    // Blow up data given the parameters
+    await this.multiplyRegistrations(powerNrRegistrations);
     await this.multiplyTransactions(nrPayments);
-    await this.multiplyMessages(squareNumberBulkMessage);
+    await this.multiplyMessages(powerNrMessages);
   }
 
-  private async multiplyRegistrations(square: number): Promise<void> {
+  private async multiplyRegistrations(powerNr: number): Promise<void> {
     const queryRegistrations = readSqlFile(
-      '../../src/scripts/sql/dummy-registrations.sql',
+      '../../src/scripts/sql/mock-registrations.sql',
     );
-    for (let i = 1; i <= square; i++) {
+    for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING DUMMY DATA square ${i} of ${square} registrations**`,
+        `**CREATING MOCK DATA registrations: duplication ${i} of ${powerNr} **`,
       );
       await this.dataSource.query(queryRegistrations);
     }
     const queryRegistrationData = readSqlFile(
-      '../../src/scripts/sql/dummy-registration-data.sql',
+      '../../src/scripts/sql/mock-registration-data.sql',
     );
-    for (let i = 1; i <= square; i++) {
+    for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING DUMMY DATA square ${i} of ${square} registration data**`,
+        `**CREATING MOCK DATA registration data: duplication ${i} of ${powerNr} **`,
       );
       await this.dataSource.query(queryRegistrationData);
     }
 
     const queryPhoneUnique = readSqlFile(
-      '../../src/scripts/sql/dummy-make-phone-unique.sql',
+      '../../src/scripts/sql/mock-make-phone-unique.sql',
     );
-    console.log(`**CREATING DUMMY DATA making phoneNr unique**`);
+    console.log(`**CREATING MOCK DATA making phoneNr unique**`);
     await this.dataSource.query(queryPhoneUnique);
 
     const queryTransactionsOnePerRegistration = readSqlFile(
-      '../../src/scripts/sql/dummy-transations-one-per-registrations.sql',
+      '../../src/scripts/sql/mock-transations-one-per-registrations.sql',
     );
-    for (let i = 1; i <= square; i++) {
+    for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING DUMMY DATA match transactions to registrations ${i} of ${square}**`,
+        `**CREATING MOCK DATA match transactions to registrations: duplication ${i} of ${powerNr}**`,
       );
       await this.dataSource.query(queryTransactionsOnePerRegistration);
     }
 
     const queryMessagesOnePerRegistration = readSqlFile(
-      '../../src/scripts/sql/dummy-messages-one-per-registration.sql',
+      '../../src/scripts/sql/mock-messages-one-per-registration.sql',
     );
-    for (let i = 1; i <= square; i++) {
+    for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING DUMMY DATA match messages to registrations ${i} of ${square}**`,
+        `**CREATING MOCK DATA match messages to registrations: duplication ${i} of ${powerNr}**`,
       );
       await this.dataSource.query(queryMessagesOnePerRegistration);
     }
   }
 
   private async multiplyTransactions(nr: number): Promise<void> {
-    // Since there already is 1 transactions
+    // Since there already is 1 transaction
     nr = nr - 1;
     const queryTransactions = readSqlFile(
-      '../../src/scripts/sql/dummy-payment-transactions.sql',
+      '../../src/scripts/sql/mock-payment-transactions.sql',
     );
     for (let i = 1; i <= nr; i++) {
       console.log(
-        `**CREATING DUMMY DATA payment ${i + 1} of ${nr + 1} payments**`,
+        `**CREATING MOCK DATA payment ${i + 1} of ${nr + 1} payments**`,
       );
       await this.dataSource.query(queryTransactions, [i + 1, i]);
     }
   }
 
-  private async multiplyMessages(nrSquare: number): Promise<void> {
-    // Since there already is 1 transactions
-    nrSquare = nrSquare - 1;
+  private async multiplyMessages(powerNr: number): Promise<void> {
     const queryNrMessageBulk = readSqlFile(
-      '../../src/scripts/sql/dummy-messages.sql',
+      '../../src/scripts/sql/mock-messages.sql',
     );
-    for (let i = 1; i <= nrSquare; i++) {
+    for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING DUMMY DATA message ${i + 1} of ${
-          nrSquare + 1
-        } square messages**`,
+        `**CREATING MOCK DATA messages: duplication ${i} of ${powerNr}**`,
       );
       await this.dataSource.query(queryNrMessageBulk);
     }

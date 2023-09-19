@@ -7,7 +7,7 @@ export enum SeedScript {
   validation = 'validation',
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
-  nlrcMultipleDummy = 'nlrc-multiple-dummy',
+  nlrcMultipleMock = 'nlrc-multiple-mock-data',
   ethJointResponse = 'eth-joint-response',
   krcsMultiple = 'krcs-multiple',
 }
