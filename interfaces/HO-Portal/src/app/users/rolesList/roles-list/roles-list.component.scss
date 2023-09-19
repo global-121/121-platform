@@ -4,4 +4,6 @@ ion-card-header {
 
 ion-card {
   margin-bottom: 30px;
+  box-shadow: none;
+  border: 1px solid var(--fiveten-neutral-200);
 }
