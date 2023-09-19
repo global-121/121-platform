@@ -25,7 +25,9 @@ export class LastMessageStatusService {
 
     if (updateData.lastMessageStatus) {
       const mappedStatus = MessageStatusMapping[updateData.lastMessageStatus];
-      const lastMessageStatusInsert = `${updateData.lastMessageType}: ${mappedStatus}`;
+      const lastMessageStatusInsert = `${this.capitalizeFirstCharacter(
+        updateData.lastMessageType,
+      )}: ${mappedStatus}`;
 
       // Update registration last message status
       await this.registrationRepository.update(
@@ -35,6 +37,10 @@ export class LastMessageStatusService {
         },
       );
     }
+  }
+
+  private capitalizeFirstCharacter(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   private includeLastMessage(
