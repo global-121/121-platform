@@ -5,10 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.99.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.99.1...master)
 
 ---
-## [1.99.0](https://github.com/global-121/121-platform/compare/v1.99.0...v1.98.1) - 2023-09-15
+
+## [1.99.1](https://github.com/global-121/121-platform/compare/v1.99.0...v1.99.1) - 2023-09-19
+
+### Fixed
+
+- Reuse valid Intersolve Visa token instead of constantly creating new one
+
+## [1.99.0](https://github.com/global-121/121-platform/compare/v1.98.1...v1.99.0) - 2023-09-15
 
 ### Added
 
@@ -35,13 +42,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Merging 2 registrations with registration changelog
 
-
 ## [1.97.1](https://github.com/global-121/121-platform/compare/v1.97.0...v1.97.1) - 2023-09-11
 
 ### Fixed
 
 - Fixed reissue inactive blocked wallet
-
 
 ## [1.97.0](https://github.com/global-121/121-platform/compare/v1.97.0...v1.96.0) - 2023-08-24
 
@@ -54,10 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show payment "status" without payment create permission
 
 ### Changed
+
 - Nestjs upgrade to v10
 - Use 'reserved' transactions in lastUsedDate Visa debit card
 
 ### Fixed
+
 - Export list of unsused voucher button
 
 ## [1.96.0](https://github.com/global-121/121-platform/compare/v1.95.1...v1.96.0) - 2023-08-16
