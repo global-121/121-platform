@@ -34,17 +34,17 @@ export class ScriptsController {
   @ApiQuery({
     name: 'mockPowerNumberRegistrations',
     required: false,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all registrations (2^x)`,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
   })
   @ApiQuery({
     name: 'mockNumberPayments',
     required: false,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: number of payments per registration to create`,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of payments per PA to create`,
   })
   @ApiQuery({
     name: 'mockPowerNumberMessages',
     required: false,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x)`,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x, e.g. 4=16 messages per PA)`,
   })
   @ApiOperation({ summary: 'Reset database' })
   @Post('/reset')
