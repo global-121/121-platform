@@ -21,7 +21,7 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
-import { TableData, User } from '../models/user.model';
+import { Role, TableData, User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -774,5 +774,9 @@ export class ProgramsServiceApiService {
 
   getAllUsers(): Promise<TableData[] | null> {
     return this.apiService.get(environment.url_121_service_api, '/users');
+  }
+
+  getRoles(): Promise<Role[] | null> {
+    return this.apiService.get(environment.url_121_service_api, '/roles');
   }
 }

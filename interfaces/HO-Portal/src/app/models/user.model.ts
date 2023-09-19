@@ -15,3 +15,9 @@ export interface TableData {
   lastLogin: string;
   username: string;
 }
+
+export interface Role {
+  id: number;
+  role: string;
+  label: string;
+}
