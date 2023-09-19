@@ -3,8 +3,7 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
-  updatePaAttribute,
-  updateRegistrationPatch,
+  updateRegistration,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
@@ -23,58 +22,16 @@ describe('Update attribute of PA', () => {
     await importRegistrations(programId, [registrationVisa], accessToken);
   });
 
-  it('should not update unknown registration  ** /attribute', async () => {
-    // Arrange
-    const wrongReferenceId = referenceIdVisa + '-fail-test';
-
-    // Act
-    const response = await updatePaAttribute(
-      programId,
-      wrongReferenceId,
-      'phoneNumber',
-      updatePhoneNumber,
-      accessToken,
-    );
-
-    // Assert
-    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-  });
-
-  it('should succesfully update  ** /attribute', async () => {
-    // Arrange
-
-    // Act
-    const response = await updatePaAttribute(
-      programId,
-      referenceIdVisa,
-      'phoneNumber',
-      updatePhoneNumber,
-      accessToken,
-    );
-
-    // Assert
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
-
-    const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
-      programId,
-      accessToken,
-    );
-    const registration = result.body[0];
-    expect(registration.phoneNumber).toBe(updatePhoneNumber);
-  });
-
-  it('should not update unknown registration  ** patch', async () => {
+  it('should not update unknown registration', async () => {
     // Arrange
     const wrongReferenceId = referenceIdVisa + '-fail-test';
     const updatePhoneData = {
       phoneNumber: updatePhoneNumber,
     };
-
     const reason = 'automated test';
 
     // Act
-    const response = await updateRegistrationPatch(
+    const response = await updateRegistration(
       programId,
       wrongReferenceId,
       updatePhoneData,
@@ -86,7 +43,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
 
-  it('should succesfully update  ** patch', async () => {
+  it('should succesfully update', async () => {
     // Arrange
 
     const reason = 'automated test';
@@ -98,7 +55,7 @@ describe('Update attribute of PA', () => {
     };
 
     // Act
-    const response = await updateRegistrationPatch(
+    const response = await updateRegistration(
       programId,
       referenceIdVisa,
       dataUpdateSucces,
@@ -125,7 +82,7 @@ describe('Update attribute of PA', () => {
     expect(registration.lastName).toBe(registrationVisa.lastName);
   });
 
-  it('should fail on wrong phonenumber ** patch', async () => {
+  it('should fail on wrong phonenumber', async () => {
     // Arrange
     const updatePhoneNumber = '150';
     const dataUpdatePhoneFail = {
@@ -135,7 +92,7 @@ describe('Update attribute of PA', () => {
 
     const reason = 'automated test';
     // Act
-    const response = await updateRegistrationPatch(
+    const response = await updateRegistration(
       programId,
       referenceIdVisa,
       dataUpdatePhoneFail,

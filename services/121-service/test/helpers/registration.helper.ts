@@ -67,24 +67,7 @@ export function changePaStatus(
     });
 }
 
-export function updatePaAttribute(
-  programId: number,
-  referenceId: string,
-  attribute: string,
-  value: string,
-  accessToken: string,
-): Promise<request.Response> {
-  return getServer()
-    .post(`/programs/${programId}/registrations/attribute`)
-    .set('Cookie', [accessToken])
-    .send({
-      referenceId: referenceId,
-      attribute: attribute,
-      value: value,
-    });
-}
-
-export function updateRegistrationPatch(
+export function updateRegistration(
   programId: number,
   referenceId: string,
   data: object,

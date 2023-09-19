@@ -3,7 +3,7 @@ import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { exportList } from '../../helpers/program.helper';
 import {
   importRegistrations,
-  updateRegistrationPatch,
+  updateRegistration,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
@@ -40,7 +40,7 @@ describe('Update attribute of PA', () => {
       accessToken,
     );
 
-    await updateRegistrationPatch(
+    await updateRegistration(
       programId,
       referenceIdVisa,
       dataUpdatePa1,
@@ -48,7 +48,7 @@ describe('Update attribute of PA', () => {
       accessToken,
     );
 
-    await updateRegistrationPatch(
+    await updateRegistration(
       programId,
       registrationVisa2.referenceId,
       dataUpdatePa2,
@@ -137,7 +137,6 @@ describe('Update attribute of PA', () => {
     );
 
     // Assert
-    const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
 });
