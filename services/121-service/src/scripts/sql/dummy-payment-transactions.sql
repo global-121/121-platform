@@ -4,11 +4,12 @@
           created,
           status,
           "errorMessage",
-          "registrationId",
+          payment,
           "customData",
           "transactionStep",
           "programId",
           "financialServiceProviderId",
+          "registrationId",
           amount,
           updated
         )
@@ -17,16 +18,17 @@
             SELECT count(id)
             FROM "121-service"."transaction"
           ),
-          created,
-          status,
-          "errorMessage",
-          $1,
-          "customData",
-          "transactionStep",
-          "programId",
-          "financialServiceProviderId",
-          amount,
-          updated
+        created,
+        status,
+        "errorMessage",
+        $1,
+        "customData",
+        "transactionStep",
+        "programId",
+        "financialServiceProviderId",
+        "registrationId",
+        amount,
+        updated
         FROM
           "121-service"."transaction"
         WHERE
