@@ -5,7 +5,8 @@
 
 <ion-content class="ion-padding">
   <app-dashboard-iframe
-    [url]="evaluationDashboardUrl"
+    *ngIf="canViewMetrics && !!program?.evaluationDashboardUrl"
+    [url]="program?.evaluationDashboardUrl"
     class="ion-margin-vertical"
   ></app-dashboard-iframe>
 </ion-content>
