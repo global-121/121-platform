@@ -1,0 +1,85 @@
+<div
+  style="
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    height: 48px;
+  "
+  class="ion-align-items-center ion-margin-vertical"
+>
+  <ion-icon
+    *ngIf="!isLoading"
+    name="funnel"
+    [attr.title]="
+      'page.program.program-people-affected.filter-placeholder' | translate
+    "
+    aria-hidden="true"
+    size="large"
+    style="margin: 0 16px 0 16px"
+    color="black"
+  ></ion-icon>
+  <ion-spinner
+    *ngIf="isLoading"
+    size="large"
+    style="margin: 0 16px 0 16px"
+    color="black"
+  ></ion-spinner>
+  <ion-select
+    interface="popover"
+    [value]="undefined"
+    [(ngModel)]="textFilterOption"
+    placeholder="Select column to filter"
+    class="table--text-filter--select ion-margin-end"
+  >
+    <ion-select-option>{{ undefined }}</ion-select-option>
+    <ion-select-option
+      *ngFor="let filterOption of tableFiltersPerColumn"
+      value="{{ filterOption.name }}"
+      >{{ filterOption.label }}</ion-select-option
+    >
+  </ion-select>
+  <ng-container *ngIf="showInput()">
+    <ion-input
+      [placeholder]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
+      [attr.title]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
+      [attr.aria-label]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
+      (keyup.enter)="applyFilter()"
+      [(ngModel)]="filterRowsVisibleQuery"
+      [clearInput]="true"
+      class="table--text-filter--input"
+      data-cy="table-text-filter"
+      [disabled]="isLoading"
+    >
+    </ion-input>
+    <ion-button
+      fill="outline"
+      [disabled]="disableApplyButton()"
+      (click)="applyFilter()"
+      >Apply Filter</ion-button
+    >
+  </ng-container>
+</div>
+<div
+  style="display: flex; flex-direction: row"
+  class="ion-align-items-center ion-margin-vertical"
+>
+  <ion-chip
+    *ngFor="let filter of textFilter | async"
+    size="small"
+  >
+    <ion-label
+      >{{ filter.column + ': ' }}<strong>{{ filter.value }}</strong></ion-label
+    >
+    <ion-icon
+      name="close"
+      size="small"
+      (click)="removeTextFilter(filter.column)"
+    ></ion-icon>
+  </ion-chip>
+</div>

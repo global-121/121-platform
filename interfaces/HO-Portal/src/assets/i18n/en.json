@@ -226,7 +226,7 @@
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
-        "filter-placeholder": "Type and press enter to filter...",
+        "filter-placeholder": "Type value...",
         "filter-toggle": "Show all",
         "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
         "filter-btn": {

@@ -56,7 +56,7 @@ import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
-import { TableService } from '../../services/table.service';
+import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
 import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -109,13 +109,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public selectedPeople: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
-
-  public textFilter: {
-    column: string;
-    value: string;
-  }[];
-  public filterRowsVisibleQuery: string;
-  public textFilterOption: string | undefined;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -341,7 +334,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       visible: [],
     },
   };
-
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
@@ -385,11 +377,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
-    private tableService: TableService,
+    private registrationsService: RegistrationsService,
   ) {
-    this.tableService?.setCurrentPage(0);
-    this.tableService?.setItemsPerPage(12);
-    this.pageMetaData = this.tableService?.getPageMetadata();
+    this.registrationsService?.setCurrentPage(0);
+    this.registrationsService?.setItemsPerPage(12);
+    this.pageMetaData = this.registrationsService?.getPageMetadata();
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -633,7 +625,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    await this.updateTableFiltersPerColumn();
+    this.tableFiltersPerColumn = await this.updateTableFiltersPerColumn();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -934,8 +926,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
-  private async updateTableFiltersPerColumn() {
-    this.tableFiltersPerColumn = [];
+  private async updateTableFiltersPerColumn(): Promise<
+    { name: string; label: string }[]
+  > {
+    const tableFiltersPerColumn = [];
     for (const columnName of this.program.filterableColumns) {
       const column = this.program.paTableAttributes.find(
         (column) => column.name === columnName,
@@ -948,8 +942,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           `page.program.program-people-affected.column.${columnName}`,
         );
       }
-      this.tableFiltersPerColumn.push({ name: columnName, label: label });
+      tableFiltersPerColumn.push({ name: columnName, label: label });
     }
+
+    return tableFiltersPerColumn;
   }
 
   private async addPaymentBulkActions() {
@@ -988,7 +984,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async loadData() {
     // TODO: How do we get people per phase now..
-    this.setPage({ offset: this.tableService?.getPageMetadata().currentPage });
+    this.setPage({
+      offset: this.registrationsService?.getPageMetadata().currentPage,
+    });
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1546,26 +1544,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private async setTextFieldFilter(value: string) {
-    // this.tableFilterState.text.value = value;
-    console.log('=== value: ', typeof value);
-    this.tableService?.addTextFilter(this.textFilterOption, value);
-    await this.getPage();
-    this.filterRowsVisibleQuery = '';
-    this.textFilterOption = undefined;
-    console.log('=== filterRowsVisibleQuery: ', this.filterRowsVisibleQuery);
-    console.log('=== textFilterOption: ', this.textFilterOption);
-  }
+  // private async setTextFieldFilter(value: string) {
+  //   // this.tableFilterState.text.value = value;
+  //   this.registrationsService?.addTextFilter(this.textFilterOption, value);
+  //   await this.getPage();
+  // }
 
   public applyFilter() {
-    if (
-      !this.textFilterOption ||
-      !this.filterRowsVisibleQuery ||
-      this.filterRowsVisibleQuery.trim() === ''
-    ) {
-      return;
-    }
-    this.setTextFieldFilter(this.filterRowsVisibleQuery?.toLowerCase().trim());
     this.updateVisiblePeopleAffectedByFilter();
   }
 
@@ -1641,7 +1626,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.tableFilterState[prop].selected = filter;
     this.setPage({
       offset: 0,
-      pageSize: this.tableService?.getPageMetadata().itemsPerPage,
+      pageSize: this.registrationsService?.getPageMetadata().itemsPerPage,
     });
   }
 
@@ -1823,22 +1808,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     limit?: number;
   }) {
     this.isLoading = true;
-    this.tableService?.setCurrentPage(pageInfo.offset);
+    this.registrationsService?.setCurrentPage(pageInfo.offset);
 
     await this.getPage();
 
     this.isLoading = false;
   }
 
-  // public async selectTextFilterOption(column: string) {
-  //   // this.tableFilterState.text.column = column;
-  //   // this.tableService?.setTextFilterColumn(column);
-
-  //   await this.getPage();
-  // }
-
   private async getPage(): Promise<void> {
-    const { data, meta } = await this.tableService.getPage(
+    const { data, meta } = await this.registrationsService.getPage(
       this.programId,
       null,
       null,
@@ -1847,16 +1825,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
-    this.tableService?.setTotalItems(meta.totalItems);
-    this.tableService?.setCurrentPage(meta.currentPage - 1);
+    this.registrationsService?.setTotalItems(meta.totalItems);
+    this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
     this.updateProxyScrollbarSize();
-
-    this.textFilter = this.tableService?.getTextFilter();
-  }
-
-  public removeTextFilter(column: string) {
-    this.tableService?.removeTextFilter(column);
-    this.getPage();
   }
 }
