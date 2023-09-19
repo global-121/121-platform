@@ -80,6 +80,13 @@ Using Redline WhatsApp Helpdesk
 
 - View iframe with PA details based on phone number
 
+Using application such as EspoCRM to call our API
+
+- Create/import registration: The general 'update PA' flow is automatically tested via [API-test](..\services\121-service\test\registrations\import-registration.test.ts)
+- Update PA attribute: The general 'update PA' flow is automatically tested via [API-test](..\services\121-service\test\registrations\update-registration.test.ts)
+- Delete PA: The general 'delete PA' flow is automatically tested via [API-test](..\services\121-service\test\registrations\delete-registration.test.ts)
+- Update FSP of PA: Not tested yet.
+
 ### For Person/People Affected
 
 #### Using PA-App
