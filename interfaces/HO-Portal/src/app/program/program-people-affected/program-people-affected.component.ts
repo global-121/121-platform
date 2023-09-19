@@ -1309,7 +1309,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     personRow: PersonRow,
     programId: number,
   ) {
-    const person = this.allPeopleData.find(
+    const person = this.visiblePeopleAffected.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
 
