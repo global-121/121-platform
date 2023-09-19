@@ -363,7 +363,7 @@
       </ng-container>
       <ng-container *ngIf="column.prop === 'messages'">
         <button
-          *ngIf="row.lastMessageStatus"
+          *ngIf="row.lastMessageStatus !== ('page.program.program-people-affected.last-message.no-message' | translate)"
           data-cy="message-history-button"
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
@@ -373,7 +373,7 @@
         >
           {{ value }}
         </button>
-        <span *ngIf="!row.lastMessageStatus">
+        <span *ngIf="row.lastMessageStatus === ('page.program.program-people-affected.last-message.no-message' | translate)">
           {{ value }}
         </span>
       </ng-container>
