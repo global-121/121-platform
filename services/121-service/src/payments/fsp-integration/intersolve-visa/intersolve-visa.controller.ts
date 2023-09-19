@@ -40,8 +40,9 @@ export class IntersolveVisaController {
     description: 'Wallets and details retrieved',
     type: GetWalletsResponseDto,
   })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
-  @Get('programs/:programId/fsp-integration/intersolve-visa/wallets')
+  @Get(
+    'programs/:programId/financial-service-providers/intersolve-visa/wallets',
+  )
   public async getVisaWalletsAndDetails(
     @Query('referenceId') referenceId,
     @Param() params,
@@ -63,9 +64,8 @@ export class IntersolveVisaController {
     description:
       'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
   })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Post(
-    'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/block',
+    'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/block',
   )
   public async blockWallet(
     @Param() params,
@@ -88,9 +88,8 @@ export class IntersolveVisaController {
     description:
       'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked)',
   })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Post(
-    'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/unblock',
+    'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/unblock',
   )
   public async unblockWallet(
     @Param() params,
@@ -113,9 +112,8 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Customer data updated',
   })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
   @Put(
-    'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId',
+    'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
   )
   public async syncIntersolveCustomerWith121(@Param() params): Promise<any> {
     return await this.intersolveVisaService.syncIntersolveCustomerWith121(
@@ -134,10 +132,8 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Issued new wallet and card',
   })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-visa
-  // TODO: is PUT and path correct?
   @Put(
-    'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId/wallets',
+    'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )
   public async reissueWalletAndCard(
     @Param() params,

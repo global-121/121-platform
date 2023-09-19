@@ -10,7 +10,6 @@ import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
-import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
@@ -1143,10 +1142,13 @@ export class RegistrationsService {
           attribute,
         );
       } catch (error) {
-        // don't throw error if the reason is that the customer doesn't exist yet
-        if (!error?.response?.errors?.includes(VisaErrorCodes.NoCustomerYet)) {
-          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
+        if (error?.response?.errors?.length > 0) {
+          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors.join(
+            ', ',
+          )}. The update in 121 did succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          throw error;
         }
       }
     }

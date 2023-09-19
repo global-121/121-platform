@@ -484,7 +484,7 @@ export class ProgramsServiceApiService {
   ): Promise<PhysicalCard[]> {
     const response = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets?referenceId=${referenceId}`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets?referenceId=${referenceId}`,
     );
 
     return !!response && !!response.wallets ? response.wallets : [];
@@ -496,7 +496,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     const res = await this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
       {},
     );
 
@@ -510,7 +510,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return await this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/${
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/${
         block ? 'block' : 'unblock'
       }`,
       {},

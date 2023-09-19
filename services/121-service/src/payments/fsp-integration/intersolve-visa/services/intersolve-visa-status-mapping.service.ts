@@ -154,11 +154,11 @@ export class IntersolveVisaStatusMappingService {
   ): string {
     let link: string;
     if (action === VisaCardAction.pause) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/fsp-integration/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/block`;
+      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/block`;
     } else if (action === VisaCardAction.unpause) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/fsp-integration/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/unblock`;
+      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/unblock`;
     } else if (action === VisaCardAction.reissue) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/fsp-integration/intersolve-visa/customers/${linkCreationInfo.referenceId}/wallets`;
+      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/customers/${linkCreationInfo.referenceId}/wallets`;
     }
     return link;
   }

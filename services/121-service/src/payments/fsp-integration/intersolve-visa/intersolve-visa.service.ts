@@ -788,10 +788,7 @@ export class IntersolveVisaService
       }
 
       if (errors.length > 0) {
-        throw new HttpException(
-          { errors: errors.join(', ') },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     } catch (error) {
       if (error.name === ErrorEnum.RegistrationDataError) {
@@ -827,13 +824,10 @@ export class IntersolveVisaService
     try {
       await this.syncIntersolveCustomerWith121(referenceId, programId);
     } catch (error) {
-      const errors = `SYNC CUSTOMER DATA ERROR: ${error.response?.errors}`;
-      throw new HttpException(
-        {
-          errors: `<strong>${errors}</strong>${errorGenericPart}`,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const errors = `SYNC CUSTOMER DATA ERROR: <strong>${error.response?.errors.join(
+        ',',
+      )}</strong>${errorGenericPart}`;
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // 0. Try to unblock wallet to be able to activate it
