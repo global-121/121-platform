@@ -1298,7 +1298,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     personRow: PersonRow,
     programId: number,
   ) {
-    const person = this.visiblePeopleAffected.find(
+    const person = this.allPeopleData.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
 
@@ -1827,6 +1827,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.tableFilterState['paStatus'].selected,
     );
 
+    this.allPeopleData = data;
     this.visiblePeopleAffected = this.createTableData(data);
     this.tableService?.setTotalItems(meta.totalItems);
     this.tableService?.setCurrentPage(meta.currentPage - 1);
