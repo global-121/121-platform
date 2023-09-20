@@ -192,6 +192,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return { type: AnswerTypes.numeric };
     } else if (name === Attributes.maxPayments) {
       return { type: AnswerTypes.numericNullable };
+    } else if (name === Attributes.referenceId) {
+      return { type: AnswerTypes.text };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
     } else if (name === Attributes.preferredLanguage) {
