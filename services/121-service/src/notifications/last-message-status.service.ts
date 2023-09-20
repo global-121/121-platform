@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MessageStatusMapping } from '../registration/enum/last-message-status';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { TwilioMessageEntity } from './twilio.entity';
@@ -10,18 +10,33 @@ export class LastMessageStatusService {
   constructor(
     @InjectRepository(RegistrationEntity)
     private readonly registrationRepository: Repository<RegistrationEntity>,
+    @InjectRepository(TwilioMessageEntity)
+    private readonly twilioMessageRepository: Repository<TwilioMessageEntity>,
   ) {}
 
   public async updateLastMessageStatus(messageSid: string): Promise<void> {
-    let query = this.registrationRepository
+    const getRegistrationByMessageSidQuery = this.twilioMessageRepository
+      .createQueryBuilder('messages')
+      .select('"registrationId"')
+      .where('sid = :sid', { sid: messageSid })
+      .limit(1);
+
+    const getLatestMessageQuery = this.registrationRepository
       .createQueryBuilder('registration')
-      .leftJoin('registration.twilioMessages', 'twilioMessagesSelect')
-      .select('"registration"."id"')
-      .where('"twilioMessagesSelect".sid = :messageSid', {
-        messageSid: messageSid,
-      });
-    query = this.includeLastMessage(query);
-    const updateData = await query.getRawOne();
+      .leftJoin('registration.twilioMessages', 'twilioMessages')
+      .distinctOn(['registration.id'])
+      .select([
+        '"registration"."id" AS "id"',
+        '"twilioMessages"."status" AS "lastMessageStatus"',
+        '"twilioMessages"."type" AS "lastMessageType"',
+      ])
+      .where(
+        `"registrationId" = (${getRegistrationByMessageSidQuery.getQuery()})`,
+      )
+      .setParameters(getRegistrationByMessageSidQuery.getParameters())
+      .orderBy('registration.id')
+      .addOrderBy('twilioMessages.created', 'DESC');
+    const updateData = await getLatestMessageQuery.getRawOne();
 
     if (updateData.lastMessageStatus) {
       const mappedStatus = MessageStatusMapping[updateData.lastMessageStatus];
@@ -35,30 +50,5 @@ export class LastMessageStatusService {
         },
       );
     }
-  }
-
-  private includeLastMessage(
-    q: SelectQueryBuilder<RegistrationEntity>,
-  ): SelectQueryBuilder<RegistrationEntity> {
-    q.leftJoin(
-      (qb) =>
-        qb
-          .from(TwilioMessageEntity, 'messages')
-          .select('MAX("created")', 'created')
-          .addSelect('"registrationId"', 'registrationId')
-          .groupBy('"registrationId"'),
-      'messages_max_created',
-      'messages_max_created."registrationId" = registration.id',
-    )
-      .leftJoin(
-        'registration.twilioMessages',
-        'twilioMessages',
-        `twilioMessages.created = messages_max_created.created`,
-      )
-      .addSelect([
-        '"twilioMessages"."status" AS "lastMessageStatus"',
-        '"twilioMessages"."type" AS "lastMessageType"',
-      ]);
-    return q;
   }
 }
