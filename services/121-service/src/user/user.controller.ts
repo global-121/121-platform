@@ -290,4 +290,40 @@ export class UserController {
 
     return await this.userService.getUsers();
   }
+
+  @Admin()
+  @ApiOperation({ summary: 'Get all users by programId' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('programs/:programId/users')
+  public async getUsersInProgram(
+    @User('id') userId: number,
+    @Param() params,
+  ): Promise<UserEntity[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.userService.getUsersInProgram(Number(params.programId));
+  }
+
+  @Admin()
+  @ApiOperation({ summary: 'Get all users by name' })
+  @ApiParam({ name: 'username', required: true, type: 'string' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('programs/:programId/users/:username')
+  public async getUsersByName(
+    @User('id') userId: number,
+    @Param() params,
+  ): Promise<UserEntity[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.userService.getUsersByName(
+      Number(params.programId),
+      params.username,
+    );
+  }
 }

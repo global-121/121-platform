@@ -486,4 +486,35 @@ export class UserService {
       },
     });
   }
+
+  public async getUsersInProgram(programId: number): Promise<UserEntity[]> {
+    return await this.assignmentRepository
+      .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.user', 'user')
+      .where('assignment.programId = :programId', { programId })
+      .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
+      .select([
+        'user.id',
+        'user.username',
+        'user.admin',
+        'user.active',
+        'user.lastLogin',
+      ])
+      .getRawMany();
+  }
+
+  public async getUsersByName(
+    programId: number,
+    username: string,
+  ): Promise<UserEntity[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .distinct(true)
+      .where('user.username LIKE :username', { username: `%${username}%` })
+      .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
+      .leftJoin('user.programAssignments', 'assignment')
+      .andWhere('assignment.programId != :programId', { programId: programId })
+      .select(['user.id', 'user.username'])
+      .getRawMany();
+  }
 }
