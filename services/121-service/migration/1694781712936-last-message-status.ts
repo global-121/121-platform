@@ -12,6 +12,9 @@ export class LastMessageStatus1694781712936 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" ADD "lastMessageStatus" character varying NOT NULL DEFAULT 'no messages yet'`,
     );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_9de58ca3e7c32731a9f6aa3d02" ON "121-service"."twilio_message" ("registrationId") `,
+    );
     await queryRunner.query(`
           UPDATE
               "121-service"."registration"
@@ -65,6 +68,9 @@ export class LastMessageStatus1694781712936 implements MigrationInterface {
     await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" DROP COLUMN "lastMessageStatus"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_9de58ca3e7c32731a9f6aa3d02"`,
     );
     await queryRunner.query(
       `CREATE VIEW "121-service"."registration_view" AS SELECT "registration"."id" AS "id", "registration"."programId" AS "programId", "registration"."registrationStatus" AS "status", "registration"."referenceId" AS "referenceId", "registration"."phoneNumber" AS "phoneNumber", "registration"."preferredLanguage" AS "preferredLanguage", "registration"."inclusionScore" AS "inclusionScore", "registration"."paymentAmountMultiplier" AS "paymentAmountMultiplier", "registration"."note" AS "note", "registration"."noteUpdated" AS "noteUpdated", "registration"."maxPayments" AS "maxPayments", "fsp"."fsp" AS "financialServiceProvider", "fsp"."fspDisplayNamePortal" AS "fspDisplayNamePortal", CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR) AS "personAffectedSequence", registration."registrationProgramId" AS "registrationProgramId" FROM "121-service"."registration" "registration" LEFT JOIN "121-service"."fsp" "fsp" ON "fsp"."id"="registration"."fspId" ORDER BY "registration"."registrationProgramId" ASC`,
