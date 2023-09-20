@@ -155,6 +155,26 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       );
       await this.dataSource.query(queryMessagesOnePerRegistration);
     }
+
+    const queryVisaCustomerOnePerRegistration = readSqlFile(
+      '../../src/scripts/sql/mock-visa-customers.sql',
+    );
+    for (let i = 1; i <= powerNr; i++) {
+      console.log(
+        `**CREATING MOCK DATA match Visa customers to registrations: duplication ${i} of ${powerNr}**`,
+      );
+      await this.dataSource.query(queryVisaCustomerOnePerRegistration);
+    }
+
+    const queryVisaWalletsOnePerRegistration = readSqlFile(
+      '../../src/scripts/sql/mock-visa-wallets.sql',
+    );
+    for (let i = 1; i <= powerNr; i++) {
+      console.log(
+        `**CREATING MOCK DATA match Visa wallets to registrations: duplication ${i} of ${powerNr}**`,
+      );
+      await this.dataSource.query(queryVisaWalletsOnePerRegistration);
+    }
   }
 
   private async multiplyTransactions(nr: number): Promise<void> {
