@@ -5,7 +5,7 @@
     "help": "Help",
     "users": "Users",
     "dashboard": "Dashboard",
-    "aid-workers": "Aid-workers",
+    "aid-workers": "Program team",
     "phases": "Phases",
     "design": "Design",
     "registration-validation": "Registration & Validation",
@@ -25,7 +25,7 @@
       "help-explanation-tooltip": "Like this!"
     },
     "aid-workers": {
-      "pageTitle": "Aid-workers"
+      "pageTitle": "Program team"
     },
     "login": {
       "pageTitle": "Log in",
