@@ -68,6 +68,15 @@ export class ProgramService {
       );
     }
 
+    let includeMetricsUrl = false;
+    if (userId) {
+      includeMetricsUrl = await this.userService.canActivate(
+        [PermissionEnum.ProgramMetricsREAD],
+        programId,
+        userId,
+      );
+    }
+
     let relations = [
       'programQuestions',
       'financialServiceProviders',
@@ -94,6 +103,11 @@ export class ProgramService {
       program['paTableAttributes'] = await this.getPaTableAttributes(
         program.id,
       );
+
+      if (!includeMetricsUrl) {
+        delete program.monitoringDashboardUrl;
+        delete program.evaluationDashboardUrl;
+      }
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
@@ -101,14 +115,15 @@ export class ProgramService {
 
   public async getCreateProgramDto(
     programId: number,
+    userId: number,
   ): Promise<CreateProgramDto> {
-    const programEntity = await this.findOne(programId);
+    const programEntity = await this.findOne(programId, userId);
     if (!programEntity) {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    return {
+    const programDto: CreateProgramDto = {
       published: programEntity.published,
       validation: programEntity.validation,
       phase: programEntity.phase,
@@ -173,6 +188,13 @@ export class ProgramService {
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
     };
+    if (programEntity.monitoringDashboardUrl) {
+      programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
+    }
+    if (programEntity.evaluationDashboardUrl) {
+      programDto.evaluationDashboardUrl = programEntity.evaluationDashboardUrl;
+    }
+    return programDto;
   }
 
   public async getPublishedPrograms(): Promise<ProgramsRO> {
@@ -300,6 +322,8 @@ export class ProgramService {
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
+    program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
+    program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();

@@ -35,6 +35,8 @@ export class Program {
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
   paTableAttributes: PaTableAttribute[];
+  monitoringDashboardUrl?: string;
+  evaluationDashboardUrl?: string;
 }
 
 export class ProgramStats {
