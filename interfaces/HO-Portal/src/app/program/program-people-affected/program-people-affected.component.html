@@ -366,7 +366,7 @@
           *ngIf="
             row.lastMessageStatus !==
             ('page.program.program-people-affected.last-message.no-message'
-              | translate)
+              | translate).toLowerCase()
           "
           data-cy="message-history-button"
           class="ion-no-padding popup-button status-pop-up"
@@ -385,6 +385,7 @@
               | translate
             ).toLowerCase()
           "
+          class="no-message"
         >
           {{ value }}
         </span>
