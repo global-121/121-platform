@@ -12,7 +12,7 @@ INSERT
 		body,
 		"to",
 		"from",
-		sid,
+		concat('SM',substr(md5(random()::text), 0, 33)) as sid,
 		status,
 		"type",
 		"dateCreated",
