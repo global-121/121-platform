@@ -6,7 +6,7 @@ export class LastMessageStatus1694781712936 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`, ["VIEW","registration_view","121-service"]);
         await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."registration" ADD "lastMessageStatus" character varying NOT NULL DEFAULT 'No messages yet'`);
+        await queryRunner.query(`ALTER TABLE "121-service"."registration" ADD "lastMessageStatus" character varying NOT NULL DEFAULT 'no messages yet'`);
         await queryRunner.query(`
           UPDATE
               "registration"
