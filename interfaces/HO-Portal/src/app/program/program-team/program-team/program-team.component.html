@@ -1,0 +1,37 @@
+<ion-content class="ion-padding-vertical">
+  <!--page title-->
+  <section>
+    <ion-item
+      lines="none"
+      color="light"
+    >
+      <ion-col class="ion-padding">
+        <h2
+          class="ion-no-margin ion-padding-top"
+          class="users-title"
+        >
+          <strong> {{ 'page.program-team.pageTitle' | translate }} </strong>
+        </h2>
+        <p class="ion-no-margin">
+          {{ 'page.program-team.page-description' | translate }}
+        </p>
+      </ion-col>
+    </ion-item>
+
+    <div class="ion-padding search-and-button">
+      <ion-item class="ion-align-items-start"></ion-item>
+
+      <!--add team member button-->
+      <ion-button
+        shape="round"
+        fill="outline"
+        class="button"
+        item-end
+        >+&nbsp;
+        <strong>{{
+          'page.program-team.add-team-member' | translate
+        }}</strong></ion-button
+      >
+    </div>
+  </section>
+</ion-content>

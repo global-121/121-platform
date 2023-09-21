@@ -27,6 +27,11 @@
     "aid-workers": {
       "pageTitle": "Program team"
     },
+    "program-team": {
+      "pageTitle": "Program team",
+      "page-description": "In this page you can create a team for your program",
+      "add-team-member": "Add team member"
+    },
     "login": {
       "pageTitle": "Log in",
       "portalTitle": "Portal",
