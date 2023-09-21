@@ -89,6 +89,7 @@ export class IntersolveVisaService
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
     const walletTransactions = transactionDetails.data.data;
+    console.log('walletTransactions: ', walletTransactions);
     // Filter out all transactions that are not reservations
     // reservation is the type that is used for payments in a shop
     let walletReserveTransactions = [];
@@ -598,7 +599,7 @@ export class IntersolveVisaService
 
     const transactionInfo = await this.getTransactionInfo(
       wallet.tokenCode,
-      wallet.lastUsedDate,
+      this.getFirstTimeOfCurrentMonth(),
     );
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
@@ -606,6 +607,19 @@ export class IntersolveVisaService
     wallet.spentThisMonth = transactionInfo.spentThisMonth;
     wallet.lastExternalUpdate = new Date();
     return await this.intersolveVisaWalletRepository.save(wallet);
+  }
+
+  private getFirstTimeOfCurrentMonth(): Date {
+    const currentDate = new Date(); // Get the current date and time
+    const firstDayOfCurrentMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    const firstTimeOfFirstDay = new Date(
+      firstDayOfCurrentMonth.setHours(0, 0, 0, 0),
+    ); // Set time to midnight
+    return firstTimeOfFirstDay;
   }
 
   public async getVisaWalletsAndDetails(
@@ -645,8 +659,9 @@ export class IntersolveVisaService
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
       walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
       // 150 is the KYC required maxiumum one can spend per month
+      // 15000 is in cents
       walletDetailsResponse.remainingSpentThisMonth =
-        150 - wallet.spentThisMonth;
+        15000 - wallet.spentThisMonth;
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }

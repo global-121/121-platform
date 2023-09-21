@@ -81,6 +81,23 @@
       </ion-label>
     </ion-item>
 
+    <!-- Current balance -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.remaining-spent-this-month'
+            | translate
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong
+          >{{ card?.remainingSpentThisMonth / 100 | number: '1.2-2' }}
+          {{ currency }}</strong
+        >
+      </ion-label>
+    </ion-item>
+
     <!-- Issued on -->
     <ion-item>
       <ion-label class="card-key-value"

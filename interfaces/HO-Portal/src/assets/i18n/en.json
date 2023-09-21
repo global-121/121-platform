@@ -687,6 +687,7 @@
       "date-issued": "Issued",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
+      "remaining-spent-this-month": "Remaining monthly spending limit",
       "pause-card": "Pause card",
       "unpause-card": "Unpause card",
       "issue-new-card": "Issue new card",
