@@ -270,4 +270,31 @@ export class CommercialBankEthiopiaService
 
     return result;
   }
+
+  public async getAllPersonsAffectedData(
+    programId: number,
+  ): Promise<CommercialBankEthiopiaRegistrationData[]> {
+    const registrationData = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'registration.id AS "id"',
+        'data.value AS value',
+        'COALESCE("programQuestion".name, "fspQuestion".name) AS "fieldName"',
+      ])
+      .where('registration.programId = :programId', { programId })
+      .andWhere(
+        '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
+        {
+          names: ['fullName', 'bankAccountNumber'],
+        },
+      )
+      .leftJoin('registration.data', 'data')
+      .leftJoin('data.programQuestion', 'programQuestion')
+      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .getRawMany();
+
+    console.log(registrationData);
+
+    return registrationData;
+  }
 }
