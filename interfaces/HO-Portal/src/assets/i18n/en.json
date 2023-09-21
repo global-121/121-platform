@@ -30,7 +30,18 @@
     "program-team": {
       "pageTitle": "Program team",
       "page-description": "In this page you can create a team for your program",
-      "add-team-member": "Add team member"
+      "add-team-member": "Add team member",
+      "table-headers": {
+        "name": "Name",
+        "role": "Role",
+        "status": "Status",
+        "last-activity": "Last activity"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "team-members": "Team members"
     },
     "login": {
       "pageTitle": "Log in",

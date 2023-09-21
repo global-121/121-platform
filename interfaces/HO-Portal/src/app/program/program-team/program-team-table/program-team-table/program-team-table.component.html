@@ -1,0 +1,95 @@
+<div
+  #proxyScrollbar
+  class="proxy-scrollbar"
+  data-target-scroll-element-selector="datatable-body"
+  data-target-width-element-selector="datatable-scroller"
+>
+  <div class="proxy-scrollbar--content"></div>
+</div>
+<ngx-datatable
+  class="bootstrap data-table--max-height"
+  [rows]="rows"
+  [columnMode]="'force'"
+  [rowHeight]="'auto'"
+  [headerHeight]="40"
+  [footerHeight]="50"
+  [sorts]="[{ prop: 'name', dir: 'asc' }]"
+>
+  <!-- name -->
+  <ngx-datatable-column
+    prop="name"
+    [name]="'page.program-team.table-headers.name' | translate"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.username }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- Role -->
+  <ngx-datatable-column
+    prop="role"
+    [name]="'page.program-team.table-headers.role' | translate"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ 'page.program-team.role.' }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- status-->
+  <ngx-datatable-column
+    prop="active"
+    [name]="'page.program-team.table-headers.status' | translate"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <ng-container>
+        <ion-chip
+          [disabled]="true"
+          [class.active]="row.active === true"
+          [class.inactive]="row.active === false"
+        >
+          <ion-label>
+            <strong>{{
+              'page.program-team.status.' + row?.active | translate
+            }}</strong>
+          </ion-label>
+        </ion-chip>
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- last activity -->
+  <ngx-datatable-column
+    prop="lastLogin"
+    [name]="'page.program-team.table-headers.last-activity' | translate"
+  >
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.lastActivity | date: DateFormat.dateOnly }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!--footer-->
+  <ngx-datatable-footer>
+    <ng-template
+      ngx-datatable-footer-template
+      let-rowCount="rowCount"
+    >
+      <div style="padding: 5px 10px">
+        <div>
+          {{ rowCount }} {{ 'page.program-team.team-members' | translate }}
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-footer>
+</ngx-datatable>
