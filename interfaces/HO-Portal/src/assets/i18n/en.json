@@ -250,8 +250,7 @@
           "remaining-payment-description": "Select to filter People Affected by payments remaining"
         },
         "last-message": {
-          "no-message": "No messages yet",
-          "message-status": "Last message:"
+          "no-message": "No messages yet"
         },
         "max-payments": {
           "left": "remaining"
@@ -282,7 +281,7 @@
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
           "payment-history": "Payment history",
-          "last-message-status": "Messages",
+          "lastMessageStatus": "Last message",
           "hasNote": "Has Note",
           "referenceId": "Reference ID",
           "note": "Note"

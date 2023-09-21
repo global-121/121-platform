@@ -6,6 +6,7 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
+import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -104,6 +105,7 @@ export class RegistrationsService {
     private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
+    private readonly lastMessageStatusService: LastMessageStatusService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -534,6 +536,10 @@ export class RegistrationsService {
         message.registration = updatedRegistration;
       }
       await this.twilioMessageRepository.save(twilioMessages);
+      // Update the last message status of the new registration
+      await this.lastMessageStatusService.updateLastMessageStatus(
+        twilioMessages[0].sid,
+      );
     }
 
     // .. then delete the imported registration

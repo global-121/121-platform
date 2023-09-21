@@ -74,7 +74,6 @@ export class PersonRow {
   preferredLanguage?: string | null;
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
-  messages?: string;
 }
 
 export class Note {

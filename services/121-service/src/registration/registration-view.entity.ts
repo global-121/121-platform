@@ -46,7 +46,8 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.note', 'note')
-      .leftJoin('registration.fsp', 'fsp'),
+      .leftJoin('registration.fsp', 'fsp')
+      .addSelect('registration.lastMessageStatus', 'lastMessageStatus'),
 })
 export class RegistrationViewEntity {
   @ViewColumn()
@@ -98,6 +99,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public maxPayments: number;
+
+  @ViewColumn()
+  public lastMessageStatus: string;
 
   @OneToMany(
     () => RegistrationDataEntity,

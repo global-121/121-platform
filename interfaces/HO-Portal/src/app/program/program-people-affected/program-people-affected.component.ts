@@ -578,9 +578,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 220,
       },
       {
-        prop: 'messages',
+        prop: 'lastMessageStatus',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.last-message-status',
+          'page.program.program-people-affected.column.lastMessageStatus',
         ),
         ...this.columnDefaults,
         phases: [
@@ -1102,17 +1102,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       fsp: person.financialServiceProvider,
       fspDisplayNamePortal: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
-      messages: person.lastMessageStatus
-        ? `${this.translate.instant(
-            'page.program.program-people-affected.message-history-popup.type.' +
-              person.lastMessageType,
-          )}: ${this.translate.instant(
-            'page.program.program-people-affected.message-history-popup.chip-status.' +
-              this.messageColumnStatus[person.lastMessageStatus],
-          )}`
-        : this.translate.instant(
-            'page.program.program-people-affected.last-message.no-message',
-          ),
       hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
@@ -1734,6 +1723,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.tableFilterState['paStatus'].selected,
     );
 
+    this.allPeopleData = data;
     this.visiblePeopleAffected = this.createTableData(data);
     this.tableService?.setTotalItems(meta.totalItems);
     this.tableService?.setCurrentPage(meta.currentPage - 1);

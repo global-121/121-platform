@@ -30,6 +30,7 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       'registrationProgramId',
       'personAffectedSequence',
       'maxPayments',
+      'lastMessageStatus',
       'data.(value)',
     ],
     filterableColumns: {
@@ -47,5 +48,6 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       registrationProgramId: AllowedFilterOperatorsNumber,
       maxPayments: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
+      lastMessageStatus: AllowedFilterOperatorsString,
     },
   };

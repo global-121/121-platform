@@ -1,5 +1,4 @@
 import * as request from 'supertest';
-import { DEBUG } from '../../src/config';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { CookieNames } from '../../src/shared/enum/cookie.enums';
 
@@ -10,8 +9,6 @@ export function getHostname(): string {
 export function getServer(): request.SuperAgentTest {
   return request.agent(getHostname());
 }
-
-export const itSkipIfDebug = DEBUG ? it.skip : it;
 
 export function resetDB(seedScript: SeedScript): Promise<request.Response> {
   return getServer()

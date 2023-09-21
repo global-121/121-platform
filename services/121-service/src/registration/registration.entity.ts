@@ -117,6 +117,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsOptional()
   public maxPayments: number;
 
+  @Column({ default: 'no messages yet' })
+  public lastMessageStatus: string;
+
   @OneToMany(
     (_type) => TransactionEntity,
     (transactions) => transactions.registration,
