@@ -1,5 +1,10 @@
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
+export class TransactionInfoVisa {
+  public lastUsedDate: Date | null;
+  public spentThisMonth: number;
+}
+
 export class GetTransactionsDetailsResponseDto {
   data: GetTransactionsDetailsResponseBodyDto;
   status: number;
