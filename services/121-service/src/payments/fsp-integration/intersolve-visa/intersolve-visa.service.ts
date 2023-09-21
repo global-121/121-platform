@@ -60,6 +60,7 @@ import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity'
 import {
   IntersolveVisaWalletEntity,
   IntersolveVisaWalletStatus,
+  maximumAmountOfSpentCentPerMonth,
 } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
@@ -660,7 +661,7 @@ export class IntersolveVisaService
       // 150 is the KYC required maxiumum one can spend per month
       // 15000 is in cents
       walletDetailsResponse.remainingSpentThisMonth =
-        15000 - wallet.spentThisMonth;
+        maximumAmountOfSpentCentPerMonth - wallet.spentThisMonth;
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }

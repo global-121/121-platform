@@ -23,6 +23,9 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
+// This is euro cents and a kyc requirement from visa
+export const maximumAmountOfSpentCentPerMonth = 15000;
+
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()

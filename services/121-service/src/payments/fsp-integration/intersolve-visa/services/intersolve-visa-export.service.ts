@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
-import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
+import {
+  IntersolveVisaWalletEntity,
+  maximumAmountOfSpentCentPerMonth,
+} from '../intersolve-visa-wallet.entity';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 
 @Injectable()
@@ -28,6 +31,7 @@ export class IntersolveVisaExportService {
         'wallet."lastUsedDate" as "lastUsedDate"',
         'wallet.balance as balance',
         'wallet."lastExternalUpdate" as "lastExternalUpdate"',
+        'wallet."spentThisMonth" as "spentThisMonth"',
         'wallet.cardStatus as "cardStatus"',
         'wallet.walletStatus as "walletStatus"',
         'wallet."tokenBlocked" as "tokenBlocked"',
@@ -70,6 +74,9 @@ export class IntersolveVisaExportService {
         lastUsedDate: wallet.lastUsedDate,
         balance: wallet.balance,
         explanation: statusInfo.explanation,
+        spentThisMonth: wallet.spentThisMonth,
+        remainingSpentThisMonth:
+          maximumAmountOfSpentCentPerMonth - wallet.spentThisMonth,
       });
     }
     return exportWalletData;
