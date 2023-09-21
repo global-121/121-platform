@@ -115,4 +115,69 @@ describe('Update attribute of PA', () => {
     // Is old data still the same?
     expect(registration.lastName).toBe(registrationVisa.lastName);
   });
+
+  it('should fail on duplicate referenceId', async () => {
+    const registrationVisa2 = { ...registrationVisa };
+    registrationVisa2.referenceId = 'duplicate-reference-id';
+    await importRegistrations(programId, [registrationVisa2], accessToken);
+    // Arrange
+    const dataUpdateReferenceIdFail = {
+      firstName: 'Jane',
+      referenceId: registrationVisa2.referenceId,
+    };
+    const reason = 'automated test';
+    // Act
+    const response = await updateRegistration(
+      programId,
+      referenceIdVisa,
+      dataUpdateReferenceIdFail,
+      reason,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    response.body;
+    const result = await searchRegistrationByReferenceId(
+      referenceIdVisa,
+      programId,
+      accessToken,
+    );
+    const registration = result.body[0];
+
+    // Is old data still the same?
+    expect(registration.firstName).toBe(registrationVisa.firstName);
+  });
+
+  it('should fail on short referenceId', async () => {
+    const registrationVisa2 = { ...registrationVisa };
+    registrationVisa2.referenceId = 'shor'; //t
+    await importRegistrations(programId, [registrationVisa2], accessToken);
+    // Arrange
+    const dataUpdateReferenceIdFail = {
+      firstName: 'Jane',
+      referenceId: registrationVisa2.referenceId,
+    };
+    const reason = 'automated test';
+    // Act
+    const response = await updateRegistration(
+      programId,
+      referenceIdVisa,
+      dataUpdateReferenceIdFail,
+      reason,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    const result = await searchRegistrationByReferenceId(
+      referenceIdVisa,
+      programId,
+      accessToken,
+    );
+    const registration = result.body[0];
+
+    // Is old data still the same?
+    expect(registration.firstName).toBe(registrationVisa.firstName);
+  });
 });

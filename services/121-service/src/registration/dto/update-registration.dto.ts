@@ -7,6 +7,7 @@ export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   preferredLanguage = 'preferredLanguage',
   maxPayments = 'maxPayments',
+  referenceId = 'referenceId',
 }
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
 export type Attributes = AdditionalAttributes | CustomDataAttributes;
