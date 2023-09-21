@@ -89,7 +89,6 @@ export class IntersolveVisaService
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
     const walletTransactions = transactionDetails.data.data;
-    console.log('walletTransactions: ', walletTransactions);
     // Filter out all transactions that are not reservations
     // reservation is the type that is used for payments in a shop
     let walletReserveTransactions = [];
