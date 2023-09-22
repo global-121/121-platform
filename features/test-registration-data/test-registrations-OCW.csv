@@ -15,3 +15,4 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 ,en,1,,Test,succeed,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-address-city-fail,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,
+,en,1,,Test,mock-spent,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,
