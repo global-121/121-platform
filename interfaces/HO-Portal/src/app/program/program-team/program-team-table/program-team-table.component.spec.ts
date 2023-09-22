@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProgramTeamTableComponent } from './program-team-table.component';
+import { ProgramTeamTable } from './program-team-table.component';
 
 describe('ProgramTeamTableComponent', () => {
-  let component: ProgramTeamTableComponent;
-  let fixture: ComponentFixture<ProgramTeamTableComponent>;
+  let component: ProgramTeamTable;
+  let fixture: ComponentFixture<ProgramTeamTable>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ProgramTeamTableComponent]
+      imports: [ProgramTeamTable],
     });
-    fixture = TestBed.createComponent(ProgramTeamTableComponent);
+    fixture = TestBed.createComponent(ProgramTeamTable);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

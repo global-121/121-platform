@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- Pop up title -->
+    <ion-title>
+      {{ 'page.program-team.popup.popup-title' | translate }}
+    </ion-title>
+
+    <!-- Exit cancel button -->
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- content -->

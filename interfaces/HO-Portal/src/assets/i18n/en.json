@@ -41,7 +41,10 @@
         "active": "Active",
         "inactive": "Inactive"
       },
-      "team-members": "Team members"
+      "team-members": "Team members",
+      "popup": {
+        "popup-title": "Add team members"
+      }
     },
     "login": {
       "pageTitle": "Log in",

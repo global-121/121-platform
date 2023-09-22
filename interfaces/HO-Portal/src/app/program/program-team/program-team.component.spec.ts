@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProgramTeamComponent } from './program-team.component';
+import { ProgramTeamPage } from './program-team.component';
 
 describe('ProgramTeamComponent', () => {
-  let component: ProgramTeamComponent;
-  let fixture: ComponentFixture<ProgramTeamComponent>;
+  let component: ProgramTeamPage;
+  let fixture: ComponentFixture<ProgramTeamPage>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ProgramTeamComponent]
+      declarations: [ProgramTeamPage],
     });
-    fixture = TestBed.createComponent(ProgramTeamComponent);
+    fixture = TestBed.createComponent(ProgramTeamPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
