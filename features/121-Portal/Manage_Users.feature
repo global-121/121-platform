@@ -21,7 +21,7 @@ Scenario: Add New Team member
 When User clicks on "Add new user" button
 And pup-up is displayed
 Then user enter team members email
-And Selects User type for team member
+And Selects Role for team member by clicking on check boxes
 Then Clicks on "Add" butto
 And Notification with "You've succsessfully added a team member" message is displayed
 And user clicks on "X" on popup
@@ -35,7 +35,7 @@ And Meatball menu is displayed
 And User clicks on "Edit user"
 Then pop-up is displayed
 And user is not able to edit email
-And User changes Role of team member
+And User changes Role of team member by clicking on checkboxes
 And click "Save" button
 Then "You've succsessfully edited the role(s) of this user"
 And user clicks on "X" on popup
@@ -55,4 +55,13 @@ And Popup is closed
 Scenario:View roles permissions tab
 When User clicks on "Roles and permissions" tab
 Then Admin and Regular roles are displayed
-And Under admin "Admin can view and edit data, add new user and create new project "
+And Under admin "Admin can view and edit data, add new user and create new project"
+
+Scenario: View error messages
+Given user clicks on Add user button
+And popup window is displayed
+When user that has already been added
+Then error message "This user is already a team member." is displayed
+And when email is changed to valid open
+And user does not assign at least one role
+Then error message "Please assign at least one role." is displayed
