@@ -43,7 +43,11 @@
       },
       "team-members": "Team members",
       "popup": {
-        "popup-title": "Add team member"
+        "title": "Add team member",
+        "cancel-button": "Cancel",
+        "add-users-button": "Add user",
+        "team-member": "Team member",
+        "role": "Role"
       }
     },
     "login": {

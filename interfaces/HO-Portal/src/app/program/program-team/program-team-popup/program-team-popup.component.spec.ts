@@ -8,7 +8,7 @@ describe('ProgramTeamPopupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ProgramTeamPopupComponent]
+      imports: [ProgramTeamPopupComponent],
     });
     fixture = TestBed.createComponent(ProgramTeamPopupComponent);
     component = fixture.componentInstance;

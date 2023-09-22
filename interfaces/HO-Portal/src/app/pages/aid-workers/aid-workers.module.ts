@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { ProgramTeamPopupComponent } from 'src/app/program/program-team/program-team-popup/program-team-popup.component';
-import { ProgramTeamTable } from 'src/app/program/program-team/program-team-table/program-team-table.component';
+import { ProgramTeamTableComponent } from 'src/app/program/program-team/program-team-table/program-team-table.component';
 import { ProgramTeamPage } from 'src/app/program/program-team/program-team.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AidWorkersPage } from './aid-workers.page';
@@ -22,7 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    ProgramTeamTable,
+    ProgramTeamTableComponent,
     ProgramTeamPopupComponent,
     RouterModule.forChild(routes),
   ],

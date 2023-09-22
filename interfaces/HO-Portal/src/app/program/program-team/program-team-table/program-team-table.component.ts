@@ -25,7 +25,7 @@ interface TableData {
   templateUrl: './program-team-table.component.html',
   styleUrls: ['./program-team-table.component.scss'],
 })
-export class ProgramTeamTable {
+export class ProgramTeamTableComponent {
   rows: TableData[];
   DateFormat = DateFormat;
 }
