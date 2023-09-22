@@ -31,7 +31,17 @@
       }}</ion-label>
     </ion-row>
     <ion-row>
-      <select class="dropdown"></select>
+      <ion-searchbar
+        (ionInput)="search($event)"
+        [debounce]="1000"
+        placeholder="{{ 'page.program-team.popup.team-member-placeholder' | translate }}"
+      >
+    </ion-searchbar>
+    <ion-list>
+      <ion-item *ngFor="let user of searchResults">
+        {{ user.user_username }}
+      </ion-item>
+    </ion-list>
     </ion-row>
     <ion-row>
       <ion-label class="label">{{

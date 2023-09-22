@@ -47,6 +47,7 @@
         "cancel-button": "Cancel",
         "add-users-button": "Add user",
         "team-member": "Team member",
+        "team-member-placeholder": "Select a team member",
         "role": "Role"
       }
     },
