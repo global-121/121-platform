@@ -23,3 +23,37 @@
 </ion-header>
 
 <!-- content -->
+<ion-content class="ion-padding">
+  <ion-grid class="ion-padding">
+    <ion-row>
+      <ion-label>label 1</ion-label>
+    </ion-row>
+    <ion-row>
+      <select class="dropdown"></select>
+    </ion-row>
+    <ion-row>
+      <ion-label>label 2</ion-label>
+    </ion-row>
+    <ion-row>
+      <select class="dropdown"></select>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<!-- cancel and add user button -->
+<ion-buttons slot="end">
+  <ion-button
+    (click)="closeModal()"
+    [attr.title]="'common.cancel' | translate"
+    [attr.aria-label]="'common.cancel' | translate"
+  >
+    cancel
+  </ion-button>
+  <ion-button
+    (click)="closeModal()"
+    [attr.title]="'common.cancel' | translate"
+    [attr.aria-label]="'common.cancel' | translate"
+  >
+    add user
+  </ion-button>
+</ion-buttons>
