@@ -3,11 +3,8 @@ import { IntersolveVisaCardStatus } from './../../src/payments/fsp-integration/i
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import {
-  changePhase,
-  doPayment,
-  waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
+import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
+import { changePhase, doPayment } from '../helpers/program.helper';
 import {
   changePaStatus,
   getVisaWalletsAndDetails,
