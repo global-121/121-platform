@@ -1083,16 +1083,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
-      paymentsLeft: person.maxPayments
-        ? person.maxPayments - person.amountPaymentsReceived
-        : null,
+      paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
             [ProgramPhase.inclusion, ProgramPhase.payment].includes(
               this.thisPhase,
             )
               ? `(${
-                  person.maxPayments - person.amountPaymentsReceived
+                  person.maxPayments - person.paymentCount
                 } ${this.translate.instant(
                   'page.program.program-people-affected.max-payments.left',
                 )})`
@@ -1627,7 +1625,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.thisPhase === this.phaseEnum.payment
         ? filteredPeopleAffectedByStatus.filter((pa) =>
             this.tableFilterState.paymentsLeft.selected.includes(
-              this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
+              this.paPaymentsLeftValue(pa.paymentCountRemaining, pa.maxPayments),
             ),
           )
         : filteredPeopleAffectedByStatus;

@@ -284,7 +284,9 @@
           "lastMessageStatus": "Last message",
           "hasNote": "Has Note",
           "referenceId": "Reference ID",
-          "note": "Note"
+          "note": "Note",
+          "paymentCount": "Total payments",
+          "paymentCountRemaining": "Remaining payments"
         },
         "language": {
           "en": "English",

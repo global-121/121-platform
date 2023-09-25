@@ -60,7 +60,7 @@ export class BulkActionsService {
             RegistrationStatus.inclusionEnded,
             RegistrationStatus.completed,
           ]) &&
-          (personData.paymentsLeft === null || personData.paymentsLeft > 0);
+          (personData.paymentCountRemaining === null || personData.paymentCountRemaining > 0);
         break;
       case BulkActionId.endInclusion:
         personData.checkboxVisible = this.hasStatus(personData, [
