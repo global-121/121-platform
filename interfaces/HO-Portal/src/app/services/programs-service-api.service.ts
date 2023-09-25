@@ -51,6 +51,7 @@ export class ProgramsServiceApiService {
             username: response.username,
             permissions: response.permissions,
             expires: response.expires,
+            isAdmin: response.isAdmin,
           };
         }
         return null;

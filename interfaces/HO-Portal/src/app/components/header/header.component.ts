@@ -4,7 +4,9 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutes } from 'src/app/app-routes.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 import { Program } from 'src/app/models/program.model';
+import { User } from 'src/app/models/user.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { UserStateComponent } from '../user-state/user-state.component';
@@ -35,17 +37,23 @@ export class HeaderComponent implements OnInit {
   public programId: number;
   private program: Program;
   public subtitle: string;
+  public isAdmin: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
+    private authService: AuthService,
   ) {
     this.programId = this.route.snapshot.params.id;
   }
 
   public async ngOnInit() {
     await this.loadProgramDetails();
+    this.authService.authenticationState$.subscribe((user: User | null) => {
+      this.isAdmin = user.isAdmin;
+    });
+    console.log('AAAAAAAAAAAAAAAA', this.isAdmin);
   }
 
   private async loadProgramDetails() {
