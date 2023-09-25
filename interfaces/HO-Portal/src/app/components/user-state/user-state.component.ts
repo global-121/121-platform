@@ -23,6 +23,7 @@ export class UserStateComponent implements OnInit {
   public appRoute = AppRoutes;
   public userName: string;
   public permissions: User['permissions'];
+  public isAdmin = User['isAdmin'];
 
   constructor(private authService: AuthService) {}
 
