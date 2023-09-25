@@ -165,6 +165,7 @@ export class UserController {
         permissions: loginResponse.userRo.user.permissions,
         access_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
+        isAdmin: loginResponse.userRo.user.isAdmin,
       });
     } catch (error) {
       throw error;
