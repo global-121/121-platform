@@ -6,6 +6,7 @@ export class User {
     [programId: number]: Permission[];
   };
   expires: string;
+  isAdmin?: boolean;
 }
 
 export interface TableData {
