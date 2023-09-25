@@ -31,6 +31,8 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       'personAffectedSequence',
       'maxPayments',
       'lastMessageStatus',
+      'paymentCount',
+      'paymentCountRemaining',
       'data.(value)',
     ],
     filterableColumns: {
@@ -49,5 +51,7 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       maxPayments: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
       lastMessageStatus: AllowedFilterOperatorsString,
+      paymentCount: AllowedFilterOperatorsNumber,
+      paymentCountRemaining: AllowedFilterOperatorsNumber,
     },
   };

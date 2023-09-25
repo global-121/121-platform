@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -41,5 +41,9 @@ export class TransactionEntity extends Base121Entity {
     (_type) => RegistrationEntity,
     (registration) => registration.transactions,
   )
+  @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
+  @Index()
+  @Column({ type: 'int', nullable: true })
+  public registrationId: number;
 }
