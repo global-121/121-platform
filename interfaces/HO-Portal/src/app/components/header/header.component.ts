@@ -53,7 +53,6 @@ export class HeaderComponent implements OnInit {
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isAdmin = user.isAdmin;
     });
-    console.log('AAAAAAAAAAAAAAAA', this.isAdmin);
   }
 
   private async loadProgramDetails() {
