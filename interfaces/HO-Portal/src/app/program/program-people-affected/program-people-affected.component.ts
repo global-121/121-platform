@@ -311,11 +311,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
     {
-      prop: 'paymentsLeft',
-      type: this.tableFilterType.multipleChoice,
-      description: 'remaining-payment-description',
-    },
-    {
       prop: 'paStatus',
       type: this.tableFilterType.multipleChoice,
       description: 'multiple-choice-hidden-options',
@@ -327,12 +322,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       default: [],
       selected: [],
       visible: [],
-    },
-    paymentsLeft: {
-      default: [],
-      selected: [],
-      visible: [],
-    },
+    }
   };
 
   public tableFiltersDropdownOptions: { name: string; label: string }[] = [];
@@ -1586,17 +1576,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
   }
 
-  private paPaymentsLeftValue(paymentsLeft, maxPayments): number {
-    if (!paymentsLeft && maxPayments === '') {
-      return -2;
-    }
-
-    if (paymentsLeft > 3) {
-      return -1;
-    }
-    return paymentsLeft;
-  }
-
   public applyTableFilter(prop, filter) {
     if (!filter) {
       return;
@@ -1621,17 +1600,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
       this.tableFilterState.paStatus.selected.includes(pa.status),
     );
-    const filteredPeopleAffectedByPaymentsLeft =
-      this.thisPhase === this.phaseEnum.payment
-        ? filteredPeopleAffectedByStatus.filter((pa) =>
-            this.tableFilterState.paymentsLeft.selected.includes(
-              this.paPaymentsLeftValue(pa.paymentCountRemaining, pa.maxPayments),
-            ),
-          )
-        : filteredPeopleAffectedByStatus;
 
     this.initialVisiblePeopleAffected = [
-      ...filteredPeopleAffectedByPaymentsLeft,
+      ...filteredPeopleAffectedByStatus,
     ];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
