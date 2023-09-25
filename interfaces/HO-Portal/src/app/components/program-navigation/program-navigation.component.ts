@@ -26,6 +26,8 @@ export class ProgramNavigationComponent implements OnInit {
   public programId: number;
   private program: Program;
 
+  public canViewMetrics: boolean;
+  public canManageAidworkers: boolean;
   public showManageAidworkers: boolean;
 
   constructor(
@@ -37,17 +39,17 @@ export class ProgramNavigationComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    await this.loadProgramDetails();
-    this.showManageAidworkers = !!this.program?.validation;
-  }
-
-  private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
-  }
 
-  public canManageAidWorkers(): boolean {
-    return this.authService.hasAllPermissions(this.programId, [
+    this.showManageAidworkers = !!this.program?.validation;
+
+    this.canManageAidworkers = this.authService.hasPermission(
+      this.programId,
       Permission.AidWorkerProgramUPDATE,
-    ]);
+    );
+    this.canViewMetrics = this.authService.hasPermission(
+      this.programId,
+      Permission.ProgramMetricsREAD,
+    );
   }
 }

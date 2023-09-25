@@ -3,7 +3,7 @@ import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
   getRegistrationChangeLog,
   importRegistrations,
-  updateRegistrationPatch,
+  updateRegistration,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
@@ -32,7 +32,7 @@ describe('Update attribute of PA', () => {
     };
 
     // Act
-    await updateRegistrationPatch(
+    await updateRegistration(
       programId,
       referenceIdVisa,
       data,
@@ -70,7 +70,7 @@ describe('Update attribute of PA', () => {
     };
 
     // Act
-    await updateRegistrationPatch(
+    await updateRegistration(
       programId,
       referenceIdVisa,
       data,

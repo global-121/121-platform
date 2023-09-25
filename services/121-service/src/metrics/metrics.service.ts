@@ -651,12 +651,14 @@ export class MetricsService {
         fsp: { program: { id: programId } },
       },
     });
+
     const fspQuestionIds = fspQuestions.map((fspQuestion) => {
       return fspQuestion.id;
     });
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
+      relations: ['financialServiceProviders'],
     });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
@@ -721,14 +723,63 @@ export class MetricsService {
         }
       }
     }
-
-    const registrations = await this.getRegistrationsFieldsForDuplicates(
-      programId,
+    return this.getRegisrationsForDuplicates(
+      duplicatesMap,
+      uniqueRegistrationIds,
+      fspQuestions,
       relationOptions,
-      Array.from(uniqueRegistrationIds),
+      program,
+    );
+  }
+
+  private async getRegisrationsForDuplicates(
+    duplicatesMap: Map<number, number[]>,
+    uniqueRegistrationIds: Set<number>,
+    fspQuestions: FspQuestionEntity[],
+    relationOptions: RegistrationDataOptions[],
+    program: ProgramEntity,
+  ): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const registrationAndFspId = await this.registrationRepository.find({
+      where: { id: In([...Array.from(uniqueRegistrationIds)]) },
+      select: ['id', 'fspId'],
+    });
+
+    // Create an object to group registrations by fspId
+    const groupedRegistrations: Record<
+      string,
+      { id: number; fspId: number }[]
+    > = {};
+    registrationAndFspId.forEach((registration) => {
+      const { id, fspId } = registration;
+      if (!groupedRegistrations[fspId]) {
+        groupedRegistrations[fspId] = [];
+      }
+      groupedRegistrations[fspId].push({ id, fspId });
+    });
+
+    // Create an object to group relation options per FSP
+    const relationOptionsPerFsp = this.getRelationOptionsPerFsp(
+      relationOptions,
+      program,
+      fspQuestions,
     );
 
-    const result = registrations.map((registration) => {
+    let allRegistrations = [];
+    for (const [fspId, registrationIds] of Object.entries(
+      groupedRegistrations,
+    )) {
+      const registrationsWithSameFspId =
+        await this.getRegistrationsFieldsForDuplicates(
+          program.id,
+          relationOptionsPerFsp[fspId],
+          registrationIds.map((r) => r.id),
+        );
+      allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
+    }
+    const result = allRegistrations.map((registration) => {
       registration =
         this.registrationsService.transformRegistrationByNamingConvention(
           JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
@@ -744,6 +795,31 @@ export class MetricsService {
       fileName: ExportType.duplicates,
       data: result,
     };
+  }
+
+  private getRelationOptionsPerFsp(
+    relationOptions: RegistrationDataOptions[],
+    program: ProgramEntity,
+    fspQuestions: FspQuestionEntity[],
+  ): { [key: number]: RegistrationDataOptions[] } {
+    const relationOptionsPerFsp = {};
+    for (const fsp of program.financialServiceProviders) {
+      // Get all non fsp questions
+      relationOptionsPerFsp[fsp.id] = relationOptions.filter(
+        (o) => !o.relation.fspQuestionId,
+      );
+      // Get all questions for specific fsp
+      const fspQuestionsPerFsp = fspQuestions.filter(
+        (question) => question.fsp.id === fsp.id,
+      );
+      for (const question of fspQuestionsPerFsp) {
+        const fspQuestionRelation = relationOptions.find(
+          (o) => o.relation.fspQuestionId === question.id,
+        );
+        relationOptionsPerFsp[fsp.id].push(fspQuestionRelation);
+      }
+    }
+    return relationOptionsPerFsp;
   }
 
   private async getPaymentDetailsPayment(
@@ -960,6 +1036,16 @@ export class MetricsService {
           programId,
           registrations,
           RegistrationStatusEnum.completed,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.paused]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.paused,
           payment,
           month,
           year,

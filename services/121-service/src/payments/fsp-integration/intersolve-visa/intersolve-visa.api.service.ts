@@ -33,26 +33,35 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken(): Promise<string> {
-    // Check expires_at
-    if (this.tokenSet && this.tokenSet.expires_at > Date.now() - 60000) {
+    if (this.isTokenValid(this.tokenSet)) {
       // Return cached token
       return this.tokenSet.access_token;
-    } else {
-      // If not valid, request new token
-      const trustIssuer = await Issuer.discover(
-        `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
-      );
-      const client = new trustIssuer.Client({
-        client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
-        client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
-      });
-      const tokenSet = await client.grant({
-        grant_type: 'client_credentials',
-      });
-      // Cache tokenSet
-      this.tokenSet = tokenSet;
-      return tokenSet.access_token;
     }
+    // If not valid, request new token
+    const trustIssuer = await Issuer.discover(
+      `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
+    );
+    const client = new trustIssuer.Client({
+      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
+      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
+    });
+    const tokenSet = await client.grant({
+      grant_type: 'client_credentials',
+    });
+    // Cache tokenSet
+    this.tokenSet = tokenSet;
+    return tokenSet.access_token;
+  }
+
+  private isTokenValid(tokenSet: TokenSet): boolean {
+    if (!tokenSet || !tokenSet.expires_at) {
+      return false;
+    }
+    // Convert expires_at to milliseconds
+    const expiresAtInMs = tokenSet.expires_at * 1000;
+    const timeLeftBeforeExpire = expiresAtInMs - Date.now();
+    // If more than 1 minute left before expiration, the token is considered valid
+    return timeLeftBeforeExpire > 60000;
   }
 
   public async createCustomer(
