@@ -58,6 +58,7 @@ export class UserService {
         username,
         token,
         permissions,
+        isAdmin: userEntity.admin,
       },
     };
 
