@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
   public programId: number;
   private program: Program;
   public subtitle: string;
-  public isAdmin: boolean;
+  public isAdmin?: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
   public async ngOnInit() {
     await this.loadProgramDetails();
     this.authService.authenticationState$.subscribe((user: User | null) => {
-      this.isAdmin = user.isAdmin;
+      this.isAdmin = user?.isAdmin;
     });
   }
 
