@@ -33,7 +33,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   public currency: string;
 
   @Input()
-  public nrPayments: Person['amountPaymentsReceived'];
+  public nrPayments: Person['paymentCount'];
 
   @Input()
   public registrationStatus: Person['status'];

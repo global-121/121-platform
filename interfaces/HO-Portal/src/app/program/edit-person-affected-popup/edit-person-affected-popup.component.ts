@@ -178,7 +178,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       if (
         value !== '' &&
         (Number(value) === 0 ||
-          Number(value) <= this.person.amountPaymentsReceived)
+          Number(value) <= this.person.paymentCount)
       ) {
         this.showAttributeErrorAlert('too-low', attribute);
         return;

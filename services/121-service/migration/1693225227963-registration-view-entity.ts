@@ -47,9 +47,7 @@ export class RegistrationViewEntity1693225227963 implements MigrationInterface {
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
       ['VIEW', 'registration_view', '121-service'],
     );
-    await queryRunner.query(
-      `DROP VIEW "121-service"."registration_view"`,
-    );
+    await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_cd56d3267e8553557ec97c6741b"`,
     );

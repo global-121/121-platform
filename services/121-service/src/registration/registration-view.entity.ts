@@ -39,6 +39,11 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.noteUpdated', 'noteUpdated')
       .addSelect('fsp.fsp', 'financialServiceProvider')
       .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
+      .addSelect('registration.paymentCount', 'paymentCount')
+      .addSelect(
+        'registration.maxPayments - registration.paymentCount',
+        'paymentCountRemaining',
+      )
       .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
@@ -102,6 +107,12 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public lastMessageStatus: string;
+
+  @ViewColumn()
+  public paymentCount: number;
+
+  @ViewColumn()
+  public paymentCountRemaining: number;
 
   @OneToMany(
     () => RegistrationDataEntity,

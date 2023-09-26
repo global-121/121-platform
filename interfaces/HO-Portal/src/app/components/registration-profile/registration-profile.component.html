@@ -15,7 +15,7 @@
       <ng-container
         *ngIf="
           canViewPhysicalCards(person.programId) &&
-          fspHasPhysicalCardSupport(person.fsp)
+          fspHasPhysicalCardSupport(person.financialServiceProvider)
         "
       >
         <div class="ion-margin-vertical ion-padding-vertical">
@@ -23,7 +23,7 @@
             [programId]="person.programId"
             [referenceId]="person.referenceId"
             [currency]="program.currency"
-            [nrPayments]="person.nrPayments"
+            [nrPayments]="person.paymentCount"
             [registrationStatus]="person.status"
           ></app-registration-physical-card-overview>
         </div>

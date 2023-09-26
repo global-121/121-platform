@@ -237,17 +237,10 @@
             "apply-btn": "Apply"
           },
           "btn-label": {
-            "paStatus": "Status",
-            "paymentsLeft": "Remaining payments"
-          },
-          "payments-left-option": {
-            "no-maximum": "No maximum",
-            "more-than-three": "> 3 remaining",
-            "zero-three": " remaining"
+            "paStatus": "Status"
           },
           "empty-selection-alert-message": "Please select at least one option",
-          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected",
-          "remaining-payment-description": "Select to filter People Affected by payments remaining"
+          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "last-message": {
           "no-message": "No messages yet"
@@ -276,7 +269,7 @@
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
-          "maxPayments": "Max payments",
+          "maxPayments": "Max. payments",
           "fspDisplayNamePortal": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
@@ -284,7 +277,9 @@
           "lastMessageStatus": "Last message",
           "hasNote": "Has Note",
           "referenceId": "Reference ID",
-          "note": "Note"
+          "note": "Note",
+          "paymentCount": "Payments so far",
+          "paymentCountRemaining": "Remaining payments"
         },
         "language": {
           "en": "English",

@@ -38,7 +38,7 @@ export class LastMessageStatusService {
       .addOrderBy('twilioMessages.created', 'DESC');
     const updateData = await getLatestMessageQuery.getRawOne();
 
-    if (updateData.lastMessageStatus) {
+    if (updateData && updateData.lastMessageStatus) {
       const mappedStatus = MessageStatusMapping[updateData.lastMessageStatus];
       const lastMessageStatusInsert = `${updateData.lastMessageType}: ${mappedStatus}`;
 

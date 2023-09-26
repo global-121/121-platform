@@ -111,6 +111,7 @@ export const expectedAttributes = [
   'registrationProgramId',
   'personAffectedSequence',
   'name',
+  'paymentCount',
 ];
 
 export { expectedValueObject1 };

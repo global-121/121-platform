@@ -120,6 +120,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ default: 'no messages yet' })
   public lastMessageStatus: string;
 
+  // This is a count of the number of transactions with a distinct on the paymentId
+  // can be failed or successful or waiting transactions
+  @Column({ default: 0 })
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  public paymentCount: number;
+
   @OneToMany(
     (_type) => TransactionEntity,
     (transactions) => transactions.registration,

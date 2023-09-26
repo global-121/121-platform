@@ -34,7 +34,8 @@ export class Person {
   registrationProgramId: number;
   personAffectedSequence: string;
   lastTransactionPaymentNumber?: number;
-  amountPaymentsReceived?: number;
+  paymentCount?: number;
+  paymentCountRemaining?: number;
   lastTransactionCreated?: string;
   lastTransactionAmount?: number;
   lastTransactionStatus?: string;
@@ -70,7 +71,8 @@ export class PersonRow {
   fspDisplayNamePortal?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
-  paymentsLeft?: number | null;
+  paymentCount?: number;
+  paymentCountRemaining?: number | null;
   preferredLanguage?: string | null;
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
