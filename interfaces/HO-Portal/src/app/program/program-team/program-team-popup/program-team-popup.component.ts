@@ -29,7 +29,7 @@ export class ProgramTeamPopupComponent {
 
   public async search(event: CustomEvent) {
     const searchTerm = event.detail.value.toLowerCase();
-    this.searchResults = await this.programsServiceApiService.getUsersByName(1, searchTerm);
+    this.searchResults = await this.programsServiceApiService.getUsersByName(this.programId, searchTerm);
   }
 
   public closeModal() {
