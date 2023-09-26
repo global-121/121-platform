@@ -46,6 +46,10 @@ import {
   GetWalletDetailsResponseDto,
   GetWalletsResponseDto,
 } from './dto/intersolve-get-wallet-details.dto';
+import {
+  IntersolveGetTransactionsResponseDataDto,
+  TransactionInfoVisa,
+} from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
@@ -58,6 +62,7 @@ import {
   IntersolveVisaWalletStatus,
 } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
 @Injectable()
@@ -78,24 +83,62 @@ export class IntersolveVisaService
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
-  public async getLastChargeTransactionDate(
+  public async getTransactionInfo(
     tokenCode: string,
     dateFrom?: Date,
-  ): Promise<Date | null> {
+  ): Promise<TransactionInfoVisa> {
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
     const walletTransactions = transactionDetails.data.data;
-
+    // Filter out all transactions that are not reservations
+    // reservation is the type that is used for payments in a shop
+    let walletReserveTransactions = [];
     if (walletTransactions && walletTransactions.length > 0) {
-      const sortedByDate = walletTransactions
-        .filter((t) => t.type === 'RESERVATION')
-        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      walletReserveTransactions = walletTransactions.filter(
+        (t) => t.type === 'RESERVATION',
+      );
+    }
+
+    return {
+      lastUsedDate: this.getLastTransactionDate(walletReserveTransactions),
+      spentThisMonth: this.calculateSpentThisMonth(walletReserveTransactions),
+    };
+  }
+
+  private getLastTransactionDate(
+    walletTransactions: IntersolveGetTransactionsResponseDataDto[],
+  ): null | Date {
+    if (walletTransactions && walletTransactions.length > 0) {
+      const sortedByDate = walletTransactions.sort((a, b) =>
+        a.createdAt < b.createdAt ? 1 : -1,
+      );
       if (sortedByDate.length > 0) {
         const dateString = sortedByDate[0].createdAt;
         return new Date(dateString);
       }
     }
     return null;
+  }
+
+  private calculateSpentThisMonth(
+    walletTransactions: IntersolveGetTransactionsResponseDataDto[],
+  ): number {
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear = now.getFullYear();
+    let total = 0;
+    for (const transaction of walletTransactions) {
+      const transactionDate = new Date(transaction.createdAt);
+      if (
+        transactionDate.getMonth() === thisMonth &&
+        transactionDate.getFullYear() === thisYear
+      ) {
+        total += transaction.quantity.value;
+      }
+    }
+    // We get back negative numbers which needs to be reversed to a positive number
+    const reversed = -total;
+    return reversed;
   }
 
   public async sendPayment(
@@ -385,7 +428,7 @@ export class IntersolveVisaService
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
   ): Promise<IntersolveCreateWalletResponseDto> {
-    const amountInCents = calculatedAmount * 100;
+    const amountInCents = Math.round(calculatedAmount * 100);
     const createWalletPayload = new IntersolveCreateWalletDto();
     createWalletPayload.reference = visaCustomer.holderId;
     if (calculatedAmount > 0) {
@@ -482,7 +525,7 @@ export class IntersolveVisaService
     referenceId: string,
     payment: number,
   ): Promise<IntersolveLoadResponseDto> {
-    const amountInCents = calculatedAmount * 100;
+    const amountInCents = Math.round(calculatedAmount * 100);
     const reference = uuid();
     const saleId = `${referenceId}-${payment}`;
 
@@ -554,15 +597,29 @@ export class IntersolveVisaService
       wallet.cardStatus = cardDetails.data.data.status;
     }
 
-    const lastUsedDate = await this.getLastChargeTransactionDate(
+    const transactionInfo = await this.getTransactionInfo(
       wallet.tokenCode,
-      wallet.lastUsedDate,
+      this.getFirstTimeOfCurrentMonth(),
     );
-    if (lastUsedDate) {
-      wallet.lastUsedDate = lastUsedDate;
+    if (transactionInfo.lastUsedDate) {
+      wallet.lastUsedDate = transactionInfo.lastUsedDate;
     }
+    wallet.spentThisMonth = transactionInfo.spentThisMonth;
     wallet.lastExternalUpdate = new Date();
     return await this.intersolveVisaWalletRepository.save(wallet);
+  }
+
+  private getFirstTimeOfCurrentMonth(): Date {
+    const currentDate = new Date(); // Get the current date and time
+    const firstDayOfCurrentMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    const firstTimeOfFirstDay = new Date(
+      firstDayOfCurrentMonth.setHours(0, 0, 0, 0),
+    ); // Set time to midnight
+    return firstTimeOfFirstDay;
   }
 
   public async getVisaWalletsAndDetails(
@@ -600,6 +657,11 @@ export class IntersolveVisaService
       walletDetailsResponse.links = statusInfo.links;
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
+      walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
+      // 150 is the KYC required maxiumum one can spend per month
+      // 15000 is in cents
+      walletDetailsResponse.maxToSpendPerMonth =
+        maximumAmountOfSpentCentPerMonth;
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }

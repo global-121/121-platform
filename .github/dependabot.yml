@@ -15,14 +15,14 @@ updates:
     open-pull-requests-limit: 3
     versioning-strategy: increase
     groups:
-      angular:
-        patterns: ['@angular*']
       eslint:
         patterns: ['*eslint*']
+        exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!
       # Most/all Angular-related dependencies are ignored for all versions
       - dependency-name: '@angular/*'
+      - dependency-name: '@angular-eslint/*'
       - dependency-name: '@angular-devkit/*'
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
@@ -57,14 +57,14 @@ updates:
     open-pull-requests-limit: 3
     versioning-strategy: increase
     groups:
-      angular:
-        patterns: ['@angular*']
       eslint:
         patterns: ['*eslint*']
+        exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!
       # Most/all Angular-related dependencies are ignored for all versions
       - dependency-name: '@angular/*'
+      - dependency-name: '@angular-eslint/*'
       - dependency-name: '@angular-devkit/*'
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
@@ -97,14 +97,14 @@ updates:
     open-pull-requests-limit: 3
     versioning-strategy: increase
     groups:
-      angular:
-        patterns: ['@angular*']
       eslint:
         patterns: ['*eslint*']
+        exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!
       # Most/all Angular-related dependencies are ignored for all versions
       - dependency-name: '@angular/*'
+      - dependency-name: '@angular-eslint/*'
       - dependency-name: '@angular-devkit/*'
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
