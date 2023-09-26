@@ -24,7 +24,6 @@ export class ProgramTeamPopupComponent {
   public async search(event: CustomEvent) {
     const searchTerm = event.detail.value.toLowerCase();
     this.searchResults = await this.programsServiceApiService.getUsersByName(1, searchTerm);
-    //TODO Program ID should not be required as we need all users to be available to add to program
   }
 
   public closeModal() {
