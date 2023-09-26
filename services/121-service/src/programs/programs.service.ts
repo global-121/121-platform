@@ -110,7 +110,7 @@ export class ProgramService {
   }
 
   public getFilterableAttributes(program: ProgramEntity): FilterAttributeDto[] {
-    const defaultFilterableInUI = [
+    let defaultFilterableInUI = [
       'personAffectedSequence',
       'referenceId',
       'phoneNumber',
@@ -119,11 +119,17 @@ export class ProgramService {
       'paymentAmountMultiplier',
       'note',
       'fspDisplayNamePortal',
-      'maxPayments',
       'paymentCount',
-      'paymentCountRemaining',
       'lastMessageStatus',
     ];
+    if (program.enableMaxPayments) {
+      defaultFilterableInUI = [
+        ...new Set([
+          ...defaultFilterableInUI,
+          ...['maxPayments', 'paymentCountRemaining'],
+        ]),
+      ];
+    }
 
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
