@@ -77,6 +77,7 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
+    await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       referenceIdVisa,
@@ -130,6 +131,8 @@ describe('Block visa debit card', () => {
       referenceIdVisa,
       accessToken,
     );
+
+    await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       referenceIdVisa,
