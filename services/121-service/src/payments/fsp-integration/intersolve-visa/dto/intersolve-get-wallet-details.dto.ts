@@ -23,6 +23,10 @@ export class GetWalletDetailsResponseDto {
   public links: VisaCardActionLink[];
   @ApiProperty()
   public explanation: string;
+  @ApiProperty()
+  public spentThisMonth: number;
+  @ApiProperty()
+  public maxToSpendPerMonth: number;
 }
 
 export class GetWalletsResponseDto {

@@ -78,7 +78,7 @@ describe('Export Visa debit card report', () => {
     expect(exportResult.body.data[0].cardStatus121).toBe(
       WalletCardStatus121.Active,
     );
-    expect(exportResult.body.data[0].balance).toBe(2200);
+    expect(exportResult.body.data[0].balance).toBe(22);
     expect(exportResult.body.data[0].registrationStatus).toBe(
       RegistrationStatusEnum.included,
     );
