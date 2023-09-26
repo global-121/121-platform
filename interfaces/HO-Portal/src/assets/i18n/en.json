@@ -279,7 +279,10 @@
           "referenceId": "Reference ID",
           "note": "Note",
           "paymentCount": "Payments so far",
-          "paymentCountRemaining": "Remaining payments"
+          "paymentCountRemaining": "Remaining payments",
+          "failedPayment": "Failed for payment #",
+          "waitingPayment": "Waiting for payment #",
+          "successPayment": "Successful for payment #"
         },
         "language": {
           "en": "English",

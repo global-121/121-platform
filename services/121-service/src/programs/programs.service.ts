@@ -125,6 +125,9 @@ export class ProgramService {
 
   public getFilterableAttributes(program: ProgramEntity): FilterAttributeDto[] {
     let defaultFilterableInUI = [
+      'failedPayment',
+      'waitingPayment',
+      'successPayment',
       'personAffectedSequence',
       'referenceId',
       'phoneNumber',
@@ -137,10 +140,8 @@ export class ProgramService {
     ];
     if (program.enableMaxPayments) {
       defaultFilterableInUI = [
-        ...new Set([
-          ...defaultFilterableInUI,
-          ...['maxPayments', 'paymentCount', 'paymentCountRemaining'],
-        ]),
+        ...defaultFilterableInUI,
+        ...['maxPayments', 'paymentCount', 'paymentCountRemaining'],
       ];
     }
 

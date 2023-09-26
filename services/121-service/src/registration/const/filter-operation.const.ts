@@ -53,5 +53,8 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       paymentCountRemaining: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
       lastMessageStatus: AllowedFilterOperatorsString,
+      failedPayment: AllowedFilterOperatorsNumber,
+      waitingPayment: AllowedFilterOperatorsNumber,
+      successPayment: AllowedFilterOperatorsNumber,
     },
   };

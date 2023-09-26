@@ -962,6 +962,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         name: attribute.name,
         label: label,
       });
+      if (attribute.name === 'successPayment') {
+        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
+        this.tableFiltersDropdownOptions.push({
+          name: 'divider',
+          label: '------------------------------------------',
+        });
+      }
     }
   }
 
