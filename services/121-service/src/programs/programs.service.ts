@@ -119,14 +119,13 @@ export class ProgramService {
       'paymentAmountMultiplier',
       'note',
       'fspDisplayNamePortal',
-      'paymentCount',
       'lastMessageStatus',
     ];
     if (program.enableMaxPayments) {
       defaultFilterableInUI = [
         ...new Set([
           ...defaultFilterableInUI,
-          ...['maxPayments', 'paymentCountRemaining'],
+          ...['maxPayments', 'paymentCount', 'paymentCountRemaining'],
         ]),
       ];
     }
