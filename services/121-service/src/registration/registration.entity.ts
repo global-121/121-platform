@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  Min,
 } from 'class-validator';
 import {
   BeforeRemove,
@@ -124,7 +125,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   // can be failed or successful or waiting transactions
   @Column({ default: 0 })
   @IsInt()
-  @IsPositive()
+  @Min(0)
   @IsOptional()
   public paymentCount: number;
 
