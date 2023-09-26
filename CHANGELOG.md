@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow external integrations to update the reference Id using patch
 
+### Fixed
+
+- Solved bug with issuing new Visa card (decimals)
+
 ## [1.100.0](https://github.com/global-121/121-platform/compare/v1.99.1...v1.100.0) - 2023-09-21
 
 ### Added
