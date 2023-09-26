@@ -1,11 +1,15 @@
 import {
   registerDecorator,
+  validate,
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { Repository } from 'typeorm';
 import { AppDataSource } from '../../../appdatasource';
+import { CreateRegistrationDto } from '../dto/create-registration.dto';
+import { Attributes } from '../dto/update-registration.dto';
 import {
   AnswerTypes,
   CustomAttributeType,
@@ -45,6 +49,13 @@ export class RegistrationDataTypeValidator
       this.message = `Attribute '${attribute}' was not found for the program related to the reference id:' ${referenceId}'`;
       return false;
     }
+    if (attribute == Attributes.referenceId) {
+      return this.referenceIdIsValid(
+        value,
+        registrationRepository,
+        referenceId,
+      );
+    }
     return this.typeIsValid(
       value,
       validationInfo.type,
@@ -60,6 +71,34 @@ export class RegistrationDataTypeValidator
 
   public defaultMessage(_args: ValidationArguments): string {
     return this.message;
+  }
+
+  private async referenceIdIsValid(
+    value: string,
+    registrationRepository: Repository<RegistrationEntity>,
+    orignalReferenceId: string,
+  ): Promise<boolean> {
+    const registration = await registrationRepository.findOne({
+      where: { referenceId: value },
+      relations: ['program'],
+    });
+    if (registration && registration.referenceId !== orignalReferenceId) {
+      this.message = `ReferenceId '${value}' already exists`;
+      return false;
+    } else {
+      const dto = new CreateRegistrationDto();
+      dto.referenceId = value;
+      const valResult = await validate(dto);
+      if (valResult.length > 0) {
+        try {
+          this.message = Object.values(valResult[0].constraints).join(', ');
+        } catch (e) {
+          this.message = JSON.stringify(valResult);
+        }
+        return false;
+      }
+    }
+    return true;
   }
 
   private typeIsValid(

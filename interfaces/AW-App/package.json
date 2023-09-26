@@ -44,7 +44,7 @@
     "@angular/service-worker": "^16.2.1",
     "@ionic/angular": "^7.3.3",
     "@ionic/storage-angular": "^4.0.0",
-    "@microsoft/applicationinsights-web": "^2.8.15",
+    "@microsoft/applicationinsights-web": "^2.8.16",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "core-js": "2.6.8",

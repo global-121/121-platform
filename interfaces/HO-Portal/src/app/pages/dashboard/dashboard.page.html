@@ -2,7 +2,17 @@
 <app-program-navigation></app-program-navigation>
 
 <ion-content class="ion-padding">
-  <ion-grid>
+  <ng-container
+    *ngIf="canViewMetrics && !!program && !!program?.monitoringDashboardUrl"
+  >
+    <app-dashboard-iframe
+      [url]="program?.monitoringDashboardUrl"
+    ></app-dashboard-iframe>
+  </ng-container>
+
+  <ion-grid
+    *ngIf="canViewMetrics && !!program && !program?.monitoringDashboardUrl"
+  >
     <ion-row>
       <ion-col
         [sizeXs]="12"

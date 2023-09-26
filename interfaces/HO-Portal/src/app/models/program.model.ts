@@ -37,11 +37,14 @@ export class Program {
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
   filterableAttributes: FilterableAttributeDefinition[];
+  monitoringDashboardUrl?: string;
+  evaluationDashboardUrl?: string;
 }
 
 class FilterableAttributeDefinition {
   name: string;
   allowedOperators: FilterOperatorEnum[];
+  paTableAttributes: PaTableAttribute[];
 }
 
 export class ProgramStats {
@@ -81,7 +84,9 @@ export class ProgramCustomAttribute {
   phases: ProgramPhase[];
 }
 
-export class PaTableAttribute extends ProgramCustomAttribute {}
+export class PaTableAttribute extends Attribute {
+  phases?: ProgramPhase[];
+}
 
 export class ProgramQuestion {
   id: number;

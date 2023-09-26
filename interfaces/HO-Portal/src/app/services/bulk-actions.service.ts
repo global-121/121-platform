@@ -58,6 +58,7 @@ export class BulkActionsService {
             RegistrationStatus.validated,
             RegistrationStatus.rejected,
             RegistrationStatus.inclusionEnded,
+            RegistrationStatus.paused,
             RegistrationStatus.completed,
           ]) &&
           (personData.paymentCountRemaining === null || personData.paymentCountRemaining > 0);
@@ -66,6 +67,11 @@ export class BulkActionsService {
         personData.checkboxVisible = this.hasStatus(personData, [
           RegistrationStatus.included,
           RegistrationStatus.completed,
+        ]);
+        break;
+      case BulkActionId.pause:
+        personData.checkboxVisible = this.hasStatus(personData, [
+          RegistrationStatus.included,
         ]);
         break;
       case BulkActionId.reject:
@@ -155,6 +161,12 @@ export class BulkActionsService {
         return await this.programsService.deleteRegistrations(
           programId,
           this.onlyIds(selectedPeople),
+        );
+      case BulkActionId.pause:
+        return await this.programsService.pause(
+          programId,
+          this.onlyIds(selectedPeople),
+          customBulkActionInput.message,
         );
     }
   }

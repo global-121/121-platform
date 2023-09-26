@@ -1,12 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardPage } from './dashboard.page';
 
 describe('DashboardPage', () => {
@@ -16,16 +15,12 @@ describe('DashboardPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardPage],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        SharedModule,
-        NoopAnimationsModule,
-      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
       providers: [
         provideMagicalMock(ProgramsServiceApiService),
         provideMagicalMock(ProgramPhaseService),
+        provideMagicalMock(AuthService),
       ],
     }).compileComponents();
   }));

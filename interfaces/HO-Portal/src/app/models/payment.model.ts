@@ -1,4 +1,4 @@
-import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
+import FspName from '../enums/fsp-name.enum';
 import { Transaction } from './transaction.model';
 
 export class PaymentData {

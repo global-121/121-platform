@@ -5,6 +5,11 @@ import { Subscription } from 'rxjs';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { TranslatableStringService } from '../services/translatable-string.service';
+
+class Recipient extends Person {
+  programTitle?: string;
+}
 
 @Component({
   selector: 'app-recipient-page',
@@ -12,16 +17,19 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   styleUrls: ['./recipient.page.scss'],
 })
 export class RecipientPage implements OnDestroy {
-  public recipients: Person[];
-  public programsMap: { [programId: number]: Program };
+  public recipients: Recipient[];
+
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
-  public bannerText: string;
+  public searchResultText: string;
+
   private paramsSubscription: Subscription;
+  private programsMap: { [programId: number]: Program };
 
   constructor(
     private progamsServiceApiService: ProgramsServiceApiService,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private activatedRoute: ActivatedRoute,
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
@@ -40,7 +48,7 @@ export class RecipientPage implements OnDestroy {
   }
 
   private async getRecipientData() {
-    this.recipients = await this.getPhoneNumberDetails(
+    this.recipients = await this.getPaDetailsByPhoneNumber(
       this.queryParamPhonenumber,
     );
 
@@ -48,30 +56,59 @@ export class RecipientPage implements OnDestroy {
       this.accordionGroupValue = this.recipients[0].id;
     }
 
-    const programs = await this.progamsServiceApiService.getAllPrograms();
-    this.programsMap = {};
-    for (const program of programs) {
-      this.programsMap[program.id] = program;
-    }
-    this.recipients = this.recipients.map((recipient) => {
-      recipient.name = recipient.name
-        ? recipient.name
-        : recipient.personAffectedSequence;
-      return recipient;
-    });
-
-    this.bannerText =
-      this.recipients.length > 1
-        ? this.translate.instant(
-            'page.iframe.recipient.multiple-recipients-found',
-            { paCount: this.recipients.length },
-          )
-        : this.translate.instant(
-            'page.iframe.recipient.single-recipient-found',
-          );
+    this.searchResultText = this.getSearchResultText(this.recipients.length);
   }
 
-  private async getPhoneNumberDetails(phoneNumber: string): Promise<Person[]> {
-    return await this.progamsServiceApiService.getPaByPhoneNr(phoneNumber);
+  private async createProgramsMap(): Promise<{
+    [id: number]: Program;
+  }> {
+    const programsMap = {};
+
+    const programs = await this.progamsServiceApiService.getAllPrograms();
+
+    for (const program of programs) {
+      const paTableAttributes =
+        await this.progamsServiceApiService.getPaTableAttributes(
+          program.id,
+          null,
+        );
+      program.paTableAttributes = paTableAttributes;
+      programsMap[program.id] = program;
+    }
+    return programsMap;
+  }
+
+  private async getPaDetailsByPhoneNumber(
+    phoneNumber: string,
+  ): Promise<Recipient[]> {
+    const paList =
+      await this.progamsServiceApiService.getPaByPhoneNr(phoneNumber);
+
+    if (!this.programsMap) {
+      this.programsMap = await this.createProgramsMap();
+    }
+
+    return paList.map((pa) => {
+      return {
+        ...pa,
+        name: pa.name ? pa.name : `PA #${pa.personAffectedSequence}`,
+        programTitle: this.translatableString.get(
+          this.programsMap[pa.programId].titlePortal,
+        ),
+        program: this.programsMap[pa.programId],
+      } as Recipient;
+    });
+  }
+
+  private getSearchResultText(resultCount: number): string {
+    if (resultCount === 1) {
+      return this.translate.instant(
+        'page.iframe.recipient.single-recipient-found',
+      );
+    }
+    return this.translate.instant(
+      'page.iframe.recipient.multiple-recipients-found',
+      { paCount: resultCount },
+    );
   }
 }

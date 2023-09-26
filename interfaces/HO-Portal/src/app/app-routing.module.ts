@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AppRoutes } from './app-routes.enum';
 import { AuthGuard } from './auth/auth.guard';
-import Permission from './auth/permission.enum';
 import { ProgramPhase } from './models/program.model';
 
 const routes: Routes = [
@@ -55,9 +54,6 @@ const routes: Routes = [
             (m) => m.DashboardPageModule,
           ),
         canActivate: [AuthGuard],
-        data: {
-          permissions: [Permission.ProgramMetricsREAD],
-        },
       },
       {
         path: 'aid-workers',
@@ -66,9 +62,6 @@ const routes: Routes = [
             (m) => m.AidWorkersPageModule,
           ),
         canActivate: [AuthGuard],
-        data: {
-          permissions: [Permission.AidWorkerProgramREAD],
-        },
       },
       {
         path: ProgramPhase.design,

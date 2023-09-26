@@ -149,6 +149,12 @@ export class ProgramEntity extends CascadeDeleteEntity {
   )
   public programFspConfiguration: ProgramFspConfigurationEntity[];
 
+  @Column({ nullable: true, default: null })
+  public monitoringDashboardUrl: string;
+
+  @Column({ nullable: true, default: null })
+  public evaluationDashboardUrl: string;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -186,6 +192,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return { type: AnswerTypes.numeric };
     } else if (name === Attributes.maxPayments) {
       return { type: AnswerTypes.numericNullable };
+    } else if (name === Attributes.referenceId) {
+      return { type: AnswerTypes.text };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
     } else if (name === Attributes.preferredLanguage) {

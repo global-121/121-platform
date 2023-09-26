@@ -9,7 +9,6 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
 import { StatusEnum } from './../../models/status.enum';
 @Component({
@@ -102,7 +101,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public hasVoucherSupport(fsp: string): boolean {
-    return PaymentUtils.hasVoucherSupport(fsp as FspName);
+    return PaymentUtils.hasVoucherSupport(fsp);
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {

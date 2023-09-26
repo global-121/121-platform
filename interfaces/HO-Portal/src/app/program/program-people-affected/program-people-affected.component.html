@@ -4,7 +4,6 @@
   <div>
     <ion-row>
       <select
-        data-cy="select-action"
         name="bulkActions"
         [title]="
           'page.program.program-people-affected.choose-action' | translate
@@ -33,7 +32,6 @@
         </ng-container>
       </select>
       <app-confirm-prompt
-        data-cy="apply-action"
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
         [subHeader]="
@@ -114,7 +112,6 @@
           [value]="filterRowsVisibleQuery"
           [clearInput]="true"
           class="filter-input"
-          data-cy="table-text-filter"
         >
         </ion-input>
       </ion-item>
@@ -129,7 +126,6 @@
       <ng-container *ngFor="let tableFilter of tableFilters">
         <app-table-filter
           *ngIf="showTableFilter(tableFilter.prop)"
-          [attr.data-cy]="'table-filter-' + tableFilter.prop"
           [buttonLabel]="
             'page.program.program-people-affected.filter-btn.btn-label.' +
               tableFilter.prop | translate
@@ -250,7 +246,6 @@
           *ngIf="canViewPersonalData"
           type="button"
           class="ion-no-padding popup-button"
-          data-cy="pa-edit-button"
           (click)="editPersonAffectedPopup(row, programId)"
           [attr.title]="
             ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
@@ -353,7 +348,6 @@
             ('page.program.program-people-affected.last-message.no-message'
               | translate).toLowerCase()
           "
-          data-cy="message-history-button"
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
             'is-error': hasMessageError(row.lastMessageStatus)
@@ -424,7 +418,6 @@
     >
       <ng-container *ngIf="value">
         <button
-          data-cy="payment-history-button"
           *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
