@@ -60,9 +60,9 @@ import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity'
 import {
   IntersolveVisaWalletEntity,
   IntersolveVisaWalletStatus,
-  maximumAmountOfSpentCentPerMonth,
 } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
 @Injectable()

@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
-import {
-  IntersolveVisaWalletEntity,
-  maximumAmountOfSpentCentPerMonth,
-} from '../intersolve-visa-wallet.entity';
+import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
+import { maximumAmountOfSpentCentPerMonth } from '../intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 
 @Injectable()

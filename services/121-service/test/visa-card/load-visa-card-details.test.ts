@@ -92,6 +92,7 @@ describe('Load Visa debit cards and details', () => {
         (a, b) => a.issuedDate - b.issuedDate,
       );
       for (const [index, wallet] of sortedWallets.entries()) {
+        console.log('wallet: ', wallet);
         if (index === 1) {
           expect(wallet.links.length).toBe(0);
         } else {
@@ -104,6 +105,8 @@ describe('Load Visa debit cards and details', () => {
         expect(wallet.status).not.toBe(WalletCardStatus121.Unknown);
         expect(wallet.issuedDate).toBeDefined();
         expect(wallet.lastUsedDate).toBeDefined();
+        expect(wallet.spentThisMonth).toBeDefined();
+        expect(wallet.remainingSpentThisMonth).toBeDefined();
       }
     }
   });
