@@ -17,7 +17,7 @@ import {
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 
-describe('Do payment to 1 PA', () => {
+describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = 1;
   const referenceIdAh = '63e62864557597e0d-AH';
   const payment = 1;
