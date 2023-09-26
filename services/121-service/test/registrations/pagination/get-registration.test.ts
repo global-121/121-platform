@@ -35,12 +35,7 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      const result = await importRegistrations(
-        programId,
-        [registration1],
-        accessToken,
-      );
-      console.log('result: ', result.body);
+      await importRegistrations(programId, [registration1], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
