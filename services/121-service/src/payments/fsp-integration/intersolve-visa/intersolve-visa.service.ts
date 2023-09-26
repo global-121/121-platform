@@ -428,7 +428,7 @@ export class IntersolveVisaService
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
   ): Promise<IntersolveCreateWalletResponseDto> {
-    const amountInCents = calculatedAmount * 100;
+    const amountInCents = Math.round(calculatedAmount * 100);
     const createWalletPayload = new IntersolveCreateWalletDto();
     createWalletPayload.reference = visaCustomer.holderId;
     if (calculatedAmount > 0) {
@@ -525,7 +525,7 @@ export class IntersolveVisaService
     referenceId: string,
     payment: number,
   ): Promise<IntersolveLoadResponseDto> {
-    const amountInCents = calculatedAmount * 100;
+    const amountInCents = Math.round(calculatedAmount * 100);
     const reference = uuid();
     const saleId = `${referenceId}-${payment}`;
 
