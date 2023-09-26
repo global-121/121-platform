@@ -28,7 +28,7 @@
 
 <ion-card
   *ngIf="program"
-  [routerLink]="['/program', program.id, 'dashboard']"
+  [routerLink]="['/program', program.id, program.phase]"
 >
   <ion-card-header>
     <ion-row class="ion-padding-horizontal">

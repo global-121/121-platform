@@ -71,7 +71,7 @@ export class ProgramController {
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
-      return this.programService.getCreateProgramDto(params.programId);
+      return this.programService.getCreateProgramDto(params.programId, userId);
     } else {
       return await this.programService.findOne(
         Number(params.programId),

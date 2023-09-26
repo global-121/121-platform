@@ -54,6 +54,10 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ nullable: true })
   public lastExternalUpdate: Date;
 
+  // This is euro cents
+  @Column({ default: 0 })
+  public spentThisMonth: number;
+
   @ManyToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,

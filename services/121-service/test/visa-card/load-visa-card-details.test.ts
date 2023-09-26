@@ -104,6 +104,7 @@ describe('Load Visa debit cards and details', () => {
         expect(wallet.status).not.toBe(WalletCardStatus121.Unknown);
         expect(wallet.issuedDate).toBeDefined();
         expect(wallet.lastUsedDate).toBeDefined();
+        expect(wallet.spentThisMonth).toBeDefined();
       }
     }
   });

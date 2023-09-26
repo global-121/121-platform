@@ -629,7 +629,7 @@
       "users-tab": "Users",
       "add-new-user": "Add new user",
       "roles-tab": "Roles",
-      "team-members": "Team members",
+      "total-users": "Users",
       "search": "Search...",
       "table-headers": {
         "username": "Username",
@@ -711,6 +711,7 @@
       "date-issued": "Issued",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
+      "spent-this-month": "Spent this month (maximum {{maxAmount}} {{currency}})",
       "pause-card": "Pause card",
       "unpause-card": "Unpause card",
       "issue-new-card": "Issue new card",
