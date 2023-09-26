@@ -40,7 +40,9 @@ export class RegistrationProfileComponent {
     ]);
   }
 
-  public fspHasPhysicalCardSupport(fspName: Person['financialServiceProvider']): boolean {
+  public fspHasPhysicalCardSupport(
+    fspName: Person['financialServiceProvider'],
+  ): boolean {
     return PaymentUtils.hasPhysicalCardSupport(fspName);
   }
 }
