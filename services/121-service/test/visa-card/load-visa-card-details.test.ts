@@ -92,7 +92,6 @@ describe('Load Visa debit cards and details', () => {
         (a, b) => a.issuedDate - b.issuedDate,
       );
       for (const [index, wallet] of sortedWallets.entries()) {
-        console.log('wallet: ', wallet);
         if (index === 1) {
           expect(wallet.links.length).toBe(0);
         } else {
