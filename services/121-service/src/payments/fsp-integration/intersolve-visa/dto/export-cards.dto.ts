@@ -14,6 +14,7 @@ export class ExportCardsDto {
   issuedDate: Date;
   lastUsedDate: Date;
   balance: number;
+  spentThisMonth: number;
 }
 
 export interface ExportWalletData {
@@ -30,4 +31,5 @@ export interface ExportWalletData {
   walletStatus: IntersolveVisaWalletStatus;
   cardStatus: IntersolveVisaCardStatus;
   explanation: string;
+  spentThisMonth: number;
 }

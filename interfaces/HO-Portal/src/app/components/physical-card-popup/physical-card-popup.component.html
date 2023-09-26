@@ -81,6 +81,26 @@
       </ion-label>
     </ion-item>
 
+    <!-- Spend this month -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.spent-this-month'
+            | translate
+              : {
+                  maxAmount: card?.maxToSpendPerMonth / 100,
+                  currency: currency
+                }
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong
+          >{{ card?.spentThisMonth / 100 | number: '1.2-2' }}
+          {{ currency }}</strong
+        >
+      </ion-label>
+    </ion-item>
+
     <!-- Issued on -->
     <ion-item>
       <ion-label class="card-key-value"

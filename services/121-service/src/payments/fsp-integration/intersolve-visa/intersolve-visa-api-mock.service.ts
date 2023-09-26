@@ -69,6 +69,9 @@ export class IntersolveVisaApiMockService {
     } else if (lastName.includes('mock-fail-get-card')) {
       // pass different holderId to be later used again
       res.data.data.id = lastName;
+    } else if (lastName.includes('mock-spent')) {
+      // pass different holderId to be later used again
+      res.data.data.id = lastName;
     } else if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
@@ -201,7 +204,11 @@ export class IntersolveVisaApiMockService {
       response.data.data.token.code = `${uuid()}mock-fail-load-balance`;
     }
     if (holderId.toLowerCase().includes('mock-fail-get-card')) {
-      // pass different token to be later used again in mock load-balance call
+      // pass different token to be later used again in mock get card call
+      response.data.data.token.code = `${uuid()}${holderId}`;
+    }
+    if (holderId.toLowerCase().includes('mock-spent')) {
+      // pass different token to be later used again in mock get transactions call
       response.data.data.token.code = `${uuid()}${holderId}`;
     }
 
@@ -433,6 +440,60 @@ export class IntersolveVisaApiMockService {
         },
       ],
     };
+    if (tokenCode.toLowerCase().includes('mock-spent')) {
+      response.data.data.push({
+        id: 1,
+        quantity: {
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+          value: -200,
+        },
+        createdAt: new Date(
+          new Date().setDate(new Date().getDate() - 1),
+        ).toISOString(),
+        creditor: {
+          tokenCode: 'random token code',
+        },
+        debtor: {
+          tokenCode: tokenCode,
+        },
+        reference: 'string',
+        type: 'RESERVATION',
+        description: 'string',
+        location: {
+          merchantCode: 'string',
+          merchantLocationCode: 'string',
+        },
+        originalTransactionId: 1,
+        paymentId: 1,
+      });
+
+      response.data.data.push({
+        id: 1,
+        quantity: {
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+          value: -300,
+        },
+        createdAt: new Date(
+          new Date().setMonth(new Date().getMonth() - 2),
+        ).toISOString(),
+        creditor: {
+          tokenCode: 'random token code',
+        },
+        debtor: {
+          tokenCode: tokenCode,
+        },
+        reference: 'string',
+        type: 'RESERVATION',
+        description: 'string',
+        location: {
+          merchantCode: 'string',
+          merchantLocationCode: 'string',
+        },
+        originalTransactionId: 1,
+        paymentId: 1,
+      });
+    }
+
     return Promise.resolve(response);
   }
 

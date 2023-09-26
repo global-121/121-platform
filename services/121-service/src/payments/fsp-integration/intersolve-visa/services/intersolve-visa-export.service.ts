@@ -28,6 +28,7 @@ export class IntersolveVisaExportService {
         'wallet."lastUsedDate" as "lastUsedDate"',
         'wallet.balance as balance',
         'wallet."lastExternalUpdate" as "lastExternalUpdate"',
+        'wallet."spentThisMonth" as "spentThisMonth"',
         'wallet.cardStatus as "cardStatus"',
         'wallet.walletStatus as "walletStatus"',
         'wallet."tokenBlocked" as "tokenBlocked"',
@@ -68,8 +69,9 @@ export class IntersolveVisaExportService {
         cardStatus121: statusInfo.walletStatus121,
         issuedDate: wallet.issuedDate,
         lastUsedDate: wallet.lastUsedDate,
-        balance: wallet.balance,
+        balance: wallet.balance / 100,
         explanation: statusInfo.explanation,
+        spentThisMonth: wallet.spentThisMonth / 100,
       });
     }
     return exportWalletData;
