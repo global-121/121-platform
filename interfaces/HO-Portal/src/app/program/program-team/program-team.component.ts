@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 import { ProgramTeamPopupComponent } from './program-team-popup/program-team-popup.component';
 
 @Component({
@@ -8,12 +9,20 @@ import { ProgramTeamPopupComponent } from './program-team-popup/program-team-pop
   styleUrls: ['./program-team.component.scss'],
 })
 export class ProgramTeamPage {
-  constructor(public modalController: ModalController) {}
+  public programId: number;
+
+  constructor(
+    public modalController: ModalController,
+    private route: ActivatedRoute,
+  ) {
+    this.programId = this.route.snapshot.params.id;
+  }
 
   public async programTeamPopup(e: Event) {
     event = e;
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: ProgramTeamPopupComponent,
+      componentProps: { programId: this.programId },
     });
     await modal.present();
   }
