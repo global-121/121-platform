@@ -345,8 +345,10 @@
         <button
           *ngIf="
             row.lastMessageStatus !==
-            ('page.program.program-people-affected.last-message.no-message'
-              | translate).toLowerCase()
+            (
+              'page.program.program-people-affected.last-message.no-message'
+              | translate
+            ).toLowerCase()
           "
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{

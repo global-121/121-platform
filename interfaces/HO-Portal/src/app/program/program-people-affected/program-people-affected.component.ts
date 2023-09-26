@@ -347,7 +347,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       default: [],
       selected: [],
       visible: [],
-    }
+    },
   };
 
   public tableFiltersDropdownOptions: { name: string; label: string }[] = [];
@@ -1627,9 +1627,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.tableFilterState.paStatus.selected.includes(pa.status),
     );
 
-    this.initialVisiblePeopleAffected = [
-      ...filteredPeopleAffectedByStatus,
-    ];
+    this.initialVisiblePeopleAffected = [...filteredPeopleAffectedByStatus];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
