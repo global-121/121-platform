@@ -10,7 +10,7 @@ export class PhysicalCard {
   statusLabel?: string;
   explanation?: string;
   spentThisMonth: number;
-  remainingSpentThisMonth: number;
+  maxToSpendPerMonth: number;
 
   issuedDate: string | Date;
   lastUsedDate: string | Date;

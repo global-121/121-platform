@@ -26,7 +26,7 @@ export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public spentThisMonth: number;
   @ApiProperty()
-  public remainingSpentThisMonth: number;
+  public maxToSpendPerMonth: number;
 }
 
 export class GetWalletsResponseDto {

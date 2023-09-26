@@ -32,5 +32,4 @@ export interface ExportWalletData {
   cardStatus: IntersolveVisaCardStatus;
   explanation: string;
   spentThisMonth: number;
-  remainingSpentThisMonth: number;
 }

@@ -660,8 +660,8 @@ export class IntersolveVisaService
       walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
       // 150 is the KYC required maxiumum one can spend per month
       // 15000 is in cents
-      walletDetailsResponse.remainingSpentThisMonth =
-        maximumAmountOfSpentCentPerMonth - wallet.spentThisMonth;
+      walletDetailsResponse.maxToSpendPerMonth =
+        maximumAmountOfSpentCentPerMonth;
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }
