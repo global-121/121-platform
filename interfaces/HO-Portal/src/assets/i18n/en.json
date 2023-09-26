@@ -269,7 +269,7 @@
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
-          "maxPayments": "Max payments",
+          "maxPayments": "Max. payments",
           "fspDisplayNamePortal": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
@@ -278,7 +278,7 @@
           "hasNote": "Has Note",
           "referenceId": "Reference ID",
           "note": "Note",
-          "paymentCount": "Total payments",
+          "paymentCount": "Payments so far",
           "paymentCountRemaining": "Remaining payments"
         },
         "language": {

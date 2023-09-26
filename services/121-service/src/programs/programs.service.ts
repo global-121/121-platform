@@ -120,9 +120,9 @@ export class ProgramService {
       'note',
       'fspDisplayNamePortal',
       'maxPayments',
-      'lastMessageStatus',
       'paymentCount',
       'paymentCountRemaining',
+      'lastMessageStatus',
     ];
 
     const paAttributesNameArray = program['paTableAttributes'].map(
