@@ -31,6 +31,7 @@ import { RegistrationEntity } from './registration.entity';
         'registrationProgramId',
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
+      .addSelect('registration.created', 'registrationCreated')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.programId', 'programId')
@@ -67,6 +68,9 @@ export class RegistrationViewEntity {
   public program: ProgramEntity;
   @Column()
   public programId: number;
+
+  @ViewColumn()
+  public registrationCreated: string;
 
   @ViewColumn()
   public referenceId: string;

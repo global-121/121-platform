@@ -91,7 +91,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private columnWidthPerType = {
     [AnswerType.Number]: 90,
-    [AnswerType.Date]: 150,
+    [AnswerType.Date]: 180,
     [AnswerType.PhoneNumber]: 130,
     [AnswerType.Text]: 150,
     [AnswerType.Enum]: 160,
@@ -464,104 +464,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         frozenLeft: this.platform.width() > 1280,
       },
       {
-        prop: 'imported',
+        prop: 'registrationCreated',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.imported',
+          'page.program.program-people-affected.column.registration-created',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'invited',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.invited',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'markedNoLongerEligible',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.no-longer-eligible',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'digitalIdCreated',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.digital-id-created',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'vulnerabilityAssessmentCompleted',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.vulnerability-assessment-completed',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'selectedForValidation',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.selected-for-validation',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        showIfNoValidation: false,
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'vulnerabilityAssessmentValidated',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.vulnerability-assessment-validated',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        showIfNoValidation: false,
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'included',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.included',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'rejected',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.rejected',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'inclusionEnded',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.inclusion-ended',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
       },
@@ -1010,26 +918,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     if (!source || source.length === 0) {
       return [];
     }
-    return source
-      .sort(this.sortPeopleByInclusionScore)
-      .map((person) => this.createPersonRow(person));
-  }
-
-  private sortPeopleByInclusionScore(a: Person, b: Person) {
-    if (a.inclusionScore === b.inclusionScore) {
-      return a.startedRegistrationDate > b.startedRegistrationDate ? -1 : 1;
-    } else {
-      return a.inclusionScore > b.inclusionScore ? -1 : 1;
-    }
+    return source.map((person) => this.createPersonRow(person));
   }
 
   private createPersonRow(person: Person): PersonRow {
-    // If a person has registered while no longer eligeble the registeredWhileNoLongerEligibleDate
-    // corresponds wuth the vulnerabilityAssessmentComplete time stamp
-    const vulnerabilityAssessmentCompleteTime = person.registeredDate
-      ? person.registeredDate
-      : person.registeredWhileNoLongerEligibleDate;
-
     let personRow: PersonRow = {
       id: person.registrationProgramId,
       referenceId: person.referenceId,
@@ -1039,57 +931,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       status: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
       ),
-      imported: person.importedDate
-        ? formatDate(person.importedDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      invited: person.invitedDate
-        ? formatDate(person.invitedDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      markedNoLongerEligible: person.noLongerEligibleDate
+      registrationCreated: person.registrationCreated
         ? formatDate(
-            person.noLongerEligibleDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      digitalIdCreated: person.startedRegistrationDate
-        ? formatDate(
-            person.startedRegistrationDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      vulnerabilityAssessmentCompleted: vulnerabilityAssessmentCompleteTime
-        ? formatDate(
-            vulnerabilityAssessmentCompleteTime,
+            person.registrationCreated,
             DateFormat.dayAndTime,
             this.locale,
           )
         : null,
       inclusionScore: person.inclusionScore,
-      selectedForValidation: person.selectedForValidationDate
-        ? formatDate(
-            person.selectedForValidationDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      vulnerabilityAssessmentValidated: person.validationDate
-        ? formatDate(person.validationDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      included: person.inclusionDate
-        ? formatDate(person.inclusionDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      rejected: person.rejectionDate
-        ? formatDate(person.rejectionDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      inclusionEnded: person.inclusionEndDate
-        ? formatDate(
-            person.inclusionEndDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
             'preferredLanguage',

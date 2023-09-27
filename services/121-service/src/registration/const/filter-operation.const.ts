@@ -18,6 +18,7 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
     maxLimit: 10000,
     sortableColumns: [
       'id',
+      'registrationCreated',
       'status',
       'referenceId',
       'phoneNumber',
