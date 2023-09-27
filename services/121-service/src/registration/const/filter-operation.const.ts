@@ -24,8 +24,6 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'note',
-      'noteUpdated',
       'financialServiceProvider',
       'registrationProgramId',
       'personAffectedSequence',
