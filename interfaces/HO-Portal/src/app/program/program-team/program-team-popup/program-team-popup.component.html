@@ -32,17 +32,36 @@
     </ion-row>
     <ion-row>
       <ion-searchbar
+        [(ngModel)]="searchQuery"
         (ionInput)="search($event)"
         [debounce]="1000"
+        id="search-trigger"
         placeholder="{{ 'page.program-team.popup.team-member-placeholder' | translate }}"
+        search-icon=“undefined”
       >
-    </ion-searchbar>
-    <ion-list>
-      <ion-item *ngFor="let user of searchResults">
-        {{ user.user_username }}
-      </ion-item>
-    </ion-list>
+      </ion-searchbar>
     </ion-row>
+    <ion-popover
+      trigger="search-trigger"
+      [dismissOnSelect]="true"
+      show-backdrop="false"
+      backdrop-dismiss="false"
+      size="cover"
+    >
+      <ng-template>
+        <ion-content>
+          <ion-list>
+            <ion-item
+              [button]="true"
+              *ngFor="let user of searchResults"
+              (click)="updateSearchbarValue(user.user_username)"
+            >
+              {{ user.user_username }}
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
     <ion-row>
       <ion-label class="label">{{
         'page.program-team.popup.role' | translate
