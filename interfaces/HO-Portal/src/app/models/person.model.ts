@@ -49,9 +49,9 @@ export class PersonRow {
   id: number;
   referenceId: string;
   checkboxVisible: boolean;
-  pa: string; // Display label
-  status: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
-  statusLabel: string;
+  registrationProgramId: string; // Display label
+  registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  status: string;
   hasNote: boolean;
   hasPhoneNumber?: boolean;
   digitalIdCreated?: string;
@@ -68,7 +68,7 @@ export class PersonRow {
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
-  fspDisplayNamePortal?: string | null;
+  financialServiceProvider?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
   paymentCount?: number;

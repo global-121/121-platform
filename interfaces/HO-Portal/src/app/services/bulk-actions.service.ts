@@ -24,7 +24,7 @@ export class BulkActionsService {
     person: PersonRow,
     requiredStates: RegistrationStatus[],
   ): boolean {
-    return requiredStates.includes(person.status);
+    return requiredStates.includes(person.registrationStatus);
   }
 
   public updateCheckbox(

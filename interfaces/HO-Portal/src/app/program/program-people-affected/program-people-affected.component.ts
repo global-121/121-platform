@@ -448,12 +448,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.column.preferredLanguage',
         ),
         ...this.columnDefaults,
+        sortable: false, // TODO: disabled, because sorting in the backend is does on values (nl/en) instead of frontend labels (Dutch/English)
         permissions: [Permission.RegistrationPersonalREAD],
         minWidth: this.columnWidthPerType[AnswerType.Text],
         width: this.columnWidthPerType[AnswerType.Text],
       },
       {
-        prop: 'statusLabel',
+        prop: 'status',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
         ),
@@ -584,7 +585,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 150,
       },
       {
-        prop: 'fspDisplayNamePortal',
+        prop: 'financialServiceProvider',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fspDisplayNamePortal',
         ),
@@ -922,6 +923,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         'page.program.program-people-affected.column.payment-history',
       ),
       ...this.columnDefaults,
+      sortable: false,
       phases: [ProgramPhase.payment],
       permissions: [Permission.RegistrationPersonalREAD],
       minWidth: 300,
@@ -1032,9 +1034,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
-      pa: person.personAffectedSequence,
-      status: person.status,
-      statusLabel: this.translate.instant(
+      registrationProgramId: person.personAffectedSequence,
+      registrationStatus: person.status,
+      status: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
       ),
       imported: person.importedDate
@@ -1113,7 +1115,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           }`
         : '',
       fsp: person.financialServiceProvider,
-      fspDisplayNamePortal: person.fspDisplayNamePortal,
+      financialServiceProvider: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
@@ -1624,7 +1626,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private updateVisiblePeopleAffectedByFilter() {
     const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
-      this.tableFilterState.paStatus.selected.includes(pa.status),
+      this.tableFilterState.paStatus.selected.includes(pa.registrationStatus),
     );
 
     this.initialVisiblePeopleAffected = [...filteredPeopleAffectedByStatus];
@@ -1724,5 +1726,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     return;
+  }
+
+  public async onSort(event) {
+    this.tableService?.setSortBy(event.sorts[0].prop, event.sorts[0].dir);
+    this.tableService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+    await this.getPage();
   }
 }
