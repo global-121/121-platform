@@ -195,6 +195,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       '../../src/scripts/sql/mock-update-payment-count.sql',
     );
     await this.dataSource.query(queryUpdatePaymentCount);
+
+    console.log(`**Updating latest transactions**`);
+    const queryUpdateLatestTransaction = readSqlFile(
+      '../../src/scripts/sql/mock-payment-transactions.sql',
+    );
+    await this.dataSource.query(queryUpdateLatestTransaction);
   }
 
   private async multiplyMessages(powerNr: number): Promise<void> {

@@ -10,6 +10,7 @@ export class TransactionEntity extends Base121Entity {
   public amount: number;
 
   @Column()
+  @Index()
   public status: string;
 
   @Column({ nullable: true })

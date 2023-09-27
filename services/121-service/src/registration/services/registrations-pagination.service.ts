@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/permission.enum';
 import { UserEntity } from '../../user/user.entity';
 import {
@@ -66,7 +67,9 @@ export class RegistrationsPaginationService {
 
     let queryBuilder = this.registrationViewRepository
       .createQueryBuilder('registration')
-      .where('"programId" = :programId', { programId: programId });
+      .where('"registration"."programId" = :programId', {
+        programId: programId,
+      });
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
@@ -96,11 +99,15 @@ export class RegistrationsPaginationService {
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
+    queryBuilder = this.addPaymentFilter(queryBuilder, query);
+
+    console.time('paginate');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfigCopy,
     );
+    console.timeEnd('paginate');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
@@ -395,5 +402,47 @@ export class RegistrationsPaginationService {
       fullnameConcat.push(registrationRow[nameColumn]);
     }
     return fullnameConcat.join(' ');
+  }
+
+  private addPaymentFilter(
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    paginateQuery: PaginateQuery,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    const filterOptions = [
+      {
+        key: 'successPayment',
+        alias: 'latestTransactionsSuccess',
+        status: StatusEnum.success,
+      },
+      {
+        key: 'failedPayment',
+        alias: 'latestTransactionsFailed',
+        status: StatusEnum.error,
+      },
+      {
+        key: 'waitingPayment',
+        alias: 'latestTransactionsWaiting',
+        status: StatusEnum.waiting,
+      },
+    ];
+
+    for (const option of filterOptions) {
+      if (
+        paginateQuery.filter &&
+        Object.keys(paginateQuery.filter).includes(option.key)
+      ) {
+        const paymentNumber = paginateQuery.filter[option.key];
+        queryBuilder.innerJoin('registration.latestTransactions', option.alias);
+        queryBuilder.innerJoin(
+          `${option.alias}.transaction`,
+          `transaction${option.alias}`,
+          `"transaction${option.alias}"."status" = '${option.status}' AND "transaction${option.alias}"."payment" = :paymentNumber`,
+          {
+            paymentNumber: paymentNumber,
+          },
+        );
+      }
+    }
+    return queryBuilder;
   }
 }
