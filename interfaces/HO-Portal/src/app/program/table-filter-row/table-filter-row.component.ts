@@ -10,6 +10,7 @@ import { FilterService, PaginationFilter } from '../../services/filter.service';
 export class TableFilterRowComponent implements OnInit {
   @Input()
   public isLoading: boolean;
+
   @Input()
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
 
@@ -20,6 +21,7 @@ export class TableFilterRowComponent implements OnInit {
   public filterRowsVisibleQuery: string;
 
   constructor(private filterService: FilterService) {}
+
   ngOnInit(): void {
     this.textFilter = this.filterService.getTextFilterSubscription();
   }

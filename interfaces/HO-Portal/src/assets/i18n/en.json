@@ -485,6 +485,11 @@
           "title": "Payment history"
         }
       },
+      "table-filter-row": {
+        "select-column-to-filter": "Select column to filter",
+        "apply-filter": "Apply Filter",
+        "remove-filter": "Remove filter"
+      },
       "bulk-import": {
         "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
         "import-result": {

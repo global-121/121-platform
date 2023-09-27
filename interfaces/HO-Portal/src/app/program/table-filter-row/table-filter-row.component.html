@@ -18,26 +18,32 @@
     style="margin: 0 16px 0 16px"
     color="black"
   ></ion-icon>
+
   <ion-spinner
     *ngIf="isLoading"
     size="large"
     style="margin: 0 16px 0 16px"
-    color="black"
+    color="medium"
   ></ion-spinner>
+
   <ion-select
+    *ngIf="!isLoading"
     interface="popover"
     [value]="undefined"
     [(ngModel)]="textFilterOption"
-    placeholder="Select column to filter"
+    [placeholder]="
+      'page.program.table-filter-row.select-column-to-filter' | translate
+    "
     class="table--text-filter--select ion-margin-end"
   >
-    <ion-select-option>{{ undefined }}</ion-select-option>
     <ion-select-option
       *ngFor="let filterOption of tableFiltersPerColumn"
-      value="{{ filterOption.name }}"
-      >{{ filterOption.label }}</ion-select-option
+      [value]="filterOption.name"
     >
+      {{ filterOption.label }}
+    </ion-select-option>
   </ion-select>
+
   <ng-container *ngIf="showInput()">
     <ion-input
       [placeholder]="
@@ -53,16 +59,17 @@
       [(ngModel)]="filterRowsVisibleQuery"
       [clearInput]="true"
       class="table--text-filter--input"
-      data-cy="table-text-filter"
       [disabled]="isLoading"
     >
     </ion-input>
+
     <ion-button
       fill="outline"
       [disabled]="disableApplyButton()"
       (click)="applyFilter()"
-      >Apply Filter</ion-button
     >
+      {{ 'page.program.table-filter-row.apply-filter' | translate }}
+    </ion-button>
   </ng-container>
 </div>
 <div
@@ -73,13 +80,31 @@
     *ngFor="let filter of textFilter | async"
     size="small"
   >
-    <ion-label
-      >{{ filter.column + ': ' }}<strong>{{ filter.value }}</strong></ion-label
-    >
-    <ion-icon
-      name="close"
+    <ion-label>
+      {{
+        'page.program.program-people-affected.column.' + filter.name
+          | translate
+      }}:
+      <strong>{{ filter.value }}</strong>
+    </ion-label>
+
+    <ion-button
+      fill="clear"
       size="small"
-      (click)="removeTextFilter(filter.column)"
-    ></ion-icon>
+      color="medium"
+      class="ion-no-margin ion-no-padding"
+      (click)="removeTextFilter(filter.name)"
+      [attr.aria-label]="
+        'page.program.table-filter-row.remove-filter' | translate
+      "
+      [attr.title]="'page.program.table-filter-row.remove-filter' | translate"
+    >
+      <ion-icon
+        name="close"
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+      ></ion-icon>
+    </ion-button>
   </ion-chip>
 </div>
