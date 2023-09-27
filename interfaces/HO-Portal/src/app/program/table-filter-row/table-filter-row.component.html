@@ -7,24 +7,20 @@
   "
   class="ion-align-items-center ion-margin-vertical"
 >
-  <ion-icon
-    *ngIf="!isLoading"
-    name="funnel"
-    [attr.title]="
-      'page.program.program-people-affected.filter-placeholder' | translate
-    "
-    aria-hidden="true"
-    size="large"
-    style="margin: 0 16px 0 16px"
-    color="black"
-  ></ion-icon>
-
   <ion-spinner
     *ngIf="isLoading"
     size="large"
     style="margin: 0 16px 0 16px"
     color="medium"
   ></ion-spinner>
+
+  <ion-icon
+    *ngIf="!isLoading"
+    name="funnel"
+    color="black"
+    aria-hidden="true"
+    style="margin: 0 16px 0 16px"
+  ></ion-icon>
 
   <ion-select
     *ngIf="!isLoading"
