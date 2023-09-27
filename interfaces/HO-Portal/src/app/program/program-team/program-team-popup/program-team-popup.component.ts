@@ -22,35 +22,31 @@ import { FormsModule } from '@angular/forms';
 export class ProgramTeamPopupComponent {
   programId;
   searchQuery: string = '';
+  searchResults: any[] = []; //TODO Should NOT be "any"
+  rolesList: any[] = []; //TODO Should NOT be "any"
 
   constructor(
     private modalController: ModalController,
     private programsServiceApiService: ProgramsServiceApiService,
-    // private popoverController: PopoverController
   ){}
-
-  searchResults: any[] = []; //TODO Should NOT be "any"
 
   public async search(event: CustomEvent) {
     const searchTerm = event.detail.value.toLowerCase();
     this.searchResults = await this.programsServiceApiService.getUsersByName(this.programId, searchTerm);
-    // this.showPopoverOnSearch();
   }
 
   updateSearchbarValue(selectedItem: string) {
     this.searchQuery = selectedItem;
   }
 
-  // async showPopoverOnSearch() {
-  //   // Create and display the popover when a search is performed
-  //   const popover = await this.popoverController.create({
-  //     component: ProgramTeamPopupComponent,
-  //     translucent: true,
-  //   });
+   public async getRoles() {
+    this.rolesList = await this.programsServiceApiService.getRoles();
+    console.dir(this.rolesList);
+  }
 
-  //   return await popover.present();
-  // }
-
+  ngOnInit(){
+    this.getRoles() ;
+  }
 
   public closeModal() {
     this.modalController.dismiss();

@@ -68,7 +68,19 @@
       }}</ion-label>
     </ion-row>
     <ion-row>
-      <select class="dropdown"></select>
+      <ion-select
+        placeholder="Assign a role(s)"
+        [multiple]="true"
+        interface="popover"
+        [interfaceOptions]="{cssClass: 'dropdown'}"
+      >
+        <ion-select-option
+          *ngFor="let role of rolesList"
+          value="{{ role.role }}"
+        >
+        {{ role.label }}
+        </ion-select-option>
+      </ion-select>
     </ion-row>
   </ion-grid>
 </ion-content>
