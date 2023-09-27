@@ -1180,13 +1180,13 @@ export class RegistrationsService {
   }
 
   public async updateRegistrationStatusBatch(
-    referenceIdsDto: ReferenceIdsDto,
+    referenceIds: string[],
     registrationStatus: RegistrationStatusEnum,
     message?: string,
     messageContentType?: MessageContentType,
   ): Promise<void> {
     const errors = [];
-    for (const referenceId of referenceIdsDto.referenceIds) {
+    for (const referenceId of referenceIds) {
       const registrationToUpdate = await this.registrationRepository.findOne({
         where: { referenceId: referenceId },
       });
@@ -1206,7 +1206,7 @@ export class RegistrationsService {
     if (errors.length === 0) {
       let programId;
       let program;
-      for (const referenceId of referenceIdsDto.referenceIds) {
+      for (const referenceId of referenceIds) {
         const updatedRegistration = await this.setRegistrationStatus(
           referenceId,
           registrationStatus,
@@ -1474,7 +1474,7 @@ export class RegistrationsService {
   public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
     await this.updateRegistrationStatusBatch(
-      referenceIdsDto,
+      referenceIdsDto.referenceIds,
       RegistrationStatusEnum.deleted,
     );
 

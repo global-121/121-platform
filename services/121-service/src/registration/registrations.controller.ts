@@ -49,7 +49,7 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { MessageDto } from './dto/message.dto';
+import { StatusUpdateDto } from './dto/message.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
@@ -420,115 +420,60 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
-  @ApiOperation({ summary: 'Mark set of PAs for validation' })
+  @ApiOperation({ summary: 'Update registration status of set of PAs' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/select-validation')
-  public async selectForValidation(
-    @Body() referenceIdsData: ReferenceIdsDto,
+  @ApiQuery({ name: 'registrationStatus', required: true, type: 'string' })
+  @Post('programs/:programId/registrations/status')
+  public async updateRegistrationStatusBatch(
+    @Query('registrationStatus') registrationStatus: string,
+    @Body() statusUpdateDto: StatusUpdateDto,
+    @User('id') userId: number,
+    @Param('programId') programId: number,
   ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.selectedForValidation,
-    );
-  }
+    let permission: PermissionEnum;
+    let messageContentType: MessageContentType;
+    switch (registrationStatus) {
+      case RegistrationStatusEnum.included:
+        permission = PermissionEnum.RegistrationStatusIncludedUPDATE;
+        messageContentType = MessageContentType.included;
+      case RegistrationStatusEnum.rejected:
+        permission = PermissionEnum.RegistrationStatusRejectedUPDATE;
+        messageContentType = MessageContentType.rejected;
+      case RegistrationStatusEnum.inclusionEnded:
+        permission = PermissionEnum.RegistrationStatusInclusionEndedUPDATE;
+        messageContentType = MessageContentType.inclusionEnded;
+      case RegistrationStatusEnum.paused:
+        permission = PermissionEnum.RegistrationStatusPausedUPDATE;
+        messageContentType = MessageContentType.paused;
+      case RegistrationStatusEnum.invited:
+        permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
+        messageContentType = MessageContentType.invited;
+      case RegistrationStatusEnum.selectedForValidation:
+        permission =
+          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE;
+      case RegistrationStatusEnum.noLongerEligible:
+        permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
+    }
+    if (!permission) {
+      const errors = `Unknown status ${registrationStatus}`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+    const hasPermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        permission,
+      );
+    if (!hasPermission) {
+      const errors = `User does not have permission to update registration status to included`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
 
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
-  @ApiOperation({ summary: 'Mark set of PAs as no longer eligible' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/no-longer-eligible')
-  public async markNoLongerEligible(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.noLongerEligible,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
-  @ApiOperation({ summary: 'Include set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/include')
-  public async include(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.included,
-      messageData.message,
-      MessageContentType.included,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusInclusionEndedUPDATE)
-  @ApiOperation({ summary: 'End inclusion of set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/end')
-  public async end(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.inclusionEnded,
-      messageData.message,
-      MessageContentType.inclusionEnded,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
-  @ApiOperation({ summary: 'Reject set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/reject')
-  public async reject(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.rejected,
-      messageData.message,
-      MessageContentType.rejected,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
-  @ApiOperation({ summary: 'Invite set of PAs for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/invite')
-  public async invite(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.invited,
-      messageData.message,
-      MessageContentType.invited,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusPausedUPDATE)
-  @ApiOperation({ summary: 'Pause set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/pause')
-  public async pause(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.paused,
-      messageData.message,
-      MessageContentType.paused,
+      statusUpdateDto.referenceIds,
+      registrationStatus as RegistrationStatusEnum,
+      statusUpdateDto.message,
+      messageContentType,
     );
   }
 

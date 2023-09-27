@@ -577,7 +577,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${action}`,
+      `/programs/${programId}/registrations/status/${action}`,
       {
         referenceIds,
         message,
@@ -589,14 +589,22 @@ export class ProgramsServiceApiService {
     programId: number | string,
     referenceIds: string[],
   ): Promise<any> {
-    return this.updatePaStatus('select-validation', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.selectedForValidation,
+      programId,
+      referenceIds,
+    );
   }
 
   markNoLongerEligible(
     programId: number | string,
     referenceIds: string[],
   ): Promise<any> {
-    return this.updatePaStatus('no-longer-eligible', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.noLongerEligible,
+      programId,
+      referenceIds,
+    );
   }
 
   invite(
@@ -604,7 +612,12 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('invite', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.invited,
+      programId,
+      referenceIds,
+      message,
+    );
   }
 
   include(
@@ -612,7 +625,12 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('include', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.included,
+      programId,
+      referenceIds,
+      message,
+    );
   }
 
   end(
@@ -620,7 +638,12 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('end', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.inclusionEnded,
+      programId,
+      referenceIds,
+      message,
+    );
   }
 
   reject(
@@ -628,7 +651,12 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('reject', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.rejected,
+      programId,
+      referenceIds,
+      message,
+    );
   }
 
   pause(
@@ -636,7 +664,12 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('pause', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.paused,
+      programId,
+      referenceIds,
+      message,
+    );
   }
 
   sendMessage(
