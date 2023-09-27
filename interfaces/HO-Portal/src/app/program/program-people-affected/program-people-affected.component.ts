@@ -954,11 +954,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     { name: string; label: string }[]
   > {
     const tableFiltersPerColumn = [];
+
     for (const columnName of this.program.filterableAttributes) {
       const column = this.program.paTableAttributes.find(
         (column) => column.name === columnName.name,
       );
       let label: string;
+
       if (column && column.shortLabel) {
         label = this.translatableStringService.get(column.shortLabel);
       } else {
@@ -966,6 +968,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           `page.program.program-people-affected.column.${columnName.name}`,
         );
       }
+
       tableFiltersPerColumn.push({ name: columnName.name, label: label });
     }
 
