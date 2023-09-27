@@ -1,14 +1,16 @@
 {
   "published": false,
-  "validation": true,
+  "validation": false,
   "phase": "design",
   "location": "Ethiopia",
   "ngo": "EKHCDC",
   "titlePortal": {
-    "en": "DRA Joint Response 2023 Ethiopia - EKHCDC"
+    "en": "DRA Joint Response 2023 Ethiopia - EKHCDC",
+    "et_AM": "የዲአርኤ የጋራ ምላሽ 2023 ኢትዮጵያ-የኢትዮጵያ ቃለህይወት ቤትክርስቲያን የልማት ኮሚሽን"
   },
   "titlePaApp": {
-    "en": "DRA Joint Response 2023 Ethiopia - EKHCDC"
+    "en": "DRA Joint Response 2023 Ethiopia - EKHCDC",
+    "et_AM": "የዲአርኤ የጋራ ምላሽ 2023 ኢትዮጵያ-የኢትዮጵያ ቃለህይወት ቤትክርስቲያን የልማት ኮሚሽን"
   },
   "description": {
     "en": ""
@@ -33,15 +35,19 @@
   "notifications": {
     "en": {
       "registered": "This is a message from EKHCDC.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+    },
+    "et_AM": {
+      "registered": "ይህ መልክት ከኢትዮጵያ ቃለህይወት ቤትክርስቲያን የልማት ኮሚሽን የተላለፈ ነው፡፡ስለተመዘገቡ እናመስግናለን፡፡በፕሮግራሙ መካተቶትን በአጭር መልእክት እናሳውቆታለን፡፡"
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "name",
+      "name": "FullName",
       "label": {
-        "en": "What is the full name of the head of your household"
+        "en": "What is the full name of the head of your household",
+        "et_AM": "የቤተሰብህ/ሽ ራስ ስም ማን ይባላል?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -52,17 +58,19 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Name"
+        "en": "Name",
+        "et_AM": "ስም"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "phone",
+      "name": "phoneNumber",
       "label": {
-        "en": "What is your phonenumber?"
+        "en": "What is your phonenumber?",
+        "et_AM": "ስልክ ቁጥርህ/ሽ ስንት ነው?"
       },
-      "answerType": "numeric",
+      "answerType": "tel",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -72,7 +80,8 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "Phone number"
+        "en": "Phone number",
+        "et_AM": "ስልክ ቁጥር"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -80,9 +89,10 @@
     {
       "name": "idNumber",
       "label": {
-        "en": "ID card number"
+        "en": "ID card number",
+        "et_AM": "መታውቂያ ቁጥርህ/ሽ ስንት ነዉ?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -92,7 +102,8 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "ID Card number"
+        "en": "ID Card number",
+        "et_AM": "የመታውቂያ ቁጥር"
       },
       "duplicateCheck": true,
       "placeholder": null
@@ -100,7 +111,8 @@
     {
       "name": "age",
       "label": {
-        "en": "What is your age?"
+        "en": "What is your age?",
+        "et_AM": "እድሜህ/ሽ ስንት ነዉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -112,7 +124,8 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "Age"
+        "en": "Age",
+        "et_AM": "እድሜ"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -120,7 +133,8 @@
     {
       "name": "gender",
       "label": {
-        "en": "Gender"
+        "en": "Gender",
+        "et_AM": "ጾታ"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -128,13 +142,15 @@
         {
           "option": "male",
           "label": {
-            "en": "Male"
+            "en": "Male",
+            "et_AM": "ወንድ"
           }
         },
         {
           "option": "female",
           "label": {
-            "en": "Female"
+            "en": "Female",
+            "et_AM": "ሴት"
           }
         }
       ],
@@ -145,7 +161,8 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "Gender"
+        "en": "Gender",
+        "et_AM": "ጾታ"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -153,7 +170,8 @@
     {
       "name": "howManyFemale",
       "label": {
-        "en": "How many family members are female?"
+        "en": "How many family members are female?",
+        "et_AM": "ከቤተሰብህ/ሽ አባላት ስንቶቹ ሴት ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -165,7 +183,8 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many family members are female?"
+        "en": "How many female?",
+        "et_AM": "ሴት አባላት"
       },
       "duplicateCheck": false,
       "placeholder": null
@@ -173,7 +192,8 @@
     {
       "name": "howManyMale",
       "label": {
-        "en": "How many family members are male?"
+        "en": "How many family members are male?",
+        "et_AM": "ከቤተሰብህ/ሽ አባላት ስንቶቹ ወንድ ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -185,15 +205,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many family members are male?"
+        "en": "How many male?",
+        "et_AM": "ወንድ አባላት"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "howManyHousehold",
+      "name": "totalFamilyMembers",
       "label": {
-        "en": "What is the total number of family members in your household?"
+        "en": "What is the total number of family members in your household?",
+        "et_AM": "በቤተሰብዎ ውስጥ ያሉት የቤተሰብ አባላት ጠቅላላ ቍጥር ስንት ነው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -205,15 +227,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "What is the total number of family members in your household?"
+        "en": "Total family members",
+        "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "femaleUnder18",
+      "name": "howManyFemaleUnder18",
       "label": {
-        "en": "How many female family members are under 18 years old?"
+        "en": "How many female family members are under 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ውስጥ ዕድሜያቸው ከ18 ዓመት በታች የሆኑ ሴቶች ስንት ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -225,15 +249,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many female family members are under 18 years old?"
+        "en": "Female under 18",
+        "et_AM": "ሴት ከ18 ዓመት በታች"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "maleUnder18",
+      "name": "howManyMaleUnder18",
       "label": {
-        "en": "How many male family members are under 18 years old?"
+        "en": "How many male family members are under 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ውስጥ ዕድሜያቸው ከ18 ዓመት በታች የሆኑ ወንዶች ስንት ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -245,15 +271,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many male family members are under 18 years old?"
+        "en": "Male under 18",
+        "et_AM": "ወንድ ከ18 ዓመት በታች"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "femaleOver18",
+      "name": "howManyFemaleOver18",
       "label": {
-        "en": "How many female family members are over 18 years old?"
+        "en": "How many female family members are over 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ውስጥ ዕድሜያቸው ከ18 ዓመት በላይ የሆኑ ሴቶች ስንት ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -265,15 +293,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many female family members are over 18 years old?"
+        "en": "Female over 18",
+        "et_AM": "ሴት ከ18 ዓመት በላይ"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "maleOver18",
+      "name": "howManyMaleOver18",
       "label": {
-        "en": "How many male family members are over 18 years old?"
+        "en": "How many male family members are over 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ውስጥ ዕድሜያቸው ከ18 ዓመት በላይ የሆኑ ወንዶች ስንት ናቸው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -285,15 +315,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many male family members are over 18 years old?"
+        "en": "Male over 18",
+        "et_AM": "ወንድ ከ18 ዓመት በላይ"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "femaleDisabilityUnder18",
+      "name": "howManyFemaleDisabilityUnder18",
       "label": {
-        "en": "How many female family members with a disability under 18 years old?"
+        "en": "How many female family members with a disability under 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ዕድሜያቸው ከ18 ዓመት በታች የሆኑ ስንት የአካል ጉዳተኛ ሴት የቤተሰብ አባላት አሉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -305,15 +337,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many female family members with a disability under 18 years old?"
+        "en": "Female with disability under 18",
+        "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "maleDisabilityUnder18",
+      "name": "howManyMaleDisabilityUnder18",
       "label": {
-        "en": "How many male family members with a disability under 18 years old?"
+        "en": "How many male family members with a disability under 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ዕድሜያቸው ከ18 ዓመት በታች የሆኑ ስንት የአካል ጉዳተኛ ወንድ የቤተሰብ አባላት አሉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -325,15 +359,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many male family members with a disability under 18 years old?"
+        "en": "Male with disability under 18",
+        "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "femaleDisabilityOver18",
+      "name": "howManyFemaleDisabilityOver18",
       "label": {
-        "en": "How many female family members with a disability over 18 years old?"
+        "en": "How many female family members with a disability over 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ዕድሜያቸው ከ18 ዓመት በላይ የሆኑ ስንት የአካል ጉዳተኛ ሴት የቤተሰብ አባላት አሉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -345,15 +381,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many female family members with a disability over 18 years old?"
+        "en": "Female with disability over 18",
+        "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
       "duplicateCheck": false,
       "placeholder": null
     },
     {
-      "name": "maleDisabilityOver18",
+      "name": "howManyMaleDisabilityOver18",
       "label": {
-        "en": "How many male family members with a disability over 18 years old?"
+        "en": "How many male family members with a disability over 18 years old?",
+        "et_AM": "በቤተሰብህ/ሽ ዕድሜያቸው ከ18 ዓመት በላይ የሆኑ ስንት የአካል ጉዳተኛ ወንድ የቤተሰብ አባላት አሉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -365,16 +403,17 @@
       "editableInPortal": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "shortLabel": {
-        "en": "How many male family members with a disability over 18 years old?"
+        "en": "Male with disability over 18",
+        "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
       "duplicateCheck": false,
       "placeholder": null
     }
   ],
   "aboutProgram": {
-    "en": "DRA Joint Response Ethiopia 2023"
+    "en": "DRA Joint Response Ethiopia 2023 - EKHCDC"
   },
-  "fullnameNamingConvention": ["name"],
-  "languages": ["en"],
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en", "et_AM"],
   "enableMaxPayments": true
 }

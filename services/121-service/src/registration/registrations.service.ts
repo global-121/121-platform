@@ -6,11 +6,11 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
+import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
-import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
@@ -104,6 +104,7 @@ export class RegistrationsService {
     private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
+    private readonly lastMessageStatusService: LastMessageStatusService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -198,6 +199,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
@@ -221,6 +223,9 @@ export class RegistrationsService {
         result = currentStatus !== RegistrationStatusEnum.deleted;
         break;
       case RegistrationStatusEnum.completed:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.paused:
         result = [RegistrationStatusEnum.included].includes(currentStatus);
         break;
     }
@@ -534,6 +539,10 @@ export class RegistrationsService {
         message.registration = updatedRegistration;
       }
       await this.twilioMessageRepository.save(twilioMessages);
+      // Update the last message status of the new registration
+      await this.lastMessageStatusService.updateLastMessageStatus(
+        twilioMessages[0].sid,
+      );
     }
 
     // .. then delete the imported registration
@@ -1023,6 +1032,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
         return RegistrationStatusTimestampField.completedDate;
+      case RegistrationStatusEnum.paused:
+        return RegistrationStatusTimestampField.pausedDate;
     }
   }
 
@@ -1127,7 +1138,9 @@ export class RegistrationsService {
     registration: RegistrationEntity,
     attribute: Attributes | string,
   ): Promise<void> {
-    if (registration.fsp?.fsp === FspName.intersolveVisa) {
+    const registrationHasVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    if (registrationHasVisaCustomer) {
       try {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
@@ -1135,10 +1148,13 @@ export class RegistrationsService {
           attribute,
         );
       } catch (error) {
-        // don't throw error if the reason is that the customer doesn't exist yet
-        if (!error.response.errors.includes(VisaErrorCodes.NoCustomerYet)) {
-          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
+        if (error?.response?.errors?.length > 0) {
+          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors.join(
+            ', ',
+          )}. The update in 121 did succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          throw error;
         }
       }
     }
@@ -1240,6 +1256,11 @@ export class RegistrationsService {
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
+    const transactionPermissionsProgramIds =
+      await this.getProgramIdsUserHasPermission(
+        userId,
+        PermissionEnum.PaymentTransactionREAD,
+      );
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1290,7 +1311,9 @@ export class RegistrationsService {
           await this.getRegistrations(
             uniqueRegistration.programId,
             true,
-            false,
+            transactionPermissionsProgramIds.includes(
+              uniqueRegistration.programId,
+            ),
             true,
             uniqueRegistration.referenceId,
           )

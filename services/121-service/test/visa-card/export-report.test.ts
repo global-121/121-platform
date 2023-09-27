@@ -1,5 +1,5 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
@@ -76,9 +76,9 @@ describe('Export Visa debit card report', () => {
     // Assert
     expect(exportResult.body.fileName).toBe('card-balances');
     expect(exportResult.body.data[0].cardStatus121).toBe(
-      WalletStatus121.Active,
+      WalletCardStatus121.Active,
     );
-    expect(exportResult.body.data[0].balance).toBe(2200);
+    expect(exportResult.body.data[0].balance).toBe(22);
     expect(exportResult.body.data[0].registrationStatus).toBe(
       RegistrationStatusEnum.included,
     );

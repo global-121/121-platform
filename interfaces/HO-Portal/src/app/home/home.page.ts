@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import Permission from '../auth/permission.enum';
+import { Component, ViewChild } from '@angular/core';
+import { ProgramsListComponent } from '../programs-list/programs-list.component';
 
 @Component({
   selector: 'app-home',
@@ -7,5 +7,13 @@ import Permission from '../auth/permission.enum';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public Permission = Permission;
+  @ViewChild('list')
+  public list: ProgramsListComponent;
+
+  constructor() {}
+
+  public ionViewWillEnter() {
+    // When returning to the home page, refresh the Programs-list
+    this.list.ngOnInit();
+  }
 }

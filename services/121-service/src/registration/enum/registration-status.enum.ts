@@ -12,6 +12,7 @@ export enum RegistrationStatusEnum {
   inclusionEnded = 'inclusionEnded',
   deleted = 'deleted',
   completed = 'completed',
+  paused = 'paused',
 }
 
 export enum RegistrationStatusTimestampField {
@@ -28,6 +29,7 @@ export enum RegistrationStatusTimestampField {
   selectedForValidationDate = 'selectedForValidationDate',
   deleteDate = 'deleteDate',
   completedDate = 'completedDate',
+  pausedDate = 'pausedDate',
 }
 
 export enum RegistrationStatusDateMap {
@@ -44,4 +46,5 @@ export enum RegistrationStatusDateMap {
   inclusionEnded = RegistrationStatusTimestampField.inclusionEndDate,
   deleted = RegistrationStatusTimestampField.deleteDate,
   completed = RegistrationStatusTimestampField.completedDate,
+  paused = RegistrationStatusTimestampField.pausedDate,
 }

@@ -9,7 +9,6 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
-import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -50,8 +49,6 @@ export class IntersolveVoucherService
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  public twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 

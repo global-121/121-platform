@@ -1,6 +1,51 @@
 import * as request from 'supertest';
+import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import { getServer } from './utility.helper';
+import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
+import { getServer, waitFor } from './utility.helper';
+
+export async function postProgram(
+  program: CreateProgramDto,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/`)
+    .set('Cookie', [accessToken])
+    .send(program);
+}
+
+export async function getProgram(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}`)
+    .query({ formatCreateProgramDto: true })
+    .set('Cookie', [accessToken]);
+}
+
+export async function postProgramQuestion(
+  programQuestion: CreateProgramQuestionDto,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/program-questions`)
+    .set('Cookie', [accessToken])
+    .send(programQuestion);
+}
+
+export async function postCustomAttribute(
+  customAttribute: CreateProgramCustomAttributeDto,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/custom-attributes`)
+    .set('Cookie', [accessToken])
+    .send(customAttribute);
+}
 
 export async function publishProgram(
   programId: number,
@@ -13,11 +58,11 @@ export async function publishProgram(
 export async function changePhase(
   programId: number,
   newPhase: ProgramPhase,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/change-phase`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({ newPhase: newPhase });
 }
 
@@ -26,11 +71,11 @@ export async function doPayment(
   paymentNr: number,
   amount: number,
   referenceIds: string[],
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/payments`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
       amount: amount,
@@ -41,11 +86,11 @@ export async function doPayment(
 export async function retryPayment(
   programId: number,
   paymentNr: number,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
     });
@@ -55,18 +100,18 @@ export async function getTransactions(
   programId: number,
   paymentNr: number,
   referenceId: string,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/payments/transactions`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .query({ minPayment: paymentNr, referenceId: referenceId });
 }
 
 export async function exportList(
   programId: number,
   exportType: string,
-  access_token: string,
+  accessToken: string,
   fromDate?: string,
   toDate?: string,
 ): Promise<request.Response> {
@@ -79,6 +124,43 @@ export async function exportList(
   }
   return await getServer()
     .get(`/programs/${programId}/metrics/export-list/${exportType}`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .query(queryParams);
+}
+
+export async function waitForPaymentTransactionsToComplete(
+  programId: number,
+  paymentReferences: string[],
+  accessToken: string,
+  maxWaitTimeMs: number,
+): Promise<void> {
+  const startTime = Date.now();
+  let allTransactionsSuccessful = false;
+
+  while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsSuccessful) {
+    // Get payment transactions
+    const paymentTransactions = await getTransactions(
+      programId,
+      null,
+      null,
+      accessToken,
+    );
+
+    // Check if all transactions have a status of "success"
+    allTransactionsSuccessful = paymentReferences.every((referenceId) => {
+      const transaction = paymentTransactions.body.find(
+        (txn) => txn.referenceId === referenceId,
+      );
+      return transaction && transaction.status === 'success';
+    });
+
+    // If not all transactions are successful, wait for a short interval before checking again
+    if (!allTransactionsSuccessful) {
+      await waitFor(1000); // Wait for 1 second (adjust as needed)
+    }
+  }
+
+  if (!allTransactionsSuccessful) {
+    throw new Error(`Timeout waiting for payment transactions to complete`);
+  }
 }

@@ -36,18 +36,34 @@
     <!-- Status -->
     <ion-item>
       <ion-label class="card-key-value">
-        {{
-          'registration-details.physical-cards-overview.card-status'
-            | translate
-        }}:
+        {{ 'registration-details.physical-cards-overview.status' | translate }}:
       </ion-label>
       <ion-label class="ion-text-right"
         ><ion-chip
           class="physical-card-status-chip"
-          [ngClass]="'physical-card-status-chip-' + card?.status.toLowerCase()"
+          [ngClass]="
+            'physical-card-status-chip-' +
+            card?.status.replace(' ', '-').toLowerCase()
+          "
           >{{ card?.status }}</ion-chip
         ></ion-label
       >
+    </ion-item>
+
+    <!-- Explanation -->
+    <ion-item>
+      <ion-label class="card-key-value">
+        {{
+          'registration-details.physical-cards-overview.explanation'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label
+        class="card-key-value ion-text-right physical-card-explanation"
+        [title]="card?.explanation ? card?.explanation : '-'"
+      >
+        <strong>{{ card?.explanation ? card?.explanation : '-' }}</strong>
+      </ion-label>
     </ion-item>
 
     <!-- Current balance -->
@@ -61,6 +77,26 @@
       <ion-label class="card-key-value ion-text-right"
         ><strong
           >{{ card?.balance / 100 | number: '1.2-2' }} {{ currency }}</strong
+        >
+      </ion-label>
+    </ion-item>
+
+    <!-- Spend this month -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.spent-this-month'
+            | translate
+              : {
+                  maxAmount: card?.maxToSpendPerMonth / 100,
+                  currency: currency
+                }
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong
+          >{{ card?.spentThisMonth / 100 | number: '1.2-2' }}
+          {{ currency }}</strong
         >
       </ion-label>
     </ion-item>
@@ -99,77 +135,81 @@
       *ngIf="showButtons"
       class="ion-padding ion-justify-content-end"
     >
-      <app-confirm-prompt
-        color="portal-primary"
-        fill="outline"
-        size="small"
-        shape="round"
-        [disabled]="issueLoading || !canIssueNewCard()"
-        (confirm)="issueNewCardButtonClick()"
-        [subHeader]="
-          'registration-details.physical-cards-overview.issue-new-card'
-            | translate
-        "
-        [message]="
-          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
-            | translate) +
-          ('registration-details.physical-cards-overview.confirm-prompt.new-card'
-            | translate) +
-          ('registration-details.physical-cards-overview.confirm-prompt.suffix'
-            | translate)
-        "
-      >
-        {{
-          'registration-details.physical-cards-overview.issue-new-card'
-            | translate
-        }}
-        <ion-spinner
+      <ng-container *ngIf="checkActionsInclude(['reissue'])">
+        <app-confirm-prompt
           color="portal-primary"
-          class="physical-card-button-spinner"
-          *ngIf="issueLoading"
-        ></ion-spinner>
-      </app-confirm-prompt>
+          fill="outline"
+          size="small"
+          shape="round"
+          [disabled]="issueLoading || !canIssueNewCard()"
+          (confirm)="issueNewCardButtonClick()"
+          [subHeader]="
+            'registration-details.physical-cards-overview.issue-new-card'
+              | translate
+          "
+          [message]="
+            ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+              | translate) +
+            ('registration-details.physical-cards-overview.confirm-prompt.new-card'
+              | translate) +
+            ('registration-details.physical-cards-overview.confirm-prompt.suffix'
+              | translate)
+          "
+        >
+          {{
+            'registration-details.physical-cards-overview.issue-new-card'
+              | translate
+          }}
+          <ion-spinner
+            color="portal-primary"
+            class="physical-card-button-spinner"
+            *ngIf="issueLoading"
+          ></ion-spinner>
+        </app-confirm-prompt>
+      </ng-container>
 
-      <app-confirm-prompt
-        class="ion-margin-start"
-        color="portal-danger"
-        fill="outline"
-        size="small"
-        shape="round"
-        [disabled]="pauseLoading || !canUsePauseButton()"
-        (confirm)="togglePauseButton()"
-        [subHeader]="
-          isCardPaused
-            ? ('registration-details.physical-cards-overview.unpause-card'
-              | translate)
-            : ('registration-details.physical-cards-overview.pause-card'
-              | translate)
-        "
-        [message]="
-          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
-            | translate) +
-          (isCardPaused
-            ? ('registration-details.physical-cards-overview.confirm-prompt.unpause'
-              | translate)
-            : ('registration-details.physical-cards-overview.confirm-prompt.pause'
-                | translate) +
-              ('registration-details.physical-cards-overview.confirm-prompt.suffix'
-                | translate))
-        "
-      >
-        {{
-          isCardPaused
-            ? ('registration-details.physical-cards-overview.unpause-card'
-              | translate)
-            : ('registration-details.physical-cards-overview.pause-card'
-              | translate)
-        }}
-        <ion-spinner
+      <ng-container *ngIf="checkActionsInclude(['pause', 'unpause'])">
+        <app-confirm-prompt
+          class="ion-margin-start"
           color="portal-danger"
-          class="physical-card-button-spinner"
-          *ngIf="pauseLoading"
-        ></ion-spinner>
-      </app-confirm-prompt>
+          fill="outline"
+          size="small"
+          shape="round"
+          [disabled]="pauseLoading || !canUsePauseButton()"
+          (confirm)="togglePauseButton()"
+          [subHeader]="
+            isCardPaused
+              ? ('registration-details.physical-cards-overview.unpause-card'
+                | translate)
+              : ('registration-details.physical-cards-overview.pause-card'
+                | translate)
+          "
+          [message]="
+            ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+              | translate) +
+            (isCardPaused
+              ? ('registration-details.physical-cards-overview.confirm-prompt.unpause'
+                | translate)
+              : ('registration-details.physical-cards-overview.confirm-prompt.pause'
+                  | translate) +
+                ('registration-details.physical-cards-overview.confirm-prompt.suffix'
+                  | translate))
+          "
+        >
+          {{
+            isCardPaused
+              ? ('registration-details.physical-cards-overview.unpause-card'
+                | translate)
+              : ('registration-details.physical-cards-overview.pause-card'
+                | translate)
+          }}
+          <ion-spinner
+            color="portal-danger"
+            class="physical-card-button-spinner"
+            *ngIf="pauseLoading"
+          ></ion-spinner>
+        </app-confirm-prompt>
+      </ng-container>
     </ion-row>
   </ion-list>
 </ion-content>

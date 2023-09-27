@@ -3,6 +3,7 @@
     <ion-col size="auto">
       <span class="navigation-button">
         <ion-button
+          [disabled]="!canViewMetrics"
           [routerLink]="['/program', programId, 'dashboard']"
           routerLinkActive
           #rlaDashboard="routerLinkActive"
@@ -22,7 +23,7 @@
         class="navigation-button"
       >
         <ion-button
-          [disabled]="!canManageAidWorkers()"
+          [disabled]="!canManageAidWorkers"
           [routerLink]="['/program', programId, 'aid-workers']"
           routerLinkActive
           #rlaAidWorkers="routerLinkActive"

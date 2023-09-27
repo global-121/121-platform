@@ -1,5 +1,4 @@
 import * as request from 'supertest';
-import { DEBUG } from '../../src/config';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { CookieNames } from '../../src/shared/enum/cookie.enums';
 
@@ -10,8 +9,6 @@ export function getHostname(): string {
 export function getServer(): request.SuperAgentTest {
   return request.agent(getHostname());
 }
-
-export const itSkipIfDebug = DEBUG ? it.skip : it;
 
 export function resetDB(seedScript: SeedScript): Promise<request.Response> {
   return getServer()
@@ -33,6 +30,23 @@ export function loginAsAdmin(): Promise<request.Response> {
 
 export async function getAccessToken(): Promise<string> {
   const login = await loginAsAdmin();
+  const cookies = login.get('Set-Cookie');
+  const accessToken = cookies
+    .find((cookie: string) => cookie.startsWith(CookieNames.general))
+    .split(';')[0];
+
+  return accessToken;
+}
+
+export function loginAsProgramManager(): Promise<request.Response> {
+  return getServer().post(`/user/login`).send({
+    username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+  });
+}
+
+export async function getAccessTokenProgramManager(): Promise<string> {
+  const login = await loginAsProgramManager();
   const cookies = login.get('Set-Cookie');
   const accessToken = cookies
     .find((cookie: string) => cookie.startsWith(CookieNames.general))

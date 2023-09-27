@@ -9,7 +9,7 @@ import { ActionService } from './action.service';
 import { ActionDto } from './dto/action.dto';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('actions')
+@ApiTags('programs/actions')
 @Controller()
 export class ActionController {
   private readonly actionService: ActionService;

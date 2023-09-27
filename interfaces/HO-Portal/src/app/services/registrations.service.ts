@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
+
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
-import { TableTextFilter } from './filter.service';
+import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
@@ -31,7 +32,7 @@ export class RegistrationsService {
     filterOnPayment: number = null,
     attributes: string[],
     statuses: RegistrationStatusEnum[] = null,
-    textFilter: TableTextFilter[],
+    textFilter: PaginationFilter[],
   ): Promise<{ data: Person[]; meta: PaginationMetadata }> {
     if (!programId) {
       return { data: [], meta: { itemsPerPage: 20, currentPage: 1 } };
@@ -40,7 +41,7 @@ export class RegistrationsService {
     const { data, meta } = await this.programsService.getPeopleAffected(
       programId,
       this.pageMetaData.itemsPerPage,
-      this.pageMetaData.currentPage,
+      this.pageMetaData.currentPage + 1,
       referenceId,
       filterOnPayment,
       attributes,

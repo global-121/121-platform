@@ -44,10 +44,10 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { ActionType } from '../../models/actions.model';
 import {
   MessageStatus,
   MessageStatusMapping,
@@ -55,11 +55,10 @@ import {
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
-import { FilterService, TableTextFilter } from '../../services/filter.service';
+import { FilterService, PaginationFilter } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
-import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
@@ -241,6 +240,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       },
     },
     {
+      id: BulkActionId.pause,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.pause',
+      ),
+      permissions: [Permission.RegistrationStatusPausedUPDATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
       id: BulkActionId.sendMessage,
       enabled: false,
       label: this.translate.instant(
@@ -312,11 +335,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
     {
-      prop: 'paymentsLeft',
-      type: this.tableFilterType.multipleChoice,
-      description: 'remaining-payment-description',
-    },
-    {
       prop: 'paStatus',
       type: this.tableFilterType.multipleChoice,
       description: 'multiple-choice-hidden-options',
@@ -329,14 +347,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       selected: [],
       visible: [],
     },
-    paymentsLeft: {
-      default: [],
-      selected: [],
-      visible: [],
-    },
   };
+
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
-  public tableTextFilter: TableTextFilter[] = [];
+  public tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private messageColumnStatus = MessageStatusMapping;
@@ -580,9 +594,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 220,
       },
       {
-        prop: 'messages',
+        prop: 'lastMessageStatus',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.last-message-status',
+          'page.program.program-people-affected.column.lastMessageStatus',
         ),
         ...this.columnDefaults,
         phases: [
@@ -852,28 +866,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private loadNameColumns() {
-    for (const nameColumn of this.program.fullnameNamingConvention) {
-      const searchableColumns = [
-        ...this.program.programQuestions,
-        ...this.program.programCustomAttributes,
-      ];
+    if (this.canViewPersonalData) {
+      for (const nameColumn of this.program.fullnameNamingConvention) {
+        const searchableColumns = [
+          ...this.program.programQuestions,
+          ...this.program.programCustomAttributes,
+        ];
 
-      const nameQuestion = searchableColumns.find(
-        (question) => question.name === nameColumn,
-      );
-      if (nameQuestion) {
-        const addCol = {
-          prop: nameColumn,
-          name: this.translatableStringService.get(
-            nameQuestion.shortLabel || nameQuestion.label,
-          ),
-          ...this.columnDefaults,
-          frozenLeft: this.platform.width() > 768,
-          permissions: [Permission.RegistrationPersonalREAD],
-          minWidth: this.columnWidthPerType[AnswerType.Text],
-          width: this.columnWidthPerType[AnswerType.Text],
-        };
-        this.columns.push(addCol);
+        const nameQuestion = searchableColumns.find(
+          (question) => question.name === nameColumn,
+        );
+        if (nameQuestion) {
+          const addCol = {
+            prop: nameColumn,
+            name: this.translatableStringService.get(
+              nameQuestion.shortLabel || nameQuestion.label,
+            ),
+            ...this.columnDefaults,
+            frozenLeft: this.platform.width() > 768,
+            permissions: [Permission.RegistrationPersonalREAD],
+            minWidth: this.columnWidthPerType[AnswerType.Text],
+            width: this.columnWidthPerType[AnswerType.Text],
+          };
+          this.columns.push(addCol);
+        }
       }
     }
   }
@@ -938,19 +954,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     { name: string; label: string }[]
   > {
     const tableFiltersPerColumn = [];
-    for (const columnName of this.program.filterableColumns) {
+    for (const columnName of this.program.filterableAttributes) {
       const column = this.program.paTableAttributes.find(
-        (column) => column.name === columnName,
+        (column) => column.name === columnName.name,
       );
       let label: string;
       if (column && column.shortLabel) {
         label = this.translatableStringService.get(column.shortLabel);
       } else {
         label = this.translate.instant(
-          `page.program.program-people-affected.column.${columnName}`,
+          `page.program.program-people-affected.column.${columnName.name}`,
         );
       }
-      tableFiltersPerColumn.push({ name: columnName, label: label });
+      tableFiltersPerColumn.push({ name: columnName.name, label: label });
     }
 
     return tableFiltersPerColumn;
@@ -1091,16 +1107,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
-      paymentsLeft: person.maxPayments
-        ? person.maxPayments - person.amountPaymentsReceived
-        : null,
+      paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
             [ProgramPhase.inclusion, ProgramPhase.payment].includes(
               this.thisPhase,
             )
               ? `(${
-                  person.maxPayments - person.amountPaymentsReceived
+                  person.maxPayments - person.paymentCount
                 } ${this.translate.instant(
                   'page.program.program-people-affected.max-payments.left',
                 )})`
@@ -1110,17 +1124,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       fsp: person.financialServiceProvider,
       fspDisplayNamePortal: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
-      messages: person.lastMessageStatus
-        ? `${this.translate.instant(
-            'page.program.program-people-affected.message-history-popup.type.' +
-              person.lastMessageType,
-          )}: ${this.translate.instant(
-            'page.program.program-people-affected.message-history-popup.chip-status.' +
-              this.messageColumnStatus[person.lastMessageStatus],
-          )}`
-        : this.translate.instant(
-            'page.program.program-people-affected.last-message.no-message',
-          ),
       hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
@@ -1257,7 +1260,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public showWhatsappNumber(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
-      show = this.hasVoucherSupport(pa.fsp);
+      show = PaymentUtils.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
       }
@@ -1508,6 +1511,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           [BulkActionId.reject]: RegistrationStatus.rejected,
           [BulkActionId.markNoLongerEligible]:
             RegistrationStatus.noLongerEligible,
+          [BulkActionId.pause]: RegistrationStatus.paused,
         };
         if (!actionStatus[this.action]) {
           return;
@@ -1551,12 +1555,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.isInProgress = false;
       });
   }
-
-  // private async setTextFieldFilter(value: string) {
-  //   // this.tableFilterState.text.value = value;
-  //   this.registrationsService?.addTextFilter(this.textFilterOption, value);
-  //   await this.getPage();
-  // }
 
   public applyFilter() {
     this.updateVisiblePeopleAffectedByFilter();
@@ -1607,17 +1605,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
   }
 
-  private paPaymentsLeftValue(paymentsLeft, maxPayments): number {
-    if (!paymentsLeft && maxPayments === '') {
-      return -2;
-    }
-
-    if (paymentsLeft > 3) {
-      return -1;
-    }
-    return paymentsLeft;
-  }
-
   public applyTableFilter(prop, filter) {
     if (!filter) {
       return;
@@ -1642,18 +1629,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
       this.tableFilterState.paStatus.selected.includes(pa.status),
     );
-    const filteredPeopleAffectedByPaymentsLeft =
-      this.thisPhase === this.phaseEnum.payment
-        ? filteredPeopleAffectedByStatus.filter((pa) =>
-            this.tableFilterState.paymentsLeft.selected.includes(
-              this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
-            ),
-          )
-        : filteredPeopleAffectedByStatus;
 
-    this.initialVisiblePeopleAffected = [
-      ...filteredPeopleAffectedByPaymentsLeft,
-    ];
+    this.initialVisiblePeopleAffected = [...filteredPeopleAffectedByStatus];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
@@ -1705,110 +1682,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     ].includes(messageStatus);
   }
 
-  public exportTableView() {
-    try {
-      const columnsToExport = [
-        ...this.mapColumsForExport(true),
-        ...this.mapColumsForExport(false),
-      ];
-
-      columnsToExport.unshift({
-        prop: 'hasNote',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.hasNote',
-        ),
-      });
-      columnsToExport.unshift({
-        prop: 'pa',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.personAffectedSequence',
-        ),
-      });
-
-      if (
-        this.showInclusionScore() &&
-        [
-          this.phaseEnum.registrationValidation,
-          this.phaseEnum.inclusion,
-        ].includes(this.thisPhase)
-      ) {
-        columnsToExport.push({
-          prop: 'inclusionScore',
-          name: this.translate.instant(
-            'page.program.program-people-affected.column.inclusionScore',
-          ),
-        });
-      }
-
-      if (this.thisPhase === this.phaseEnum.payment) {
-        {
-          columnsToExport.push({
-            prop: 'paymentHistoryColumn',
-            name: this.paymentHistoryColumn.name || '',
-          });
-        }
-      }
-
-      const collator = new Intl.Collator(undefined, {
-        numeric: true,
-        sensitivity: 'base',
-      });
-      const xlsxContent = this.visiblePeopleAffected
-        .sort((a, b) => collator.compare(a.pa, b.pa))
-        .map((person) =>
-          columnsToExport.reduce((res, col) => {
-            const value = this.processExportTableViewValue(person[col.prop]);
-            return Object.assign(res, { [col.name]: value });
-          }, {}),
-        );
-
-      arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
-
-      this.programsService.saveAction(
-        ActionType.exportTableView,
-        this.programId,
-      );
-
-      actionResult(
-        this.alertController,
-        this.translate,
-        this.translate.instant(
-          'page.program.program-people-affected.export-list.success-message',
-        ),
-      );
-    } catch (error) {
-      console.log('error: ', error);
-      actionResult(
-        this.alertController,
-        this.translate,
-        this.translate.instant('common.export-error'),
-        true,
-        PubSubEvent.dataRegistrationChanged,
-        this.pubSub,
-      );
-    }
-  }
-
-  private mapColumsForExport(
-    frozenLeft: boolean,
-  ): { prop: string; name: string }[] {
-    return this.columns
-      .filter((c) => c.frozenLeft === frozenLeft)
-      .map((col) => ({ prop: col.prop, name: col.name }));
-  }
-
-  private processExportTableViewValue(value) {
-    if (typeof value === 'boolean') {
-      return value ? 'yes' : 'no';
-    }
-
-    if (Array.isArray(value)) {
-      return value.join(', ');
-    }
-
-    return value;
-  }
-
   public async setPage(pageInfo: {
     offset: number;
     count?: number;
@@ -1832,7 +1705,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.tableFilterState['paStatus'].selected,
       this.tableTextFilter,
     );
-
 
     this.visiblePeopleAffected = this.createTableData(data);
     this.registrationsService?.setTotalItems(meta.totalItems);

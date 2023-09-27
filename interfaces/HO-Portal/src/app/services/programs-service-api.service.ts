@@ -23,11 +23,11 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
-import { User } from '../models/user.model';
+import { Role, TableData, User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
-import { TableTextFilter } from './filter.service';
+import { FilterOperatorEnum, PaginationFilter } from './filter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -132,9 +132,10 @@ export class ProgramsServiceApiService {
     programId: number | string,
     phase: ProgramPhase,
   ): Promise<PaTableAttribute[]> {
+    const phaseString = phase ? phase : '';
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/pa-table-attributes/${phase}`,
+      `/programs/${programId}/pa-table-attributes/${phaseString}`,
     );
   }
 
@@ -486,7 +487,7 @@ export class ProgramsServiceApiService {
   ): Promise<PhysicalCard[]> {
     const response = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets?referenceId=${referenceId}`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets?referenceId=${referenceId}`,
     );
 
     return !!response && !!response.wallets ? response.wallets : [];
@@ -498,7 +499,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     const res = await this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
       {},
     );
 
@@ -512,7 +513,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return await this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/${
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/${
         block ? 'block' : 'unblock'
       }`,
       {},
@@ -527,7 +528,7 @@ export class ProgramsServiceApiService {
     filterOnPayment?: number,
     attributes?: string[],
     statuses?: RegistrationStatus[],
-    filters?: TableTextFilter[],
+    filters?: PaginationFilter[],
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
@@ -548,9 +549,11 @@ export class ProgramsServiceApiService {
     }
     if (filters) {
       for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
-          `filter.${filter.column}`,
-          `$ilike:${filter.value}`,
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
         );
       }
     }
@@ -623,6 +626,14 @@ export class ProgramsServiceApiService {
     message: string,
   ): Promise<any> {
     return this.updatePaStatus('reject', programId, referenceIds, message);
+  }
+
+  pause(
+    programId: number | string,
+    referenceIds: string[],
+    message: string,
+  ): Promise<any> {
+    return this.updatePaStatus('pause', programId, referenceIds, message);
   }
 
   sendMessage(
@@ -790,5 +801,13 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/metrics/registration-status`,
       false,
     );
+  }
+
+  getAllUsers(): Promise<TableData[] | null> {
+    return this.apiService.get(environment.url_121_service_api, '/users');
+  }
+
+  getRoles(): Promise<Role[] | null> {
+    return this.apiService.get(environment.url_121_service_api, '/roles');
   }
 }

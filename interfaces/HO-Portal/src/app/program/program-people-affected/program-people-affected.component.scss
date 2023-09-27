@@ -63,6 +63,13 @@
   }
 }
 
+.no-message {
+  display: block;
+}
+.no-message:first-letter {
+  text-transform: uppercase;
+}
+
 .checkmark {
   font-size: 170%;
 

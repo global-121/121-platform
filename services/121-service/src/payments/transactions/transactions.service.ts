@@ -206,9 +206,10 @@ export class TransactionsService {
       );
     }
 
-    if (program.enableMaxPayments && registration.maxPayments) {
-      await this.checkAndUpdateMaxPaymentRegistration(registration);
-    }
+    await this.updatePaymentCountRegistration(
+      registration,
+      program.enableMaxPayments,
+    );
 
     if (
       transactionResponse.status === StatusEnum.success &&
@@ -260,8 +261,9 @@ export class TransactionsService {
     return message;
   }
 
-  private async checkAndUpdateMaxPaymentRegistration(
+  private async updatePaymentCountRegistration(
     registration: RegistrationEntity,
+    enableMaxPayments: boolean,
   ): Promise<void> {
     // Get current amount of payments done to PA
     const { currentPaymentCount } = await this.transactionRepository
@@ -276,12 +278,20 @@ export class TransactionsService {
       })
       .getRawOne();
     // Match that against registration.maxPayments
-    if (
-      currentPaymentCount >= registration.maxPayments &&
-      registration.registrationStatus === RegistrationStatusEnum.included
-    ) {
-      registration.registrationStatus = RegistrationStatusEnum.completed;
-      await this.registrationRepository.save(registration);
+
+    await this.registrationRepository.update(registration.id, {
+      paymentCount: currentPaymentCount,
+    });
+
+    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
+    if (enableMaxPayments && registration.maxPayments) {
+      if (
+        currentPaymentCount >= registration.maxPayments &&
+        registration.registrationStatus === RegistrationStatusEnum.included
+      ) {
+        registration.registrationStatus = RegistrationStatusEnum.completed;
+        await this.registrationRepository.save(registration);
+      }
     }
   }
 

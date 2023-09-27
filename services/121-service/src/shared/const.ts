@@ -1,4 +1,4 @@
-const nameConstraintQuestionsArray = [
+export const nameConstraintQuestionsArray = [
   'id',
   'status',
   'referenceId',
@@ -16,7 +16,8 @@ const nameConstraintQuestionsArray = [
   'lastTransactionAmount',
   'lastTransactionErrorMessage',
   'lastTransactionCustomData',
-  'amountPaymentsReceived',
+  'paymentCount',
+  'paymentCountRemaining',
   'importedDate',
   'invitedDate',
   'startedRegistrationDate',

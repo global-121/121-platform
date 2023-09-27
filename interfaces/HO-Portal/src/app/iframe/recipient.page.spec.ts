@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BannerComponent } from '../components/banner/banner.component';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { TranslatableStringService } from '../services/translatable-string.service';
 import { SharedModule } from '../shared/shared.module';
 import { IframeModule } from './iframe.module';
 import { RecipientPage } from './recipient.page';
@@ -19,12 +20,12 @@ describe('Recipient.PageComponent', () => {
       imports: [
         IonicModule.forRoot(),
         RouterTestingModule,
-        TranslateModule.forRoot(),
         HttpClientTestingModule,
+        TranslateModule.forRoot(),
         IframeModule,
         SharedModule,
       ],
-      providers: [ProgramsServiceApiService],
+      providers: [ProgramsServiceApiService, TranslatableStringService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RecipientPage);

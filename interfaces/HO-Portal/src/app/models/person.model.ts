@@ -34,7 +34,8 @@ export class Person {
   registrationProgramId: number;
   personAffectedSequence: string;
   lastTransactionPaymentNumber?: number;
-  amountPaymentsReceived?: number;
+  paymentCount?: number;
+  paymentCountRemaining?: number;
   lastTransactionCreated?: string;
   lastTransactionAmount?: number;
   lastTransactionStatus?: string;
@@ -70,11 +71,11 @@ export class PersonRow {
   fspDisplayNamePortal?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
-  paymentsLeft?: number | null;
+  paymentCount?: number;
+  paymentCountRemaining?: number | null;
   preferredLanguage?: string | null;
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
-  messages?: string;
 }
 
 export class Note {
@@ -118,9 +119,10 @@ export const PA_STATUS_ORDER = [
   { id: 7, value: RegistrationStatus.included },
   { id: 8, value: RegistrationStatus.inclusionEnded },
   { id: 9, value: RegistrationStatus.rejected },
-  { id: 10, value: RegistrationStatus.noLongerEligible },
-  { id: 11, value: RegistrationStatus.registeredWhileNoLongerEligible },
-  { id: 12, value: RegistrationStatus.completed },
+  { id: 10, value: RegistrationStatus.paused },
+  { id: 11, value: RegistrationStatus.noLongerEligible },
+  { id: 12, value: RegistrationStatus.registeredWhileNoLongerEligible },
+  { id: 13, value: RegistrationStatus.completed },
 ];
 
 export enum PersonDefaultAttributes {

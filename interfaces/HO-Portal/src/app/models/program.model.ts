@@ -1,3 +1,4 @@
+import { FilterOperatorEnum } from '../services/filter.service';
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { LanguageEnum } from './person.model';
@@ -35,7 +36,15 @@ export class Program {
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
-  filterableColumns: string[];
+  filterableAttributes: FilterableAttributeDefinition[];
+  monitoringDashboardUrl?: string;
+  evaluationDashboardUrl?: string;
+}
+
+class FilterableAttributeDefinition {
+  name: string;
+  allowedOperators: FilterOperatorEnum[];
+  paTableAttributes: PaTableAttribute[];
 }
 
 export class ProgramStats {
@@ -75,7 +84,9 @@ export class ProgramCustomAttribute {
   phases: ProgramPhase[];
 }
 
-export class PaTableAttribute extends ProgramCustomAttribute {}
+export class PaTableAttribute extends Attribute {
+  phases?: ProgramPhase[];
+}
 
 export class ProgramQuestion {
   id: number;

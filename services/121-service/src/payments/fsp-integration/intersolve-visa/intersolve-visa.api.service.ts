@@ -14,6 +14,7 @@ import {
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
+import { IntersolveGetCardResponseDto } from './dto/intersolve-get-card-details.dto';
 import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
@@ -32,26 +33,35 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken(): Promise<string> {
-    // Check expires_at
-    if (this.tokenSet && this.tokenSet.expires_at > Date.now() - 60000) {
+    if (this.isTokenValid(this.tokenSet)) {
       // Return cached token
       return this.tokenSet.access_token;
-    } else {
-      // If not valid, request new token
-      const trustIssuer = await Issuer.discover(
-        `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
-      );
-      const client = new trustIssuer.Client({
-        client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
-        client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
-      });
-      const tokenSet = await client.grant({
-        grant_type: 'client_credentials',
-      });
-      // Cache tokenSet
-      this.tokenSet = tokenSet;
-      return tokenSet.access_token;
     }
+    // If not valid, request new token
+    const trustIssuer = await Issuer.discover(
+      `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
+    );
+    const client = new trustIssuer.Client({
+      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
+      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
+    });
+    const tokenSet = await client.grant({
+      grant_type: 'client_credentials',
+    });
+    // Cache tokenSet
+    this.tokenSet = tokenSet;
+    return tokenSet.access_token;
+  }
+
+  private isTokenValid(tokenSet: TokenSet): boolean {
+    if (!tokenSet || !tokenSet.expires_at) {
+      return false;
+    }
+    // Convert expires_at to milliseconds
+    const expiresAtInMs = tokenSet.expires_at * 1000;
+    const timeLeftBeforeExpire = expiresAtInMs - Date.now();
+    // If more than 1 minute left before expiration, the token is considered valid
+    return timeLeftBeforeExpire > 60000;
   }
 
   public async createCustomer(
@@ -121,6 +131,26 @@ export class IntersolveVisaApiService {
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.get<IntersolveGetWalletResponseDto>(
+        url,
+        headers,
+      );
+    }
+  }
+
+  // Swagger docs https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
+  public async getCard(
+    tokenCode: string,
+  ): Promise<IntersolveGetCardResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getCardMock(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetCardResponseDto>(
         url,
         headers,
       );

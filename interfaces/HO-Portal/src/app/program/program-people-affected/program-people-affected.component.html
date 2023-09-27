@@ -4,7 +4,6 @@
   <div>
     <ion-row>
       <select
-        data-cy="select-action"
         name="bulkActions"
         [title]="
           'page.program.program-people-affected.choose-action' | translate
@@ -33,7 +32,6 @@
         </ng-container>
       </select>
       <app-confirm-prompt
-        data-cy="apply-action"
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
         [subHeader]="
@@ -76,7 +74,6 @@
       <ng-container *ngFor="let tableFilter of tableFilters">
         <app-table-filter
           *ngIf="showTableFilter(tableFilter.prop)"
-          [attr.data-cy]="'table-filter-' + tableFilter.prop"
           [buttonLabel]="
             'page.program.program-people-affected.filter-btn.btn-label.' +
               tableFilter.prop | translate
@@ -93,21 +90,6 @@
           }"
         ></app-table-filter>
       </ng-container>
-
-      <ion-button
-        (click)="exportTableView()"
-        [disabled]="visiblePeopleAffected.length === 0"
-        data-cy="export-table-view"
-      >
-        <ion-icon
-          name="download"
-          slot="start"
-        ></ion-icon>
-        {{
-          'page.program.program-people-affected.export-list.button-label'
-            | translate
-        }}</ion-button
-      >
     </ion-row>
   </div>
 </ion-row>
@@ -216,7 +198,6 @@
           *ngIf="canViewPersonalData"
           type="button"
           class="ion-no-padding popup-button"
-          data-cy="pa-edit-button"
           (click)="editPersonAffectedPopup(row, programId)"
           [attr.title]="
             ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
@@ -306,16 +287,21 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'messages' &&
+          column.prop !== 'lastMessageStatus' &&
           column.prop !== 'name'
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
       </ng-container>
-      <ng-container *ngIf="column.prop === 'messages'">
+      <ng-container *ngIf="column.prop === 'lastMessageStatus'">
         <button
-          *ngIf="row.lastMessageStatus"
-          data-cy="message-history-button"
+          *ngIf="
+            row.lastMessageStatus !==
+            (
+              'page.program.program-people-affected.last-message.no-message'
+              | translate
+            ).toLowerCase()
+          "
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
             'is-error': hasMessageError(row.lastMessageStatus)
@@ -324,7 +310,16 @@
         >
           {{ value }}
         </button>
-        <span *ngIf="!row.lastMessageStatus">
+        <span
+          *ngIf="
+            row.lastMessageStatus.toLowerCase() ===
+            (
+              'page.program.program-people-affected.last-message.no-message'
+              | translate
+            ).toLowerCase()
+          "
+          class="no-message"
+        >
           {{ value }}
         </span>
       </ng-container>
@@ -377,7 +372,6 @@
     >
       <ng-container *ngIf="value">
         <button
-          data-cy="payment-history-button"
           *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="

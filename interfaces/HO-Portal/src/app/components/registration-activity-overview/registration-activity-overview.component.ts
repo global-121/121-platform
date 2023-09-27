@@ -11,7 +11,6 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
@@ -20,6 +19,7 @@ import { Person } from '../../models/person.model';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
+
 class ActivityOverviewItem {
   type: string;
   label?: string;
@@ -62,9 +62,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private person: Person;
 
   @Input()
-  private referenceId: string;
-
-  @Input()
   public canViewVouchers = false;
 
   public DateFormat = DateFormat;
@@ -97,7 +94,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (!this.person || !this.program.id || !this.referenceId) {
+    if (!this.person || !this.program.id || !this.person.referenceId) {
       return;
     }
 
@@ -156,7 +153,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   }
 
   public hasVoucherSupport(fsp: string): boolean {
-    return PaymentUtils.hasVoucherSupport(fsp as FspName);
+    return PaymentUtils.hasVoucherSupport(fsp);
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
@@ -220,7 +217,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue.transaction ||
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
-          this.canDoSinglePayment,
+          false,
           this.person,
           this.lastPaymentId,
           false,
@@ -250,7 +247,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     if (this.canViewMessageHistory) {
       const messageHistory = await this.programsService.retrieveMsgHistory(
         this.program.id,
-        this.referenceId,
+        this.person.referenceId,
       );
 
       for (const message of messageHistory) {

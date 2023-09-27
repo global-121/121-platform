@@ -35,6 +35,19 @@ export function searchRegistrationByReferenceId(
     .set('Cookie', [accessToken]);
 }
 
+export function searchRegistrationByPhoneNumber(
+  phoneNumber: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    phonenumber: phoneNumber,
+  };
+  return getServer()
+    .get(`/registrations`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
+
 export function getRegistrations(
   programId: number,
   attributes: string[],
@@ -79,24 +92,7 @@ export function changePaStatus(
     });
 }
 
-export function updatePaAttribute(
-  programId: number,
-  referenceId: string,
-  attribute: string,
-  value: string,
-  accessToken: string,
-): Promise<request.Response> {
-  return getServer()
-    .post(`/programs/${programId}/registrations/attribute`)
-    .set('Cookie', [accessToken])
-    .send({
-      referenceId: referenceId,
-      attribute: attribute,
-      value: value,
-    });
-}
-
-export function updateRegistrationPatch(
+export function updateRegistration(
   programId: number,
   referenceId: string,
   data: object,
@@ -135,7 +131,9 @@ export function getVisaWalletsAndDetails(
     referenceId: referenceId,
   };
   return getServer()
-    .get(`/programs/${programId}/fsp-integration/intersolve-visa/wallets`)
+    .get(
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets`,
+    )
     .query(queryParams)
     .set('Cookie', [accessToken]);
 }
@@ -147,7 +145,7 @@ export function issueNewVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .put(
-      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
     )
     .set('Cookie', [accessToken]);
 }
@@ -159,7 +157,7 @@ export function blockVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/block`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/block`,
     )
     .set('Cookie', [accessToken])
     .send({});
@@ -172,7 +170,7 @@ export function unblockVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/unblock`,
+      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/unblock`,
     )
     .set('Cookie', [accessToken])
     .send({});

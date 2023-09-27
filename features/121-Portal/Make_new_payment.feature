@@ -117,16 +117,16 @@ Feature: Make a new payment
 
   -- "Intersolve-visa"
 
-  Scenario: Send first payment instructions to a Person Affected with SMS created from EspoCRM with Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been created via EspoCRM API integration as registered with Financial Service Provider "Intersolve-visa"
+  Scenario: Send first payment instructions to a Person Affected with SMS created with registrations import endpoint with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been created directly via registrations import endpoint as registered with Financial Service Provider "Intersolve-visa"
     And the PA has correctly filled "firstName", "lastName", "phoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
     And the PA has status "included"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about receiving their Visa card
 
-  Scenario: Send first payment instructions to a Person Affected with Whatsapp created from EspoCRM with Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been created via EspoCRM API integration as registered with Financial Service Provider "Intersolve-visa"
+  Scenario: Send first payment instructions to a Person Affected with Whatsapp created registrations import endpoint with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been created directly via registrations import endpoint as registered with Financial Service Provider "Intersolve-visa"
     And the PA has correctly filled "firstName", "lastName", "phoneNumber", "whatsappPhoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
     And the PA has status "included"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
@@ -134,13 +134,13 @@ Feature: Make a new payment
     And the notification is about receiving their Visa card
 
   Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-voucher" to Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been updated via EspoCRM API integration from having Intersolve Financial Service Provider "Intersolve-voucher" to having with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been updated having Intersolve Financial Service Provider "Intersolve-voucher" to having with Financial Service Provider "Intersolve-visa"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about receiving their Visa card
 
   Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been updated via EspoCRM API integration from having from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to having with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been updated having from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to having with Financial Service Provider "Intersolve-visa"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about receiving their Visa card

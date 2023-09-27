@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FilterService, TableTextFilter } from '../../services/filter.service';
+import { FilterService, PaginationFilter } from '../../services/filter.service';
 
 @Component({
   selector: 'app-table-filter-row',
@@ -15,7 +15,7 @@ export class TableFilterRowComponent implements OnInit {
 
   public textFilterOption: string | undefined;
 
-  public textFilter: Observable<TableTextFilter[]>;
+  public textFilter: Observable<PaginationFilter[]>;
 
   public filterRowsVisibleQuery: string;
 

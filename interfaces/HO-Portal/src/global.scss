@@ -283,6 +283,14 @@ ion-button {
     background-color: var(--fiveten-warning-100);
     color: var(--fiveten-warning-700);
   }
+  &.physical-card-status-chip-unknown {
+    background-color: var(--fiveten-warning-100);
+    color: var(--fiveten-warning-700);
+  }
+  &.physical-card-status-chip-suspected-fraud {
+    background-color: var(--fiveten-error-100);
+    color: var(--fiveten-error-700);
+  }
 }
 .chip {
   pointer-events: none;
@@ -299,6 +307,27 @@ ion-input.custom-border {
   }
 }
 
+/*
+	Component: Tabs
+*/
+.tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 30px;
+  padding-left: 32px;
+  border-bottom: 1px solid var(--fiveten-neutral-600);
+}
+
+.tab {
+  --background: #f4f7fa;
+  margin-right: 16px;
+  --color-checked: #4f22d7;
+}
+
+/*
+	Component: Table - Text-Filter
+*/
 .table--text-filter--select {
   min-height: 44px;
   width: 25%;

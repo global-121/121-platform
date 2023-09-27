@@ -43,6 +43,7 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
+import { PaginateConfigRegistrationView } from './const/filter-operation.const';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -64,17 +65,13 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
-import {
-  paginateConfig,
-  RegistrationsPaginationService,
-} from './services/registrations-pagination.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   public file: any;
 }
 @UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
-@ApiTags('registrations')
 @Controller()
 export class RegistrationsController {
   public constructor(
@@ -82,6 +79,7 @@ export class RegistrationsController {
     private readonly registrationsPaginateService: RegistrationsPaginationService,
   ) {}
 
+  @ApiTags('programs/registrations')
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
   @ApiResponse({
@@ -106,6 +104,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
   @ApiResponse({ status: 201 })
@@ -118,6 +117,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @PersonAffectedAuth()
   @ApiOperation({
     summary: 'Set custom data for registration (Used by Person Affected)',
@@ -137,6 +137,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Set phone number' })
   @ApiResponse({ status: 201, description: 'Phone set for registration' })
@@ -153,6 +154,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @PersonAffectedAuth()
   @ApiOperation({
     summary:
@@ -171,6 +173,7 @@ export class RegistrationsController {
     return await this.registrationsService.register(referenceIdDto.referenceId);
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({ summary: 'Import set of PAs to invite, based on CSV' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -190,6 +193,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
   @ApiOperation({
     summary: 'Get a CSV template for importing registrations',
@@ -206,6 +210,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
     summary: 'Import set of registered PAs, from CSV',
@@ -225,6 +230,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
     summary: 'Import set of registered PAs',
@@ -259,6 +265,8 @@ export class RegistrationsController {
     }
   }
 
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
     summary:
       'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
@@ -269,14 +277,25 @@ export class RegistrationsController {
     type: 'integer',
   })
   @Get('programs/:programId/registrations')
-  @PaginatedSwaggerDocs(RegistrationViewEntity, paginateConfig)
-  public findAll(
+  @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
+  public async findAll(
     @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
     @Param('programId') programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    return this.registrationsPaginateService.getPaginate(
+    const hasPersonalRead =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        PermissionEnum.RegistrationPersonalREAD,
+      );
+
+    // TODO: Add check for transaction read
+
+    return await this.registrationsPaginateService.getPaginate(
       query,
       Number(programId),
+      hasPersonalRead,
     );
   }
 
@@ -334,6 +353,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
     summary: 'Update provided attributes of registration (Used by Aidworker)',
@@ -375,34 +395,7 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
-  @ApiOperation({
-    summary: 'Update attribute for registration (Used by Aidworker)',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Updated attribute for registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/attribute')
-  public async setAttribute(
-    @Body() updateAttributeDto: UpdateAttributeDto,
-    @Param() params,
-    @User('id') userId: number,
-  ): Promise<RegistrationEntity> {
-    const data = {};
-    data[updateAttributeDto.attribute] = updateAttributeDto.value;
-    return await this.registrationsService.updateRegistration(
-      params.programId,
-      updateAttributeDto.referenceId,
-      {
-        data,
-        reason: null,
-      },
-      userId,
-    );
-  }
-
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ summary: 'Update note for registration' })
   @ApiResponse({ status: 201, description: 'Update note for registration' })
@@ -415,6 +408,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ summary: 'Get note for registration' })
   @ApiResponse({ status: 200, description: 'Get note for registration' })
@@ -425,6 +419,7 @@ export class RegistrationsController {
     return await this.registrationsService.retrieveNote(params.referenceId);
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
   @ApiOperation({ summary: 'Mark set of PAs for validation' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -438,6 +433,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
   @ApiOperation({ summary: 'Mark set of PAs as no longer eligible' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -451,6 +447,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
   @ApiOperation({ summary: 'Include set of PAs' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -467,6 +464,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusInclusionEndedUPDATE)
   @ApiOperation({ summary: 'End inclusion of set of PAs' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -483,6 +481,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
   @ApiOperation({ summary: 'Reject set of PAs' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -499,6 +498,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
   @ApiOperation({ summary: 'Invite set of PAs for registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -515,6 +515,24 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationStatusPausedUPDATE)
+  @ApiOperation({ summary: 'Pause set of PAs' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/pause')
+  public async pause(
+    @Body() referenceIdsData: ReferenceIdsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      referenceIdsData,
+      RegistrationStatusEnum.paused,
+      messageData.message,
+      MessageContentType.paused,
+    );
+  }
+
+  @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:
@@ -554,6 +572,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     summary:
@@ -577,6 +596,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -587,6 +607,7 @@ export class RegistrationsController {
     await this.registrationsService.deleteBatch(referenceIdsData);
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -597,6 +618,7 @@ export class RegistrationsController {
     await this.registrationsService.deleteBatch(referenceIdsData);
   }
 
+  @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
@@ -615,6 +637,7 @@ export class RegistrationsController {
     return await this.registrationsService.downloadValidationData(userId);
   }
 
+  @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary: 'Get registration with prefilled answers (for AW)',
@@ -642,6 +665,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspREAD)
   @ApiOperation({ summary: 'Find FSP and attributes' })
   @ApiResponse({
@@ -658,6 +682,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ summary: 'Issue validationData (For AW)' })
   @ApiResponse({ status: 200, description: 'Validation Data issued' })
@@ -675,6 +700,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationCREATE)
   @ApiOperation({
     summary:
@@ -691,6 +717,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
   @ApiOperation({ summary: 'Get message history for one registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -703,6 +730,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Get registration status' })
   @ApiResponse({ status: 200 })
@@ -717,6 +745,7 @@ export class RegistrationsController {
     return { status };
   }
 
+  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({ summary: 'Get Person Affected referenceId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

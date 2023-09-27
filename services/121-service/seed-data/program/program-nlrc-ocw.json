@@ -107,12 +107,6 @@
         "en": "First name"
       },
       "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
       "phases": []
     },
     {
@@ -121,12 +115,6 @@
         "en": "Last name"
       },
       "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
       "phases": []
     }
   ],
@@ -158,5 +146,7 @@
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl", "ar", "tr"],
-  "enableMaxPayments": false
+  "enableMaxPayments": false,
+  "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
+  "evaluationDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9"
 }

@@ -1,24 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
+import { FilterOperator } from 'nestjs-paginate';
+import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { ExportType } from '../metrics/dto/export-details.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import {
+  AllowedFilterOperatorsString,
+  PaginateConfigRegistrationView,
+} from '../registration/const/filter-operation.const';
+import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import {
   Attribute,
   QuestionType,
 } from '../registration/enum/custom-data-attributes';
+import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CreateProgramCustomAttributesDto,
+} from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
+import {
+  CreateProgramQuestionDto,
+  UpdateProgramQuestionDto,
+} from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -61,6 +75,15 @@ export class ProgramService {
       );
     }
 
+    let includeMetricsUrl = false;
+    if (userId) {
+      includeMetricsUrl = await this.userService.canActivate(
+        [PermissionEnum.ProgramMetricsREAD],
+        programId,
+        userId,
+      );
+    }
+
     let relations = [
       'programQuestions',
       'financialServiceProviders',
@@ -88,35 +111,79 @@ export class ProgramService {
         program.id,
       );
 
-      // TODO: Get these columns from some enum or something
-      const defaultFilterableColumns = [
-        'personAffectedSequence',
-        'referenceId',
-        'phoneNumber',
-        'preferredLanguage',
-        'inclusionScore',
-        'paymentAmountMultiplier',
-        'note',
-        'fspDisplayNamePortal',
-        'maxPayments',
-      ];
+      // TODO: Get these attributes from some enum or something
+      program['filterableAttributes'] = this.getFilterableAttributes(program);
 
-      const paAttributesNameArray = program['paTableAttributes'].map(
-        (paAttribute: Attribute) => paAttribute.name,
-      );
-      program['filterableColumns'] = [
-        ...new Set([...defaultFilterableColumns, ...paAttributesNameArray]),
-      ];
+      if (!includeMetricsUrl) {
+        delete program.monitoringDashboardUrl;
+        delete program.evaluationDashboardUrl;
+      }
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
   }
 
+  public getFilterableAttributes(program: ProgramEntity): FilterAttributeDto[] {
+    let defaultFilterableInUI = [
+      'personAffectedSequence',
+      'referenceId',
+      'phoneNumber',
+      'preferredLanguage',
+      'inclusionScore',
+      'paymentAmountMultiplier',
+      'note',
+      'fspDisplayNamePortal',
+      'lastMessageStatus',
+    ];
+    if (program.enableMaxPayments) {
+      defaultFilterableInUI = [
+        ...new Set([
+          ...defaultFilterableInUI,
+          ...['maxPayments', 'paymentCount', 'paymentCountRemaining'],
+        ]),
+      ];
+    }
+
+    const paAttributesNameArray = program['paTableAttributes'].map(
+      (paAttribute: Attribute) => paAttribute.name,
+    );
+    const filterableAttributeNames = [
+      ...new Set([...defaultFilterableInUI, ...paAttributesNameArray]),
+    ];
+
+    const filterableAttributes: FilterAttributeDto[] = [];
+    for (const name of filterableAttributeNames) {
+      if (PaginateConfigRegistrationView.filterableColumns[name]) {
+        filterableAttributes.push({
+          name: name,
+          allowedOperators: PaginateConfigRegistrationView.filterableColumns[
+            name
+          ] as FilterOperator[],
+        });
+      } else {
+        // If no allowed operators are defined than the attribute is
+        // registration data which is store as a string
+        filterableAttributes.push({
+          name: name,
+          allowedOperators: AllowedFilterOperatorsString,
+        });
+      }
+    }
+
+    return filterableAttributes;
+  }
+
   public async getCreateProgramDto(
     programId: number,
+    userId: number,
   ): Promise<CreateProgramDto> {
-    const programEntity = await this.findOne(programId);
-    return {
+    const programEntity = await this.findOne(programId, userId);
+    if (!programEntity) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const programDto: CreateProgramDto = {
       published: programEntity.published,
       validation: programEntity.validation,
       phase: programEntity.phase,
@@ -169,7 +236,7 @@ export class ProgramService {
             pattern: programQuestion.pattern,
             phases: programQuestion.phases,
             editableInPortal: programQuestion.editableInPortal,
-            export: programQuestion.export,
+            export: programQuestion.export as unknown as ExportType[],
             shortLabel: programQuestion.shortLabel,
             duplicateCheck: programQuestion.duplicateCheck,
             placeholder: programQuestion.placeholder,
@@ -181,6 +248,13 @@ export class ProgramService {
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
     };
+    if (programEntity.monitoringDashboardUrl) {
+      programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
+    }
+    if (programEntity.evaluationDashboardUrl) {
+      programDto.evaluationDashboardUrl = programEntity.evaluationDashboardUrl;
+    }
+    return programDto;
   }
 
   public async getPublishedPrograms(): Promise<ProgramsRO> {
@@ -237,29 +311,41 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    for (const name of Object.values(programData.fullnameNamingConvention)) {
-      const fspAttributes = [];
-      for (const fsp of programData.financialServiceProviders) {
-        const fspEntity = await this.financialServiceProviderRepository.findOne(
-          {
-            where: { fsp: fsp.fsp },
-            relations: ['questions'],
-          },
-        );
-        for (const question of fspEntity.questions) {
-          fspAttributes.push(question.name);
-        }
+    const fspAttributeNames = [];
+    for (const fsp of programData.financialServiceProviders) {
+      const fspEntity = await this.financialServiceProviderRepository.findOne({
+        where: { fsp: fsp.fsp },
+        relations: ['questions'],
+      });
+      for (const question of fspEntity.questions) {
+        fspAttributeNames.push(question.name);
       }
-      if (
-        !programData.programQuestions.map((q) => q.name).includes(name) &&
-        !programData.programCustomAttributes
-          .map((ca) => ca.name)
-          .includes(name) &&
-        !fspAttributes.includes(name)
-      ) {
+    }
+    const programQuestionNames = programData.programQuestions.map(
+      (q) => q.name,
+    );
+    const customAttributeNames = programData.programCustomAttributes.map(
+      (ca) => ca.name,
+    );
+    const allAttributeNames = programQuestionNames.concat(
+      customAttributeNames,
+      [...new Set(fspAttributeNames)],
+    );
+    for (const name of Object.values(programData.fullnameNamingConvention)) {
+      if (!allAttributeNames.includes(name)) {
         const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
+    }
+    // Check if allAttributeNames has duplicate values
+    const duplicateNames = allAttributeNames.filter(
+      (item, index) => allAttributeNames.indexOf(item) !== index,
+    );
+    if (duplicateNames.length > 0) {
+      const errors = `The names ${duplicateNames.join(
+        ', ',
+      )} are used more than once program question, custom attribute or fsp attribute`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -270,7 +356,6 @@ export class ProgramService {
     let newProgram;
 
     await this.validateProgram(programData);
-
     const program = new ProgramEntity();
     program.published = programData.published;
     program.validation = programData.validation;
@@ -297,6 +382,8 @@ export class ProgramService {
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
+    program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
+    program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -324,9 +411,11 @@ export class ProgramService {
 
       savedProgram.programQuestions = [];
       for (const programQuestion of programData.programQuestions) {
-        programQuestion['programId'] = savedProgram.id;
+        const programQuestionEntity =
+          this.programQuestionDtoToEntity(programQuestion);
+        programQuestionEntity['programId'] = savedProgram.id;
         const programQuestionReturn = await programQuestionRepository.save(
-          programQuestion,
+          programQuestionEntity,
         );
         savedProgram.programQuestions.push(programQuestionReturn);
       }
@@ -435,6 +524,102 @@ export class ProgramService {
     return savedAttributes;
   }
 
+  private async validateAttributeName(
+    programId: number,
+    name: string,
+  ): Promise<void> {
+    const existingAttributes = await this.getPaTableAttributes(programId);
+    const existingNames = existingAttributes.map((attr) => {
+      return attr.name;
+    });
+    if (existingNames.includes(name)) {
+      const errors = `Unable to create program question/attribute with name ${name}. The names ${existingNames.join(
+        ', ',
+      )} are already in use`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+    if (nameConstraintQuestionsArray.includes(name)) {
+      const errors = `Unable to create program question/attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
+        ', ',
+      )} are forbidden to use`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async createProgramCustomAttribute(
+    programId: number,
+    createProgramAttributeDto: CreateProgramCustomAttributeDto,
+  ): Promise<ProgramCustomAttributeEntity> {
+    await this.validateAttributeName(programId, createProgramAttributeDto.name);
+    const programCustomAttribute = this.programCustomAttributeDtoToEntity(
+      createProgramAttributeDto,
+    );
+    programCustomAttribute.programId = programId;
+    try {
+      return await this.programCustomAttributeRepository.save(
+        programCustomAttribute,
+      );
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        const errorMessage = error.message; // Get the error message from QueryFailedError
+        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  private programCustomAttributeDtoToEntity(
+    dto: CreateProgramCustomAttributeDto,
+  ): ProgramCustomAttributeEntity {
+    const programCustomAttribute = new ProgramCustomAttributeEntity();
+    programCustomAttribute.name = dto.name;
+    programCustomAttribute.type = dto.type;
+    programCustomAttribute.label = dto.label;
+    programCustomAttribute.phases = dto.phases;
+    programCustomAttribute.duplicateCheck = dto.duplicateCheck;
+    return programCustomAttribute;
+  }
+
+  public async createProgramQuestion(
+    programId: number,
+    createProgramQuestionDto: CreateProgramQuestionDto,
+  ): Promise<ProgramQuestionEntity> {
+    await this.validateAttributeName(programId, createProgramQuestionDto.name);
+    const programQuestion = this.programQuestionDtoToEntity(
+      createProgramQuestionDto,
+    );
+    programQuestion.programId = programId;
+
+    try {
+      return await this.programQuestionRepository.save(programQuestion);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        const errorMessage = error.message; // Get the error message from QueryFailedError
+        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  private programQuestionDtoToEntity(
+    dto: CreateProgramQuestionDto,
+  ): ProgramQuestionEntity {
+    const programQuestion = new ProgramQuestionEntity();
+    programQuestion.name = dto.name;
+    programQuestion.label = dto.label;
+    programQuestion.answerType = dto.answerType;
+    programQuestion.questionType = dto.questionType;
+    programQuestion.options = dto.options;
+    programQuestion.scoring = dto.scoring;
+    programQuestion.persistence = dto.persistence;
+    programQuestion.pattern = dto.pattern;
+    programQuestion.phases = dto.phases;
+    programQuestion.editableInPortal = dto.editableInPortal;
+    programQuestion.export = dto.export as unknown as JSON;
+    programQuestion.shortLabel = dto.shortLabel;
+    programQuestion.duplicateCheck = dto.duplicateCheck;
+    programQuestion.placeholder = dto.placeholder;
+    return programQuestion;
+  }
+
   public async updateProgramQuestion(
     programId: number,
     updateProgramQuestionDto: UpdateProgramQuestionDto,
@@ -533,7 +718,21 @@ export class ProgramService {
   public async getPaTableAttributes(
     programId: number,
     phase?: ProgramPhase,
+    userId?: number,
   ): Promise<Attribute[]> {
+    if (userId) {
+      const hasPersonalRead = await this.userService.canActivate(
+        [PermissionEnum.RegistrationPersonalREAD],
+        programId,
+        userId,
+      );
+      if (!hasPersonalRead) {
+        // If a person does not have personal read permission we should
+        // not show registration data columns in the portal
+        return [];
+      }
+    }
+
     let queryCustomAttr = this.dataSource
       .getRepository(ProgramCustomAttributeEntity)
       .createQueryBuilder('programCustomAttribute')

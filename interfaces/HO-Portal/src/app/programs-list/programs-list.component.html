@@ -13,7 +13,7 @@
           {{ 'page.programs-list.pageTitle' | translate }}
         </strong>
       </h2>
-      <ion-note *ngIf="!items || items?.length < 1">
+      <ion-note *ngIf="!loading && (!items || items?.length < 1)">
         {{ 'page.programs-list.not-available' | translate }}
       </ion-note>
       <p
@@ -28,7 +28,14 @@
     </ion-col>
   </ion-item>
   <ion-row
-    style="width: 100%"
+    *ngIf="loading"
+    class="ion-justify-content-center ion-align-items-center ion-padding"
+    style="min-height: 400px"
+  >
+    <ion-spinner color="portal-primary"></ion-spinner>
+  </ion-row>
+  <ion-row
+    *ngIf="!loading"
     class="ion-padding"
   >
     <ion-col
