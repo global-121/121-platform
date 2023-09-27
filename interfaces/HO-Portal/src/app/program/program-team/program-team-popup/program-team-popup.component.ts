@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { FormsModule } from '@angular/forms';
+import { SuccessPopupComponent } from '../success-popup/success-popup.component';
 
 @Component({
   selector: 'app-program-team-popup',
@@ -14,7 +15,7 @@ import { FormsModule } from '@angular/forms';
     IonicModule,
     SharedModule,
     TranslateModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './program-team-popup.component.html',
   styleUrls: ['./program-team-popup.component.scss'],
@@ -27,25 +28,38 @@ export class ProgramTeamPopupComponent {
 
   constructor(
     private modalController: ModalController,
-    private programsServiceApiService: ProgramsServiceApiService,
-  ){}
+    private programsServiceApiService: ProgramsServiceApiService, // private popoverController: PopoverController
+  ) {}
 
   public async search(event: CustomEvent) {
     const searchTerm = event.detail.value.toLowerCase();
-    this.searchResults = await this.programsServiceApiService.getUsersByName(this.programId, searchTerm);
+    this.searchResults = await this.programsServiceApiService.getUsersByName(
+      this.programId,
+      searchTerm,
+    );
+    // this.showPopoverOnSearch();
   }
 
   updateSearchbarValue(selectedItem: string) {
     this.searchQuery = selectedItem;
   }
 
-   public async getRoles() {
+  public async getRoles() {
     this.rolesList = await this.programsServiceApiService.getRoles();
     console.dir(this.rolesList);
   }
 
-  ngOnInit(){
-    this.getRoles() ;
+  ngOnInit() {
+    this.getRoles();
+  }
+
+  public async successPopup(e: Event) {
+    event = e;
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: SuccessPopupComponent,
+      componentProps: { programId: this.programId },
+    });
+    await modal.present();
   }
 
   public closeModal() {

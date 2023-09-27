@@ -1,30 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ProgramTeamPopupComponent } from './program-team-popup.component';
+import { SuccessPopupComponent } from './success-popup.component';
 
-describe('ProgramTeamPopupComponent', () => {
-  let component: ProgramTeamPopupComponent;
-  let fixture: ComponentFixture<ProgramTeamPopupComponent>;
+describe('SuccessPopupComponent', () => {
+  let component: SuccessPopupComponent;
+  let fixture: ComponentFixture<SuccessPopupComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ProgramTeamPopupComponent,
-        HttpClientTestingModule,
+        SuccessPopupComponent,
+        TranslateModule.forRoot(),
         CommonModule,
         IonicModule,
         SharedModule,
-        TranslateModule.forRoot(),
         FormsModule,
       ],
     });
-    fixture = TestBed.createComponent(ProgramTeamPopupComponent);
+    fixture = TestBed.createComponent(SuccessPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

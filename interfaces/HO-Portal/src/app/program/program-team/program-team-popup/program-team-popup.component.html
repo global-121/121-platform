@@ -36,8 +36,10 @@
         (ionInput)="search($event)"
         [debounce]="1000"
         id="search-trigger"
-        placeholder="{{ 'page.program-team.popup.team-member-placeholder' | translate }}"
-        search-icon=“undefined”
+        placeholder="{{
+          'page.program-team.popup.team-member-placeholder' | translate
+        }}"
+        search-icon="“undefined”"
       >
       </ion-searchbar>
     </ion-row>
@@ -102,12 +104,11 @@
 
   <!-- add user button -->
   <ion-button
-    (click)="closeModal()"
-    [attr.title]="'common.cancel' | translate"
-    [attr.aria-label]="'common.cancel' | translate"
+    (click)="successPopup($event)"
     shape="round"
     fill="solid"
+    class="button"
+    item-end
+    >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
   >
-    {{ 'page.program-team.popup.add-users-button' | translate }}
-  </ion-button>
 </div>

@@ -50,6 +50,10 @@
         "team-member-placeholder": "Select a team member",
         "roles-placeholder": "Assign a role(s)",
         "role": "Role"
+      },
+      "success-popup": {
+        "title": "Add team member",
+        "message": "You’ve successfully added a team member"
       }
     },
     "login": {

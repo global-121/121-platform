@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { ProgramTeamPopupComponent } from './program-team-popup/program-team-popup.component';
 
 @Component({
