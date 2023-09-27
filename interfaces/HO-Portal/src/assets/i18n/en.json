@@ -48,6 +48,7 @@
         "add-users-button": "Add user",
         "team-member": "Team member",
         "team-member-placeholder": "Select a team member",
+        "roles-placeholder": "Assign a role(s)",
         "role": "Role"
       }
     },
