@@ -27,6 +27,7 @@ import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
+import { TableTextFilter } from './filter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -526,7 +527,7 @@ export class ProgramsServiceApiService {
     filterOnPayment?: number,
     attributes?: string[],
     statuses?: RegistrationStatus[],
-    filters?: { column: string; value: string }[],
+    filters?: TableTextFilter[],
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();

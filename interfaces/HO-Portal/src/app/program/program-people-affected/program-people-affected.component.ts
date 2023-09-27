@@ -55,6 +55,7 @@ import {
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
+import { FilterService, TableTextFilter } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
@@ -335,6 +336,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public tableTextFilter: TableTextFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private messageColumnStatus = MessageStatusMapping;
@@ -378,6 +380,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
     private registrationsService: RegistrationsService,
+    private filterService: FilterService,
   ) {
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
@@ -591,6 +594,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 200,
       },
     ];
+
+    this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
+      this.tableTextFilter = filter;
+      await this.getPage();
+    });
   }
   ngOnDestroy(): void {
     if (this.routerSubscription) {
@@ -1822,7 +1830,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       null,
       null,
       this.tableFilterState['paStatus'].selected,
+      this.tableTextFilter,
     );
+
 
     this.visiblePeopleAffected = this.createTableData(data);
     this.registrationsService?.setTotalItems(meta.totalItems);
