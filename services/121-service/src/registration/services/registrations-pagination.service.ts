@@ -51,6 +51,7 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
+    hasTransactionRead: boolean,
   ): Promise<Paginated<RegistrationViewEntity>> {
     const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
@@ -97,10 +98,13 @@ export class RegistrationsPaginationService {
       paginateConfigCopy.searchableColumns = ['data.(value)'];
     }
 
+    // If a person has transaction read permission, add the payment filter
+    if (hasTransactionRead) {
+      queryBuilder = this.addPaymentFilter(queryBuilder, query);
+    }
+
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
-    queryBuilder = this.addPaymentFilter(queryBuilder, query);
-
     console.time('paginate');
     const result = await paginate<RegistrationViewEntity>(
       query,
