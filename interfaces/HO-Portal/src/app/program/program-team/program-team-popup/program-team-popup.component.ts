@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+// import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SuccessPopupComponent } from '../success-popup/success-popup.component';
@@ -28,7 +29,8 @@ export class ProgramTeamPopupComponent {
 
   constructor(
     private modalController: ModalController,
-    private programsServiceApiService: ProgramsServiceApiService, // private popoverController: PopoverController
+    // private programsService: ProgramsServiceApiService,
+    private programsServiceApiService: ProgramsServiceApiService,
   ) {}
 
   public async search(event: CustomEvent) {
@@ -46,8 +48,20 @@ export class ProgramTeamPopupComponent {
 
   public async getRoles() {
     this.rolesList = await this.programsServiceApiService.getRoles();
-    console.dir(this.rolesList);
   }
+
+  public async assignTeamMember() {
+    await this.programsServiceApiService.assignAidworker(this.programId, this.programId, ["program-admin", "run-program"]);
+  }
+
+  // private async succesAssignedAidworker(userId: number) {
+  //   await this.programsService.assignAidworker(
+  //     Number(this.programId),
+  //     Number(userId),
+  //     [UserRole.FieldValidation],
+  //   );
+  //   this.successPopup(new=[any]);
+  // }
 
   ngOnInit() {
     this.getRoles();
