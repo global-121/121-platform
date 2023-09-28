@@ -7,7 +7,7 @@ INSERT
 			max(id)
 		FROM
 			"121-service"."transaction"),
-		created,
+		created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY id),
 		status,
 		"errorMessage",
 		payment,

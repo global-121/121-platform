@@ -18,6 +18,7 @@ import {
   GetTransactionDto,
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
+import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 
 @Injectable()
@@ -26,6 +27,8 @@ export class TransactionsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(LatestTransactionEntity)
+  private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -210,7 +213,7 @@ export class TransactionsService {
       registration,
       program.enableMaxPayments,
     );
-
+    await this.updateLatestTransaction(transaction);
     if (
       transactionResponse.status === StatusEnum.success &&
       fsp.notifyOnTransaction &&
@@ -259,6 +262,34 @@ export class TransactionsService {
       }
     }
     return message;
+  }
+
+  private async updateLatestTransaction(
+    transaction: TransactionEntity,
+  ): Promise<void> {
+    const latestTransaction = new LatestTransactionEntity();
+    latestTransaction.registrationId = transaction.registrationId;
+    latestTransaction.payment = transaction.payment;
+    latestTransaction.transactionId = transaction.id;
+    try {
+      // Try to insert a new LatestTransactionEntity
+      await this.latestTransactionRepository.insert(latestTransaction);
+    } catch (error) {
+      if (error.code === '23505') {
+        // 23505 is the code for unique violation in PostgreSQL
+        // If a unique constraint violation occurred, update the existing LatestTransactionEntity
+        await this.latestTransactionRepository.update(
+          {
+            registrationId: latestTransaction.registrationId,
+            payment: latestTransaction.payment,
+          },
+          latestTransaction,
+        );
+      } else {
+        // If some other error occurred, rethrow it
+        throw error;
+      }
+    }
   }
 
   private async updatePaymentCountRegistration(

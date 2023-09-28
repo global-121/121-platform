@@ -21,7 +21,7 @@ const readSqlFile = (filepath: string): string => {
   return fs
     .readFileSync(path.join(__dirname, filepath))
     .toString()
-    .replace(/\r?\n|\r/g, '');
+    .replace(/\r?\n|\r/g, ' ');
 };
 
 @Injectable()
@@ -108,6 +108,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.multiplyRegistrations(powerNrRegistrations);
     await this.multiplyTransactions(nrPayments);
     await this.multiplyMessages(powerNrMessages);
+    await this.updateSequenceNumbers();
   }
 
   private async multiplyRegistrations(powerNr: number): Promise<void> {
@@ -196,11 +197,15 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     );
     await this.dataSource.query(queryUpdatePaymentCount);
 
-    console.log(`**Updating latest transactions**`);
+    console.log(`**Updating latest transactions. This can take a minute..** `);
+    await this.dataSource.query(
+      `truncate table "121-service"."latest_transaction"`,
+    );
     const queryUpdateLatestTransaction = readSqlFile(
-      '../../src/scripts/sql/mock-payment-transactions.sql',
+      '../../src/scripts/sql/mock-lastest-transactions.sql',
     );
     await this.dataSource.query(queryUpdateLatestTransaction);
+    console.log(`**Done updating latest transactions**`);
   }
 
   private async multiplyMessages(powerNr: number): Promise<void> {
@@ -212,6 +217,35 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
         `**CREATING MOCK DATA messages: duplication ${i} of ${powerNr}**`,
       );
       await this.dataSource.query(queryNrMessageBulk);
+    }
+  }
+
+  private async updateSequenceNumbers(): Promise<void> {
+    console.log('**Updating sequence numbers.**');
+    const tables = await this.dataSource.query(`
+      SELECT c.table_name
+      FROM information_schema.columns c
+      JOIN information_schema.tables t
+      ON t.table_name = c.table_name
+      AND t.table_schema = c.table_schema
+      WHERE c.table_schema = '121-service'
+      AND c.column_name = 'id'
+      AND t.table_type = 'BASE TABLE'
+    `);
+    for (const table of tables) {
+      const tableName = table.table_name;
+      if (!['custom_migration', 'typeorm_metadata'].includes(tableName)) {
+        const sequenceName = `${tableName}_id_seq`;
+        const maxIdQuery = `SELECT MAX(id) FROM "121-service"."${tableName}"`;
+
+        const maxIdResult = await this.dataSource.query(maxIdQuery);
+        const maxId = maxIdResult[0].max;
+        if (maxId && maxId > 0) {
+          const nextId = maxId + 1;
+          const updateSequenceQuery = `SELECT setval('121-service.${sequenceName}', ${nextId}) from "121-service"."${tableName}"`;
+          await this.dataSource.query(updateSequenceQuery);
+        }
+      }
     }
   }
 }

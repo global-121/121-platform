@@ -5,12 +5,18 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  Unique,
 } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { TransactionEntity } from './transaction.entity';
 
 // This entity is used to store to link the lastest transaction for a payment to a registration
+
+@Unique('registrationPaymentLatestTransactionUnique', [
+  'registrationId',
+  'payment',
+])
 @Entity('latest_transaction')
 export class LatestTransactionEntity extends Base121Entity {
   @Column({ default: 1 })
