@@ -71,16 +71,18 @@
     </ion-row>
     <ion-row>
       <ion-select
-        placeholder="{{ 'page.program-team.popup.roles-placeholder' | translate }}"
+        placeholder="{{
+          'page.program-team.popup.roles-placeholder' | translate
+        }}"
         [multiple]="true"
         interface="popover"
-        [interfaceOptions]="{cssClass: 'dropdown'}"
+        [interfaceOptions]="{ cssClass: 'dropdown' }"
       >
         <ion-select-option
           *ngFor="let role of rolesList"
           value="{{ role.role }}"
         >
-        {{ role.label }}
+          {{ role.label }}
         </ion-select-option>
       </ion-select>
     </ion-row>
