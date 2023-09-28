@@ -277,6 +277,7 @@ export class IntersolveVoucherService
       amount,
     );
 
+    console.log('transferResult: ', transferResult);
     paResult.status = transferResult.status;
     if (transferResult.status === StatusEnum.error) {
       paResult.message =
@@ -331,7 +332,6 @@ export class IntersolveVoucherService
             StatusEnum.waiting,
             null,
             registration.programId,
-            messageSid,
           );
 
           result.status = StatusEnum.waiting;

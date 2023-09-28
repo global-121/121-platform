@@ -424,7 +424,7 @@ export class WhatsappIncomingService {
               ProgramNotificationEnum.whatsappVoucher
             ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
-        await this.whatsappService.sendWhatsapp(
+        const messageSid = await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,
           IntersolveVoucherPayoutStatus.VoucherSent,
@@ -445,6 +445,7 @@ export class WhatsappIncomingService {
           StatusEnum.success,
           null,
           registration.programId,
+          messageSid,
         );
 
         // Add small delay/sleep to ensure the order in which messages are received
