@@ -56,8 +56,6 @@ describe('TooltipComponent', () => {
 
     const tooltipContent: HTMLElement = document.querySelector('ion-popover');
 
-    console.log('tooltipContent: ', tooltipContent);
-
     expect(tooltipContent).toBeTruthy();
 
     jasmine.clock().uninstall();
