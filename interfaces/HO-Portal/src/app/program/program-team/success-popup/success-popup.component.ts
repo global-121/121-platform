@@ -23,15 +23,6 @@ export class SuccessPopupComponent {
 
   constructor(private modalController: ModalController) {}
 
-  public async successPopup(e: Event) {
-    event = e;
-    const modal: HTMLIonModalElement = await this.modalController.create({
-      component: SuccessPopupComponent,
-      componentProps: { programId: this.programId },
-    });
-    await modal.present();
-  }
-
   public closeModal() {
     this.modalController.dismiss();
   }
