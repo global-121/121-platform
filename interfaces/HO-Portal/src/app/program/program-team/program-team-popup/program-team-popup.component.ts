@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, IonSearchbar } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 // import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -23,6 +23,7 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
 })
 export class ProgramTeamPopupComponent {
   programId;
+  @ViewChild('searchbar') searchbar: IonSearchbar;
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
@@ -39,6 +40,9 @@ export class ProgramTeamPopupComponent {
       this.programId,
       searchTerm,
     );
+    setTimeout(() => {
+      this.searchbar.setFocus();
+    }, 10);
     // this.showPopoverOnSearch();
   }
 
