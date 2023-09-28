@@ -341,7 +341,13 @@ export class PaymentsService {
     payment: number,
   ): Promise<RegistrationEntity[]> {
     const waitingReferenceIds = (
-      await this.getTransactionsByStatus(programId, payment, StatusEnum.waiting)
+      await this.transactionService.getLastTransactions(
+        programId,
+        null,
+        payment,
+        null,
+        StatusEnum.waiting,
+      )
     ).map((t) => t.referenceId);
     return await this.registrationRepository.find({
       where: { referenceId: In(waitingReferenceIds) },
@@ -437,7 +443,13 @@ export class PaymentsService {
       // If no referenceIds passed, retry all failed transactions for this payment
       // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
-        await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
+        await this.transactionService.getLastTransactions(
+          programId,
+          null,
+          payment,
+          null,
+          StatusEnum.error,
+        )
       ).map((t) => t.referenceId);
       // .. if nothing found, throw an error
       if (!failedReferenceIds.length) {
@@ -476,31 +488,20 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
-  private async getTransactionsByStatus(
-    programId: number,
-    payment: number,
-    status: StatusEnum,
-  ): Promise<any[]> {
-    const allLatestTransactionAttemptsPerPa =
-      await this.transactionService.getTransactions(programId, false, payment);
-    const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
-      (t) => t.payment === payment && t.status === status,
-    );
-    return failedTransactions;
-  }
-
   public async getFspInstructions(
     programId,
     payment,
     userId: number,
   ): Promise<FspInstructions> {
-    const transactions = await this.transactionService.getTransactions(
-      programId,
-      false,
-    );
-    const paymentTransactions = transactions.filter(
-      (transaction) => transaction.payment === payment,
-    );
+    const paymentTransactions =
+      await this.transactionService.getLastTransactions(
+        programId,
+        null,
+        payment,
+        null,
+        null,
+      );
+
     const csvInstructions = [];
     let xmlInstructions: string;
 

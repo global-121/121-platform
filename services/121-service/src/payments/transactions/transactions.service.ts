@@ -17,6 +17,7 @@ import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
@@ -40,27 +41,75 @@ export class TransactionsService {
 
   public constructor(private readonly messageService: MessageService) {}
 
-  public async getTransactions(
+  public async getLastTransactions(
     programId: number,
-    splitByTransactionStep: boolean,
     minPayment?: number,
+    specificPayment?: number,
     referenceId?: string,
-  ): Promise<any> {
-    const transactions =
-      await this.getLatestAttemptPerPaAndPaymentTransactionsQuery(
-        programId,
-        splitByTransactionStep,
-        minPayment,
-        referenceId,
-      ).getRawMany();
-    return transactions;
+    status?: StatusEnum,
+  ): Promise<TransactionReturnDto[]> {
+    return this.getLastTransactionsQuery(
+      programId,
+      minPayment,
+      specificPayment,
+      referenceId,
+      status,
+    ).getRawMany();
   }
 
-  public getLatestAttemptPerPaAndPaymentTransactionsQuery(
+  public getLastTransactionsQuery(
     programId: number,
-    splitByTransactionStep: boolean,
     minPayment?: number,
+    specificPayment?: number,
     referenceId?: string,
+    status?: StatusEnum,
+  ): SelectQueryBuilder<TransactionEntity> {
+    let transactionQuery = this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
+        '"referenceId"',
+        'status',
+        'amount',
+        'transaction.errorMessage as "errorMessage"',
+        'transaction.customData as "customData"',
+        'fsp.fspDisplayNamePortal as "fspName"',
+        'fsp.fsp as "fsp"',
+      ])
+      .leftJoin('transaction.financialServiceProvider', 'fsp')
+      .leftJoin('transaction.registration', 'r')
+      .innerJoin('transaction.latestTransaction', 'lt')
+      .where('transaction."programId" = :programId', {
+        programId: programId,
+      })
+      .andWhere('transaction.payment >= :minPayment', {
+        minPayment: minPayment || 0,
+      });
+    if (specificPayment) {
+      transactionQuery = transactionQuery.andWhere(
+        'transaction.payment = :specificpayment',
+        { specificpayment: specificPayment },
+      );
+    }
+
+    if (referenceId) {
+      transactionQuery = transactionQuery.andWhere(
+        '"referenceId" = :referenceId',
+        { referenceId: referenceId },
+      );
+    }
+    if (status) {
+      transactionQuery = transactionQuery.andWhere(
+        'transaction.status = :status',
+        { status: status },
+      );
+    }
+    return transactionQuery;
+  }
+
+  public getLastTransactionsSplitByPaymentQuery(
+    programId: number,
   ): SelectQueryBuilder<any> {
     const maxAttemptPerPaAndPayment = this.transactionRepository
       .createQueryBuilder('transaction')
@@ -72,14 +121,11 @@ export class TransactionsService {
         programId: programId,
       })
       .groupBy('payment')
-      .addGroupBy('"registrationId"');
+      .addGroupBy('"registrationId"')
+      .addSelect('"transactionStep"')
+      .addGroupBy('"transactionStep"');
 
-    if (splitByTransactionStep) {
-      maxAttemptPerPaAndPayment
-        .addSelect('"transactionStep"')
-        .addGroupBy('"transactionStep"');
-    }
-    let transactionQuery = this.transactionRepository
+    const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
@@ -102,16 +148,7 @@ export class TransactionsService {
       .where('transaction.program.id = :programId', {
         programId: programId,
       })
-      .andWhere('transaction.payment >= :minPayment', {
-        minPayment: minPayment || 0,
-      })
       .andWhere('subquery.max_attempt IS NOT NULL');
-    if (referenceId) {
-      transactionQuery = transactionQuery.andWhere(
-        '"referenceId" = :referenceId',
-        { referenceId: referenceId },
-      );
-    }
     return transactionQuery;
   }
 
