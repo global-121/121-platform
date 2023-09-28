@@ -324,23 +324,3 @@ ion-input.custom-border {
   margin-right: 16px;
   --color-checked: #4f22d7;
 }
-
-/*
-	Component: Table - Text-Filter
-*/
-.table--text-filter--select {
-  min-height: 44px;
-  width: 25%;
-  --highlight-color-invalid: none;
-  --highlight-color-valid: none;
-  &::part(container) {
-    width: 100%;
-  }
-}
-
-.table--text-filter--input {
-  min-height: 44px !important;
-  width: 25%;
-  --highlight-color-invalid: none;
-  --highlight-color-valid: none;
-}

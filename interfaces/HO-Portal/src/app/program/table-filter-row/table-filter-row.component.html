@@ -30,7 +30,7 @@
     [placeholder]="
       'page.program.table-filter-row.select-column-to-filter' | translate
     "
-    class="table--text-filter--select ion-margin-end"
+    class="tfr--text-filter--select ion-margin-end"
   >
     <ion-select-option
       *ngFor="let filterOption of tableFiltersPerColumn"
@@ -54,7 +54,7 @@
       (keyup.enter)="applyFilter()"
       [(ngModel)]="filterRowsVisibleQuery"
       [clearInput]="true"
-      class="table--text-filter--input"
+      class="tfr--text-filter--input"
       [disabled]="isLoading"
     >
     </ion-input>

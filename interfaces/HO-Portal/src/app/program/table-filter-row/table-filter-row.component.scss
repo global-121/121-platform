@@ -5,3 +5,20 @@ ion-chip {
 ion-chip ion-button {
   cursor: pointer;
 }
+
+.tfr--text-filter--select {
+  min-height: 44px;
+  width: 25%;
+  --highlight-color-invalid: none;
+  --highlight-color-valid: none;
+  &::part(container) {
+    width: 100%;
+  }
+}
+
+.tfr--text-filter--input {
+  min-height: 44px !important;
+  width: 25%;
+  --highlight-color-invalid: none;
+  --highlight-color-valid: none;
+}
