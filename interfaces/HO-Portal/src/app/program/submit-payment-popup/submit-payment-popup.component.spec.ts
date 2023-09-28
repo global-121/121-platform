@@ -1,8 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { MakePaymentComponent } from 'src/app/program/make-payment/make-payment.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { SubmitPaymentPopupComponent } from './submit-payment-popup.component';
 
 describe('SubmitPaymentPopupComponent', () => {
@@ -15,9 +16,13 @@ describe('SubmitPaymentPopupComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     TestBed.configureTestingModule({
-      declarations: [SubmitPaymentPopupComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SubmitPaymentPopupComponent, MakePaymentComponent],
+      imports: [
+        IonicModule,
+        TranslateModule.forRoot(),
+        SharedModule,
+        HttpClientTestingModule,
+      ],
       providers: [
         {
           provide: ModalController,

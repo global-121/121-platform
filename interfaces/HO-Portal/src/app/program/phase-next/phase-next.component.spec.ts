@@ -1,5 +1,4 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -29,7 +28,6 @@ describe('PhaseNextComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PhaseNextComponent],
       imports: [HttpClientTestingModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMagicalMock(ProgramsServiceApiService),
         provideMagicalMock(ProgramPhaseService),

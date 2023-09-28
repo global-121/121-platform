@@ -1,13 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramPeopleAffectedComponent } from './program-people-affected.component';
 
@@ -30,8 +31,13 @@ describe('ProgramPeopleAffectedComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ProgramPeopleAffectedComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        FormsModule,
+        TranslateModule.forRoot(),
+        NgxDatatableModule,
+        RouterTestingModule,
+        SharedModule,
+      ],
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),

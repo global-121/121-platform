@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
@@ -20,7 +19,6 @@ describe('ProgramPayoutComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProgramPayoutComponent],
       imports: [TranslateModule.forRoot(), FormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),

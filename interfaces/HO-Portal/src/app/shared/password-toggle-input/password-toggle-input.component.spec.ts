@@ -1,5 +1,6 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { PasswordToggleInputComponent } from './password-toggle-input.component';
 
 describe('PasswordToggleInputComponent', () => {
@@ -9,7 +10,7 @@ describe('PasswordToggleInputComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PasswordToggleInputComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [FormsModule, IonicModule],
     }).compileComponents();
   }));
 

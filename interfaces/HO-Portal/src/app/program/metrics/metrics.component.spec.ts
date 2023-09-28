@@ -1,56 +1,34 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { provideMagicalMock } from 'src/app/mocks/helpers';
-import { Program } from 'src/app/models/program.model';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
+import { SharedModule } from '../../shared/shared.module';
 import { MetricsComponent } from './metrics.component';
 
-@Component({
-  template: '<app-metrics [program]="program"></app-metrics>',
-})
-class TestHostComponent {
-  program: Program | any;
-}
-
 describe('MetricsComponent', () => {
-  let fixture: ComponentFixture<TestHostComponent>;
-  let testHost: TestHostComponent;
-
-  const mockProgramId = 1;
+  let component: MetricsComponent;
+  let fixture: ComponentFixture<MetricsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MetricsComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(TranslatableStringService),
-        provideMagicalMock(ProgramsServiceApiService),
+      declarations: [MetricsComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        SharedModule,
+        HttpClientTestingModule,
       ],
+      providers: [TranslatableStringService, ProgramsServiceApiService],
     }).compileComponents();
   }));
 
-  let mockTranslatableStringService: jasmine.SpyObj<any>;
-  let mockProgramsApi: jasmine.SpyObj<any>;
-
   beforeEach(() => {
-    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
-    mockProgramsApi.getProgramById.and.returnValue(
-      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
-    );
-    mockTranslatableStringService = TestBed.inject(TranslatableStringService);
-    mockTranslatableStringService.get.and.returnValue('');
-
-    fixture = TestBed.createComponent(TestHostComponent);
-    testHost = fixture.componentInstance;
-
+    fixture = TestBed.createComponent(MetricsComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(testHost).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });

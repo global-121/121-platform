@@ -1,10 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ExportFspInstructionsComponent } from './export-fsp-instructions.component';
 
 describe('ExportFspInstructionsComponent', () => {
@@ -17,11 +18,12 @@ describe('ExportFspInstructionsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ExportFspInstructionsComponent],
       imports: [
+        IonicModule,
         TranslateModule.forRoot(),
         HttpClientTestingModule,
         RouterTestingModule,
+        SharedModule,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));

@@ -1,7 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { UpdatePropertyItemComponent } from './update-property-item.component';
 
 describe('UpdatePropertyItemComponent', () => {
@@ -11,8 +12,12 @@ describe('UpdatePropertyItemComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UpdatePropertyItemComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [FormsModule, TranslateModule.forRoot()],
+      imports: [
+        FormsModule,
+        IonicModule,
+        TranslateModule.forRoot(),
+        SharedModule,
+      ],
     }).compileComponents();
   }));
 
