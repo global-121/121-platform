@@ -27,6 +27,7 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '../dto/registration-data-relation.model';
+import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
@@ -172,8 +173,9 @@ export class RegistrationsPaginationService {
     registrationDataRelations: RegistrationDataInfo[],
     registrationDataNamesProgram: string[],
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    const filterableColumnsRegData = this.createFilterObjectRegistrationData(
+    const filterableColumnsRegData = this.createFilterObjects(
       registrationDataNamesProgram,
+      AllowedFilterOperatorsString,
     );
     const parsedFilter = parseFilter(query, filterableColumnsRegData);
     return this.filterRegistrationDataQb(
@@ -183,12 +185,13 @@ export class RegistrationsPaginationService {
     );
   }
 
-  private createFilterObjectRegistrationData(
+  private createFilterObjects(
     registrationDataNamesProgram: string[],
+    allowedFilterOperators: FilterOperator[],
   ): { [column: string]: FilterOperator[] | true } {
     const filterObject = {};
     for (const name of registrationDataNamesProgram) {
-      filterObject[name] = AllowedFilterOperatorsString;
+      filterObject[name] = allowedFilterOperators;
     }
     return filterObject;
   }
@@ -412,19 +415,25 @@ export class RegistrationsPaginationService {
     queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
     paginateQuery: PaginateQuery,
   ): SelectQueryBuilder<RegistrationViewEntity> {
+    const filterableColumns = this.createFilterObjects(
+      Object.values(PaymentFilterEnum),
+      [FilterOperator.EQ],
+    );
+
+    const parsedFilter = parseFilter(paginateQuery, filterableColumns);
     const filterOptions = [
       {
-        key: 'successPayment',
+        key: PaymentFilterEnum.successPayment,
         alias: 'latestTransactionsSuccess',
         status: StatusEnum.success,
       },
       {
-        key: 'failedPayment',
+        key: PaymentFilterEnum.failedPayment,
         alias: 'latestTransactionsFailed',
         status: StatusEnum.error,
       },
       {
-        key: 'waitingPayment',
+        key: PaymentFilterEnum.waitingPayment,
         alias: 'latestTransactionsWaiting',
         status: StatusEnum.waiting,
       },
@@ -433,20 +442,40 @@ export class RegistrationsPaginationService {
     for (const option of filterOptions) {
       if (
         paginateQuery.filter &&
-        Object.keys(paginateQuery.filter).includes(option.key)
+        Object.keys(parsedFilter).includes(option.key)
       ) {
-        const paymentNumber = paginateQuery.filter[option.key];
-        queryBuilder.innerJoin('registration.latestTransactions', option.alias);
-        queryBuilder.innerJoin(
-          `${option.alias}.transaction`,
-          `transaction${option.alias}`,
-          `"transaction${option.alias}"."status" = '${option.status}' AND "transaction${option.alias}"."payment" = :paymentNumber`,
-          {
-            paymentNumber: paymentNumber,
-          },
-        );
+        for (const filter of parsedFilter[option.key]) {
+          const paymentNumber = filter.findOperator.value;
+          // if payment number is numeric, add the filter
+          if (!isNaN(Number(paymentNumber))) {
+            queryBuilder = this.addPaymentFilterJoin(
+              queryBuilder,
+              option.alias,
+              option.status,
+              paymentNumber,
+            );
+          }
+        }
       }
     }
+    return queryBuilder;
+  }
+
+  private addPaymentFilterJoin(
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    alias: string,
+    status: StatusEnum,
+    paymentNumber: string,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    queryBuilder.innerJoin('registration.latestTransactions', alias);
+    queryBuilder.innerJoin(
+      `${alias}.transaction`,
+      `transaction${alias}`,
+      `"transaction${alias}"."status" = '${status}' AND "transaction${alias}"."payment" = :paymentNumber`,
+      {
+        paymentNumber: paymentNumber,
+      },
+    );
     return queryBuilder;
   }
 }
