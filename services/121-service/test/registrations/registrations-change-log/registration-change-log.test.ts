@@ -13,7 +13,7 @@ import {
 
 const reason = 'automated test';
 
-describe('Update attribute of PA', () => {
+describe('Get and update registration change log', () => {
   const programId = 3;
 
   let accessToken: string;

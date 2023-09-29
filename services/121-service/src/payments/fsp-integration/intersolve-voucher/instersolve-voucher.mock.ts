@@ -62,7 +62,10 @@ export class IntersolveVoucherMockService {
         },
       };
     }
-    console.log('IntersolveMock post(): response:', response);
+    console.log(
+      'IntersolveMock post(): response: CardNewBalance',
+      response.IssueCardResponse.CardNewBalance,
+    );
     return new Promise((resolve) => resolve(response));
   }
 
