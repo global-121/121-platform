@@ -1,6 +1,5 @@
 import Permission from '../auth/permission.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
 // Model for data from the API
@@ -74,7 +73,7 @@ export class PersonRow {
   paymentCount?: number;
   paymentCountRemaining?: number | null;
   preferredLanguage?: string | null;
-  paymentHistory?: PaymentColumnDetail;
+  paymentHistoryColumn? : string;
   lastMessageStatus?: string;
 }
 
