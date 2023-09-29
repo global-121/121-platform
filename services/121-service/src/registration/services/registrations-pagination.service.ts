@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/permission.enum';
 import { UserEntity } from '../../user/user.entity';
 import {
@@ -26,6 +27,7 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '../dto/registration-data-relation.model';
+import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
@@ -50,6 +52,7 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
+    hasTransactionRead: boolean,
   ): Promise<Paginated<RegistrationViewEntity>> {
     const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
@@ -66,7 +69,9 @@ export class RegistrationsPaginationService {
 
     let queryBuilder = this.registrationViewRepository
       .createQueryBuilder('registration')
-      .where('"programId" = :programId', { programId: programId });
+      .where('"registration"."programId" = :programId', {
+        programId: programId,
+      });
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
@@ -94,13 +99,20 @@ export class RegistrationsPaginationService {
       paginateConfigCopy.searchableColumns = ['data.(value)'];
     }
 
+    // If a person has transaction read permission, add the payment filter
+    if (hasTransactionRead) {
+      queryBuilder = this.addPaymentFilter(queryBuilder, query);
+    }
+
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
+    console.time('paginate');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfigCopy,
     );
+    console.timeEnd('paginate');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
@@ -161,8 +173,9 @@ export class RegistrationsPaginationService {
     registrationDataRelations: RegistrationDataInfo[],
     registrationDataNamesProgram: string[],
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    const filterableColumnsRegData = this.createFilterObjectRegistrationData(
+    const filterableColumnsRegData = this.createFilterObjects(
       registrationDataNamesProgram,
+      AllowedFilterOperatorsString,
     );
     const parsedFilter = parseFilter(query, filterableColumnsRegData);
     return this.filterRegistrationDataQb(
@@ -172,12 +185,13 @@ export class RegistrationsPaginationService {
     );
   }
 
-  private createFilterObjectRegistrationData(
+  private createFilterObjects(
     registrationDataNamesProgram: string[],
+    allowedFilterOperators: FilterOperator[],
   ): { [column: string]: FilterOperator[] | true } {
     const filterObject = {};
     for (const name of registrationDataNamesProgram) {
-      filterObject[name] = AllowedFilterOperatorsString;
+      filterObject[name] = allowedFilterOperators;
     }
     return filterObject;
   }
@@ -395,5 +409,73 @@ export class RegistrationsPaginationService {
       fullnameConcat.push(registrationRow[nameColumn]);
     }
     return fullnameConcat.join(' ');
+  }
+
+  private addPaymentFilter(
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    paginateQuery: PaginateQuery,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    const filterableColumns = this.createFilterObjects(
+      Object.values(PaymentFilterEnum),
+      [FilterOperator.EQ],
+    );
+
+    const parsedFilter = parseFilter(paginateQuery, filterableColumns);
+    const filterOptions = [
+      {
+        key: PaymentFilterEnum.successPayment,
+        alias: 'latestTransactionsSuccess',
+        status: StatusEnum.success,
+      },
+      {
+        key: PaymentFilterEnum.failedPayment,
+        alias: 'latestTransactionsFailed',
+        status: StatusEnum.error,
+      },
+      {
+        key: PaymentFilterEnum.waitingPayment,
+        alias: 'latestTransactionsWaiting',
+        status: StatusEnum.waiting,
+      },
+    ];
+
+    for (const option of filterOptions) {
+      if (
+        paginateQuery.filter &&
+        Object.keys(parsedFilter).includes(option.key)
+      ) {
+        for (const filter of parsedFilter[option.key]) {
+          const paymentNumber = filter.findOperator.value;
+          // if payment number is numeric, add the filter
+          if (!isNaN(Number(paymentNumber))) {
+            queryBuilder = this.addPaymentFilterJoin(
+              queryBuilder,
+              option.alias,
+              option.status,
+              paymentNumber,
+            );
+          }
+        }
+      }
+    }
+    return queryBuilder;
+  }
+
+  private addPaymentFilterJoin(
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    alias: string,
+    status: StatusEnum,
+    paymentNumber: string,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    queryBuilder.innerJoin('registration.latestTransactions', alias);
+    queryBuilder.innerJoin(
+      `${alias}.transaction`,
+      `transaction${alias}`,
+      `"transaction${alias}"."status" = '${status}' AND "transaction${alias}"."payment" = :paymentNumber`,
+      {
+        paymentNumber: paymentNumber,
+      },
+    );
+    return queryBuilder;
   }
 }

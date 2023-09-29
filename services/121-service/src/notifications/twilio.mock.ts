@@ -109,7 +109,8 @@ export class TwilioClientMock {
       }
       if (
         twilioMessagesCreateDto.messageType ===
-        IntersolveVoucherPayoutStatus.InitialMessage
+          IntersolveVoucherPayoutStatus.InitialMessage &&
+        !twilioMessagesCreateDto.to.includes('15005550002')
       ) {
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
           (e) => {

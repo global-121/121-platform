@@ -210,10 +210,9 @@ export class MetricsService {
         .map((i) => i.payment)
         .sort((a, b) => (a > b ? 1 : -1));
 
-      transactions = await this.transactionsService.getTransactions(
-        programId,
-        true,
-      );
+      transactions = this.transactionsService
+        .getLastTransactionsSplitByPaymentQuery(programId)
+        .getRawMany();
     }
 
     for await (const row of rows) {
@@ -1360,18 +1359,20 @@ export class MetricsService {
     ).length;
 
     // Use this method to get only the latest attempt per PA per payment
-    const transactionsQuery =
-      this.transactionsService.getLatestAttemptPerPaAndPaymentTransactionsQuery(
-        programId,
-        false,
-      );
+    const transactionsQuery = this.transactionsService.getLastTransactionsQuery(
+      programId,
+      null,
+      null,
+      null,
+      StatusEnum.success,
+    );
 
     const { spentMoney } = await this.dataSource
       .createQueryBuilder()
       .select('SUM(amount)', 'spentMoney')
       .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
       .setParameters(transactionsQuery.getParameters())
-      .where('status = :status', { status: StatusEnum.success })
+      // .where('status = :status', { status: StatusEnum.success })
       .getRawOne();
 
     const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future

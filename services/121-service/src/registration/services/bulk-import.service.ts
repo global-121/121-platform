@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import * as convert from 'xml-js';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
 import { LookupService } from '../../notifications/lookup/lookup.service';
@@ -29,6 +30,7 @@ import {
   AnswerTypes,
   Attribute,
   GenericAttributes,
+  QuestionType,
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
@@ -580,6 +582,7 @@ export class BulkImportService {
         name: c.name,
         type: c.type,
         label: c.label,
+        questionType: QuestionType.programCustomAttribute,
       };
     });
   }
@@ -600,6 +603,7 @@ export class BulkImportService {
         id: c.id,
         name: c.name,
         type: c.answerType,
+        questionType: QuestionType.programQuestion,
       };
     });
     attributes = [...attributes, ...programQuestions];
@@ -614,17 +618,37 @@ export class BulkImportService {
           id: c.id,
           name: c.name,
           type: c.answerType,
+          fspName: c.fsp.fsp,
+          questionType: QuestionType.fspQuestion,
         };
       });
-    attributes = [...attributes, ...programFspAttributes.reverse()];
+    attributes = [...programFspAttributes.reverse(), ...attributes];
 
-    // deduplicate attributes
-    attributes = attributes.filter(
-      (value, index, self) =>
-        index ===
-        self.findIndex((t) => t.name === value.name && t.type === value.type),
-    );
-    return attributes;
+    // deduplicate attributes and concatenate fsp names
+    const deduplicatedAttributes = attributes.reduce((acc, curr) => {
+      const existingAttribute = acc.find((a) => a.name === curr.name);
+      if (existingAttribute) {
+        if (
+          curr.questionType &&
+          !existingAttribute.questionTypes.includes(curr.questionType)
+        ) {
+          existingAttribute.questionTypes.push(curr.questionType);
+        }
+        if (curr.fspName) {
+          existingAttribute.fspNames.push(curr.fspName);
+        }
+      } else {
+        acc.push({
+          id: curr.id,
+          name: curr.name,
+          type: curr.type,
+          fspNames: curr.fspName ? [curr.fspName] : [],
+          questionTypes: curr.questionType ? [curr.questionType] : [],
+        });
+      }
+      return acc;
+    }, []);
+    return deduplicatedAttributes;
   }
 
   public async validateRegistrationsInput(
@@ -706,7 +730,13 @@ export class BulkImportService {
         original: null,
         sanitized: null,
       };
-      for await (const att of dynamicAttributes) {
+
+      // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
+      const dynamicAttributesForFsp = dynamicAttributes.filter((att) =>
+        this.isDynamicAttributeForFsp(att, row.fspName),
+      );
+
+      for await (const att of dynamicAttributesForFsp) {
         if (att.type === AnswerTypes.tel && row[att.name]) {
           let sanitized: string;
           if (row[att.name] === earlierCheckedPhoneNr.original) {
@@ -761,6 +791,29 @@ export class BulkImportService {
       validatatedArray.push(importRecord);
     }
     return validatatedArray;
+  }
+
+  private isDynamicAttributeForFsp(
+    attribute: Attribute,
+    fspName: FspName,
+  ): boolean {
+    if (
+      attribute.questionTypes.length > 1 ||
+      attribute.questionTypes[0] !== QuestionType.fspQuestion
+    ) {
+      // The attribute has multiple question types or is not FSP-specific
+      return true;
+    } else if (
+      attribute.questionTypes.length === 1 &&
+      attribute.questionTypes[0] === QuestionType.fspQuestion &&
+      attribute.fspNames.includes(fspName)
+    ) {
+      // The attribute has a single question type that is FSP-specific and is relevant for the FSP of this registration
+      return true;
+    } else {
+      // The attribute is not relevant
+      return false;
+    }
   }
 
   private createLanguageMapping(programLanguages: string[]): object {

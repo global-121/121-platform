@@ -289,6 +289,12 @@ export class RegistrationsController {
         programId,
         PermissionEnum.RegistrationPersonalREAD,
       );
+    const hasTransactionRead =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        PermissionEnum.PaymentTransactionREAD,
+      );
 
     // TODO: Add check for transaction read
 
@@ -296,6 +302,7 @@ export class RegistrationsController {
       query,
       Number(programId),
       hasPersonalRead,
+      hasTransactionRead,
     );
   }
 

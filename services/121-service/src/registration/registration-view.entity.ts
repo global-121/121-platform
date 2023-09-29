@@ -9,6 +9,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
+import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -122,4 +123,13 @@ export class RegistrationViewEntity {
     },
   )
   public data: RegistrationDataEntity[];
+
+  @OneToMany(
+    () => LatestTransactionEntity,
+    (latestTransactions) => latestTransactions.registration,
+    {
+      eager: true,
+    },
+  )
+  public latestTransactions: LatestTransactionEntity[];
 }
