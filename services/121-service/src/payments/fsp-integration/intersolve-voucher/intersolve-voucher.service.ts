@@ -277,7 +277,6 @@ export class IntersolveVoucherService
       amount,
     );
 
-    console.log('transferResult: ', transferResult);
     paResult.status = transferResult.status;
     if (transferResult.status === StatusEnum.error) {
       paResult.message =
