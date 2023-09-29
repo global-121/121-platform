@@ -13,7 +13,7 @@ export const AllowedFilterOperatorsNumber = [
   FilterOperator.NULL,
 ];
 
-export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
+const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
     maxLimit: 10000,
     sortableColumns: [
@@ -53,8 +53,29 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       paymentCountRemaining: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
       lastMessageStatus: AllowedFilterOperatorsString,
+    },
+  };
+
+// Define the object with additional filterable columns
+// This is the object that is used in the controller for swagger documentation
+// This is because we wrote custom code to handle the additional filterable columns
+const PaginateConfigRegistrationViewWithPayments: PaginateConfig<RegistrationViewEntity> =
+  {
+    ...basePaginateConfigRegistrationView,
+    filterableColumns: {
+      ...basePaginateConfigRegistrationView.filterableColumns,
       failedPayment: AllowedFilterOperatorsNumber,
       waitingPayment: AllowedFilterOperatorsNumber,
       successPayment: AllowedFilterOperatorsNumber,
     },
   };
+
+// Define the object without additional filterable columns
+const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
+  ...basePaginateConfigRegistrationView,
+};
+
+export {
+  PaginateConfigRegistrationViewWithPayments,
+  PaginateConfigRegistrationView,
+};
