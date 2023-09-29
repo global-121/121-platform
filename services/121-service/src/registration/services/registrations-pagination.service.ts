@@ -91,6 +91,7 @@ export class RegistrationsPaginationService {
     }
 
     // Check if the sort contains at least one registration data name
+    // At the moment we only support sorting on one field
     if (
       hasPersonalReadPermission &&
       query.sortBy &&
@@ -102,11 +103,13 @@ export class RegistrationsPaginationService {
         registrationDataRelations,
       );
     }
+
     if (hasPersonalReadPermission) {
       paginateConfigCopy.relations = ['data'];
       paginateConfigCopy.searchableColumns = ['data.(value)'];
     }
 
+    console.log('queryBuilder: ', queryBuilder.getQueryAndParameters());
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
@@ -298,7 +301,9 @@ export class RegistrationsPaginationService {
       }),
     );
     queryBuilder.orderBy('rd.value', query.sortBy[0][1] as 'ASC' | 'DESC');
-    queryBuilder.addSelect('rd.value'); // This is somehow needed (without alias!) to make the orderBy work
+    queryBuilder.addSelect('rd.value');
+    // This is somehow needed (without alias!) to make the orderBy work
+    // These values are not returned because they are not mapped later on
     return queryBuilder;
   }
 
