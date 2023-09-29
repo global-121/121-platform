@@ -23,10 +23,12 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
 })
 export class ProgramTeamPopupComponent {
   programId;
+  userId;
   @ViewChild('searchbar') searchbar: IonSearchbar;
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
+  showSearchResults;
 
   constructor(
     private modalController: ModalController,
@@ -40,14 +42,13 @@ export class ProgramTeamPopupComponent {
       this.programId,
       searchTerm,
     );
-    setTimeout(() => {
-      this.searchbar.setFocus();
-    }, 10);
-    // this.showPopoverOnSearch();
+    this.searchResults.length > 0 ? this.showSearchResults = true : this.showSearchResults = false;
   }
 
-  updateSearchbarValue(selectedItem: string) {
+  updateSearchbarValue(selectedItem: string, userId: number) {
     this.searchQuery = selectedItem;
+    this.userId = userId;
+    this.showSearchResults = false;
   }
 
   public async getRoles() {
@@ -55,17 +56,9 @@ export class ProgramTeamPopupComponent {
   }
 
   public async assignTeamMember() {
-    await this.programsServiceApiService.assignAidworker(this.programId, this.programId, ["program-admin", "run-program"]);
+    await this.programsServiceApiService.assignAidworker(this.programId, this.userId, ["program-admin", "run-program"]);
+    this.successPopup(event);
   }
-
-  // private async succesAssignedAidworker(userId: number) {
-  //   await this.programsService.assignAidworker(
-  //     Number(this.programId),
-  //     Number(userId),
-  //     [UserRole.FieldValidation],
-  //   );
-  //   this.successPopup(new=[any]);
-  // }
 
   ngOnInit() {
     this.getRoles();
