@@ -1,32 +1,20 @@
 <div
-  style="
-    display: flex;
-    flex-direction: row;
-    border: 1px solid black;
-    height: 48px;
-  "
-  class="ion-align-items-center ion-margin-vertical"
+  [ngClass]="{
+    'tfr--create-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
+    'is-loading': isLoading
+  }"
 >
-  <ion-spinner
-    *ngIf="isLoading"
-    size="large"
-    style="margin: 0 16px 0 16px"
-    color="medium"
-  ></ion-spinner>
-
   <ion-icon
-    *ngIf="!isLoading"
     name="funnel"
     color="black"
     aria-hidden="true"
-    style="margin: 0 16px 0 16px"
+    class="ion-margin-horizontal"
   ></ion-icon>
 
   <ion-select
-    *ngIf="!isLoading"
     interface="popover"
-    [value]="undefined"
     [(ngModel)]="textFilterOption"
+    [disabled]="isLoading"
     [placeholder]="
       'page.program.table-filter-row.select-column-to-filter' | translate
     "
@@ -51,11 +39,11 @@
       [attr.aria-label]="
         'page.program.program-people-affected.filter-placeholder' | translate
       "
-      (keyup.enter)="applyFilter()"
       [(ngModel)]="filterRowsVisibleQuery"
-      [clearInput]="true"
-      class="tfr--text-filter--input"
       [disabled]="isLoading"
+      [clearInput]="true"
+      (keyup.enter)="applyFilter()"
+      class="tfr--text-filter--input"
     >
     </ion-input>
 
@@ -68,9 +56,12 @@
     </ion-button>
   </ng-container>
 </div>
+
 <div
-  style="display: flex; flex-direction: row"
-  class="ion-align-items-center ion-margin-vertical"
+  [ngClass]="{
+    'tfr--active-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
+    'is-loading': isLoading
+  }"
 >
   <ion-chip
     *ngFor="let filter of textFilter | async"
