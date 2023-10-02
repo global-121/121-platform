@@ -1568,8 +1568,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async onSort(event) {
-    this.tableService?.setSortBy(event.sorts[0].prop, event.sorts[0].dir);
-    this.tableService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+    this.registrationsService?.setSortBy(
+      event.sorts[0].prop,
+      event.sorts[0].dir,
+    );
+    this.registrationsService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
     await this.getPage();
   }
 }
