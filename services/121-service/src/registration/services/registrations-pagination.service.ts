@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FilterOperator,
@@ -27,6 +27,7 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '../dto/registration-data-relation.model';
+import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
@@ -52,7 +53,6 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
-    hasTransactionRead: boolean,
   ): Promise<Paginated<RegistrationViewEntity>> {
     const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
@@ -81,7 +81,6 @@ export class RegistrationsPaginationService {
 
     // Check if the filter contains at least one registration data name
     if (
-      hasPersonalReadPermission &&
       query.filter &&
       registrationDataNamesProgram.some((key) =>
         Object.keys(query.filter).includes(key),
@@ -100,9 +99,7 @@ export class RegistrationsPaginationService {
     }
 
     // If a person has transaction read permission, add the payment filter
-    if (hasTransactionRead) {
-      queryBuilder = this.addPaymentFilter(queryBuilder, query);
-    }
+    queryBuilder = this.addPaymentFilter(queryBuilder, query);
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
@@ -131,6 +128,79 @@ export class RegistrationsPaginationService {
       hasPersonalReadPermission,
     );
     return result;
+  }
+
+  public async throwIfNoPermissionsForQuery(
+    userId: number,
+    programId: number,
+    paginateQuery: PaginateQuery,
+  ): Promise<void> {
+    await this.throwIfNoTransactionReadPermission(
+      userId,
+      programId,
+      paginateQuery,
+    );
+    await this.throwIfNoPersonalReadPermission(
+      userId,
+      programId,
+      paginateQuery,
+    );
+  }
+
+  private async throwIfNoTransactionReadPermission(
+    userId: number,
+    programId: number,
+    paginateQuery: PaginateQuery,
+  ): Promise<void> {
+    const hasTransactionRead = await this.userHasPermissionForProgram(
+      userId,
+      programId,
+      PermissionEnum.PaymentTransactionREAD,
+    );
+    if (!hasTransactionRead && paginateQuery.filter) {
+      for (const filterKey of Object.keys(paginateQuery.filter)) {
+        if (Object.values(PaymentFilterEnum).includes(filterKey as any)) {
+          throw new HttpException(
+            `You do not have permission ${
+              PermissionEnum.PaymentTransactionREAD
+            }. Not allowed to use filter parameters ${Object.values(
+              PaymentFilterEnum,
+            ).join(', ')}`,
+            HttpStatus.UNAUTHORIZED,
+          );
+        }
+      }
+    }
+  }
+
+  private async throwIfNoPersonalReadPermission(
+    userId: number,
+    programId: number,
+    paginateQuery: PaginateQuery,
+  ): Promise<void> {
+    const hasPersonalRead = await this.userHasPermissionForProgram(
+      userId,
+      programId,
+      PermissionEnum.RegistrationPersonalREAD,
+    );
+    if (!hasPersonalRead && paginateQuery.filter) {
+      const registrationDataRelations =
+        await this.programService.getAllRelationProgram(programId);
+      const registrationDataNamesProgram = registrationDataRelations.map(
+        (r) => r.name,
+      );
+      registrationDataNamesProgram.push(CustomDataAttributes.phoneNumber);
+
+      // Check if the filter contains at least one registration data name
+      for (const registrationDataName of registrationDataNamesProgram) {
+        if (Object.keys(paginateQuery.filter).includes(registrationDataName)) {
+          throw new HttpException(
+            `You do not have permission ${PermissionEnum.RegistrationPersonalREAD}. Not allowed to use filter paramter: ${registrationDataName}`,
+            HttpStatus.UNAUTHORIZED,
+          );
+        }
+      }
+    }
   }
 
   public async userHasPermissionForProgram(
