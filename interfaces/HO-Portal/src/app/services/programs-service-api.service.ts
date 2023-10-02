@@ -13,6 +13,7 @@ import { Message } from '../models/message.model';
 import {
   FilterOperatorEnum,
   PaginationFilter,
+  PaginationSort,
 } from '../models/pagination-filter.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
@@ -532,6 +533,7 @@ export class ProgramsServiceApiService {
     attributes?: string[],
     statuses?: RegistrationStatus[],
     filters?: PaginationFilter[],
+    sort?: PaginationSort,
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
@@ -559,6 +561,9 @@ export class ProgramsServiceApiService {
           `${operator}:${filter.value}`,
         );
       }
+    }
+    if (sort) {
+      params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     }
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,

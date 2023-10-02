@@ -161,8 +161,8 @@
   [headerHeight]="95"
   [footerHeight]="50"
   [reorderable]="false"
-  sortType="single"
-  [sorts]="[{ prop: 'pa', dir: 'asc' }]"
+  [externalSorting]="true"
+  (sort)="onSort($event)"
   [loadingIndicator]="isLoading"
   [columns]="columns"
   [rows]="visiblePeopleAffected"
@@ -220,7 +220,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    prop="pa"
+    prop="registrationProgramId"
     [name]="
       'page.program.program-people-affected.column.personAffectedSequence'
         | translate
