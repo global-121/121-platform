@@ -20,6 +20,7 @@ import { PermissionEnum } from '../../user/permission.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
@@ -46,18 +47,21 @@ export class TransactionsController {
   })
   @ApiResponse({
     status: 200,
+    type: TransactionReturnDto,
+    isArray: true,
   })
   @Get('programs/:programId/payments/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('minPayment') minPayment: number,
     @Query('referenceId') referenceId: string,
-  ): Promise<any> {
-    return await this.transactionsService.getTransactions(
+  ): Promise<TransactionReturnDto[]> {
+    return await this.transactionsService.getLastTransactions(
       Number(programId),
-      false,
       minPayment,
+      null,
       referenceId,
+      null,
     );
   }
 

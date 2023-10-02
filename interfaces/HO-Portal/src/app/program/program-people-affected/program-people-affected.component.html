@@ -91,6 +91,7 @@
           <ion-select-option
             *ngFor="let filterOption of tableFiltersDropdownOptions"
             value="{{ filterOption.name }}"
+            [disabled]="filterOption.name === 'DIVIDER'"
             >{{ filterOption.label }}</ion-select-option
           >
         </ion-select>
@@ -420,7 +421,6 @@
     >
       <ng-container *ngIf="value">
         <button
-          *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
@@ -432,15 +432,11 @@
           "
           (click)="paymentHistoryPopup(row)"
           [ngClass]="{
-            'is-error': hasError(row),
             'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
           {{ value }}
         </button>
-        <span *ngIf="!row.paymentHistory?.paymentIndex">
-          {{ value }}
-        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>

@@ -133,6 +133,8 @@ export async function waitForPaymentTransactionsToComplete(
   paymentReferences: string[],
   accessToken: string,
   maxWaitTimeMs: number,
+  completeStatusses: string[] = ['success'],
+  payment = 1,
 ): Promise<void> {
   const startTime = Date.now();
   let allTransactionsSuccessful = false;
@@ -141,7 +143,7 @@ export async function waitForPaymentTransactionsToComplete(
     // Get payment transactions
     const paymentTransactions = await getTransactions(
       programId,
-      null,
+      payment,
       null,
       accessToken,
     );
@@ -151,7 +153,7 @@ export async function waitForPaymentTransactionsToComplete(
       const transaction = paymentTransactions.body.find(
         (txn) => txn.referenceId === referenceId,
       );
-      return transaction && transaction.status === 'success';
+      return transaction && completeStatusses.includes(transaction.status);
     });
 
     // If not all transactions are successful, wait for a short interval before checking again
