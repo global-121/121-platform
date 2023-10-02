@@ -1,5 +1,5 @@
-ion-grid {
-  --ion-grid-width: 70%;
+form {
+  width: 70%;
 }
 
 ion-searchbar {
@@ -8,6 +8,15 @@ ion-searchbar {
   border: 1px solid var(--fiveten-neutral-200);
   height: 44px;
   margin-bottom: 14px;
+}
+
+ion-list {
+  margin: 0 0 16px 0 !important;
+  margin-inline-start: 0 !important;
+  overflow-y: scroll;
+  height: 150px;
+  width: 100%;
+  padding: 0;
 }
 
 .label {

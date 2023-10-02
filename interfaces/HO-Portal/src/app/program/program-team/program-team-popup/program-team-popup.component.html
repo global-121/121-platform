@@ -46,7 +46,7 @@
         >
         </ion-searchbar>
         <ng-container *ngIf="showSearchResults">
-          <ion-list>
+          <ion-list class="ion-no-margin">
             <ion-item
               [button]="true"
               *ngFor="let user of searchResults"
@@ -74,7 +74,7 @@
           interface="popover"
           [(ngModel)]="selectedRoles"
           name="selectedRoles"
-          [interfaceOptions]="{ cssClass: 'dropdown' }"
+          [interfaceOptions]="{ cssClass: 'rolesDropdown' }"
         >
           <ion-select-option
             *ngFor="let role of rolesList"
@@ -100,15 +100,19 @@
         >
       </ion-button>
 
-    <!-- add user button -->
-    <ion-button
-      type="submit"
-      shape="round"
-      fill="solid"
-      class="button"
-      item-end
-      [disabled]="!isFormComplete()"
-      >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
-    >
-  </div>
-</form>
+      <!-- add user button -->
+      <ion-button
+        type="submit"
+        shape="round"
+        fill="solid"
+        class="button"
+        item-end
+        [disabled]="!isFormComplete()"
+        (click)="assignTeamMember()"
+        >{{
+          'page.program-team.popup.add-users-button' | translate
+        }}</ion-button
+      >
+    </div>
+  </form>
+</ion-content>
