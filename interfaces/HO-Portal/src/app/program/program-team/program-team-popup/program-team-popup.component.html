@@ -35,6 +35,7 @@
       <ion-row>
         <ion-searchbar
           id="searchbar"
+          name="searchQuery"
           [(ngModel)]="searchQuery"
           (ionInput)="search($event)"
           [debounce]="1000"
@@ -72,6 +73,7 @@
           [multiple]="true"
           interface="popover"
           ngModel="selectedRoles"
+          name="selectedRoles"
           [interfaceOptions]="{ cssClass: 'dropdown' }"
         >
           <ion-select-option
