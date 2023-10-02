@@ -16,6 +16,7 @@ import {
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { SortDirection } from '@swimlane/ngx-datatable';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
@@ -1567,12 +1568,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
   }
 
-  public async onSort(event) {
+  public async onSort(event: {
+    sorts: {
+      dir: SortDirection;
+      prop: string;
+    }[];
+    column: '';
+    prevValue: '';
+    newvalue: '';
+  }) {
     this.registrationsService?.setSortBy(
       event.sorts[0].prop,
       event.sorts[0].dir,
     );
-    this.registrationsService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
-    await this.getPage();
+
+    this.setPage({
+      // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+      offset: 0,
+    });
   }
 }
