@@ -477,6 +477,12 @@ export class RegistrationsController {
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
+    );
+
     return await this.registrationsService.patchRegistrationsStatus(
       query,
       programId,
