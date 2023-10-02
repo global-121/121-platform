@@ -55,6 +55,7 @@ export function getRegistrations(
   page?: number,
   limit?: number,
   filter: { [key: string]: string } = {},
+  sort?: { field: string; direction: 'ASC' | 'DESC' },
 ): Promise<request.Response> {
   const queryParams = {};
   if (attributes) {
@@ -70,6 +71,9 @@ export function getRegistrations(
     for (const [key, value] of Object.entries(filter)) {
       queryParams[key] = value;
     }
+  }
+  if (sort) {
+    queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
   }
   return getServer()
     .get(`/programs/${programId}/registrations`)

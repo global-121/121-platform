@@ -43,7 +43,7 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { PaginateConfigRegistrationView } from './const/filter-operation.const';
+import { PaginateConfigRegistrationViewWithPayments } from './const/filter-operation.const';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -278,7 +278,10 @@ export class RegistrationsController {
     type: 'integer',
   })
   @Get('programs/:programId/registrations')
-  @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewWithPayments,
+  )
   public async findAll(
     @Paginate() query: PaginateQuery,
     @User('id') userId: number,
@@ -291,7 +294,11 @@ export class RegistrationsController {
         PermissionEnum.RegistrationPersonalREAD,
       );
 
-    // TODO: Add check for transaction read
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
+    );
 
     return await this.registrationsPaginateService.getPaginate(
       query,

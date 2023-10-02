@@ -22,7 +22,6 @@ import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { AnswerType } from 'src/app/models/fsp.model';
-import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   Person,
   PersonRow,
@@ -33,7 +32,6 @@ import {
   Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
-import { StatusEnum } from 'src/app/models/status.enum';
 import {
   TableFilterMultipleChoiceOption,
   TableFilterType,
@@ -91,7 +89,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private columnWidthPerType = {
     [AnswerType.Number]: 90,
-    [AnswerType.Date]: 150,
+    [AnswerType.Date]: 180,
     [AnswerType.PhoneNumber]: 130,
     [AnswerType.Text]: 150,
     [AnswerType.Enum]: 160,
@@ -448,12 +446,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.column.preferredLanguage',
         ),
         ...this.columnDefaults,
+        sortable: false, // TODO: disabled, because sorting in the backend is does on values (nl/en) instead of frontend labels (Dutch/English)
         permissions: [Permission.RegistrationPersonalREAD],
         minWidth: this.columnWidthPerType[AnswerType.Text],
         width: this.columnWidthPerType[AnswerType.Text],
       },
       {
-        prop: 'statusLabel',
+        prop: 'status',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
         ),
@@ -463,104 +462,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         frozenLeft: this.platform.width() > 1280,
       },
       {
-        prop: 'imported',
+        prop: 'registrationCreated',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.imported',
+          'page.program.program-people-affected.column.registration-created',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'invited',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.invited',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'markedNoLongerEligible',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.no-longer-eligible',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'digitalIdCreated',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.digital-id-created',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'vulnerabilityAssessmentCompleted',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.vulnerability-assessment-completed',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'selectedForValidation',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.selected-for-validation',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        showIfNoValidation: false,
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'vulnerabilityAssessmentValidated',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.vulnerability-assessment-validated',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        showIfNoValidation: false,
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'included',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.included',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'rejected',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.rejected',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'inclusionEnded',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.inclusion-ended',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
       },
@@ -584,7 +491,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 150,
       },
       {
-        prop: 'fspDisplayNamePortal',
+        prop: 'financialServiceProvider',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fspDisplayNamePortal',
         ),
@@ -922,10 +829,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         'page.program.program-people-affected.column.payment-history',
       ),
       ...this.columnDefaults,
+      sortable: false,
       phases: [ProgramPhase.payment],
       permissions: [Permission.RegistrationPersonalREAD],
-      minWidth: 300,
-      width: 300,
+      minWidth: 200,
+      width: 200,
     };
   }
 
@@ -962,6 +870,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         name: attribute.name,
         label: label,
       });
+      if (attribute.name === 'successPayment') {
+        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
+        this.tableFiltersDropdownOptions.push({
+          name: 'divider',
+          label: '------------------------------------------',
+        });
+      }
     }
   }
 
@@ -1008,86 +923,27 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     if (!source || source.length === 0) {
       return [];
     }
-    return source
-      .sort(this.sortPeopleByInclusionScore)
-      .map((person) => this.createPersonRow(person));
-  }
-
-  private sortPeopleByInclusionScore(a: Person, b: Person) {
-    if (a.inclusionScore === b.inclusionScore) {
-      return a.startedRegistrationDate > b.startedRegistrationDate ? -1 : 1;
-    } else {
-      return a.inclusionScore > b.inclusionScore ? -1 : 1;
-    }
+    return source.map((person) => this.createPersonRow(person));
   }
 
   private createPersonRow(person: Person): PersonRow {
-    // If a person has registered while no longer eligeble the registeredWhileNoLongerEligibleDate
-    // corresponds wuth the vulnerabilityAssessmentComplete time stamp
-    const vulnerabilityAssessmentCompleteTime = person.registeredDate
-      ? person.registeredDate
-      : person.registeredWhileNoLongerEligibleDate;
-
     let personRow: PersonRow = {
       id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
-      pa: person.personAffectedSequence,
-      status: person.status,
-      statusLabel: this.translate.instant(
+      registrationProgramId: person.personAffectedSequence,
+      registrationStatus: person.status,
+      status: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
       ),
-      imported: person.importedDate
-        ? formatDate(person.importedDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      invited: person.invitedDate
-        ? formatDate(person.invitedDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      markedNoLongerEligible: person.noLongerEligibleDate
+      registrationCreated: person.registrationCreated
         ? formatDate(
-            person.noLongerEligibleDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      digitalIdCreated: person.startedRegistrationDate
-        ? formatDate(
-            person.startedRegistrationDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      vulnerabilityAssessmentCompleted: vulnerabilityAssessmentCompleteTime
-        ? formatDate(
-            vulnerabilityAssessmentCompleteTime,
+            person.registrationCreated,
             DateFormat.dayAndTime,
             this.locale,
           )
         : null,
       inclusionScore: person.inclusionScore,
-      selectedForValidation: person.selectedForValidationDate
-        ? formatDate(
-            person.selectedForValidationDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
-      vulnerabilityAssessmentValidated: person.validationDate
-        ? formatDate(person.validationDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      included: person.inclusionDate
-        ? formatDate(person.inclusionDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      rejected: person.rejectionDate
-        ? formatDate(person.rejectionDate, DateFormat.dayAndTime, this.locale)
-        : null,
-      inclusionEnded: person.inclusionEndDate
-        ? formatDate(
-            person.inclusionEndDate,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
-        : null,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
             'preferredLanguage',
@@ -1113,21 +969,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           }`
         : '',
       fsp: person.financialServiceProvider,
-      fspDisplayNamePortal: person.fspDisplayNamePortal,
+      financialServiceProvider: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
-    const lastPaymentInfo = {
-      lastPaymentNumber: person.lastTransactionPaymentNumber,
-      lastPaymentAmount: person.lastTransactionAmount,
-      lastPaymentStatus: person.lastTransactionStatus,
-      lastPaymentErrorMessage: person.lastTransactionErrorMessage,
-    };
-
     if (this.canViewPaymentData) {
-      personRow = this.fillPaymentHistoryColumn(personRow, lastPaymentInfo);
+      personRow = this.fillPaymentHistoryColumn(personRow);
     }
 
     // Custom attributes can be personal data or not personal data
@@ -1165,67 +1014,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
-  private fillPaymentHistoryColumn(
-    personRow: PersonRow,
-    lastPaymentInfo: {
-      lastPaymentNumber: number;
-      lastPaymentAmount: number;
-      lastPaymentStatus: string;
-      lastPaymentErrorMessage: string;
-    },
-  ): PersonRow {
-    const {
-      lastPaymentNumber,
-      lastPaymentAmount,
-      lastPaymentStatus,
-      lastPaymentErrorMessage,
-    } = lastPaymentInfo;
-
-    let paymentColumnValue = new PaymentColumnDetail();
-
+  private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
     const columnKey = 'paymentHistoryColumn';
-
-    if (!lastPaymentNumber) {
-      paymentColumnValue.text = this.translate.instant(
-        'page.program.program-people-affected.transaction.no-payment-yet',
-      );
-      personRow[columnKey] = paymentColumnValue.text;
-    } else {
-      paymentColumnValue = {
-        text: '',
-        paymentIndex: lastPaymentNumber,
-        amount: `${this.program.currency} ${lastPaymentAmount}`,
-        status: lastPaymentStatus,
-        errorMessage: lastPaymentErrorMessage,
-      };
-      if (lastPaymentStatus === StatusEnum.success) {
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.success',
-        );
-      } else if (lastPaymentStatus === StatusEnum.waiting) {
-        paymentColumnValue.errorMessage = this.translate.instant(
-          'page.program.program-people-affected.transaction.waiting-message',
-        );
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.waiting',
-        );
-      } else {
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.error',
-        );
-      }
-      personRow[columnKey] =
-        this.translate.instant(
-          'page.program.program-people-affected.transaction.payment-number',
-          {
-            number: paymentColumnValue.paymentIndex,
-          },
-        ) +
-        ' ' +
-        paymentColumnValue.text;
-    }
-
-    personRow.paymentHistory = paymentColumnValue;
+    personRow[columnKey] = this.translate.instant(
+      'page.program.program-people-affected.transaction.payments-popup',
+    );
     return personRow;
   }
 
@@ -1259,17 +1052,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return show;
   }
 
-  public hasError(row: PersonRow): boolean {
-    if (row.paymentHistory.errorMessage) {
-      return true;
-    }
-
-    if (row.paymentHistory.status === StatusEnum.error) {
-      return true;
-    }
-
-    return false;
-  }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
     const modal: HTMLIonModalElement = await this.modalController.create({
@@ -1624,7 +1406,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private updateVisiblePeopleAffectedByFilter() {
     const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
-      this.tableFilterState.paStatus.selected.includes(pa.status),
+      this.tableFilterState.paStatus.selected.includes(pa.registrationStatus),
     );
 
     this.initialVisiblePeopleAffected = [...filteredPeopleAffectedByStatus];
@@ -1724,5 +1506,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     return;
+  }
+
+  public async onSort(event) {
+    this.tableService?.setSortBy(event.sorts[0].prop, event.sorts[0].dir);
+    this.tableService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+    await this.getPage();
   }
 }

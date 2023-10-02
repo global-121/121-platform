@@ -9,6 +9,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
+import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -31,6 +32,7 @@ import { RegistrationEntity } from './registration.entity';
         'registrationProgramId',
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
+      .addSelect('registration.created', 'registrationCreated')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.programId', 'programId')
@@ -67,6 +69,9 @@ export class RegistrationViewEntity {
   public program: ProgramEntity;
   @Column()
   public programId: number;
+
+  @ViewColumn()
+  public registrationCreated: string;
 
   @ViewColumn()
   public referenceId: string;
@@ -122,4 +127,13 @@ export class RegistrationViewEntity {
     },
   )
   public data: RegistrationDataEntity[];
+
+  @OneToMany(
+    () => LatestTransactionEntity,
+    (latestTransactions) => latestTransactions.registration,
+    {
+      eager: true,
+    },
+  )
+  public latestTransactions: LatestTransactionEntity[];
 }

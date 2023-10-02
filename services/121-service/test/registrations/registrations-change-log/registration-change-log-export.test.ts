@@ -27,7 +27,7 @@ const dataUpdatePa2 = {
   paymentAmountMultiplier: 2,
 };
 
-describe('Update attribute of PA', () => {
+describe('Export registration change log', () => {
   let accessToken: string;
 
   beforeEach(async () => {

@@ -1,5 +1,16 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
 
+export function createExpectedValueObject(registration, id): any {
+  const expectedValueObject = { ...registration };
+  expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
+  delete expectedValueObject.fspName;
+  expectedValueObject['registrationProgramId'] = id;
+  expectedValueObject[
+    'personAffectedSequence'
+  ] = `PA #${expectedValueObject['registrationProgramId']}`;
+  return expectedValueObject;
+}
+
 export const programId = 3;
 export const referenceId = '63e62864557597e0d';
 export const registration1 = {
@@ -17,13 +28,8 @@ export const registration1 = {
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
 };
-const expectedValueObject1 = { ...registration1 };
-expectedValueObject1['financialServiceProvider'] = expectedValueObject1.fspName;
-delete expectedValueObject1.fspName;
-expectedValueObject1['registrationProgramId'] = 1;
-expectedValueObject1[
-  'personAffectedSequence'
-] = `PA #${expectedValueObject1['registrationProgramId']}`;
+
+const expectedValueObject1 = createExpectedValueObject(registration1, 1);
 
 export const referenceId2 = '22e62864557597e0d';
 export const registration2 = {
@@ -41,13 +47,8 @@ export const registration2 = {
   addressPostalCode: '2345AB',
   addressCity: 'AnotherCity',
 };
-const expectedValueObject2 = { ...registration2 };
-expectedValueObject2['financialServiceProvider'] = expectedValueObject2.fspName;
-delete expectedValueObject2.fspName;
-expectedValueObject2['registrationProgramId'] = 2;
-expectedValueObject2[
-  'personAffectedSequence'
-] = `PA #${expectedValueObject2['registrationProgramId']}`;
+
+const expectedValueObject2 = createExpectedValueObject(registration2, 2);
 
 export const referenceId3 = '43e62864557597e0d';
 export const registration3 = {
@@ -57,7 +58,7 @@ export const registration3 = {
   firstName: 'Sophia',
   lastName: 'Johnson',
   phoneNumber: '14155236666',
-  fspName: FspName.intersolveVisa, // Replace with a known FSP name
+  fspName: FspName.intersolveVisa,
   whatsappPhoneNumber: '14155236666',
   addressStreet: 'DifferentStreet',
   addressHouseNumber: '3',
@@ -65,13 +66,7 @@ export const registration3 = {
   addressPostalCode: '3456CD',
   addressCity: 'DifferentCity',
 };
-const expectedValueObject3 = { ...registration3 };
-expectedValueObject3['financialServiceProvider'] = expectedValueObject3.fspName;
-delete expectedValueObject3.fspName;
-expectedValueObject3['registrationProgramId'] = 3;
-expectedValueObject3[
-  'personAffectedSequence'
-] = `PA #${expectedValueObject3['registrationProgramId']}`;
+const expectedValueObject3 = createExpectedValueObject(registration3, 3);
 
 export const referenceId4 = '54e62864557597e0d';
 export const registration4 = {
@@ -81,7 +76,7 @@ export const registration4 = {
   firstName: 'Luis',
   lastName: 'Garcia',
   phoneNumber: '14155235555',
-  fspName: FspName.intersolveVisa, // Replace with a known FSP name
+  fspName: FspName.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
@@ -89,13 +84,19 @@ export const registration4 = {
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
 };
-const expectedValueObject4 = { ...registration4 };
-expectedValueObject4['financialServiceProvider'] = expectedValueObject4.fspName;
-delete expectedValueObject4.fspName;
-expectedValueObject4['registrationProgramId'] = 4;
-expectedValueObject4[
-  'personAffectedSequence'
-] = `PA #${expectedValueObject4['registrationProgramId']}`;
+const expectedValueObject4 = createExpectedValueObject(registration4, 4);
+
+export const referenceId5 = '44e62864557597e0d';
+export const registration5 = {
+  referenceId: referenceId5,
+  preferredLanguage: 'nl',
+  paymentAmountMultiplier: 1,
+  firstName: 'Gemma',
+  lastName: 'Houtenbos',
+  phoneNumber: '14155235556',
+  fspName: FspName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235555',
+};
 
 export const expectedAttributes = [
   'id',
