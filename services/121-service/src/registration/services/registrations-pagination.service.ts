@@ -166,7 +166,7 @@ export class RegistrationsPaginationService {
             }. Not allowed to use filter parameters ${Object.values(
               PaymentFilterEnum,
             ).join(', ')}`,
-            HttpStatus.UNAUTHORIZED,
+            HttpStatus.FORBIDDEN,
           );
         }
       }
@@ -196,7 +196,7 @@ export class RegistrationsPaginationService {
         if (Object.keys(paginateQuery.filter).includes(registrationDataName)) {
           throw new HttpException(
             `You do not have permission ${PermissionEnum.RegistrationPersonalREAD}. Not allowed to use filter paramter: ${registrationDataName}`,
-            HttpStatus.UNAUTHORIZED,
+            HttpStatus.FORBIDDEN,
           );
         }
       }
