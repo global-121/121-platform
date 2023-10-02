@@ -1372,7 +1372,6 @@ export class MetricsService {
       .select('SUM(amount)', 'spentMoney')
       .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
       .setParameters(transactionsQuery.getParameters())
-      // .where('status = :status', { status: StatusEnum.success })
       .getRawOne();
 
     const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
