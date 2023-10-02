@@ -28,6 +28,7 @@ export class ProgramTeamPopupComponent {
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
+  selectedRoles;
   showSearchResults;
   addButtonDisabled = true;
 
@@ -44,6 +45,10 @@ export class ProgramTeamPopupComponent {
       searchTerm,
     );
     this.searchResults.length > 0 ? this.showSearchResults = true : this.showSearchResults = false;
+  }
+
+  isFormComplete(): boolean {
+    return this.searchQuery !== '' && this.selectedRoles !== '';
   }
 
   updateSearchbarValue(selectedItem: string, userId: number) {

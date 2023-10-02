@@ -68,6 +68,7 @@
           }}"
           [multiple]="true"
           interface="popover"
+          ngModel="selectedRoles"
           [interfaceOptions]="{ cssClass: 'dropdown' }"
         >
           <ion-select-option
@@ -102,7 +103,8 @@
       fill="solid"
       class="button"
       item-end
-      [disabled]="this.addButtonDisabled"
+      [disabled]="!isFormComplete()"
+      (click)="assignTeamMember()"
       >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
     >
   </div>
