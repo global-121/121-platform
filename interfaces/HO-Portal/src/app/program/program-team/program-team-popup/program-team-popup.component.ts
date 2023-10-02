@@ -29,6 +29,7 @@ export class ProgramTeamPopupComponent {
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
   showSearchResults;
+  addButtonDisabled = true;
 
   constructor(
     private modalController: ModalController,

@@ -23,84 +23,87 @@
 </ion-header>
 
 <!-- content -->
-<ion-content class="ion-padding">
-  <ion-grid class="ion-padding">
-    <ion-row>
-      <ion-label class="label">{{
-        'page.program-team.popup.team-member' | translate
-      }}</ion-label>
-    </ion-row>
-    <ion-row>
-      <ion-searchbar
-        id="searchbar"
-        [(ngModel)]="searchQuery"
-        (ionInput)="search($event)"
-        [debounce]="1000"
-        placeholder="{{
-          'page.program-team.popup.team-member-placeholder' | translate
-        }}"
-        search-icon="'undefined'"
-      >
-      </ion-searchbar>
-      <ng-container *ngIf="showSearchResults">
-        <ion-list>
-          <ion-item
-            [button]="true"
-            *ngFor="let user of searchResults"
-            (click)="updateSearchbarValue(user.user_username, user.user_id)"
-          >
-            {{ user.user_username }}
-          </ion-item>
-        </ion-list>
-      </ng-container>
-    </ion-row>
-    <ion-row>
-      <ion-label class="label">{{
-        'page.program-team.popup.role' | translate
-      }}</ion-label>
-    </ion-row>
-    <ion-row>
-      <ion-select
-        placeholder="{{
-          'page.program-team.popup.roles-placeholder' | translate
-        }}"
-        [multiple]="true"
-        interface="popover"
-        [interfaceOptions]="{ cssClass: 'dropdown' }"
-      >
-        <ion-select-option
-          *ngFor="let role of rolesList"
-          value="{{ role.role }}"
+<form (ngSubmit)="assignTeamMember()">
+  <ion-content class="ion-padding">
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-label class="label">{{
+          'page.program-team.popup.team-member' | translate
+        }}</ion-label>
+      </ion-row>
+      <ion-row>
+        <ion-searchbar
+          id="searchbar"
+          name="searchQuery"
+          [(ngModel)]="searchQuery"
+          (ionInput)="search($event)"
+          [debounce]="1000"
+          placeholder="{{
+            'page.program-team.popup.team-member-placeholder' | translate
+          }}"
+          search-icon="'undefined'"
         >
-          {{ role.label.trim() }}
-        </ion-select-option>
-      </ion-select>
-    </ion-row>
-  </ion-grid>
-</ion-content>
-
-<div class="buttons">
-  <!-- cancel button -->
-  <ion-button
-    (click)="closeModal()"
-    [attr.title]="'common.cancel' | translate"
-    [attr.aria-label]="'common.cancel' | translate"
-    fill="clear"
-  >
-    <u
-      ><strong>{{
-        'page.program-team.popup.cancel-button' | translate
-      }}</strong></u
+        </ion-searchbar>
+        <ng-container *ngIf="showSearchResults">
+          <ion-list>
+            <ion-item
+              [button]="true"
+              *ngFor="let user of searchResults"
+              (click)="updateSearchbarValue(user.user_username, user.user_id)"
+            >
+              {{ user.user_username }}
+            </ion-item>
+          </ion-list>
+        </ng-container>
+      </ion-row>
+      <ion-row>
+        <ion-label class="label">{{
+          'page.program-team.popup.role' | translate
+        }}</ion-label>
+      </ion-row>
+      <ion-row>
+        <ion-select
+          placeholder="{{
+            'page.program-team.popup.roles-placeholder' | translate
+          }}"
+          [multiple]="true"
+          interface="popover"
+          [interfaceOptions]="{ cssClass: 'dropdown' }"
+        >
+          <ion-select-option
+            *ngFor="let role of rolesList"
+            value="{{ role.role }}"
+          >
+            {{ role.label.trim() }}
+          </ion-select-option>
+        </ion-select>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  <div class="buttons">
+    <!-- cancel button -->
+    <ion-button
+      (click)="closeModal()"
+      [attr.title]="'common.cancel' | translate"
+      [attr.aria-label]="'common.cancel' | translate"
+      fill="clear"
     >
-  </ion-button>
+      <u
+        ><strong>{{
+          'page.program-team.popup.cancel-button' | translate
+        }}</strong></u
+      >
+    </ion-button>
 
-  <!-- add user button -->
-  <ion-button
-    (click)="assignTeamMember()"
-    shape="round"
-    fill="solid"
-    class="button"
-    item-end
-    >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
-  >
-</div>
+    <!-- add user button -->
+    <ion-button
+      type="submit"
+      shape="round"
+      fill="solid"
+      class="button"
+      item-end
+      [disabled]="this.addButtonDisabled"
+      >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
+    >
+  </div>
+</form>
