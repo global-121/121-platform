@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
+import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
@@ -34,6 +35,7 @@ import { NoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
+import { RegistrationStatusPatchResultDto } from './dto/registration-status-patch-result.dto';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
@@ -59,6 +61,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -105,6 +108,7 @@ export class RegistrationsService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
     private readonly lastMessageStatusService: LastMessageStatusService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -146,6 +150,15 @@ export class RegistrationsService {
     );
     registrationToUpdate.registrationStatus = status;
     return await this.registrationRepository.save(registrationToUpdate);
+  }
+
+  private getAllowedNewStatusesForCurrentStatus(
+    currentStatus: RegistrationStatusEnum,
+  ): RegistrationStatusEnum[] {
+    const allStatuses = Object.values(RegistrationStatusEnum);
+    return allStatuses.filter((newStatus) =>
+      this.canChangeStatus(newStatus, currentStatus),
+    );
   }
 
   private canChangeStatus(
@@ -1177,6 +1190,51 @@ export class RegistrationsService {
     note.note = registration.note;
     note.noteUpdated = registration.noteUpdated;
     return note;
+  }
+
+  public async patchRegistrationsStatus(
+    query: PaginateQuery,
+    programId: number,
+    registrationStatus: RegistrationStatusEnum,
+    message?: string,
+    messageContentType?: MessageContentType,
+  ): Promise<RegistrationStatusPatchResultDto> {
+    // Overwrite the default select, as we only need the referenceId
+    query.select = ['referenceId'];
+
+    const selectedRegistrations =
+      await this.registrationsPaginationService.getPaginate(
+        query,
+        programId,
+        false,
+      );
+
+    const alllowedNewStatusses =
+      this.getAllowedNewStatusesForCurrentStatus(registrationStatus);
+    query.filter = query.filter || {};
+    query.filter.status = `$in:${alllowedNewStatusses.join(',')}`;
+    const applicableRegistrations =
+      await this.registrationsPaginationService.getPaginate(
+        query,
+        programId,
+        false,
+      );
+    const referenceIds = applicableRegistrations.data.map(
+      (registration) => registration.referenceId,
+    );
+    await this.updateRegistrationStatusBatch(
+      referenceIds,
+      registrationStatus,
+      message,
+      messageContentType,
+    );
+    return {
+      totalFilterCount: selectedRegistrations.meta.totalItems,
+      applicableCount: applicableRegistrations.meta.totalItems,
+      nonApplicableCount:
+        selectedRegistrations.meta.totalItems -
+        applicableRegistrations.meta.totalItems,
+    };
   }
 
   public async updateRegistrationStatusBatch(

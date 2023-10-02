@@ -49,10 +49,11 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { StatusUpdateDto } from './dto/message.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
+import { RegistrationStatusPatchResultDto } from './dto/registration-status-patch-result.dto';
+import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
@@ -420,18 +421,18 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @ApiOperation({ summary: 'Update registration status of set of PAs' })
+  @ApiOperation({ summary: 'Update registration status of set of PAs.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'registrationStatus', required: true, type: 'string' })
-  @Post('programs/:programId/registrations/status')
-  public async updateRegistrationStatusBatch(
-    @Query('registrationStatus') registrationStatus: string,
-    @Body() statusUpdateDto: StatusUpdateDto,
+  @Patch('programs/:programId/registrations')
+  public async patchRegistrationsStatus(
+    @Paginate() query: PaginateQuery,
+    @Body() statusUpdateDto: RegistrationStatusPatchDto,
     @User('id') userId: number,
     @Param('programId') programId: number,
-  ): Promise<void> {
+  ): Promise<RegistrationStatusPatchResultDto> {
     let permission: PermissionEnum;
     let messageContentType: MessageContentType;
+    const registrationStatus = statusUpdateDto.status;
     switch (registrationStatus) {
       case RegistrationStatusEnum.included:
         permission = PermissionEnum.RegistrationStatusIncludedUPDATE;
@@ -469,8 +470,9 @@ export class RegistrationsController {
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
-    await this.registrationsService.updateRegistrationStatusBatch(
-      statusUpdateDto.referenceIds,
+    return await this.registrationsService.patchRegistrationsStatus(
+      query,
+      programId,
       registrationStatus as RegistrationStatusEnum,
       statusUpdateDto.message,
       messageContentType,
