@@ -28,8 +28,8 @@ export class ProgramTeamPopupComponent {
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
-  selectedRoles;
-  showSearchResults;
+  selectedRoles: any [] = [];
+  showSearchResults: boolean;
   addButtonDisabled = true;
 
   constructor(
@@ -50,7 +50,7 @@ export class ProgramTeamPopupComponent {
   }
 
   isFormComplete(): boolean {
-    return this.searchQuery !== '' && this.selectedRoles !== '';
+    return this.searchQuery !== '' && this.selectedRoles.length !== 0;
   }
 
   updateSearchbarValue(selectedItem: string, userId: number) {
@@ -64,11 +64,13 @@ export class ProgramTeamPopupComponent {
   }
 
   public async assignTeamMember() {
+    console.log(this.selectedRoles);
     await this.programsServiceApiService.assignAidworker(
       this.programId,
       this.userId,
-      ['program-admin', 'run-program'],
+      this.selectedRoles,
     );
+    this.closeModal();
     this.successPopup(event);
   }
 

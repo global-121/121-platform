@@ -72,7 +72,7 @@
           toggleIcon="chevron-down-outline"
           [multiple]="true"
           interface="popover"
-          ngModel="selectedRoles"
+          [(ngModel)]="selectedRoles"
           name="selectedRoles"
           [interfaceOptions]="{ cssClass: 'dropdown' }"
         >
@@ -108,7 +108,6 @@
       class="button"
       item-end
       [disabled]="!isFormComplete()"
-      (click)="assignTeamMember()"
       >{{ 'page.program-team.popup.add-users-button' | translate }}</ion-button
     >
   </div>
