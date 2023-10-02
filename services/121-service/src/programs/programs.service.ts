@@ -10,7 +10,7 @@ import { ExportType } from '../metrics/dto/export-details.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import {
   AllowedFilterOperatorsString,
-  PaginateConfigRegistrationView,
+  PaginateConfigRegistrationViewWithPayments,
 } from '../registration/const/filter-operation.const';
 import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
@@ -154,12 +154,11 @@ export class ProgramService {
 
     const filterableAttributes: FilterAttributeDto[] = [];
     for (const name of filterableAttributeNames) {
-      if (PaginateConfigRegistrationView.filterableColumns[name]) {
+      if (PaginateConfigRegistrationViewWithPayments.filterableColumns[name]) {
         filterableAttributes.push({
           name: name,
-          allowedOperators: PaginateConfigRegistrationView.filterableColumns[
-            name
-          ] as FilterOperator[],
+          allowedOperators: PaginateConfigRegistrationViewWithPayments
+            .filterableColumns[name] as FilterOperator[],
         });
       } else {
         // If no allowed operators are defined than the attribute is
@@ -170,7 +169,6 @@ export class ProgramService {
         });
       }
     }
-
     return filterableAttributes;
   }
 
