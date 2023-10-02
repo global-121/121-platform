@@ -89,11 +89,27 @@ export class RegistrationsPaginationService {
         registrationDataNamesProgram,
       );
     }
+
+    // Check if the sort contains at least one registration data name
+    // At the moment we only support sorting on one field
+    if (
+      hasPersonalReadPermission &&
+      query.sortBy &&
+      registrationDataNamesProgram.some((key) => query.sortBy[0][0] === key)
+    ) {
+      queryBuilder = this.sortOnRegistrationData(
+        query,
+        queryBuilder,
+        registrationDataRelations,
+      );
+    }
+
     if (hasPersonalReadPermission) {
       paginateConfigCopy.relations = ['data'];
       paginateConfigCopy.searchableColumns = ['data.(value)'];
     }
 
+    console.log('queryBuilder: ', queryBuilder.getQueryAndParameters());
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
@@ -268,6 +284,27 @@ export class RegistrationsPaginationService {
       }
       i++;
     }
+  }
+
+  private sortOnRegistrationData(
+    query: PaginateQuery,
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    registrationDataRelations: RegistrationDataInfo[],
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    const relationInfoArray = registrationDataRelations.filter(
+      (r) => r.name === query.sortBy[0][0],
+    );
+    queryBuilder.leftJoin('registration.data', 'rd');
+    queryBuilder.andWhere(
+      new Brackets((qb) => {
+        this.whereRegistrationDataIsOneOfIds(relationInfoArray, qb, 'rd');
+      }),
+    );
+    queryBuilder.orderBy('rd.value', query.sortBy[0][1] as 'ASC' | 'DESC');
+    queryBuilder.addSelect('rd.value');
+    // This is somehow needed (without alias!) to make the orderBy work
+    // These values are not returned because they are not mapped later on
+    return queryBuilder;
   }
 
   private mapPaginatedEntity(

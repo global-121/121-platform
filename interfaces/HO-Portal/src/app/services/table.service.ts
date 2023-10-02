@@ -3,6 +3,8 @@ import { RegistrationStatusEnum } from '../../../../../services/121-service/src/
 import {
   FilterOperatorEnum,
   PaginationFilter,
+  PaginationSort,
+  SortDirectionEnum,
 } from '../models/pagination-filter.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
@@ -13,6 +15,7 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 })
 export class TableService {
   private textFilter: PaginationFilter;
+  private sortBy: PaginationSort;
   private DEFAULT_TEXT_FILTER = { name: null, value: null };
 
   private pageMetaData = new PaginationMetadata();
@@ -23,6 +26,7 @@ export class TableService {
 
   public setTextFilterName(name: string) {
     this.textFilter.name = name;
+    console.log('this.textFilter: ', this.textFilter);
   }
 
   public setTextFilterValue(value: string) {
@@ -31,6 +35,13 @@ export class TableService {
 
   public setTextFilterOperator(operator: FilterOperatorEnum) {
     this.textFilter.operator = operator;
+  }
+
+  public setSortBy(column: string, direction: string) {
+    this.sortBy = {
+      column,
+      direction: direction.toUpperCase() as SortDirectionEnum,
+    };
   }
 
   public setCurrentPage(currentPage: number) {
@@ -77,6 +88,7 @@ export class TableService {
       attributes,
       statuses,
       filters,
+      this.sortBy,
     );
 
     this.pageMetaData.totalItems = meta.totalItems;

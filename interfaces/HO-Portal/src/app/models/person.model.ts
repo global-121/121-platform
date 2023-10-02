@@ -11,18 +11,7 @@ export class Person {
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
-  startedRegistrationDate?: string;
-  importedDate?: string;
-  invitedDate?: string;
-  noLongerEligibleDate?: string;
-  registeredWhileNoLongerEligibleDate?: string;
-  registeredDate?: string;
-  selectedForValidationDate?: string;
-  validationDate?: string;
-  inclusionDate?: string;
-  inclusionEndDate?: string;
-  rejectionDate?: string;
-  completedDate?: string;
+  registrationCreated?: string;
   status: RegistrationStatus;
   note?: string;
   hasPhoneNumber?: boolean;
@@ -49,26 +38,17 @@ export class PersonRow {
   id: number;
   referenceId: string;
   checkboxVisible: boolean;
-  pa: string; // Display label
-  status: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
-  statusLabel: string;
+  registrationProgramId: string; // Display label
+  registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  status: string;
   hasNote: boolean;
   hasPhoneNumber?: boolean;
-  digitalIdCreated?: string;
-  vulnerabilityAssessmentCompleted?: string | null;
-  selectedForValidation?: string | null;
-  vulnerabilityAssessmentValidated?: string | null;
+  registrationCreated?: string;
   inclusionScore?: number;
-  included?: string | null;
-  rejected?: string | null;
-  inclusionEnded?: string | null;
-  imported?: string | null;
-  invited?: string | null;
-  markedNoLongerEligible?: string | null;
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
-  fspDisplayNamePortal?: string | null;
+  financialServiceProvider?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
   paymentCount?: number;
