@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
-
+import RegistrationStatus from '../enums/registration-status.enum';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
-import { PaginationFilter } from './filter.service';
+import {
+  PaginationFilter,
+  PaginationSort,
+  SortDirectionEnum,
+} from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
@@ -11,8 +14,16 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 })
 export class RegistrationsService {
   private pageMetaData = new PaginationMetadata();
+  private sortBy: PaginationSort;
 
   constructor(private programsService: ProgramsServiceApiService) {}
+
+  public setSortBy(column: string, direction: string) {
+    this.sortBy = {
+      column,
+      direction: direction.toUpperCase() as SortDirectionEnum,
+    };
+  }
 
   public setCurrentPage(currentPage: number) {
     this.pageMetaData.currentPage = currentPage;
@@ -31,7 +42,7 @@ export class RegistrationsService {
     referenceId: string = null,
     filterOnPayment: number = null,
     attributes: string[],
-    statuses: RegistrationStatusEnum[] = null,
+    statuses: RegistrationStatus[] = null,
     textFilter: PaginationFilter[],
   ): Promise<{ data: Person[]; meta: PaginationMetadata }> {
     if (!programId) {
@@ -47,6 +58,7 @@ export class RegistrationsService {
       attributes,
       statuses,
       textFilter,
+      this.sortBy,
     );
 
     this.pageMetaData.totalItems = meta.totalItems;

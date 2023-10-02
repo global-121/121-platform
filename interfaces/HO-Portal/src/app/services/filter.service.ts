@@ -7,6 +7,16 @@ export class PaginationFilter {
   operator?: FilterOperatorEnum;
 }
 
+export class PaginationSort {
+  column: string;
+  direction: SortDirectionEnum;
+}
+
+export enum SortDirectionEnum {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export enum FilterOperatorEnum {
   eq = '$eq',
   in = '$in',
