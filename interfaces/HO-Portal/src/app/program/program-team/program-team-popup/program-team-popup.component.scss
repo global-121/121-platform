@@ -10,15 +10,6 @@ ion-searchbar {
   margin-bottom: 14px;
 }
 
-ion-list {
-  margin: 0 0 16px 0 !important;
-  margin-inline-start: 0 !important;
-  overflow-y: scroll;
-  height: 150px;
-  width: 100%;
-  padding: 0;
-}
-
 .label {
   margin-bottom: 8px;
   font-size: 14px;
@@ -45,4 +36,17 @@ ion-select {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.search-wrapper {
+  position: relative;
+  ion-list{
+    position: absolute;
+    top: 44px;
+    z-index: 3;
+    border-radius: 0px 0px 5px 5px;
+    --box-shadow: none;
+    border: 1px solid var(--fiveten-neutral-200);
+    width: 100%;
+  }
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, IonSearchbar, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 // import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -24,7 +24,7 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
 export class ProgramTeamPopupComponent {
   programId;
   userId;
-  @ViewChild('searchbar') searchbar: IonSearchbar;
+  // @ViewChild('searchbar') searchbar: IonSearchbar;
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
@@ -44,7 +44,7 @@ export class ProgramTeamPopupComponent {
       this.programId,
       searchTerm,
     );
-    this.searchResults.length > 0
+    this.searchResults.length > 0 && searchTerm !== ''
       ? (this.showSearchResults = true)
       : (this.showSearchResults = false);
   }
@@ -64,14 +64,17 @@ export class ProgramTeamPopupComponent {
   }
 
   public async assignTeamMember() {
-    console.log(this.selectedRoles);
-    await this.programsServiceApiService.assignAidworker(
-      this.programId,
-      this.userId,
-      this.selectedRoles,
-    );
-    this.closeModal();
-    this.successPopup(event);
+    try {
+      await this.programsServiceApiService.assignAidworker(
+          this.programId,
+          this.userId,
+          this.selectedRoles,
+        );
+        this.closeModal();
+        this.successPopup(event);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   ngOnInit() {
