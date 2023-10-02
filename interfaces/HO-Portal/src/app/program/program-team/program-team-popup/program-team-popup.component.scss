@@ -1,5 +1,11 @@
-.dropdown {
-  width: 416px;
+ion-grid {
+  --ion-grid-width: 70%;
+}
+
+ion-searchbar {
+  border-radius: 5px;
+  --box-shadow: none;
+  border: 1px solid var(--fiveten-neutral-200);
   height: 44px;
   margin-bottom: 14px;
 }
@@ -9,9 +15,25 @@
   font-size: 14px;
 }
 
+ion-select {
+  --border-color: var(--fiveten-neutral-200);
+  height: 44px;
+  min-height: 44px;
+  &::part(label) {
+    color: var(--fiveten-neutral-200);
+  }
+  &::part(icon) {
+    width: 20px;
+    height: 20px;
+    inset-inline-end: 20px !important;
+    position: absolute;
+    color: var(--ion-color-medium-shade);
+  }
+}
+
 .buttons {
   padding: 24px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

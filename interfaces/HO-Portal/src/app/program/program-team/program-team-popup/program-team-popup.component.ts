@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController, IonSearchbar } from '@ionic/angular';
+import { IonicModule, IonSearchbar, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 // import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -44,7 +44,9 @@ export class ProgramTeamPopupComponent {
       this.programId,
       searchTerm,
     );
-    this.searchResults.length > 0 ? this.showSearchResults = true : this.showSearchResults = false;
+    this.searchResults.length > 0
+      ? (this.showSearchResults = true)
+      : (this.showSearchResults = false);
   }
 
   isFormComplete(): boolean {
@@ -62,7 +64,11 @@ export class ProgramTeamPopupComponent {
   }
 
   public async assignTeamMember() {
-    await this.programsServiceApiService.assignAidworker(this.programId, this.userId, ["program-admin", "run-program"]);
+    await this.programsServiceApiService.assignAidworker(
+      this.programId,
+      this.userId,
+      ['program-admin', 'run-program'],
+    );
     this.successPopup(event);
   }
 

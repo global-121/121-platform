@@ -23,9 +23,10 @@
 </ion-header>
 
 <!-- content -->
-<form (ngSubmit)="assignTeamMember()">
-  <ion-content class="ion-padding">
-    <ion-grid class="ion-padding">
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="assignTeamMember()">
+    <ion-grid class="ion-no-margin ion-padding">
       <ion-row>
         <ion-label class="label">{{
           'page.program-team.popup.team-member' | translate
@@ -34,7 +35,6 @@
       <ion-row>
         <ion-searchbar
           id="searchbar"
-          name="searchQuery"
           [(ngModel)]="searchQuery"
           (ionInput)="search($event)"
           [debounce]="1000"
@@ -66,6 +66,9 @@
           placeholder="{{
             'page.program-team.popup.roles-placeholder' | translate
           }}"
+          label-placement="start"
+          fill="outline"
+          toggleIcon="chevron-down-outline"
           [multiple]="true"
           interface="popover"
           ngModel="selectedRoles"
@@ -80,21 +83,20 @@
         </ion-select>
       </ion-row>
     </ion-grid>
-  </ion-content>
-  <div class="buttons">
-    <!-- cancel button -->
-    <ion-button
-      (click)="closeModal()"
-      [attr.title]="'common.cancel' | translate"
-      [attr.aria-label]="'common.cancel' | translate"
-      fill="clear"
-    >
-      <u
-        ><strong>{{
-          'page.program-team.popup.cancel-button' | translate
-        }}</strong></u
+    <div class="buttons">
+      <!-- cancel button -->
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+        fill="clear"
       >
-    </ion-button>
+        <u
+          ><strong>{{
+            'page.program-team.popup.cancel-button' | translate
+          }}</strong></u
+        >
+      </ion-button>
 
     <!-- add user button -->
     <ion-button
