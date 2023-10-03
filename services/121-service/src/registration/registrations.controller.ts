@@ -365,72 +365,6 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
-  @ApiOperation({
-    summary: 'Update provided attributes of registration (Used by Aidworker)',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Updated provided attributes of registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Patch('programs/:programId/registrations/:referenceId')
-  public async updateRegistration(
-    @Param() params,
-    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
-    @User('id') userId: number,
-  ): Promise<RegistrationEntity> {
-    const partialRegistration = updateRegistrationDataDto.data;
-    // first validate all attributes and return error if any
-    for (const attributeKey of Object.keys(partialRegistration)) {
-      const attributeDto: UpdateAttributeDto = {
-        referenceId: params.referenceId,
-        attribute: attributeKey,
-        value: partialRegistration[attributeKey],
-      };
-      const errors = await validate(
-        plainToClass(UpdateAttributeDto, attributeDto),
-      );
-      if (errors.length > 0) {
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    // if all valid, process update
-    return await this.registrationsService.updateRegistration(
-      params.programId,
-      params.referenceId,
-      updateRegistrationDataDto,
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: 'Update note for registration' })
-  @ApiResponse({ status: 201, description: 'Update note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/note')
-  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
-    return await this.registrationsService.updateNote(
-      updateNote.referenceId,
-      updateNote.note,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get note for registration' })
-  @ApiResponse({ status: 200, description: 'Get note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true })
-  @Get('programs/:programId/registrations/note/:referenceId')
-  public async retrieveNote(@Param() params): Promise<NoteDto> {
-    return await this.registrationsService.retrieveNote(params.referenceId);
-  }
-
-  @ApiTags('programs/registrations')
   @ApiOperation({ summary: 'Update registration status of set of PAs.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -444,7 +378,7 @@ export class RegistrationsController {
     description:
       'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so not registration statusses will be updated or messages will be send. If this parameter is not included or is set to `false`, the function will execute normally and make the changes as expected. This parameter is optional and defaults to `false`',
   })
-  @Patch('programs/:programId/registrations')
+  @Patch('programs/:programId/registrations/status')
   public async patchRegistrationsStatus(
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
@@ -506,6 +440,73 @@ export class RegistrationsController {
       statusUpdateDto.message,
       messageContentType,
     );
+  }
+
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
+  @ApiOperation({
+    summary: 'Update provided attributes of registration (Used by Aidworker)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Updated provided attributes of registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
+  @Patch('programs/:programId/registrations/:referenceId')
+  public async updateRegistration(
+    @Param() params,
+    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
+    @User('id') userId: number,
+  ): Promise<RegistrationEntity> {
+    const partialRegistration = updateRegistrationDataDto.data;
+    // first validate all attributes and return error if any
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      const attributeDto: UpdateAttributeDto = {
+        referenceId: params.referenceId,
+        attribute: attributeKey,
+        value: partialRegistration[attributeKey],
+      };
+      const errors = await validate(
+        plainToClass(UpdateAttributeDto, attributeDto),
+      );
+      if (errors.length > 0) {
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    // if all valid, process update
+    return await this.registrationsService.updateRegistration(
+      params.programId,
+      params.referenceId,
+      updateRegistrationDataDto,
+      userId,
+    );
+  }
+
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
+  @ApiOperation({ summary: 'Update note for registration' })
+  @ApiResponse({ status: 201, description: 'Update note for registration' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/note')
+  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
+    return await this.registrationsService.updateNote(
+      updateNote.referenceId,
+      updateNote.note,
+    );
+  }
+
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationPersonalREAD)
+  @ApiOperation({ summary: 'Get note for registration' })
+  @ApiResponse({ status: 200, description: 'Get note for registration' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true })
+  @Get('programs/:programId/registrations/note/:referenceId')
+  public async retrieveNote(@Param() params): Promise<NoteDto> {
+    return await this.registrationsService.retrieveNote(params.referenceId);
   }
 
   @ApiTags('registrations')
