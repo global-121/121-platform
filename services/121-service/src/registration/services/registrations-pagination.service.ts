@@ -22,6 +22,7 @@ import { UserEntity } from '../../user/user.entity';
 import {
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
+  PaginateConfigRegistrationViewNoLimit,
 } from '../const/filter-operation.const';
 import {
   RegistrationDataInfo,
@@ -53,8 +54,15 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
+    noLimit: boolean,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    const paginateConfigCopy = { ...PaginateConfigRegistrationView };
+    let paginateConfigCopy = { ...PaginateConfigRegistrationView };
+    if (noLimit) {
+      // These setting are needed to get all registrations
+      // This is used for doing bulk updates with a filter
+      paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
+      query.limit = 0;
+    }
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention = await this.getFullNameNamingConvention(

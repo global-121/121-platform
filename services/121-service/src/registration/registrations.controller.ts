@@ -307,6 +307,7 @@ export class RegistrationsController {
       query,
       Number(programId),
       hasPersonalRead,
+      false,
     );
   }
 
@@ -497,12 +498,12 @@ export class RegistrationsController {
       programId,
       query,
     );
-
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
     return await this.registrationsService.patchRegistrationsStatus(
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
-      queryParams.dryRun,
+      dryRun,
       statusUpdateDto.message,
       messageContentType,
     );
