@@ -4,7 +4,6 @@ import {
   IsIn,
   IsInt,
   IsNotEmpty,
-  IsNotIn,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -97,6 +96,5 @@ export class ImportRegistrationsDto extends BulkImportDto {
   @IsOptional()
   @IsString()
   @Length(5, 200)
-  @IsNotIn(['status']) //To avoid endpoint confusion in registration.controller
   public referenceId: string;
 }
