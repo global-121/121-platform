@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-// import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SuccessPopupComponent } from '../success-popup/success-popup.component';
@@ -24,17 +23,15 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
 export class ProgramTeamPopupComponent implements OnInit {
   programId;
   userId;
-  // @ViewChild('searchbar') searchbar: IonSearchbar;
   searchQuery: string = '';
-  searchResults: any[] = []; //TODO Should NOT be "any"
-  rolesList: any[] = []; //TODO Should NOT be "any"
+  searchResults: any[] = [];
+  rolesList: any[] = [];
   selectedRoles: any[] = [];
   showSearchResults: boolean;
   addButtonDisabled = true;
 
   constructor(
     private modalController: ModalController,
-    // private programsService: ProgramsServiceApiService,
     private programsServiceApiService: ProgramsServiceApiService,
   ) {}
 
