@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from '../../mocks/helpers';
 import { ErrorHandlerService } from '../../services/error-handler.service';
@@ -17,7 +17,7 @@ describe('DatetimePickerComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
     TestBed.configureTestingModule({
       declarations: [DatetimePickerComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [IonicModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ModalController,

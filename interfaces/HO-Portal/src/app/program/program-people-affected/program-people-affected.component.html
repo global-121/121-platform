@@ -64,59 +64,6 @@
       >
         <ion-icon name="refresh"></ion-icon>
       </ion-button>
-      <ion-item
-        lines="none"
-        style="border: 1px solid #d1d4d7; border-radius: 4px; height: 40px"
-        class="ion-align-items-start"
-      >
-        <ion-icon
-          name="funnel"
-          [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          aria-hidden="true"
-          size="small"
-          slot="start"
-          class="ion-margin-end"
-          style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
-          color="black"
-        ></ion-icon>
-        <ion-select
-          style="min-height: 40px; margin-right: 8px"
-          interface="popover"
-          (ionChange)="selectTextFilterOption($event.detail.value)"
-          placeholder="Select..."
-        >
-          <ion-select-option
-            *ngFor="let filterOption of tableFiltersDropdownOptions"
-            value="{{ filterOption.name }}"
-            [disabled]="filterOption.name === 'DIVIDER'"
-            >{{ filterOption.label }}</ion-select-option
-          >
-        </ion-select>
-        <ion-input
-          [placeholder]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          [attr.aria-label]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          (ionInput)="applyFilter($event.detail.value)"
-          [debounce]="1000"
-          [value]="filterRowsVisibleQuery"
-          [clearInput]="true"
-          class="filter-input"
-        >
-        </ion-input>
-      </ion-item>
-
       <ion-label class="ion-margin-start">
         {{
           'page.program.program-people-affected.filter-btn.common.filter-by'
@@ -146,6 +93,10 @@
     </ion-row>
   </div>
 </ion-row>
+<app-table-filter-row
+  [isLoading]="isLoading"
+  [tableFiltersPerColumn]="tableFiltersPerColumn"
+></app-table-filter-row>
 <div
   #proxyScrollbar
   class="proxy-scrollbar"

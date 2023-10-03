@@ -16,6 +16,7 @@ import {
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { SortDirection } from '@swimlane/ngx-datatable';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
@@ -50,12 +51,12 @@ import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
-import { FilterOperatorEnum } from '../../models/pagination-filter.model';
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
+import { FilterService, PaginationFilter } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
-import { TableService } from '../../services/table.service';
+import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -102,12 +103,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
 
-  private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
-  public filterRowsVisibleQuery: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -119,202 +118,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public action: BulkActionId = BulkActionId.chooseAction;
   public BulkActionEnum = BulkActionId;
-  public bulkActions: BulkAction[] = [
-    {
-      id: BulkActionId.invite,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.invite',
-      ),
-      permissions: [Permission.RegistrationStatusInvitedUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.markNoLongerEligible,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.no-longer-eligible',
-      ),
-      permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: true,
-    },
-    {
-      id: BulkActionId.selectForValidation,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.select-for-validation',
-      ),
-      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: false,
-    },
-    {
-      id: BulkActionId.include,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.include',
-      ),
-      permissions: [Permission.RegistrationStatusIncludedUPDATE],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: false,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.reject,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.reject',
-      ),
-      permissions: [Permission.RegistrationStatusRejectedUPDATE],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
-        inputRequired: true,
-        explanation: `${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        )} <br> ${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.reject.explanation',
-        )}`,
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.endInclusion,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.end-inclusion',
-      ),
-      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.pause,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.pause',
-      ),
-      permissions: [Permission.RegistrationStatusPausedUPDATE],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: false,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.sendMessage,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.send-message',
-      ),
-      permissions: [Permission.RegistrationNotificationCREATE],
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        inputConstraint: {
-          length: 20,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.deletePa,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.delete-pa',
-      ),
-      permissions: [Permission.RegistrationDELETE],
-      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-      showIfNoValidation: true,
-      confirmConditions: {
-        inputRequired: false,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.delete-warning',
-        ),
-      },
-    },
-    {
-      id: BulkActionId.divider,
-      enabled: false,
-      label: '-------------------------------',
-      permissions: [Permission.PaymentCREATE],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-    },
-  ];
+  public bulkActions: BulkAction[] = [];
   public applyBtnDisabled = true;
   public submitWarning: any;
 
@@ -348,7 +152,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   };
 
-  public tableFiltersDropdownOptions: { name: string; label: string }[] = [];
+  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private messageColumnStatus = MessageStatusMapping;
@@ -391,11 +196,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private translatableStringService: TranslatableStringService,
     private errorHandlerService: ErrorHandlerService,
     private enumService: EnumService,
-    private tableService: TableService,
+    private registrationsService: RegistrationsService,
+    private filterService: FilterService,
   ) {
-    this.tableService?.setCurrentPage(0);
-    this.tableService?.setItemsPerPage(12);
-    this.pageMetaData = this.tableService?.getPageMetadata();
+    this.registrationsService?.setCurrentPage(0);
+    this.registrationsService?.setItemsPerPage(12);
+    this.pageMetaData = this.registrationsService?.getPageMetadata();
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
@@ -514,6 +320,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         width: 200,
       },
     ];
+
+    this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
+      this.tableTextFilter = filter;
+      await this.getPage();
+    });
   }
   ngOnDestroy(): void {
     if (this.routerSubscription) {
@@ -548,7 +359,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    await this.updatetableFiltersDropdown();
+    this.tableFiltersPerColumn = await this.updateTableFiltersPerColumn();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -840,7 +651,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private async updateBulkActions() {
     await this.addPaymentBulkActions();
 
-    this.bulkActions = this.bulkActions.map((action) => {
+    this.bulkActions = this.bulkActionService.getBulkActions().map((action) => {
       action.enabled =
         this.authService.hasAllPermissions(
           this.programId,
@@ -852,32 +663,37 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
-  private async updatetableFiltersDropdown() {
-    this.tableFiltersDropdownOptions = [];
-    for (const attribute of this.program.filterableAttributes) {
+  private async updateTableFiltersPerColumn(): Promise<
+    { name: string; label: string }[]
+  > {
+    const tableFiltersPerColumn = [];
+
+    for (const columnName of this.program.filterableAttributes) {
       const column = this.program.paTableAttributes.find(
-        (column) => column.name === attribute.name,
+        (column) => column.name === columnName.name,
       );
       let label: string;
+
       if (column && column.shortLabel) {
         label = this.translatableStringService.get(column.shortLabel);
       } else {
         label = this.translate.instant(
-          `page.program.program-people-affected.column.${attribute.name}`,
+          `page.program.program-people-affected.column.${columnName.name}`,
         );
       }
-      this.tableFiltersDropdownOptions.push({
-        name: attribute.name,
-        label: label,
-      });
-      if (attribute.name === 'successPayment') {
+
+      tableFiltersPerColumn.push({ name: columnName.name, label: label });
+
+      if (columnName.name === 'successPayment') {
         // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
-        this.tableFiltersDropdownOptions.push({
+        tableFiltersPerColumn.push({
           name: 'divider',
           label: '------------------------------------------',
         });
       }
     }
+
+    return tableFiltersPerColumn;
   }
 
   private async addPaymentBulkActions() {
@@ -916,7 +732,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async loadData() {
     // TODO: How do we get people per phase now..
-    this.setPage({ offset: this.tableService?.getPageMetadata().currentPage });
+    this.setPage({
+      offset: this.registrationsService?.getPageMetadata().currentPage,
+    });
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1052,7 +870,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return show;
   }
 
-
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
@@ -1072,7 +889,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async paymentHistoryPopup(personRow: PersonRow) {
-    const person = this.allPeopleData.find(
+    const person = this.visiblePeopleAffected.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
     const modal: HTMLIonModalElement = await this.modalController.create({
@@ -1093,7 +910,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     personRow: PersonRow,
     programId: number,
   ) {
-    const person = this.allPeopleData.find(
+    const person = this.visiblePeopleAffected.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
 
@@ -1329,13 +1146,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private async setTextFieldFilter(value: string) {
-    this.tableService?.setTextFilterValue(value);
-    await this.getPage();
-  }
-
-  public applyFilter(value: string) {
-    this.setTextFieldFilter(value?.toLowerCase().trim());
+  public applyFilter() {
     this.updateVisiblePeopleAffectedByFilter();
   }
 
@@ -1400,7 +1211,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.tableFilterState[prop].selected = filter;
     this.setPage({
       offset: 0,
-      pageSize: this.tableService?.getPageMetadata().itemsPerPage,
+      pageSize: this.registrationsService?.getPageMetadata().itemsPerPage,
     });
   }
 
@@ -1468,49 +1279,47 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     limit?: number;
   }) {
     this.isLoading = true;
-    this.tableService?.setCurrentPage(pageInfo.offset);
+    this.registrationsService?.setCurrentPage(pageInfo.offset);
 
     await this.getPage();
 
     this.isLoading = false;
   }
 
-  public async selectTextFilterOption(column: string) {
-    const attribute = this.program.filterableAttributes.find(
-      (attribute) => attribute.name === column,
-    );
-    const operator = attribute.allowedOperators.includes(
-      FilterOperatorEnum.ilike,
-    )
-      ? FilterOperatorEnum.ilike
-      : FilterOperatorEnum.eq;
-    this.tableService?.setTextFilterOperator(operator);
-    this.tableService?.setTextFilterName(column);
-    await this.getPage();
-  }
-
   private async getPage(): Promise<void> {
-    const { data, meta } = await this.tableService.getPage(
+    const { data, meta } = await this.registrationsService.getPage(
       this.programId,
       null,
       null,
       null,
       this.tableFilterState['paStatus'].selected,
+      this.tableTextFilter,
     );
 
-    this.allPeopleData = data;
     this.visiblePeopleAffected = this.createTableData(data);
-    this.tableService?.setTotalItems(meta.totalItems);
-    this.tableService?.setCurrentPage(meta.currentPage - 1);
+    this.registrationsService?.setTotalItems(meta.totalItems);
+    this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
     this.updateProxyScrollbarSize();
-
-    return;
   }
 
-  public async onSort(event) {
-    this.tableService?.setSortBy(event.sorts[0].prop, event.sorts[0].dir);
-    this.tableService?.setCurrentPage(0); // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
-    await this.getPage();
+  public async onSort(event: {
+    sorts: {
+      dir: SortDirection;
+      prop: string;
+    }[];
+    column: '';
+    prevValue: '';
+    newvalue: '';
+  }) {
+    this.registrationsService?.setSortBy(
+      event.sorts[0].prop,
+      event.sorts[0].dir,
+    );
+
+    this.setPage({
+      // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+      offset: 0,
+    });
   }
 }

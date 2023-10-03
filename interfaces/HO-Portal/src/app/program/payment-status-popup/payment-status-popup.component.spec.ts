@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -18,8 +17,11 @@ describe('PaymentStatusPopupComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [PaymentStatusPopupComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        IonicModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+      ],
       providers: [
         {
           provide: ModalController,

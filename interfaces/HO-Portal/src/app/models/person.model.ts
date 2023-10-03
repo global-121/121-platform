@@ -53,7 +53,7 @@ export class PersonRow {
   paymentCount?: number;
   paymentCountRemaining?: number | null;
   preferredLanguage?: string | null;
-  paymentHistoryColumn? : string;
+  paymentHistoryColumn?: string;
   lastMessageStatus?: string;
 }
 

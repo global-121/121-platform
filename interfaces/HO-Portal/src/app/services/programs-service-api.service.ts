@@ -10,11 +10,6 @@ import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
-import {
-  FilterOperatorEnum,
-  PaginationFilter,
-  PaginationSort,
-} from '../models/pagination-filter.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
@@ -32,6 +27,11 @@ import { Role, TableData, User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+  PaginationSort,
+} from './filter.service';
 
 @Injectable({
   providedIn: 'root',
