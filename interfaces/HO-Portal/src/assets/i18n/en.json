@@ -739,6 +739,9 @@
     "label": "Select a file",
     "download-template-button": "Download template CSV-file"
   },
+  "select-typeahead": {
+    "placeholder": "Select..."
+  },
   "password-toggle": {
     "show": "Show password",
     "hide": "Hide password"
