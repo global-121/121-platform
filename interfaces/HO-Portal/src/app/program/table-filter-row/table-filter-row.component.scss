@@ -21,8 +21,8 @@
 
 .tfr--text-filter--input,
 .tfr--text-filter--select {
-  --highlight-color-invalid: transparent;
-  --highlight-color-valid: transparent;
+  --highlight-color-invalid: none;
+  --highlight-color-valid: none;
 
   min-height: 2.75rem;
   width: 25%;
