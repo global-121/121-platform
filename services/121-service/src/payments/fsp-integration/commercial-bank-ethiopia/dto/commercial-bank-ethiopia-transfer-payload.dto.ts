@@ -14,3 +14,14 @@ export class CommercialBankEthiopiaRegistrationData {
   public value: string;
   public referenceId: string;
 }
+
+export class CommercialBankEthiopiaValidationData {
+  public id: number;
+  public fullName: string;
+  public bankAccountNumber: string;
+  public status: string;
+  public cbeName: string;
+  public discrepancyNname: string;
+  public cbeStatus: string;
+  public errorMessage: string;
+}

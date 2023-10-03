@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
 @ApiTags('callbacks/commercialBankEthiopia')
 // TODO: REFACTOR: rename to callbacks/commercialBankEthiopia
@@ -18,8 +19,8 @@ export class CommercialBankEthiopiaController {
   @Get('validate-persons-affected/:programId')
   public async notificationCallback(
     @Param('programId') programId: number,
-  ): Promise<any> {
-    await this.commercialBankEthiopiaService.getAllPersonsAffectedData(
+  ): Promise<CommercialBankEthiopiaValidationData[]> {
+    return await this.commercialBankEthiopiaService.sendValidationPerPa(
       Number(programId),
     );
   }
