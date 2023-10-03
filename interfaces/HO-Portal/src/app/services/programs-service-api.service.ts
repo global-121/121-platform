@@ -781,10 +781,16 @@ export class ProgramsServiceApiService {
   }
 
   getUsersByName(programId: number | string, username: string): Promise<any> {
-    //TODO Should NOT be "any"
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/users/${username}`,
+    );
+  }
+
+  getUsersByProgram(programId: number): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/users`,
     );
   }
 }

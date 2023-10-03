@@ -38,8 +38,8 @@
         "last-activity": "Last activity"
       },
       "status": {
-        "active": "Active",
-        "inactive": "Inactive"
+        "true": "Active",
+        "false": "Inactive"
       },
       "team-members": "Team members",
       "popup": {
