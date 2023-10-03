@@ -331,6 +331,7 @@ export class IntersolveVoucherService
             StatusEnum.waiting,
             null,
             registration.programId,
+            messageSid,
           );
 
           result.status = StatusEnum.waiting;
@@ -394,19 +395,25 @@ export class IntersolveVoucherService
       return;
     }
 
-    await this.transactionRepository.update(
-      { id: transactionId },
-      {
-        status: status,
-        errorMessage:
-          status === StatusEnum.error
-            ? (statusCallbackData.ErrorMessage || '') +
-              ' (ErrorCode: ' +
-              statusCallbackData.ErrorCode +
-              ')'
-            : null,
-      },
-    );
+    const transactionToUpdateFilter = {
+      id: transactionId,
+    };
+    // if success, then only update if transaction is a 'voucher sent' message
+    // if error, then always update
+    if (status === StatusEnum.success) {
+      transactionToUpdateFilter['transactionStep'] = 2;
+    }
+
+    await this.transactionRepository.update(transactionToUpdateFilter, {
+      status: status,
+      errorMessage:
+        status === StatusEnum.error
+          ? (statusCallbackData.ErrorMessage || '') +
+            ' (ErrorCode: ' +
+            statusCallbackData.ErrorCode +
+            ')'
+          : null,
+    });
   }
 
   public async exportVouchers(
