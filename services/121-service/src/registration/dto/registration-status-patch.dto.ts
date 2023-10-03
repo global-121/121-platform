@@ -9,7 +9,7 @@ export class RegistrationStatusPatchDto {
   @IsEnum(RegistrationStatusEnum)
   public readonly status: RegistrationStatusEnum;
 
-  @ApiProperty({ example: 'Rejection message' })
+  @ApiProperty({ example: 'Long enough rejection message' })
   @MinLength(20)
   @IsString()
   @IsOptional()

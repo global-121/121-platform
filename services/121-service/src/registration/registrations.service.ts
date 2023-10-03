@@ -152,12 +152,12 @@ export class RegistrationsService {
     return await this.registrationRepository.save(registrationToUpdate);
   }
 
-  private getAllowedNewStatusesForCurrentStatus(
-    currentStatus: RegistrationStatusEnum,
+  private getAllowedCurrentStatusesForNewStatus(
+    newStatus: RegistrationStatusEnum,
   ): RegistrationStatusEnum[] {
     const allStatuses = Object.values(RegistrationStatusEnum);
-    return allStatuses.filter((newStatus) =>
-      this.canChangeStatus(newStatus, currentStatus),
+    return allStatuses.filter((currentStatus) =>
+      this.canChangeStatus(currentStatus, newStatus),
     );
   }
 
@@ -1211,10 +1211,10 @@ export class RegistrationsService {
         false,
       );
 
-    const alllowedNewStatusses =
-      this.getAllowedNewStatusesForCurrentStatus(registrationStatus);
+    const alllowedCurrentStatuses =
+      this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
     query.filter = query.filter || {};
-    query.filter.status = `$in:${alllowedNewStatusses.join(',')}`;
+    query.filter.status = `$in:${alllowedCurrentStatuses.join(',')}`;
     const applicableRegistrations =
       await this.registrationsPaginationService.getPaginate(
         query,
