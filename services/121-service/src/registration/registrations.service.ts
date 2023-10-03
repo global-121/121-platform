@@ -1225,25 +1225,19 @@ export class RegistrationsService {
         false,
       );
     if (!dryRun) {
-      // Get the refrenceIds for the update seperately as running a query with no limit is slower
-      // so you show the result of the applicable registrations earlier
-      const registrationForUpdate =
-        await this.registrationsPaginationService.getPaginate(
-          query,
-          programId,
-          false,
-          true,
-        );
-      const referenceIds = registrationForUpdate.data.map(
-        (registration) => registration.referenceId,
-      );
-      await this.updateRegistrationStatusBatch(
-        referenceIds,
+      this.updateRegistrationStatusBatchFilter(
+        query,
+        programId,
         registrationStatus,
         message,
         messageContentType,
-      );
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
     }
+    // Get the refrenceIds for the update seperately as running a query with no limit is slower
+    // so you show the result of the applicable registrations earlier
+
     return {
       totalFilterCount: selectedRegistrations.meta.totalItems,
       applicableCount: applicableRegistrations.meta.totalItems,
@@ -1251,6 +1245,31 @@ export class RegistrationsService {
         selectedRegistrations.meta.totalItems -
         applicableRegistrations.meta.totalItems,
     };
+  }
+
+  private async updateRegistrationStatusBatchFilter(
+    query: PaginateQuery,
+    programId: number,
+    registrationStatus: RegistrationStatusEnum,
+    message?: string,
+    messageContentType?: MessageContentType,
+  ): Promise<void> {
+    const registrationForUpdate =
+      await this.registrationsPaginationService.getPaginate(
+        query,
+        programId,
+        false,
+        true,
+      );
+    const referenceIds = registrationForUpdate.data.map(
+      (registration) => registration.referenceId,
+    );
+    await this.updateRegistrationStatusBatch(
+      referenceIds,
+      registrationStatus,
+      message,
+      messageContentType,
+    );
   }
 
   public async updateRegistrationStatusBatch(
@@ -1278,18 +1297,22 @@ export class RegistrationsService {
           registrationStatus === RegistrationStatusEnum.invited
             ? program.tryWhatsAppFirst
             : false;
-        this.messageService
-          .sendTextMessage(
+        try {
+          await this.messageService.sendTextMessage(
             updatedRegistration,
             programId,
             message,
             null,
             tryWhatsappFirst,
             messageContentType,
-          )
-          .catch((error) => {
+          );
+        } catch (error) {
+          if (process.env.NODE_ENV === 'development') {
+            throw error;
+          } else {
             this.azureLogService.logError(error, true);
-          });
+          }
+        }
       }
     }
   }
