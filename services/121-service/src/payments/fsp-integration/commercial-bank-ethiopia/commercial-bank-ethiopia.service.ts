@@ -252,7 +252,6 @@ export class CommercialBankEthiopiaService
   ): Promise<CommercialBankEthiopiaValidationData[]> {
     const credentials: { username: string; password: string } =
       await this.getCommercialBankEthiopiaCredentials(programId);
-    console.log(credentials);
 
     const getAllPersonsAffectedData = await this.getAllPersonsAffectedData(
       programId,
@@ -285,7 +284,6 @@ export class CommercialBankEthiopiaService
             : 'No match';
         result.push(pa);
       } else {
-        console.log(paResult);
         pa.errorMessage =
           paResult.resultDescription ||
           (paResult.Status &&
@@ -297,7 +295,6 @@ export class CommercialBankEthiopiaService
       }
     }
 
-    console.log(result);
     return result;
   }
 
