@@ -148,8 +148,10 @@ export class RegistrationsService {
     const registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
     );
-    registrationToUpdate.registrationStatus = status;
-    return await this.registrationRepository.save(registrationToUpdate);
+    if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
+      registrationToUpdate.registrationStatus = status;
+      return await this.registrationRepository.save(registrationToUpdate);
+    }
   }
 
   private getAllowedNewStatusesForCurrentStatus(
@@ -1257,60 +1259,38 @@ export class RegistrationsService {
     message?: string,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    const errors = [];
+    let programId;
+    let program;
     for (const referenceId of referenceIds) {
-      const registrationToUpdate = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-      });
-      if (!registrationToUpdate) {
-        errors.push(`Registration '${referenceId}' is not found`);
-      } else if (
-        !this.canChangeStatus(
-          registrationToUpdate.registrationStatus,
-          registrationStatus,
-        )
-      ) {
-        errors.push(
-          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
-        );
-      }
-    }
-    if (errors.length === 0) {
-      let programId;
-      let program;
-      for (const referenceId of referenceIds) {
-        const updatedRegistration = await this.setRegistrationStatus(
-          referenceId,
-          registrationStatus,
-        );
-        if (message) {
-          if (updatedRegistration.programId !== programId) {
-            programId = updatedRegistration.programId;
-            // avoid a query per PA if not necessary
-            program = await this.programRepository.findOne({
-              where: { id: programId },
-            });
-          }
-          const tryWhatsappFirst =
-            registrationStatus === RegistrationStatusEnum.invited
-              ? program.tryWhatsAppFirst
-              : false;
-          this.messageService
-            .sendTextMessage(
-              updatedRegistration,
-              programId,
-              message,
-              null,
-              tryWhatsappFirst,
-              messageContentType,
-            )
-            .catch((error) => {
-              this.azureLogService.logError(error, true);
-            });
+      const updatedRegistration = await this.setRegistrationStatus(
+        referenceId,
+        registrationStatus,
+      );
+      if (message && updatedRegistration) {
+        if (updatedRegistration.programId !== programId) {
+          programId = updatedRegistration.programId;
+          // avoid a query per PA if not necessary
+          program = await this.programRepository.findOne({
+            where: { id: programId },
+          });
         }
+        const tryWhatsappFirst =
+          registrationStatus === RegistrationStatusEnum.invited
+            ? program.tryWhatsAppFirst
+            : false;
+        this.messageService
+          .sendTextMessage(
+            updatedRegistration,
+            programId,
+            message,
+            null,
+            tryWhatsappFirst,
+            messageContentType,
+          )
+          .catch((error) => {
+            this.azureLogService.logError(error, true);
+          });
       }
-    } else {
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -1543,8 +1523,39 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
+  private async checkAllowedStatusChangeOrThrow(
+    referenceIds: string[],
+    registrationStatus: RegistrationStatusEnum,
+  ): Promise<void> {
+    const errors = [];
+    for (const referenceId of referenceIds) {
+      const registrationToUpdate = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId },
+      });
+      if (!registrationToUpdate) {
+        errors.push(`Registration '${referenceId}' is not found`);
+      } else if (
+        !this.canChangeStatus(
+          registrationToUpdate.registrationStatus,
+          registrationStatus,
+        )
+      ) {
+        errors.push(
+          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
+        );
+      }
+    }
+    if (errors.length > 0) {
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+  }
+
   public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
+    await this.checkAllowedStatusChangeOrThrow(
+      referenceIdsDto.referenceIds,
+      RegistrationStatusEnum.deleted,
+    );
     await this.updateRegistrationStatusBatch(
       referenceIdsDto.referenceIds,
       RegistrationStatusEnum.deleted,
