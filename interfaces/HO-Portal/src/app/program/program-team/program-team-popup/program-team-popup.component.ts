@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,14 +21,14 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
   templateUrl: './program-team-popup.component.html',
   styleUrls: ['./program-team-popup.component.scss'],
 })
-export class ProgramTeamPopupComponent {
+export class ProgramTeamPopupComponent implements OnInit {
   programId;
   userId;
   // @ViewChild('searchbar') searchbar: IonSearchbar;
   searchQuery: string = '';
   searchResults: any[] = []; //TODO Should NOT be "any"
   rolesList: any[] = []; //TODO Should NOT be "any"
-  selectedRoles: any [] = [];
+  selectedRoles: any[] = [];
   showSearchResults: boolean;
   addButtonDisabled = true;
 
@@ -66,12 +66,12 @@ export class ProgramTeamPopupComponent {
   public async assignTeamMember() {
     try {
       await this.programsServiceApiService.assignAidworker(
-          this.programId,
-          this.userId,
-          this.selectedRoles,
-        );
-        this.closeModal();
-        this.successPopup(event);
+        this.programId,
+        this.userId,
+        this.selectedRoles,
+      );
+      this.closeModal();
+      this.successPopup(event);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -88,6 +88,9 @@ export class ProgramTeamPopupComponent {
       componentProps: { programId: this.programId },
     });
     await modal.present();
+    window.setTimeout(() => {
+      modal.dismiss();
+    }, 3000);
   }
 
   public closeModal() {

@@ -330,3 +330,23 @@ ion-searchbar ion-icon {
 ion-searchbar .searchbar-input {
   padding-inline-start: 5px !important;
 }
+
+.rolesDropdown {
+  --box-shadow: none;
+  ion-list {
+    width: 365px;
+    overflow-x: hidden;
+    border: 2px solid var(--fiveten-neutral-200);
+    border-radius: 5px;
+    padding: 0px;
+    --min-height: 30px;
+  }
+  ion-item {
+    --min-height: 30px;
+  }
+
+  ion-checkbox {
+    font-size: 14px;
+    --border-width: 1px;
+  }
+}
