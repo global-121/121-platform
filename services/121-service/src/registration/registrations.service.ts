@@ -1196,6 +1196,7 @@ export class RegistrationsService {
     query: PaginateQuery,
     programId: number,
     registrationStatus: RegistrationStatusEnum,
+    dryRun: boolean,
     message?: string,
     messageContentType?: MessageContentType,
   ): Promise<RegistrationStatusPatchResultDto> {
@@ -1222,12 +1223,14 @@ export class RegistrationsService {
     const referenceIds = applicableRegistrations.data.map(
       (registration) => registration.referenceId,
     );
-    await this.updateRegistrationStatusBatch(
-      referenceIds,
-      registrationStatus,
-      message,
-      messageContentType,
-    );
+    if (!dryRun) {
+      await this.updateRegistrationStatusBatch(
+        referenceIds,
+        registrationStatus,
+        message,
+        messageContentType,
+      );
+    }
     return {
       totalFilterCount: selectedRegistrations.meta.totalItems,
       applicableCount: applicableRegistrations.meta.totalItems,

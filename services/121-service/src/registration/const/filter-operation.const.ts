@@ -69,6 +69,14 @@ const PaginateConfigRegistrationViewWithPayments: PaginateConfig<RegistrationVie
     },
   };
 
+const PaginateConfigRegistrationViewOnlyFilters: PaginateConfig<RegistrationViewEntity> =
+  {
+    filterableColumns: {
+      ...PaginateConfigRegistrationViewWithPayments.filterableColumns,
+    },
+    sortableColumns: [],
+  };
+
 // Define the object without additional filterable columns
 const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
   ...basePaginateConfigRegistrationView,
@@ -77,4 +85,5 @@ const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
 export {
   PaginateConfigRegistrationViewWithPayments,
   PaginateConfigRegistrationView,
+  PaginateConfigRegistrationViewOnlyFilters,
 };

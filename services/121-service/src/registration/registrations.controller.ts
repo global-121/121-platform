@@ -43,7 +43,10 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { PaginateConfigRegistrationViewWithPayments } from './const/filter-operation.const';
+import {
+  PaginateConfigRegistrationViewOnlyFilters,
+  PaginateConfigRegistrationViewWithPayments,
+} from './const/filter-operation.const';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -430,12 +433,18 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @ApiOperation({ summary: 'Update registration status of set of PAs.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({ name: 'dryRun', required: true, type: 'boolean' })
   @Patch('programs/:programId/registrations')
   public async patchRegistrationsStatus(
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
     @User('id') userId: number,
     @Param('programId') programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<RegistrationStatusPatchResultDto> {
     let permission: PermissionEnum;
     let messageContentType: MessageContentType;
@@ -487,6 +496,7 @@ export class RegistrationsController {
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
+      queryParams.dryRun,
       statusUpdateDto.message,
       messageContentType,
     );
