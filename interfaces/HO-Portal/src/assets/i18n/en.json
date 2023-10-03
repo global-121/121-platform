@@ -270,7 +270,10 @@
           "referenceId": "Reference ID",
           "note": "Note",
           "paymentCount": "Payments so far",
-          "paymentCountRemaining": "Remaining payments"
+          "paymentCountRemaining": "Remaining payments",
+          "failedPayment": "Failed for payment #",
+          "waitingPayment": "Waiting for payment #",
+          "successPayment": "Successful for payment #"
         },
         "language": {
           "en": "English",
@@ -326,7 +329,7 @@
           "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
           "success": "Success",
-          "no-payment-yet": "No payment yet",
+          "payments-popup": "Payments",
           "show-status": "Show status",
           "do-single-payment": "Do single payment",
           "payment-number": "Payment #{{number}}",

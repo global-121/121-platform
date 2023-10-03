@@ -9,7 +9,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
-import { TransactionEntity } from '../../transactions/transaction.entity';
+import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { BobFinanceFspInstructions } from './dto/bob-finance-fsp-instructions.dto';
@@ -50,7 +50,7 @@ export class BobFinanceService
 
   public async getFspInstructions(
     registration: RegistrationEntity,
-    transaction: TransactionEntity,
+    transaction: TransactionReturnDto,
   ): Promise<BobFinanceFspInstructions> {
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
 

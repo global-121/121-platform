@@ -23,6 +23,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
@@ -153,6 +154,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
+  @OneToMany(
+    () => LatestTransactionEntity,
+    (latestTransactions) => latestTransactions.registration,
+  )
+  public latestTransactions: LatestTransactionEntity[];
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -186,6 +193,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TryWhatsappEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: LatestTransactionEntity,
         columnName: 'registration',
       },
     ]);

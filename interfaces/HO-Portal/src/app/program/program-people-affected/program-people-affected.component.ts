@@ -23,7 +23,6 @@ import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { AnswerType } from 'src/app/models/fsp.model';
-import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   Person,
   PersonRow,
@@ -34,7 +33,6 @@ import {
   Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
-import { StatusEnum } from 'src/app/models/status.enum';
 import {
   TableFilterMultipleChoiceOption,
   TableFilterType,
@@ -841,8 +839,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       sortable: false,
       phases: [ProgramPhase.payment],
       permissions: [Permission.RegistrationPersonalREAD],
-      minWidth: 300,
-      width: 300,
+      minWidth: 200,
+      width: 200,
     };
   }
 
@@ -881,6 +879,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
 
       tableFiltersPerColumn.push({ name: columnName.name, label: label });
+
+      if (columnName.name === 'successPayment') {
+        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
+        tableFiltersPerColumn.push({
+          name: 'divider',
+          label: '------------------------------------------',
+        });
+      }
     }
 
     return tableFiltersPerColumn;
@@ -983,15 +989,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
-    const lastPaymentInfo = {
-      lastPaymentNumber: person.lastTransactionPaymentNumber,
-      lastPaymentAmount: person.lastTransactionAmount,
-      lastPaymentStatus: person.lastTransactionStatus,
-      lastPaymentErrorMessage: person.lastTransactionErrorMessage,
-    };
-
     if (this.canViewPaymentData) {
-      personRow = this.fillPaymentHistoryColumn(personRow, lastPaymentInfo);
+      personRow = this.fillPaymentHistoryColumn(personRow);
     }
 
     // Custom attributes can be personal data or not personal data
@@ -1029,67 +1028,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
-  private fillPaymentHistoryColumn(
-    personRow: PersonRow,
-    lastPaymentInfo: {
-      lastPaymentNumber: number;
-      lastPaymentAmount: number;
-      lastPaymentStatus: string;
-      lastPaymentErrorMessage: string;
-    },
-  ): PersonRow {
-    const {
-      lastPaymentNumber,
-      lastPaymentAmount,
-      lastPaymentStatus,
-      lastPaymentErrorMessage,
-    } = lastPaymentInfo;
-
-    let paymentColumnValue = new PaymentColumnDetail();
-
+  private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
     const columnKey = 'paymentHistoryColumn';
-
-    if (!lastPaymentNumber) {
-      paymentColumnValue.text = this.translate.instant(
-        'page.program.program-people-affected.transaction.no-payment-yet',
-      );
-      personRow[columnKey] = paymentColumnValue.text;
-    } else {
-      paymentColumnValue = {
-        text: '',
-        paymentIndex: lastPaymentNumber,
-        amount: `${this.program.currency} ${lastPaymentAmount}`,
-        status: lastPaymentStatus,
-        errorMessage: lastPaymentErrorMessage,
-      };
-      if (lastPaymentStatus === StatusEnum.success) {
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.success',
-        );
-      } else if (lastPaymentStatus === StatusEnum.waiting) {
-        paymentColumnValue.errorMessage = this.translate.instant(
-          'page.program.program-people-affected.transaction.waiting-message',
-        );
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.waiting',
-        );
-      } else {
-        paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.error',
-        );
-      }
-      personRow[columnKey] =
-        this.translate.instant(
-          'page.program.program-people-affected.transaction.payment-number',
-          {
-            number: paymentColumnValue.paymentIndex,
-          },
-        ) +
-        ' ' +
-        paymentColumnValue.text;
-    }
-
-    personRow.paymentHistory = paymentColumnValue;
+    personRow[columnKey] = this.translate.instant(
+      'page.program.program-people-affected.transaction.payments-popup',
+    );
     return personRow;
   }
 
@@ -1121,18 +1064,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
     }
     return show;
-  }
-
-  public hasError(row: PersonRow): boolean {
-    if (row.paymentHistory.errorMessage) {
-      return true;
-    }
-
-    if (row.paymentHistory.status === StatusEnum.error) {
-      return true;
-    }
-
-    return false;
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {

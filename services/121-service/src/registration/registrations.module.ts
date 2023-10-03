@@ -15,6 +15,7 @@ import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-vis
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
@@ -60,6 +61,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
       RegistrationViewEntity,
+      LatestTransactionEntity,
     ]),
     UserModule,
     HttpModule,

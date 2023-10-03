@@ -331,7 +331,6 @@ export class IntersolveVoucherService
             StatusEnum.waiting,
             null,
             registration.programId,
-            messageSid,
           );
 
           result.status = StatusEnum.waiting;

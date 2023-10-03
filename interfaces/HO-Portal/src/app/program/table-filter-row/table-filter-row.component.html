@@ -23,6 +23,7 @@
     <ion-select-option
       *ngFor="let filterOption of tableFiltersPerColumn"
       [value]="filterOption.name"
+      [disabled]="filterOption.name === 'DIVIDER'"
     >
       {{ filterOption.label }}
     </ion-select-option>

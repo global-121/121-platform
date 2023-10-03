@@ -17,16 +17,6 @@ export class LastPaymentResults {
   waiting: number;
 }
 
-export class PaymentColumnDetail {
-  text: string;
-  paymentIndex?: number;
-  amount?: string;
-  hasMessageIcon?: boolean;
-  hasMoneyIconTable?: boolean;
-  errorMessage?: string;
-  status?: string;
-}
-
 export class PaymentRowDetail {
   text: string;
   sentDate?: string;
