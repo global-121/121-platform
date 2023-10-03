@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import Permission from '../auth/permission.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { BulkActionId } from '../models/bulk-actions.models';
+import { BulkAction, BulkActionId } from '../models/bulk-actions.models';
 import { PersonRow } from '../models/person.model';
+import { ProgramPhase } from '../models/program.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 class CustomBulkActionInput {
@@ -14,7 +17,10 @@ class CustomBulkActionInput {
   providedIn: 'root',
 })
 export class BulkActionsService {
-  constructor(private programsService: ProgramsServiceApiService) {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private translate: TranslateService,
+  ) {}
 
   private onlyIds(people: PersonRow[]): string[] {
     return people.map((pa) => pa.referenceId);
@@ -111,6 +117,203 @@ export class BulkActionsService {
     return personData;
   }
 
+  private bulkActions: BulkAction[] = [
+    {
+      id: BulkActionId.invite,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.invite',
+      ),
+      permissions: [Permission.RegistrationStatusInvitedUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.markNoLongerEligible,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.no-longer-eligible',
+      ),
+      permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.selectForValidation,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.select-for-validation',
+      ),
+      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: false,
+    },
+    {
+      id: BulkActionId.include,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.include',
+      ),
+      permissions: [Permission.RegistrationStatusIncludedUPDATE],
+      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.reject,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.reject',
+      ),
+      permissions: [Permission.RegistrationStatusRejectedUPDATE],
+      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: `${this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        )} <br> ${this.translate.instant(
+          'page.program.program-people-affected.action-inputs.reject.explanation',
+        )}`,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.endInclusion,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.end-inclusion',
+      ),
+      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.pause,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.pause',
+      ),
+      permissions: [Permission.RegistrationStatusPausedUPDATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.sendMessage,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.send-message',
+      ),
+      permissions: [Permission.RegistrationNotificationCREATE],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+      ],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
+      },
+    },
+    {
+      id: BulkActionId.deletePa,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.delete-pa',
+      ),
+      permissions: [Permission.RegistrationDELETE],
+      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+      showIfNoValidation: true,
+      confirmConditions: {
+        inputRequired: false,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.delete-warning',
+        ),
+      },
+    },
+    {
+      id: BulkActionId.divider,
+      enabled: false,
+      label: '-------------------------------',
+      permissions: [Permission.PaymentCREATE],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+  ];
+
   public async applyAction(
     action: BulkActionId,
     programId: number,
@@ -170,5 +373,9 @@ export class BulkActionsService {
           customBulkActionInput.message,
         );
     }
+  }
+
+  public getBulkActions(): BulkAction[] {
+    return this.bulkActions;
   }
 }
