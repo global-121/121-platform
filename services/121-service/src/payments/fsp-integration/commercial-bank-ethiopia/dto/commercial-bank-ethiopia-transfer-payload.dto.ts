@@ -21,7 +21,7 @@ export class CommercialBankEthiopiaValidationData {
   public bankAccountNumber: string;
   public status: string;
   public cbeName: string;
-  public discrepancyNname: string;
+  public discrepancyName: string;
   public cbeStatus: string;
   public errorMessage: string;
 }

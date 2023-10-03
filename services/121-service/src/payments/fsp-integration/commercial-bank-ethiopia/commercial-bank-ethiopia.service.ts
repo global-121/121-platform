@@ -279,7 +279,7 @@ export class CommercialBankEthiopiaService
           ]['ns4:mEACCOUNTCBEREMITANCEDetailType'];
         pa.cbeName = accountInfo['ns4:CUSTOMERNAME']._text;
         pa.cbeStatus = accountInfo['ns4:ACCOUNTSTATUS']._text;
-        pa.discrepancyNname =
+        pa.discrepancyName =
           pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
             ? 'Match'
             : 'No match';
