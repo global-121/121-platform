@@ -1204,6 +1204,8 @@ export class RegistrationsService {
   ): Promise<RegistrationStatusPatchResultDto> {
     // Overwrite the default select, as we only need the referenceId
     query.select = ['referenceId'];
+    query.limit = 0;
+    query.page = null;
 
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate(

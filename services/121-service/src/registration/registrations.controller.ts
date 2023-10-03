@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -366,6 +367,16 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for the registration status update',
+    type: RegistrationStatusPatchResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'The registration status update was succesfully started',
+    type: RegistrationStatusPatchResultDto,
+  })
   @ApiOperation({ summary: 'Update registration status of set of PAs.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -379,6 +390,21 @@ export class RegistrationsController {
     description:
       'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
   })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Patch('programs/:programId/registrations/status')
   public async patchRegistrationsStatus(
     @Paginate() query: PaginateQuery,
@@ -433,7 +459,7 @@ export class RegistrationsController {
       query,
     );
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    return await this.registrationsService.patchRegistrationsStatus(
+    const result = await this.registrationsService.patchRegistrationsStatus(
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
@@ -441,6 +467,12 @@ export class RegistrationsController {
       statusUpdateDto.message,
       messageContentType,
     );
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('programs/registrations')
