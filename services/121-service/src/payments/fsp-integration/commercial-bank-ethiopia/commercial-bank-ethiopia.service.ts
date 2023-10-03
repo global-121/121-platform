@@ -258,10 +258,10 @@ export class CommercialBankEthiopiaService
       programId,
     );
 
-    let result = [];
+    const result = [];
     for (const pa of getAllPersonsAffectedData) {
       // console.log(pa);
-      let paResult =
+      const paResult =
         await this.commercialBankEthiopiaApiService.getValidationStatus(
           pa.bankAccountNumber,
           credentials,
