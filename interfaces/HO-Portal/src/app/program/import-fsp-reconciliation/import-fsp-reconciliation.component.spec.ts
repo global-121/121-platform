@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { AuthService } from '../../../app/auth/auth.service';
 import { provideMagicalMock } from '../../../app/mocks/helpers';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
@@ -16,8 +16,11 @@ describe('ImportFspReconciliationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ImportFspReconciliationComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot(),
+        SharedModule,
+        HttpClientTestingModule,
+      ],
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),

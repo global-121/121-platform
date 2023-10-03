@@ -26,6 +26,7 @@ import { ImportFspReconciliationComponent } from '../program/import-fsp-reconcil
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
@@ -60,6 +61,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ProgramCardComponent,
     MessageHistoryPopupComponent,
     DatetimePickerComponent,
+    TableFilterRowComponent,
   ],
   imports: [
     CommonModule,
@@ -103,6 +105,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TableFilterPopoverComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
+    TableFilterRowComponent,
   ],
 })
 export class SharedModule {}

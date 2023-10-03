@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -23,8 +22,11 @@ describe('EditPersonAffectedPopupComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [EditPersonAffectedPopupComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        IonicModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+      ],
       providers: [
         {
           provide: ModalController,
@@ -56,6 +58,7 @@ describe('EditPersonAffectedPopupComponent', () => {
         r([
           {
             id: 1,
+            personAffectedSequence: '1',
             referenceId: 'test',
             registrationProgramId: 1,
             status: RegistrationStatus.startedRegistration,

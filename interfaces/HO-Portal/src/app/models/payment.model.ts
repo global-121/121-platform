@@ -17,7 +17,6 @@ export class LastPaymentResults {
   waiting: number;
 }
 
-
 export class PaymentRowDetail {
   text: string;
   sentDate?: string;

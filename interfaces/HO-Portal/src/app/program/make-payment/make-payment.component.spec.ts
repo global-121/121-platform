@@ -1,8 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { MakePaymentComponent } from './make-payment.component';
 
 describe('MakePaymentComponent', () => {
@@ -13,11 +14,12 @@ describe('MakePaymentComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MakePaymentComponent],
       imports: [
+        IonicModule,
         TranslateModule.forRoot(),
+        SharedModule,
         RouterTestingModule,
         HttpClientTestingModule,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [],
     }).compileComponents();
   }));

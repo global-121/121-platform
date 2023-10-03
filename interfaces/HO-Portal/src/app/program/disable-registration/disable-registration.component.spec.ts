@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -15,7 +14,6 @@ describe('DisableRegistrationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [DisableRegistrationComponent],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),

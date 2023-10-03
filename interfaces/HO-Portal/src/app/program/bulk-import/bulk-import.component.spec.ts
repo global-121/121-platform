@@ -1,9 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { BulkImportComponent } from './bulk-import.component';
 
 describe('BulkImportComponent', () => {
@@ -13,8 +14,7 @@ describe('BulkImportComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BulkImportComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [IonicModule, TranslateModule.forRoot(), SharedModule],
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),

@@ -1,8 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
+import { AlertController, IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { provideMagicalMock } from '../../mocks/helpers';
@@ -16,8 +15,8 @@ describe('UpdateFspComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UpdateFspComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        IonicModule,
         FormsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot(),

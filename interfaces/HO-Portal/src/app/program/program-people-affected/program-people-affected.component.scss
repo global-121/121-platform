@@ -1,10 +1,6 @@
-/*
- * Tools - above the table
- ***************************************************************************/
-.filter-input {
-  min-width: 16em;
-  max-width: 30%;
-  min-height: 40px;
+:host {
+  display: block;
+  min-height: 100%; // Ensure to always fill the viewport; So the top filter-row stays in the same place
 }
 
 /*
