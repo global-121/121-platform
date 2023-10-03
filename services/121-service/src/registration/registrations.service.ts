@@ -1208,6 +1208,7 @@ export class RegistrationsService {
         query,
         programId,
         false,
+        false,
       );
 
     const alllowedNewStatusses =
@@ -1219,11 +1220,21 @@ export class RegistrationsService {
         query,
         programId,
         false,
+        false,
       );
-    const referenceIds = applicableRegistrations.data.map(
-      (registration) => registration.referenceId,
-    );
     if (!dryRun) {
+      // Get the refrenceIds for the update seperately as running a query with no limit is slower
+      // so you show the result of the applicable registrations earlier
+      const registrationForUpdate =
+        await this.registrationsPaginationService.getPaginate(
+          query,
+          programId,
+          false,
+          true,
+        );
+      const referenceIds = registrationForUpdate.data.map(
+        (registration) => registration.referenceId,
+      );
       await this.updateRegistrationStatusBatch(
         referenceIds,
         registrationStatus,
