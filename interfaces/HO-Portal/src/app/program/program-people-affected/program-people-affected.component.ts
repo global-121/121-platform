@@ -92,7 +92,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   // private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
 
-  private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
@@ -664,7 +663,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async paymentHistoryPopup(personRow: PersonRow) {
-    const person = this.allPeopleData.find(
+    const person = this.visiblePeopleAffected.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
     const modal: HTMLIonModalElement = await this.modalController.create({
@@ -685,14 +684,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     personRow: PersonRow,
     programId: number,
   ) {
-    const person = this.allPeopleData.find(
-      (pa) => pa.referenceId === personRow.referenceId,
-    );
-
+    const referenceId = personRow.referenceId;
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: MessageHistoryPopupComponent,
       componentProps: {
-        person,
+        referenceId,
         programId,
       },
     });
