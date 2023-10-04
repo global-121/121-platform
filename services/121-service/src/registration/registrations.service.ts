@@ -2,7 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  And,
+  DataSource,
+  In,
+  IsNull,
+  Not,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -1273,10 +1281,19 @@ export class RegistrationsService {
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
   ): SelectQueryBuilder<RegistrationViewEntity> {
+    return this.getBaseQuery().andWhere({ status: In(allowedCurrentStatuses) });
+  }
+
+  private getCustomMessageBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
+    return this.getBaseQuery().andWhere({
+      phoneNumber: And(Not(IsNull()), Not('')),
+    });
+  }
+
+  private getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewRepository
       .createQueryBuilder('registration')
-      .where('1=1')
-      .andWhere({ status: In(allowedCurrentStatuses) });
+      .where('1=1');
   }
 
   private async updateRegistrationStatusBatchFilter(
@@ -1895,6 +1912,7 @@ export class RegistrationsService {
       query,
       applicableQuery,
       programId,
+      this.getCustomMessageBaseQuery(),
     );
 
     const registrationForUpdate =
@@ -1903,6 +1921,7 @@ export class RegistrationsService {
         programId,
         false,
         true,
+        this.getCustomMessageBaseQuery(),
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
