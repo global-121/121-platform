@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { getServer } from './utility.helper';
 
 export function importRegistrations(
@@ -83,15 +84,21 @@ export function getRegistrations(
 
 export function changePaStatus(
   programId: number,
-  registrations: string[],
-  action: string,
+  referenceIds: string[],
+  status: RegistrationStatusEnum,
   accessToken: string,
 ): Promise<request.Response> {
+  const queryParams = {
+    filter: {
+      referenceId: `'$in:${referenceIds.join(',')}`,
+    },
+  };
   return getServer()
-    .post(`/programs/${programId}/registrations/${action}`)
+    .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
-      referenceIds: registrations,
+      status: status,
       message: null,
     });
 }

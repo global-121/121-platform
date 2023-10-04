@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from '../../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
 import { changePhase } from '../../helpers/program.helper';
@@ -38,7 +39,7 @@ describe('Load PA table', () => {
       await changePaStatus(
         programId,
         [registration1.referenceId],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
     });

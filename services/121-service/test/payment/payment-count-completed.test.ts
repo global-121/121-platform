@@ -53,7 +53,12 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     it('should set registration to complete', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
-      await changePaStatus(programId, [referenceIdAh], 'include', accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdAh],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
       const paymentReferenceIds = [referenceIdAh];
 
       // Act

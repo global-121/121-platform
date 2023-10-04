@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import {
@@ -47,7 +48,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -81,7 +82,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -115,7 +116,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -149,7 +150,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -183,7 +184,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -217,7 +218,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -268,7 +269,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -317,7 +318,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
@@ -366,7 +367,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programIdVisa,
         [referenceIdVisa],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];

@@ -13,6 +13,7 @@ import {
   referenceIdVisa,
   registrationVisa,
 } from '../../test/visa-card/visa-card.data';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { InterfaceScript } from './scripts.module';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
@@ -92,7 +93,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await changePaStatus(
       programIdVisa,
       [referenceIdVisa],
-      'include',
+      RegistrationStatusEnum.included,
       accessToken,
     );
     await doPayment(
