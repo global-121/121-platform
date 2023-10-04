@@ -87,12 +87,18 @@ export function changePaStatus(
   referenceIds: string[],
   status: RegistrationStatusEnum,
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
   const queryParams = {
     filter: {
       referenceId: `'$in:${referenceIds.join(',')}`,
     },
   };
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
   return getServer()
     .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
@@ -100,6 +106,26 @@ export function changePaStatus(
     .send({
       status: status,
       message: null,
+    });
+}
+
+export function sendMessage(
+  programId: number,
+  referenceIds: string[],
+  message: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    filter: {
+      referenceId: `'$in:${referenceIds.join(',')}`,
+    },
+  };
+  return getServer()
+    .post(`/programs/${programId}/registrations/message`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send({
+      message: message,
     });
 }
 
