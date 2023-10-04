@@ -48,6 +48,7 @@ import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
 } from './const/filter-operation.const';
+import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -56,7 +57,6 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
-import { RegistrationStatusPatchResultDto } from './dto/registration-status-patch-result.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
@@ -370,12 +370,12 @@ export class RegistrationsController {
   @ApiResponse({
     status: 200,
     description: 'Dry run result for the registration status update',
-    type: RegistrationStatusPatchResultDto,
+    type: BulkActionResultDto,
   })
   @ApiResponse({
     status: 202,
     description: 'The registration status update was succesfully started',
-    type: RegistrationStatusPatchResultDto,
+    type: BulkActionResultDto,
   })
   @ApiOperation({ summary: 'Update registration status of set of PAs.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -412,7 +412,7 @@ export class RegistrationsController {
     @User('id') userId: number,
     @Param('programId') programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
-  ): Promise<RegistrationStatusPatchResultDto> {
+  ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum;
     let messageContentType: MessageContentType;
     const registrationStatus = statusUpdateDto.status;
@@ -711,20 +711,80 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for sending a bulk message',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'Sending bulk message was succesfully started',
+    type: BulkActionResultDto,
+  })
+  @ApiOperation({
+    summary:
+      'Sends registration(s) a custom message via sms or whatsapp if they have a whatsapp number.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationNotificationCREATE)
   @ApiOperation({
     summary:
       'Send custom text-message (whatsapp or sms) to array of registrations',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/text-message')
+  @Post('programs/:programId/registrations/message')
   public async sendCustomTextMessage(
-    @Body() data: SendCustomTextDto,
-  ): Promise<void> {
-    return await this.registrationsService.sendCustomTextMessage(
-      data.referenceIds,
-      data.message,
+    @Body() body: SendCustomTextDto,
+    @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
+    @Param('programId') programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultDto> {
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
     );
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const result = await this.registrationsService.postMessages(
+      query,
+      programId,
+      body.message,
+      dryRun,
+    );
+
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('programs/registrations')

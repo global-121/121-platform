@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class RegistrationStatusPatchResultDto {
+export class BulkActionResultDto {
   @ApiProperty({
     example: 10,
   })

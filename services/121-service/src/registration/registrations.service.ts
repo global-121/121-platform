@@ -26,6 +26,7 @@ import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -35,7 +36,6 @@ import { NoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
-import { RegistrationStatusPatchResultDto } from './dto/registration-status-patch-result.dto';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
@@ -1194,6 +1194,36 @@ export class RegistrationsService {
     return note;
   }
 
+  private async getBulkActionResult(
+    originalQuery: PaginateQuery,
+    applicableQuery: PaginateQuery,
+    programId: number,
+  ): Promise<BulkActionResultDto> {
+    const selectedRegistrations =
+      await this.registrationsPaginationService.getPaginate(
+        originalQuery,
+        programId,
+        false,
+        false,
+      );
+
+    const applicableRegistrations =
+      await this.registrationsPaginationService.getPaginate(
+        applicableQuery,
+        programId,
+        false,
+        false,
+      );
+
+    return {
+      totalFilterCount: selectedRegistrations.meta.totalItems,
+      applicableCount: applicableRegistrations.meta.totalItems,
+      nonApplicableCount:
+        selectedRegistrations.meta.totalItems -
+        applicableRegistrations.meta.totalItems,
+    };
+  }
+
   public async patchRegistrationsStatus(
     query: PaginateQuery,
     programId: number,
@@ -1201,34 +1231,25 @@ export class RegistrationsService {
     dryRun: boolean,
     message?: string,
     messageContentType?: MessageContentType,
-  ): Promise<RegistrationStatusPatchResultDto> {
+  ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
-    query.select = ['referenceId'];
-    query.limit = 0;
-    query.page = null;
-
-    const selectedRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        query,
-        programId,
-        false,
-        false,
-      );
+    query = this.setQueryPropertiesBulkAction(query);
 
     const alllowedCurrentStatuses =
-      this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
-    query.filter = query.filter || {};
-    query.filter.status = `$in:${alllowedCurrentStatuses.join(',')}`;
-    const applicableRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        query,
-        programId,
-        false,
-        false,
-      );
+      await this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
+
+    const applicableQuery = { ...query };
+    applicableQuery.filter = applicableQuery.filter || {};
+    applicableQuery.filter.status = `$in:${alllowedCurrentStatuses.join(',')}`;
+
+    const resultDto = await this.getBulkActionResult(
+      query,
+      applicableQuery,
+      programId,
+    );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
-        query,
+        applicableQuery,
         programId,
         registrationStatus,
         message,
@@ -1240,13 +1261,7 @@ export class RegistrationsService {
     // Get the refrenceIds for the update seperately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
 
-    return {
-      totalFilterCount: selectedRegistrations.meta.totalItems,
-      applicableCount: applicableRegistrations.meta.totalItems,
-      nonApplicableCount:
-        selectedRegistrations.meta.totalItems -
-        applicableRegistrations.meta.totalItems,
-    };
+    return resultDto;
   }
 
   private async updateRegistrationStatusBatchFilter(
@@ -1848,6 +1863,41 @@ export class RegistrationsService {
     }
   }
 
+  public async postMessages(
+    query: PaginateQuery,
+    programId: number,
+    message: string,
+    dryRun: boolean,
+  ): Promise<BulkActionResultDto> {
+    query = this.setQueryPropertiesBulkAction(query);
+
+    // Still to do
+    const applicableQuery = { ...query };
+
+    const resultDto = await this.getBulkActionResult(
+      query,
+      applicableQuery,
+      programId,
+    );
+
+    const registrationForUpdate =
+      await this.registrationsPaginationService.getPaginate(
+        applicableQuery,
+        programId,
+        false,
+        true,
+      );
+    const referenceIds = registrationForUpdate.data.map(
+      (registration) => registration.referenceId,
+    );
+    if (!dryRun) {
+      this.sendCustomTextMessage(referenceIds, message).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
+    }
+    return resultDto;
+  }
+
   public async sendCustomTextMessage(
     referenceIds: string[],
     message: string,
@@ -1858,25 +1908,17 @@ export class RegistrationsService {
         referenceId,
         ['program'],
       );
-      if (!registration.phoneNumber) {
-        const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
       validRegistrations.push(registration);
     }
     for (const validRegistration of validRegistrations) {
-      this.messageService
-        .sendTextMessage(
-          validRegistration,
-          validRegistration.program.id,
-          message,
-          null,
-          null,
-          MessageContentType.custom,
-        )
-        .catch((err) => {
-          console.log('err: ', err);
-        });
+      await this.messageService.sendTextMessage(
+        validRegistration,
+        validRegistration.program.id,
+        message,
+        null,
+        null,
+        MessageContentType.custom,
+      );
     }
   }
 
@@ -1929,5 +1971,12 @@ export class RegistrationsService {
     });
 
     return q;
+  }
+
+  private setQueryPropertiesBulkAction(query: PaginateQuery): PaginateQuery {
+    query.select = ['referenceId'];
+    query.limit = 0;
+    query.page = null;
+    return query;
   }
 }
