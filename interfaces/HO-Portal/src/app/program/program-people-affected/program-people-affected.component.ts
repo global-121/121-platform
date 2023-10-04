@@ -22,7 +22,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import { AnswerType } from 'src/app/models/fsp.model';
 import {
   Person,
   PersonRow,
@@ -37,7 +36,6 @@ import {
   TableFilterMultipleChoiceOption,
   TableFilterType,
 } from 'src/app/models/table-filter.model';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
@@ -57,6 +55,7 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { RegistrationsService } from '../../services/registrations.service';
+import { TableService } from '../../services/table.service';
 import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -88,19 +87,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public isLoading: boolean;
 
-  private columnWidthPerType = {
-    [AnswerType.Number]: 90,
-    [AnswerType.Date]: 180,
-    [AnswerType.PhoneNumber]: 130,
-    [AnswerType.Text]: 150,
-    [AnswerType.Enum]: 160,
-    [AnswerType.Email]: 180,
-    [AnswerType.Boolean]: 90,
-    [AnswerType.MultiSelect]: 180,
-  };
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
-  private standardColumns: PersonTableColumn[] = [];
+  // private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
 
   private allPeopleData: Person[];
@@ -199,6 +188,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private enumService: EnumService,
     private registrationsService: RegistrationsService,
     private filterService: FilterService,
+    private tableService: TableService,
   ) {
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
@@ -219,113 +209,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ),
     };
 
-    this.columnDefaults = {
-      draggable: false,
-      resizeable: false,
-      sortable: true,
-      comparator: undefined,
-      frozenLeft: false,
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
-      permissions: [Permission.RegistrationREAD],
-      showIfNoValidation: true,
-      headerClass: 'ion-text-wrap ion-align-self-end',
-    };
-
-    this.standardColumns = [
-      {
-        prop: 'phoneNumber',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.phoneNumber',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 1280,
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.PhoneNumber],
-        width: this.columnWidthPerType[AnswerType.PhoneNumber],
-      },
-      {
-        prop: 'preferredLanguage',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.preferredLanguage',
-        ),
-        ...this.columnDefaults,
-        sortable: false, // TODO: disabled, because sorting in the backend is does on values (nl/en) instead of frontend labels (Dutch/English)
-        permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
-      },
-      {
-        prop: 'status',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.status',
-        ),
-        ...this.columnDefaults,
-        minWidth: 135,
-        width: 135,
-        frozenLeft: this.platform.width() > 1280,
-      },
-      {
-        prop: 'registrationCreated',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.registration-created',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
-      },
-      {
-        prop: 'paymentAmountMultiplier',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.paymentAmountMultiplier',
-        ),
-        ...this.columnDefaults,
-        comparator: this.paComparator.bind(this),
-        minWidth: this.columnWidthPerType[AnswerType.Number],
-        width: this.columnWidthPerType[AnswerType.Number],
-      },
-      {
-        prop: 'maxPayments',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.maxPayments',
-        ),
-        ...this.columnDefaults,
-        minWidth: 150,
-        width: 150,
-      },
-      {
-        prop: 'financialServiceProvider',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.fspDisplayNamePortal',
-        ),
-        ...this.columnDefaults,
-        minWidth: 220,
-        width: 220,
-      },
-      {
-        prop: 'lastMessageStatus',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.lastMessageStatus',
-        ),
-        ...this.columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
-        minWidth: 200,
-        width: 200,
-      },
-    ];
-
     this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
       this.tableTextFilter = filter;
       await this.getPage();
     });
+
+    this.columnDefaults = this.tableService.getColumnDefaults();
   }
   ngOnDestroy(): void {
     if (this.routerSubscription) {
@@ -354,7 +243,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.setupStatusFilter();
 
-    await this.loadColumns();
+    this.columns = await this.tableService.loadColumns(
+      this.thisPhase,
+      this.program,
+      this.canViewPaymentData,
+      this.canViewPersonalData,
+    );
+
+    console.log('=== this.columns: ', this.columns);
 
     await this.refreshData();
 
@@ -522,131 +418,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }, 0);
   }
 
-  private async loadColumns() {
-    this.loadNameColumns();
-    for (const column of this.standardColumns) {
-      if (
-        column.phases.includes(this.thisPhase) &&
-        this.authService.hasAllPermissions(
-          this.programId,
-          column.permissions,
-        ) &&
-        this.checkValidationColumnOrAction(column) &&
-        this.showMaxPaymentsColumn(column)
-      ) {
-        this.columns.push(column);
-      }
-    }
-
-    this.columnsPerPhase = await this.programsService.getPaTableAttributes(
-      this.programId,
-      this.thisPhase,
-    );
-
-    if (!this.columnsPerPhase) {
-      return;
-    }
-
-    for (const colPerPhase of this.columnsPerPhase) {
-      const addCol = {
-        prop: colPerPhase.name,
-        name: this.createColumnNameLabel(
-          colPerPhase.name,
-          colPerPhase.shortLabel,
-        ),
-        ...this.columnDefaults,
-        permissions: [Permission.RegistrationPersonalREAD],
-        phases: colPerPhase.phases,
-        headerClass: 'ion-align-self-end header-overflow-ellipsis',
-      };
-      if (this.columnWidthPerType[colPerPhase.type]) {
-        addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
-        addCol.width = this.columnWidthPerType[colPerPhase.type];
-      } else {
-        addCol.minWidth = this.columnWidthPerType.text;
-        addCol.width = this.columnWidthPerType.text;
-      }
-      if (
-        this.authService.hasAllPermissions(this.programId, addCol.permissions)
-      ) {
-        this.columns.push(addCol);
-      }
-    }
-
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
-      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-    }
-  }
-
-  private loadNameColumns() {
-    if (this.canViewPersonalData) {
-      for (const nameColumn of this.program.fullnameNamingConvention) {
-        const searchableColumns = [
-          ...this.program.programQuestions,
-          ...this.program.programCustomAttributes,
-        ];
-
-        const nameQuestion = searchableColumns.find(
-          (question) => question.name === nameColumn,
-        );
-        if (nameQuestion) {
-          const addCol = {
-            prop: nameColumn,
-            name: this.translatableStringService.get(
-              nameQuestion.shortLabel || nameQuestion.label,
-            ),
-            ...this.columnDefaults,
-            frozenLeft: this.platform.width() > 768,
-            permissions: [Permission.RegistrationPersonalREAD],
-            minWidth: this.columnWidthPerType[AnswerType.Text],
-            width: this.columnWidthPerType[AnswerType.Text],
-          };
-          this.columns.push(addCol);
-        }
-      }
-    }
-  }
-
   private checkValidationColumnOrAction(columnOrAction) {
     return (
       (columnOrAction.showIfNoValidation && !this.program.validation) ||
       this.program.validation
     );
-  }
-
-  private showMaxPaymentsColumn(column: PersonTableColumn): boolean {
-    return (
-      column.prop !== 'maxPayments' ||
-      (column.prop === 'maxPayments' && this.program.enableMaxPayments)
-    );
-  }
-
-  private createColumnNameLabel(
-    columnName: string,
-    columnShortlLabel?: TranslatableString,
-  ): string {
-    if (columnShortlLabel) {
-      return this.translatableStringService.get(columnShortlLabel);
-    }
-
-    this.translate.instant(
-      `page.program.program-people-affected.column.${columnName}`,
-    );
-  }
-
-  private createPaymentHistoryColumn(): PersonTableColumn {
-    return {
-      prop: 'paymentHistory',
-      name: this.translate.instant(
-        'page.program.program-people-affected.column.payment-history',
-      ),
-      ...this.columnDefaults,
-      sortable: false,
-      phases: [ProgramPhase.payment],
-      permissions: [Permission.RegistrationPersonalREAD],
-      minWidth: 200,
-      width: 200,
-    };
   }
 
   private async updateBulkActions() {
@@ -1298,6 +1074,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
+    console.log('=== this.visiblePeopleAffected: ', this.visiblePeopleAffected);
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
