@@ -118,10 +118,8 @@
   [columns]="columns"
   [rows]="visiblePeopleAffected"
   selectionType="checkbox"
-  [displayCheck]="isRowSelectable"
   [selected]="selectedPeople"
   (select)="onSelect($event.selected)"
-  [selectCheck]="isRowSelectable"
   [rowHeight]="65"
   [externalPaging]="true"
   [count]="pageMetaData?.totalItems"
@@ -135,21 +133,10 @@
     [width]="75"
     [frozenLeft]="true"
     headerClass="ion-align-self-end"
+    [headerCheckboxable]="false"
   >
-    <ng-template
-      ngx-datatable-header-template
-      let-value="value"
-      let-allRowsSelected="allRowsSelected"
-      let-selectFn="selectFn"
-    >
+    <ng-template ngx-datatable-header-template>
       <label>
-        <input
-          type="checkbox"
-          [checked]="headerChecked"
-          [disabled]="!headerSelectAllVisible"
-          [ngStyle]="headerSelectAllVisible ? {} : { visibility: 'hidden' }"
-          (change)="selectFn(!allRowsSelected)"
-        />
         {{ 'page.program.program-people-affected.column.select' | translate }}
       </label>
     </ng-template>
@@ -158,12 +145,10 @@
       ngx-datatable-cell-template
       let-row="row"
       let-value="value"
-      let-isSelected="isSelected"
       let-onCheckboxChangeFn="onCheckboxChangeFn"
     >
       <input
         type="checkbox"
-        [checked]="isSelected"
         (change)="onCheckboxChangeFn($event)"
         *ngIf="row.checkboxVisible"
       />

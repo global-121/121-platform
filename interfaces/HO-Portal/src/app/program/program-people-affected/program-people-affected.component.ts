@@ -89,16 +89,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
-  // private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
 
-  public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
-  private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
-
-  public headerChecked = false;
-  public headerSelectAllVisible = false;
 
   public isInProgress = false;
 
@@ -628,7 +622,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public showInclusionScore(): boolean {
     let show = false;
-    for (const pa of this.allPeopleAffected) {
+    for (const pa of this.visiblePeopleAffected) {
       show = !!pa.inclusionScore;
       if (show) {
         break;
@@ -639,7 +633,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public showWhatsappNumber(): boolean {
     let show = false;
-    for (const pa of this.allPeopleAffected) {
+    for (const pa of this.visiblePeopleAffected) {
       show = PaymentUtils.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
@@ -712,16 +706,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         dropdownOptionLabel.split('#')[1],
       );
     }
-    this.allPeopleAffected = await this.updatePeopleForAction(
-      this.allPeopleAffected,
+
+    this.visiblePeopleAffected = await this.updatePeopleForAction(
+      this.visiblePeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
     );
 
-    this.toggleHeaderCheckbox();
     this.updateSubmitWarning(this.selectedPeople.length);
 
-    const nrCheckboxes = this.countSelectable(this.allPeopleAffected);
+    const nrCheckboxes = this.countSelectable(this.visiblePeopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
       actionResult(
@@ -765,69 +759,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
-    this.toggleHeaderCheckbox();
-    this.headerChecked = false;
+
     this.selectedPeople = [];
     this.isInProgress = false;
   }
 
-  private toggleHeaderCheckbox() {
-    if (this.countSelectable(this.allPeopleAffected) < 1) {
-      this.headerSelectAllVisible = false;
-      return;
-    }
-    this.headerSelectAllVisible = !this.headerSelectAllVisible;
-  }
-
-  public isRowSelectable(row: PersonRow): boolean {
-    return row.checkboxVisible || false;
-  }
-
-  public onSelect(newSelected: PersonRow[]) {
-    // This extra hack for 'de-select all' to work properly
-    if (
-      this.headerChecked &&
-      newSelected.length === this.allPeopleAffected.length
-    ) {
-      newSelected = [];
-    }
-
-    const allSelectable = this.allPeopleAffected.filter(this.isRowSelectable);
-    const prevSelectedCount = this.selectedPeople.length;
-    const cleanNewSelected = newSelected.filter(this.isRowSelectable);
-
-    // We need to distinguish between the header-select case and the single-row-selection, as they both call the same function
-    const diffNewSelected = Math.abs(
-      cleanNewSelected.length - prevSelectedCount,
-    );
-    const multiSelection = diffNewSelected > 1;
-
-    if (!multiSelection) {
-      // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
-      this.selectedPeople = cleanNewSelected;
-      this.headerChecked = cleanNewSelected.length === allSelectable.length;
-    } else {
-      // This is the header-selection case
-      if (!this.headerChecked) {
-        // If checking ...
-        this.selectedPeople = cleanNewSelected;
-      } else {
-        // If unchecking ...
-        this.selectedPeople = [];
-      }
-
-      this.headerChecked = !this.headerChecked;
-    }
-
-    this.updateSubmitWarning(this.selectedPeople.length);
+  public onSelect(selected: PersonRow[]) {
+    this.updateSubmitWarning(selected.length);
 
     if (this.action === BulkActionId.doPayment) {
-      this.submitPaymentProps.referenceIds = this.selectedPeople.map(
-        (p) => p.referenceId,
-      );
+      this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
 
-    if (this.selectedPeople.length) {
+    if (selected.length) {
       this.applyBtnDisabled = false;
     } else {
       this.applyBtnDisabled = true;
@@ -835,7 +779,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private countSelectable(rows: PersonRow[]) {
-    return rows.filter(this.isRowSelectable).length;
+    return rows.filter((row) => row.checkboxVisible).length;
   }
 
   public getCurrentBulkAction(): BulkAction {
@@ -921,10 +865,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  public applyFilter() {
-    this.updateVisiblePeopleAffectedByFilter();
-  }
-
   public paComparator(a: string, b: string) {
     // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
     return a.localeCompare(b, undefined, {
@@ -988,39 +928,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       offset: 0,
       pageSize: this.registrationsService?.getPageMetadata().itemsPerPage,
     });
-  }
-
-  private updateVisiblePeopleAffectedByFilter() {
-    const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
-      this.tableFilterState.paStatus.selected.includes(pa.registrationStatus),
-    );
-
-    this.initialVisiblePeopleAffected = [...filteredPeopleAffectedByStatus];
-
-    const rowsVisible = this.initialVisiblePeopleAffected.filter(
-      (row: PersonRow) => {
-        // Loop over all columns
-        for (const key of Object.keys(row)) {
-          try {
-            const columnValue = row[key].toLowerCase();
-            const includeRow =
-              columnValue.indexOf(this.tableFilterState.text) !== -1 || // check literal values
-              columnValue
-                .replace(/\s/g, '')
-                .indexOf(this.tableFilterState.text) !== -1 || // check also with spaces removed
-              !this.tableFilterState.text;
-            if (includeRow) {
-              return includeRow;
-            }
-          } catch {
-            // Do not filter on unfilterable column types
-          }
-        }
-      },
-    );
-
-    this.visiblePeopleAffected = rowsVisible;
-    this.updateProxyScrollbarSize();
   }
 
   public showTableFilter(prop): boolean {
