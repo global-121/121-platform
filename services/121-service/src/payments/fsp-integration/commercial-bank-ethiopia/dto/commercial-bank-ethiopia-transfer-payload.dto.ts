@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CommercialBankEthiopiaTransferPayload {
   public debitAmount: number;
   public debitTheIrRef: string;
@@ -16,12 +18,20 @@ export class CommercialBankEthiopiaRegistrationData {
 }
 
 export class CommercialBankEthiopiaValidationData {
+  @ApiProperty()
   public id: number;
+  @ApiProperty()
   public fullName: string;
+  @ApiProperty()
   public bankAccountNumber: string;
+  @ApiProperty()
   public status: string;
+  @ApiProperty()
   public cbeName: string;
+  @ApiProperty()
   public discrepancyName: string;
+  @ApiProperty()
   public cbeStatus: string;
+  @ApiProperty()
   public errorMessage: string;
 }

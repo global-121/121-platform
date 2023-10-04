@@ -259,7 +259,6 @@ export class CommercialBankEthiopiaService
 
     const result = [];
     for (const pa of getAllPersonsAffectedData) {
-      // console.log(pa);
       const paResult =
         await this.commercialBankEthiopiaApiService.getValidationStatus(
           pa.bankAccountNumber,

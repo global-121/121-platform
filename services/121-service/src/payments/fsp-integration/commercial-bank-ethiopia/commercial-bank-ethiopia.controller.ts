@@ -13,7 +13,11 @@ export class CommercialBankEthiopiaController {
   @ApiOperation({
     summary: 'validate all persons affected that are in this program.',
   })
-  @ApiResponse({ status: 201, description: 'validated' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of PAs with their validation status',
+    type: [CommercialBankEthiopiaValidationData],
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get(
     'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries',
