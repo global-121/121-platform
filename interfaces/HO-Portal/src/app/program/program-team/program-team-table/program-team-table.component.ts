@@ -27,8 +27,8 @@ interface TableData {
   styleUrls: ['./program-team-table.component.scss'],
 })
 export class ProgramTeamTableComponent implements OnInit {
-  rows: TableData[];
-  DateFormat = DateFormat;
+  public rows: TableData[];
+  public DateFormat = DateFormat;
 
   public programId: number;
 

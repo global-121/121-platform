@@ -502,7 +502,7 @@ export class UserService {
         'user.username AS username',
         'user.admin AS admin',
         'user.active AS active',
-        'user.lastLogin AS lastLogin',
+        'user.lastLogin AS "lastLogin"',
       ])
       .getRawMany();
   }
