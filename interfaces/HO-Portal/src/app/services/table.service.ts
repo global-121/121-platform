@@ -155,7 +155,6 @@ export class TableService {
   public async loadColumns(
     thisPhase: ProgramPhase,
     program: Program,
-    canViewPaymentData: boolean,
     canViewPersonalData: boolean,
   ): Promise<PersonTableColumn[]> {
     const columns: PersonTableColumn[] = [];
@@ -202,10 +201,6 @@ export class TableService {
       if (this.authService.hasAllPermissions(program.id, addCol.permissions)) {
         columns.push(addCol);
       }
-    }
-
-    if (canViewPaymentData && thisPhase === ProgramPhase.payment) {
-      columns.push(this.createPaymentHistoryColumn());
     }
 
     return columns;
@@ -260,7 +255,7 @@ export class TableService {
     return columns;
   }
 
-  private createPaymentHistoryColumn(): PersonTableColumn {
+  public createPaymentHistoryColumn(): PersonTableColumn {
     return {
       prop: 'paymentHistory',
       name: this.translate.instant(

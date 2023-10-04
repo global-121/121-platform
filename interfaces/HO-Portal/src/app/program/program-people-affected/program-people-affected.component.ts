@@ -245,9 +245,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.columns = await this.tableService.loadColumns(
       this.thisPhase,
       this.program,
-      this.canViewPaymentData,
       this.canViewPersonalData,
     );
+
+    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+      this.paymentHistoryColumn =
+        this.tableService.createPaymentHistoryColumn();
+    }
 
     await this.refreshData();
 
