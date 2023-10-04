@@ -40,7 +40,7 @@ updates:
       - dependency-name: '@types/*'
         update-types:
           ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: ['@typescript-eslint/*']
+      - dependency-name: '@typescript-eslint/*'
         update-types: ['version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
@@ -82,7 +82,7 @@ updates:
       - dependency-name: '@types/*'
         update-types:
           ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: ['@typescript-eslint/*']
+      - dependency-name: '@typescript-eslint/*'
         update-types: ['version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
@@ -122,7 +122,7 @@ updates:
       - dependency-name: '@types/*'
         update-types:
           ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: ['@typescript-eslint/*']
+      - dependency-name: '@typescript-eslint/*'
         update-types: ['version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
