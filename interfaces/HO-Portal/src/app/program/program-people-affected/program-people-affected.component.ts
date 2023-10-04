@@ -250,8 +250,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.canViewPersonalData,
     );
 
-    console.log('=== this.columns: ', this.columns);
-
     await this.refreshData();
 
     await this.updateBulkActions();
@@ -1074,7 +1072,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
-    console.log('=== this.visiblePeopleAffected: ', this.visiblePeopleAffected);
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
