@@ -1240,22 +1240,17 @@ export class RegistrationsService {
     // Overwrite the default select, as we only need the referenceId
     query = this.setQueryPropertiesBulkAction(query);
 
-    const alllowedCurrentStatuses =
-      await this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
+    const allowedCurrentStatuses =
+      this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
     const applicableQuery = { ...query };
     applicableQuery.filter = applicableQuery.filter || {};
-
-    const queryBuilder = this.registrationViewRepository
-      .createQueryBuilder('registration')
-      .where('1=1')
-      .andWhere({ status: In(alllowedCurrentStatuses) });
 
     const resultDto = await this.getBulkActionResult(
       query,
       applicableQuery,
       programId,
-      queryBuilder,
+      this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
@@ -1264,7 +1259,7 @@ export class RegistrationsService {
         registrationStatus,
         message,
         messageContentType,
-        queryBuilder,
+        this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -1273,6 +1268,15 @@ export class RegistrationsService {
     // so you show the result of the applicable registrations earlier
 
     return resultDto;
+  }
+
+  private getStatusUpdateBaseQuery(
+    allowedCurrentStatuses: RegistrationStatusEnum[],
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    return this.registrationViewRepository
+      .createQueryBuilder('registration')
+      .where('1=1')
+      .andWhere({ status: In(allowedCurrentStatuses) });
   }
 
   private async updateRegistrationStatusBatchFilter(
@@ -1978,12 +1982,10 @@ export class RegistrationsService {
     programId: number,
     paId: number,
   ): Promise<RegistrationEntity> {
-    const q = await this.registrationRepository.findOne({
+    return await this.registrationRepository.findOne({
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
-
-    return q;
   }
 
   private setQueryPropertiesBulkAction(query: PaginateQuery): PaginateQuery {
