@@ -439,7 +439,7 @@ export class RegistrationsController {
         permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
     }
     if (!permission) {
-      const errors = `Unknown status ${registrationStatus}`;
+      const errors = `The status ${registrationStatus} is unknown or cannot be changed to via API`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     const hasPermission =

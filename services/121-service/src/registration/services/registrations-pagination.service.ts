@@ -55,6 +55,7 @@ export class RegistrationsPaginationService {
     programId: number,
     hasPersonalReadPermission: boolean,
     noLimit: boolean,
+    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
@@ -75,11 +76,17 @@ export class RegistrationsPaginationService {
       }
     }
 
-    let queryBuilder = this.registrationViewRepository
-      .createQueryBuilder('registration')
-      .where('"registration"."programId" = :programId', {
+    if (!queryBuilder) {
+      queryBuilder = this.registrationViewRepository
+        .createQueryBuilder('registration')
+        .where('1=1');
+    }
+    queryBuilder = queryBuilder.andWhere(
+      '"registration"."programId" = :programId',
+      {
         programId: programId,
-      });
+      },
+    );
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);

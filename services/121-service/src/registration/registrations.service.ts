@@ -58,6 +58,7 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
@@ -97,6 +98,8 @@ export class RegistrationsService {
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
+  @InjectRepository(RegistrationViewEntity)
+  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -1198,6 +1201,7 @@ export class RegistrationsService {
     originalQuery: PaginateQuery,
     applicableQuery: PaginateQuery,
     programId: number,
+    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate(
@@ -1213,6 +1217,7 @@ export class RegistrationsService {
         programId,
         false,
         false,
+        queryBuilder,
       );
 
     return {
@@ -1240,12 +1245,17 @@ export class RegistrationsService {
 
     const applicableQuery = { ...query };
     applicableQuery.filter = applicableQuery.filter || {};
-    applicableQuery.filter.status = `$in:${alllowedCurrentStatuses.join(',')}`;
+
+    const queryBuilder = this.registrationViewRepository
+      .createQueryBuilder('registration')
+      .where('1=1')
+      .andWhere({ status: In(alllowedCurrentStatuses) });
 
     const resultDto = await this.getBulkActionResult(
       query,
       applicableQuery,
       programId,
+      queryBuilder,
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
@@ -1254,6 +1264,7 @@ export class RegistrationsService {
         registrationStatus,
         message,
         messageContentType,
+        queryBuilder,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -1270,6 +1281,7 @@ export class RegistrationsService {
     registrationStatus: RegistrationStatusEnum,
     message?: string,
     messageContentType?: MessageContentType,
+    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<void> {
     const registrationForUpdate =
       await this.registrationsPaginationService.getPaginate(
@@ -1277,6 +1289,7 @@ export class RegistrationsService {
         programId,
         false,
         true,
+        queryBuilder,
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
