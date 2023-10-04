@@ -3,9 +3,8 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
-@ApiTags('callbacks/commercialBankEthiopia')
-// TODO: REFACTOR: rename to callbacks/commercialBankEthiopia
-@Controller('payments/commercialBankEthiopia')
+@ApiTags('financial-service-providers/commercial-bank-ethiopia')
+@Controller()
 export class CommercialBankEthiopiaController {
   public constructor(
     private commercialBankEthiopiaService: CommercialBankEthiopiaService,
@@ -16,8 +15,10 @@ export class CommercialBankEthiopiaController {
   })
   @ApiResponse({ status: 201, description: 'validated' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('validate-persons-affected/:programId')
-  public async notificationCallback(
+  @Get(
+    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries',
+  )
+  public async validate(
     @Param('programId') programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
     return await this.commercialBankEthiopiaService.sendValidationPerPa(
