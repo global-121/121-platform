@@ -377,7 +377,10 @@ export class RegistrationsController {
     description: 'The registration status update was succesfully started',
     type: BulkActionResultDto,
   })
-  @ApiOperation({ summary: 'Update registration status of set of PAs.' })
+  @ApiOperation({
+    summary:
+      'Update registration status of set of PAs that can be defined via filter parameters.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
     RegistrationViewEntity,
@@ -388,7 +391,7 @@ export class RegistrationsController {
     required: false,
     type: 'boolean',
     description:
-      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent.  Instead it will return data on how many registrations this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
   })
   @ApiQuery({
     name: 'limit',
@@ -723,7 +726,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      'Sends registration(s) a custom message via sms or whatsapp if they have a whatsapp number.',
+      'Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -735,7 +738,7 @@ export class RegistrationsController {
     required: false,
     type: 'boolean',
     description:
-      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no messages will be sent. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
   })
   @ApiQuery({
     name: 'limit',
