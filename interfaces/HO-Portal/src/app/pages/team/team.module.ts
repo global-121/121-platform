@@ -7,7 +7,7 @@ import { ProgramTeamPopupComponent } from 'src/app/program/program-team/program-
 import { ProgramTeamTableComponent } from 'src/app/program/program-team/program-team-table/program-team-table.component';
 import { ProgramTeamPage } from 'src/app/program/program-team/program-team.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AidWorkersPage } from './aid-workers.page';
+import { AidWorkersPage } from './team.page';
 
 const routes: Routes = [
   {
