@@ -50,9 +50,9 @@
             <ion-item
               [button]="true"
               *ngFor="let user of searchResults"
-              (click)="updateSearchbarValue(user.user_username, user.user_id)"
+              (click)="updateSearchbarValue(user.username, user.id)"
             >
-              {{ user.user_username }}
+              {{ user.username }}
             </ion-item>
           </ion-list>
         </ng-container>

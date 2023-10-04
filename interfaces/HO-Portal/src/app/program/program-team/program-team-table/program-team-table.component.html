@@ -24,7 +24,7 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.user_username }}
+      {{ row.username }}
     </ng-template>
   </ngx-datatable-column>
 
@@ -37,7 +37,7 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.user_role }}
+      {{ row.role }}
     </ng-template>
   </ngx-datatable-column>
 
@@ -53,12 +53,12 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
-          [class.active]="row.user_active === true"
-          [class.inactive]="row.user_active === false"
+          [class.active]="row.active === true"
+          [class.inactive]="row.active === false"
         >
           <ion-label>
             <strong>{{
-              'page.program-team.status.' + row?.user_active | translate
+              'page.program-team.status.' + row?.active | translate
             }}</strong>
           </ion-label>
         </ion-chip>
@@ -75,7 +75,7 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.user_lastLogin | date: DateFormat.dateOnly }}
+      {{ row.lastLogin | date: DateFormat.dateOnly }}
     </ng-template>
   </ngx-datatable-column>
 

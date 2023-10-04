@@ -24,6 +24,8 @@ import { LoginUserDto, UpdateUserDto } from './dto';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
+import { FindUserReponseDto } from './dto/find-user-response.dto';
+import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEnum } from './permission.enum';
 import { UserRoleEntity } from './user-role.entity';
@@ -291,39 +293,38 @@ export class UserController {
     return await this.userService.getUsers();
   }
 
-  @Admin()
+  @Permissions(PermissionEnum.AidWorkerProgramREAD)
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of users assigned to a program',
+    type: [GetUserReponseDto],
+  })
   @Get('programs/:programId/users')
   public async getUsersInProgram(
-    @User('id') userId: number,
     @Param() params,
-  ): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+  ): Promise<GetUserReponseDto[]> {
     return await this.userService.getUsersInProgram(Number(params.programId));
   }
 
-  @Admin()
-  @ApiOperation({ summary: 'Get all users by name' })
+  // This endpoint searches users accross all programs, which is needed to add a user to a program
+  // We did not create an extra permission for this as it is always used in combination with adding new users to a program
+  // ProgramId is therefore not needed in the service
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiOperation({
+    summary:
+      'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
+  })
   @ApiParam({ name: 'username', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of users that match the search criteria.',
+    type: [FindUserReponseDto],
+  })
   @Get('programs/:programId/users/:username')
-  public async getUsersByName(
-    @User('id') userId: number,
-    @Param() params,
-  ): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
-    return await this.userService.getUsersByName(
-      Number(params.programId),
-      params.username,
-    );
+  public async getUsersByName(@Param() params): Promise<FindUserReponseDto[]> {
+    return await this.userService.findUsersByName(params.username);
   }
 }
