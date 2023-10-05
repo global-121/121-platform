@@ -61,17 +61,13 @@ export class ProgramTeamPopupComponent implements OnInit {
   }
 
   public async assignTeamMember() {
-    try {
-      await this.programsServiceApiService.assignAidworker(
-        this.programId,
-        this.userId,
-        this.selectedRoles,
-      );
-      this.closeModal();
-      this.successPopup();
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    await this.programsServiceApiService.assignAidworker(
+      this.programId,
+      this.userId,
+      this.selectedRoles,
+    );
+    this.closeModal();
+    this.successPopup();
   }
 
   ngOnInit() {
