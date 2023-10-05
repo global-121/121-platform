@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -27,10 +27,11 @@ interface TableData {
   styleUrls: ['./program-team-table.component.scss'],
 })
 export class ProgramTeamTableComponent implements OnInit {
+  @Input()
+  private programId: number;
+
   public rows: TableData[];
   public DateFormat = DateFormat;
-
-  public programId: number;
 
   constructor(private programsService: ProgramsServiceApiService) {}
 
@@ -40,7 +41,7 @@ export class ProgramTeamTableComponent implements OnInit {
 
   public async loadData() {
     const programUsers: TableData[] =
-      await this.programsService.getUsersByProgram(1); // TODO Implement programId as variable to pass in
+      await this.programsService.getUsersByProgram(this.programId);
     this.rows = programUsers;
   }
 }
