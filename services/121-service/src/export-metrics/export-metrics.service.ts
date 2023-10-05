@@ -901,6 +901,8 @@ export class ExportMetricsService {
     for (const fsp of program.financialServiceProviders) {
       if (fsp.fsp === FspName.safaricom) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
+      } else if (fsp.fsp === FspName.intersolveVisa) {
+        fields = [...fields, ...['transactionID']];
       }
     }
     return fields;

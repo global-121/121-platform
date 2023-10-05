@@ -240,6 +240,10 @@ export class IntersolveVisaService
               createCustomerResult.data.errors,
             )}`
           : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`;
+        paTransactionResult.customData = {
+          transactionID: createCustomerResult.data?.correlationId || null,
+        };
+
         return paTransactionResult;
       }
 
@@ -266,6 +270,9 @@ export class IntersolveVisaService
               createWalletResult.data.errors,
             )}`
           : `CREATE WALLET ERROR: ${createWalletResult.status} - ${createWalletResult.statusText}`;
+        paTransactionResult.customData = {
+          transactionID: createWalletResult.data?.correlationId || null,
+        };
         return paTransactionResult;
       }
 
@@ -310,8 +317,8 @@ export class IntersolveVisaService
             `LINK CUSTOMER ERROR: ${registerResult.status} - ${registerResult.statusText}`;
         paTransactionResult.customData = {
           intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+          transactionID: registerResult.correlationId || null,
         };
-        return paTransactionResult;
       }
 
       // if succes, update wallet: set linkedToVisaCustomer to true
@@ -328,6 +335,7 @@ export class IntersolveVisaService
         paymentDetails,
         visaCustomer.visaWallets[0],
       );
+      console.log(createDebitCardResult);
 
       // error or success: set transaction result either way
       paTransactionResult.status =
@@ -344,6 +352,7 @@ export class IntersolveVisaService
           : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+        transactionID: createDebitCardResult.correlationId || null,
       };
 
       // if success, update wallet: set debitCardCreated to true ..
@@ -366,6 +375,7 @@ export class IntersolveVisaService
         registration.referenceId,
         paymentNr,
       );
+      console.log(loadBalanceResult);
 
       paTransactionResult.status = loadBalanceResult.data?.success
         ? StatusEnum.success
@@ -379,6 +389,7 @@ export class IntersolveVisaService
         : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+        transactionID: loadBalanceResult.data?.correlationId || null,
       };
 
       transactionNotifications.push(

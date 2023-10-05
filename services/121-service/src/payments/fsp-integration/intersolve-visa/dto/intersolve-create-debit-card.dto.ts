@@ -34,4 +34,5 @@ export class IntersolveCreateDebitCardResponseDto {
   };
   public status: number;
   public statusText: string;
+  public correlationId?: string;
 }

@@ -61,4 +61,5 @@ export class IntersolveLinkWalletCustomerResponseDto {
   };
   public status: number;
   public statusText: string;
+  public correlationId?: string;
 }
