@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ProgramTeamTableComponent } from './program-team-table.component';
 import { provideMagicalMock } from '../../../mocks/helpers';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ProgramsServiceApiService } from '../../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../../services/translatable-string.service';
+import { ProgramTeamTableComponent } from './program-team-table.component';
 
 describe('ProgramTeamTableComponent', () => {
   let component: ProgramTeamTableComponent;
