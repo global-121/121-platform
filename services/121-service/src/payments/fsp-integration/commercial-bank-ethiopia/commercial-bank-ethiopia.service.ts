@@ -269,22 +269,21 @@ export class CommercialBankEthiopiaService
         );
       console.timeEnd(logString);
 
-      if (
-        paResult &&
-        paResult.Status &&
-        paResult.Status.successIndicator &&
-        paResult.Status.successIndicator._text === 'Success'
-      ) {
+      if (paResult?.Status?.successIndicator?._text === 'Success') {
         const accountInfo =
           paResult.EACCOUNTCBEREMITANCEType[
             'ns4:gEACCOUNTCBEREMITANCEDetailType'
           ]['ns4:mEACCOUNTCBEREMITANCEDetailType'];
         pa.cbeName = accountInfo['ns4:CUSTOMERNAME']._text;
         pa.cbeStatus = accountInfo['ns4:ACCOUNTSTATUS']._text;
-        pa.discrepancyName =
-          pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
-            ? 'Match'
-            : 'No match';
+        if (pa.fullName) {
+          pa.discrepancyName =
+            pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
+              ? 'Match'
+              : 'No match';
+        } else {
+          pa.errorMessage = 'Could not be matched: fullName in 121 is missing';
+        }
         result.push(pa);
       } else {
         pa.errorMessage =
