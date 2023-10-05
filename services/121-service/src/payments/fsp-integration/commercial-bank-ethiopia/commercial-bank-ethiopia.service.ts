@@ -271,11 +271,11 @@ export class CommercialBankEthiopiaService
 
       if (paResult?.Status?.successIndicator?._text === 'Success') {
         const accountInfo =
-          paResult.EACCOUNTCBEREMITANCEType[
+          paResult?.EACCOUNTCBEREMITANCEType?.[
             'ns4:gEACCOUNTCBEREMITANCEDetailType'
-          ]['ns4:mEACCOUNTCBEREMITANCEDetailType'];
-        pa.cbeName = accountInfo['ns4:CUSTOMERNAME']._text;
-        pa.cbeStatus = accountInfo['ns4:ACCOUNTSTATUS']._text;
+          ]?.['ns4:mEACCOUNTCBEREMITANCEDetailType'];
+        pa.cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
+        pa.cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
         if (pa.fullName) {
           pa.discrepancyName =
             pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
