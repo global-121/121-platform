@@ -258,12 +258,16 @@ export class CommercialBankEthiopiaService
     );
 
     const result = [];
+    console.time('getValidationStatus loop total');
     for (const pa of getAllPersonsAffectedData) {
+      const logString = `getValidationStatus for PA: ${pa.id}`;
+      console.time(logString);
       const paResult =
         await this.commercialBankEthiopiaApiService.getValidationStatus(
           pa.bankAccountNumber,
           credentials,
         );
+      console.timeEnd(logString);
 
       if (
         paResult &&
@@ -293,6 +297,7 @@ export class CommercialBankEthiopiaService
         result.push(pa);
       }
     }
+    console.timeEnd('getValidationStatus loop total');
 
     return result;
   }
