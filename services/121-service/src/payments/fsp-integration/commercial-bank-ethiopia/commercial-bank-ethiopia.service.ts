@@ -18,6 +18,7 @@ import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api
 import {
   CommercialBankEthiopiaRegistrationData,
   CommercialBankEthiopiaTransferPayload,
+  CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
 @Injectable()
@@ -43,19 +44,8 @@ export class CommercialBankEthiopiaService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
-    const config = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', { fspName: paPaymentList[0].fspName })
-      .leftJoin('fspConfig.fsp', 'fsp')
-      .getRawMany();
-
-    const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === 'username')?.value,
-      password: config.find((c) => c.name === 'password')?.value,
-    };
+    const credentials: { username: string; password: string } =
+      await this.getCommercialBankEthiopiaCredentials(programId);
 
     const program = await this.programRepository.findOneBy({
       id: programId,
@@ -255,6 +245,118 @@ export class CommercialBankEthiopiaService
       paymentResult: result,
     };
     return paTransactionResult;
+  }
+
+  public async sendValidationPerPa(
+    programId: number,
+  ): Promise<CommercialBankEthiopiaValidationData[]> {
+    const credentials: { username: string; password: string } =
+      await this.getCommercialBankEthiopiaCredentials(programId);
+
+    const getAllPersonsAffectedData = await this.getAllPersonsAffectedData(
+      programId,
+    );
+
+    const result = [];
+    console.time('getValidationStatus loop total');
+    for (const pa of getAllPersonsAffectedData) {
+      const logString = `getValidationStatus for PA: ${pa.id}`;
+      console.time(logString);
+      const paResult =
+        await this.commercialBankEthiopiaApiService.getValidationStatus(
+          pa.bankAccountNumber,
+          credentials,
+        );
+      console.timeEnd(logString);
+
+      if (paResult?.Status?.successIndicator?._text === 'Success') {
+        const accountInfo =
+          paResult.EACCOUNTCBEREMITANCEType[
+            'ns4:gEACCOUNTCBEREMITANCEDetailType'
+          ]['ns4:mEACCOUNTCBEREMITANCEDetailType'];
+        pa.cbeName = accountInfo['ns4:CUSTOMERNAME']._text;
+        pa.cbeStatus = accountInfo['ns4:ACCOUNTSTATUS']._text;
+        if (pa.fullName) {
+          pa.discrepancyName =
+            pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
+              ? 'Match'
+              : 'No match';
+        } else {
+          pa.errorMessage = 'Could not be matched: fullName in 121 is missing';
+        }
+        result.push(pa);
+      } else {
+        pa.errorMessage =
+          paResult.resultDescription ||
+          (paResult.Status &&
+            paResult.Status.messages &&
+            (paResult.Status.messages.length > 0
+              ? paResult.Status.messages[0]._text
+              : paResult.Status.messages._text));
+        result.push(pa);
+      }
+    }
+    console.timeEnd('getValidationStatus loop total');
+
+    return result;
+  }
+
+  public async getAllPersonsAffectedData(
+    programId: number,
+  ): Promise<CommercialBankEthiopiaValidationData[]> {
+    const registrationData = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'registration.id AS "id"',
+        'registration.registrationStatus AS "status"',
+        'ARRAY_AGG(data.value) AS "values"',
+        'ARRAY_AGG(COALESCE("programQuestion".name, "fspQuestion".name)) AS "fieldNames"',
+      ])
+      .where('registration.programId = :programId', { programId })
+      .andWhere(
+        '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
+        {
+          names: ['fullName', 'bankAccountNumber'],
+        },
+      )
+      .leftJoin('registration.data', 'data')
+      .leftJoin('data.programQuestion', 'programQuestion')
+      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .groupBy('registration.id')
+      .getRawMany();
+
+    // Create a new array by mapping the original objects
+    const formattedData: any = registrationData.map((pa) => {
+      const paData = { id: pa.id, status: pa.status };
+      pa.fieldNames.forEach((fieldName, index) => {
+        paData[fieldName] = pa.values[index];
+      });
+      return paData;
+    });
+
+    return formattedData;
+  }
+
+  public async getCommercialBankEthiopiaCredentials(
+    programId: number,
+  ): Promise<{ username: string; password: string }> {
+    const config = await this.programFspConfigurationRepository
+      .createQueryBuilder('fspConfig')
+      .select('name')
+      .addSelect('value')
+      .where('fspConfig.programId = :programId', { programId })
+      .andWhere('fsp.fsp = :fspName', {
+        fspName: FspName.commercialBankEthiopia,
+      })
+      .leftJoin('fspConfig.fsp', 'fsp')
+      .getRawMany();
+
+    const credentials: { username: string; password: string } = {
+      username: config.find((c) => c.name === 'username')?.value,
+      password: config.find((c) => c.name === 'password')?.value,
+    };
+
+    return credentials;
   }
 
   private generateRandomNumerics(length: number): string {
