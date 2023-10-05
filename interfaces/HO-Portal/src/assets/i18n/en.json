@@ -5,7 +5,7 @@
     "help": "Help",
     "users": "Users",
     "dashboard": "Dashboard",
-    "aid-workers": "Aid-workers",
+    "team": "Team",
     "phases": "Phases",
     "design": "Design",
     "registration-validation": "Registration & Validation",
@@ -24,8 +24,37 @@
       "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
       "help-explanation-tooltip": "Like this!"
     },
-    "aid-workers": {
-      "pageTitle": "Aid-workers"
+    "team": {
+      "pageTitle": "Program team"
+    },
+    "program-team": {
+      "pageTitle": "Program team",
+      "page-description": "In this page you can create a team for your program",
+      "add-team-member": "Add/change team member",
+      "table-headers": {
+        "name": "Name",
+        "role": "Role",
+        "status": "Status",
+        "last-activity": "Last login"
+      },
+      "status": {
+        "true": "Active",
+        "false": "Inactive"
+      },
+      "team-members": "Team members",
+      "popup": {
+        "title": "Add/change team member",
+        "cancel-button": "Cancel",
+        "add-users-button": "Add user",
+        "team-member": "Team member",
+        "team-member-placeholder": "Select a team member",
+        "roles-placeholder": "Assign a role(s)",
+        "role": "Role"
+      },
+      "success-popup": {
+        "title": "Add/change team member",
+        "message": "You’ve successfully added a team member"
+      }
     },
     "login": {
       "pageTitle": "Log in",
