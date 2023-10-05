@@ -8,6 +8,19 @@ export class User {
   expires: string;
 }
 
+export interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  status: StatusName;
+  lastActivity: string;
+}
+
+export enum StatusName {
+  active = 'active',
+  inactive = 'inactive',
+}
+
 export interface TableData {
   active: boolean;
   admin: boolean;

@@ -18,8 +18,7 @@ export class ProgramTeamPage {
     this.programId = this.route.snapshot.params.id;
   }
 
-  public async programTeamPopup(e: Event) {
-    event = e;
+  public async programTeamPopup(): Promise<void> {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: ProgramTeamPopupComponent,
       componentProps: { programId: this.programId },

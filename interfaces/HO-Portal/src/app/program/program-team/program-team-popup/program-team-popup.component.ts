@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SuccessPopupComponent } from '../success-popup/success-popup.component';
+import { Role, TeamMember } from '../../../models/user.model';
 
 @Component({
   selector: 'app-program-team-popup',
@@ -21,21 +22,27 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
   styleUrls: ['./program-team-popup.component.scss'],
 })
 export class ProgramTeamPopupComponent implements OnInit {
-  programId;
-  userId;
-  searchQuery: string = '';
-  searchResults: any[] = [];
-  rolesList: any[] = [];
-  selectedRoles: any[] = [];
-  showSearchResults: boolean;
-  addButtonDisabled = true;
+  private programId: number;
+  private userId: number;
+
+  public searchQuery: string = '';
+  public searchResults: TeamMember[][] = [];
+  public showSearchResults: boolean;
+
+
+  public rolesList: Role[] = [];
+  public selectedRoleNames: string[] = [];
 
   constructor(
     private modalController: ModalController,
     private programsServiceApiService: ProgramsServiceApiService,
-  ) {}
+  ) { }
 
-  public async search(event: CustomEvent) {
+  ngOnInit() {
+    this.getRoles();
+  }
+
+  public async search(event: CustomEvent): Promise<void> {
     const searchTerm = event.detail.value.toLowerCase();
     this.searchResults = await this.programsServiceApiService.getUsersByName(
       this.programId,
@@ -46,35 +53,32 @@ export class ProgramTeamPopupComponent implements OnInit {
       : (this.showSearchResults = false);
   }
 
-  isFormComplete(): boolean {
-    return this.searchQuery !== '' && this.selectedRoles.length !== 0;
+  public isFormComplete(): boolean {
+    return this.searchQuery !== '' && this.selectedRoleNames.length !== 0;
   }
 
-  updateSearchbarValue(selectedItem: string, userId: number) {
+  public updateSearchbarValue(selectedItem: string, userId: number): void {
     this.searchQuery = selectedItem;
     this.userId = userId;
     this.showSearchResults = false;
   }
 
-  public async getRoles() {
+  public async getRoles(): Promise<void> {
     this.rolesList = await this.programsServiceApiService.getRoles();
   }
 
-  public async assignTeamMember() {
+  public async assignTeamMember(): Promise<void>  {
     await this.programsServiceApiService.assignAidworker(
       this.programId,
       this.userId,
-      this.selectedRoles,
+      this.selectedRoleNames,
     );
     this.closeModal();
     this.successPopup();
   }
 
-  ngOnInit() {
-    this.getRoles();
-  }
 
-  public async successPopup() {
+  public async successPopup(): Promise<void>  {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: SuccessPopupComponent,
       componentProps: { programId: this.programId },
@@ -85,7 +89,7 @@ export class ProgramTeamPopupComponent implements OnInit {
     }, 3000);
   }
 
-  public closeModal() {
+  public closeModal(): void {
     this.modalController.dismiss();
   }
 }

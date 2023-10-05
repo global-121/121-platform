@@ -19,11 +19,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
   styleUrls: ['./success-popup.component.scss'],
 })
 export class SuccessPopupComponent {
-  programId;
-
   constructor(private modalController: ModalController) {}
 
-  public closeModal() {
+  public closeModal(): void {
     this.modalController.dismiss();
   }
 }
