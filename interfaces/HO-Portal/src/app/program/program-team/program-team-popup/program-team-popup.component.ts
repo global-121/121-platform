@@ -5,8 +5,8 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { SuccessPopupComponent } from '../success-popup/success-popup.component';
 import { Role, TeamMember } from '../../../models/user.model';
+import { SuccessPopupComponent } from '../success-popup/success-popup.component';
 
 @Component({
   selector: 'app-program-team-popup',
@@ -29,14 +29,13 @@ export class ProgramTeamPopupComponent implements OnInit {
   public searchResults: TeamMember[][] = [];
   public showSearchResults: boolean;
 
-
   public rolesList: Role[] = [];
   public selectedRoleNames: string[] = [];
 
   constructor(
     private modalController: ModalController,
     private programsServiceApiService: ProgramsServiceApiService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getRoles();
@@ -67,7 +66,7 @@ export class ProgramTeamPopupComponent implements OnInit {
     this.rolesList = await this.programsServiceApiService.getRoles();
   }
 
-  public async assignTeamMember(): Promise<void>  {
+  public async assignTeamMember(): Promise<void> {
     await this.programsServiceApiService.assignAidworker(
       this.programId,
       this.userId,
@@ -77,8 +76,7 @@ export class ProgramTeamPopupComponent implements OnInit {
     this.successPopup();
   }
 
-
-  public async successPopup(): Promise<void>  {
+  public async successPopup(): Promise<void> {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: SuccessPopupComponent,
       componentProps: { programId: this.programId },

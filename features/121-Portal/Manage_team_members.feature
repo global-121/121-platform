@@ -11,7 +11,7 @@
     And last login is displayed in format (dd/mm/yyyy) or empty
     And user clicks on a column users are sorted alphabetically or numerically
     And above Team Members table on the left side filtering field is displayed
-    And on the right side on top of user table "Add team member" button is displayed
+    And on the right side on top of user table "Add/change team member" button is displayed
 
   Scenario: Add New Team member
     When User clicks on "Add new user" button
