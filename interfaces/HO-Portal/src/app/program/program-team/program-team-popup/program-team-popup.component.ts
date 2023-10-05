@@ -68,7 +68,7 @@ export class ProgramTeamPopupComponent implements OnInit {
         this.selectedRoles,
       );
       this.closeModal();
-      this.successPopup(event);
+      this.successPopup();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -78,8 +78,7 @@ export class ProgramTeamPopupComponent implements OnInit {
     this.getRoles();
   }
 
-  public async successPopup(e: Event) {
-    event = e;
+  public async successPopup() {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: SuccessPopupComponent,
       componentProps: { programId: this.programId },
