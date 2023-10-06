@@ -2009,7 +2009,6 @@ export class RegistrationsService {
 
   private setQueryPropertiesBulkAction(query: PaginateQuery): PaginateQuery {
     query.select = ['referenceId'];
-    query.limit = 0;
     query.page = null;
     return query;
   }

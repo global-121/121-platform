@@ -62,7 +62,7 @@ export class RegistrationsPaginationService {
       // These setting are needed to get all registrations
       // This is used for doing bulk updates with a filter
       paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
-      // query.limit = 0;
+      query.limit = 0;
     }
 
     const orignalSelect = query.select ? [...query.select] : [];
