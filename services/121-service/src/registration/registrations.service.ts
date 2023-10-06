@@ -1206,14 +1206,13 @@ export class RegistrationsService {
   }
 
   private async getBulkActionResult(
-    originalQuery: PaginateQuery,
-    applicableQuery: PaginateQuery,
+    paginateQuery: PaginateQuery,
     programId: number,
-    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate(
-        originalQuery,
+        paginateQuery,
         programId,
         false,
         false,
@@ -1221,7 +1220,7 @@ export class RegistrationsService {
 
     const applicableRegistrations =
       await this.registrationsPaginationService.getPaginate(
-        applicableQuery,
+        paginateQuery,
         programId,
         false,
         false,
@@ -1238,7 +1237,7 @@ export class RegistrationsService {
   }
 
   public async patchRegistrationsStatus(
-    query: PaginateQuery,
+    paginateQuery: PaginateQuery,
     programId: number,
     registrationStatus: RegistrationStatusEnum,
     dryRun: boolean,
@@ -1246,28 +1245,27 @@ export class RegistrationsService {
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
-    query = this.setQueryPropertiesBulkAction(query);
+    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
-
-    const applicableQuery = { ...query };
-    applicableQuery.filter = applicableQuery.filter || {};
+    const statusUpdateBaseQueryBuilder = this.getStatusUpdateBaseQuery(
+      allowedCurrentStatuses,
+    );
 
     const resultDto = await this.getBulkActionResult(
-      query,
-      applicableQuery,
+      paginateQuery,
       programId,
-      this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
+      statusUpdateBaseQueryBuilder,
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
-        applicableQuery,
+        paginateQuery,
         programId,
         registrationStatus,
         message,
         messageContentType,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
+        statusUpdateBaseQueryBuilder,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -1898,30 +1896,27 @@ export class RegistrationsService {
   }
 
   public async postMessages(
-    query: PaginateQuery,
+    paginateQuery: PaginateQuery,
     programId: number,
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    query = this.setQueryPropertiesBulkAction(query);
-
-    // Still to do
-    const applicableQuery = { ...query };
+    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+    const customMessageBaseQuery = this.getCustomMessageBaseQuery();
 
     const resultDto = await this.getBulkActionResult(
-      query,
-      applicableQuery,
+      paginateQuery,
       programId,
-      this.getCustomMessageBaseQuery(),
+      customMessageBaseQuery,
     );
 
     const registrationForUpdate =
       await this.registrationsPaginationService.getPaginate(
-        applicableQuery,
+        paginateQuery,
         programId,
         false,
         true,
-        this.getCustomMessageBaseQuery(),
+        customMessageBaseQuery,
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
