@@ -113,4 +113,13 @@
       ></ion-icon>
     </ion-button>
   </ion-chip>
+  <ng-container *ngIf="(textFilter | async).length > 0">
+    <div class="ml-auto">
+      <ion-chip (click)="clearAllFilters()">
+        <ion-label>
+          {{ 'page.program.table-filter-row.clear-all' | translate }}
+        </ion-label>
+      </ion-chip>
+    </div>
+  </ng-container>
 </div>

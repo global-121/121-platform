@@ -84,4 +84,8 @@ export class TableFilterRowComponent implements OnInit {
   public applyStatusFilter(filter) {
     console.log('=== filter: ', filter);
   }
+
+  public clearAllFilters() {
+    this.filterService.clearAllFilters();
+  }
 }

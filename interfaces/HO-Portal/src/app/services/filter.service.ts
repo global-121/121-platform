@@ -64,4 +64,9 @@ export class FilterService {
   public getStatusFilterSubscription(): Observable<RegistrationStatus[]> {
     return this.statusFilterSubject.asObservable();
   }
+
+  public clearAllFilters() {
+    this.textFilter = [];
+    this.textFilterSubject.next(this.textFilter);
+  }
 }
