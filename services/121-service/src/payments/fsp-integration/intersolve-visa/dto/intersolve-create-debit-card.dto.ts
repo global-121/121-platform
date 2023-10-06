@@ -31,8 +31,8 @@ export class IntersolveCreateDebitCardResponseDto {
     success?: boolean;
     errors?: IntersolveReponseErrorDto[];
     code?: string;
+    correlationId?: string;
   };
   public status: number;
   public statusText: string;
-  public correlationId?: string;
 }

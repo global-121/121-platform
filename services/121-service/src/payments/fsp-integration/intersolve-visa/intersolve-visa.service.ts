@@ -317,7 +317,7 @@ export class IntersolveVisaService
             `LINK CUSTOMER ERROR: ${registerResult.status} - ${registerResult.statusText}`;
         paTransactionResult.customData = {
           intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-          transactionID: registerResult.correlationId || null,
+          transactionID: registerResult.data?.correlationId || null,
         };
       }
 
@@ -352,7 +352,7 @@ export class IntersolveVisaService
           : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-        transactionID: createDebitCardResult.correlationId || null,
+        transactionID: createDebitCardResult.data?.correlationId || null,
       };
 
       // if success, update wallet: set debitCardCreated to true ..
