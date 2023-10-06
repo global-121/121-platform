@@ -32,10 +32,7 @@ import {
   Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
-import {
-  TableFilterMultipleChoiceOption,
-  TableFilterType,
-} from 'src/app/models/table-filter.model';
+import { TableFilterType } from 'src/app/models/table-filter.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
@@ -126,43 +123,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       description: 'multiple-choice-hidden-options',
     },
   ];
-  public tableFilterState = {
-    text: { column: null, value: '' },
-    paStatus: {
-      default: [],
-      selected: [],
-      visible: [],
-    },
-  };
 
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
   public tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
+  private tableStatusFilter: RegistrationStatus[];
+
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
-  private paStatusDefaultsPerPhase = {
-    [ProgramPhase.registrationValidation]: [
-      RegistrationStatus.imported,
-      RegistrationStatus.invited,
-      RegistrationStatus.startedRegistration,
-      RegistrationStatus.selectedForValidation,
-      RegistrationStatus.registered,
-      RegistrationStatus.noLongerEligible,
-      RegistrationStatus.registeredWhileNoLongerEligible,
-    ],
-    [ProgramPhase.inclusion]: [
-      RegistrationStatus.validated,
-      RegistrationStatus.registered,
-      RegistrationStatus.selectedForValidation,
-      RegistrationStatus.rejected,
-      RegistrationStatus.inclusionEnded,
-    ],
-    [ProgramPhase.payment]: [
-      RegistrationStatus.included,
-      RegistrationStatus.completed,
-    ],
-  };
 
   constructor(
     private authService: AuthService,
@@ -207,6 +176,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       await this.getPage();
     });
 
+    this.filterService
+      .getStatusFilterSubscription()
+      .subscribe(async (filter) => {
+        this.tableStatusFilter = filter;
+        await this.getPage();
+      });
+
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
   ngOnDestroy(): void {
@@ -233,8 +209,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.activePhase = this.program.phase;
-
-    await this.setupStatusFilter();
 
     this.columns = await this.tableService.loadColumns(
       this.thisPhase,
@@ -279,33 +253,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
-  }
-
-  private async setupStatusFilter() {
-    this.tableFilterState.paStatus.default =
-      this.paStatusDefaultsPerPhase[this.thisPhase];
-    this.tableFilterState.paStatus.visible =
-      await this.getStatusFilterOptions();
-    this.tableFilterState.paStatus.selected = [
-      ...this.tableFilterState.paStatus.default,
-    ];
-  }
-
-  private async getStatusFilterOptions(): Promise<
-    TableFilterMultipleChoiceOption[]
-  > {
-    const registrationStatusesWithCount =
-      await this.programsService.getRegistrationStatusCount(this.programId);
-    return registrationStatusesWithCount.map(({ status, statusCount }) => {
-      const option: TableFilterMultipleChoiceOption = {
-        value: status,
-        label: this.translate.instant(
-          'page.program.program-people-affected.status.' + status,
-        ),
-        count: Number(statusCount),
-      };
-      return option;
-    });
   }
 
   private async refreshData() {
@@ -910,38 +857,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
   }
 
-  public applyTableFilter(prop, filter) {
-    if (!filter) {
-      return;
-    }
-
-    if (prop === 'paymentsLeft') {
-      filter = filter.map((option) => Number(option));
-    }
-
-    if (this.tableFilterState[prop].selected === filter) {
-      return;
-    }
-
-    this.tableFilterState[prop].selected = filter;
-    this.setPage({
-      offset: 0,
-      pageSize: this.registrationsService?.getPageMetadata().itemsPerPage,
-    });
-  }
-
-  public showTableFilter(prop): boolean {
-    if (
-      prop !== 'paymentsLeft' ||
-      (this.thisPhase === this.phaseEnum.payment &&
-        this.program.enableMaxPayments)
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
   public hasMessageError(messageStatus): boolean {
     return this.messageColumnStatus[messageStatus] === MessageStatus.failed;
   }
@@ -974,7 +889,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       null,
       null,
       null,
-      this.tableFilterState['paStatus'].selected,
+      this.tableStatusFilter,
       this.tableTextFilter,
     );
 

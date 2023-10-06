@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import { ProgramPhase } from '../../models/program.model';
+import { TableFilterType } from '../../models/table-filter.model';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
 
 @Component({
@@ -14,11 +17,21 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
 
+  @Input()
+  public thisPhase: ProgramPhase;
+
+  @Input()
+  public programId: number;
+
   public textFilterOption: string | undefined;
 
   public textFilter: Observable<PaginationFilter[]>;
 
   public filterRowsVisibleQuery: string;
+
+  public tableFilterType = TableFilterType;
+
+  public allPaStatuses = Object.values(RegistrationStatusEnum);
 
   constructor(private filterService: FilterService) {}
 
@@ -66,5 +79,9 @@ export class TableFilterRowComponent implements OnInit {
     }
 
     return false;
+  }
+
+  public applyStatusFilter(filter) {
+    console.log('=== filter: ', filter);
   }
 }

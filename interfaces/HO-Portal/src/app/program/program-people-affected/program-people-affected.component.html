@@ -64,38 +64,14 @@
       >
         <ion-icon name="refresh"></ion-icon>
       </ion-button>
-      <ion-label class="ion-margin-start">
-        {{
-          'page.program.program-people-affected.filter-btn.common.filter-by'
-            | translate
-        }}
-      </ion-label>
-
-      <ng-container *ngFor="let tableFilter of tableFilters">
-        <app-table-filter
-          *ngIf="showTableFilter(tableFilter.prop)"
-          [buttonLabel]="
-            'page.program.program-people-affected.filter-btn.btn-label.' +
-              tableFilter.prop | translate
-          "
-          [type]="tableFilter.type"
-          [description]="
-            'page.program.program-people-affected.filter-btn.' +
-              tableFilter.description | translate
-          "
-          (filter)="applyTableFilter(tableFilter.prop, $event)"
-          [filterProps]="{
-            allOptions: tableFilterState[tableFilter.prop]?.visible,
-            currentSelection: tableFilterState[tableFilter.prop]?.selected
-          }"
-        ></app-table-filter>
-      </ng-container>
     </ion-row>
   </div>
 </ion-row>
 <app-table-filter-row
   [isLoading]="isLoading"
   [tableFiltersPerColumn]="tableFiltersPerColumn"
+  [programId]="programId"
+  [thisPhase]="thisPhase"
 ></app-table-filter-row>
 <div
   #proxyScrollbar

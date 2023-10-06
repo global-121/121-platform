@@ -1,61 +1,79 @@
 <div
   [ngClass]="{
-    'tfr--create-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
+    'tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical': true,
     'is-loading': isLoading
   }"
 >
-  <ion-icon
-    name="funnel"
-    color="black"
-    aria-hidden="true"
-    class="ion-margin-horizontal"
-  ></ion-icon>
-
-  <ion-select
-    interface="popover"
-    [(ngModel)]="textFilterOption"
-    [disabled]="isLoading"
-    [placeholder]="
-      'page.program.table-filter-row.select-column-to-filter' | translate
-    "
-    class="tfr--text-filter--select ion-margin-end"
+  <div
+    class="layout-flex-row ion-align-items-center"
+    style="width: 50%"
   >
-    <ion-select-option
-      *ngFor="let filterOption of tableFiltersPerColumn"
-      [value]="filterOption.name"
-      [disabled]="filterOption.name === 'DIVIDER'"
-    >
-      {{ filterOption.label }}
-    </ion-select-option>
-  </ion-select>
+    <ion-icon
+      name="funnel"
+      color="black"
+      aria-hidden="true"
+      class="ion-margin-horizontal"
+    ></ion-icon>
 
-  <ng-container *ngIf="showInput()">
-    <ion-input
-      [placeholder]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.title]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.aria-label]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [(ngModel)]="filterRowsVisibleQuery"
+    <ion-select
+      interface="popover"
+      [(ngModel)]="textFilterOption"
       [disabled]="isLoading"
-      [clearInput]="true"
-      (keyup.enter)="applyFilter()"
-      class="tfr--text-filter--input"
+      [placeholder]="
+        'page.program.table-filter-row.select-column-to-filter' | translate
+      "
+      class="tfr--text-filter--select ion-margin-end"
     >
-    </ion-input>
+      <ion-select-option
+        *ngFor="let filterOption of tableFiltersPerColumn"
+        [value]="filterOption.name"
+        [disabled]="filterOption.name === 'DIVIDER'"
+      >
+        {{ filterOption.label }}
+      </ion-select-option>
+    </ion-select>
 
-    <ion-button
-      fill="outline"
-      [disabled]="disableApplyButton()"
-      (click)="applyFilter()"
-    >
-      {{ 'page.program.table-filter-row.apply-filter' | translate }}
-    </ion-button>
-  </ng-container>
+    <ng-container *ngIf="showInput()">
+      <ion-input
+        [placeholder]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [attr.title]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [attr.aria-label]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [(ngModel)]="filterRowsVisibleQuery"
+        [disabled]="isLoading"
+        [clearInput]="true"
+        (keyup.enter)="applyFilter()"
+        class="tfr--text-filter--input"
+      >
+      </ion-input>
+
+      <ion-button
+        fill="outline"
+        [disabled]="disableApplyButton()"
+        (click)="applyFilter()"
+      >
+        {{ 'page.program.table-filter-row.apply-filter' | translate }}
+      </ion-button>
+    </ng-container>
+  </div>
+  <div class="layout-flex-row ion-align-items-center">
+    <ion-label class="ion-margin-start">
+      {{
+        'page.program.program-people-affected.filter-btn.common.filter-by'
+          | translate
+      }}
+    </ion-label>
+    <app-status-table-filter
+      *ngIf="programId"
+      [programId]="programId"
+      [thisPhase]="thisPhase"
+    ></app-status-table-filter>
+  </div>
 </div>
 
 <div
