@@ -9,9 +9,8 @@ import { HeaderComponent } from '../components/header/header.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
+import { StatusTableFilterComponent } from '../components/status-table-filter/status-table-filter.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
-import { TableFilterPopoverComponent } from '../components/table-filter/table-filter-popover/table-filter-popover.component';
-import { TableFilterComponent } from '../components/table-filter/table-filter.component';
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
@@ -56,8 +55,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TooltipComponent,
     UpdateFspComponent,
     UpdatePropertyItemComponent,
-    TableFilterComponent,
-    TableFilterPopoverComponent,
+    StatusTableFilterComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
     DatetimePickerComponent,
@@ -101,8 +99,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdateFspComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
-    TableFilterComponent,
-    TableFilterPopoverComponent,
+    StatusTableFilterComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
     TableFilterRowComponent,
