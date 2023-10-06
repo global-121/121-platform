@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { TableFilterComponent } from './table-filter.component';
+import { StatusTableFilterComponent } from './status-table-filter.component';
 
-describe('TableFilterComponent', () => {
-  let component: TableFilterComponent;
-  let fixture: ComponentFixture<TableFilterComponent>;
+describe('StatusTableFilterComponent', () => {
+  let component: StatusTableFilterComponent;
+  let fixture: ComponentFixture<StatusTableFilterComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TableFilterComponent],
+      declarations: [StatusTableFilterComponent],
       imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TableFilterComponent);
+    fixture = TestBed.createComponent(StatusTableFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
