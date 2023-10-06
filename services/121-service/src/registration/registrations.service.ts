@@ -1249,14 +1249,11 @@ export class RegistrationsService {
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
-    const statusUpdateBaseQueryBuilder = this.getStatusUpdateBaseQuery(
-      allowedCurrentStatuses,
-    );
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      statusUpdateBaseQueryBuilder,
+      this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
@@ -1265,7 +1262,7 @@ export class RegistrationsService {
         registrationStatus,
         message,
         messageContentType,
-        statusUpdateBaseQueryBuilder,
+        this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -1902,12 +1899,11 @@ export class RegistrationsService {
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
     paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
-    const customMessageBaseQuery = this.getCustomMessageBaseQuery();
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      customMessageBaseQuery,
+      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
     );
 
     const registrationForUpdate =
@@ -1916,7 +1912,7 @@ export class RegistrationsService {
         programId,
         false,
         true,
-        customMessageBaseQuery,
+        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
