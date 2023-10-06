@@ -19,7 +19,7 @@ import {
   registration5,
 } from './pagination-data';
 
-describe('do bulk action on set of registrations', () => {
+describe('change the status of a set of registrations', () => {
   let accessToken: string;
   const registrations = [
     registration1,
@@ -46,7 +46,7 @@ describe('do bulk action on set of registrations', () => {
 
   it('should update statuses if possible', async () => {
     // Arrange
-    // NOTE: because the helper-function changePaStatus already uses an filter on IN(..referenceIds) this also alrady tests the scenario where in the front-end manually multiple rows are selected (instead of 'select all')
+    // NOTE: because the helper-function changePaStatus already uses an filter on IN(..referenceIds) this also already tests the scenario where in the front-end manually multiple rows are selected (instead of 'select all')
     const newStatus = RegistrationStatusEnum.included; // registered to included IS possible
 
     // Act
@@ -143,27 +143,4 @@ describe('do bulk action on set of registrations', () => {
       expect(registration.status).toBe(oldStatus);
     }
   });
-
-  // TODO: fix this test
-  // it('should send message to non-empty phonenumbers', async () => {
-  //   // Arrange
-  //   registration2.phoneNumber = null;
-  //   await importRegistrations(programId, [registration2], accessToken);
-  //   const message = 'Long enough test message';
-
-  //   // Act
-  //   const sendMessageResponse = await sendMessage(
-  //     programId,
-  //     referenceIds,
-  //     message,
-  //     accessToken,
-  //   );
-  //   console.log('sendMessageResponse: ', sendMessageResponse.body);
-
-  //   // Assert
-  //   expect(sendMessageResponse.body.totalFilterCount).toBe(
-  //     registrations.length,
-  //   );
-  //   expect(sendMessageResponse.body.applicableCount).toBe(2); // as 4 - 2 = 2 registrations have a non-empty phonenumber
-  // });
 });

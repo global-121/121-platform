@@ -4,7 +4,7 @@ import { CreateProgramQuestionDto } from '../../src/programs/dto/program-questio
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
-import { getRegistrations } from './registration.helper';
+import { getMessageHistory, getRegistrations } from './registration.helper';
 import { getServer, waitFor } from './utility.helper';
 
 export async function postProgram(
@@ -202,5 +202,48 @@ export async function waitForStatusUpdateToComplete(
 
   if (!allStatusUpdatesSuccessful) {
     throw new Error(`Timeout waiting for status updates to complete`);
+  }
+}
+
+export async function waitForMessagesToComplete(
+  programId: number,
+  referenceIds: string[],
+  accessToken: string,
+  maxWaitTimeMs: number,
+): Promise<void> {
+  const startTime = Date.now();
+  let allMessageUpdatesSuccessful = false;
+
+  while (
+    Date.now() - startTime < maxWaitTimeMs &&
+    !allMessageUpdatesSuccessful
+  ) {
+    // Get message histories
+    const messageHistories = [];
+    for (const referenceId of referenceIds) {
+      const response = await getMessageHistory(
+        programId,
+        referenceId,
+        accessToken,
+      );
+      const messages = response.body;
+      messageHistories.push(messages);
+    }
+
+    // Check if all message histories are longer than 0
+    const amountOfRegistrationWithMessages = messageHistories.filter(
+      (messageHistory) => messageHistory.length > 0,
+    ).length;
+    allMessageUpdatesSuccessful =
+      amountOfRegistrationWithMessages === referenceIds.length;
+
+    // If not all PAs received a message, wait for a short interval before checking again
+    if (!allMessageUpdatesSuccessful) {
+      await waitFor(1000); // Wait for 1 second (adjust as needed)
+    }
+  }
+
+  if (!allMessageUpdatesSuccessful) {
+    throw new Error(`Timeout waiting for messages to be sent`);
   }
 }

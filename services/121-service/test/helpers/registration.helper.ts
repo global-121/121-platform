@@ -89,11 +89,10 @@ export function changePaStatus(
   accessToken: string,
   filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
-  const queryParams = {
-    filter: {
-      referenceId: `'$in:${referenceIds.join(',')}`,
-    },
-  };
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
       queryParams[key] = value;
@@ -115,18 +114,16 @@ export function sendMessage(
   message: string,
   accessToken: string,
 ): Promise<request.Response> {
-  const queryParams = {
-    filter: {
-      referenceId: `'$in:${referenceIds.join(',')}`,
-    },
+  const filter = {
+    ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
   };
   return getServer()
     .post(`/programs/${programId}/registrations/message`)
     .set('Cookie', [accessToken])
-    .query(queryParams)
     .send({
       message: message,
-    });
+    })
+    .query(filter);
 }
 
 export function updateRegistration(
