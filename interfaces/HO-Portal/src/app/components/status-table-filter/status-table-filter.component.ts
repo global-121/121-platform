@@ -16,6 +16,8 @@ export class StatusTableFilterComponent implements OnInit {
   @Input()
   public thisPhase: ProgramPhase;
 
+  public isStatusPopoverOpen: boolean = false;
+
   public totalCount: number = 0;
 
   public options: {
@@ -86,7 +88,7 @@ export class StatusTableFilterComponent implements OnInit {
   public onSelectAll() {
     this.selectAll = !this.selectAll;
     for (const key of this.getOptionsArray()) {
-      this.options[key].selected = this.selectAll;
+      this.options[key].selected = !this.selectAll;
     }
   }
 
@@ -101,11 +103,11 @@ export class StatusTableFilterComponent implements OnInit {
   };
 
   public onOptionClick() {
-    if (Object.values(this.options).some((o) => !o.selected)) {
+    if (Object.values(this.options).every((o) => o.selected)) {
+      this.selectAll = true;
+    } else {
       this.selectAll = false;
-      return;
     }
-    this.selectAll = true;
   }
 
   private getSelectedOptions(): RegistrationStatus[] {
@@ -116,5 +118,14 @@ export class StatusTableFilterComponent implements OnInit {
 
   public applyFilter() {
     this.filterService.updateStatusFilter(this.getSelectedOptions());
+    this.isStatusPopoverOpen = false;
+  }
+
+  public toggleStatusPopover() {
+    this.isStatusPopoverOpen = !this.isStatusPopoverOpen;
+  }
+
+  public cancelClick() {
+    this.isStatusPopoverOpen = false;
   }
 }
