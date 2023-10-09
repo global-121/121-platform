@@ -21,6 +21,7 @@ import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -173,6 +174,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TryWhatsappEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
         columnName: 'registration',
       },
     ]);

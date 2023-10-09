@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
+import { CommercialBankEthiopiaModule } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveIssueVoucherRequestEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -26,6 +27,7 @@ import { CronjobService } from './cronjob.service';
     WhatsappModule,
     IntersolveVoucherModule,
     IntersolveVisaModule,
+    CommercialBankEthiopiaModule,
   ],
   providers: [CronjobService],
   controllers: [],
