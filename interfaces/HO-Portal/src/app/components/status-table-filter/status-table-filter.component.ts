@@ -79,14 +79,15 @@ export class StatusTableFilterComponent implements OnInit {
       });
     }, {});
 
-    this.onOptionClick();
     this.applyFilter();
   }
 
-  public onSelectAll() {
-    this.selectAll = !this.selectAll;
+  public onSelectAll(e: Event) {
+    const checkbox = e.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+    this.selectAll = isChecked;
     for (const key of this.getOptionsArray()) {
-      this.options[key].selected = this.selectAll;
+      this.options[key].selected = isChecked;
     }
   }
 
@@ -100,7 +101,8 @@ export class StatusTableFilterComponent implements OnInit {
     );
   };
 
-  public onOptionClick() {
+  public onOptionClick(option: RegistrationStatus) {
+    this.options[option].selected = !this.options[option].selected;
     if (Object.values(this.options).some((o) => !o.selected)) {
       this.selectAll = false;
       return;

@@ -7,8 +7,6 @@
   class="table-filter-popover--multiple-choice"
 >
   <ng-template>
-    <pre>{{ selectAll | json }}</pre>
-    <pre>{{ options | json }}</pre>
     <ion-grid
       class="ion-padding ion-no-margin table-filter-popover--multiple-choice--list"
     >
@@ -24,8 +22,8 @@
         <div class="ion-margin-start">
           <ion-row class="ion-justify-content-end">
             <ion-checkbox
-              [(ngModel)]="selectAll"
-              (click)="onSelectAll()"
+              [checked]="selectAll"
+              (ionChange)="onSelectAll($event)"
               class="ion-margin-start"
             >
               <ion-text color="medium">{{ totalCount }}</ion-text>
@@ -54,8 +52,8 @@
           >
             <ion-row class="ion-justify-content-end">
               <ion-checkbox
-                [(ngModel)]="options[option].selected"
-                (click)="onOptionClick()"
+                [checked]="options[option].selected"
+                (ionChange)="onOptionClick(option)"
                 class="ion-margin-start"
               >
                 <ion-text color="medium">{{
