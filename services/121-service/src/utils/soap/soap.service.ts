@@ -188,6 +188,12 @@ export class SoapService {
         return parsedResponse['S:Envelope']['S:Body'][
           'ns10:CBERemitanceTransactionStatusResponse'
         ];
+      } else if (
+        parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:AccountEnquiryResponse'
+        ];
       }
     } catch (error) {
       throw error;

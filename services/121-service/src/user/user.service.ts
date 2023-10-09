@@ -16,6 +16,8 @@ import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
+import { FindUserReponseDto } from './dto/find-user-response.dto';
+import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEntity } from './permissions.entity';
@@ -58,6 +60,7 @@ export class UserService {
         username,
         token,
         permissions,
+        isAdmin: userEntity.admin,
       },
     };
 
@@ -485,5 +488,34 @@ export class UserService {
         userType: UserType.aidWorker,
       },
     });
+  }
+
+  public async getUsersInProgram(
+    programId: number,
+  ): Promise<GetUserReponseDto[]> {
+    return await this.assignmentRepository
+      .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.user', 'user')
+      .where('assignment.programId = :programId', { programId })
+      .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
+      .select([
+        'user.id AS id',
+        'user.username AS username',
+        'user.admin AS admin',
+        'user.active AS active',
+        'user.lastLogin AS "lastLogin"',
+      ])
+      .getRawMany();
+  }
+
+  public async findUsersByName(
+    username: string,
+  ): Promise<FindUserReponseDto[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username LIKE :username', { username: `%${username}%` })
+      .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
+      .select(['user.id AS id', 'user.username AS username'])
+      .getRawMany();
   }
 }

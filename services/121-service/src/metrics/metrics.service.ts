@@ -846,11 +846,11 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select([
         'registration.referenceId as "referenceId"',
+        'transaction.status as "status"',
         'transaction.payment as "payment"',
         'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
-        'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
       ])
