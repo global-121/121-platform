@@ -30,7 +30,7 @@ export class CronjobService {
       'CronjobService - Started: validateCommercialBankEthiopiaAccountEnquiries',
     );
 
-    await this.commercialBankEthiopiaService.sendValidationPerPa();
+    await this.commercialBankEthiopiaService.validateAllPas();
 
     console.info(
       'CronjobService - Complete: validateCommercialBankEthiopiaAccountEnquiries',
