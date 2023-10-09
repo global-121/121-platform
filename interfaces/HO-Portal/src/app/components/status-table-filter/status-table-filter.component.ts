@@ -63,6 +63,10 @@ export class StatusTableFilterComponent implements OnInit {
       statusCount: number;
     }[] = await this.programsService.getRegistrationStatusCount(this.programId);
 
+    if (!activeStatuses) {
+      return;
+    }
+
     this.totalCount = activeStatuses.reduce((total, option) => {
       return (total = total + Number(option.statusCount));
     }, 0);
