@@ -271,18 +271,26 @@ export class CommercialBankEthiopiaService
 
       if (paResult?.Status?.successIndicator?._text === 'Success') {
         const accountInfo =
-          paResult.EACCOUNTCBEREMITANCEType[
+          paResult?.EACCOUNTCBEREMITANCEType?.[
             'ns4:gEACCOUNTCBEREMITANCEDetailType'
-          ]['ns4:mEACCOUNTCBEREMITANCEDetailType'];
-        pa.cbeName = accountInfo['ns4:CUSTOMERNAME']._text;
-        pa.cbeStatus = accountInfo['ns4:ACCOUNTSTATUS']._text;
-        if (pa.fullName) {
+          ]?.['ns4:mEACCOUNTCBEREMITANCEDetailType'];
+        pa.cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
+        pa.cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
+        if (pa.fullName && pa.cbeName) {
           pa.discrepancyName =
             pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
               ? 'Match'
               : 'No match';
-        } else {
+        } else if (pa.fullName && !pa.cbeName) {
+          console.log('### No pa.cbeName', JSON.stringify(paResult));
+          pa.errorMessage =
+            'Could not be matched: did not get a name from CBE for account number';
+        } else if (pa.cbeName && !pa.fullName) {
           pa.errorMessage = 'Could not be matched: fullName in 121 is missing';
+        } else {
+          console.log('### No pa.cbeName & fullName', JSON.stringify(paResult));
+          pa.errorMessage =
+            'Could not be matched: fullName in 121 is missing and did not get a name from CBE for account number';
         }
         result.push(pa);
       } else {
