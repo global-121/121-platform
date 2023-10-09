@@ -227,4 +227,96 @@ export class CommercialBankEthiopiaApiService {
 
     return payload;
   }
+
+  public async getValidationStatus(
+    bankAccountNumber: string,
+    credentials: { username: string; password: string },
+  ): Promise<any> {
+    const payload = await this.createValidationStatusPayload(
+      bankAccountNumber,
+      credentials,
+    );
+
+    try {
+      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+        ? await this.commercialBankEthiopiaMock.postCBEValidation(payload)
+        : await this.soapService.postCBERequest(
+            payload,
+            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=2`,
+          );
+
+      return responseBody;
+    } catch (error) {
+      // Handle errors here
+      const result: any = {
+        resultDescription: 'Unknown error occurred.',
+      };
+
+      if (error.code === 'ENOTFOUND') {
+        console.error(
+          'Failed because of CBE connection error. Please try again later',
+        );
+        result.resultDescription =
+          'Failed because of CBE connection error. Please try again later';
+      } else {
+        console.error('Unknown error occurred:', error.response);
+        result.resultDescription = error.response;
+      }
+
+      return result;
+    }
+  }
+
+  public async createValidationStatusPayload(
+    bankAccountNumber: string,
+    credentials: { username: string; password: string },
+  ): Promise<any> {
+    // Create the SOAP envelope for credit transfer
+    const payload = await this.soapService.readXmlAsJs(
+      CommercialBankEthiopiaSoapElements.AccountEnquiry,
+    );
+
+    // Find the soapenv:Body element
+    const soapBody = payload.elements
+      .find((el) => el.name === 'soapenv:Envelope')
+      .elements.find((el) => el.name === 'soapenv:Body');
+
+    // Find the cber:AccountEnquiry element
+    const rmtFundtransfer = soapBody.elements.find(
+      (el) => el.name === 'cber:AccountEnquiry',
+    );
+
+    // Modify the elements within cber:AccountEnquiry
+    rmtFundtransfer.elements.forEach((element) => {
+      switch (element.name) {
+        case 'WebRequestCommon':
+          const passwordElement = element.elements.find(
+            (el) => el.name === 'password',
+          );
+          const userNameElement = element.elements.find(
+            (el) => el.name === 'userName',
+          );
+          passwordElement.elements[0].text = credentials.password;
+          userNameElement.elements[0].text = credentials.username;
+          break;
+        case 'EACCOUNTCBEREMITANCEType':
+          const enquiryInputElement = element.elements.find(
+            (el) => el.name === 'enquiryInputCollection',
+          );
+          const columnNameElement = enquiryInputElement.elements.find(
+            (el) => el.name === 'columnName',
+          );
+          const criteriaValueElement = enquiryInputElement.elements.find(
+            (el) => el.name === 'criteriaValue',
+          );
+          columnNameElement.elements[0].text = 'ID';
+          criteriaValueElement.elements[0].text = bankAccountNumber;
+          // You can modify other elements similarly
+          break;
+        // Handle other elements if needed
+      }
+    });
+
+    return payload;
+  }
 }

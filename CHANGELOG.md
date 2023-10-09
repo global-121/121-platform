@@ -5,18 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.100.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.102.1...master)
 
 ---
+## [1.102.1](https://github.com/global-121/121-platform/compare/v1.102.0...v1.102.1) - 2023-10-05
+
+### Fixed
+
+- Fixed CBE account-enquiries cannot access ns4:gEACCOUNTCBEREMITANCEDetailType
+
+## [1.102.0](https://github.com/global-121/121-platform/compare/v1.101.0...v1.102.0) - 2023-10-05
+
+### Added
+
+- Api for CBE account-enquiries
+
+### Changed
+
+- Default throttle limit
+
+
+## [1.101.0](https://github.com/global-121/121-platform/compare/v1.100.0...v1.101.0) - 2023-09-26
+
+### Added
+
+- Allow external integrations to update the reference Id using patch
+
+### Fixed
+
+- Solved bug with issuing new Visa card (decimals)
+
 ## [1.100.0](https://github.com/global-121/121-platform/compare/v1.99.1...v1.100.0) - 2023-09-21
 
 ### Added
-- Allow external integrations to update the reference Id using patch
-- Admins can see an overview of all users
-- Admins can see an overview of all roles
-- The possiblity to add an url to a powerbi dashboard that can be shown in the evaluation page and in the dashboard page
-- Removed old code for the espocrm integration
 
+- Intersolve Visa: See monthly spending limit
 
 ## [1.99.1](https://github.com/global-121/121-platform/compare/v1.99.0...v1.99.1) - 2023-09-19
 

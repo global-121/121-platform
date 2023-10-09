@@ -1,0 +1,24 @@
+.select-typeahead--trigger-wrapper {
+  position: relative;
+  padding: 0.45em;
+  border: 1px solid var(--ion-color-medium);
+  border-radius: 0.25em;
+}
+
+/* The actionable button is placed 'on top of' the 'real' <ion-select> input-element  */
+.select-typeahead--trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+}
+
+/* This proxy should not be interacted with; It is only there to contain + show the input-data */
+.select-typeahead--proxy.select-disabled {
+  opacity: 1; /* Override the styles from .select-disabled */
+}
+.select-typeahead--proxy:not(.select-label-placement-stacked) {
+  min-height: auto;
+}

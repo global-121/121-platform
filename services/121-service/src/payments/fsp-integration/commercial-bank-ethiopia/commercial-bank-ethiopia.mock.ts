@@ -153,4 +153,46 @@ export class CommercialBankEthiopiaMockService {
     };
     return new Promise((resolve) => resolve(response));
   }
+
+  public async postCBEValidation(payload): Promise<any> {
+    await this.waitForRandomDelay();
+
+    const mockScenario = 'success'; // 'other-failure' / 'no-response' to test the corresponding scenario
+
+    // Define the success transaction Status object
+    const successTransactionStatus = {
+      successIndicator: { _text: 'Success' },
+    };
+    // Define the duplicated transaction Status object
+    const otherFailureStatus = {
+      successIndicator: { _text: 'T24Error' },
+      messages: [{ _text: 'Other Test failure' }],
+    };
+
+    // Switch between mock scenarios
+    let Status;
+    if (mockScenario === 'success') {
+      Status = successTransactionStatus;
+    } else if (mockScenario === 'other-failure') {
+      Status = otherFailureStatus;
+    } else if (mockScenario === 'no-response') {
+      const errors = 'No response';
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const response = {
+      Status,
+      ['EACCOUNTCBEREMITANCEType']: {
+        ['ns4:gEACCOUNTCBEREMITANCEDetailType']: {
+          ['ns4:mEACCOUNTCBEREMITANCEDetailType']: {
+            ['ns4:ACCOUNTNO']: { _text: String(payload.bankAccountNumber) },
+            ['ns4:CUSTOMERNAME']: { _text: 'ANDUALEM MOHAMMED YIMER' },
+            ['ns4:ACCOUNTSTATUS']: { _text: 'CREDIT ALLOWED' },
+            ['ns4:MOBILENO']: { _text: '+251947940727' },
+          },
+        },
+      },
+    };
+    return new Promise((resolve) => resolve(response));
+  }
 }
