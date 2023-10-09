@@ -1,0 +1,122 @@
+<div class="select-typeahead--trigger-wrapper">
+  <ion-button
+    type="button"
+    [id]="triggerId"
+    expand="full"
+    fill="clear"
+    class="select-typeahead--trigger ion-text-wrap ion-no-margin"
+  >
+    &nbsp;
+    <!-- Empty, transparent trigger to cover the proxy-select -->
+  </ion-button>
+  <ion-select
+    [value]="workingSelectedValues"
+    [multiple]="multiple"
+    [label]="label"
+    [labelPlacement]="!!label ? 'stacked' : null"
+    [placeholder]="placeholder || ('select-typeahead.placeholder' | translate)"
+    [disabled]="true"
+    class="select-typeahead--proxy"
+  >
+    <ion-select-option
+      *ngFor="let selectedItem of workingSelectedValues"
+      [value]="selectedItem"
+      [selected]="true"
+      [disabled]="true"
+    >
+      {{ getLabel(selectedItem) }}
+    </ion-select-option>
+  </ion-select>
+</div>
+
+<ion-popover
+  [isOpen]="isOpen"
+  [trigger]="triggerId"
+  triggerAction="click"
+  reference="trigger"
+  side="bottom"
+  alignment="center"
+  size="cover"
+  [showBackdrop]="showBackdrop"
+  (ionPopoverWillPresent)="onPresent()"
+  (ionPopoverWillDismiss)="onDismiss($event.detail)"
+>
+  <ng-template>
+    <ion-header class="ion-no-border ion-no-padding">
+      <ion-toolbar style="--min-height: 0">
+        <ion-searchbar
+          (ionInput)="onSearchbarInput($event)"
+          style="
+            padding: 0 !important;
+            border-bottom: 1px solid var(--ion-color-medium);
+          "
+        />
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content
+      *ngIf="multiple"
+      color="light"
+    >
+      <ion-list
+        [inset]="false"
+        lines="full"
+        class="ion-no-padding"
+      >
+        <ion-item *ngFor="let item of filteredItems; trackBy: trackItems">
+          <ion-checkbox
+            [value]="item.name"
+            [checked]="isChecked(item.name)"
+            (ionChange)="onCheckboxChange($event.detail?.checked, item)"
+          >
+            {{ item.label }}
+          </ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+    <ion-content
+      *ngIf="!multiple"
+      color="light"
+    >
+      <ion-radio-group
+        [value]="workingSelectedValues[0]"
+        (ionChange)="onRadioChange($event?.detail?.value)"
+      >
+        <ion-list
+          [inset]="false"
+          lines="full"
+          class="ion-no-padding"
+        >
+          <ion-item *ngFor="let item of filteredItems; trackBy: trackItems">
+            <ion-radio [value]="item.name">
+              {{ item.label }}
+            </ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-radio-group>
+    </ion-content>
+
+    <ion-footer class="ion-no-border">
+      <ion-toolbar>
+        <ion-buttons slot="secondary">
+          <ion-button
+            (click)="cancelChanges()"
+            color="danger"
+            fill="clear"
+          >
+            {{ 'common.cancel' | translate }}
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="primary">
+          <ion-button
+            (click)="confirmChanges()"
+            color="primary"
+            fill="solid"
+          >
+            {{ 'common.ok' | translate }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-footer>
+  </ng-template>
+</ion-popover>
