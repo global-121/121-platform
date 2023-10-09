@@ -16,6 +16,8 @@ export class StatusTableFilterComponent implements OnInit {
   @Input()
   public thisPhase: ProgramPhase;
 
+  public isStatusPopoverOpen: boolean = false;
+
   public totalCount: number = 0;
 
   public options: {
@@ -118,5 +120,14 @@ export class StatusTableFilterComponent implements OnInit {
 
   public applyFilter() {
     this.filterService.updateStatusFilter(this.getSelectedOptions());
+    this.isStatusPopoverOpen = false;
+  }
+
+  public toggleStatusPopover() {
+    this.isStatusPopoverOpen = !this.isStatusPopoverOpen;
+  }
+
+  public cancelClick() {
+    this.isStatusPopoverOpen = false;
   }
 }
