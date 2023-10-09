@@ -8,7 +8,7 @@ import { ProgramTeamPopupComponent } from './program-team-popup/program-team-pop
   templateUrl: './program-team.component.html',
   styleUrls: ['./program-team.component.scss'],
 })
-export class ProgramTeamPage {
+export class ProgramTeamComponent {
   public programId: number;
 
   constructor(

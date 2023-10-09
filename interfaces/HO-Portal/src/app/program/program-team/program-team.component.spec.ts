@@ -1,14 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProgramTeamPage } from './program-team.component';
+import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
+import { ProgramTeamComponent } from './program-team.component';
 
 describe('ProgramTeamComponent', () => {
-  let component: ProgramTeamPage;
-  let fixture: ComponentFixture<ProgramTeamPage>;
+  let component: ProgramTeamComponent;
+  let fixture: ComponentFixture<ProgramTeamComponent>;
 
   beforeEach(waitForAsync(() => {
     const modalSpy = jasmine.createSpyObj('Modal', ['present']);
@@ -16,13 +16,14 @@ describe('ProgramTeamComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     TestBed.configureTestingModule({
-      declarations: [ProgramTeamPage],
+      declarations: [ProgramTeamComponent],
       imports: [
+        IonicModule,
         TranslateModule.forRoot(),
         RouterTestingModule,
         HttpClientTestingModule,
+        ProgramTeamTableComponent,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ModalController,
@@ -33,7 +34,7 @@ describe('ProgramTeamComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramTeamPage);
+    fixture = TestBed.createComponent(ProgramTeamComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,14 +5,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { ProgramTeamPopupComponent } from 'src/app/program/program-team/program-team-popup/program-team-popup.component';
 import { ProgramTeamTableComponent } from 'src/app/program/program-team/program-team-table/program-team-table.component';
-import { ProgramTeamPage } from 'src/app/program/program-team/program-team.component';
+import { ProgramTeamComponent } from 'src/app/program/program-team/program-team.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AidWorkersPage } from './team.page';
+import { TeamPage } from './team.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AidWorkersPage,
+    component: TeamPage,
   },
 ];
 
@@ -26,6 +26,6 @@ const routes: Routes = [
     ProgramTeamPopupComponent,
     RouterModule.forChild(routes),
   ],
-  declarations: [AidWorkersPage, ProgramTeamPage],
+  declarations: [TeamPage, ProgramTeamComponent],
 })
 export class AidWorkersPageModule {}

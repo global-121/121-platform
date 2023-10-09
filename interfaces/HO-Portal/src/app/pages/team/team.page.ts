@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './team.page.html',
   styleUrls: ['./team.page.scss'],
 })
-export class AidWorkersPage {
+export class TeamPage {
   public programId = this.route.snapshot.params.id;
 
   constructor(private route: ActivatedRoute) {}
