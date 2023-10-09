@@ -113,7 +113,6 @@ export class ExportMetricsService {
       programId,
       ExportType.allPeopleAffected,
       null,
-      true,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -127,7 +126,6 @@ export class ExportMetricsService {
       programId,
       ExportType.included,
       RegistrationStatusEnum.included,
-      false,
     );
     const response = {
       fileName: 'inclusion-list',
@@ -143,7 +141,6 @@ export class ExportMetricsService {
       programId,
       ExportType.selectedForValidation,
       RegistrationStatusEnum.selectedForValidation,
-      false,
     );
     const response = {
       fileName: ExportType.selectedForValidation,
@@ -189,7 +186,6 @@ export class ExportMetricsService {
     programId: number,
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
-    addPaymentColumns?: boolean,
   ): Promise<object[]> {
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
@@ -202,23 +198,7 @@ export class ExportMetricsService {
       exportType,
     );
 
-    let payments;
-    let transactions;
-    if (addPaymentColumns) {
-      payments = (await this.paymentsService.getPayments(programId))
-        .map((i) => i.payment)
-        .sort((a, b) => (a > b ? 1 : -1));
-
-      transactions = await this.transactionsService.getTransactions(
-        programId,
-        true,
-      );
-    }
-
     for await (const row of rows) {
-      if (addPaymentColumns) {
-        this.addPaymentFieldsToExport(row, payments, transactions);
-      }
       row['id'] = row['registrationProgramId'];
       delete row['registrationProgramId'];
     }
@@ -555,22 +535,15 @@ export class ExportMetricsService {
   }
 
   private filterUnusedColumn(columnDetails): object[] {
-    const emptyColumns = [];
-    for (const row of columnDetails) {
-      for (const key in row) {
-        if (row[key]) {
-          emptyColumns.push(key);
-        }
-      }
-    }
     const filteredColumns = [];
     for (const row of columnDetails) {
+      const filteredRow = {};
       for (const key in row) {
-        if (!emptyColumns.includes(key)) {
-          delete row[key];
+        if (row[key]) {
+          filteredRow[key] = row[key];
         }
       }
-      filteredColumns.push(row);
+      filteredColumns.push(filteredRow);
     }
     return filteredColumns;
   }
