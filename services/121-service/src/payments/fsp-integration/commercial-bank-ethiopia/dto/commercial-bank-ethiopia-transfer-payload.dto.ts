@@ -24,14 +24,4 @@ export class CommercialBankEthiopiaValidationData {
   public fullName: string;
   @ApiProperty()
   public bankAccountNumber: string;
-  @ApiProperty()
-  public status: string;
-  @ApiProperty()
-  public cbeName: string;
-  @ApiProperty()
-  public discrepancyName: string;
-  @ApiProperty()
-  public cbeStatus: string;
-  @ApiProperty()
-  public errorMessage: string;
 }
