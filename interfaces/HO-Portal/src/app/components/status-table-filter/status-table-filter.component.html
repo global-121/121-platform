@@ -1,11 +1,13 @@
 <ion-button
   (click)="toggleStatusPopover()"
   id="statusPopoverButton"
-  >{{
+  fill="clear"
+>
+  {{
     'page.program.program-people-affected.filter-btn.btn-label.paStatus'
       | translate
-  }}</ion-button
->
+  }}
+</ion-button>
 <ion-popover
   trigger="statusPopoverButton"
   [isOpen]="isStatusPopoverOpen"

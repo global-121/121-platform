@@ -1,19 +1,21 @@
 <div
+  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical"
   [ngClass]="{
-    'tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical': true,
     'is-loading': isLoading
   }"
 >
   <div
     class="layout-flex-row ion-align-items-center"
-    style="width: 50%"
+    style="flex-basis: 80%"
   >
-    <ion-icon
-      name="funnel"
-      color="black"
-      aria-hidden="true"
-      class="ion-margin-horizontal"
-    ></ion-icon>
+    <span>
+      <ion-icon
+        name="funnel"
+        color="black"
+        aria-hidden="true"
+        class="ion-margin-horizontal"
+      ></ion-icon>
+    </span>
 
     <app-select-typeahead
       [items]="tableFiltersPerColumn"
@@ -54,13 +56,15 @@
       </ion-button>
     </ng-container>
   </div>
-  <div class="layout-flex-row ion-align-items-center">
-    <ion-label class="ion-margin-start">
+
+  <div class="layout-flex-row ion-align-items-center ion-padding-horizontal">
+    <ion-label class="ion-text-nowrap">
       {{
         'page.program.program-people-affected.filter-btn.common.filter-by'
           | translate
       }}
     </ion-label>
+    &nbsp;
     <app-status-table-filter
       *ngIf="programId"
       [programId]="programId"
@@ -70,46 +74,52 @@
 </div>
 
 <div
+  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center ion-margin-vertical"
   [ngClass]="{
-    'tfr--active-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
     'is-loading': isLoading
   }"
 >
-  <ion-chip
-    *ngFor="let filter of textFilter | async"
-    size="small"
-  >
-    <ion-label>
-      {{ filter.label }}:
-      <strong>{{ filter.value }}</strong>
-    </ion-label>
-
-    <ion-button
-      fill="clear"
+  <div>
+    <ion-chip
+      *ngFor="let filter of textFilter | async"
       size="small"
-      color="medium"
-      class="ion-no-margin ion-no-padding"
-      (click)="removeTextFilter(filter.name)"
-      [attr.aria-label]="
-        'page.program.table-filter-row.remove-filter' | translate
-      "
-      [attr.title]="'page.program.table-filter-row.remove-filter' | translate"
     >
-      <ion-icon
-        name="close"
+      <ion-label>
+        {{ filter.label }}:
+        <strong>{{ filter.value }}</strong>
+      </ion-label>
+
+      <ion-button
+        fill="clear"
         size="small"
-        slot="icon-only"
-        aria-hidden="true"
-      ></ion-icon>
+        color="medium"
+        class="ion-no-margin ion-no-padding"
+        (click)="removeTextFilter(filter.name)"
+        [attr.aria-label]="
+          'page.program.table-filter-row.remove-filter' | translate
+        "
+        [attr.title]="'page.program.table-filter-row.remove-filter' | translate"
+      >
+        <ion-icon
+          name="close"
+          size="small"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-chip>
+  </div>
+  <div
+    *ngIf="(textFilter | async).length > 0"
+    class="ion-align-flex-end"
+  >
+    <ion-button
+      (click)="clearAllFilters()"
+      size="small"
+      shape="round"
+      color="tertiary"
+    >
+      {{ 'page.program.table-filter-row.clear-all' | translate }}
     </ion-button>
-  </ion-chip>
-  <ng-container *ngIf="(textFilter | async).length > 0">
-    <div class="ml-auto">
-      <ion-chip (click)="clearAllFilters()">
-        <ion-label>
-          {{ 'page.program.table-filter-row.clear-all' | translate }}
-        </ion-label>
-      </ion-chip>
-    </div>
-  </ng-container>
+  </div>
 </div>
