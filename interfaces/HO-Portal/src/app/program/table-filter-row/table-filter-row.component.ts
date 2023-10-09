@@ -23,7 +23,7 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public programId: number;
 
-  public textFilterOption: string | undefined;
+  public textFilterOption: { name: string; label: string }[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
@@ -40,14 +40,15 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public applyFilter() {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return;
     }
     if (this.disableApplyButton()) {
       return;
     }
     this.filterService.addTextFilter(
-      this.textFilterOption,
+      this.textFilterOption[0].name,
+      this.textFilterOption[0].label,
       this.filterRowsVisibleQuery,
     );
     this.clearFilter();
@@ -55,7 +56,7 @@ export class TableFilterRowComponent implements OnInit {
 
   private clearFilter() {
     this.filterRowsVisibleQuery = '';
-    this.textFilterOption = undefined;
+    this.textFilterOption = [];
   }
 
   public removeTextFilter(column: string) {
@@ -63,7 +64,7 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public showInput(): boolean {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return false;
     }
 

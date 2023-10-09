@@ -15,23 +15,16 @@
       class="ion-margin-horizontal"
     ></ion-icon>
 
-    <ion-select
-      interface="popover"
-      [(ngModel)]="textFilterOption"
-      [disabled]="isLoading"
+    <app-select-typeahead
+      [items]="tableFiltersPerColumn"
+      [(selection)]="textFilterOption"
       [placeholder]="
         'page.program.table-filter-row.select-column-to-filter' | translate
       "
+      [multiple]="false"
+      [disabled]="isLoading"
       class="tfr--text-filter--select ion-margin-end"
-    >
-      <ion-select-option
-        *ngFor="let filterOption of tableFiltersPerColumn"
-        [value]="filterOption.name"
-        [disabled]="filterOption.name === 'DIVIDER'"
-      >
-        {{ filterOption.label }}
-      </ion-select-option>
-    </ion-select>
+    ></app-select-typeahead>
 
     <ng-container *ngIf="showInput()">
       <ion-input
@@ -87,10 +80,7 @@
     size="small"
   >
     <ion-label>
-      {{
-        'page.program.program-people-affected.column.' + filter.name
-          | translate
-      }}:
+      {{ filter.label }}:
       <strong>{{ filter.value }}</strong>
     </ion-label>
 

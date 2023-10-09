@@ -5,6 +5,7 @@ import RegistrationStatus from '../enums/registration-status.enum';
 export class PaginationFilter {
   value: string;
   name: string;
+  label: string;
   operator?: FilterOperatorEnum;
 }
 
@@ -42,8 +43,12 @@ export class FilterService {
     this.textFilter = this.DEFAULT_TEXT_FILTER;
   }
 
-  public addTextFilter(column: string, value: string) {
-    this.textFilter.push({ name: column, value });
+  public addTextFilter(column: string, label: string, value: string) {
+    this.textFilter.push({
+      name: column,
+      label,
+      value,
+    });
     this.textFilterSubject.next(this.textFilter);
   }
 

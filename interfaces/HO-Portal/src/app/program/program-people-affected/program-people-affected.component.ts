@@ -77,7 +77,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public phaseEnum = ProgramPhase;
 
   public program: Program;
-  private paTableAttributes: PaTableAttribute[];
+  private paTableAttributes: PaTableAttribute[] = [];
   public activePhase: ProgramPhase;
 
   private locale: string;
@@ -408,6 +408,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         tableFiltersPerColumn.push({
           name: 'divider',
           label: '------------------------------------------',
+          disabled: true,
         });
       }
     }

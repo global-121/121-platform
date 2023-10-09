@@ -9,6 +9,7 @@ import { HeaderComponent } from '../components/header/header.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
+import { SelectTypeaheadComponent } from '../components/select-typeahead/select-typeahead.component';
 import { StatusTableFilterComponent } from '../components/status-table-filter/status-table-filter.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
@@ -72,6 +73,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UserStateComponent,
     ProgramNavigationComponent,
     PhaseNavigationComponent,
+    SelectTypeaheadComponent,
   ],
   exports: [
     BulkImportComponent,
