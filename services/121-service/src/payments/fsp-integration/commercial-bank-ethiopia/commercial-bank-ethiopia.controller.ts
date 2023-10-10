@@ -4,8 +4,8 @@ import { Admin } from '../../../guards/admin.decorator';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { CommercialBankEthiopiaAccountEnquiryDto } from './dto/commercial-bank-ethiopia-account-enquiry.dto';
 import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
 @Controller()
@@ -29,7 +29,7 @@ export class CommercialBankEthiopiaController {
   )
   public async getValidated(
     @Param('programId') programId: number,
-  ): Promise<CommercialBankEthiopiaAccountEnquiryDto> {
+  ): Promise<CommercialBankEthiopiaValidationReportDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
       Number(programId),
     );

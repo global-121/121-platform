@@ -1,4 +1,4 @@
-export class CommercialBankEthiopiaAccountEnquiryDto {
+export class CommercialBankEthiopiaValidationReportDto {
   data: {
     registrationProgramId: number;
     fullNameUsedForTheMatch: string;

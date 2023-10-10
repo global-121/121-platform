@@ -16,12 +16,12 @@ import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
-import { CommercialBankEthiopiaAccountEnquiryDto } from './dto/commercial-bank-ethiopia-account-enquiry.dto';
 import {
   CommercialBankEthiopiaRegistrationData,
   CommercialBankEthiopiaTransferPayload,
   CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -425,7 +425,7 @@ export class CommercialBankEthiopiaService
 
   public async getAllPaValidations(
     programId: number,
-  ): Promise<CommercialBankEthiopiaAccountEnquiryDto> {
+  ): Promise<CommercialBankEthiopiaValidationReportDto> {
     const programPAs = await this.commercialBankEthiopiaAccountEnquiriesEntity
       .createQueryBuilder('cbe')
       .innerJoin('cbe.registration', 'registration')

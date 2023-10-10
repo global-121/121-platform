@@ -27,10 +27,15 @@ export class DownloadCbeVerificationReportComponent {
     private translate: TranslateService,
     private alertController: AlertController,
   ) {
-    this.btnText = 'CBE verification report';
-    this.subHeader = 'Download CBE Verification Report';
-    this.message =
-      'The data in this report is based on data that is imported every night from CBE.';
+    this.btnText = this.translate.instant(
+      'page.program.program-payout.cbe.btn',
+    );
+    this.subHeader = this.translate.instant(
+      'page.program.program-payout.cbe.subHeader',
+    );
+    this.message = this.translate.instant(
+      'page.program.program-payout.cbe.message',
+    );
   }
 
   public async getVerificationReport() {

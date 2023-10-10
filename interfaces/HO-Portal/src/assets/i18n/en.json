@@ -243,6 +243,11 @@
           "retry-all": "Retry all {{number}} failed",
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
         },
+        "cbe": {
+          "btn": "CBE verification report",
+          "subHeader": "Download CBE Verification Report",
+          "message": "The data in this report is based on data that is imported every night from CBE."
+        },
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
