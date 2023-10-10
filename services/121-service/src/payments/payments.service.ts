@@ -132,7 +132,7 @@ export class PaymentsService {
     );
 
     if (!dryRun && referenceIds.length > 0) {
-      await this.initiatePayment(
+      this.initiatePayment(
         userId,
         programId,
         payment,
