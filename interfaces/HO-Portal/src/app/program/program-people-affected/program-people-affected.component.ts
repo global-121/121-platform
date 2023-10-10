@@ -224,7 +224,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    this.tableFiltersPerColumn = await this.updateTableFiltersPerColumn();
+    this.tableFiltersPerColumn = this.createFilterPerAttibute();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -381,38 +381,59 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
-  private async updateTableFiltersPerColumn(): Promise<
-    { name: string; label: string }[]
-  > {
-    const tableFiltersPerColumn = [];
+  private getLabelForAttribute(attributeName: string): string {
+    const paAttribute = this.program.paTableAttributes.find(
+      (attribute) => attribute.name === attributeName,
+    );
 
-    for (const columnName of this.program.filterableAttributes) {
-      const column = this.program.paTableAttributes.find(
-        (column) => column.name === columnName.name,
-      );
-      let label: string;
+    if (paAttribute && paAttribute.shortLabel) {
+      return this.translatableStringService.get(paAttribute.shortLabel);
+    }
 
-      if (column && column.shortLabel) {
-        label = this.translatableStringService.get(column.shortLabel);
-      } else {
-        label = this.translate.instant(
-          `page.program.program-people-affected.column.${columnName.name}`,
-        );
+    const availableTranslations = this.translate.instant(
+      'page.program.program-people-affected.column',
+    );
+
+    if (availableTranslations[attributeName]) {
+      return availableTranslations[attributeName];
+    }
+
+    return attributeName;
+  }
+
+  private createFilterPerAttibute(): {
+    name: string;
+    label: string;
+  }[] {
+    const allFilters = [];
+    let groupIndex = 0;
+    for (const group of this.program.filterableAttributes) {
+      for (const columnName of group.filters) {
+        if (
+          columnName.name === 'inclusionScore' &&
+          !this.showInclusionScore()
+        ) {
+          continue;
+        }
+
+        allFilters.push({
+          name: columnName.name,
+          label: this.getLabelForAttribute(columnName.name),
+        });
       }
 
-      tableFiltersPerColumn.push({ name: columnName.name, label: label });
-
-      if (columnName.name === 'successPayment') {
-        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
-        tableFiltersPerColumn.push({
+      // add divider line after each group except last
+      if (groupIndex < this.program.filterableAttributes.length - 1) {
+        allFilters.push({
           name: 'divider',
-          label: '------------------------------------------',
+          label: '-',
           disabled: true,
         });
       }
+      groupIndex += 1;
     }
 
-    return tableFiltersPerColumn;
+    return allFilters;
   }
 
   private async addPaymentBulkActions() {
