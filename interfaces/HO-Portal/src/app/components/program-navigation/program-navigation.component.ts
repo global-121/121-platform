@@ -5,8 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
-import { Program } from 'src/app/models/program.model';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-navigation.component';
 
 @Component({
@@ -24,25 +22,18 @@ import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-n
 })
 export class ProgramNavigationComponent implements OnInit {
   public programId: number;
-  private program: Program;
 
   public canViewMetrics: boolean;
   public canManageAidworkers: boolean;
-  public showManageAidworkers: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private programsService: ProgramsServiceApiService,
   ) {
     this.programId = this.route.snapshot.params.id;
   }
 
   public async ngOnInit() {
-    this.program = await this.programsService.getProgramById(this.programId);
-
-    this.showManageAidworkers = !!this.program?.validation;
-
     this.canManageAidworkers = this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramUPDATE,

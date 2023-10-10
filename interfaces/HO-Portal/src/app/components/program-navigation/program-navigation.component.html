@@ -18,20 +18,17 @@
           class="navigation-button--indicator"
         ></span>
       </span>
-      <span
-        *ngIf="showManageAidworkers"
-        class="navigation-button"
-      >
+      <span class="navigation-button">
         <ion-button
-          [disabled]="!canManageAidWorkers"
-          [routerLink]="['/program', programId, 'aid-workers']"
+          [disabled]="!canManageAidworkers"
+          [routerLink]="['/program', programId, 'team']"
           routerLinkActive
           #rlaAidWorkers="routerLinkActive"
           [color]="rlaAidWorkers.isActive ? 'primary' : 'secondary'"
           fill="clear"
           size="small"
         >
-          {{ 'header.aid-workers' | translate }}
+          {{ 'header.team' | translate }}
         </ion-button>
         <span
           *ngIf="rlaAidWorkers.isActive"
