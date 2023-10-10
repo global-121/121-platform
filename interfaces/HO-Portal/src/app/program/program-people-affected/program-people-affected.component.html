@@ -99,6 +99,13 @@
     [headerCheckboxable]="false"
   >
     <ng-template ngx-datatable-header-template>
+      <input
+        type="checkbox"
+        [checked]="selectAllChecked"
+        [disabled]="!selectAllCheckboxVisible"
+        [ngStyle]="selectAllCheckboxVisible ? {} : { visibility: 'hidden' }"
+        (change)="onSelectAll()"
+      />
       <label>
         {{ 'page.program.program-people-affected.column.select' | translate }}
       </label>

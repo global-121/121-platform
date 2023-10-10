@@ -104,6 +104,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public bulkActions: BulkAction[] = [];
   public applyBtnDisabled = true;
   public submitWarning: any;
+  public selectAllCheckboxVisible = false;
+  public selectAllChecked = false;
 
   public tableFilterType = TableFilterType;
 
@@ -645,6 +647,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.updateSubmitWarning(this.selectedPeople.length);
 
+    this.selectAllCheckboxVisible = true;
+
     const nrCheckboxes = this.countSelectable(this.visiblePeopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
@@ -680,6 +684,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
+    this.selectAllCheckboxVisible = false;
+    this.selectAllChecked = false;
 
     this.selectedPeople = [];
     this.isInProgress = false;
@@ -693,6 +699,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     if (selected.length) {
+      this.applyBtnDisabled = false;
+    } else {
+      this.applyBtnDisabled = true;
+    }
+  }
+
+  public onSelectAll() {
+    this.selectAllChecked = !this.selectAllChecked;
+    if (this.selectAllChecked) {
       this.applyBtnDisabled = false;
     } else {
       this.applyBtnDisabled = true;
