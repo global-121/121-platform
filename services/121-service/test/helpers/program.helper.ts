@@ -75,6 +75,11 @@ export async function doPayment(
   referenceIds: string[],
   accessToken: string,
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+
   return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
@@ -82,7 +87,8 @@ export async function doPayment(
       payment: paymentNr,
       amount: amount,
       referenceIds: { referenceIds: referenceIds },
-    });
+    })
+    .query(queryParams);
 }
 
 export async function retryPayment(

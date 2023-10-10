@@ -86,8 +86,17 @@ describe('Do payment to 1 PA', () => {
         await waitFor(2_000);
       }
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(doPaymentResponse.body.totalFilterCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
+      expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
+        registrationAh.paymentAmountMultiplier,
+      );
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
     });

@@ -70,8 +70,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('succes');
     });
 
@@ -104,8 +106,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE CUSTOMER ERROR');
     });
 
@@ -138,8 +142,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE WALLET ERROR');
     });
 
@@ -172,8 +178,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('LINK CUSTOMER ERROR');
     });
 
@@ -206,8 +214,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE DEBIT CARD ERROR');
     });
 
@@ -253,9 +263,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doSecondPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doSecondPaymentResponse.text).toBe(
-        String(paymentReferenceIds.length),
+      expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doSecondPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain('LOAD BALANCE ERROR');
     });
@@ -304,9 +314,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doSecondPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doSecondPaymentResponse.text).toBe(
-        String(paymentReferenceIds.length),
+      expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doSecondPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain('success');
     });
@@ -354,8 +364,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('success');
     });
 
