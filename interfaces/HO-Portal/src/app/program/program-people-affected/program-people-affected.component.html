@@ -53,19 +53,6 @@
       ></ion-spinner>
     </ion-row>
   </div>
-  <div>
-    <ion-row
-      *ngIf="program"
-      class="ion-align-items-center"
-    >
-      <ion-button
-        class="ion-padding-end"
-        (click)="refreshData()"
-      >
-        <ion-icon name="refresh"></ion-icon>
-      </ion-button>
-    </ion-row>
-  </div>
 </ion-row>
 <app-table-filter-row
   [isLoading]="isLoading"
