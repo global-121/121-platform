@@ -79,7 +79,13 @@
     'is-loading': isLoading
   }"
 >
-  <div>
+  <div
+    class="ion-align-items-center"
+    *ngIf="(textFilter | async).length"
+  >
+    <ion-text style="margin-right: 8px; font-size: 14px"
+      >Filtered recipients: {{ filteredCount }}</ion-text
+    >
     <ion-chip
       *ngFor="let filter of textFilter | async"
       size="small"

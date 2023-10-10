@@ -23,6 +23,9 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public programId: number;
 
+  @Input()
+  public filteredCount: number;
+
   public textFilterOption: { name: string; label: string }[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
