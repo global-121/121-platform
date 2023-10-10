@@ -110,7 +110,7 @@
                 [value]="item.name"
                 [disabled]="item.disabled"
                 [title]="item.label"
-                (click)="confirmChanges()"
+                (click)="onRadioClick(item.name)"
                 (keyup.enter)="confirmChanges()"
               >
                 {{ item.label }}
