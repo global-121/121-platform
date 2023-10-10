@@ -727,6 +727,7 @@ export class RegistrationsService {
     return program;
   }
 
+  // TODO: this old function must be removed but is still used at 2 places. Migrate those to the paginate-approach.
   public async getRegistrations(
     programId: number,
     includePersonalData: boolean,

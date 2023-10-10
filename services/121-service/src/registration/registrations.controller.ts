@@ -312,60 +312,6 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({
-    summary: 'Get all registrations for program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
-  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
-  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
-  @ApiResponse({
-    status: 201,
-    description: 'Got all People Affected for program EXCLUDING personal data',
-  })
-  @Get('programs/:programId/registrations/old')
-  public async getPeopleAffected(
-    @Param('programId') programId: number,
-    @User('id') userId: number,
-    @Query() queryParams,
-  ): Promise<any[]> {
-    const personalData = queryParams.personalData === 'true';
-    const paymentData = queryParams.paymentData === 'true';
-    if (personalData) {
-      await this.registrationsService.checkPermissionAndThrow(
-        userId,
-        PermissionEnum.RegistrationPersonalREAD,
-        Number(programId),
-      );
-    }
-    if (paymentData || queryParams.filterOnPayment) {
-      await this.registrationsService.checkPermissionAndThrow(
-        userId,
-        PermissionEnum.PaymentTransactionREAD,
-        Number(programId),
-      );
-    }
-
-    let attributes: [];
-    if (queryParams.attributes || queryParams.attributes === '') {
-      attributes =
-        queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
-    }
-
-    return await this.registrationsService.getRegistrations(
-      Number(programId),
-      personalData,
-      paymentData,
-      true,
-      queryParams.referenceId,
-      queryParams.filterOnPayment,
-      attributes,
-    );
-  }
-
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
