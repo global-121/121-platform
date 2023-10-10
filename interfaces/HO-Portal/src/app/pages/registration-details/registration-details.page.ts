@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { RegistrationProfileComponent } from 'src/app/components/registration-profile/registration-profile.component';
-import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -110,7 +110,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       )
     ).data[0];
 
-    if (person.status === RegistrationStatusEnum.deleted) {
+    if (person.status === RegistrationStatus.deleted) {
       return null;
     }
 

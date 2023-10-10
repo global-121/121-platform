@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
@@ -31,7 +31,7 @@ export class TableFilterRowComponent implements OnInit {
 
   public tableFilterType = TableFilterType;
 
-  public allPaStatuses = Object.values(RegistrationStatusEnum);
+  public allPaStatuses = Object.values(RegistrationStatus);
 
   constructor(private filterService: FilterService) {}
 
