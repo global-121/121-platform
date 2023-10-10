@@ -1205,7 +1205,7 @@ export class RegistrationsService {
     return note;
   }
 
-  private async getBulkActionResult(
+  public async getBulkActionResult(
     paginateQuery: PaginateQuery,
     programId: number,
     queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
@@ -1285,7 +1285,7 @@ export class RegistrationsService {
     });
   }
 
-  private getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
+  public getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewRepository
       .createQueryBuilder('registration')
       .where('1=1');
@@ -1998,8 +1998,14 @@ export class RegistrationsService {
     });
   }
 
-  private setQueryPropertiesBulkAction(query: PaginateQuery): PaginateQuery {
+  public setQueryPropertiesBulkAction(
+    query: PaginateQuery,
+    includePaymentMultiplier = false,
+  ): PaginateQuery {
     query.select = ['referenceId'];
+    if (includePaymentMultiplier) {
+      query.select.push('paymentAmountMultiplier');
+    }
     query.page = null;
     return query;
   }

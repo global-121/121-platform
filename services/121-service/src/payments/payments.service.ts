@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateQuery } from 'nestjs-paginate';
 import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
@@ -7,14 +8,18 @@ import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
+import { BulkActionResultPaymentDto } from '../registration/dto/bulk-action-result.dto';
 import {
   ImportResult,
   ImportStatus,
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { RegistrationsService } from '../registration/registrations.service';
 import { BulkImportService } from '../registration/services/bulk-import.service';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
@@ -60,6 +65,8 @@ export class PaymentsService {
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly bulkImportService: BulkImportService,
+    private readonly registrationsService: RegistrationsService,
+    private registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async getPayments(programId: number): Promise<
@@ -81,24 +88,92 @@ export class PaymentsService {
     return payments;
   }
 
-  public async createPayment(
+  public async postPayment(
     userId: number,
     programId: number,
     payment: number,
     amount: number,
-    referenceIdsDto: ReferenceIdsDto,
+    query: PaginateQuery,
+    dryRun: boolean,
+  ): Promise<BulkActionResultPaymentDto> {
+    const paginateQuery =
+      this.registrationsService.setQueryPropertiesBulkAction(query, true);
+
+    const bulkActionesultDto =
+      await this.registrationsService.getBulkActionResult(
+        paginateQuery,
+        programId,
+        this.getStatusPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    const registrationsForPayment =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        false,
+        true,
+        this.getStatusPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    // Get the sum of the paymentAmountMultiplier of all registrations to give calculate the total amount of money to be paid in frontend
+    let totalMultiplierSum = 0;
+    // This loop  is pretty fast: with 100.000 registrations it takes ~12ms
+    for (const registration of registrationsForPayment.data) {
+      totalMultiplierSum =
+        totalMultiplierSum + registration.paymentAmountMultiplier;
+    }
+    const bulkActionResultPaymentDto = {
+      ...bulkActionesultDto,
+      sumPaymentAmountMultiplier: totalMultiplierSum,
+    };
+
+    const referenceIds = registrationsForPayment.data.map(
+      (registration) => registration.referenceId,
+    );
+
+    if (!dryRun && referenceIds.length > 0) {
+      await this.initiatePayment(
+        userId,
+        programId,
+        payment,
+        amount,
+        referenceIds,
+      ).catch((e) => {
+        this.azureLogService.logError(e, true);
+      });
+    }
+
+    return bulkActionResultPaymentDto;
+  }
+
+  private getStatusPaymentBaseQuery(
+    payment: number,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    // Do not do payment if a registration has already one transaction for that payment number
+    return this.registrationsService
+      .getBaseQuery()
+      .leftJoin(
+        'registration.latestTransactions',
+        'latest_transaction_join',
+        'latest_transaction_join.payment = :payment',
+        { payment },
+      )
+      .andWhere('latest_transaction_join.id is null');
+  }
+
+  public async initiatePayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    amount: number,
+    referenceIds: string[],
   ): Promise<number> {
-    await this.checkProgram(programId);
     const paPaymentDataList = await this.getPaymentList(
-      referenceIdsDto.referenceIds,
+      referenceIds,
       amount,
       programId,
     );
 
-    if (paPaymentDataList.length < 1) {
-      const errors = 'There are no targeted PAs for this payment';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
     await this.actionService.saveAction(
       userId,
       programId,
@@ -140,14 +215,11 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+    this.payout(paPaymentDataList, programId, payment, userId).catch((e) => {
+      this.azureLogService.logError(e, true);
+    });
 
-    return paymentTransactionResult;
+    return paPaymentDataList.length;
   }
 
   private async checkProgram(programId: number): Promise<ProgramEntity> {
@@ -171,9 +243,7 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment).catch((e) => {
-      this.azureLogService.logError(e, true);
-    });
+    await this.makePaymentRequest(paLists, programId, payment);
     if (payment > -1) {
       await this.actionService.saveAction(
         userId,

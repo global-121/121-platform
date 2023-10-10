@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,9 +23,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
+import {
+  BulkActionResultDto,
+  BulkActionResultPaymentDto,
+} from '../registration/dto/bulk-action-result.dto';
 import { ImportResult } from '../registration/dto/bulk-import.dto';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
@@ -35,7 +46,10 @@ import { PaymentsService } from './payments.service';
 @ApiTags('payments')
 @Controller()
 export class PaymentsController {
-  public constructor(private readonly paymentsService: PaymentsService) {}
+  public constructor(
+    private readonly paymentsService: PaymentsService,
+    private readonly registrationsPaginateService: RegistrationsPaginationService,
+  ) {}
 
   @Permissions(PermissionEnum.PaymentREAD)
   @ApiOperation({ summary: 'Get past payments for program' })
@@ -51,23 +65,75 @@ export class PaymentsController {
   }
 
   @Permissions(PermissionEnum.PaymentCREATE)
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for doing a paymet',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'Doing the payment was succesfully started',
+    type: BulkActionResultDto,
+  })
   @ApiOperation({
     summary: 'Send payout instruction to financial service provider',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no messages will be sent. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Post('programs/:programId/payments')
   public async createPayment(
     @Body() data: CreatePaymentDto,
+    @Paginate() query: PaginateQuery,
     @Param() param,
     @User('id') userId: number,
-  ): Promise<number> {
-    return await this.paymentsService.createPayment(
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultPaymentDto> {
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      param.programId,
+      query,
+    );
+    const dryRun = queryParams.dryRun === 'true';
+    const result = await this.paymentsService.postPayment(
       userId,
       param.programId,
       data.payment,
       data.amount,
-      data.referenceIds,
+      query,
+      dryRun,
     );
+
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothing is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(String(result), HttpStatus.OK);
+    }
+    return result;
   }
 
   @Permissions(PermissionEnum.PaymentCREATE)

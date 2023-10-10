@@ -82,6 +82,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     LastMessageStatusService,
   ],
   controllers: [RegistrationsController],
-  exports: [RegistrationsService],
+  exports: [RegistrationsService, RegistrationsPaginationService],
 })
 export class RegistrationsModule {}
