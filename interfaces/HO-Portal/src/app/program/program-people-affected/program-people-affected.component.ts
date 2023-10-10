@@ -385,31 +385,40 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     { name: string; label: string }[]
   > {
     const tableFiltersPerColumn = [];
+    let groupIndex = 0;
+    for (const group of this.program.filterableAttributes) {
+      for (const columnName of group.filters) {
+        if (
+          columnName.name === 'inclusionScore' &&
+          !this.showInclusionScore()
+        ) {
+          continue;
+        }
 
-    for (const columnName of this.program.filterableAttributes) {
-      const column = this.program.paTableAttributes.find(
-        (column) => column.name === columnName.name,
-      );
-      let label: string;
-
-      if (column && column.shortLabel) {
-        label = this.translatableStringService.get(column.shortLabel);
-      } else {
-        label = this.translate.instant(
-          `page.program.program-people-affected.column.${columnName.name}`,
+        const column = this.program.paTableAttributes.find(
+          (column) => column.name === columnName.name,
         );
+        let label: string;
+
+        if (column && column.shortLabel) {
+          label = this.translatableStringService.get(column.shortLabel);
+        } else {
+          label = this.translate.instant(
+            `page.program.program-people-affected.column.${columnName.name}`,
+          );
+        }
+
+        tableFiltersPerColumn.push({ name: columnName.name, label: label });
       }
-
-      tableFiltersPerColumn.push({ name: columnName.name, label: label });
-
-      if (columnName.name === 'successPayment') {
-        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
+      // add divider line after each group except last
+      if (groupIndex < this.program.filterableAttributes.length - 1) {
         tableFiltersPerColumn.push({
           name: 'divider',
-          label: '------------------------------------------',
+          label: '-------------------------------------------------------',
           disabled: true,
         });
       }
+      groupIndex += 1;
     }
 
     return tableFiltersPerColumn;
