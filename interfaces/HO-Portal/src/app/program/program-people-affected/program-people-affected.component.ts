@@ -38,7 +38,6 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
-import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
@@ -451,7 +450,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadData() {
-    // TODO: How do we get people per phase now..
     this.setPage({
       offset: this.registrationsService?.getPageMetadata().currentPage,
     });
@@ -560,29 +558,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
-  public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
-    ];
-    return voucherFsps.includes(fsp);
-  }
-
   public showInclusionScore(): boolean {
     let show = false;
     for (const pa of this.visiblePeopleAffected) {
       show = !!pa.inclusionScore;
-      if (show) {
-        break;
-      }
-    }
-    return show;
-  }
-
-  public showWhatsappNumber(): boolean {
-    let show = false;
-    for (const pa of this.visiblePeopleAffected) {
-      show = PaymentUtils.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
       }
@@ -685,15 +664,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     payment?: number,
   ) {
     let registrationsWithPayment;
-    // if (payment) {
-    // registrationsWithPayment = (
-    //   await this.programsService.getPeopleAffected(
-    //     this.programId,
-    //     null,
-    //     payment,
-    //   )
-    // ).data.map((r) => r.referenceId);
-    // }
     return people.map((person) =>
       this.bulkActionService.updateCheckbox(
         action,
@@ -860,14 +830,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public hasMessageError(messageStatus): boolean {
     return this.messageColumnStatus[messageStatus] === MessageStatus.failed;
-  }
-
-  public hasMessageSuccess(messageStatus): boolean {
-    return [
-      MessageStatus.delivered,
-      MessageStatus.read,
-      MessageStatus.sent,
-    ].includes(messageStatus);
   }
 
   public async setPage(pageInfo: {
