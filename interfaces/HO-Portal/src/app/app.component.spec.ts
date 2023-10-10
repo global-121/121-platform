@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
 import { LoggingService } from './services/logging.service';
@@ -9,7 +10,11 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       providers: [LoggingService],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      imports: [
+        IonicModule.forRoot(),
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+      ],
     }).compileComponents();
   }));
 

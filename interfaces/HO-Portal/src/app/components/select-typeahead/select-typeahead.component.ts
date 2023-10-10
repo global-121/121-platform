@@ -1,5 +1,5 @@
 import { NgForOf, NgIf } from '@angular/common';
-import type { OnInit } from '@angular/core';
+import type { OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export interface Item {
   name: string;
   label: string;
+  disabled?: boolean;
 }
 
 @Component({
@@ -16,12 +17,15 @@ export interface Item {
   templateUrl: './select-typeahead.component.html',
   styleUrls: ['./select-typeahead.component.css'],
 })
-export class SelectTypeaheadComponent implements OnInit {
+export class SelectTypeaheadComponent implements OnInit, OnChanges {
   @Input()
   public label: string;
 
   @Input()
   public placeholder: string;
+
+  @Input()
+  public disabled = false;
 
   @Input()
   public multiple = false;
@@ -49,8 +53,20 @@ export class SelectTypeaheadComponent implements OnInit {
 
   public isOpen = false;
 
-  public ngOnInit() {
+  constructor() {
     this.triggerId = `typeahead-${Math.random().toString().slice(2)}`;
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (
+      (changes.items && changes.items.currentValue) ||
+      (changes.selection && changes.selection.currentValue)
+    ) {
+      this.resetWorkingSelectedValues(this.selection);
+    }
+  }
+
+  public ngOnInit() {
     this.resetWorkingSelectedValues(this.selection);
   }
 

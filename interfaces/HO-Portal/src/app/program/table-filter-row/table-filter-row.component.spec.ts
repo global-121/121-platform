@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SelectTypeaheadComponent } from 'src/app/components/select-typeahead/select-typeahead.component';
 import { FilterService } from 'src/app/services/filter.service';
 
 import { TableFilterRowComponent } from './table-filter-row.component';
@@ -13,7 +14,12 @@ describe('TableFilterRowComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TableFilterRowComponent],
-      imports: [IonicModule, FormsModule, TranslateModule.forRoot()],
+      imports: [
+        IonicModule,
+        FormsModule,
+        TranslateModule.forRoot(),
+        SelectTypeaheadComponent,
+      ],
       providers: [FilterService],
     });
     fixture = TestBed.createComponent(TableFilterRowComponent);

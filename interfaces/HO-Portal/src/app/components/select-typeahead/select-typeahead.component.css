@@ -15,10 +15,26 @@
   opacity: 0.5;
 }
 
-/* This proxy should not be interacted with; It is only there to contain + show the input-data */
-.select-typeahead--proxy.select-disabled {
-  opacity: 1; /* Override the styles from .select-disabled */
+.select-typeahead--proxy::part(container) {
+  width: 100%;
+}
+
+/*
+  This proxy should not be interacted with;
+  It is only there to contain + show the input-data.
+  Styled as 'enabled' to override .select-disabled,
+    Except: When trigger is really disabled.
+*/
+.select-typeahead--proxy.select-disabled:not(
+    .select-typeahead--trigger[disabled] + .select-typeahead--proxy
+  ) {
+  opacity: 1;
 }
 .select-typeahead--proxy:not(.select-label-placement-stacked) {
   min-height: auto;
+}
+
+.select-typeahead--popover ion-content::part(scroll) {
+  --height-of-item: 3rem;
+  max-height: calc(7.75 * var(--height-of-item));
 }

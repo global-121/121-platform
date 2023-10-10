@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import RegistrationStatus from '../enums/registration-status.enum';
 
 export class PaginationFilter {
   value: string;
   name: string;
+  label: string;
   operator?: FilterOperatorEnum;
 }
 
@@ -34,12 +36,19 @@ export class FilterService {
   );
   private textFilter: PaginationFilter[];
 
+  private statusFilterSubject = new BehaviorSubject<RegistrationStatus[]>([]);
+  private statusFilter: RegistrationStatus[];
+
   constructor() {
     this.textFilter = this.DEFAULT_TEXT_FILTER;
   }
 
-  public addTextFilter(column: string, value: string) {
-    this.textFilter.push({ name: column, value });
+  public addTextFilter(column: string, label: string, value: string) {
+    this.textFilter.push({
+      name: column,
+      label,
+      value,
+    });
     this.textFilterSubject.next(this.textFilter);
   }
 
@@ -50,5 +59,19 @@ export class FilterService {
 
   public getTextFilterSubscription(): Observable<PaginationFilter[]> {
     return this.textFilterSubject.asObservable();
+  }
+
+  public updateStatusFilter(filter: RegistrationStatus[]) {
+    this.statusFilter = filter;
+    this.statusFilterSubject.next(this.statusFilter);
+  }
+
+  public getStatusFilterSubscription(): Observable<RegistrationStatus[]> {
+    return this.statusFilterSubject.asObservable();
+  }
+
+  public clearAllFilters() {
+    this.textFilter = [];
+    this.textFilterSubject.next(this.textFilter);
   }
 }

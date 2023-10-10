@@ -86,6 +86,8 @@ export class PersonTableColumn {
   permissions: Permission[];
   showIfNoValidation: boolean;
   headerClass: string;
+  minWidth?: number;
+  width?: number;
 }
 
 export const PA_STATUS_ORDER = [

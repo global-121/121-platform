@@ -41,6 +41,12 @@
     }
 
     .datatable-body-row {
+      border-top: none;
+
+      &.datatable-row-even {
+        background-color: transparent;
+      }
+
       &.active .datatable-row-left,
       &.active {
         background-color: $body-color--active;
