@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
@@ -58,6 +57,7 @@ export class ProgramsServiceApiService {
             username: response.username,
             permissions: response.permissions,
             expires: response.expires,
+            isAdmin: response.isAdmin,
           };
         }
         return null;
@@ -836,7 +836,7 @@ export class ProgramsServiceApiService {
 
   async getRegistrationStatusCount(
     programId: number,
-  ): Promise<{ status: RegistrationStatusEnum; statusCount: number }[]> {
+  ): Promise<{ status: RegistrationStatus; statusCount: number }[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/metrics/registration-status`,
@@ -850,5 +850,19 @@ export class ProgramsServiceApiService {
 
   getRoles(): Promise<Role[] | null> {
     return this.apiService.get(environment.url_121_service_api, '/roles');
+  }
+
+  getUsersByName(programId: number | string, username: string): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/users/${username}`,
+    );
+  }
+
+  getUsersByProgram(programId: number): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/users`,
+    );
   }
 }

@@ -1,98 +1,125 @@
 <div
+  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical"
   [ngClass]="{
-    'tfr--create-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
     'is-loading': isLoading
   }"
 >
-  <ion-icon
-    name="funnel"
-    color="black"
-    aria-hidden="true"
-    class="ion-margin-horizontal"
-  ></ion-icon>
-
-  <ion-select
-    interface="popover"
-    [(ngModel)]="textFilterOption"
-    [disabled]="isLoading"
-    [placeholder]="
-      'page.program.table-filter-row.select-column-to-filter' | translate
-    "
-    class="tfr--text-filter--select ion-margin-end"
+  <div
+    class="layout-flex-row ion-align-items-center"
+    style="flex-basis: 80%"
   >
-    <ion-select-option
-      *ngFor="let filterOption of tableFiltersPerColumn"
-      [value]="filterOption.name"
-      [disabled]="filterOption.name === 'DIVIDER'"
-    >
-      {{ filterOption.label }}
-    </ion-select-option>
-  </ion-select>
+    <span>
+      <ion-icon
+        name="funnel"
+        color="black"
+        aria-hidden="true"
+        class="ion-margin-horizontal"
+      ></ion-icon>
+    </span>
 
-  <ng-container *ngIf="showInput()">
-    <ion-input
+    <app-select-typeahead
+      [items]="tableFiltersPerColumn"
+      [(selection)]="textFilterOption"
       [placeholder]="
-        'page.program.program-people-affected.filter-placeholder' | translate
+        'page.program.table-filter-row.select-column-to-filter' | translate
       "
-      [attr.title]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.aria-label]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [(ngModel)]="filterRowsVisibleQuery"
+      [multiple]="false"
       [disabled]="isLoading"
-      [clearInput]="true"
-      (keyup.enter)="applyFilter()"
-      class="tfr--text-filter--input"
-    >
-    </ion-input>
+      class="tfr--text-filter--select ion-margin-end"
+    ></app-select-typeahead>
 
-    <ion-button
-      fill="outline"
-      [disabled]="disableApplyButton()"
-      (click)="applyFilter()"
-    >
-      {{ 'page.program.table-filter-row.apply-filter' | translate }}
-    </ion-button>
-  </ng-container>
+    <ng-container *ngIf="showInput()">
+      <ion-input
+        [placeholder]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [attr.title]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [attr.aria-label]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        [(ngModel)]="filterRowsVisibleQuery"
+        [disabled]="isLoading"
+        [clearInput]="true"
+        (keyup.enter)="applyFilter()"
+        class="tfr--text-filter--input"
+      >
+      </ion-input>
+
+      <ion-button
+        fill="outline"
+        [disabled]="disableApplyButton()"
+        (click)="applyFilter()"
+      >
+        {{ 'page.program.table-filter-row.apply-filter' | translate }}
+      </ion-button>
+    </ng-container>
+  </div>
+
+  <div class="layout-flex-row ion-align-items-center ion-padding-horizontal">
+    <ion-label class="ion-text-nowrap">
+      {{
+        'page.program.program-people-affected.filter-btn.common.filter-by'
+          | translate
+      }}
+    </ion-label>
+    &nbsp;
+    <app-status-table-filter
+      *ngIf="programId"
+      [programId]="programId"
+      [thisPhase]="thisPhase"
+    ></app-status-table-filter>
+  </div>
 </div>
 
 <div
+  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center ion-margin-vertical"
   [ngClass]="{
-    'tfr--active-filters layout-flex-row ion-align-items-center ion-margin-vertical': true,
     'is-loading': isLoading
   }"
 >
-  <ion-chip
-    *ngFor="let filter of textFilter | async"
-    size="small"
-  >
-    <ion-label>
-      {{
-        'page.program.program-people-affected.column.' + filter.name
-          | translate
-      }}:
-      <strong>{{ filter.value }}</strong>
-    </ion-label>
-
-    <ion-button
-      fill="clear"
+  <div>
+    <ion-chip
+      *ngFor="let filter of textFilter | async"
       size="small"
-      color="medium"
-      class="ion-no-margin ion-no-padding"
-      (click)="removeTextFilter(filter.name)"
-      [attr.aria-label]="
-        'page.program.table-filter-row.remove-filter' | translate
-      "
-      [attr.title]="'page.program.table-filter-row.remove-filter' | translate"
     >
-      <ion-icon
-        name="close"
+      <ion-label>
+        {{ filter.label }}:
+        <strong>{{ filter.value }}</strong>
+      </ion-label>
+
+      <ion-button
+        fill="clear"
         size="small"
-        slot="icon-only"
-        aria-hidden="true"
-      ></ion-icon>
+        color="medium"
+        class="ion-no-margin ion-no-padding"
+        (click)="removeTextFilter(filter.name)"
+        [attr.aria-label]="
+          'page.program.table-filter-row.remove-filter' | translate
+        "
+        [attr.title]="'page.program.table-filter-row.remove-filter' | translate"
+      >
+        <ion-icon
+          name="close"
+          size="small"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-chip>
+  </div>
+  <div
+    *ngIf="(textFilter | async).length > 0"
+    class="ion-align-flex-end"
+  >
+    <ion-button
+      (click)="clearAllFilters()"
+      size="small"
+      shape="round"
+      color="tertiary"
+    >
+      {{ 'page.program.table-filter-row.clear-all' | translate }}
     </ion-button>
-  </ion-chip>
+  </div>
 </div>

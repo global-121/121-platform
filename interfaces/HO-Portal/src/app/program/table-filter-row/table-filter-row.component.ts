@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
+import { ProgramPhase } from '../../models/program.model';
+import { TableFilterType } from '../../models/table-filter.model';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
 
 @Component({
@@ -14,11 +17,21 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
 
-  public textFilterOption: string | undefined;
+  @Input()
+  public thisPhase: ProgramPhase;
+
+  @Input()
+  public programId: number;
+
+  public textFilterOption: { name: string; label: string }[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
   public filterRowsVisibleQuery: string;
+
+  public tableFilterType = TableFilterType;
+
+  public allPaStatuses = Object.values(RegistrationStatus);
 
   constructor(private filterService: FilterService) {}
 
@@ -27,14 +40,15 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public applyFilter() {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return;
     }
     if (this.disableApplyButton()) {
       return;
     }
     this.filterService.addTextFilter(
-      this.textFilterOption,
+      this.textFilterOption[0].name,
+      this.textFilterOption[0].label,
       this.filterRowsVisibleQuery,
     );
     this.clearFilter();
@@ -42,7 +56,7 @@ export class TableFilterRowComponent implements OnInit {
 
   private clearFilter() {
     this.filterRowsVisibleQuery = '';
-    this.textFilterOption = undefined;
+    this.textFilterOption = [];
   }
 
   public removeTextFilter(column: string) {
@@ -50,7 +64,7 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public showInput(): boolean {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return false;
     }
 
@@ -66,5 +80,13 @@ export class TableFilterRowComponent implements OnInit {
     }
 
     return false;
+  }
+
+  public applyStatusFilter(filter) {
+    console.log('=== filter: ', filter);
+  }
+
+  public clearAllFilters() {
+    this.filterService.clearAllFilters();
   }
 }

@@ -56,9 +56,9 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'aid-workers',
+        path: 'team',
         loadChildren: () =>
-          import('./pages/aid-workers/aid-workers.module').then(
+          import('./pages/team/team.module').then(
             (m) => m.AidWorkersPageModule,
           ),
         canActivate: [AuthGuard],
