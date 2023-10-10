@@ -53,7 +53,8 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
   @Output()
   public selectionCancel = new EventEmitter<void>();
 
-  @ViewChild('searchbar') private searchbar: IonSearchbar;
+  @ViewChild('searchbar')
+  private searchbar: IonSearchbar;
 
   public triggerId: string;
 
@@ -93,8 +94,8 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
     this.isOpen = true;
   }
 
-  public async onDidPresent() {
-    await this.searchbar.setFocus();
+  public onDidPresent() {
+    this.searchbar.setFocus();
   }
 
   public onDismiss($detail: { role?: 'backdrop' }) {
