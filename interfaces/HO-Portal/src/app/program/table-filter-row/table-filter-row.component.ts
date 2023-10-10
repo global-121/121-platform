@@ -35,7 +35,7 @@ export class TableFilterRowComponent implements OnInit {
 
   constructor(private filterService: FilterService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.textFilter = this.filterService.getTextFilterSubscription();
   }
 
@@ -51,10 +51,10 @@ export class TableFilterRowComponent implements OnInit {
       this.textFilterOption[0].label,
       this.filterRowsVisibleQuery,
     );
-    this.clearFilter();
+    this.clearFilterCreateForm();
   }
 
-  private clearFilter() {
+  private clearFilterCreateForm() {
     this.filterRowsVisibleQuery = '';
     this.textFilterOption = [];
   }
@@ -80,10 +80,6 @@ export class TableFilterRowComponent implements OnInit {
     }
 
     return false;
-  }
-
-  public applyStatusFilter(filter) {
-    console.log('=== filter: ', filter);
   }
 
   public clearAllFilters() {
