@@ -104,6 +104,8 @@
               [value]="item.name"
               [disabled]="item.disabled"
               [title]="item.label"
+              (click)="confirmChanges()"
+              (keyup.enter)="confirmChanges()"
             >
               {{ item.label }}
             </ion-radio>

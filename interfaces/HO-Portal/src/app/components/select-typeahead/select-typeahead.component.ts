@@ -162,8 +162,5 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
   }
   public onRadioChange(name: Item['name']) {
     this.workingSelectedValues = [name];
-    if (!this.multiple) {
-      this.confirmChanges();
-    }
   }
 }
