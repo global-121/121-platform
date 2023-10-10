@@ -110,7 +110,10 @@
       </ion-radio-group>
     </ion-content>
 
-    <ion-footer [ngClass]="{ 'ion-no-border': filteredItems.length < 8 }">
+    <ion-footer
+      *ngIf="multiple"
+      [ngClass]="{ 'ion-no-border': filteredItems.length < 8 }"
+    >
       <ion-toolbar>
         <ion-buttons slot="secondary">
           <ion-button
