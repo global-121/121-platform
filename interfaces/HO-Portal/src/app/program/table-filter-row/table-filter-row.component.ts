@@ -15,7 +15,7 @@ export class TableFilterRowComponent implements OnInit {
   public isLoading: boolean;
 
   @Input()
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public allFilters: { name: string; label: string }[] = [];
 
   @Input()
   public thisPhase: ProgramPhase;
