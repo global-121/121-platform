@@ -22,6 +22,7 @@ import { BulkImportService } from '../registration/services/bulk-import.service'
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
+import { RegistrationStatusEnum } from './../registration/enum/registration-status.enum';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
@@ -103,7 +104,7 @@ export class PaymentsService {
       await this.registrationsService.getBulkActionResult(
         paginateQuery,
         programId,
-        this.getStatusPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
     const registrationsForPayment =
@@ -112,7 +113,7 @@ export class PaymentsService {
         programId,
         false,
         true,
-        this.getStatusPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
     // Get the sum of the paymentAmountMultiplier of all registrations to give calculate the total amount of money to be paid in frontend
@@ -146,7 +147,7 @@ export class PaymentsService {
     return bulkActionResultPaymentDto;
   }
 
-  private getStatusPaymentBaseQuery(
+  private getPaymentBaseQuery(
     payment: number,
   ): SelectQueryBuilder<RegistrationViewEntity> {
     // Do not do payment if a registration has already one transaction for that payment number
@@ -158,7 +159,10 @@ export class PaymentsService {
         'latest_transaction_join.payment = :payment',
         { payment },
       )
-      .andWhere('latest_transaction_join.id is null');
+      .andWhere('latest_transaction_join.id is null')
+      .andWhere('registration.status = :status', {
+        status: RegistrationStatusEnum.included,
+      });
   }
 
   public async initiatePayment(
