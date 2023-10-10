@@ -1,6 +1,6 @@
 <ion-button
   (click)="toggleStatusPopover()"
-  id="statusPopoverButton"
+  [id]="thisPhase + 'statusPopoverButton'"
   fill="clear"
 >
   {{
@@ -9,7 +9,7 @@
   }}
 </ion-button>
 <ion-popover
-  trigger="statusPopoverButton"
+  [trigger]="thisPhase + 'statusPopoverButton'"
   [isOpen]="isStatusPopoverOpen"
   (didDismiss)="isStatusPopoverOpen = false"
   class="table-filter-popover--multiple-choice"
