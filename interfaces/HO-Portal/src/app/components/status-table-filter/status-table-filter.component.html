@@ -2,11 +2,16 @@
   (click)="toggleStatusPopover()"
   [id]="thisPhase + 'statusPopoverButton'"
   fill="clear"
+  color="secondary"
 >
   {{
     'page.program.program-people-affected.filter-btn.btn-label.paStatus'
       | translate
   }}
+  <ion-icon
+    slot="end"
+    [name]="isStatusPopoverOpen ? 'chevron-up-outline' : 'chevron-down-outline'"
+  ></ion-icon>
 </ion-button>
 <ion-popover
   [trigger]="thisPhase + 'statusPopoverButton'"
