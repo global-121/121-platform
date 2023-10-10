@@ -669,6 +669,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
+    disableAll?: boolean,
   ) {
     let registrationsWithPayment;
     return people.map((person) =>
@@ -676,6 +677,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action,
         person,
         payment ? registrationsWithPayment.includes(person.referenceId) : null,
+        disableAll,
       ),
     );
   }
@@ -708,8 +710,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
+      this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+        null,
+        true,
+      );
       this.applyBtnDisabled = false;
     } else {
+      this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
       this.applyBtnDisabled = true;
     }
   }

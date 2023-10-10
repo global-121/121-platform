@@ -38,8 +38,9 @@ export class BulkActionsService {
     action: BulkActionId,
     personData: PersonRow,
     hasSelectedPayment?: boolean,
+    disableAll?: boolean,
   ) {
-    console.log('personData: ', personData);
+    personData.checkboxDisabled = disableAll ? true : false;
     switch (action) {
       case BulkActionId.invite:
         personData.checkboxVisible = this.hasStatus(personData, [

@@ -36,6 +36,7 @@ export class PersonRow {
   id: number;
   referenceId: string;
   checkboxVisible: boolean;
+  checkboxDisabled?: boolean = false;
   registrationProgramId: string; // Display label
   registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   status: string;

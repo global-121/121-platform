@@ -121,6 +121,7 @@
         type="checkbox"
         (change)="onCheckboxChangeFn($event)"
         *ngIf="row.checkboxVisible"
+        [disabled]="row.checkboxDisabled"
       />
     </ng-template>
   </ngx-datatable-column>
