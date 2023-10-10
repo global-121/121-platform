@@ -38,8 +38,3 @@
   --height-of-item: 3rem;
   max-height: calc(7.75 * var(--height-of-item));
 }
-
-.hide-radio {
-  --color:transparent;
-  --color-checked: transparent;
-}

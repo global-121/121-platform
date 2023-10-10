@@ -414,7 +414,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       if (groupIndex < this.program.filterableAttributes.length - 1) {
         tableFiltersPerColumn.push({
           name: 'divider',
-          label: '-------------------------------------------------------',
+          label: '-',
           disabled: true,
         });
       }
