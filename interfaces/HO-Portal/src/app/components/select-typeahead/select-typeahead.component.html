@@ -101,6 +101,7 @@
             <ion-radio
               [value]="item.name"
               [disabled]="item.disabled"
+              [class.hide-radio]="item.disabled"
               [title]="item.label"
             >
               {{ item.label }}
