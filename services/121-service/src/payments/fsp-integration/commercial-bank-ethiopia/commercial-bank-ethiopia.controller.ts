@@ -3,8 +3,8 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../../guards/admin.decorator';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaAccountEnquiryDto } from './dto/commercial-bank-ethiopia-account-enquiry.dto';
 import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
@@ -29,7 +29,7 @@ export class CommercialBankEthiopiaController {
   )
   public async getValidated(
     @Param('programId') programId: number,
-  ): Promise<CommercialBankEthiopiaAccountEnquiriesEntity[]> {
+  ): Promise<CommercialBankEthiopiaAccountEnquiryDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
       Number(programId),
     );
