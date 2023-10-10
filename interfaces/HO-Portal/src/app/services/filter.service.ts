@@ -31,30 +31,34 @@ export enum FilterOperatorEnum {
 })
 export class FilterService {
   private DEFAULT_TEXT_FILTER = [];
+
   private textFilterSubject = new BehaviorSubject<PaginationFilter[]>(
     this.DEFAULT_TEXT_FILTER,
   );
-  private textFilter: PaginationFilter[];
+  private textFilter: Map<PaginationFilter['name'], PaginationFilter>;
 
   private statusFilterSubject = new BehaviorSubject<RegistrationStatus[]>([]);
   private statusFilter: RegistrationStatus[];
 
   constructor() {
-    this.textFilter = this.DEFAULT_TEXT_FILTER;
+    this.textFilter = new Map(this.DEFAULT_TEXT_FILTER);
   }
 
-  public addTextFilter(column: string, label: string, value: string) {
-    this.textFilter.push({
-      name: column,
+  public setTextFilter(columnName: string, value: string, label: string) {
+
+    this.textFilter.set(columnName, {
+      name: columnName,
       label,
       value,
     });
-    this.textFilterSubject.next(this.textFilter);
+
+    this.textFilterSubject.next(Array.from(this.textFilter.values()));
   }
 
   public removeTextFilter(column: string) {
-    this.textFilter = this.textFilter.filter((f) => f.name !== column);
-    this.textFilterSubject.next(this.textFilter);
+    this.textFilter.delete(column);
+
+    this.textFilterSubject.next(Array.from(this.textFilter.values()));
   }
 
   public getTextFilterSubscription(): Observable<PaginationFilter[]> {
@@ -71,7 +75,26 @@ export class FilterService {
   }
 
   public clearAllFilters() {
-    this.textFilter = [];
-    this.textFilterSubject.next(this.textFilter);
+    const filtersToClear = Array.from(this.textFilter.keys());
+
+    const clearedQueryParams = {};
+    filtersToClear.forEach((filterName: string) => {
+      clearedQueryParams[filterName] = null;
+    });
+
+    this.textFilter = new Map(this.DEFAULT_TEXT_FILTER);
+    this.textFilterSubject.next(this.DEFAULT_TEXT_FILTER);
+  }
+
+  public sanitizeFilterValue(value: string): string {
+    if (!value) {
+      return '';
+    }
+
+    const forbiddenCharacters = [',', '&', '$', ':'];
+    forbiddenCharacters.forEach((character) => {
+      value = value.replaceAll(character, '');
+    });
+    return value.trim();
   }
 }
