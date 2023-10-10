@@ -356,13 +356,9 @@ export class RegistrationsPaginationService {
     for (const relationInfo of relationInfoArray) {
       for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
         if (i === 0) {
-          qb.where(`${uniqueJoinId}."${dataRelKey}" = :id${uniqueJoinId}`, {
-            [`id${uniqueJoinId}`]: id,
-          });
+          qb.where(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         } else {
-          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = :id${uniqueJoinId}`, {
-            [`id${uniqueJoinId}`]: id,
-          });
+          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         }
       }
       i++;
