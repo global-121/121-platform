@@ -577,118 +577,165 @@ export class ProgramsServiceApiService {
   private updatePaStatus(
     action: string,
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
     message?: string,
   ): Promise<any> {
-    return this.apiService.post(
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/status/${action}`,
+      `/programs/${programId}/registrations/status`,
       {
-        referenceIds,
+        status: action,
         message,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
   selectForValidation(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.selectedForValidation,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
     );
   }
 
   markNoLongerEligible(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.noLongerEligible,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
     );
   }
 
   invite(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.invited,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   include(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.included,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   end(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.inclusionEnded,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   reject(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.rejected,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   pause(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.paused,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   sendMessage(
-    referenceIds: string[],
-    message: string,
     programId: number,
+    message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/text-message`,
+      `/programs/${programId}/registrations/message`,
       {
-        referenceIds,
         message,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 

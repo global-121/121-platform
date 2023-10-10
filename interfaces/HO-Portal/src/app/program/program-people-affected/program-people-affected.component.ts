@@ -48,7 +48,11 @@ import {
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
-import { FilterService, PaginationFilter } from '../../services/filter.service';
+import {
+  FilterOperatorEnum,
+  FilterService,
+  PaginationFilter,
+} from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { RegistrationsService } from '../../services/registrations.service';
 import { TableService } from '../../services/table.service';
@@ -508,7 +512,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       financialServiceProvider: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
-      hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
     if (this.canViewPaymentData) {
@@ -714,12 +717,39 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     `;
   }
 
+  private setBulkActionFilters(): PaginationFilter[] {
+    let filters: PaginationFilter[];
+    if (this.selectedPeople.length) {
+      filters = [
+        {
+          value: this.selectedPeople.map((p) => p.referenceId).join(','),
+          name: 'referenceId',
+          label: 'referenceId',
+          operator: FilterOperatorEnum.in,
+        },
+      ];
+    } else {
+      filters = this.tableTextFilter;
+    }
+    return filters;
+  }
+
   public async applyAction(confirmInput?: string) {
     this.isInProgress = true;
+
+    const dryRun = false;
+    const filters = this.setBulkActionFilters();
     this.bulkActionService
-      .applyAction(this.action, this.programId, this.selectedPeople, {
-        message: confirmInput,
-      })
+      .applyAction(
+        this.action,
+        this.programId,
+        this.selectedPeople,
+        {
+          message: confirmInput,
+        },
+        dryRun,
+        filters,
+      )
       .then(async () => {
         if (
           this.action === BulkActionId.sendMessage ||

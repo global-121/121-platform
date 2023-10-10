@@ -13,7 +13,6 @@ export class Person {
   registrationCreated?: string;
   status: RegistrationStatus;
   note?: string;
-  hasPhoneNumber?: boolean;
   financialServiceProvider?: string;
   fspDisplayNamePortal?: string;
   paymentAmountMultiplier?: number;
@@ -41,7 +40,6 @@ export class PersonRow {
   registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   status: string;
   hasNote: boolean;
-  hasPhoneNumber?: boolean;
   registrationCreated?: string;
   inclusionScore?: number;
   name?: string | null;

@@ -5,6 +5,7 @@ import RegistrationStatus from '../enums/registration-status.enum';
 import { BulkAction, BulkActionId } from '../models/bulk-actions.models';
 import { PersonRow } from '../models/person.model';
 import { ProgramPhase } from '../models/program.model';
+import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 class CustomBulkActionInput {
@@ -38,6 +39,7 @@ export class BulkActionsService {
     personData: PersonRow,
     hasSelectedPayment?: boolean,
   ) {
+    console.log('personData: ', personData);
     switch (action) {
       case BulkActionId.invite:
         personData.checkboxVisible = this.hasStatus(personData, [
@@ -92,7 +94,7 @@ export class BulkActionsService {
         ]);
         break;
       case BulkActionId.sendMessage:
-        personData.checkboxVisible = personData.hasPhoneNumber;
+        personData.checkboxVisible = !!personData.phoneNumber;
         break;
       case BulkActionId.deletePa:
         personData.checkboxVisible = this.hasStatus(personData, [
@@ -319,58 +321,68 @@ export class BulkActionsService {
     programId: number,
     selectedPeople: PersonRow[],
     customBulkActionInput?: CustomBulkActionInput,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<void> {
     switch (action) {
       case BulkActionId.invite:
         return await this.programsService.invite(
           programId,
-          this.onlyIds(selectedPeople),
           customBulkActionInput.message,
+          dryRun,
+          filters,
         );
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
           programId,
-          this.onlyIds(selectedPeople),
+          dryRun,
+          filters,
         );
       case BulkActionId.selectForValidation:
         return await this.programsService.selectForValidation(
           programId,
-          this.onlyIds(selectedPeople),
+          dryRun,
+          filters,
         );
       case BulkActionId.include:
         return await this.programsService.include(
           programId,
-          this.onlyIds(selectedPeople),
           customBulkActionInput.message,
+          dryRun,
+          filters,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
           programId,
-          this.onlyIds(selectedPeople),
           customBulkActionInput.message,
+          dryRun,
+          filters,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
-          this.onlyIds(selectedPeople),
           customBulkActionInput.message,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.pause:
+        return await this.programsService.pause(
+          programId,
+          customBulkActionInput.message,
+          dryRun,
+          filters,
         );
       case BulkActionId.sendMessage:
         return await this.programsService.sendMessage(
-          this.onlyIds(selectedPeople),
-          customBulkActionInput.message,
           programId,
+          customBulkActionInput.message,
+          dryRun,
+          filters,
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
           programId,
           this.onlyIds(selectedPeople),
-        );
-      case BulkActionId.pause:
-        return await this.programsService.pause(
-          programId,
-          this.onlyIds(selectedPeople),
-          customBulkActionInput.message,
         );
     }
   }
