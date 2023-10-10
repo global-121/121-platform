@@ -47,12 +47,14 @@
   class="select-typeahead--popover"
   [showBackdrop]="showBackdrop"
   (ionPopoverWillPresent)="onPresent()"
+  (ionPopoverDidPresent)="onDidPresent()"
   (ionPopoverWillDismiss)="onDismiss($event.detail)"
 >
   <ng-template>
     <ion-header class="ion-no-border ion-no-padding">
       <ion-toolbar style="--min-height: 0">
         <ion-searchbar
+          #searchbar
           (ionInput)="onSearchbarInput($event)"
           style="
             padding: 0 !important;

@@ -1,7 +1,15 @@
 import { NgForOf, NgIf } from '@angular/common';
-import type { OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { IonicModule, IonSearchbar } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 export interface Item {
@@ -45,6 +53,8 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
   @Output()
   public selectionCancel = new EventEmitter<void>();
 
+  @ViewChild('searchbar') private searchbar: IonSearchbar;
+
   public triggerId: string;
 
   public filteredItems: Item[] = [];
@@ -81,6 +91,10 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
 
   public onPresent() {
     this.isOpen = true;
+  }
+
+  public async onDidPresent() {
+    await this.searchbar.setFocus();
   }
 
   public onDismiss($detail: { role?: 'backdrop' }) {
