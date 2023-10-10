@@ -168,25 +168,35 @@ export class PaymentsService {
     amount: number,
     referenceIds: string[],
   ): Promise<number> {
-    const paPaymentDataList = await this.getPaymentList(
-      referenceIds,
-      amount,
-      programId,
-    );
+    const chunkSize = 1000;
+    const chunks = [];
+    for (let i = 0; i < referenceIds.length; i += chunkSize) {
+      chunks.push(referenceIds.slice(i, i + chunkSize));
+    }
 
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.paymentStarted,
-    );
+    let paymentTransactionResult = 0;
+    for (const chunk of chunks) {
+      const paPaymentDataList = await this.getPaymentList(
+        chunk,
+        amount,
+        programId,
+      );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+      await this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.paymentStarted,
+      );
 
+      const result = await this.payout(
+        paPaymentDataList,
+        programId,
+        payment,
+        userId,
+      );
+
+      paymentTransactionResult += result;
+    }
     return paymentTransactionResult;
   }
 
