@@ -1,8 +1,6 @@
 .select-typeahead--trigger-wrapper {
   position: relative;
   padding: 0.45em;
-  border: 1px solid var(--ion-color-medium);
-  border-radius: 0.25em;
 }
 
 /* The actionable button is placed 'on top of' the 'real' <ion-select> input-element  */

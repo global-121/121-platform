@@ -509,7 +509,7 @@
         }
       },
       "table-filter-row": {
-        "select-column-to-filter": "Select column to filter",
+        "select-column-to-filter": "Type or select column to filter",
         "apply-filter": "Apply Filter",
         "remove-filter": "Remove filter",
         "clear-all": "Clear all filters"
