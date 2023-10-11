@@ -503,8 +503,11 @@
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status-changed": "You successfully changed the status to <strong>{{pastatus}}</strong> for <strong>{{panumber}}</strong> People Affected.",
-        "pa-moved-phase": "These People Affected might be visible in another phase after this status change.",
+        "bulk-action-response": {
+          "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>The operation can take some time to process. Inspect the PA-table below for the up-to-date status.",
+          "pa-moved-phase": "People Affected might be visible in another phase after this status change.",
+          "close-popup": "You can close this popup."
+        },
         "payment-history-popup": {
           "title": "Payment history"
         }

@@ -797,47 +797,34 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           return;
         }
 
-        if (
-          this.action === BulkActionId.sendMessage ||
-          this.action === BulkActionId.deletePa
-        ) {
-          this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-          return;
-        }
-
-        const actionStatus = {
-          [BulkActionId.invite]: RegistrationStatus.invited,
-          [BulkActionId.selectForValidation]:
-            RegistrationStatus.selectedForValidation,
-          [BulkActionId.include]: RegistrationStatus.included,
-          [BulkActionId.endInclusion]: RegistrationStatus.inclusionEnded,
-          [BulkActionId.reject]: RegistrationStatus.rejected,
-          [BulkActionId.markNoLongerEligible]:
-            RegistrationStatus.noLongerEligible,
-          [BulkActionId.pause]: RegistrationStatus.paused,
-        };
-        if (!actionStatus[this.action]) {
-          return;
-        }
+        const statusBulkActions = [
+          BulkActionId.invite,
+          BulkActionId.selectForValidation,
+          BulkActionId.include,
+          BulkActionId.endInclusion,
+          BulkActionId.reject,
+          BulkActionId.markNoLongerEligible,
+          BulkActionId.pause,
+        ];
 
         await actionResult(
           this.alertController,
           this.translate,
           `<p>${this.translate.instant(
-            'page.program.program-people-affected.status-changed',
+            'page.program.program-people-affected.bulk-action-response.response',
             {
-              pastatus: this.translate
-                .instant(
-                  'page.program.program-people-affected.status.' +
-                    actionStatus[this.action],
-                )
-                .toLowerCase(),
-              panumber: bulkActionResult.applicableCount,
+              action: this.getCurrentBulkAction().label,
+              paNumber: bulkActionResult.applicableCount,
             },
-          )}
-              <p>${this.translate.instant(
-                'page.program.program-people-affected.pa-moved-phase',
-              )}</p>`,
+          )}</p>${
+            statusBulkActions.includes(this.action)
+              ? `<p>${this.translate.instant(
+                  'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+                )}</p>`
+              : ''
+          }<p>${this.translate.instant(
+            'page.program.program-people-affected.bulk-action-response.close-popup',
+          )}</p>`,
           true,
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
