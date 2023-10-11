@@ -44,6 +44,8 @@ export enum PermissionEnum {
   FspDebitCardCREATE = 'fsp:debit-card.create',
   FspDebitCardEXPORT = 'fsp:debit-card.export',
 
+  FspCbeValidationReportREAD = 'fsp:cbe:validation-report.read',
+
   // Registration(s)
   RegistrationREAD = 'registration.read',
   RegistrationCREATE = 'registration.create',

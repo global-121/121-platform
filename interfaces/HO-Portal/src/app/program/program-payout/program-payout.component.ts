@@ -65,6 +65,8 @@ export class ProgramPayoutComponent implements OnInit {
   public minPayment: number;
   public maxPayment: number;
 
+  public showCbeValidationButton: boolean;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
@@ -106,6 +108,8 @@ export class ProgramPayoutComponent implements OnInit {
     this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
+
+    this.showCbeValidationButton = this.checkShowCbeValidation();
   }
 
   private checkCanViewPayment(): boolean {
@@ -154,6 +158,17 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.id,
       Permission.PaymentFspInstructionREAD,
     );
+  }
+
+  checkShowCbeValidation(): boolean {
+    const hasCbeProvider = this.program?.financialServiceProviders?.some(
+      (fsp) => fsp.fsp === 'Commercial-bank-ethiopia',
+    );
+    const hasPermission = this.authService.hasPermission(
+      this.program.id,
+      Permission.FspCbeValidationReportREAD,
+    );
+    return hasCbeProvider && hasPermission;
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
