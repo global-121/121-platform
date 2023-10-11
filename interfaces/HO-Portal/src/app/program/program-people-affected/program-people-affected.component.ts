@@ -640,7 +640,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
     }
 
-    this.visiblePeopleAffected = await this.updatePeopleForAction(
+    this.visiblePeopleAffected = this.updatePeopleForAction(
       this.visiblePeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
@@ -666,7 +666,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private async updatePeopleForAction(
+  private updatePeopleForAction(
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
@@ -930,6 +930,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
+    if (this.selectAllChecked) {
+      this.visiblePeopleAffected = this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+        null,
+        true,
+      );
+    } else {
+      this.visiblePeopleAffected = this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+      );
+    }
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
