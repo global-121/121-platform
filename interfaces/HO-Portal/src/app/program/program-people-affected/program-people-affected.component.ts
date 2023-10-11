@@ -165,6 +165,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
+          console.log('after NavigationEnd: ', this.thisPhase);
           this.initComponent();
         }
       }
@@ -180,7 +181,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
+    console.log('ngOnDestroy: ', this.thisPhase);
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
@@ -190,6 +192,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   async initComponent() {
+    console.log('initComponent: ', this.thisPhase);
     this.isLoading = true;
 
     this.filterService.textFilter$.subscribe((filter) => {
@@ -226,6 +229,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.tableService.createPaymentHistoryColumn();
     }
 
+    console.log('initComponent BEFORE refreshData: ', this.thisPhase);
     await this.refreshData();
 
     await this.updateBulkActions();
@@ -250,6 +254,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         PubSubEvent.dataRegistrationChanged,
         () => {
           if (this.router.url.includes(this.thisPhase)) {
+            console.log('pubSub: dataRegistrationChanged! ', this.thisPhase);
             this.refreshData();
           }
         },
@@ -262,6 +267,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async refreshData() {
+    console.log('refreshData: ', this.thisPhase);
     this.isLoading = true;
     await this.loadData();
     await this.resetBulkAction();
@@ -475,6 +481,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadData() {
+    console.log('loadData: ', this.thisPhase);
     this.setPage({
       offset: this.registrationsService?.getPageMetadata().currentPage,
     });
@@ -863,6 +870,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     pageSize?: number;
     limit?: number;
   }) {
+    console.log('setPage: ', this.thisPhase);
     this.isLoading = true;
     this.registrationsService?.setCurrentPage(pageInfo.offset);
 
@@ -872,6 +880,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async getPage(): Promise<void> {
+    console.log('getPage: ', this.thisPhase);
+
     const { data, meta } = await this.registrationsService.getPage(
       this.programId,
       null,
@@ -902,6 +912,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       event.sorts[0].dir,
     );
 
+    console.log('onSort: ', this.thisPhase);
     this.setPage({
       // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
       offset: 0,
