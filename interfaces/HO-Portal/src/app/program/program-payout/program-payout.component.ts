@@ -166,7 +166,7 @@ export class ProgramPayoutComponent implements OnInit {
     );
     const hasPermission = this.authService.hasPermission(
       this.program.id,
-      Permission.FspCbeValidationReportREAD,
+      Permission.PaymentFspInstructionREAD,
     );
     return hasCbeProvider && hasPermission;
   }
