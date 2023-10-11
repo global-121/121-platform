@@ -21,7 +21,11 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
+import {
+  BulkAction,
+  BulkActionId,
+  BulkActionResult,
+} from 'src/app/models/bulk-actions.models';
 import {
   Person,
   PersonRow,
@@ -104,7 +108,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public BulkActionEnum = BulkActionId;
   public bulkActions: BulkAction[] = [];
   public applyBtnDisabled = true;
-  public submitWarning: any;
+  public submitWarning: string;
   public selectAllCheckboxVisible = false;
   public selectAllChecked = false;
 
@@ -169,13 +173,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         }
       }
     });
-
-    this.submitWarning = {
-      message: '',
-      people: this.translate.instant(
-        'page.program.program-people-affected.submit-warning-people-affected',
-      ),
-    };
 
     this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
       this.tableTextFilter = filter;
@@ -646,8 +643,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.submitPaymentProps.payment,
     );
 
-    this.updateSubmitWarning(this.selectedPeople.length);
-
     this.selectAllCheckboxVisible = true;
   }
 
@@ -680,14 +675,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public onSelect(selected: PersonRow[]) {
-    this.updateSubmitWarning(selected.length);
-    this.selectedCount = selected.length;
-
     if (this.action === BulkActionId.doPayment) {
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
 
     if (selected.length) {
+      this.applyAction(null, true);
       this.applyBtnDisabled = false;
     } else {
       this.applyBtnDisabled = true;
@@ -717,14 +710,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(peopleCount: number) {
+  private updateSubmitWarning(
+    applicableCount: number,
+    totalFilterCount: number,
+    nonApplicableCount: number,
+  ) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
     const actionLabel = this.getCurrentBulkAction().label;
-    this.submitWarning.message = `
-      ${actionLabel}: ${peopleCount} ${this.submitWarning.people}
-    `;
+    this.submitWarning = this.translate.instant(
+      'page.program.program-people-affected.submit-warning-people-affected',
+      {
+        actionLabel,
+        applicableCount: applicableCount,
+        totalFilterCount: totalFilterCount,
+        nonApplicableCount: nonApplicableCount,
+      },
+    );
   }
 
   private setBulkActionFilters(): PaginationFilter[] {
@@ -770,11 +773,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         filters,
       )
       .then(async (response) => {
-        const applicableCount = response['applicableCount'];
+        const bulkActionResult = response as BulkActionResult;
         if (dryRun) {
-          this.updateSubmitWarning(applicableCount);
-          this.selectedCount = applicableCount;
-          if (applicableCount === 0) {
+          this.updateSubmitWarning(
+            bulkActionResult.applicableCount,
+            bulkActionResult.totalFilterCount,
+            bulkActionResult.nonApplicableCount,
+          );
+          this.selectedCount = bulkActionResult.applicableCount;
+          if (bulkActionResult.applicableCount === 0) {
             this.resetBulkAction();
             actionResult(
               this.alertController,
@@ -825,7 +832,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
                     actionStatus[this.action],
                 )
                 .toLowerCase(),
-              panumber: applicableCount,
+              panumber: bulkActionResult.applicableCount,
             },
           )}
               <p>${this.translate.instant(

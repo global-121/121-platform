@@ -37,7 +37,7 @@
         [subHeader]="
           'page.program.program-people-affected.submit-warning' | translate
         "
-        [message]="submitWarning.message"
+        [message]="submitWarning"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
         [submitPaymentProps]="submitPaymentProps"
         [action]="action"
@@ -363,7 +363,7 @@
               | translate
                 : {
                     selectedCount: selectedCount,
-                    totalCount: pageMetaData?.totalItems
+                    totalCount: pageMetaData?.totalItems || 0
                   }
           }}
         </div>

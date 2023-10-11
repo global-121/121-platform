@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import Permission from '../auth/permission.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { BulkAction, BulkActionId } from '../models/bulk-actions.models';
+import {
+  BulkAction,
+  BulkActionId,
+  BulkActionResult,
+} from '../models/bulk-actions.models';
 import { PersonRow } from '../models/person.model';
 import { ProgramPhase } from '../models/program.model';
 import { PaginationFilter } from './filter.service';
@@ -324,7 +328,7 @@ export class BulkActionsService {
     customBulkActionInput?: CustomBulkActionInput,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
-  ): Promise<void> {
+  ): Promise<BulkActionResult | void> {
     switch (action) {
       case BulkActionId.invite:
         return await this.programsService.invite(
