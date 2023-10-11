@@ -27,10 +27,6 @@ export class BulkActionsService {
     private translate: TranslateService,
   ) {}
 
-  private onlyIds(people: PersonRow[]): string[] {
-    return people.map((pa) => pa.referenceId);
-  }
-
   private hasStatus(
     person: PersonRow,
     requiredStates: RegistrationStatus[],
@@ -324,7 +320,6 @@ export class BulkActionsService {
   public async applyAction(
     action: BulkActionId,
     programId: number,
-    selectedPeople: PersonRow[],
     customBulkActionInput?: CustomBulkActionInput,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
@@ -387,7 +382,8 @@ export class BulkActionsService {
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
           programId,
-          this.onlyIds(selectedPeople),
+          dryRun,
+          filters,
         );
     }
   }

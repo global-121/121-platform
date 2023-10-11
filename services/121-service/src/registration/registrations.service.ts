@@ -41,7 +41,7 @@ import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { NoteDto } from './dto/note.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
@@ -1620,18 +1620,50 @@ export class RegistrationsService {
     }
   }
 
-  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
+  public async deleteRegistrations(
+    paginateQuery: PaginateQuery,
+    programId: number,
+    dryRun: boolean,
+  ): Promise<BulkActionResultDto> {
+    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+
+    const resultDto = await this.getBulkActionResult(
+      paginateQuery,
+      programId,
+      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+    );
+
+    const registrationForUpdate =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        false,
+        true,
+        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+    const referenceIds = registrationForUpdate.data.map(
+      (registration) => registration.referenceId,
+    );
+    if (!dryRun) {
+      this.deleteBatch(referenceIds).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
+    }
+    return resultDto;
+  }
+
+  public async deleteBatch(referenceIds: string[]): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
     await this.checkAllowedStatusChangeOrThrow(
-      referenceIdsDto.referenceIds,
+      referenceIds,
       RegistrationStatusEnum.deleted,
     );
     await this.updateRegistrationStatusBatch(
-      referenceIdsDto.referenceIds,
+      referenceIds,
       RegistrationStatusEnum.deleted,
     );
 
-    for await (const referenceId of referenceIdsDto.referenceIds) {
+    for await (const referenceId of referenceIds) {
       const registration = await this.getRegistrationFromReferenceId(
         referenceId,
         ['user'],

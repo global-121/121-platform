@@ -683,6 +683,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.applyAction(null, true);
       this.applyBtnDisabled = false;
     } else {
+      this.selectedCount = 0;
       this.applyBtnDisabled = true;
     }
   }
@@ -765,7 +766,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .applyAction(
         this.action,
         this.programId,
-        this.selectedPeople,
         {
           message: confirmInput,
         },

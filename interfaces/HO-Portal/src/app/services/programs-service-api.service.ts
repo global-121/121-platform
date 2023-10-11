@@ -89,13 +89,29 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
+  deleteRegistrations(
+    programId: number,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
+  ): Promise<any> {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      {
-        referenceIds,
-      },
+      null,
+      false,
+      params,
     );
   }
 
