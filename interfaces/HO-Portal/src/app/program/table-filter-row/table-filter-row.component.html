@@ -79,7 +79,18 @@
     'is-loading': isLoading
   }"
 >
-  <div>
+  <div
+    *ngIf="(textFilter | async).length"
+    class="ion-align-items-center"
+  >
+    <ion-text
+      class="ion-margin-end"
+      style="font-size: 0.875rem"
+    >
+      {{ 'page.program.table-filter-row.filtered-results' | translate }}:
+      {{ filteredCount }}
+    </ion-text>
+
     <ion-chip
       *ngFor="let filter of textFilter | async"
       size="small"
