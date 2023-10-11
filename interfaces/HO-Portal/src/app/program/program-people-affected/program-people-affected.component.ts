@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription, throttleTime } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -115,8 +115,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
+
   private routerSubscription: Subscription;
   private pubSubSubscription: Subscription;
+  private filtersSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
@@ -189,21 +191,37 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     if (this.pubSubSubscription) {
       this.pubSubSubscription.unsubscribe();
     }
+    if (this.filtersSubscription) {
+      this.filtersSubscription.unsubscribe();
+    }
   }
 
   async initComponent() {
     console.log('initComponent: ', this.thisPhase);
     this.isLoading = true;
 
-    this.filterService.textFilter$.subscribe((filter) => {
-      this.tableTextFilter = filter;
-      this.refreshData();
-    });
+    this.filtersSubscription = combineLatest([
+      this.filterService.textFilter$,
+      this.filterService.statusFilter$,
+    ])
+      .pipe(
+        throttleTime(1_000, null, {
+          leading: false,
+          trailing: true,
+        }),
+      )
+      .subscribe(([textFilter, statusFilter]) => {
+        this.tableTextFilter = textFilter;
+        this.tableStatusFilter = statusFilter;
 
-    this.filterService.statusFilter$.subscribe((filter) => {
-      this.tableStatusFilter = filter;
-      this.refreshData();
-    });
+        console.log(
+          'filterService - ALL Filter$',
+          this.thisPhase,
+          textFilter,
+          statusFilter,
+        );
+        this.refreshData();
+      });
 
     this.columns = [];
 
