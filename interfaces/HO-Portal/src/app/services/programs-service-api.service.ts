@@ -731,6 +731,7 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registrations/message`,
       {
         message,
+        skipMessageValidation: dryRun,
       },
       false,
       false,

@@ -721,6 +721,12 @@ export class RegistrationsController {
       query,
     );
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    if (!dryRun && body.skipMessageValidation) {
+      throw new HttpException(
+        'skipping Message Validation is only allowed in dryRun case',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const result = await this.registrationsService.postMessages(
       query,
       programId,
