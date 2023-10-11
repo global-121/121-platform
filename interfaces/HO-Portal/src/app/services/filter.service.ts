@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import RegistrationStatus from '../enums/registration-status.enum';
 
-export class PaginationFilter {
-  value: string;
+export class Filter {
   name: string;
   label: string;
+}
+export class PaginationFilter extends Filter {
+  value: string;
   operator?: FilterOperatorEnum;
 }
 
@@ -32,13 +34,17 @@ export enum FilterOperatorEnum {
 export class FilterService {
   private DEFAULT_TEXT_FILTER = [];
 
+  private textFilter: Map<PaginationFilter['name'], PaginationFilter>;
   private textFilterSubject = new BehaviorSubject<PaginationFilter[]>(
     this.DEFAULT_TEXT_FILTER,
   );
-  private textFilter: Map<PaginationFilter['name'], PaginationFilter>;
+  public textFilter$: Observable<PaginationFilter[]> =
+    this.textFilterSubject.asObservable();
 
-  private statusFilterSubject = new BehaviorSubject<RegistrationStatus[]>([]);
   private statusFilter: RegistrationStatus[];
+  private statusFilterSubject = new BehaviorSubject<RegistrationStatus[]>([]);
+  public statusFilter$: Observable<RegistrationStatus[]> =
+    this.statusFilterSubject.asObservable();
 
   constructor() {
     this.textFilter = new Map(this.DEFAULT_TEXT_FILTER);

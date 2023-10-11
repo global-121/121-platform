@@ -36,7 +36,7 @@ export class TableFilterRowComponent implements OnInit {
   constructor(private filterService: FilterService) {}
 
   public ngOnInit(): void {
-    this.textFilter = this.filterService.getTextFilterSubscription();
+    this.textFilter = this.filterService.textFilter$;
   }
 
   public applyFilter() {
