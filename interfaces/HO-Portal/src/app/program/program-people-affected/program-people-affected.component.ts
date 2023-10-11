@@ -231,6 +231,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.updateBulkActions();
 
     this.tableFiltersPerColumn = this.createFilterPerAttibute();
+    this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
       programId: this.programId,
