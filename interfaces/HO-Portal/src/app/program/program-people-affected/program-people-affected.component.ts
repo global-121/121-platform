@@ -710,12 +710,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
+      this.selectedPeople = [];
       this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
         null,
         true,
       );
+      this.applyAction(null, true);
       this.applyBtnDisabled = false;
     } else {
       this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
@@ -758,10 +760,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return filters;
   }
 
-  public async applyAction(confirmInput?: string) {
+  public async applyAction(confirmInput?: string, dryRun: boolean = false) {
     this.isInProgress = true;
 
-    const dryRun = false;
     const filters = this.setBulkActionFilters();
     this.bulkActionService
       .applyAction(
@@ -774,7 +775,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         dryRun,
         filters,
       )
-      .then(async () => {
+      .then(async (response) => {
+        if (dryRun) {
+          this.updateSubmitWarning(response['applicableCount']);
+          return;
+        }
         if (
           this.action === BulkActionId.sendMessage ||
           this.action === BulkActionId.deletePa

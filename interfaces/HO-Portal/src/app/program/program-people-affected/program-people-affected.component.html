@@ -120,6 +120,7 @@
       <input
         type="checkbox"
         (change)="onCheckboxChangeFn($event)"
+        [checked]="selectAllChecked ? true : value"
         *ngIf="row.checkboxVisible"
         [disabled]="row.checkboxDisabled"
       />
