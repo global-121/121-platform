@@ -48,7 +48,11 @@ import {
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
-import { FilterService, PaginationFilter } from '../../services/filter.service';
+import {
+  Filter,
+  FilterService,
+  PaginationFilter,
+} from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { RegistrationsService } from '../../services/registrations.service';
 import { TableService } from '../../services/table.service';
@@ -124,7 +128,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ];
 
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
-  public tableTextFilter: PaginationFilter[] = [];
+  private tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private tableStatusFilter: RegistrationStatus[];
@@ -151,11 +155,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private filterService: FilterService,
     private tableService: TableService,
   ) {
+    this.locale = environment.defaultLocale;
+
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
+
     this.pageMetaData = this.registrationsService?.getPageMetadata();
-    this.locale = environment.defaultLocale;
-    this.routerSubscription = this.router.events.subscribe(async (event) => {
+
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
           this.initComponent();
@@ -170,20 +177,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ),
     };
 
-    this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
-      this.tableTextFilter = filter;
-      await this.getPage();
-    });
-
-    this.filterService
-      .getStatusFilterSubscription()
-      .subscribe(async (filter) => {
-        this.tableStatusFilter = filter;
-        await this.getPage();
-      });
-
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
+
   ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
@@ -195,6 +191,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   async initComponent() {
     this.isLoading = true;
+
+    this.filterService.textFilter$.subscribe((filter) => {
+      this.tableTextFilter = filter;
+      this.refreshData();
+    });
+
+    this.filterService.statusFilter$.subscribe((filter) => {
+      this.tableStatusFilter = filter;
+      this.refreshData();
+    });
 
     this.columns = [];
 
@@ -225,6 +231,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.updateBulkActions();
 
     this.tableFiltersPerColumn = this.createFilterPerAttibute();
+    this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -401,10 +408,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return attributeName;
   }
 
-  private createFilterPerAttibute(): {
-    name: string;
-    label: string;
-  }[] {
+  private createFilterPerAttibute(): Filter[] {
     const allFilters = [];
     let groupIndex = 0;
     for (const group of this.program.filterableAttributes) {

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SelectTypeaheadComponent } from 'src/app/components/select-typeahead/select-typeahead.component';
@@ -18,6 +19,7 @@ describe('TableFilterRowComponent', () => {
         IonicModule,
         FormsModule,
         TranslateModule.forRoot(),
+        RouterTestingModule,
         SelectTypeaheadComponent,
       ],
       providers: [FilterService],
