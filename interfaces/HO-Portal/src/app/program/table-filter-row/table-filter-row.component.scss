@@ -10,8 +10,11 @@
 //
 
 .tfr--create-filters {
-  border: 1px solid black;
+  border: 1px solid var(--fiveten-neutral-200);
   min-height: 3rem;
+
+  padding-top: 6px;
+  padding-bottom: 6px;
 
   &.is-loading {
     opacity: 0.6;
@@ -38,11 +41,30 @@
 }
 
 .tfr--active-filters {
+  margin-top: 8px;
+  margin-bottom: 8px;
   ion-chip {
     cursor: default; // Make appear as unclickable
   }
 
   ion-chip ion-button {
     cursor: pointer; // Re-enable cursor to appear interactive normally
+    position: relative;
+    inset-inline-end: -0.5em;
+  }
+
+  .tfr--active-filters-component {
+    --background: var(--fiveten-purple-100);
+    border: 1px solid var(--fiveten-purple-200);
+    --color: var(--fiveten-neutral-900);
+    font-size: 12px;
+
+    &.tfr--active-filters-chip {
+      height: 2.2em;
+    }
+
+    &.tfr--clear-filters-btn {
+      border-radius: 50vh;
+    }
   }
 }
