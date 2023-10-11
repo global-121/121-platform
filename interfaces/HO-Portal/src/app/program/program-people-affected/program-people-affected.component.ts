@@ -698,7 +698,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
       this.selectedPeople = [];
-      this.selectedCount = this.pageMetaData?.totalItems;
       this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
@@ -774,6 +773,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         const applicableCount = response['applicableCount'];
         if (dryRun) {
           this.updateSubmitWarning(applicableCount);
+          this.selectedCount = applicableCount;
           if (applicableCount === 0) {
             this.resetBulkAction();
             actionResult(
