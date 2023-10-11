@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -109,19 +110,19 @@ export class PaymentsController {
   public async createPayment(
     @Body() data: CreatePaymentDto,
     @Paginate() query: PaginateQuery,
-    @Param() param,
+    @Param('programId', ParseIntPipe) programId: number,
     @User('id') userId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
-      param.programId,
+      programId,
       query,
     );
     const dryRun = queryParams.dryRun === 'true';
     const result = await this.paymentsService.postPayment(
       userId,
-      param.programId,
+      programId,
       data.payment,
       data.amount,
       query,
