@@ -649,21 +649,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateSubmitWarning(this.selectedPeople.length);
 
     this.selectAllCheckboxVisible = true;
-
-    const nrCheckboxes = this.countSelectable(this.visiblePeopleAffected);
-    if (nrCheckboxes === 0) {
-      this.resetBulkAction();
-      actionResult(
-        this.alertController,
-        this.translate,
-        this.translate.instant(
-          'page.program.program-people-affected.no-checkboxes',
-        ),
-        true,
-        PubSubEvent.dataRegistrationChanged,
-        this.pubSub,
-      );
-    }
   }
 
   private updatePeopleForAction(
@@ -729,10 +714,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private countSelectable(rows: PersonRow[]) {
-    return rows.filter((row) => row.checkboxVisible).length;
-  }
-
   public getCurrentBulkAction(): BulkAction {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
@@ -790,10 +771,25 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         filters,
       )
       .then(async (response) => {
+        const applicableCount = response['applicableCount'];
         if (dryRun) {
-          this.updateSubmitWarning(response['applicableCount']);
+          this.updateSubmitWarning(applicableCount);
+          if (applicableCount === 0) {
+            this.resetBulkAction();
+            actionResult(
+              this.alertController,
+              this.translate,
+              this.translate.instant(
+                'page.program.program-people-affected.no-checkboxes',
+              ),
+              true,
+              PubSubEvent.dataRegistrationChanged,
+              this.pubSub,
+            );
+          }
           return;
         }
+
         if (
           this.action === BulkActionId.sendMessage ||
           this.action === BulkActionId.deletePa
@@ -829,7 +825,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
                     actionStatus[this.action],
                 )
                 .toLowerCase(),
-              panumber: this.selectedPeople.length,
+              panumber: applicableCount,
             },
           )}
               <p>${this.translate.instant(
