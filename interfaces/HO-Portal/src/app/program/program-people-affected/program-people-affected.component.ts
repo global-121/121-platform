@@ -92,6 +92,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public paymentHistoryColumn: PersonTableColumn;
 
   public selectedPeople: PersonRow[] = [];
+  public selectedCount: number = 0;
   public visiblePeopleAffected: PersonRow[] = [];
 
   public isInProgress = false;
@@ -695,6 +696,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public onSelect(selected: PersonRow[]) {
     this.updateSubmitWarning(selected.length);
+    this.selectedCount = selected.length;
 
     if (this.action === BulkActionId.doPayment) {
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
@@ -711,6 +713,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
       this.selectedPeople = [];
+      this.selectedCount = this.pageMetaData?.totalItems;
       this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
@@ -720,6 +723,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.applyAction(null, true);
       this.applyBtnDisabled = false;
     } else {
+      this.selectedCount = this.selectedPeople.length;
       this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
       this.applyBtnDisabled = true;
     }
@@ -755,7 +759,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         },
       ];
     } else {
-      filters = this.tableTextFilter;
+      filters = [
+        ...this.tableTextFilter,
+        ...[
+          {
+            name: 'status',
+            label: 'status',
+            value: this.tableStatusFilter.join(','),
+            operator: FilterOperatorEnum.in,
+          },
+        ],
+      ];
     }
     return filters;
   }
