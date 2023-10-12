@@ -64,11 +64,6 @@ export class StatusTableFilterComponent implements OnInit {
     }[] = await this.programsService.getRegistrationStatusCount(this.programId);
 
     //filter out deleted PAs as they should not be included in the status filter
-    activeStatuses.splice(
-      activeStatuses.findIndex((s) => s.status === RegistrationStatus.deleted),
-      1,
-    );
-
     if (!activeStatuses) {
       return;
     }

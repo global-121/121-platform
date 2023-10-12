@@ -1289,7 +1289,7 @@ export class RegistrationsService {
   private getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewRepository
       .createQueryBuilder('registration')
-      .where('1=1');
+      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
   }
 
   private async updateRegistrationStatusBatchFilter(
