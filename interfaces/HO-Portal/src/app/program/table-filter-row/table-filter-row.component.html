@@ -86,7 +86,7 @@
     <ion-chip
       *ngFor="let filter of textFilter | async"
       size="small"
-      class="tfr--active-filters-component tfr--active-filters-chip"
+      class="tfr--active-filters-chip"
     >
       <ion-label>
         {{ filter.label }}:
@@ -121,7 +121,7 @@
       (click)="clearAllFilters()"
       size="small"
       shape="round"
-      class="tfr--active-filters-component tfr--clear-filters-btn"
+      class="tfr--clear-filters-btn"
     >
       {{ 'page.program.table-filter-row.clear-all' | translate }}
     </ion-button>

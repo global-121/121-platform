@@ -41,7 +41,7 @@
 }
 
 .tfr--active-filters {
-  padding: 8px;
+  padding: 0.5rem;
 
   ion-chip {
     cursor: default; // Make appear as unclickable
@@ -53,18 +53,17 @@
     inset-inline-end: -0.5em;
   }
 
-  .tfr--active-filters-component {
+  .tfr--clear-filters-btn {
     --background: var(--fiveten-purple-100);
-    border: 1px solid var(--fiveten-purple-200);
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--fiveten-purple-200);
     --color: var(--fiveten-neutral-900);
     font-size: 12px;
-
-    &.tfr--active-filters-chip {
-      height: 2.2em;
-    }
-
-    &.tfr--clear-filters-btn {
-      border-radius: 50vh;
-    }
+  }
+  .tfr--active-filters-chip {
+    --background: var(--fiveten-purple-100);
+    border: 1px solid var(--fiveten-purple-200);
+    --min-height: 2.2em;
   }
 }
