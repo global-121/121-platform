@@ -5,6 +5,7 @@ import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configurati
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
+import { UserModule } from '../../../user/user.module';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -25,6 +26,7 @@ import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.servic
       CommercialBankEthiopiaAccountEnquiriesEntity,
     ]),
     TransactionsModule,
+    UserModule,
   ],
   providers: [
     CommercialBankEthiopiaService,

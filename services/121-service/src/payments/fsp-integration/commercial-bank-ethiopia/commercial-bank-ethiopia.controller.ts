@@ -1,12 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../../guards/admin.decorator';
+import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
+import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
 @Controller()
 export class CommercialBankEthiopiaController {
