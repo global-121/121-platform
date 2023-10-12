@@ -447,7 +447,6 @@ export class CommercialBankEthiopiaService
         'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
         'cbe.cbeName as "cbeName"',
         'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
-        'cbe.namesMatch as "namesMatch"',
         'cbe.errorMessage as "errorMessage"',
         'cbe.cbeStatus as "cbeStatus"',
         'cbe.updated as "updated"',

@@ -4,7 +4,6 @@ export class CommercialBankEthiopiaValidationReportDto {
     fullNameUsedForTheMatch: string;
     bankAccountNumberUsedForCall: string;
     cbeName: string;
-    namesMatch: boolean;
     cbeStatus: string;
     errorMessage: string;
   }[];
