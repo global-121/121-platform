@@ -733,11 +733,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(
-    applicableCount: number,
-    totalFilterCount: number,
-    nonApplicableCount: number,
-  ) {
+  private updateSubmitWarning(applicableCount: number) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
@@ -747,8 +743,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       {
         actionLabel,
         applicableCount: applicableCount,
-        totalFilterCount: totalFilterCount,
-        nonApplicableCount: nonApplicableCount,
       },
     );
   }
@@ -797,11 +791,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(async (response) => {
         const bulkActionResult = response as BulkActionResult;
         if (dryRun) {
-          this.updateSubmitWarning(
-            bulkActionResult.applicableCount,
-            bulkActionResult.totalFilterCount,
-            bulkActionResult.nonApplicableCount,
-          );
+          this.updateSubmitWarning(bulkActionResult.applicableCount);
           this.selectedCount = bulkActionResult.applicableCount;
           if (bulkActionResult.applicableCount === 0) {
             this.resetBulkAction();
