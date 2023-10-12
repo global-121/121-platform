@@ -686,6 +686,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async resetBulkAction() {
+    console.log('resetBulkAction: ');
     this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
