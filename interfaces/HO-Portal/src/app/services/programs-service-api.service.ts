@@ -94,18 +94,7 @@ export class ProgramsServiceApiService {
     dryRun: boolean = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    let params = new HttpParams();
-    params = params.append('dryRun', dryRun);
-    if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
-    }
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -597,18 +586,7 @@ export class ProgramsServiceApiService {
     filters?: PaginationFilter[],
     message?: string,
   ): Promise<any> {
-    let params = new HttpParams();
-    params = params.append('dryRun', dryRun);
-    if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
-    }
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status`,
@@ -730,18 +708,7 @@ export class ProgramsServiceApiService {
     dryRun: boolean = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    let params = new HttpParams();
-    params = params.append('dryRun', dryRun);
-    if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
-    }
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message`,
@@ -928,5 +895,24 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/users`,
     );
+  }
+
+  private filterToParams(
+    filters: PaginationFilter[],
+    dryRun: boolean,
+  ): HttpParams {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return params;
   }
 }
