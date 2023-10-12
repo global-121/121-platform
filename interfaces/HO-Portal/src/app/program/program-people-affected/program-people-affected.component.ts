@@ -17,7 +17,8 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { combineLatest, Subscription, throttleTime } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { mergeWith, throttleTime } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -118,7 +119,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private routerSubscription: Subscription;
   private pubSubSubscription: Subscription;
-  private filtersSubscription: Subscription;
+  private textFilterSubscription: Subscription;
+  private statusFilterSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
@@ -191,37 +193,50 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     if (this.pubSubSubscription) {
       this.pubSubSubscription.unsubscribe();
     }
-    if (this.filtersSubscription) {
-      this.filtersSubscription.unsubscribe();
+    if (this.textFilterSubscription) {
+      this.textFilterSubscription.unsubscribe();
     }
+    if (this.statusFilterSubscription) {
+      this.statusFilterSubscription.unsubscribe();
+    }
+  }
+
+  private setupFilterSubscriptions() {
+    this.textFilterSubscription = this.filterService.textFilter$.subscribe(
+      (value) => {
+        this.tableTextFilter = value;
+        console.log('textFilterSubscription: ', this.tableTextFilter);
+      },
+    );
+    this.statusFilterSubscription = this.filterService.statusFilter$.subscribe(
+      (value) => {
+        this.tableStatusFilter = value;
+        console.log('statusFilterSubscription: ', this.tableStatusFilter);
+      },
+    );
+
+    this.filterService.textFilter$
+      .pipe(mergeWith(this.filterService.statusFilter$))
+      .pipe(
+        throttleTime(500, null, {
+          leading: false,
+          trailing: true,
+        }),
+      )
+      .subscribe(() => {
+        console.log(
+          'filterService - ALL Filter$',
+          this.thisPhase,
+          this.tableTextFilter,
+          this.tableStatusFilter,
+        );
+        this.refreshData();
+      });
   }
 
   async initComponent() {
     console.log('initComponent: ', this.thisPhase);
     this.isLoading = true;
-
-    this.filtersSubscription = combineLatest([
-      this.filterService.textFilter$,
-      this.filterService.statusFilter$,
-    ])
-      .pipe(
-        throttleTime(1_000, null, {
-          leading: false,
-          trailing: true,
-        }),
-      )
-      .subscribe(([textFilter, statusFilter]) => {
-        this.tableTextFilter = textFilter;
-        this.tableStatusFilter = statusFilter;
-
-        console.log(
-          'filterService - ALL Filter$',
-          this.thisPhase,
-          textFilter,
-          statusFilter,
-        );
-        this.refreshData();
-      });
 
     this.columns = [];
 
@@ -247,8 +262,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.tableService.createPaymentHistoryColumn();
     }
 
-    console.log('initComponent BEFORE refreshData: ', this.thisPhase);
-    await this.refreshData();
+    this.setupFilterSubscriptions();
 
     await this.updateBulkActions();
 
