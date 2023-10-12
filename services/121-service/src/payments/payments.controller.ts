@@ -146,12 +146,12 @@ export class PaymentsController {
   @Patch('programs/:programId/payments')
   public async retryPayment(
     @Body() data: RetryPaymentDto,
-    @Param() param,
+    @Param('programId', ParseIntPipe) programId: number,
     @User('id') userId: number,
   ): Promise<number> {
     return await this.paymentsService.retryPayment(
       userId,
-      param.programId,
+      programId,
       data.payment,
       data.referenceIds,
     );

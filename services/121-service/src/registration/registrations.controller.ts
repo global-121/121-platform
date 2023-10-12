@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -289,7 +290,7 @@ export class RegistrationsController {
   public async findAll(
     @Paginate() query: PaginateQuery,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -413,7 +414,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum;
@@ -766,7 +767,7 @@ export class RegistrationsController {
     @Body() body: SendCustomTextDto,
     @Paginate() query: PaginateQuery,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(

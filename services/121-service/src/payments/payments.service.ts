@@ -15,6 +15,7 @@ import {
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsService } from '../registration/registrations.service';
@@ -22,7 +23,6 @@ import { BulkImportService } from '../registration/services/bulk-import.service'
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
-import { RegistrationStatusEnum } from './../registration/enum/registration-status.enum';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
@@ -111,7 +111,7 @@ export class PaymentsService {
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
         programId,
-        false,
+        true,
         true,
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );

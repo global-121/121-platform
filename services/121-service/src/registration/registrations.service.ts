@@ -1214,7 +1214,7 @@ export class RegistrationsService {
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
         programId,
-        false,
+        true,
         false,
       );
 
@@ -1222,7 +1222,7 @@ export class RegistrationsService {
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
         programId,
-        false,
+        true,
         false,
         queryBuilder,
       );
