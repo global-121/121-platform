@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Export People Affected: removed payment data & optimised removal of empty columns
 
+### Added
+
+- CBE cronjob to update account enquiries
+
 ## [1.102.1](https://github.com/global-121/121-platform/compare/v1.102.0...v1.102.1) - 2023-10-05
 
 ### Fixed
