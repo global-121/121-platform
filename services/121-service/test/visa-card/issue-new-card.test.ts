@@ -5,7 +5,7 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getMessageHistory,
   getVisaWalletsAndDetails,
   importRegistrations,
@@ -40,7 +40,7 @@ describe('Issue new Visa debit card', () => {
   it('should succesfully issue a new Visa Debit card', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       [referenceIdVisa],
       RegistrationStatusEnum.included,

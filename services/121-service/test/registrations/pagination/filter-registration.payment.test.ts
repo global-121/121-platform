@@ -7,7 +7,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '../../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
 } from '../../helpers/registration.helper';
@@ -53,7 +53,7 @@ describe('Load PA table', () => {
       );
       await importRegistrations(programId, registrations, accessToken);
 
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         paymentReferenceIds,
         RegistrationStatusEnum.included,

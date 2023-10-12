@@ -4,7 +4,7 @@ import path from 'path';
 import { DataSource } from 'typeorm';
 import { changePhase, doPayment } from '../../test/helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   importRegistrations,
 } from '../../test/helpers/registration.helper';
 import { getAccessToken } from '../../test/helpers/utility.helper';
@@ -90,7 +90,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
     await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       [referenceIdVisa],
       RegistrationStatusEnum.included,

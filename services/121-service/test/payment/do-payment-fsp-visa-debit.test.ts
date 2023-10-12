@@ -9,7 +9,7 @@ import {
   retryPayment,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   importRegistrations,
   updateRegistration,
 } from '../helpers/registration.helper';
@@ -45,7 +45,7 @@ describe('Do payment to 1 PA', () => {
     it('should succesfully pay-out Visa Debit', async () => {
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -81,7 +81,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -117,7 +117,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-wallet';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -153,7 +153,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-link-customer-wallet';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -189,7 +189,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-debit-card';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -225,7 +225,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-load-balance';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -276,7 +276,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'succeed';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -325,7 +325,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -376,7 +376,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       registrationVisa.paymentAmountMultiplier = 3;
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,

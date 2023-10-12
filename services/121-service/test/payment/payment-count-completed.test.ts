@@ -11,7 +11,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
 } from '../helpers/registration.helper';
@@ -53,7 +53,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     it('should set registration to complete', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdAh],
         RegistrationStatusEnum.included,

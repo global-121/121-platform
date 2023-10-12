@@ -74,9 +74,16 @@ export async function doPayment(
   amount: number,
   referenceIds: string[],
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
   const queryParams = {};
-  if (referenceIds) {
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+
+  if (referenceIds && referenceIds.length > 0) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
@@ -86,7 +93,6 @@ export async function doPayment(
     .send({
       payment: paymentNr,
       amount: amount,
-      referenceIds: { referenceIds: referenceIds },
     })
     .query(queryParams);
 }

@@ -11,7 +11,7 @@ import {
   getTransactions,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
@@ -56,7 +56,7 @@ describe('Do payment to 1 PA', () => {
     it('should succesfully pay-out', async () => {
       // Arrange
       await importRegistrations(programId, [registrationJumbo], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdJumbo],
         RegistrationStatusEnum.included,
@@ -102,7 +102,7 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       registrationJumbo.addressCity = null;
       await importRegistrations(programId, [registrationJumbo], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdJumbo],
         RegistrationStatusEnum.included,

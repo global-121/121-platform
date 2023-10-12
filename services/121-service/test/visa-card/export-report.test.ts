@@ -5,7 +5,7 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment, exportList } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
 } from '../helpers/registration.helper';
@@ -52,7 +52,7 @@ describe('Export Visa debit card report', () => {
   it('should succesfully generate a report of all Visa Debit cards', async () => {
     // Arrange
     await importRegistrations(programId, [registrationVisa], accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programId,
       [referenceIdVisa],
       RegistrationStatusEnum.included,
