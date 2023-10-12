@@ -53,8 +53,8 @@ import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
-  FilterOperatorEnum,
   Filter,
+  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -500,17 +500,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ),
       registrationCreated: person.registrationCreated
         ? formatDate(
-          person.registrationCreated,
-          DateFormat.dayAndTime,
-          this.locale,
-        )
+            person.registrationCreated,
+            DateFormat.dayAndTime,
+            this.locale,
+          )
         : null,
       inclusionScore: person.inclusionScore,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
-          'preferredLanguage',
-          person.preferredLanguage,
-        )
+            'preferredLanguage',
+            person.preferredLanguage,
+          )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       paymentAmountMultiplier: person.paymentAmountMultiplier
@@ -518,15 +518,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : '',
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
-        ? `${person.maxPayments} ${[ProgramPhase.inclusion, ProgramPhase.payment].includes(
-          this.thisPhase,
-        )
-          ? `(${person.maxPayments - person.paymentCount
-          } ${this.translate.instant(
-            'page.program.program-people-affected.max-payments.left',
-          )})`
-          : ''
-        }`
+        ? `${person.maxPayments} ${
+            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
+              this.thisPhase,
+            )
+              ? `(${
+                  person.maxPayments - person.paymentCount
+                } ${this.translate.instant(
+                  'page.program.program-people-affected.max-payments.left',
+                )})`
+              : ''
+          }`
         : '',
       fsp: person.financialServiceProvider,
       financialServiceProvider: person.fspDisplayNamePortal,
@@ -836,11 +838,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               action: this.getCurrentBulkAction().label,
               paNumber: bulkActionResult.applicableCount,
             },
-          )}</p>${statusBulkActions.includes(this.action)
-            ? `<p>${this.translate.instant(
-              'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
-            )}</p>`
-            : ''
+          )}</p>${
+            statusBulkActions.includes(this.action)
+              ? `<p>${this.translate.instant(
+                  'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+                )}</p>`
+              : ''
           }<p>${this.translate.instant(
             'page.program.program-people-affected.bulk-action-response.close-popup',
           )}</p>`,
