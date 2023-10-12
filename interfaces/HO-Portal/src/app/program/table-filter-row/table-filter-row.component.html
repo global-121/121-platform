@@ -1,5 +1,5 @@
 <div
-  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical"
+  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
   [ngClass]="{
     'is-loading': isLoading
   }"
@@ -13,7 +13,7 @@
         name="funnel"
         color="black"
         aria-hidden="true"
-        class="ion-margin-horizontal"
+        class="ion-margin-start"
       ></ion-icon>
     </span>
 
@@ -57,7 +57,10 @@
     </ng-container>
   </div>
 
-  <div class="layout-flex-row ion-align-items-center ion-padding-horizontal">
+  <div
+    style="border-left: 1px solid var(--fiveten-neutral-200)"
+    class="layout-flex-row ion-align-items-center ion-padding-horizontal"
+  >
     <ion-label class="ion-text-nowrap">
       {{
         'page.program.program-people-affected.filter-btn.common.filter-by'
@@ -74,7 +77,7 @@
 </div>
 
 <div
-  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center ion-margin-vertical"
+  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center"
   [ngClass]="{
     'is-loading': isLoading
   }"
@@ -94,6 +97,7 @@
     <ion-chip
       *ngFor="let filter of textFilter | async"
       size="small"
+      class="tfr--active-filters-chip"
     >
       <ion-label>
         {{ filter.label }}:
@@ -128,7 +132,7 @@
       (click)="clearAllFilters()"
       size="small"
       shape="round"
-      color="tertiary"
+      class="tfr--clear-filters-btn"
     >
       {{ 'page.program.table-filter-row.clear-all' | translate }}
     </ion-button>
