@@ -55,6 +55,7 @@ export class FilterService {
     this.resetTextFilterInternal();
 
     this.route.queryParams.subscribe((params) => {
+      console.log('FilterService Params - subscription: ', params);
       if (!params) {
         this.resetTextFilterInternal();
         return;
@@ -63,6 +64,9 @@ export class FilterService {
         return;
       }
 
+      console.log(
+        'FilterService Params - subscription - updateFiltersFromUrl() ',
+      );
       this.updateFiltersFromUrl(params);
     });
   }
@@ -90,6 +94,7 @@ export class FilterService {
 
     Object.keys(params).forEach((key) => {
       if (!this.isAvailableFilter(key)) {
+        console.log('updateFiltersFromUrl - IGNORED: ', key);
         return;
       }
 
@@ -97,13 +102,18 @@ export class FilterService {
       const filterValue = this.sanitizeFilterValue(filterValueRaw);
 
       if (!filterValue) {
+        console.log('updateFiltersFromUrl - Remove: ', key);
         this.removeTextFilter(key, false);
         return;
       }
 
+      console.log('updateFiltersFromUrl - Set: ', key);
       this.setTextFilter(key, filterValue, null, false);
     });
 
+    console.log(
+      'publishTextFilter in updateFiltersFromUrl (AFTER param-keys loop)',
+    );
     this.publishTextFilter();
   }
 
@@ -114,11 +124,13 @@ export class FilterService {
   }
 
   public setAllAvailableFilters(filters: Filter[]) {
+    console.log('FilterService setAllAvailableFilters: ', filters);
     if (!filters) {
       return;
     }
     this.allAvailableFilters = filters;
 
+    console.log('FilterService setAllAvailableFilters - updateFiltersFromUrl');
     this.updateFiltersFromUrl(this.route.snapshot.queryParams);
   }
 
@@ -145,6 +157,8 @@ export class FilterService {
       value,
     });
 
+    console.log('setTextFilter - publishChange: ', columnName, publishChange);
+
     if (publishChange) {
       this.updateUrl(columnName, value);
       this.publishTextFilter();
@@ -153,6 +167,12 @@ export class FilterService {
 
   public removeTextFilter(columnName: string, publishChange = true) {
     this.textFilter.delete(columnName);
+
+    console.log(
+      'removeTextFilter - publishChange: ',
+      columnName,
+      publishChange,
+    );
 
     if (publishChange) {
       this.updateUrl(columnName, null);
