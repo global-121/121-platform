@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 
 @Component({
   selector: 'app-inclusion',
@@ -15,9 +16,23 @@ export class InclusionPage {
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;
 
+  @ViewChild('table')
+  public table: ProgramPeopleAffectedComponent;
+
   constructor(private route: ActivatedRoute) {}
 
   public onReady(state: boolean) {
     this.isReady = state;
+  }
+
+  public ionViewDidEnter() {
+    console.log('InclusionPage: ionViewWillEnter()');
+
+    this.table.initComponent();
+  }
+  public ionViewWillLeave() {
+    console.log('InclusionPage: ionViewWillLeave()');
+
+    this.table.ngOnDestroy();
   }
 }

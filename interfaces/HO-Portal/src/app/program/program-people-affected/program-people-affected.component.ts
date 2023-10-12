@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
@@ -166,14 +166,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.pageMetaData = this.registrationsService?.getPageMetadata();
 
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        if (event.url.includes(this.thisPhase)) {
-          console.log('after NavigationEnd: ', this.thisPhase);
-          this.initComponent();
-        }
-      }
-    });
+    // this.routerSubscription = this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     if (event.url.includes(this.thisPhase)) {
+    //       console.log('after NavigationEnd: ', this.thisPhase);
+    //       this.initComponent();
+    //     }
+    //   }
+    // });
 
     this.submitWarning = {
       message: '',
