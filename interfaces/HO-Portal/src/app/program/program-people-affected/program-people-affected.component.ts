@@ -852,6 +852,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
         );
+        this.isInProgress = false;
       })
       .catch((error) => {
         console.log('Error:', error);
@@ -863,9 +864,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
         );
-      })
-      .finally(() => {
-        this.isInProgress = false;
       });
   }
 
