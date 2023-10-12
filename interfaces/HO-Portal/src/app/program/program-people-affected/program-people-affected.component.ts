@@ -802,56 +802,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(async (response) => {
         const bulkActionResult = response as BulkActionResult;
         if (dryRun) {
-          this.updateSubmitWarning(bulkActionResult.applicableCount);
-          this.selectedCount = bulkActionResult.applicableCount;
-          if (bulkActionResult.applicableCount === 0) {
-            this.resetBulkAction();
-            actionResult(
-              this.alertController,
-              this.translate,
-              this.translate.instant(
-                'page.program.program-people-affected.no-checkboxes',
-              ),
-              true,
-              PubSubEvent.dataRegistrationChanged,
-              this.pubSub,
-            );
-          }
-          return;
+          this.handleBulkActionDryRunResult(bulkActionResult);
+        } else {
+          this.handleBulkActionResult(bulkActionResult);
         }
-
-        const statusBulkActions = [
-          BulkActionId.invite,
-          BulkActionId.selectForValidation,
-          BulkActionId.include,
-          BulkActionId.endInclusion,
-          BulkActionId.reject,
-          BulkActionId.markNoLongerEligible,
-          BulkActionId.pause,
-        ];
-
-        await actionResult(
-          this.alertController,
-          this.translate,
-          `<p>${this.translate.instant(
-            'page.program.program-people-affected.bulk-action-response.response',
-            {
-              action: this.getCurrentBulkAction().label,
-              paNumber: bulkActionResult.applicableCount,
-            },
-          )}</p>${
-            statusBulkActions.includes(this.action)
-              ? `<p>${this.translate.instant(
-                  'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
-                )}</p>`
-              : ''
-          }<p>${this.translate.instant(
-            'page.program.program-people-affected.bulk-action-response.close-popup',
-          )}</p>`,
-          true,
-          PubSubEvent.dataRegistrationChanged,
-          this.pubSub,
-        );
         this.isInProgress = false;
       })
       .catch((error) => {
@@ -865,6 +819,59 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           this.pubSub,
         );
       });
+  }
+
+  private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
+    this.updateSubmitWarning(bulkActionResult.applicableCount);
+    this.selectedCount = bulkActionResult.applicableCount;
+    if (bulkActionResult.applicableCount === 0) {
+      this.resetBulkAction();
+      actionResult(
+        this.alertController,
+        this.translate,
+        this.translate.instant(
+          'page.program.program-people-affected.no-checkboxes',
+        ),
+        true,
+        PubSubEvent.dataRegistrationChanged,
+        this.pubSub,
+      );
+    }
+    return;
+  }
+
+  private async handleBulkActionResult(bulkActionResult: BulkActionResult) {
+    const statusRelatedBulkActions = [
+      BulkActionId.invite,
+      BulkActionId.selectForValidation,
+      BulkActionId.include,
+      BulkActionId.endInclusion,
+      BulkActionId.reject,
+      BulkActionId.markNoLongerEligible,
+      BulkActionId.pause,
+    ];
+    await actionResult(
+      this.alertController,
+      this.translate,
+      `<p>${this.translate.instant(
+        'page.program.program-people-affected.bulk-action-response.response',
+        {
+          action: this.getCurrentBulkAction().label,
+          paNumber: bulkActionResult.applicableCount,
+        },
+      )}</p>${
+        statusRelatedBulkActions.includes(this.action)
+          ? `<p>${this.translate.instant(
+              'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+            )}</p>`
+          : ''
+      }<p>${this.translate.instant(
+        'page.program.program-people-affected.bulk-action-response.close-popup',
+      )}</p>`,
+      true,
+      PubSubEvent.dataRegistrationChanged,
+      this.pubSub,
+    );
   }
 
   public paComparator(a: string, b: string) {
