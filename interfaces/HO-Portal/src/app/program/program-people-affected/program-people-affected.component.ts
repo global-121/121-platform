@@ -665,6 +665,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.submitPaymentProps.payment,
     );
 
+    // Change the selected people count when select all is active and the bulk actions changes
+    if (this.selectAllChecked) {
+      this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+        null,
+        true,
+      );
+      this.applyAction(null, true);
+    }
+
     this.selectAllCheckboxVisible = true;
   }
 
@@ -686,7 +697,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async resetBulkAction() {
-    console.log('resetBulkAction: ');
     this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
