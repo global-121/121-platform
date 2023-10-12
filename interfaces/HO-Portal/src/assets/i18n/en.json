@@ -246,7 +246,7 @@
         "cbe": {
           "btn": "CBE verification report",
           "subHeader": "Download CBE Verification Report",
-          "message": "The data in this report is based on data that is imported every night from CBE."
+          "message": "The data in this report is based on data that is imported every night from CBE. <br /> If you changed data today this will not be reflected in the report."
         },
         "make-payment": {
           "error": {
