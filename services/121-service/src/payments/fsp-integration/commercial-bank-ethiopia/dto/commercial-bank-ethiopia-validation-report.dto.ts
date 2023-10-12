@@ -1,11 +1,26 @@
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CommercialBankEthiopiaValidationReportData {
+  @ApiProperty()
+  registrationProgramId: number;
+  @ApiProperty()
+  fullNameUsedForTheMatch: string;
+  @ApiProperty()
+  bankAccountNumberUsedForCall: string;
+  @ApiProperty()
+  cbeName: string;
+  @ApiProperty()
+  cbeStatus: string;
+  @ApiProperty()
+  errorMessage: string;
+}
+
 export class CommercialBankEthiopiaValidationReportDto {
-  data: {
-    registrationProgramId: number;
-    fullNameUsedForTheMatch: string;
-    bankAccountNumberUsedForCall: string;
-    cbeName: string;
-    cbeStatus: string;
-    errorMessage: string;
-  }[];
+  @ApiProperty({
+    isArray: true,
+    type: CommercialBankEthiopiaValidationReportData,
+  })
+  data: CommercialBankEthiopiaValidationReportData[];
+  @ApiProperty()
   fileName: string;
 }

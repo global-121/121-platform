@@ -4,7 +4,6 @@ import { Admin } from '../../../guards/admin.decorator';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
@@ -16,12 +15,12 @@ export class CommercialBankEthiopiaController {
 
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
-    summary: 'Validate all persons affected that are in this program.',
+    summary: 'Returns a list of PAs with their validation status',
   })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of PAs with their validation status',
-    type: [CommercialBankEthiopiaValidationData],
+    type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get(
