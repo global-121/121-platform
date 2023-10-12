@@ -352,7 +352,7 @@
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "perform action <strong>{{actionLabel}}</strong> on {{applicableCount}}",
+        "submit-warning-people-affected": "perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected",
         "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "transaction": {
           "error": "Failed",
