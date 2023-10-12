@@ -211,7 +211,7 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
-  public async assignRolesAndAssignmentAidworkerToProgram(
+  public async assignAidworkerRolesAndAssignmentToProgram(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
@@ -564,7 +564,7 @@ export class UserService {
     return roles;
   }
 
-  public async assigAidworkerToProgram(
+  public async assigAidworkerRolesToProgram(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,

@@ -277,7 +277,7 @@ export class UserController {
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    return await this.userService.assignRolesAndAssignmentAidworkerToProgram(
+    return await this.userService.assignAidworkerRolesAndAssignmentToProgram(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,
@@ -293,7 +293,7 @@ export class UserController {
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    return await this.userService.assigAidworkerToProgram(
+    return await this.userService.assigAidworkerRolesToProgram(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,
