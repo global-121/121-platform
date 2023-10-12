@@ -54,12 +54,15 @@
     </ion-row>
   </div>
 </ion-row>
+
 <app-table-filter-row
   [isLoading]="isLoading"
-  [tableFiltersPerColumn]="tableFiltersPerColumn"
+  [allFilters]="tableFiltersPerColumn"
   [programId]="programId"
   [thisPhase]="thisPhase"
-></app-table-filter-row>
+  [filteredCount]="pageMetaData?.totalItems"
+/>
+
 <div
   #proxyScrollbar
   class="proxy-scrollbar"

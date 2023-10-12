@@ -15,13 +15,16 @@ export class TableFilterRowComponent implements OnInit {
   public isLoading: boolean;
 
   @Input()
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public allFilters: { name: string; label: string }[] = [];
 
   @Input()
   public thisPhase: ProgramPhase;
 
   @Input()
   public programId: number;
+
+  @Input()
+  public filteredCount: number;
 
   public textFilterOption: { name: string; label: string }[] = [];
 
@@ -35,8 +38,8 @@ export class TableFilterRowComponent implements OnInit {
 
   constructor(private filterService: FilterService) {}
 
-  ngOnInit(): void {
-    this.textFilter = this.filterService.getTextFilterSubscription();
+  public ngOnInit(): void {
+    this.textFilter = this.filterService.textFilter$;
   }
 
   public applyFilter() {
@@ -46,15 +49,15 @@ export class TableFilterRowComponent implements OnInit {
     if (this.disableApplyButton()) {
       return;
     }
-    this.filterService.addTextFilter(
+    this.filterService.setTextFilter(
       this.textFilterOption[0].name,
-      this.textFilterOption[0].label,
       this.filterRowsVisibleQuery,
+      this.textFilterOption[0].label,
     );
-    this.clearFilter();
+    this.clearFilterCreateForm();
   }
 
-  private clearFilter() {
+  private clearFilterCreateForm() {
     this.filterRowsVisibleQuery = '';
     this.textFilterOption = [];
   }
@@ -72,18 +75,11 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public disableApplyButton(): boolean {
-    if (
-      !this.filterRowsVisibleQuery ||
-      this.filterRowsVisibleQuery.trim() === ''
-    ) {
+    if (!this.filterService.sanitizeFilterValue(this.filterRowsVisibleQuery)) {
       return true;
     }
 
     return false;
-  }
-
-  public applyStatusFilter(filter) {
-    console.log('=== filter: ', filter);
   }
 
   public clearAllFilters() {

@@ -1,5 +1,5 @@
 <div
-  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-vertical"
+  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
   [ngClass]="{
     'is-loading': isLoading
   }"
@@ -13,12 +13,12 @@
         name="funnel"
         color="black"
         aria-hidden="true"
-        class="ion-margin-horizontal"
+        class="ion-margin-start"
       ></ion-icon>
     </span>
 
     <app-select-typeahead
-      [items]="tableFiltersPerColumn"
+      [items]="allFilters"
       [(selection)]="textFilterOption"
       [placeholder]="
         'page.program.table-filter-row.select-column-to-filter' | translate
@@ -57,7 +57,10 @@
     </ng-container>
   </div>
 
-  <div class="layout-flex-row ion-align-items-center ion-padding-horizontal">
+  <div
+    style="border-left: 1px solid var(--fiveten-neutral-200)"
+    class="layout-flex-row ion-align-items-center ion-padding-horizontal"
+  >
     <ion-label class="ion-text-nowrap">
       {{
         'page.program.program-people-affected.filter-btn.common.filter-by'
@@ -74,15 +77,27 @@
 </div>
 
 <div
-  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center ion-margin-vertical"
+  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center"
   [ngClass]="{
     'is-loading': isLoading
   }"
 >
-  <div>
+  <div
+    *ngIf="(textFilter | async).length"
+    class="ion-align-items-center"
+  >
+    <ion-text
+      class="ion-margin-end"
+      style="font-size: 0.875rem"
+    >
+      {{ 'page.program.table-filter-row.filtered-results' | translate }}:
+      {{ filteredCount }}
+    </ion-text>
+
     <ion-chip
       *ngFor="let filter of textFilter | async"
       size="small"
+      class="tfr--active-filters-chip"
     >
       <ion-label>
         {{ filter.label }}:
@@ -117,7 +132,7 @@
       (click)="clearAllFilters()"
       size="small"
       shape="round"
-      color="tertiary"
+      class="tfr--clear-filters-btn"
     >
       {{ 'page.program.table-filter-row.clear-all' | translate }}
     </ion-button>

@@ -123,52 +123,77 @@ export class ProgramService {
     return program;
   }
 
-  public getFilterableAttributes(program: ProgramEntity): FilterAttributeDto[] {
-    let defaultFilterableInUI = [
-      'failedPayment',
-      'waitingPayment',
-      'successPayment',
+  public getFilterableAttributes(
+    program: ProgramEntity,
+  ): { group: string; filters: FilterAttributeDto[] }[] {
+    const genericPaAttributeFilters = [
       'personAffectedSequence',
       'referenceId',
       'phoneNumber',
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'note',
       'fspDisplayNamePortal',
-      'lastMessageStatus',
     ];
-    if (program.enableMaxPayments) {
-      defaultFilterableInUI = [
-        ...defaultFilterableInUI,
-        ...['maxPayments', 'paymentCount', 'paymentCountRemaining'],
-      ];
-    }
-
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
     );
-    const filterableAttributeNames = [
-      ...new Set([...defaultFilterableInUI, ...paAttributesNameArray]),
-    ];
 
-    const filterableAttributes: FilterAttributeDto[] = [];
-    for (const name of filterableAttributeNames) {
-      if (PaginateConfigRegistrationViewWithPayments.filterableColumns[name]) {
-        filterableAttributes.push({
-          name: name,
-          allowedOperators: PaginateConfigRegistrationViewWithPayments
-            .filterableColumns[name] as FilterOperator[],
-        });
-      } else {
-        // If no allowed operators are defined than the attribute is
-        // registration data which is store as a string
-        filterableAttributes.push({
-          name: name,
-          allowedOperators: AllowedFilterOperatorsString,
-        });
-      }
+    let filterableAttributeNames = [
+      {
+        group: 'payments',
+        filters: ['failedPayment', 'waitingPayment', 'successPayment'],
+      },
+      {
+        group: 'messages',
+        filters: ['lastMessageStatus'],
+      },
+      {
+        group: 'paAttributes',
+        filters: [
+          ...new Set([...genericPaAttributeFilters, ...paAttributesNameArray]),
+        ],
+      },
+    ];
+    if (program.enableMaxPayments) {
+      filterableAttributeNames = [
+        ...filterableAttributeNames,
+        ...[
+          {
+            group: 'maxPayments',
+            filters: ['maxPayments', 'paymentCount', 'paymentCountRemaining'],
+          },
+        ],
+      ];
     }
+
+    const filterableAttributes = [];
+    for (const group of filterableAttributeNames) {
+      const filterableAttributesPerGroup: FilterAttributeDto[] = [];
+      for (const name of group.filters) {
+        if (
+          PaginateConfigRegistrationViewWithPayments.filterableColumns[name]
+        ) {
+          filterableAttributesPerGroup.push({
+            name: name,
+            allowedOperators: PaginateConfigRegistrationViewWithPayments
+              .filterableColumns[name] as FilterOperator[],
+          });
+        } else {
+          // If no allowed operators are defined than the attribute is
+          // registration data which is stored as a string
+          filterableAttributesPerGroup.push({
+            name: name,
+            allowedOperators: AllowedFilterOperatorsString,
+          });
+        }
+      }
+      filterableAttributes.push({
+        group: group.group,
+        filters: filterableAttributesPerGroup,
+      });
+    }
+
     return filterableAttributes;
   }
 

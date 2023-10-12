@@ -47,12 +47,14 @@
   class="select-typeahead--popover"
   [showBackdrop]="showBackdrop"
   (ionPopoverWillPresent)="onPresent()"
+  (ionPopoverDidPresent)="onDidPresent()"
   (ionPopoverWillDismiss)="onDismiss($event.detail)"
 >
   <ng-template>
     <ion-header class="ion-no-border ion-no-padding">
       <ion-toolbar style="--min-height: 0">
         <ion-searchbar
+          #searchbar
           (ionInput)="onSearchbarInput($event)"
           style="
             padding: 0 !important;
@@ -97,20 +99,32 @@
           lines="full"
           class="ion-no-padding"
         >
-          <ion-item *ngFor="let item of filteredItems; trackBy: trackItems">
-            <ion-radio
-              [value]="item.name"
-              [disabled]="item.disabled"
-              [title]="item.label"
-            >
-              {{ item.label }}
-            </ion-radio>
-          </ion-item>
+          <ng-container *ngFor="let item of filteredItems; trackBy: trackItems">
+            <ion-item-divider
+              *ngIf="item.name.startsWith('divider')"
+              color="light"
+              style="min-height: 1rem"
+            />
+            <ion-item *ngIf="!item.name.startsWith('divider')">
+              <ion-radio
+                [value]="item.name"
+                [disabled]="item.disabled"
+                [title]="item.label"
+                (click)="onRadioClick(item.name)"
+                (keyup.enter)="confirmChanges()"
+              >
+                {{ item.label }}
+              </ion-radio>
+            </ion-item>
+          </ng-container>
         </ion-list>
       </ion-radio-group>
     </ion-content>
 
-    <ion-footer [ngClass]="{ 'ion-no-border': filteredItems.length < 8 }">
+    <ion-footer
+      *ngIf="multiple"
+      [ngClass]="{ 'ion-no-border': filteredItems.length < 8 }"
+    >
       <ion-toolbar>
         <ion-buttons slot="secondary">
           <ion-button

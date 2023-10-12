@@ -36,9 +36,14 @@ export class Program {
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
-  filterableAttributes: FilterableAttributeDefinition[];
+  filterableAttributes: FilterableAttributeGroup[];
   monitoringDashboardUrl?: string;
   evaluationDashboardUrl?: string;
+}
+
+class FilterableAttributeGroup {
+  group: string;
+  filters: FilterableAttributeDefinition[];
 }
 
 class FilterableAttributeDefinition {

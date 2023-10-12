@@ -54,6 +54,7 @@ import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
   FilterOperatorEnum,
+  Filter,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -135,7 +136,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ];
 
   public tableFiltersPerColumn: { name: string; label: string }[] = [];
-  public tableTextFilter: PaginationFilter[] = [];
+  private tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
   private tableStatusFilter: RegistrationStatus[];
@@ -162,11 +163,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private filterService: FilterService,
     private tableService: TableService,
   ) {
+    this.locale = environment.defaultLocale;
+
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
+
     this.pageMetaData = this.registrationsService?.getPageMetadata();
-    this.locale = environment.defaultLocale;
-    this.routerSubscription = this.router.events.subscribe(async (event) => {
+
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
           this.initComponent();
@@ -174,20 +178,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
     });
 
-    this.filterService.getTextFilterSubscription().subscribe(async (filter) => {
-      this.tableTextFilter = filter;
-      await this.getPage();
-    });
-
-    this.filterService
-      .getStatusFilterSubscription()
-      .subscribe(async (filter) => {
-        this.tableStatusFilter = filter;
-        await this.getPage();
-      });
-
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
+
   ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
@@ -199,6 +192,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   async initComponent() {
     this.isLoading = true;
+
+    this.filterService.textFilter$.subscribe((filter) => {
+      this.tableTextFilter = filter;
+      this.refreshData();
+    });
+
+    this.filterService.statusFilter$.subscribe((filter) => {
+      this.tableStatusFilter = filter;
+      this.refreshData();
+    });
 
     this.columns = [];
 
@@ -228,7 +231,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    this.tableFiltersPerColumn = await this.updateTableFiltersPerColumn();
+    this.tableFiltersPerColumn = this.createFilterPerAttibute();
+    this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -385,38 +389,56 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     });
   }
 
-  private async updateTableFiltersPerColumn(): Promise<
-    { name: string; label: string }[]
-  > {
-    const tableFiltersPerColumn = [];
+  private getLabelForAttribute(attributeName: string): string {
+    const paAttribute = this.program.paTableAttributes.find(
+      (attribute) => attribute.name === attributeName,
+    );
 
-    for (const columnName of this.program.filterableAttributes) {
-      const column = this.program.paTableAttributes.find(
-        (column) => column.name === columnName.name,
-      );
-      let label: string;
+    if (paAttribute && paAttribute.shortLabel) {
+      return this.translatableStringService.get(paAttribute.shortLabel);
+    }
 
-      if (column && column.shortLabel) {
-        label = this.translatableStringService.get(column.shortLabel);
-      } else {
-        label = this.translate.instant(
-          `page.program.program-people-affected.column.${columnName.name}`,
-        );
+    const availableTranslations = this.translate.instant(
+      'page.program.program-people-affected.column',
+    );
+
+    if (availableTranslations[attributeName]) {
+      return availableTranslations[attributeName];
+    }
+
+    return attributeName;
+  }
+
+  private createFilterPerAttibute(): Filter[] {
+    const allFilters = [];
+    let groupIndex = 0;
+    for (const group of this.program.filterableAttributes) {
+      for (const columnName of group.filters) {
+        if (
+          columnName.name === 'inclusionScore' &&
+          !this.showInclusionScore()
+        ) {
+          continue;
+        }
+
+        allFilters.push({
+          name: columnName.name,
+          label: this.getLabelForAttribute(columnName.name),
+        });
       }
 
-      tableFiltersPerColumn.push({ name: columnName.name, label: label });
-
-      if (columnName.name === 'successPayment') {
-        // TODO: Refactor: this is hard-coded & it assumes that 'successPayment' is the last of the 3 payment variables as defined in programs.service. This should be replaced by a more robust solution.
-        tableFiltersPerColumn.push({
+      // add divider line after each group except last
+      if (groupIndex < this.program.filterableAttributes.length - 1) {
+        allFilters.push({
           name: 'divider',
-          label: '------------------------------------------',
+          label: '-',
           disabled: true,
         });
       }
+      groupIndex += 1;
     }
 
-    return tableFiltersPerColumn;
+    return allFilters;
   }
 
   private async addPaymentBulkActions() {
@@ -478,17 +500,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ),
       registrationCreated: person.registrationCreated
         ? formatDate(
-            person.registrationCreated,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
+          person.registrationCreated,
+          DateFormat.dayAndTime,
+          this.locale,
+        )
         : null,
       inclusionScore: person.inclusionScore,
       preferredLanguage: person.preferredLanguage
         ? this.enumService.getEnumLabel(
-            'preferredLanguage',
-            person.preferredLanguage,
-          )
+          'preferredLanguage',
+          person.preferredLanguage,
+        )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       paymentAmountMultiplier: person.paymentAmountMultiplier
@@ -496,17 +518,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : '',
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
-        ? `${person.maxPayments} ${
-            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
-              this.thisPhase,
-            )
-              ? `(${
-                  person.maxPayments - person.paymentCount
-                } ${this.translate.instant(
-                  'page.program.program-people-affected.max-payments.left',
-                )})`
-              : ''
-          }`
+        ? `${person.maxPayments} ${[ProgramPhase.inclusion, ProgramPhase.payment].includes(
+          this.thisPhase,
+        )
+          ? `(${person.maxPayments - person.paymentCount
+          } ${this.translate.instant(
+            'page.program.program-people-affected.max-payments.left',
+          )})`
+          : ''
+        }`
         : '',
       fsp: person.financialServiceProvider,
       financialServiceProvider: person.fspDisplayNamePortal,
@@ -816,12 +836,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               action: this.getCurrentBulkAction().label,
               paNumber: bulkActionResult.applicableCount,
             },
-          )}</p>${
-            statusBulkActions.includes(this.action)
-              ? `<p>${this.translate.instant(
-                  'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
-                )}</p>`
-              : ''
+          )}</p>${statusBulkActions.includes(this.action)
+            ? `<p>${this.translate.instant(
+              'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+            )}</p>`
+            : ''
           }<p>${this.translate.instant(
             'page.program.program-people-affected.bulk-action-response.close-popup',
           )}</p>`,
