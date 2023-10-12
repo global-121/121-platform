@@ -5,9 +5,8 @@ import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { PermissionEnum } from '../../../user/permission.enum';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { CommercialBankEthiopiaValidationData } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
@@ -19,12 +18,12 @@ export class CommercialBankEthiopiaController {
 
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
-    summary: 'Validate all persons affected that are in this program.',
+    summary: 'Returns a list of PAs with their validation status',
   })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of PAs with their validation status',
-    type: [CommercialBankEthiopiaValidationData],
+    type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get(
@@ -32,7 +31,7 @@ export class CommercialBankEthiopiaController {
   )
   public async getValidated(
     @Param('programId') programId: number,
-  ): Promise<CommercialBankEthiopiaAccountEnquiriesEntity[]> {
+  ): Promise<CommercialBankEthiopiaValidationReportDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
       Number(programId),
     );

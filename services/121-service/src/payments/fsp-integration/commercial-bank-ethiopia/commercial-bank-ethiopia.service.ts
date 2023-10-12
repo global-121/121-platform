@@ -21,6 +21,7 @@ import {
   CommercialBankEthiopiaTransferPayload,
   CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -424,7 +425,7 @@ export class CommercialBankEthiopiaService
 
   public async getAllPaValidations(
     programId: number,
-  ): Promise<CommercialBankEthiopiaAccountEnquiriesEntity[]> {
+  ): Promise<CommercialBankEthiopiaValidationReportDto> {
     const programPAs = await this.commercialBankEthiopiaAccountEnquiriesEntity
       .createQueryBuilder('cbe')
       .innerJoin('cbe.registration', 'registration')
@@ -442,19 +443,17 @@ export class CommercialBankEthiopiaService
         ],
       })
       .select([
-        'cbe.id',
-        'cbe.updated',
-        'cbe.registrationId',
-        'cbe.fullNameUsedForTheMatch',
-        'cbe.bankAccountNumberUsedForCall',
-        'cbe.cbeName',
-        'cbe.namesMatch',
-        'cbe.cbeStatus',
-        'cbe.errorMessage',
+        'registration.registrationProgramId as "registrationProgramId"',
+        'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
+        'cbe.cbeName as "cbeName"',
+        'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
+        'cbe.errorMessage as "errorMessage"',
+        'cbe.cbeStatus as "cbeStatus"',
+        'cbe.updated as "updated"',
       ])
-      .getMany();
+      .getRawMany();
 
-    return programPAs;
+    return { data: programPAs, fileName: 'cbe-validation-report' };
   }
 
   private generateRandomNumerics(length: number): string {
