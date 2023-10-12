@@ -32,7 +32,7 @@
         </ng-container>
       </select>
       <app-confirm-prompt
-        [disabled]="applyBtnDisabled"
+        [disabled]="applyBtnDisabled || isInProgress"
         (confirm)="applyAction($event)"
         [subHeader]="
           'page.program.program-people-affected.submit-warning' | translate
