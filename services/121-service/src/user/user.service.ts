@@ -211,7 +211,7 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
-  public async assigAidworkerToProgram(
+  public async assignRolesAndAssignmentAidworkerToProgram(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
@@ -264,13 +264,18 @@ export class UserService {
     return newRoles;
   }
 
-  public async deleteAssignment(
+  public async deleteRoles(
     programId: number,
     userId: number,
-  ): Promise<void> {
+    assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['programAssignments', 'programAssignments.program'],
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+      ],
     });
     if (!user) {
       const errors = { User: ' not found' };
@@ -284,15 +289,36 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const rolesToDelete = await this.userRoleRepository.find({
+      where: {
+        role: In(assignAidworkerToProgram.roles),
+      },
+    });
+    if (rolesToDelete.length !== assignAidworkerToProgram.roles.length) {
+      const errors = { Roles: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     // If 0 roles are posted remove aidworker assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
-        await this.assignmentRepository.remove(programAssignment);
-        // Also remove user without assignments
-        if (user.programAssignments.length <= 1) {
-          await this.userRepository.remove(user);
+        const rolesToKeep = programAssignment.roles.filter(
+          (role) => !rolesToDelete.some((newRole) => newRole.id === role.id),
+        );
+        let resultRoles: UserRoleEntity[] = [];
+
+        if (rolesToDelete.length === 0 || rolesToKeep.length === 0) {
+          // If no roles are left, delete the assignment
+          await this.assignmentRepository.remove(programAssignment);
+        } else if (rolesToKeep.length > 0) {
+          // Keep only the roles that are not in the newRoles array
+          programAssignment.roles = rolesToKeep;
+
+          // Save the assignment with updated roles
+          await this.assignmentRepository.save(programAssignment);
+          resultRoles = rolesToKeep;
         }
-        return;
+        return resultRoles;
       }
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
@@ -517,5 +543,84 @@ export class UserService {
       .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
       .select(['user.id AS id', 'user.username AS username'])
       .getRawMany();
+  }
+
+  public async getProgramRoles(
+    programId: number,
+    userId: number,
+  ): Promise<UserRoleEntity[]> {
+    const roles = await this.userRoleRepository
+      .createQueryBuilder('roles')
+      .leftJoin('roles.assignments', 'assignments')
+      .where('assignments.programId = :programId', { programId })
+      .andWhere('assignments.userId = :userId', { userId })
+      .getMany();
+
+    if (!roles) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    return roles;
+  }
+
+  public async assigAidworkerToProgram(
+    programId: number,
+    userId: number,
+    assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+      ],
+    });
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
+    if (!program) {
+      const errors = { Program: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const newRoles = await this.userRoleRepository.find({
+      where: {
+        role: In(assignAidworkerToProgram.roles),
+      },
+    });
+    if (newRoles.length !== assignAidworkerToProgram.roles.length) {
+      const errors = { Roles: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    // if already assigned: add roles to program assignment
+    for (const programAssignment of user.programAssignments) {
+      if (programAssignment.program.id === programId) {
+        // Get the existing roles
+        const existingRoles = programAssignment.roles;
+
+        // Filter out roles that are already assigned
+        const rolesToAdd = newRoles.filter(
+          (newRole) =>
+            !existingRoles.some(
+              (existingRole) => existingRole.id === newRole.id,
+            ),
+        );
+
+        // If there are roles to add, update the roles in the programAssignment
+        programAssignment.roles = existingRoles.concat(rolesToAdd);
+
+        // Save the updated programAssignment
+        await this.assignmentRepository.save(programAssignment);
+
+        return programAssignment.roles;
+      }
+    }
   }
 }

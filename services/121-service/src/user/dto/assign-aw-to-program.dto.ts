@@ -8,6 +8,6 @@ export class AssignAidworkerToProgramDto {
     enum: DefaultUserRole,
   })
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(0)
   public readonly roles: DefaultUserRole[];
 }

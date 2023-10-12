@@ -59,15 +59,6 @@ export class ProgramService {
     programId: number,
     userId?: number,
   ): Promise<ProgramEntity> {
-    let includeAidworkerAssignments = false;
-    if (userId) {
-      includeAidworkerAssignments = await this.userService.canActivate(
-        [PermissionEnum.AidWorkerProgramREAD],
-        programId,
-        userId,
-      );
-    }
-
     let includeMetricsUrl = false;
     if (userId) {
       includeMetricsUrl = await this.userService.canActivate(
@@ -77,20 +68,12 @@ export class ProgramService {
       );
     }
 
-    let relations = [
+    const relations = [
       'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
       'programCustomAttributes',
     ];
-    if (includeAidworkerAssignments) {
-      const aidworkerAssignmentsRelations = [
-        'aidworkerAssignments',
-        'aidworkerAssignments.user',
-        'aidworkerAssignments.roles',
-      ];
-      relations = [...relations, ...aidworkerAssignmentsRelations];
-    }
 
     const program = await this.programRepository.findOne({
       where: { id: programId },

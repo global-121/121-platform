@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Req,
@@ -254,12 +255,41 @@ export class UserController {
     return await this.userService.findByUsername(username);
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiOperation({ summary: 'Assign Aidworker to program' })
+  @Admin()
+  @ApiOperation({ summary: 'Get user roles' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @Post('programs/:programId/users/:userId/assignments')
-  public async assignFieldValidationAidworkerToProgram(
+  // TODO: REFACTOR: rename to /users/roles/
+  @Get('programs/:programId/users/:userId/roles')
+  public async getProgramRoles(@Param() params): Promise<UserRoleEntity[]> {
+    return await this.userService.getProgramRoles(
+      Number(params.programId),
+      Number(params.userId),
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiOperation({ summary: 'Assign Roles and Assignment Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Put('programs/:programId/users/:userId/roles')
+  public async assignRolesAndAssignmentFieldValidationAidworkerToProgram(
+    @Param() params,
+    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
+    return await this.userService.assignRolesAndAssignmentAidworkerToProgram(
+      Number(params.programId),
+      Number(params.userId),
+      assignAidworkerToProgram,
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiOperation({ summary: 'Assign Roles Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Patch('programs/:programId/users/:userId/roles')
+  public async assignRolesFieldValidationAidworkerToProgram(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
@@ -274,11 +304,15 @@ export class UserController {
   @ApiOperation({ summary: 'Remove aidworker from program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @Delete('programs/:programId/users/:userId/assignments')
-  public async deleteAidWorkerAssignment(@Param() params): Promise<void> {
-    return await this.userService.deleteAssignment(
+  @Delete('programs/:programId/users/:userId/roles')
+  public async deleteAidWorkerAssignment(
+    @Param() params,
+    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
+    return await this.userService.deleteRoles(
       Number(params.programId),
       Number(params.userId),
+      assignAidworkerToProgram,
     );
   }
 
