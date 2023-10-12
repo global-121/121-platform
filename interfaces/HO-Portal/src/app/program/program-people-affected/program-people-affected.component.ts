@@ -121,6 +121,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private pubSubSubscription: Subscription;
   private textFilterSubscription: Subscription;
   private statusFilterSubscription: Subscription;
+  private combinedFilterSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
@@ -199,6 +200,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     if (this.statusFilterSubscription) {
       this.statusFilterSubscription.unsubscribe();
     }
+    if (this.combinedFilterSubscription) {
+      this.combinedFilterSubscription.unsubscribe();
+    }
   }
 
   private setupFilterSubscriptions() {
@@ -215,7 +219,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       },
     );
 
-    this.filterService.textFilter$
+    this.combinedFilterSubscription = this.filterService.textFilter$
       .pipe(mergeWith(this.filterService.statusFilter$))
       .pipe(
         throttleTime(500, null, {
