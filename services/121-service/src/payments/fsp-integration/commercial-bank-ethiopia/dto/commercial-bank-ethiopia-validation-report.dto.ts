@@ -13,6 +13,8 @@ export class CommercialBankEthiopiaValidationReportData {
   cbeStatus: string;
   @ApiProperty()
   errorMessage: string;
+  @ApiProperty()
+  updated: string;
 }
 
 export class CommercialBankEthiopiaValidationReportDto {
