@@ -493,8 +493,9 @@ export class UserService {
   public async getUsersInProgram(
     programId: number,
   ): Promise<GetUserReponseDto[]> {
-    return await this.assignmentRepository
+    const users = await this.assignmentRepository
       .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('assignment.user', 'user')
       .where('assignment.programId = :programId', { programId })
       .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
@@ -504,8 +505,31 @@ export class UserService {
         'user.admin AS admin',
         'user.active AS active',
         'user.lastLogin AS "lastLogin"',
+        'ARRAY_AGG(roles.id) AS rolesId',
+        'ARRAY_AGG(roles.role) AS role',
+        'ARRAY_AGG(roles.label) AS label',
       ])
+      .groupBy('user.id')
       .getRawMany();
+
+    const result = users.map((user) => {
+      const roles = user.rolesid.map((id, index) => ({
+        id,
+        role: user.role[index],
+        label: user.label[index],
+      }));
+
+      return {
+        id: user.id,
+        username: user.username,
+        admin: user.admin,
+        active: user.active,
+        lastLogin: user.lastLogin,
+        roles,
+      };
+    });
+
+    return result;
   }
 
   public async findUsersByName(
