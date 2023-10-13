@@ -508,6 +508,18 @@
           "pa-moved-phase": "People Affected might be visible in another phase after this status change.",
           "close-popup": "You can close this popup."
         },
+        "bulk-action-conditions": {
+          "invite": "Note: The 'Invite' action is only applicable to registrations that have been imported, marked as no longer eligible, or have no assigned status.",
+          "select-for-validation": "Note: The 'Select for Validation' action can only be applied to registrations that are currently registered.",
+          "include": "Note: The 'Include' action is applicable to registrations with the status 'Registered', 'Selected for Validation', 'Validated', 'Rejected', 'Inclusion Ended', 'Paused', or 'Completed'.",
+          "end-inclusion": "Note: The 'End Inclusion' action is applicable solely to registrations that are currently included or completed.",
+          "reject": "Note: The 'Reject' action is applicable to registrations with the status 'Registered', 'Selected for Validation', 'Validated', 'Included', 'No Longer Eligible', or 'Registered While No Longer Eligible'.",
+          "mark-no-longer-eligible": "Note: The 'Mark No Longer Eligible' action is applicable to registrations that have been imported or invited.",
+          "send-message": "Note: The 'Send Message' action can only be applied to registrations that have a phone number associated with them.",
+          "delete-pa": "Note: The 'Delete PA' action can be applied to any registration that is not already deleted.",
+          "do-payment": "Note: The 'Do Payment' action can only be applied to registrations that have not yet received the payment.",
+          "pause": "Note: The 'Pause' action can only be applied to registrations that are currently included."
+        },
         "payment-history-popup": {
           "title": "Payment history"
         }

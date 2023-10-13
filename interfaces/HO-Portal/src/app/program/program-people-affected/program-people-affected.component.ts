@@ -782,13 +782,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       return;
     }
     const actionLabel = this.getCurrentBulkAction().label;
-    this.submitWarning = this.translate.instant(
+    const numberOfPeopleWarning = this.translate.instant(
       'page.program.program-people-affected.submit-warning-people-affected',
       {
         actionLabel,
         applicableCount: applicableCount,
       },
     );
+    const conditionsToSelectText = this.translate.instant(
+      `page.program.program-people-affected.bulk-action-conditions.${this.action}`)
+    this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
   }
 
   private setBulkActionFilters(): PaginationFilter[] {
@@ -858,13 +861,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateSubmitWarning(bulkActionResult.applicableCount);
     this.selectedCount = bulkActionResult.applicableCount;
     if (bulkActionResult.applicableCount === 0) {
+      const nobodyToSelectTest = this.translate.instant(
+        'page.program.program-people-affected.no-checkboxes'
+      )
+      const conditionsToSelectText = this.translate.instant(
+        `page.program.program-people-affected.bulk-action-conditions.${this.action}`)
+
+      const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
+          `
+
       this.resetBulkAction();
       actionResult(
         this.alertController,
         this.translate,
-        this.translate.instant(
-          'page.program.program-people-affected.no-checkboxes',
-        ),
+        text,
         true,
         PubSubEvent.dataRegistrationChanged,
         this.pubSub,
@@ -883,24 +893,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
     ];
+    const responseText = this.translate.instant('page.program.program-people-affected.bulk-action-response.response', {
+      action: this.getCurrentBulkAction().label,
+      paNumber: bulkActionResult.applicableCount,
+    });
+
+    const paMovedPhaseText = statusRelatedBulkActions.includes(this.action)
+      ? this.translate.instant('page.program.program-people-affected.bulk-action-response.pa-moved-phase')
+      : '';
+    const closePopupText = this.translate.instant('page.program.program-people-affected.bulk-action-response.close-popup');
+
+
+    const bulkActionResponse = `<p>${responseText}</p><p>${paMovedPhaseText}</p><p>${closePopupText}</p>`;
+
     await actionResult(
       this.alertController,
       this.translate,
-      `<p>${this.translate.instant(
-        'page.program.program-people-affected.bulk-action-response.response',
-        {
-          action: this.getCurrentBulkAction().label,
-          paNumber: bulkActionResult.applicableCount,
-        },
-      )}</p>${
-        statusRelatedBulkActions.includes(this.action)
-          ? `<p>${this.translate.instant(
-              'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
-            )}</p>`
-          : ''
-      }<p>${this.translate.instant(
-        'page.program.program-people-affected.bulk-action-response.close-popup',
-      )}</p>`,
+      bulkActionResponse,
       true,
       PubSubEvent.dataRegistrationChanged,
       this.pubSub,
