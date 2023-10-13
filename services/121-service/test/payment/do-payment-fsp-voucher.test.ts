@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
@@ -49,7 +50,12 @@ describe('Do payment to 1 PA', () => {
     it('should succesfully pay-out', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
-      await changePaStatus(programId, [referenceIdAh], 'include', accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdAh],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
       const paymentReferenceIds = [referenceIdAh];
 
       // Act

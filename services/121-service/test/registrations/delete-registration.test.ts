@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
@@ -21,11 +20,7 @@ describe('Delete PA', () => {
   });
 
   afterEach(async () => {
-    await deleteRegistrations(
-      programId,
-      { referenceIds: [referenceIdVisa] },
-      accessToken,
-    );
+    await deleteRegistrations(programId, [referenceIdVisa], accessToken);
   });
 
   it('should not delete unknown registrations', async () => {
@@ -35,13 +30,14 @@ describe('Delete PA', () => {
     // Act
     const response = await deleteRegistrations(
       programId,
-      { referenceIds: [wrongReferenceId] },
+      [wrongReferenceId],
       accessToken,
     );
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
-    expect(response.body.errors.length).not.toBe(0);
+    expect(response.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(response.body.totalFilterCount).toBe(0);
+    expect(response.body.applicableCount).toBe(0);
   });
 
   it('should succesfully delete', async () => {
@@ -50,24 +46,19 @@ describe('Delete PA', () => {
     // Act
     const response = await deleteRegistrations(
       programId,
-      { referenceIds: [rightReferenceId] },
+      [rightReferenceId],
       accessToken,
     );
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.statusCode).toBe(HttpStatus.ACCEPTED);
 
     const registration = await searchRegistrationByReferenceId(
       referenceIdVisa,
       programId,
       accessToken,
     );
-    expect(registration.body.data[0].status).toBe(
-      RegistrationStatusEnum.deleted,
-    );
-    // Expect PII to be deleted
-    expect(registration.body.data[0].phoneNumber).toBe(null);
-    // TODO: Commenting this out for now as this is not working with the current refactor/implementation
-    // expect(registration.body.data[0].firstName).toBe(null);
+    // You cannot find delete PAs
+    expect(registration.body.data.length).toBe(0);
   });
 });

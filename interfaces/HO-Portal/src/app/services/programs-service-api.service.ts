@@ -89,13 +89,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
+  deleteRegistrations(
+    programId: number,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
+  ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      {
-        referenceIds,
-      },
+      null,
+      false,
+      params,
     );
   }
 
@@ -577,85 +582,144 @@ export class ProgramsServiceApiService {
   private updatePaStatus(
     action: string,
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
     message?: string,
   ): Promise<any> {
-    return this.apiService.post(
+    const params = this.filterToParams(filters, dryRun);
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${action}`,
+      `/programs/${programId}/registrations/status`,
       {
-        referenceIds,
+        status: action,
         message,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
   selectForValidation(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('select-validation', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.selectedForValidation,
+      programId,
+      dryRun,
+      filters,
+    );
   }
 
   markNoLongerEligible(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('no-longer-eligible', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.noLongerEligible,
+      programId,
+      dryRun,
+      filters,
+    );
   }
 
   invite(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('invite', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.invited,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   include(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('include', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.included,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   end(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('end', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.inclusionEnded,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   reject(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('reject', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.rejected,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   pause(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('pause', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.paused,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   sendMessage(
-    referenceIds: string[],
-    message: string,
     programId: number,
+    message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/text-message`,
+      `/programs/${programId}/registrations/message`,
       {
-        referenceIds,
         message,
+        skipMessageValidation: dryRun,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
@@ -831,5 +895,24 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/users`,
     );
+  }
+
+  private filterToParams(
+    filters: PaginationFilter[],
+    dryRun: boolean,
+  ): HttpParams {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return params;
   }
 }

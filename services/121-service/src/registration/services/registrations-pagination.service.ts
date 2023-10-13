@@ -10,6 +10,7 @@ import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
 import {
   Brackets,
   FindOperator,
+  Not,
   Repository,
   SelectQueryBuilder,
   WhereExpressionBuilder,
@@ -22,6 +23,7 @@ import { UserEntity } from '../../user/user.entity';
 import {
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
+  PaginateConfigRegistrationViewNoLimit,
 } from '../const/filter-operation.const';
 import {
   RegistrationDataInfo,
@@ -29,6 +31,7 @@ import {
 } from '../dto/registration-data-relation.model';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
@@ -53,8 +56,16 @@ export class RegistrationsPaginationService {
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
+    noLimit: boolean,
+    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
-    const paginateConfigCopy = { ...PaginateConfigRegistrationView };
+    let paginateConfigCopy = { ...PaginateConfigRegistrationView };
+    if (noLimit) {
+      // These setting are needed to get all registrations
+      // This is used for doing bulk updates with a filter
+      paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
+      query.limit = 0;
+    }
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention = await this.getFullNameNamingConvention(
@@ -67,11 +78,17 @@ export class RegistrationsPaginationService {
       }
     }
 
-    let queryBuilder = this.registrationViewRepository
-      .createQueryBuilder('registration')
-      .where('"registration"."programId" = :programId', {
+    if (!queryBuilder) {
+      queryBuilder = this.registrationViewRepository
+        .createQueryBuilder('registration')
+        .where({ status: Not(RegistrationStatusEnum.deleted) });
+    }
+    queryBuilder = queryBuilder.andWhere(
+      '"registration"."programId" = :programId',
+      {
         programId: programId,
-      });
+      },
+    );
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
@@ -115,6 +132,7 @@ export class RegistrationsPaginationService {
 
     // If a person has transaction read permission, add the payment filter
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
+    // console.log('queryBuilder: ', queryBuilder.getSql());
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection

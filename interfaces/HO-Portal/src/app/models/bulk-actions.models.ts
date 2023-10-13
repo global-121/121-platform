@@ -26,3 +26,9 @@ export class BulkAction {
   showIfNoValidation: boolean;
   confirmConditions?: InputProps;
 }
+
+export class BulkActionResult {
+  public readonly totalFilterCount: number;
+  public readonly applicableCount: number;
+  public readonly nonApplicableCount: number;
+}

@@ -9,6 +9,7 @@ import {
 import {
   BeforeRemove,
   Brackets,
+  Check,
   Column,
   Entity,
   Index,
@@ -26,6 +27,7 @@ import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ReferenceIdConstraints } from '../shared/const';
 import { UserEntity } from '../user/user.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
@@ -43,6 +45,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
+@Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)

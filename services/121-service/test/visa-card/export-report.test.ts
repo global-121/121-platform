@@ -52,7 +52,12 @@ describe('Export Visa debit card report', () => {
   it('should succesfully generate a report of all Visa Debit cards', async () => {
     // Arrange
     await importRegistrations(programId, [registrationVisa], accessToken);
-    await changePaStatus(programId, [referenceIdVisa], 'include', accessToken);
+    await changePaStatus(
+      programId,
+      [referenceIdVisa],
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
     const paymentReferenceIds = [referenceIdVisa];
     await doPayment(
       programId,
