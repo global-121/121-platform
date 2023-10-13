@@ -4,17 +4,13 @@
 
   <div>
     <ion-row>
-
-      {{ selectedPeople | json }}
-    </ion-row>
-    <ion-row>
       <select
         name="bulkActions"
         [title]="
           'page.program.program-people-affected.choose-action' | translate
         "
         (change)="selectAction($event)"
-      class="styled-select ion-margsein-end"
+      class="styled-select ion-margin-end"
         [(ngModel)]="action"
       >
         <option value="">
@@ -130,7 +126,7 @@
       <input
         type="checkbox"
         (change)="onCheckboxChangeFn($event)"
-        [checked]="selectAllChecked ? true : isRowSelected(row.referenceId)"
+        [checked]="isRowSelected(row.referenceId)"
         *ngIf="row.checkboxVisible"
         [disabled]="row.checkboxDisabled"
       />

@@ -747,7 +747,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public isRowSelected(rowId: string): boolean {
-    return this.selectedPeople.map((p) => p.referenceId).includes(rowId)
+    if (this.selectAllChecked) {
+      return true
+    } else {
+      return this.selectedPeople.map((p) => p.referenceId).includes(rowId)
+    }
   }
 
   public getCurrentBulkAction(): BulkAction {
