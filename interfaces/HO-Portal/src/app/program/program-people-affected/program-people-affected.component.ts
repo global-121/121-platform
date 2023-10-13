@@ -196,11 +196,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.filterService.textFilter$.subscribe((filter) => {
       this.tableTextFilter = filter;
       this.refreshData();
+      this.clearSelection();
     });
 
     this.filterService.statusFilter$.subscribe((filter) => {
       this.tableStatusFilter = filter;
       this.refreshData();
+      this.clearSelection();
     });
 
     this.columns = [];
@@ -727,23 +729,40 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
+  private clearSelection(): void {
+    this.selectedPeople = [];
+    this.selectedCount = 0;
+    if (this.selectAllChecked) {
+      this.onSelectAll()
+    }
+    this.applyBtnDisabled = false;
+  }
+
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
-      this.selectedPeople = [];
-      this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-        null,
-        true,
-      );
-      this.applyAction(null, true);
-      this.applyBtnDisabled = false;
+      this.handleSelectAllChecked()
     } else {
-      this.selectedCount = this.selectedPeople.length;
-      this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
-      this.applyBtnDisabled = true;
+      this.handleSelectAllUnchecked()
     }
+  }
+
+  private handleSelectAllChecked(): void {
+    this.selectedPeople = [];
+    this.updatePeopleForAction(
+      this.visiblePeopleAffected,
+      this.action,
+      null,
+      true,
+    );
+    this.applyAction(null, true);
+    this.applyBtnDisabled = false;
+  }
+
+  private handleSelectAllUnchecked() {
+    this.selectedCount = this.selectedPeople.length;
+    this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
+    this.applyBtnDisabled = true;
   }
 
   public isRowSelected(rowId: string): boolean {
