@@ -581,8 +581,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
-
-
   private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
     const columnKey = 'paymentHistoryColumn';
     personRow[columnKey] = this.translate.instant(
@@ -733,7 +731,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectedPeople = [];
     this.selectedCount = 0;
     if (this.selectAllChecked) {
-      this.onSelectAll()
+      this.onSelectAll();
     }
     this.applyBtnDisabled = false;
   }
@@ -741,9 +739,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
-      this.handleSelectAllChecked()
+      this.handleSelectAllChecked();
     } else {
-      this.handleSelectAllUnchecked()
+      this.handleSelectAllUnchecked();
     }
   }
 
@@ -767,9 +765,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public isRowSelected(rowId: string): boolean {
     if (this.selectAllChecked) {
-      return true
+      return true;
     } else {
-      return this.selectedPeople.map((p) => p.referenceId).includes(rowId)
+      return this.selectedPeople.map((p) => p.referenceId).includes(rowId);
     }
   }
 
@@ -790,7 +788,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       },
     );
     const conditionsToSelectText = this.translate.instant(
-      `page.program.program-people-affected.bulk-action-conditions.${this.action}`)
+      `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+    );
     this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
   }
 
@@ -862,13 +861,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectedCount = bulkActionResult.applicableCount;
     if (bulkActionResult.applicableCount === 0) {
       const nobodyToSelectTest = this.translate.instant(
-        'page.program.program-people-affected.no-checkboxes'
-      )
+        'page.program.program-people-affected.no-checkboxes',
+      );
       const conditionsToSelectText = this.translate.instant(
-        `page.program.program-people-affected.bulk-action-conditions.${this.action}`)
+        `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+      );
 
       const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
-          `
+          `;
 
       this.resetBulkAction();
       actionResult(
@@ -893,16 +893,22 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
     ];
-    const responseText = this.translate.instant('page.program.program-people-affected.bulk-action-response.response', {
-      action: this.getCurrentBulkAction().label,
-      paNumber: bulkActionResult.applicableCount,
-    });
+    const responseText = this.translate.instant(
+      'page.program.program-people-affected.bulk-action-response.response',
+      {
+        action: this.getCurrentBulkAction().label,
+        paNumber: bulkActionResult.applicableCount,
+      },
+    );
 
     const paMovedPhaseText = statusRelatedBulkActions.includes(this.action)
-      ? this.translate.instant('page.program.program-people-affected.bulk-action-response.pa-moved-phase')
+      ? this.translate.instant(
+          'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+        )
       : '';
-    const closePopupText = this.translate.instant('page.program.program-people-affected.bulk-action-response.close-popup');
-
+    const closePopupText = this.translate.instant(
+      'page.program.program-people-affected.bulk-action-response.close-popup',
+    );
 
     const bulkActionResponse = `<p>${responseText}</p><p>${paMovedPhaseText}</p><p>${closePopupText}</p>`;
 
