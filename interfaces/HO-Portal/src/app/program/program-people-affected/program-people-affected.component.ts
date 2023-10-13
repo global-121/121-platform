@@ -262,6 +262,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isCompleted.emit(true);
   }
 
+  public getId(row: PersonRow): string {
+    return row.referenceId;
+  }
+
   private async refreshData() {
     this.isLoading = true;
     await this.loadData();
@@ -575,6 +579,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return personRow;
   }
 
+
+
   private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
     const columnKey = 'paymentHistoryColumn';
     personRow[columnKey] = this.translate.instant(
@@ -738,6 +744,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
       this.applyBtnDisabled = true;
     }
+  }
+
+  public isRowSelected(rowId: string): boolean {
+    return this.selectedPeople.map((p) => p.referenceId).includes(rowId)
   }
 
   public getCurrentBulkAction(): BulkAction {

@@ -1,7 +1,12 @@
 <ion-row
   class="ion-align-items-center ion-justify-content-between ion-margin-bottom"
 >
+
   <div>
+    <ion-row>
+
+      {{ selectedPeople | json }}
+    </ion-row>
     <ion-row>
       <select
         name="bulkActions"
@@ -9,7 +14,7 @@
           'page.program.program-people-affected.choose-action' | translate
         "
         (change)="selectAction($event)"
-        class="styled-select ion-margin-end"
+      class="styled-select ion-margsein-end"
         [(ngModel)]="action"
       >
         <option value="">
@@ -71,6 +76,7 @@
 >
   <div class="proxy-scrollbar--content"></div>
 </div>
+
 <ngx-datatable
   #people
   class="bootstrap"
@@ -81,6 +87,7 @@
   [externalSorting]="true"
   (sort)="onSort($event)"
   [loadingIndicator]="isLoading"
+  [rowIdentity]="getId"
   [columns]="columns"
   [rows]="visiblePeopleAffected"
   selectionType="checkbox"
@@ -123,7 +130,7 @@
       <input
         type="checkbox"
         (change)="onCheckboxChangeFn($event)"
-        [checked]="selectAllChecked ? true : value"
+        [checked]="selectAllChecked ? true : isRowSelected(row.referenceId)"
         *ngIf="row.checkboxVisible"
         [disabled]="row.checkboxDisabled"
       />
