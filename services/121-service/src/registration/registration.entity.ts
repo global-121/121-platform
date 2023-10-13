@@ -143,9 +143,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
+    // The order of these calls is important, because of foreign key constraints
+    // Please check if it still works if you change the order
     await this.deleteAllOneToMany([
       {
         entityClass: ImageCodeExportVouchersEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: TwilioMessageEntity,
         columnName: 'registration',
       },
       {
