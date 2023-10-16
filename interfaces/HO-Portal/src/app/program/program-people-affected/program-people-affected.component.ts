@@ -264,10 +264,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isCompleted.emit(true);
   }
 
-  public getId(row: PersonRow): string {
-    return row.referenceId;
-  }
-
   private async refreshData() {
     this.isLoading = true;
     await this.loadData();
