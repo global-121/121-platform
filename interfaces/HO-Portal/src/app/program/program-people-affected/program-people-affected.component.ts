@@ -746,15 +746,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private clearSelection(): void {
-    this.selectedPeople = [];
-    this.selectedCount = 0;
-    if (this.selectAllChecked) {
-      this.onSelectAll();
-    }
-    this.applyBtnDisabled = false;
-  }
-
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
