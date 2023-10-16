@@ -779,7 +779,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(applicableCount: number) {
+  private updateSubmitWarning(
+    applicableCount: number,
+    nonApplicableCount: number,
+  ) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
@@ -793,8 +796,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
     const conditionsToSelectText = this.translate.instant(
       `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+      { action: this.getCurrentBulkAction().label },
     );
-    this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
+    this.submitWarning = `<p>${numberOfPeopleWarning}</p>`;
+    if (nonApplicableCount > 0) {
+      this.submitWarning += `<p>${conditionsToSelectText}</p>`;
+    }
   }
 
   private setBulkActionFilters(): PaginationFilter[] {
@@ -861,7 +868,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
-    this.updateSubmitWarning(bulkActionResult.applicableCount);
+    this.updateSubmitWarning(
+      bulkActionResult.applicableCount,
+      bulkActionResult.nonApplicableCount,
+    );
     this.selectedCount = bulkActionResult.applicableCount;
     if (bulkActionResult.applicableCount === 0) {
       const nobodyToSelectTest = this.translate.instant(
@@ -869,6 +879,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
       const conditionsToSelectText = this.translate.instant(
         `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+        { action: this.getCurrentBulkAction().label },
       );
 
       const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
