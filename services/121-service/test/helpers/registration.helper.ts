@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { getServer } from './utility.helper';
 
 export function importRegistrations(
@@ -14,13 +15,25 @@ export function importRegistrations(
 
 export function deleteRegistrations(
   programId: number,
-  registrationReferenceIds: { referenceIds: string[] },
+  referenceIds: string[],
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+
   return getServer()
     .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .send(registrationReferenceIds);
+    .send()
+    .query(queryParams);
 }
 
 export function searchRegistrationByReferenceId(
@@ -83,17 +96,46 @@ export function getRegistrations(
 
 export function changePaStatus(
   programId: number,
-  registrations: string[],
-  action: string,
+  referenceIds: string[],
+  status: RegistrationStatusEnum,
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
   return getServer()
-    .post(`/programs/${programId}/registrations/${action}`)
+    .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
-      referenceIds: registrations,
+      status: status,
       message: null,
     });
+}
+
+export function sendMessage(
+  programId: number,
+  referenceIds: string[],
+  message: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const filter = {
+    ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
+  };
+  return getServer()
+    .post(`/programs/${programId}/registrations/message`)
+    .set('Cookie', [accessToken])
+    .send({
+      message: message,
+    })
+    .query(filter);
 }
 
 export function updateRegistration(

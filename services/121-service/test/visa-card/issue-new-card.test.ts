@@ -1,5 +1,6 @@
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
@@ -42,7 +43,7 @@ describe('Issue new Visa debit card', () => {
     await changePaStatus(
       programIdVisa,
       [referenceIdVisa],
-      'include',
+      RegistrationStatusEnum.included,
       accessToken,
     );
     const paymentReferenceIds = [referenceIdVisa];

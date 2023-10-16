@@ -22,7 +22,11 @@ import { mergeWith, throttleTime } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
+import {
+  BulkAction,
+  BulkActionId,
+  BulkActionResult,
+} from 'src/app/models/bulk-actions.models';
 import {
   Person,
   PersonRow,
@@ -51,6 +55,7 @@ import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
   Filter,
+  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -93,6 +98,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public paymentHistoryColumn: PersonTableColumn;
 
   public selectedPeople: PersonRow[] = [];
+  public selectedCount: number = 0;
   public visiblePeopleAffected: PersonRow[] = [];
 
   public isInProgress = false;
@@ -104,7 +110,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public BulkActionEnum = BulkActionId;
   public bulkActions: BulkAction[] = [];
   public applyBtnDisabled = true;
-  public submitWarning: any;
+  public submitWarning: string;
+  public selectAllCheckboxVisible = false;
+  public selectAllChecked = false;
 
   public tableFilterType = TableFilterType;
 
@@ -166,13 +174,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.registrationsService?.setItemsPerPage(12);
 
     this.pageMetaData = this.registrationsService?.getPageMetadata();
-
-    this.submitWarning = {
-      message: '',
-      people: this.translate.instant(
-        'page.program.program-people-affected.submit-warning-people-affected',
-      ),
-    };
 
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
@@ -280,6 +281,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
+  }
+
+  public getId(row: PersonRow): string {
+    return row.referenceId;
   }
 
   private async refreshData() {
@@ -554,7 +559,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       financialServiceProvider: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
-      hasPhoneNumber: !!person.hasPhoneNumber,
     };
 
     if (this.canViewPaymentData) {
@@ -680,34 +684,31 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
     }
 
-    this.visiblePeopleAffected = await this.updatePeopleForAction(
+    this.visiblePeopleAffected = this.updatePeopleForAction(
       this.visiblePeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
     );
 
-    this.updateSubmitWarning(this.selectedPeople.length);
-
-    const nrCheckboxes = this.countSelectable(this.visiblePeopleAffected);
-    if (nrCheckboxes === 0) {
-      this.resetBulkAction();
-      actionResult(
-        this.alertController,
-        this.translate,
-        this.translate.instant(
-          'page.program.program-people-affected.no-checkboxes',
-        ),
+    // Change the selected people count when select all is active and the bulk actions changes
+    if (this.selectAllChecked) {
+      this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+        null,
         true,
-        PubSubEvent.dataRegistrationChanged,
-        this.pubSub,
       );
+      this.applyAction(null, true);
     }
+
+    this.selectAllCheckboxVisible = true;
   }
 
-  private async updatePeopleForAction(
+  private updatePeopleForAction(
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
+    disableAll?: boolean,
   ) {
     let registrationsWithPayment;
     return people.map((person) =>
@@ -715,6 +716,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action,
         person,
         payment ? registrationsWithPayment.includes(person.referenceId) : null,
+        disableAll,
       ),
     );
   }
@@ -723,95 +725,142 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
+    this.selectAllCheckboxVisible = false;
+    this.selectAllChecked = false;
 
     this.selectedPeople = [];
     this.isInProgress = false;
   }
 
   public onSelect(selected: PersonRow[]) {
-    this.updateSubmitWarning(selected.length);
-
     if (this.action === BulkActionId.doPayment) {
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
 
     if (selected.length) {
+      this.applyAction(null, true);
       this.applyBtnDisabled = false;
     } else {
+      this.selectedCount = 0;
       this.applyBtnDisabled = true;
     }
   }
 
-  private countSelectable(rows: PersonRow[]) {
-    return rows.filter((row) => row.checkboxVisible).length;
+  private clearSelection(): void {
+    this.selectedPeople = [];
+    this.selectedCount = 0;
+    if (this.selectAllChecked) {
+      this.onSelectAll();
+    }
+    this.applyBtnDisabled = false;
+  }
+
+  public onSelectAll() {
+    this.selectAllChecked = !this.selectAllChecked;
+    if (this.selectAllChecked) {
+      this.handleSelectAllChecked();
+    } else {
+      this.handleSelectAllUnchecked();
+    }
+  }
+
+  private handleSelectAllChecked(): void {
+    this.selectedPeople = [];
+    this.updatePeopleForAction(
+      this.visiblePeopleAffected,
+      this.action,
+      null,
+      true,
+    );
+    this.applyAction(null, true);
+    this.applyBtnDisabled = false;
+  }
+
+  private handleSelectAllUnchecked() {
+    this.selectedCount = this.selectedPeople.length;
+    this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
+    this.applyBtnDisabled = true;
+  }
+
+  public isRowSelected(rowId: string): boolean {
+    if (this.selectAllChecked) {
+      return true;
+    } else {
+      return this.selectedPeople.map((p) => p.referenceId).includes(rowId);
+    }
   }
 
   public getCurrentBulkAction(): BulkAction {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(peopleCount: number) {
+  private updateSubmitWarning(applicableCount: number) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
     const actionLabel = this.getCurrentBulkAction().label;
-    this.submitWarning.message = `
-      ${actionLabel}: ${peopleCount} ${this.submitWarning.people}
-    `;
+    const numberOfPeopleWarning = this.translate.instant(
+      'page.program.program-people-affected.submit-warning-people-affected',
+      {
+        actionLabel,
+        applicableCount: applicableCount,
+      },
+    );
+    const conditionsToSelectText = this.translate.instant(
+      `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+    );
+    this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
   }
 
-  public async applyAction(confirmInput?: string) {
+  private setBulkActionFilters(): PaginationFilter[] {
+    let filters: PaginationFilter[];
+    if (this.selectedPeople.length) {
+      filters = [
+        {
+          value: this.selectedPeople.map((p) => p.referenceId).join(','),
+          name: 'referenceId',
+          label: 'referenceId',
+          operator: FilterOperatorEnum.in,
+        },
+      ];
+    } else {
+      filters = [
+        ...this.tableTextFilter,
+        ...[
+          {
+            name: 'status',
+            label: 'status',
+            value: this.tableStatusFilter.join(','),
+            operator: FilterOperatorEnum.in,
+          },
+        ],
+      ];
+    }
+    return filters;
+  }
+
+  public async applyAction(confirmInput?: string, dryRun: boolean = false) {
     this.isInProgress = true;
+
+    const filters = this.setBulkActionFilters();
     this.bulkActionService
-      .applyAction(this.action, this.programId, this.selectedPeople, {
-        message: confirmInput,
-      })
-      .then(async () => {
-        if (
-          this.action === BulkActionId.sendMessage ||
-          this.action === BulkActionId.deletePa
-        ) {
-          this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-          return;
+      .applyAction(
+        this.action,
+        this.programId,
+        {
+          message: confirmInput,
+        },
+        dryRun,
+        filters,
+      )
+      .then(async (response) => {
+        const bulkActionResult = response as BulkActionResult;
+        if (dryRun) {
+          this.handleBulkActionDryRunResult(bulkActionResult);
+        } else {
+          this.handleBulkActionResult(bulkActionResult);
         }
-
-        const actionStatus = {
-          [BulkActionId.invite]: RegistrationStatus.invited,
-          [BulkActionId.selectForValidation]:
-            RegistrationStatus.selectedForValidation,
-          [BulkActionId.include]: RegistrationStatus.included,
-          [BulkActionId.endInclusion]: RegistrationStatus.inclusionEnded,
-          [BulkActionId.reject]: RegistrationStatus.rejected,
-          [BulkActionId.markNoLongerEligible]:
-            RegistrationStatus.noLongerEligible,
-          [BulkActionId.pause]: RegistrationStatus.paused,
-        };
-        if (!actionStatus[this.action]) {
-          return;
-        }
-
-        await actionResult(
-          this.alertController,
-          this.translate,
-          `<p>${this.translate.instant(
-            'page.program.program-people-affected.status-changed',
-            {
-              pastatus: this.translate
-                .instant(
-                  'page.program.program-people-affected.status.' +
-                    actionStatus[this.action],
-                )
-                .toLowerCase(),
-              panumber: this.selectedPeople.length,
-            },
-          )}
-              <p>${this.translate.instant(
-                'page.program.program-people-affected.pa-moved-phase',
-              )}</p>`,
-          true,
-          PubSubEvent.dataRegistrationChanged,
-          this.pubSub,
-        );
+        this.isInProgress = false;
       })
       .catch((error) => {
         console.log('Error:', error);
@@ -823,10 +872,73 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
         );
-      })
-      .finally(() => {
-        this.isInProgress = false;
       });
+  }
+
+  private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
+    this.updateSubmitWarning(bulkActionResult.applicableCount);
+    this.selectedCount = bulkActionResult.applicableCount;
+    if (bulkActionResult.applicableCount === 0) {
+      const nobodyToSelectTest = this.translate.instant(
+        'page.program.program-people-affected.no-checkboxes',
+      );
+      const conditionsToSelectText = this.translate.instant(
+        `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+      );
+
+      const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
+          `;
+
+      this.resetBulkAction();
+      actionResult(
+        this.alertController,
+        this.translate,
+        text,
+        true,
+        PubSubEvent.dataRegistrationChanged,
+        this.pubSub,
+      );
+    }
+    return;
+  }
+
+  private async handleBulkActionResult(bulkActionResult: BulkActionResult) {
+    const statusRelatedBulkActions = [
+      BulkActionId.invite,
+      BulkActionId.selectForValidation,
+      BulkActionId.include,
+      BulkActionId.endInclusion,
+      BulkActionId.reject,
+      BulkActionId.markNoLongerEligible,
+      BulkActionId.pause,
+    ];
+    const responseText = this.translate.instant(
+      'page.program.program-people-affected.bulk-action-response.response',
+      {
+        action: this.getCurrentBulkAction().label,
+        paNumber: bulkActionResult.applicableCount,
+      },
+    );
+
+    const paMovedPhaseText = statusRelatedBulkActions.includes(this.action)
+      ? this.translate.instant(
+          'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
+        )
+      : '';
+    const closePopupText = this.translate.instant(
+      'page.program.program-people-affected.bulk-action-response.close-popup',
+    );
+
+    const bulkActionResponse = `<p>${responseText}</p><p>${paMovedPhaseText}</p><p>${closePopupText}</p>`;
+
+    await actionResult(
+      this.alertController,
+      this.translate,
+      bulkActionResponse,
+      true,
+      PubSubEvent.dataRegistrationChanged,
+      this.pubSub,
+    );
   }
 
   public paComparator(a: string, b: string) {
@@ -903,6 +1015,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
+    if (this.selectAllChecked) {
+      this.visiblePeopleAffected = this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+        null,
+        true,
+      );
+    } else {
+      this.visiblePeopleAffected = this.updatePeopleForAction(
+        this.visiblePeopleAffected,
+        this.action,
+      );
+    }
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 

@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
@@ -58,7 +59,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programId,
         [referenceIdJumbo],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];
@@ -102,7 +103,7 @@ describe('Do payment to 1 PA', () => {
       await changePaStatus(
         programId,
         [referenceIdJumbo],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];

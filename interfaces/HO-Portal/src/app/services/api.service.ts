@@ -2,6 +2,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
   HttpStatusCode,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -86,6 +87,7 @@ export class ApiService {
     anonymous = false,
     responseAsBlob = false,
     isUpload = false,
+    params: HttpParams = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
@@ -96,11 +98,14 @@ export class ApiService {
           headers: this.createHeaders(isUpload),
           responseType: responseAsBlob ? 'blob' : null,
           withCredentials: true,
+          params,
         })
         .pipe(
           tap((response) =>
             console.log(
-              `ApiService POST: ${security} ${endpoint}${path}:`,
+              `ApiService POST: ${security} ${endpoint}${path}${
+                params ? `\nParams ${params}` : ''
+              }:`,
               body,
               '\nResponse:',
               response,
@@ -172,6 +177,7 @@ export class ApiService {
     anonymous = false,
     responseAsBlob = false,
     isUpload = false,
+    params: HttpParams = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService PATCH: ${security} ${endpoint}${path}`, body);
@@ -182,11 +188,14 @@ export class ApiService {
           headers: this.createHeaders(isUpload),
           responseType: responseAsBlob ? 'blob' : null,
           withCredentials: true,
+          params,
         })
         .pipe(
           tap((response) =>
             console.log(
-              `ApiService PATCH: ${security} ${endpoint}${path}:`,
+              `ApiService PATCH: ${security} ${endpoint}${path}${
+                params ? `\nParams ${params}` : ''
+              }:`,
               body,
               '\nResponse:',
               response,
@@ -213,6 +222,7 @@ export class ApiService {
     path: string,
     body?: object,
     anonymous = false,
+    params: HttpParams = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
 
@@ -222,11 +232,14 @@ export class ApiService {
           headers: this.createHeaders(anonymous),
           withCredentials: true,
           body: body,
+          params,
         })
         .pipe(
           tap((response) =>
             console.log(
-              `ApiService DELETE: ${security} ${endpoint}${path}`,
+              `ApiService DELETE: ${security} ${endpoint}${path}${
+                params ? `\nParams ${params}` : ''
+              }`,
               '\nResponse:',
               response,
             ),
