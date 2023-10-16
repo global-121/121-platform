@@ -366,8 +366,8 @@
             'page.program.program-people-affected.footer-selected-of-total'
               | translate
                 : {
-                    selectedCount: selectedCount,
-                    totalCount: pageMetaData?.totalItems || 0
+                    selectedCount: selectedCount  | number: '1.0-0',
+                    totalCount: (pageMetaData?.totalItems || 0) | number: '1.0-0'
                   }
           }}
         </div>
