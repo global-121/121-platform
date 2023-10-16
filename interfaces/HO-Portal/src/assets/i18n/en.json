@@ -352,7 +352,7 @@
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected",
+        "submit-warning-people-affected": "Perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected.",
         "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "transaction": {
           "error": "Failed",
@@ -509,16 +509,16 @@
           "close-popup": "You can close this popup."
         },
         "bulk-action-conditions": {
-          "invite": "Note: The 'Invite' action is only applicable to registrations that have been imported, marked as no longer eligible, or have no assigned status.",
-          "select-for-validation": "Note: The 'Select for Validation' action can only be applied to registrations that are currently registered.",
-          "include": "Note: The 'Include' action is applicable to registrations with the status 'Registered', 'Selected for Validation', 'Validated', 'Rejected', 'Inclusion Ended', 'Paused', or 'Completed'.",
-          "end-inclusion": "Note: The 'End Inclusion' action is applicable solely to registrations that are currently included or completed.",
-          "reject": "Note: The 'Reject' action is applicable to registrations with the status 'Registered', 'Selected for Validation', 'Validated', 'Included', 'No Longer Eligible', or 'Registered While No Longer Eligible'.",
-          "mark-no-longer-eligible": "Note: The 'Mark No Longer Eligible' action is applicable to registrations that have been imported or invited.",
-          "send-message": "Note: The 'Send Message' action can only be applied to registrations that have a phone number associated with them.",
-          "delete-pa": "Note: The 'Delete PA' action can be applied to any registration that is not already deleted.",
-          "do-payment": "Note: The 'Do Payment' action can only be applied to registrations that have not yet received the payment.",
-          "pause": "Note: The 'Pause' action can only be applied to registrations that are currently included."
+          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>{Imported}</i> or <i>No longer eligible</i>.",
+          "select-for-validation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
+          "end-inclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
+          "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
+          "mark-no-longer-eligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
+          "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
+          "delete-pa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
+          "send-message": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
+          "do-payment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
         },
         "payment-history-popup": {
           "title": "Payment history"
