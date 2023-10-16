@@ -165,7 +165,7 @@ export class IntersolveVoucherCronService {
           continue;
         }
         const language = await this.getLanguageForRegistration(referenceId);
-        let whatsappPayment = this.getNotificationText(
+        let whatsappPayment = this.intersolveVoucherService.getNotificationText(
           registration.program,
           ProgramNotificationEnum.whatsappPayment,
           language,
@@ -207,19 +207,5 @@ export class IntersolveVoucherCronService {
       return registration.preferredLanguage;
     }
     return this.fallbackLanguage;
-  }
-
-  private getNotificationText(
-    program: ProgramEntity,
-    type: string,
-    language?: string,
-  ): string {
-    if (
-      program.notifications[language] &&
-      program.notifications[language][type]
-    ) {
-      return program.notifications[language][type];
-    }
-    return program.notifications[this.fallbackLanguage][type];
   }
 }

@@ -302,14 +302,18 @@ export class IntersolveVoucherService
     });
 
     const programId = registration.programId;
-
-    const language = await this.getLanguage(paymentInfo.referenceId);
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
-    let whatsappPayment =
-      program.notifications[language][ProgramNotificationEnum.whatsappPayment];
-    whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
+    const language = registration.preferredLanguage || this.fallbackLanguage;
+    let whatsappPayment = this.getNotificationText(
+      program,
+      ProgramNotificationEnum.whatsappPayment,
+      language,
+    );
+    whatsappPayment = whatsappPayment
+      .split('{{1}}')
+      .join(String(calculatedAmount));
 
     await this.whatsappService
       .sendWhatsapp(
@@ -331,6 +335,7 @@ export class IntersolveVoucherService
             StatusEnum.waiting,
             null,
             registration.programId,
+            messageSid,
           );
 
           result.status = StatusEnum.waiting;
@@ -357,8 +362,22 @@ export class IntersolveVoucherService
             preferredLanguage: Not(IsNull()),
           },
         })
-      )?.preferredLanguage || 'en'
+      )?.preferredLanguage || this.fallbackLanguage
     );
+  }
+
+  public getNotificationText(
+    program: ProgramEntity,
+    type: string,
+    language?: string,
+  ): string {
+    if (
+      program.notifications[language] &&
+      program.notifications[language][type]
+    ) {
+      return program.notifications[language][type];
+    }
+    return program.notifications[this.fallbackLanguage][type];
   }
 
   private async storeVoucherData(
@@ -394,19 +413,25 @@ export class IntersolveVoucherService
       return;
     }
 
-    await this.transactionRepository.update(
-      { id: transactionId },
-      {
-        status: status,
-        errorMessage:
-          status === StatusEnum.error
-            ? (statusCallbackData.ErrorMessage || '') +
-              ' (ErrorCode: ' +
-              statusCallbackData.ErrorCode +
-              ')'
-            : null,
-      },
-    );
+    const transactionToUpdateFilter = {
+      id: transactionId,
+    };
+    // if success, then only update if transaction is a 'voucher sent' message
+    // if error, then always update
+    if (status === StatusEnum.success) {
+      transactionToUpdateFilter['transactionStep'] = 2;
+    }
+
+    await this.transactionRepository.update(transactionToUpdateFilter, {
+      status: status,
+      errorMessage:
+        status === StatusEnum.error
+          ? (statusCallbackData.ErrorMessage || '') +
+            ' (ErrorCode: ' +
+            statusCallbackData.ErrorCode +
+            ')'
+          : null,
+    });
   }
 
   public async exportVouchers(

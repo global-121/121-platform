@@ -33,8 +33,7 @@ describe('send arbitrary messages to set of registrations', () => {
     await importRegistrations(programId, registrations, accessToken);
   });
 
-  // TODO: fix this test
-  it('should send messages', async () => {
+  it('should send messages to selected PAs only', async () => {
     // Arrange
     const message = 'Long enough test message';
 

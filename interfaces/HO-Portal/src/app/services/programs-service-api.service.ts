@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
@@ -58,6 +57,7 @@ export class ProgramsServiceApiService {
             username: response.username,
             permissions: response.permissions,
             expires: response.expires,
+            isAdmin: response.isAdmin,
           };
         }
         return null;
@@ -89,13 +89,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
+  deleteRegistrations(
+    programId: number,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
+  ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      {
-        referenceIds,
-      },
+      null,
+      false,
+      params,
     );
   }
 
@@ -577,118 +582,144 @@ export class ProgramsServiceApiService {
   private updatePaStatus(
     action: string,
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
     message?: string,
   ): Promise<any> {
-    return this.apiService.post(
+    const params = this.filterToParams(filters, dryRun);
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/status/${action}`,
+      `/programs/${programId}/registrations/status`,
       {
-        referenceIds,
+        status: action,
         message,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
   selectForValidation(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.selectedForValidation,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
     );
   }
 
   markNoLongerEligible(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.noLongerEligible,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
     );
   }
 
   invite(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.invited,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   include(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.included,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   end(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.inclusionEnded,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   reject(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.rejected,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   pause(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.paused,
       programId,
-      referenceIds,
+      dryRun,
+      filters,
       message,
     );
   }
 
   sendMessage(
-    referenceIds: string[],
-    message: string,
     programId: number,
+    message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/text-message`,
+      `/programs/${programId}/registrations/message`,
       {
-        referenceIds,
         message,
+        skipMessageValidation: dryRun,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
@@ -836,7 +867,7 @@ export class ProgramsServiceApiService {
 
   async getRegistrationStatusCount(
     programId: number,
-  ): Promise<{ status: RegistrationStatusEnum; statusCount: number }[]> {
+  ): Promise<{ status: RegistrationStatus; statusCount: number }[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/metrics/registration-status`,
@@ -850,5 +881,38 @@ export class ProgramsServiceApiService {
 
   getRoles(): Promise<Role[] | null> {
     return this.apiService.get(environment.url_121_service_api, '/roles');
+  }
+
+  getUsersByName(programId: number | string, username: string): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/users/${username}`,
+    );
+  }
+
+  getUsersByProgram(programId: number): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/users`,
+    );
+  }
+
+  private filterToParams(
+    filters: PaginationFilter[],
+    dryRun: boolean,
+  ): HttpParams {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return params;
   }
 }

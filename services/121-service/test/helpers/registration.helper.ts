@@ -15,13 +15,25 @@ export function importRegistrations(
 
 export function deleteRegistrations(
   programId: number,
-  registrationReferenceIds: { referenceIds: string[] },
+  referenceIds: string[],
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+
   return getServer()
     .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .send(registrationReferenceIds);
+    .send()
+    .query(queryParams);
 }
 
 export function searchRegistrationByReferenceId(

@@ -102,6 +102,7 @@ export class AuthService {
       username: user.username,
       permissions: user.permissions,
       expires: user.expires,
+      isAdmin: user.isAdmin,
     };
   }
 

@@ -42,8 +42,6 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       preferredLanguage: AllowedFilterOperatorsString,
       inclusionScore: AllowedFilterOperatorsNumber,
       paymentAmountMultiplier: AllowedFilterOperatorsNumber,
-      note: AllowedFilterOperatorsString,
-      noteUpdated: AllowedFilterOperatorsNumber,
       financialServiceProvider: AllowedFilterOperatorsString,
       fspDisplayNamePortal: AllowedFilterOperatorsString,
       registrationProgramId: AllowedFilterOperatorsNumber,

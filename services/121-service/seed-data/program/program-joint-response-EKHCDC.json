@@ -44,7 +44,7 @@
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "FullName",
+      "name": "fullName",
       "label": {
         "en": "What is the full name of the head of your household",
         "et_AM": "የቤተሰብህ/ሽ ራስ ስም ማን ይባላል?"

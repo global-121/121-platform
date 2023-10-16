@@ -10,6 +10,7 @@ import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
 import {
   Brackets,
   FindOperator,
+  Not,
   Repository,
   SelectQueryBuilder,
   WhereExpressionBuilder,
@@ -30,6 +31,7 @@ import {
 } from '../dto/registration-data-relation.model';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
@@ -79,7 +81,7 @@ export class RegistrationsPaginationService {
     if (!queryBuilder) {
       queryBuilder = this.registrationViewRepository
         .createQueryBuilder('registration')
-        .where('1=1');
+        .where({ status: Not(RegistrationStatusEnum.deleted) });
     }
     queryBuilder = queryBuilder.andWhere(
       '"registration"."programId" = :programId',
@@ -372,13 +374,9 @@ export class RegistrationsPaginationService {
     for (const relationInfo of relationInfoArray) {
       for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
         if (i === 0) {
-          qb.where(`${uniqueJoinId}."${dataRelKey}" = :id${uniqueJoinId}`, {
-            [`id${uniqueJoinId}`]: id,
-          });
+          qb.where(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         } else {
-          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = :id${uniqueJoinId}`, {
-            [`id${uniqueJoinId}`]: id,
-          });
+          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         }
       }
       i++;

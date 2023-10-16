@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
+import { ProgramPhase } from '../../models/program.model';
+import { TableFilterType } from '../../models/table-filter.model';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
 
 @Component({
@@ -12,37 +15,51 @@ export class TableFilterRowComponent implements OnInit {
   public isLoading: boolean;
 
   @Input()
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public allFilters: { name: string; label: string }[] = [];
 
-  public textFilterOption: string | undefined;
+  @Input()
+  public thisPhase: ProgramPhase;
+
+  @Input()
+  public programId: number;
+
+  @Input()
+  public filteredCount: number;
+
+  public textFilterOption: { name: string; label: string }[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
   public filterRowsVisibleQuery: string;
 
+  public tableFilterType = TableFilterType;
+
+  public allPaStatuses = Object.values(RegistrationStatus);
+
   constructor(private filterService: FilterService) {}
 
-  ngOnInit(): void {
-    this.textFilter = this.filterService.getTextFilterSubscription();
+  public ngOnInit(): void {
+    this.textFilter = this.filterService.textFilter$;
   }
 
   public applyFilter() {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return;
     }
     if (this.disableApplyButton()) {
       return;
     }
-    this.filterService.addTextFilter(
-      this.textFilterOption,
+    this.filterService.setTextFilter(
+      this.textFilterOption[0].name,
       this.filterRowsVisibleQuery,
+      this.textFilterOption[0].label,
     );
-    this.clearFilter();
+    this.clearFilterCreateForm();
   }
 
-  private clearFilter() {
+  private clearFilterCreateForm() {
     this.filterRowsVisibleQuery = '';
-    this.textFilterOption = undefined;
+    this.textFilterOption = [];
   }
 
   public removeTextFilter(column: string) {
@@ -50,7 +67,7 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public showInput(): boolean {
-    if (!this.textFilterOption) {
+    if (!this.textFilterOption.length) {
       return false;
     }
 
@@ -58,13 +75,14 @@ export class TableFilterRowComponent implements OnInit {
   }
 
   public disableApplyButton(): boolean {
-    if (
-      !this.filterRowsVisibleQuery ||
-      this.filterRowsVisibleQuery.trim() === ''
-    ) {
+    if (!this.filterService.sanitizeFilterValue(this.filterRowsVisibleQuery)) {
       return true;
     }
 
     return false;
+  }
+
+  public clearAllFilters() {
+    this.filterService.clearAllFilters();
   }
 }

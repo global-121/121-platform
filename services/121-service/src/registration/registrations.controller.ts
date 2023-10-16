@@ -56,7 +56,7 @@ import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
@@ -313,60 +313,6 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({
-    summary: 'Get all registrations for program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
-  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
-  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
-  @ApiResponse({
-    status: 201,
-    description: 'Got all People Affected for program EXCLUDING personal data',
-  })
-  @Get('programs/:programId/registrations/old')
-  public async getPeopleAffected(
-    @Param('programId') programId: number,
-    @User('id') userId: number,
-    @Query() queryParams,
-  ): Promise<any[]> {
-    const personalData = queryParams.personalData === 'true';
-    const paymentData = queryParams.paymentData === 'true';
-    if (personalData) {
-      await this.registrationsService.checkPermissionAndThrow(
-        userId,
-        PermissionEnum.RegistrationPersonalREAD,
-        Number(programId),
-      );
-    }
-    if (paymentData || queryParams.filterOnPayment) {
-      await this.registrationsService.checkPermissionAndThrow(
-        userId,
-        PermissionEnum.PaymentTransactionREAD,
-        Number(programId),
-      );
-    }
-
-    let attributes: [];
-    if (queryParams.attributes || queryParams.attributes === '') {
-      attributes =
-        queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
-    }
-
-    return await this.registrationsService.getRegistrations(
-      Number(programId),
-      personalData,
-      paymentData,
-      true,
-      queryParams.referenceId,
-      queryParams.filterOnPayment,
-      attributes,
-    );
-  }
-
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
@@ -611,25 +557,71 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for deleting set of registrations',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'Deleting set of registrations was succesfully started',
+    type: BulkActionResultDto,
+  })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registrations will be deleted. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Delete('programs/:programId/registrations')
   public async delete(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.deleteBatch(referenceIdsData);
-  }
+    @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
+    @Param('programId') programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultDto> {
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
+    );
 
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ summary: 'Delete set of registrations' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
-  public async deletePost(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.deleteBatch(referenceIdsData);
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const result = await this.registrationsService.deleteRegistrations(
+      query,
+      programId,
+      dryRun,
+    );
+
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('registrations')
@@ -757,11 +749,6 @@ export class RegistrationsController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationNotificationCREATE)
-  @ApiOperation({
-    summary:
-      'Send custom text-message (whatsapp or sms) to array of registrations',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/message')
   public async sendCustomTextMessage(
     @Body() body: SendCustomTextDto,
@@ -776,6 +763,12 @@ export class RegistrationsController {
       query,
     );
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    if (!dryRun && body.skipMessageValidation) {
+      throw new HttpException(
+        'skipping Message Validation is only allowed in dryRun case',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const result = await this.registrationsService.postMessages(
       query,
       programId,
