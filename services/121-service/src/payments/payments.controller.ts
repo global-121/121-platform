@@ -68,7 +68,7 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiResponse({
     status: 200,
-    description: 'Dry run result for doing a paymet',
+    description: 'Dry run result for doing a payment',
     type: BulkActionResultDto,
   })
   @ApiResponse({
@@ -89,7 +89,7 @@ export class PaymentsController {
     required: false,
     type: 'boolean',
     description:
-      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no messages will be sent. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually doing any payment. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
   })
   @ApiQuery({
     name: 'limit',
@@ -132,7 +132,7 @@ export class PaymentsController {
     if (dryRun) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothing is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
-      throw new HttpException(String(result), HttpStatus.OK);
+      throw new HttpException(result, HttpStatus.OK);
     }
     return result;
   }

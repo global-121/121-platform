@@ -100,7 +100,7 @@ export class PaymentsService {
     const paginateQuery =
       this.registrationsService.setQueryPropertiesBulkAction(query, true);
 
-    const bulkActionesultDto =
+    const bulkActionResultDto =
       await this.registrationsService.getBulkActionResult(
         paginateQuery,
         programId,
@@ -116,15 +116,15 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
-    // Get the sum of the paymentAmountMultiplier of all registrations to give calculate the total amount of money to be paid in frontend
+    // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    // This loop  is pretty fast: with 100.000 registrations it takes ~12ms
+    // This loop is pretty fast: with 100.000 registrations it takes ~12ms
     for (const registration of registrationsForPayment.data) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
     }
     const bulkActionResultPaymentDto = {
-      ...bulkActionesultDto,
+      ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
     };
 
