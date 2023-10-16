@@ -176,6 +176,12 @@ export class PaymentsService {
     amount: number,
     referenceIds: string[],
   ): Promise<number> {
+    await this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.paymentStarted,
+    );
+
     const chunkSize = 1000;
     const chunks = [];
     for (let i = 0; i < referenceIds.length; i += chunkSize) {
@@ -188,12 +194,6 @@ export class PaymentsService {
         chunk,
         amount,
         programId,
-      );
-
-      await this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.paymentStarted,
       );
 
       const result = await this.payout(
