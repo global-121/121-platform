@@ -12,7 +12,7 @@ import { ProgramPhase } from '../models/program.model';
 import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
-class CustomBulkActionInput {
+export class CustomBulkActionInput {
   message?: string;
   payment?: number;
   paymentAmount?: number;

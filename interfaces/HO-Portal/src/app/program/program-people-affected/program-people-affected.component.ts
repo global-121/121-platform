@@ -37,7 +37,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { TableFilterType } from 'src/app/models/table-filter.model';
-import { BulkActionsService } from 'src/app/services/bulk-actions.service';
+import {
+  BulkActionsService,
+  CustomBulkActionInput,
+} from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -706,12 +709,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public onSelect(selected: PersonRow[]) {
+    let customBulkActionInput: CustomBulkActionInput = null;
     if (this.action === BulkActionId.doPayment) {
+      customBulkActionInput = {
+        payment: this.submitPaymentProps.payment,
+      };
+
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
 
     if (selected.length) {
-      this.applyAction(null, true);
+      this.applyAction(customBulkActionInput, true);
       this.applyBtnDisabled = false;
     } else {
       this.selectedCount = 0;
@@ -812,7 +820,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return filters;
   }
 
-  public async applyAction(confirmInput?: string, dryRun: boolean = false) {
+  public async applyAction(
+    customBulkActionInput?: CustomBulkActionInput,
+    dryRun: boolean = false,
+  ) {
     this.isInProgress = true;
 
     const filters = this.setBulkActionFilters();
@@ -820,9 +831,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .applyAction(
         this.action,
         this.programId,
-        {
-          message: confirmInput,
-        },
+        customBulkActionInput || null,
         dryRun,
         filters,
       )
@@ -840,7 +849,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         actionResult(
           this.alertController,
           this.translate,
-          error.error.errors.join('<br><br>'),
+          error.error.error,
           true,
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,

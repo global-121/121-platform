@@ -107,6 +107,10 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
+    if (!amount) {
+      return { ...bulkActionResultDto, sumPaymentAmountMultiplier: 0 };
+    }
+
     const registrationsForPayment =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,

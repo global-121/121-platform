@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CreatePaymentDto {
   @ApiProperty({ example: 1 })
@@ -7,5 +7,6 @@ export class CreatePaymentDto {
   public readonly payment: number;
   @ApiProperty({ example: 10 })
   @IsNumber()
-  public readonly amount: number;
+  @IsOptional()
+  public readonly amount?: number;
 }
