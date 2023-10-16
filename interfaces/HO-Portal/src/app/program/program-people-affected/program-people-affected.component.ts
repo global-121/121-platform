@@ -381,9 +381,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async updateBulkActions() {
-    await this.addPaymentBulkActions();
-
-    this.bulkActions = this.bulkActionService.getBulkActions().map((action) => {
+    const notPaymentBulkActions = this.bulkActionService.getBulkActions();
+    const paymentBulkActions = await this.getPaymentBulkActions();
+    const unfilteredBulkAction = [
+      ...notPaymentBulkActions,
+      ...paymentBulkActions,
+    ];
+    this.bulkActions = unfilteredBulkAction.map((action) => {
       action.enabled =
         this.authService.hasAllPermissions(
           this.programId,
@@ -447,33 +451,18 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return allFilters;
   }
 
-  private async addPaymentBulkActions() {
-    // filter out all dopayment actions to avoid duplication
-    this.bulkActions = this.bulkActions.filter(
-      (action) => action.id !== BulkActionId.doPayment,
-    );
-
+  private async getPaymentBulkActions(): Promise<BulkAction[]> {
+    // Add buaddPaymentBulkActionslk-action for 1st upcoming payment & past 5 payments
+    // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
     const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
-    let paymentId = nextPaymentId || this.program.distributionDuration;
+    const paymentId = nextPaymentId || this.program.distributionDuration;
 
-    // Add bulk-action for 1st upcoming payment & past 5 payments
-    // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
-    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
-      const paymentBulkAction = {
-        id: BulkActionId.doPayment,
-        enabled: true,
-        label: `${this.translate.instant(
-          'page.program.program-people-affected.actions.do-payment',
-        )} #${paymentId}`,
-        permissions: [Permission.PaymentCREATE],
-        phases: [ProgramPhase.payment],
-        showIfNoValidation: true,
-      };
-      this.bulkActions.push(paymentBulkAction);
-      paymentId--;
-    }
+    return this.bulkActionService.generatePaymentBulkActions(
+      paymentId,
+      nextPaymentId,
+    );
   }
 
   public hasEnabledActions(): boolean {
@@ -665,7 +654,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
     }
 
-    this.visiblePeopleAffected = this.updatePeopleForAction(
+    this.visiblePeopleAffected = await this.updatePeopleForAction(
       this.visiblePeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
@@ -685,21 +674,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectAllCheckboxVisible = true;
   }
 
-  private updatePeopleForAction(
+  private async updatePeopleForAction(
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
     disableAll?: boolean,
-  ) {
-    let registrationsWithPayment;
-    return people.map((person) =>
-      this.bulkActionService.updateCheckbox(
+  ): Promise<PersonRow[]> {
+    const updatedPersons: PersonRow[] = [];
+    for (const person of people) {
+      const updatedPerson = await this.bulkActionService.updateCheckbox(
         action,
         person,
-        payment ? registrationsWithPayment.includes(person.referenceId) : null,
+        this.programId,
+        payment,
         disableAll,
-      ),
-    );
+      );
+      updatedPersons.push(updatedPerson);
+    }
+    return updatedPersons;
   }
 
   private async resetBulkAction() {
@@ -997,14 +989,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.visiblePeopleAffected = this.createTableData(data);
     if (this.selectAllChecked) {
-      this.visiblePeopleAffected = this.updatePeopleForAction(
+      this.visiblePeopleAffected = await this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
         null,
         true,
       );
     } else {
-      this.visiblePeopleAffected = this.updatePeopleForAction(
+      this.visiblePeopleAffected = await this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
       );

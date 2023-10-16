@@ -39,6 +39,14 @@ export class TransactionsController {
     name: 'minPayment',
     required: false,
     type: 'integer',
+    description:
+      'Request transactions that are higher or equal as a payment index',
+  })
+  @ApiQuery({
+    name: 'payment',
+    required: false,
+    type: 'integer',
+    description: 'Request a transaction from a specific payment index',
   })
   @ApiQuery({
     name: 'referenceId',
@@ -55,11 +63,12 @@ export class TransactionsController {
     @Param('programId') programId: number,
     @Query('minPayment') minPayment: number,
     @Query('referenceId') referenceId: string,
+    @Query('payment') payment: number,
   ): Promise<TransactionReturnDto[]> {
     return await this.transactionsService.getLastTransactions(
       Number(programId),
-      minPayment,
-      null,
+      Number(minPayment),
+      Number(payment),
       referenceId,
       null,
     );

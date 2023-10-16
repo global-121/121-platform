@@ -34,12 +34,13 @@ export class BulkActionsService {
     return requiredStates.includes(person.registrationStatus);
   }
 
-  public updateCheckbox(
+  public async updateCheckbox(
     action: BulkActionId,
     personData: PersonRow,
-    hasSelectedPayment?: boolean,
+    programId: number,
+    payment?: number,
     disableAll?: boolean,
-  ) {
+  ): Promise<PersonRow> {
     personData.checkboxDisabled = disableAll ? true : false;
     switch (action) {
       case BulkActionId.invite:
@@ -114,10 +115,24 @@ export class BulkActionsService {
       case BulkActionId.doPayment:
         personData.checkboxVisible =
           this.hasStatus(personData, [RegistrationStatus.included]) &&
-          !hasSelectedPayment;
+          !(await this.hasPayment(personData.referenceId, programId, payment));
         break;
     }
     return personData;
+  }
+
+  private async hasPayment(
+    referenceId: string,
+    programId: number,
+    payment?: number,
+  ): Promise<boolean> {
+    const transactions = await this.programsService.getTransactions(
+      programId,
+      null,
+      payment,
+      referenceId,
+    );
+    return transactions.length > 0;
   }
 
   private bulkActions: BulkAction[] = [
@@ -372,6 +387,14 @@ export class BulkActionsService {
           dryRun,
           filters,
         );
+      case BulkActionId.doPayment:
+        return await this.programsService.doPayment(
+          programId,
+          customBulkActionInput.payment,
+          customBulkActionInput.paymentAmount,
+          dryRun,
+          filters,
+        );
       case BulkActionId.sendMessage:
         return await this.programsService.sendMessage(
           programId,
@@ -390,5 +413,27 @@ export class BulkActionsService {
 
   public getBulkActions(): BulkAction[] {
     return this.bulkActions;
+  }
+
+  public generatePaymentBulkActions(
+    paymentId: number,
+    nextPaymentId: number,
+  ): BulkAction[] {
+    const paymentBulkActions: BulkAction[] = [];
+    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
+      const paymentBulkAction = {
+        id: BulkActionId.doPayment,
+        enabled: true,
+        label: `${this.translate.instant(
+          'page.program.program-people-affected.actions.do-payment',
+        )} #${paymentId}`,
+        permissions: [Permission.PaymentCREATE],
+        phases: [ProgramPhase.payment],
+        showIfNoValidation: true,
+      };
+      paymentBulkActions.push(paymentBulkAction);
+      paymentId--;
+    }
+    return paymentBulkActions;
   }
 }

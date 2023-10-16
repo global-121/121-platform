@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
+import { PaymentUtils } from '../../shared/payment.utils';
 
 @Component({
   selector: 'app-make-payment',
@@ -91,7 +92,13 @@ export class MakePaymentComponent implements OnInit {
     const referenceIds = this.referenceIds.length ? this.referenceIds : null;
 
     await this.programsService
-      .submitPayout(this.programId, paymentId, this.amountInput, referenceIds)
+      .doPayment(
+        this.programId,
+        paymentId,
+        this.amountInput,
+        false,
+        PaymentUtils.refernceIdsToFilter(referenceIds),
+      )
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),

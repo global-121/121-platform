@@ -207,11 +207,15 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minPayment?: number | string,
+    payment?: number | string,
     referenceId?: string,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
     if (minPayment) {
       params = params.append('minPayment', minPayment);
+    }
+    if (payment) {
+      params = params.append('payment', payment);
     }
     if (referenceId) {
       params = params.append('referenceId', referenceId);
@@ -264,6 +268,7 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registrations/note/${referenceId}`,
     );
   }
+
   retrieveMsgHistory(
     programId: number,
     referenceId: string,
@@ -293,20 +298,25 @@ export class ProgramsServiceApiService {
     );
   }
 
-  submitPayout(
+  doPayment(
     programId: number,
     payment: number,
     amount: number,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
       {
         payment: Number(payment),
         amount: Number(amount),
-        referenceIds: { referenceIds },
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 

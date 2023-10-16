@@ -9,6 +9,10 @@ import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
 import { IntersolvePayoutStatus } from '../models/transaction-custom-data';
 import { Transaction } from '../models/transaction.model';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+} from '../services/filter.service';
 
 export class PaymentUtils {
   static getPaymentRowInfo(
@@ -123,5 +127,16 @@ export class PaymentUtils {
     } else {
       return [];
     }
+  }
+
+  static refernceIdsToFilter(referenceIds: string[]): PaginationFilter[] {
+    return [
+      {
+        value: referenceIds.join(','),
+        name: 'referenceId',
+        label: 'referenceId',
+        operator: FilterOperatorEnum.in,
+      },
+    ];
   }
 }
