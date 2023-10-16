@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { formatDate, formatNumber } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -791,7 +791,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       'page.program.program-people-affected.submit-warning-people-affected',
       {
         actionLabel,
-        applicableCount: applicableCount,
+        applicableCount: formatNumber(applicableCount, this.locale),
       },
     );
     const conditionsToSelectText = this.translate.instant(
