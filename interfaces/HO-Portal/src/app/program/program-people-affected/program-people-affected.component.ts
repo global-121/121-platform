@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { formatDate, formatNumber } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -17,8 +17,7 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { Subscription } from 'rxjs';
-import { mergeWith, throttleTime } from 'rxjs/operators';
+import { mergeWith, Subscription, throttleTime } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -66,6 +65,7 @@ import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
+import { TableFilterRowComponent } from '../table-filter-row/table-filter-row.component';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -75,6 +75,8 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
 export class ProgramPeopleAffectedComponent implements OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
+  @ViewChild('tableFilterRow')
+  public tableFilterRow: TableFilterRowComponent;
 
   @Input()
   public programId: number;
@@ -217,12 +219,18 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         }),
       )
       .subscribe(() => {
+        this.setPage({
+          // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+          offset: 0,
+        });
         this.refreshData();
       });
   }
 
   async initComponent() {
     this.isLoading = true;
+
+    this.tableFilterRow.initComponent();
 
     this.columns = [];
 
@@ -281,10 +289,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
-  }
-
-  public getId(row: PersonRow): string {
-    return row.referenceId;
   }
 
   private async refreshData() {
@@ -785,7 +789,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(applicableCount: number) {
+  private updateSubmitWarning(
+    applicableCount: number,
+    nonApplicableCount: number,
+  ) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
@@ -794,13 +801,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       'page.program.program-people-affected.submit-warning-people-affected',
       {
         actionLabel,
-        applicableCount: applicableCount,
+        applicableCount: formatNumber(applicableCount, this.locale),
       },
     );
     const conditionsToSelectText = this.translate.instant(
       `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+      { action: this.getCurrentBulkAction().label },
     );
-    this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
+    this.submitWarning = `<p>${numberOfPeopleWarning}</p>`;
+    if (nonApplicableCount > 0) {
+      this.submitWarning += `<p>${conditionsToSelectText}</p>`;
+    }
   }
 
   private setBulkActionFilters(): PaginationFilter[] {
@@ -867,7 +878,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
-    this.updateSubmitWarning(bulkActionResult.applicableCount);
+    this.updateSubmitWarning(
+      bulkActionResult.applicableCount,
+      bulkActionResult.nonApplicableCount,
+    );
     this.selectedCount = bulkActionResult.applicableCount;
     if (bulkActionResult.applicableCount === 0) {
       const nobodyToSelectTest = this.translate.instant(
@@ -875,6 +889,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
       const conditionsToSelectText = this.translate.instant(
         `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+        { action: this.getCurrentBulkAction().label },
       );
 
       const text = `${nobodyToSelectTest}\n${conditionsToSelectText}

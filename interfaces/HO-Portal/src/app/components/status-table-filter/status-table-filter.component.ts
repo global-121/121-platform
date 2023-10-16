@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { ProgramPhase } from '../../models/program.model';
 import { FilterService } from '../../services/filter.service';
@@ -9,7 +9,7 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
   templateUrl: './status-table-filter.component.html',
   styleUrls: ['./status-table-filter.component.scss'],
 })
-export class StatusTableFilterComponent implements OnInit {
+export class StatusTableFilterComponent {
   @Input()
   public programId: number;
 
@@ -57,7 +57,7 @@ export class StatusTableFilterComponent implements OnInit {
     private filterService: FilterService,
   ) {}
 
-  async ngOnInit() {
+  async initComponent() {
     const activeStatuses: {
       status: RegistrationStatus;
       statusCount: number;

@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import RegistrationStatus from 'src/app/enums/registration-status.enum';
+import { StatusTableFilterComponent } from '../../components/status-table-filter/status-table-filter.component';
 import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
 import { FilterService, PaginationFilter } from '../../services/filter.service';
@@ -10,7 +11,7 @@ import { FilterService, PaginationFilter } from '../../services/filter.service';
   templateUrl: './table-filter-row.component.html',
   styleUrls: ['./table-filter-row.component.scss'],
 })
-export class TableFilterRowComponent implements OnInit {
+export class TableFilterRowComponent {
   @Input()
   public isLoading: boolean;
 
@@ -26,6 +27,9 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public filteredCount: number;
 
+  @ViewChild('statusTableFilter')
+  public statusTableFilter: StatusTableFilterComponent;
+
   public textFilterOption: { name: string; label: string }[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
@@ -36,10 +40,12 @@ export class TableFilterRowComponent implements OnInit {
 
   public allPaStatuses = Object.values(RegistrationStatus);
 
-  constructor(private filterService: FilterService) {}
-
-  public ngOnInit(): void {
+  constructor(private filterService: FilterService) {
     this.textFilter = this.filterService.textFilter$;
+  }
+
+  public initComponent(): void {
+    this.statusTableFilter.initComponent();
   }
 
   public applyFilter() {
