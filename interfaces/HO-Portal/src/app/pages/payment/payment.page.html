@@ -18,6 +18,7 @@
   ></app-program-payout>
 
   <app-program-people-affected
+    #table
     *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"

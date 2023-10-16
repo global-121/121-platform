@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
@@ -18,6 +18,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
 import { Subscription } from 'rxjs';
+import { mergeWith, throttleTime } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -123,8 +124,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
+
   private routerSubscription: Subscription;
   private pubSubSubscription: Subscription;
+  private textFilterSubscription: Subscription;
+  private statusFilterSubscription: Subscription;
+  private combinedFilterSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
@@ -170,48 +175,58 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.pageMetaData = this.registrationsService?.getPageMetadata();
 
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        if (event.url.includes(this.thisPhase)) {
-          this.initComponent();
-        }
-      }
-    });
-
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
     if (this.pubSubSubscription) {
       this.pubSubSubscription.unsubscribe();
     }
+    if (this.textFilterSubscription) {
+      this.textFilterSubscription.unsubscribe();
+    }
+    if (this.statusFilterSubscription) {
+      this.statusFilterSubscription.unsubscribe();
+    }
+    if (this.combinedFilterSubscription) {
+      this.combinedFilterSubscription.unsubscribe();
+    }
+  }
+
+  private setupFilterSubscriptions() {
+    this.textFilterSubscription = this.filterService.textFilter$.subscribe(
+      (value) => {
+        this.tableTextFilter = value;
+      },
+    );
+    this.statusFilterSubscription = this.filterService.statusFilter$.subscribe(
+      (value) => {
+        this.tableStatusFilter = value;
+      },
+    );
+
+    this.combinedFilterSubscription = this.filterService.textFilter$
+      .pipe(mergeWith(this.filterService.statusFilter$))
+      .pipe(
+        throttleTime(500, null, {
+          leading: false,
+          trailing: true,
+        }),
+      )
+      .subscribe(() => {
+        this.setPage({
+          // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+          offset: 0,
+        });
+        this.refreshData();
+      });
   }
 
   async initComponent() {
     this.isLoading = true;
-
-    this.filterService.textFilter$.subscribe((filter) => {
-      this.tableTextFilter = filter;
-      this.setPage({
-        // Reset to page 1 first, to avoid situation where current page is higher than total pages after filtering
-        offset: 0,
-      });
-      this.refreshData();
-      this.clearSelection();
-    });
-
-    this.filterService.statusFilter$.subscribe((filter) => {
-      this.tableStatusFilter = filter;
-      this.setPage({
-        // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
-        offset: 0,
-      });
-      this.refreshData();
-      this.clearSelection();
-    });
 
     this.columns = [];
 
@@ -237,7 +252,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.tableService.createPaymentHistoryColumn();
     }
 
-    await this.refreshData();
+    this.setupFilterSubscriptions();
 
     await this.updateBulkActions();
 
@@ -729,15 +744,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.selectedCount = 0;
       this.applyBtnDisabled = true;
     }
-  }
-
-  private clearSelection(): void {
-    this.selectedPeople = [];
-    this.selectedCount = 0;
-    if (this.selectAllChecked) {
-      this.onSelectAll();
-    }
-    this.applyBtnDisabled = false;
   }
 
   public onSelectAll() {
