@@ -69,6 +69,7 @@
     </ion-label>
     &nbsp;
     <app-status-table-filter
+      #statusTableFilter
       *ngIf="programId"
       [programId]="programId"
       [thisPhase]="thisPhase"

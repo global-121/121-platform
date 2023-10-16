@@ -17,8 +17,7 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { Subscription } from 'rxjs';
-import { mergeWith, throttleTime } from 'rxjs/operators';
+import { mergeWith, Subscription, throttleTime } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -66,6 +65,7 @@ import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
+import { TableFilterRowComponent } from '../table-filter-row/table-filter-row.component';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -75,6 +75,8 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
 export class ProgramPeopleAffectedComponent implements OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
+  @ViewChild('tableFilterRow')
+  public tableFilterRow: TableFilterRowComponent;
 
   @Input()
   public programId: number;
@@ -227,6 +229,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   async initComponent() {
     this.isLoading = true;
+
+    this.tableFilterRow.initComponent();
 
     this.columns = [];
 
