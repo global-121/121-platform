@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
-import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
+import {
+  IntersolveVisaCardStatus,
+  IntersolveVisaWalletStatus,
+} from '../intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '../services/intersolve-visa-status-mapping.service';
 import {
   IntersolveCreateWalletResponseAssetDto,
@@ -27,6 +30,10 @@ export class GetWalletDetailsResponseDto {
   public spentThisMonth: number;
   @ApiProperty()
   public maxToSpendPerMonth: number;
+  @ApiProperty()
+  public intersolveVisaCardStatus: IntersolveVisaCardStatus;
+  @ApiProperty()
+  public intersolveVisaWalletStatus: IntersolveVisaWalletStatus;
 }
 
 export class GetWalletsResponseDto {

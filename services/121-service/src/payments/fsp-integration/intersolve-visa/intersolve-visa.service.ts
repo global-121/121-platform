@@ -658,6 +658,11 @@ export class IntersolveVisaService
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
       walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
+
+      // These properties are not used in the frontend but are very useful for debugging
+      walletDetailsResponse.intersolveVisaCardStatus = wallet.cardStatus;
+      walletDetailsResponse.intersolveVisaWalletStatus = wallet.walletStatus;
+
       // 150 is the KYC required maxiumum one can spend per month
       // 15000 is in cents
       walletDetailsResponse.maxToSpendPerMonth =
