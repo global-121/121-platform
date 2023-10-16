@@ -43,13 +43,10 @@ export class RegistrationValidationPage implements OnInit {
   }
 
   public ionViewDidEnter() {
-    console.log('RegistrationValidationPage: ionViewWillEnter()');
-
     this.table.initComponent();
   }
-  public ionViewWillLeave() {
-    console.log('RegistrationValidationPage: ionViewWillLeave()');
 
+  public ionViewWillLeave() {
     this.table.ngOnDestroy();
   }
 }

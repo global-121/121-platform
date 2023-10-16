@@ -29,13 +29,9 @@ export class PaymentPage {
   }
 
   public ionViewDidEnter() {
-    console.log('RegistrationValidationPage: ionViewWillEnter()');
-
     this.table.initComponent();
   }
   public ionViewWillLeave() {
-    console.log('RegistrationValidationPage: ionViewWillLeave()');
-
     this.table.ngOnDestroy();
   }
 }

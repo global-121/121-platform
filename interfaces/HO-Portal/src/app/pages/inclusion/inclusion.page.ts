@@ -26,13 +26,10 @@ export class InclusionPage {
   }
 
   public ionViewDidEnter() {
-    console.log('InclusionPage: ionViewWillEnter()');
-
     this.table.initComponent();
   }
-  public ionViewWillLeave() {
-    console.log('InclusionPage: ionViewWillLeave()');
 
+  public ionViewWillLeave() {
     this.table.ngOnDestroy();
   }
 }
