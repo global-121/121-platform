@@ -195,12 +195,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.filterService.textFilter$.subscribe((filter) => {
       this.tableTextFilter = filter;
+      this.setPage({
+        // Reset to page 1 first, to avoid situation where current page is higher than total pages after filtering
+        offset: 0,
+      });
       this.refreshData();
       this.clearSelection();
     });
 
     this.filterService.statusFilter$.subscribe((filter) => {
       this.tableStatusFilter = filter;
+      this.setPage({
+        // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+        offset: 0,
+      });
       this.refreshData();
       this.clearSelection();
     });
