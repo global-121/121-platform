@@ -113,7 +113,6 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     const paymentId =
       this.payment ||
       (await this.pastPaymentsService.getNextPaymentId(this.program));
-    console.log('=== this.referenceIds: ', this.referenceIds);
     const filters = this.referenceIds.length
       ? PaymentUtils.refernceIdsToFilter(this.referenceIds)
       : this.getTableFilters();
