@@ -18,7 +18,7 @@ export class ProgramTeamTableComponent implements OnInit {
   @Input()
   private programId: number;
 
-  public rows: TeamMember[];
+  public rows: TeamMember[] = [];
   public DateFormat = DateFormat;
 
   constructor(private programsService: ProgramsServiceApiService) {}

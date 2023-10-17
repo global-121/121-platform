@@ -37,7 +37,9 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.role }}
+      <div *ngFor="let role of row.roles">
+        {{ role.label }}
+      </div>
     </ng-template>
   </ngx-datatable-column>
 

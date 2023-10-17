@@ -9,12 +9,13 @@ export class User {
   isAdmin?: boolean;
 }
 
-export interface TeamMember {
+export class TeamMember {
   id: number;
-  name: string;
-  role: string;
-  status: StatusName;
-  lastActivity: string;
+  username: string;
+  admin: boolean;
+  active: boolean;
+  lastLogin: Date;
+  roles: Role[];
 }
 
 export enum StatusName {
