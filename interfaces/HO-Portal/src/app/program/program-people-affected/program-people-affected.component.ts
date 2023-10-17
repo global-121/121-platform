@@ -803,10 +803,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private setBulkActionFilters(): PaginationFilter[] {
     let filters: PaginationFilter[];
     if (this.selectedPeople.length) {
-      console.log(
-        '=== this.selectedPeople.length: ',
-        this.selectedPeople.length,
-      );
       filters = [
         {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
@@ -816,8 +812,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         },
       ];
     } else {
-      console.log('=== else: ');
-
       filters = [
         ...this.tableTextFilter,
         ...[
