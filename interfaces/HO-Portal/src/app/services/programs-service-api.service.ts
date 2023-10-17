@@ -670,9 +670,9 @@ export class ProgramsServiceApiService {
     userId: number,
     roles: UserRole[] | string[],
   ): Promise<Program> {
-    return this.apiService.post(
+    return this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/assignments`,
+      `/programs/${programId}/users/${userId}/roles`,
       {
         roles,
       },
@@ -685,7 +685,7 @@ export class ProgramsServiceApiService {
   ): Promise<Program> {
     return this.apiService.delete(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/assignments`,
+      `/programs/${programId}/users/${userId}/roles`,
     );
   }
 
