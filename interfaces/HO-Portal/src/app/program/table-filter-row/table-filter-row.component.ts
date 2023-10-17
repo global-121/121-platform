@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
-import { FilterService, PaginationFilter } from '../../services/filter.service';
+import { Filter, FilterService, PaginationFilter } from '../../services/filter.service';
 
 @Component({
   selector: 'app-table-filter-row',
@@ -26,7 +26,7 @@ export class TableFilterRowComponent implements OnInit {
   @Input()
   public filteredCount: number;
 
-  public textFilterOption: { name: string; label: string }[] = [];
+  public textFilterOption: Filter[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
@@ -52,6 +52,7 @@ export class TableFilterRowComponent implements OnInit {
     this.filterService.setTextFilter(
       this.textFilterOption[0].name,
       this.filterRowsVisibleQuery,
+      this.textFilterOption[0].allowedOperators,
       this.textFilterOption[0].label,
     );
     this.clearFilterCreateForm();

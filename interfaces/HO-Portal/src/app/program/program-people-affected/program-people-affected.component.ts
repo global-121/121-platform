@@ -138,7 +138,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   ];
 
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public tableFiltersPerColumn: Filter[] = [];
   private tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
@@ -437,6 +437,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         allFilters.push({
           name: columnName.name,
           label: this.getLabelForAttribute(columnName.name),
+          allowedOperators: columnName.allowedOperators,
         });
       }
 

@@ -6,6 +6,7 @@ import RegistrationStatus from '../enums/registration-status.enum';
 export class Filter {
   name: string;
   label: string;
+  allowedOperators?: FilterOperatorEnum[];
 }
 export class PaginationFilter extends Filter {
   value: string;
@@ -100,11 +101,16 @@ export class FilterService {
         this.removeTextFilter(key, false);
         return;
       }
-
-      this.setTextFilter(key, filterValue, null, false);
+      const allowedOperators = this.getFilterOperatorForName(key);
+      this.setTextFilter(key, filterValue, allowedOperators, null, false);
     });
 
     this.publishTextFilter();
+  }
+
+  private getFilterOperatorForName(name: string): FilterOperatorEnum[] {
+    const filter = this.allAvailableFilters.find((filter) => filter.name === name);
+    return filter.allowedOperators
   }
 
   private isAvailableFilter(name: string) {
@@ -132,10 +138,11 @@ export class FilterService {
   public setTextFilter(
     columnName: string,
     value: string,
+    allowedOperations: FilterOperatorEnum[],
     label?: string,
     publishChange = true,
   ) {
-    if (!label) {
+      if (!label) {
       label = this.getLabelOfFilter(columnName);
     }
 
@@ -143,6 +150,7 @@ export class FilterService {
       name: columnName,
       label,
       value,
+      operator: allowedOperations.includes(FilterOperatorEnum.ilike) ? FilterOperatorEnum.ilike : FilterOperatorEnum.eq,
     });
 
     if (publishChange) {
