@@ -7,6 +7,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Role, TeamMember } from '../../../models/user.model';
 import { SuccessPopupComponent } from '../success-popup/success-popup.component';
+import { TeamMemberService } from '../../../services/team-member.service';
 
 @Component({
   selector: 'app-program-team-popup',
@@ -35,6 +36,7 @@ export class ProgramTeamPopupComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private programsServiceApiService: ProgramsServiceApiService,
+    private teamMemberService: TeamMemberService,
   ) {}
 
   ngOnInit() {
@@ -82,6 +84,7 @@ export class ProgramTeamPopupComponent implements OnInit {
       componentProps: { programId: this.programId },
     });
     await modal.present();
+    this.teamMemberService.notifyTeamMemberAdded();
     window.setTimeout(() => {
       modal.dismiss();
     }, 3000);

@@ -6,6 +6,7 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TeamMember } from '../../../models/user.model';
+import { TeamMemberService } from '../../../services/team-member.service';
 
 @Component({
   selector: 'app-program-team-table',
@@ -21,10 +22,17 @@ export class ProgramTeamTableComponent implements OnInit {
   public rows: TeamMember[] = [];
   public DateFormat = DateFormat;
 
-  constructor(private programsService: ProgramsServiceApiService) {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private teamMemberService: TeamMemberService,
+  ) {}
 
   ngOnInit() {
     this.loadData();
+
+    this.teamMemberService.teamMemberAdded$.subscribe(() => {
+      this.loadData();
+    });
   }
 
   public async loadData(): Promise<void> {
