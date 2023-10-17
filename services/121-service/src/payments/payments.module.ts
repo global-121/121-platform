@@ -14,8 +14,8 @@ import { RegistrationDataEntity } from '../registration/registration-data.entity
 import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
-import { BulkImportService } from '../registration/services/bulk-import.service';
 import { InclusionScoreService } from '../registration/services/inclusion-score.service';
+import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
 import { UserEntity } from './../user/user.entity';
@@ -68,7 +68,7 @@ import { TransactionsModule } from './transactions/transactions.module';
   ],
   providers: [
     PaymentsService,
-    BulkImportService,
+    RegistrationsImportService,
     LookupService,
     InclusionScoreService,
     AzureLogService,

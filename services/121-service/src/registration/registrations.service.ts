@@ -1,16 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { PaginateQuery } from 'nestjs-paginate';
-import {
-  And,
-  DataSource,
-  In,
-  IsNull,
-  Not,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -19,22 +10,15 @@ import { LastMessageStatusService } from '../notifications/last-message-status.s
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
-import { AzureLogService } from '../shared/services/azure-log.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -66,11 +50,12 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
-import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import {
+  ImportType,
+  RegistrationsImportService,
+} from './services/registrations-import.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -92,34 +77,20 @@ export class RegistrationsService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
-  @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
-  @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
-  @InjectRepository(SafaricomRequestEntity)
-  private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
-  @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly azureLogService: AzureLogService,
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
-    private readonly bulkImportService: BulkImportService,
+    private readonly registrationsImportService: RegistrationsImportService,
     private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
     private readonly lastMessageStatusService: LastMessageStatusService,
-    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -165,16 +136,7 @@ export class RegistrationsService {
     }
   }
 
-  private getAllowedCurrentStatusesForNewStatus(
-    newStatus: RegistrationStatusEnum,
-  ): RegistrationStatusEnum[] {
-    const allStatuses = Object.values(RegistrationStatusEnum);
-    return allStatuses.filter((currentStatus) =>
-      this.canChangeStatus(currentStatus, newStatus),
-    );
-  }
-
-  private canChangeStatus(
+  public canChangeStatus(
     currentStatus: RegistrationStatusEnum,
     newStatus: RegistrationStatusEnum,
   ): boolean {
@@ -670,7 +632,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importBulk(csvFile, program, userId);
+    return await this.registrationsImportService.importBulk(
+      csvFile,
+      program,
+      userId,
+    );
   }
 
   public async getImportRegistrationsTemplate(
@@ -680,7 +646,7 @@ export class RegistrationsService {
     if (!Object.values(ImportType).includes(type)) {
       throw new HttpException('Wrong import type', HttpStatus.BAD_REQUEST);
     }
-    return await this.bulkImportService.getImportRegistrationsTemplate(
+    return await this.registrationsImportService.getImportRegistrationsTemplate(
       programId,
       type,
     );
@@ -691,7 +657,10 @@ export class RegistrationsService {
     programId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importRegistrations(csvFile, program);
+    return await this.registrationsImportService.importRegistrations(
+      csvFile,
+      program,
+    );
   }
 
   public async importValidatedRegistrations(
@@ -699,7 +668,7 @@ export class RegistrationsService {
     programId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importValidatedRegistrations(
+    return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
     );
@@ -709,7 +678,7 @@ export class RegistrationsService {
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    return await this.bulkImportService.validateRegistrationsInput(
+    return await this.registrationsImportService.validateRegistrationsInput(
       validatedJsonData,
       programId,
     );
@@ -1206,164 +1175,6 @@ export class RegistrationsService {
     return note;
   }
 
-  public async getBulkActionResult(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
-  ): Promise<BulkActionResultDto> {
-    const selectedRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        true,
-        false,
-      );
-
-    const applicableRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        true,
-        false,
-        queryBuilder,
-      );
-
-    return {
-      totalFilterCount: selectedRegistrations.meta.totalItems,
-      applicableCount: applicableRegistrations.meta.totalItems,
-      nonApplicableCount:
-        selectedRegistrations.meta.totalItems -
-        applicableRegistrations.meta.totalItems,
-    };
-  }
-
-  public async patchRegistrationsStatus(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    registrationStatus: RegistrationStatusEnum,
-    dryRun: boolean,
-    message?: string,
-    messageContentType?: MessageContentType,
-  ): Promise<BulkActionResultDto> {
-    // Overwrite the default select, as we only need the referenceId
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
-
-    const allowedCurrentStatuses =
-      this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
-
-    const resultDto = await this.getBulkActionResult(
-      paginateQuery,
-      programId,
-      this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
-    );
-    if (!dryRun) {
-      this.updateRegistrationStatusBatchFilter(
-        paginateQuery,
-        programId,
-        registrationStatus,
-        message,
-        messageContentType,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
-      ).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
-    }
-    // Get the refrenceIds for the update seperately as running a query with no limit is slower
-    // so you show the result of the applicable registrations earlier
-
-    return resultDto;
-  }
-
-  private getStatusUpdateBaseQuery(
-    allowedCurrentStatuses: RegistrationStatusEnum[],
-  ): SelectQueryBuilder<RegistrationViewEntity> {
-    return this.getBaseQuery().andWhere({ status: In(allowedCurrentStatuses) });
-  }
-
-  private getCustomMessageBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
-    return this.getBaseQuery().andWhere({
-      phoneNumber: And(Not(IsNull()), Not('')),
-    });
-  }
-
-  public getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
-    return this.registrationViewRepository
-      .createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
-  }
-
-  private async updateRegistrationStatusBatchFilter(
-    query: PaginateQuery,
-    programId: number,
-    registrationStatus: RegistrationStatusEnum,
-    message?: string,
-    messageContentType?: MessageContentType,
-    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
-  ): Promise<void> {
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        query,
-        programId,
-        false,
-        true,
-        queryBuilder,
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
-    await this.updateRegistrationStatusBatch(
-      referenceIds,
-      registrationStatus,
-      message,
-      messageContentType,
-    );
-  }
-
-  public async updateRegistrationStatusBatch(
-    referenceIds: string[],
-    registrationStatus: RegistrationStatusEnum,
-    message?: string,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    let programId;
-    let program;
-    for (const referenceId of referenceIds) {
-      const updatedRegistration = await this.setRegistrationStatus(
-        referenceId,
-        registrationStatus,
-      );
-      if (message && updatedRegistration) {
-        if (updatedRegistration.programId !== programId) {
-          programId = updatedRegistration.programId;
-          // avoid a query per PA if not necessary
-          program = await this.programRepository.findOne({
-            where: { id: programId },
-          });
-        }
-        const tryWhatsappFirst =
-          registrationStatus === RegistrationStatusEnum.invited
-            ? program.tryWhatsAppFirst
-            : false;
-        try {
-          await this.messageService.sendTextMessage(
-            updatedRegistration,
-            programId,
-            message,
-            null,
-            tryWhatsappFirst,
-            messageContentType,
-          );
-        } catch (error) {
-          if (process.env.NODE_ENV === 'development') {
-            throw error;
-          } else {
-            this.azureLogService.logError(error, true);
-          }
-        }
-      }
-    }
-  }
-
   public async searchRegistration(
     rawPhoneNumber: string,
     userId: number,
@@ -1593,148 +1404,6 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  private async checkAllowedStatusChangeOrThrow(
-    referenceIds: string[],
-    registrationStatus: RegistrationStatusEnum,
-  ): Promise<void> {
-    const errors = [];
-    for (const referenceId of referenceIds) {
-      const registrationToUpdate = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-      });
-      if (!registrationToUpdate) {
-        errors.push(`Registration '${referenceId}' is not found`);
-      } else if (
-        !this.canChangeStatus(
-          registrationToUpdate.registrationStatus,
-          registrationStatus,
-        )
-      ) {
-        errors.push(
-          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
-        );
-      }
-    }
-    if (errors.length > 0) {
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-  }
-
-  public async deleteRegistrations(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    dryRun: boolean,
-  ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
-
-    const resultDto = await this.getBulkActionResult(
-      paginateQuery,
-      programId,
-      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
-    );
-
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        false,
-        true,
-        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
-    if (!dryRun) {
-      this.deleteBatch(referenceIds).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
-    }
-    return resultDto;
-  }
-
-  public async deleteBatch(referenceIds: string[]): Promise<void> {
-    // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
-    await this.checkAllowedStatusChangeOrThrow(
-      referenceIds,
-      RegistrationStatusEnum.deleted,
-    );
-    await this.updateRegistrationStatusBatch(
-      referenceIds,
-      RegistrationStatusEnum.deleted,
-    );
-
-    for await (const referenceId of referenceIds) {
-      const registration = await this.getRegistrationFromReferenceId(
-        referenceId,
-        ['user'],
-      );
-
-      // Delete all data for this registration
-      await this.registrationDataRepository.delete({
-        registrationId: registration.id,
-      });
-      if (registration.user) {
-        await this.personAffectedAppDataRepository.delete({
-          user: { id: registration.user.id },
-        });
-      }
-      await this.twilioMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.whatsappPendingMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.tryWhatsappRepository.delete({
-        registrationId: registration.id,
-      });
-
-      // anonymize some data for this registration
-      registration.phoneNumber = null;
-      registration.note = null;
-      await this.registrationRepository.save(registration);
-
-      // FSP-specific
-      // intersolve-voucher
-      const voucherImages = await this.imageCodeExportVouchersRepo.find({
-        where: { registrationId: registration.id },
-        relations: ['voucher'],
-      });
-      const vouchersToUpdate = [];
-      for await (const voucherImage of voucherImages) {
-        const voucher = await this.intersolveVoucherRepo.findOne({
-          where: { id: voucherImage.voucher.id },
-        });
-        voucher.whatsappPhoneNumber = null;
-        vouchersToUpdate.push(voucher);
-      }
-      await this.intersolveVoucherRepo.save(vouchersToUpdate);
-      //safaricom
-      const safaricomRequests = await this.safaricomRequestRepo.find({
-        where: { transaction: { registration: { id: registration.id } } },
-        relations: ['transaction', 'transaction.registration'],
-      });
-      const requestsToUpdate = [];
-      for (const request of safaricomRequests) {
-        request.requestResult = JSON.parse(
-          JSON.stringify(request.requestResult).replace(request.partyB, ''),
-        );
-        request.paymentResult = JSON.parse(
-          JSON.stringify(request.paymentResult).replace(request.partyB, ''),
-        );
-        request.transaction.customData = JSON.parse(
-          JSON.stringify(request.transaction.customData).replace(
-            request.partyB,
-            '',
-          ),
-        );
-        request.partyB = '';
-        requestsToUpdate.push(request);
-      }
-      await this.safaricomRequestRepo.save(requestsToUpdate);
-      // TODO: at_notification + belcash_request
-    }
-  }
-
   public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user = await this.programService.findUserProgramAssignmentsOrThrow(
       userId,
@@ -1925,63 +1594,6 @@ export class RegistrationsService {
     }
   }
 
-  public async postMessages(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    message: string,
-    dryRun: boolean,
-  ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
-
-    const resultDto = await this.getBulkActionResult(
-      paginateQuery,
-      programId,
-      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
-    );
-
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        false,
-        true,
-        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
-    if (!dryRun) {
-      this.sendCustomTextMessage(referenceIds, message).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
-    }
-    return resultDto;
-  }
-
-  public async sendCustomTextMessage(
-    referenceIds: string[],
-    message: string,
-  ): Promise<void> {
-    const validRegistrations: RegistrationEntity[] = [];
-    for (const referenceId of referenceIds) {
-      const registration = await this.getRegistrationFromReferenceId(
-        referenceId,
-        ['program'],
-      );
-      validRegistrations.push(registration);
-    }
-    for (const validRegistration of validRegistrations) {
-      await this.messageService.sendTextMessage(
-        validRegistration,
-        validRegistration.program.id,
-        message,
-        null,
-        null,
-        MessageContentType.custom,
-      );
-    }
-  }
-
   public async getMessageHistoryRegistration(
     referenceId: string,
   ): Promise<MessageHistoryDto[]> {
@@ -2029,17 +1641,5 @@ export class RegistrationsService {
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
-  }
-
-  public setQueryPropertiesBulkAction(
-    query: PaginateQuery,
-    includePaymentMultiplier = false,
-  ): PaginateQuery {
-    query.select = ['referenceId'];
-    if (includePaymentMultiplier) {
-      query.select.push('paymentAmountMultiplier');
-    }
-    query.page = null;
-    return query;
   }
 }

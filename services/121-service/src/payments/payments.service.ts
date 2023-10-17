@@ -18,12 +18,12 @@ import { CustomDataAttributes } from '../registration/enum/custom-data-attribute
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationsService } from '../registration/registrations.service';
-import { BulkImportService } from '../registration/services/bulk-import.service';
+import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -65,8 +65,8 @@ export class PaymentsService {
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
-    private readonly bulkImportService: BulkImportService,
-    private readonly registrationsService: RegistrationsService,
+    private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
     private registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
@@ -98,10 +98,10 @@ export class PaymentsService {
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
     const paginateQuery =
-      this.registrationsService.setQueryPropertiesBulkAction(query, true);
+      this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
 
     const bulkActionResultDto =
-      await this.registrationsService.getBulkActionResult(
+      await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
         programId,
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
@@ -155,7 +155,7 @@ export class PaymentsService {
     payment: number,
   ): SelectQueryBuilder<RegistrationViewEntity> {
     // Do not do payment if a registration has already one transaction for that payment number
-    return this.registrationsService
+    return this.registrationsBulkService
       .getBaseQuery()
       .leftJoin(
         'registration.latestTransactions',
@@ -731,7 +731,9 @@ export class PaymentsService {
   private async xmlToValidatedFspReconciliation(
     xmlFile,
   ): Promise<ImportFspReconciliationDto> {
-    const importRecords = await this.bulkImportService.validateXml(xmlFile);
+    const importRecords = await this.registrationsImportService.validateXml(
+      xmlFile,
+    );
     return await this.validateFspReconciliationXmlInput(importRecords);
   }
 
@@ -742,7 +744,7 @@ export class PaymentsService {
     let recordsCount = 0;
     for (const row of xmlArray) {
       recordsCount += 1;
-      if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
+      if (this.registrationsImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = this.vodacashService.validateReconciliationData(row);

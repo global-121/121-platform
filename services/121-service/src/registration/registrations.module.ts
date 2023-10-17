@@ -34,8 +34,9 @@ import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
-import { BulkImportService } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { RegistrationsBulkService } from './services/registrations-bulk.service';
+import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Module({
@@ -75,13 +76,18 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
   ],
   providers: [
     RegistrationsService,
-    BulkImportService,
+    RegistrationsImportService,
     InclusionScoreService,
     AzureLogService,
     RegistrationsPaginationService,
     LastMessageStatusService,
+    RegistrationsBulkService,
   ],
   controllers: [RegistrationsController],
-  exports: [RegistrationsService, RegistrationsPaginationService],
+  exports: [
+    RegistrationsService,
+    RegistrationsBulkService,
+    RegistrationsPaginationService,
+  ],
 })
 export class RegistrationsModule {}

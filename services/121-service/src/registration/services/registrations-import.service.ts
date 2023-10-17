@@ -34,9 +34,9 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import { RegistrationEntity } from '../registration.entity';
-import { RegistrationDataEntity } from './../registration-data.entity';
 import { InclusionScoreService } from './inclusion-score.service';
 
 export enum ImportType {
@@ -45,7 +45,7 @@ export enum ImportType {
 }
 
 @Injectable()
-export class BulkImportService {
+export class RegistrationsImportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationStatusChangeEntity)

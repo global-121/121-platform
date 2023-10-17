@@ -71,6 +71,7 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
@@ -83,6 +84,7 @@ export class RegistrationsController {
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -409,7 +411,7 @@ export class RegistrationsController {
       query,
     );
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    const result = await this.registrationsService.patchRegistrationsStatus(
+    const result = await this.registrationsBulkService.patchRegistrationsStatus(
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
@@ -610,7 +612,7 @@ export class RegistrationsController {
     );
 
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    const result = await this.registrationsService.deleteRegistrations(
+    const result = await this.registrationsBulkService.deleteRegistrations(
       query,
       programId,
       dryRun,
@@ -769,7 +771,7 @@ export class RegistrationsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.registrationsService.postMessages(
+    const result = await this.registrationsBulkService.postMessages(
       query,
       programId,
       body.message,
