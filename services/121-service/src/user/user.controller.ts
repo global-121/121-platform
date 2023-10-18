@@ -13,7 +13,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { DEBUG } from '../config';
 import { Admin } from '../guards/admin.decorator';
@@ -315,6 +321,7 @@ export class UserController {
   @ApiOperation({ summary: 'Remove aidworker from program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @ApiBody({ type: AssignAidworkerToProgramDto, required: false })
   @Delete('programs/:programId/users/:userId/roles')
   public async deleteAidWorkerAssignment(
     @Param() params,

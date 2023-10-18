@@ -289,17 +289,21 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const whereRolesClause = assignAidworkerToProgram.roles
+      ? { role: In(assignAidworkerToProgram.roles) }
+      : {};
+
     const rolesToDelete = await this.userRoleRepository.find({
-      where: {
-        role: In(assignAidworkerToProgram.roles),
-      },
+      where: whereRolesClause,
     });
-    if (rolesToDelete.length !== assignAidworkerToProgram.roles.length) {
+    if (
+      assignAidworkerToProgram.roles &&
+      rolesToDelete.length !== assignAidworkerToProgram.roles.length
+    ) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // If 0 roles are posted remove aidworker assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         const rolesToKeep = programAssignment.roles.filter(
