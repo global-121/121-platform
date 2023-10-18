@@ -6,7 +6,7 @@ import { changePhase, getNotes, postNote } from '../helpers/program.helper';
 import { importRegistrations } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
-describe('Create notes', () => {
+describe('Notes', () => {
   let accessToken: string;
   const programId = 3;
   const referenceId = '456984cc-1066-48f3-b70b-0e16c3fe5bce';
@@ -26,6 +26,8 @@ describe('Create notes', () => {
     addressCity: 'Stad',
   };
 
+  const noteText = 'test note';
+
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
@@ -40,36 +42,28 @@ describe('Create notes', () => {
   });
 
   it('should post a note', async () => {
-    // Arrange
-    const text = 'test note';
-
     // Act
     const postNoteResponse = await postNote(
       referenceId,
-      text,
+      noteText,
       programId,
       accessToken,
     );
 
     // Assert
     expect(postNoteResponse.statusCode).toBe(HttpStatus.CREATED);
-    expect(postNoteResponse.body.text).toBe(text);
+    expect(postNoteResponse.body.text).toBe(noteText);
   });
 
   it('should get a note', async () => {
-    // Arrange
-    const text = 'test note';
-
-    await postNote(referenceId, text, programId, accessToken);
+    await postNote(referenceId, noteText, programId, accessToken);
 
     // Act
     const getNoteResponse = await getNotes(referenceId, programId, accessToken);
 
-    // console.log(getNoteResponse);
-
     // Assert
     expect(getNoteResponse.statusCode).toBe(HttpStatus.OK);
     expect(getNoteResponse.body.length).toBe(1);
-    expect(getNoteResponse.body[0].text).toBe(text);
+    expect(getNoteResponse.body[0].text).toBe(noteText);
   });
 });
