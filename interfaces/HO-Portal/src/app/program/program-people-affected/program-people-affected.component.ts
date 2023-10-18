@@ -735,9 +735,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public onSelect(selected: PersonRow[]) {
     let customBulkActionInput: CustomBulkActionInput = null;
     if (this.action === BulkActionId.doPayment) {
-      customBulkActionInput = {
-        payment: this.submitPaymentProps.payment,
-      };
+      customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
 
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
@@ -770,9 +768,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
     let customBulkActionInput: CustomBulkActionInput = null;
     if (this.action === BulkActionId.doPayment) {
-      customBulkActionInput = {
-        payment: this.submitPaymentProps.payment,
-      };
+      customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
     }
     this.applyAction(null, customBulkActionInput, true);
     this.applyBtnDisabled = false;
@@ -1072,5 +1068,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
       offset: 0,
     });
+  }
+
+  private getDryRunPaymentCustomBulkActionInput(): CustomBulkActionInput {
+    return {
+      payment: this.submitPaymentProps.payment,
+      paymentAmount: this.program.fixedTransferValue,
+    };
   }
 }
