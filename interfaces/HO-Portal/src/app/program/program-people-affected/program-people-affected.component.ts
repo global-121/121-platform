@@ -695,7 +695,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         null,
         true,
       );
-      this.applyAction(null, true);
+      this.applyAction(null, null, true);
     }
 
     this.selectAllCheckboxVisible = true;
@@ -743,7 +743,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     if (selected.length) {
-      this.applyAction(customBulkActionInput, true);
+      this.applyAction(null, customBulkActionInput, true);
       this.applyBtnDisabled = false;
     } else {
       this.selectedCount = 0;
@@ -774,7 +774,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         payment: this.submitPaymentProps.payment,
       };
     }
-    this.applyAction(customBulkActionInput, true);
+    this.applyAction(null, customBulkActionInput, true);
     this.applyBtnDisabled = false;
   }
 
@@ -849,17 +849,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async applyAction(
+    message: string,
     customBulkActionInput?: CustomBulkActionInput,
     dryRun: boolean = false,
   ) {
     this.isInProgress = true;
+
+    if (!customBulkActionInput) {
+      customBulkActionInput = new CustomBulkActionInput();
+    }
+    customBulkActionInput.message = message;
 
     const filters = this.setBulkActionFilters();
     this.bulkActionService
       .applyAction(
         this.action,
         this.programId,
-        customBulkActionInput || null,
+        customBulkActionInput,
         dryRun,
         filters,
       )
