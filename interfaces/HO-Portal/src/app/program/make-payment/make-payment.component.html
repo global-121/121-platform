@@ -2,7 +2,11 @@
   <ion-note class="ion-margin-end">
     {{
       'page.program.program-payout.make-payment.number-included'
-        | translate: { number: totalIncluded >= 0 ? (totalIncluded  | number: '1.0-0') : '?' }
+        | translate
+          : {
+              number:
+                totalIncluded >= 0 ? (totalIncluded | number: '1.0-0') : '?'
+            }
     }}
   </ion-note>
 
