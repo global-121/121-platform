@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { formatDate, formatNumber } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { Subscription } from 'rxjs';
+import { mergeWith, Subscription, throttleTime } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -68,6 +68,7 @@ import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
+import { TableFilterRowComponent } from '../table-filter-row/table-filter-row.component';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -77,6 +78,8 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
 export class ProgramPeopleAffectedComponent implements OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
+  @ViewChild('tableFilterRow')
+  public tableFilterRow: TableFilterRowComponent;
 
   @Input()
   public programId: number;
@@ -126,8 +129,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
+
   private routerSubscription: Subscription;
   private pubSubSubscription: Subscription;
+  private textFilterSubscription: Subscription;
+  private statusFilterSubscription: Subscription;
+  private combinedFilterSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   public tableFilters = [
@@ -173,40 +180,60 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.pageMetaData = this.registrationsService?.getPageMetadata();
 
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        if (event.url.includes(this.thisPhase)) {
-          this.initComponent();
-        }
-      }
-    });
-
     this.columnDefaults = this.tableService.getColumnDefaults();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
     if (this.pubSubSubscription) {
       this.pubSubSubscription.unsubscribe();
     }
+    if (this.textFilterSubscription) {
+      this.textFilterSubscription.unsubscribe();
+    }
+    if (this.statusFilterSubscription) {
+      this.statusFilterSubscription.unsubscribe();
+    }
+    if (this.combinedFilterSubscription) {
+      this.combinedFilterSubscription.unsubscribe();
+    }
+  }
+
+  private setupFilterSubscriptions() {
+    this.textFilterSubscription = this.filterService.textFilter$.subscribe(
+      (value) => {
+        this.tableTextFilter = value;
+      },
+    );
+    this.statusFilterSubscription = this.filterService.statusFilter$.subscribe(
+      (value) => {
+        this.tableStatusFilter = value;
+      },
+    );
+
+    this.combinedFilterSubscription = this.filterService.textFilter$
+      .pipe(mergeWith(this.filterService.statusFilter$))
+      .pipe(
+        throttleTime(500, null, {
+          leading: false,
+          trailing: true,
+        }),
+      )
+      .subscribe(() => {
+        this.setPage({
+          // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
+          offset: 0,
+        });
+        this.refreshData();
+      });
   }
 
   async initComponent() {
     this.isLoading = true;
 
-    this.filterService.textFilter$.subscribe((filter) => {
-      this.tableTextFilter = filter;
-      this.refreshData();
-      this.clearSelection();
-    });
-
-    this.filterService.statusFilter$.subscribe((filter) => {
-      this.tableStatusFilter = filter;
-      this.refreshData();
-      this.clearSelection();
-    });
+    this.tableFilterRow.initComponent();
 
     this.columns = [];
 
@@ -232,7 +259,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.tableService.createPaymentHistoryColumn();
     }
 
-    await this.refreshData();
+    this.setupFilterSubscriptions();
 
     await this.updateBulkActions();
 
@@ -265,10 +292,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.updateProxyScrollbarSize();
 
     this.isCompleted.emit(true);
-  }
-
-  public getId(row: PersonRow): string {
-    return row.referenceId;
   }
 
   private async refreshData() {
@@ -728,15 +751,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private clearSelection(): void {
-    this.selectedPeople = [];
-    this.selectedCount = 0;
-    if (this.selectAllChecked) {
-      this.onSelectAll();
-    }
-    this.applyBtnDisabled = false;
-  }
-
   public onSelectAll() {
     this.selectAllChecked = !this.selectAllChecked;
     if (this.selectAllChecked) {
@@ -782,7 +796,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return this.bulkActions.find((i: BulkAction) => i.id === this.action);
   }
 
-  private updateSubmitWarning(applicableCount: number) {
+  private updateSubmitWarning(
+    applicableCount: number,
+    nonApplicableCount: number,
+  ) {
     if (!this.getCurrentBulkAction()) {
       return;
     }
@@ -791,13 +808,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       'page.program.program-people-affected.submit-warning-people-affected',
       {
         actionLabel,
-        applicableCount: applicableCount,
+        applicableCount: formatNumber(applicableCount, this.locale),
       },
     );
     const conditionsToSelectText = this.translate.instant(
       `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+      { action: this.getCurrentBulkAction().label },
     );
-    this.submitWarning = `<p>${numberOfPeopleWarning}</p><p>${conditionsToSelectText}</p>`;
+    this.submitWarning = `<p>${numberOfPeopleWarning}</p>`;
+    if (nonApplicableCount > 0) {
+      this.submitWarning += `<p>${conditionsToSelectText}</p>`;
+    }
   }
 
   private setBulkActionFilters(): PaginationFilter[] {
@@ -865,7 +886,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
-    this.updateSubmitWarning(bulkActionResult.applicableCount);
+    this.updateSubmitWarning(
+      bulkActionResult.applicableCount,
+      bulkActionResult.nonApplicableCount,
+    );
     this.selectedCount = bulkActionResult.applicableCount;
     if (bulkActionResult.applicableCount === 0) {
       const nobodyToSelectTest = this.translate.instant(
@@ -873,6 +897,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
       const conditionsToSelectText = this.translate.instant(
         `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
+        { action: this.getCurrentBulkAction().label },
       );
 
       const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
