@@ -1,4 +1,4 @@
-import { formatCurrency } from '@angular/common';
+import { formatCurrency, formatNumber } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -53,6 +53,8 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   private tableSatusFilterSubscription: Subscription;
   private tableStatusFilter: RegistrationStatus[];
 
+  private locale: string;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
@@ -61,6 +63,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     private router: Router,
     private filterService: FilterService,
   ) {
+    this.locale = environment.defaultLocale;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.ngOnInit();
@@ -216,7 +219,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
 
     this.totalIncludedMessage = this.translate.instant(
       'page.program.program-payout.total-included',
-      { totalIncluded: this.totalIncluded },
+      { totalIncluded: formatNumber(this.totalIncluded, this.locale) },
     );
 
     this.totalAmountMessage = this.translate.instant(
