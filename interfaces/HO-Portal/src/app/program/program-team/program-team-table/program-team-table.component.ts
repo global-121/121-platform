@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { TranslateModule } from '@ngx-translate/core';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { TeamMember } from '../../../models/user.model';
+import { ProgramTeamPopupOperationEnum } from '../../../models/program-team-popup-operation.enum';
+import { TeamMember, TeamMemberRow } from '../../../models/user.model';
 import { TeamMemberService } from '../../../services/team-member.service';
+import { ProgramTeamPopupComponent } from '../program-team-popup/program-team-popup.component';
 
 @Component({
   selector: 'app-program-team-table',
@@ -19,18 +21,21 @@ export class ProgramTeamTableComponent implements OnInit {
   @Input()
   private programId: number;
 
-  public rows: TeamMember[] = [];
+  public rows: TeamMemberRow[] = [];
   public DateFormat = DateFormat;
+  public popoverEvent: Event;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private teamMemberService: TeamMemberService,
+    public modalController: ModalController,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
     this.loadData();
 
-    this.teamMemberService.teamMemberAdded$.subscribe(() => {
+    this.teamMemberService.teamMemberChanged$.subscribe(() => {
       this.loadData();
     });
   }
@@ -38,6 +43,33 @@ export class ProgramTeamTableComponent implements OnInit {
   public async loadData(): Promise<void> {
     const programUsers: TeamMember[] =
       await this.programsService.getUsersByProgram(this.programId);
-    this.rows = programUsers;
+
+    this.rows = programUsers.map((user) => ({
+      ...user,
+      showTeamMemberPopover: false,
+    }));
+  }
+
+  public toggleTeamMemberPopover(event: Event, row: TeamMemberRow): void {
+    this.popoverEvent = event;
+    row.showTeamMemberPopover = !row.showTeamMemberPopover;
+  }
+
+  public editRole(row: TeamMemberRow): void {
+    console.log('row: ', row);
+  }
+
+  public async removeFromTeam(row: TeamMemberRow): Promise<void> {
+    row.showTeamMemberPopover = false;
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: ProgramTeamPopupComponent,
+      componentProps: {
+        operation: ProgramTeamPopupOperationEnum.remove,
+        programId: this.programId,
+        teamMemberRow: row,
+        title: this.translate.instant('common.confirm'),
+      },
+    });
+    await modal.present();
   }
 }

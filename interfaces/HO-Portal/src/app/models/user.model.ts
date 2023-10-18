@@ -18,6 +18,10 @@ export class TeamMember {
   roles: Role[];
 }
 
+export class TeamMemberRow extends TeamMember {
+  showTeamMemberPopover: boolean;
+}
+
 export enum StatusName {
   active = 'active',
   inactive = 'inactive',

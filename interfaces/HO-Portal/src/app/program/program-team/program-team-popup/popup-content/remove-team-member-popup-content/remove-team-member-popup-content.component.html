@@ -1,0 +1,44 @@
+<!-- content -->
+<form (ngSubmit)="removeTeamMember()">
+  <ion-grid class="ion-no-margin ion-padding">
+    <ion-row>
+      <ion-label class="label">{{
+        'page.program-team.popup.remove.introduction' | translate
+      }}</ion-label>
+      <div class="label-container">
+        <ion-label class="label attention">{{
+          'page.program-team.popup.remove.attention' | translate
+        }}</ion-label>
+        <ion-label class="label">{{
+          'page.program-team.popup.remove.explanation' | translate
+        }}</ion-label>
+      </div>
+      <ion-label class="label">{{
+        'page.program-team.popup.remove.confirmation-question' | translate
+      }}</ion-label>
+    </ion-row>
+  </ion-grid>
+  <div class="buttons">
+    <!-- cancel button -->
+    <ion-button
+      (click)="closeModal()"
+      [attr.title]="'common.cancel' | translate"
+      [attr.aria-label]="'common.cancel' | translate"
+      fill="clear"
+    >
+      <u
+        ><strong>{{ 'common.cancel' | translate }}</strong></u
+      >
+    </ion-button>
+
+    <!-- add user button -->
+    <ion-button
+      type="submit"
+      shape="round"
+      fill="solid"
+      class="button"
+      item-end
+      >{{ 'page.program-team.popup.remove.confirm' | translate }}</ion-button
+    >
+  </div>
+</form>
