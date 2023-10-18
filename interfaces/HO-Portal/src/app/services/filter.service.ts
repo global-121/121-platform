@@ -109,8 +109,10 @@ export class FilterService {
   }
 
   private getFilterOperatorForName(name: string): FilterOperatorEnum[] {
-    const filter = this.allAvailableFilters.find((filter) => filter.name === name);
-    return filter.allowedOperators
+    const filter = this.allAvailableFilters.find(
+      (filter) => filter.name === name,
+    );
+    return filter.allowedOperators;
   }
 
   private isAvailableFilter(name: string) {
@@ -142,7 +144,7 @@ export class FilterService {
     label?: string,
     publishChange = true,
   ) {
-      if (!label) {
+    if (!label) {
       label = this.getLabelOfFilter(columnName);
     }
 
@@ -150,7 +152,9 @@ export class FilterService {
       name: columnName,
       label,
       value,
-      operator: allowedOperations.includes(FilterOperatorEnum.ilike) ? FilterOperatorEnum.ilike : FilterOperatorEnum.eq,
+      operator: allowedOperations.includes(FilterOperatorEnum.ilike)
+        ? FilterOperatorEnum.ilike
+        : FilterOperatorEnum.eq,
     });
 
     if (publishChange) {

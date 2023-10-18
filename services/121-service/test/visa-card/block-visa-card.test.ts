@@ -5,8 +5,8 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
-  blockVisaCard,
   awaitChangePaStatus,
+  blockVisaCard,
   getMessageHistory,
   getVisaWalletsAndDetails,
   importRegistrations,
