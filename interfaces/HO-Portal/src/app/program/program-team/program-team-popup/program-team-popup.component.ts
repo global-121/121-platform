@@ -6,8 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Role, TeamMember } from '../../../models/user.model';
-import { SuccessPopupComponent } from '../success-popup/success-popup.component';
 import { TeamMemberService } from '../../../services/team-member.service';
+import { SuccessPopupComponent } from '../success-popup/success-popup.component';
 
 @Component({
   selector: 'app-program-team-popup',

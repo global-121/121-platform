@@ -1,12 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProgramTeamPopupComponent } from './program-team-popup/program-team-popup.component';
+import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
 
 @Component({
   selector: 'app-program-team',
   templateUrl: './program-team.component.html',
   styleUrls: ['./program-team.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonicModule,
+    ProgramTeamTableComponent,
+    TranslateModule,
+  ],
 })
 export class ProgramTeamPage {
   public programId: number;
