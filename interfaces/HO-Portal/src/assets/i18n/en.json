@@ -49,6 +49,7 @@
         "team-member": "Team member",
         "team-member-placeholder": "Select a team member",
         "roles-placeholder": "Assign a role(s)",
+        "roles-required": "Please select at least one role",
         "role": "Role",
         "remove": {
           "title": "Remove team member",
@@ -62,7 +63,8 @@
         "add": {
           "title": "Add team member",
           "succes-message": "You’ve successfully added a team member",
-          "confirm": "Add user"
+          "confirm": "Add user",
+          "already-member": "This user is already a team member"
         },
         "change": {
           "title": "Edit team member roles",

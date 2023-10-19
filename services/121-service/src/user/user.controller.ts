@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -380,7 +381,10 @@ export class UserController {
     type: [FindUserReponseDto],
   })
   @Get('programs/:programId/users/:username')
-  public async getUsersByName(@Param() params): Promise<FindUserReponseDto[]> {
-    return await this.userService.findUsersByName(params.username);
+  public async getUsersByName(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('username') username: string,
+  ): Promise<FindUserReponseDto[]> {
+    return await this.userService.findUsersByName(username);
   }
 }

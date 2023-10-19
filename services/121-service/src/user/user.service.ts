@@ -569,7 +569,13 @@ export class UserService {
       .createQueryBuilder('user')
       .where('user.username LIKE :username', { username: `%${username}%` })
       .andWhere('user.userType = :userType', { userType: UserType.aidWorker })
-      .select(['user.id AS id', 'user.username AS username'])
+      .leftJoin('user.programAssignments', 'assignment')
+      .select([
+        'user.id AS id',
+        'user.username AS username',
+        'ARRAY_AGG(assignment.programId) AS "assignedProgramIds"',
+      ])
+      .groupBy('user.id, user.username')
       .getRawMany();
   }
 

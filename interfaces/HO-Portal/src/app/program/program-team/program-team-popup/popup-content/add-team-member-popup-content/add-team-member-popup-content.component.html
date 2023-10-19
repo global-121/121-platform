@@ -19,12 +19,19 @@
         search-icon="'undefined'"
       >
       </ion-searchbar>
+      <div *ngIf="isUserAlreadyTeamMember">
+        <app-warning-label
+          [warningText]="
+            'page.program-team.popup.add.already-member' | translate
+          "
+        ></app-warning-label>
+      </div>
       <ng-container *ngIf="showSearchResults">
         <ion-list class="ion-no-margin">
           <ion-item
             [button]="true"
             *ngFor="let user of searchResults"
-            (click)="updateSearchbarValue(user.username, user.id)"
+            (click)="updateSearchbarValue(user)"
           >
             {{ user.username }}
           </ion-item>
@@ -57,6 +64,11 @@
           {{ role.label.trim() }}
         </ion-select-option>
       </ion-select>
+      <div *ngIf="showRolesWarning()">
+        <app-warning-label
+          [warningText]="'page.program-team.popup.roles-required' | translate"
+        ></app-warning-label>
+      </div>
     </ion-row>
   </ion-grid>
   <div class="buttons">

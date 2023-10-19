@@ -9,6 +9,12 @@ export class User {
   isAdmin?: boolean;
 }
 
+export class UserSearchResult {
+  id: number;
+  username: string;
+  assignedProgramIds: number[];
+}
+
 export class TeamMember {
   id: number;
   username: string;

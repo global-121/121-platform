@@ -35,7 +35,7 @@ export class ProgramTeamPage {
       component: ProgramTeamPopupComponent,
       componentProps: {
         operation: ProgramTeamPopupOperationEnum.add,
-        programId: this.programId,
+        programId: Number(this.programId), // Not sure why this.route.snapshot.params.id is used in a lot of places but it's not a number
         title: this.translate.instant('page.program-team.popup.add.title'),
       },
     });

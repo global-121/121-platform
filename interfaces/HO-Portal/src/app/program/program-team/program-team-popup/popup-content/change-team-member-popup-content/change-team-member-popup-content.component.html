@@ -43,6 +43,11 @@
           {{ role.label.trim() }}
         </ion-select-option>
       </ion-select>
+      <div *ngIf="!rolesAreSelected()">
+        <app-warning-label
+          [warningText]="'page.program-team.popup.roles-required' | translate"
+        ></app-warning-label>
+      </div>
     </ion-row>
   </ion-grid>
   <div class="buttons">
@@ -65,7 +70,7 @@
       fill="solid"
       class="button"
       item-end
-      [disabled]="!isFormComplete()"
+      [disabled]="!rolesAreSelected()"
       >{{ 'page.program-team.popup.change.confirm' | translate }}</ion-button
     >
   </div>

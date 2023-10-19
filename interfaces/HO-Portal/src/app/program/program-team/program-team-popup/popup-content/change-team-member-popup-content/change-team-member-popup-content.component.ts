@@ -7,6 +7,7 @@ import { Role, TeamMemberRow } from '../../../../../models/user.model';
 import { ProgramsServiceApiService } from '../../../../../services/programs-service-api.service';
 import { TeamMemberService } from '../../../../../services/team-member.service';
 import { SharedModule } from '../../../../../shared/shared.module';
+import { WarningLabelComponent } from './../../../../../shared/warning-label/warning-label.component';
 
 @Component({
   selector: 'app-change-team-member-popup-content',
@@ -18,6 +19,7 @@ import { SharedModule } from '../../../../../shared/shared.module';
     TranslateModule,
     FormsModule,
     ChangeTeamMemberPopupContentComponent,
+    WarningLabelComponent,
   ],
   templateUrl: './change-team-member-popup-content.component.html',
   styleUrls: ['./change-team-member-popup-content.component.scss'],
@@ -48,8 +50,8 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
     this.initiateSelectedRoleNames();
   }
 
-  public isFormComplete(): boolean {
-    return this.selectedRoleNames.length !== 0;
+  public rolesAreSelected(): boolean {
+    return this.selectedRoleNames.length > 0;
   }
 
   public async getRoles(): Promise<void> {

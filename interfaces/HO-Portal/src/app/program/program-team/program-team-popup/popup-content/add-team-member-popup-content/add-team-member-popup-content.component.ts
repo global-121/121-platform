@@ -3,10 +3,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { Role, TeamMember } from '../../../../../models/user.model';
+import { Role, UserSearchResult } from '../../../../../models/user.model';
 import { ProgramsServiceApiService } from '../../../../../services/programs-service-api.service';
 import { TeamMemberService } from '../../../../../services/team-member.service';
 import { SharedModule } from '../../../../../shared/shared.module';
+import { WarningLabelComponent } from '../../../../../shared/warning-label/warning-label.component';
 
 @Component({
   selector: 'app-add-team-member-popup-content',
@@ -18,6 +19,7 @@ import { SharedModule } from '../../../../../shared/shared.module';
     TranslateModule,
     FormsModule,
     AddTeamMemberPopupContentComponent,
+    WarningLabelComponent,
   ],
   templateUrl: './add-team-member-popup-content.component.html',
   styleUrls: ['./add-team-member-popup-content.component.scss'],
@@ -25,10 +27,12 @@ import { SharedModule } from '../../../../../shared/shared.module';
 export class AddTeamMemberPopupContentComponent implements OnInit {
   @Input()
   public programId: number;
+
   private userId: number;
+  public isUserAlreadyTeamMember = false;
 
   public searchQuery: string = '';
-  public searchResults: TeamMember[][] = [];
+  public searchResults: UserSearchResult[] = [];
   public showSearchResults: boolean;
 
   public rolesList: Role[] = [];
@@ -59,10 +63,21 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
     return this.searchQuery !== '' && this.selectedRoleNames.length !== 0;
   }
 
-  public updateSearchbarValue(selectedItem: string, userId: number): void {
-    this.searchQuery = selectedItem;
-    this.userId = userId;
+  public updateSearchbarValue(userSearchResult: UserSearchResult): void {
+    this.searchQuery = userSearchResult.username;
+    this.userId = userSearchResult.id;
+    this.isUserAlreadyTeamMember = userSearchResult.assignedProgramIds.includes(
+      this.programId,
+    );
     this.showSearchResults = false;
+  }
+
+  public showRolesWarning(): boolean {
+    return (
+      this.selectedRoleNames.length === 0 &&
+      !!this.userId &&
+      !this.isUserAlreadyTeamMember
+    );
   }
 
   public async getRoles(): Promise<void> {
