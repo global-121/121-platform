@@ -39,6 +39,7 @@ enum ActivityOverviewType {
   dataChanges = 'dataChanges',
   payment = 'payment',
   message = 'message',
+  notes = 'notes',
   status = 'status',
 }
 
@@ -73,6 +74,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     ActivityOverviewType.dataChanges,
     ActivityOverviewType.payment,
     ActivityOverviewType.message,
+    ActivityOverviewType.notes,
     ActivityOverviewType.status,
   ];
 
@@ -335,6 +337,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           date: new Date(change.created),
           description,
           chipText: change.user.username,
+        });
+      }
+
+      const notes = await this.programsService.getNotes(
+        this.program.id,
+        this.person.referenceId,
+      );
+      for (const note of notes) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.notes,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.note.label',
+          ),
+          date: new Date(note.created),
+          description: note.text,
+          chipText: note.username,
         });
       }
     }

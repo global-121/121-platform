@@ -232,25 +232,28 @@ export class ProgramsServiceApiService {
     );
   }
 
-  updateNote(
+  postNote(
     programId: number,
     referenceId: string,
     note: string,
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note`,
+      `/programs/${programId}/note`,
       {
         referenceId,
-        note,
+        text: note,
       },
+      false,
     );
   }
 
-  retrieveNote(programId: number, referenceId: string): Promise<Note> {
+  getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note/${referenceId}`,
+      `/programs/${programId}/note/${referenceId}`,
+      null,
+      false,
     );
   }
   retrieveMsgHistory(
