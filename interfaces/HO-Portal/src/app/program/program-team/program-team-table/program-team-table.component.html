@@ -98,6 +98,7 @@
       <ion-popover
         [isOpen]="row.showTeamMemberPopover"
         [event]="popoverEvent"
+        (didDismiss)="row.showTeamMemberPopover = false"
       >
         <ng-template>
           <app-popover-content>
