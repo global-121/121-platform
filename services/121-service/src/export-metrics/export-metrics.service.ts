@@ -745,6 +745,10 @@ export class ExportMetricsService {
       fspQuestions,
     );
 
+    const relationOptionNoFsp = relationOptions.filter(
+      (o) => !o.relation.fspQuestionId,
+    );
+
     let allRegistrations = [];
     for (const [fspId, registrationIds] of Object.entries(
       groupedRegistrations,
@@ -752,7 +756,9 @@ export class ExportMetricsService {
       const registrationsWithSameFspId =
         await this.getRegistrationsFieldsForDuplicates(
           program.id,
-          relationOptionsPerFsp[fspId],
+          relationOptionsPerFsp[fspId]
+            ? relationOptionsPerFsp[fspId]
+            : relationOptionNoFsp,
           registrationIds.map((r) => r.registrationProgramId),
         );
       allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
