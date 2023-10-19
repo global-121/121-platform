@@ -695,6 +695,7 @@ export class ExportMetricsService {
         }
       }
     }
+    // TODO: refactor this to use the paginate functionality
     return this.getRegisrationsForDuplicates(
       duplicatesMap,
       uniqueRegistrationIds,
@@ -706,7 +707,7 @@ export class ExportMetricsService {
 
   private async getRegisrationsForDuplicates(
     duplicatesMap: Map<number, number[]>,
-    uniqueRegistrationIds: Set<number>,
+    uniqueRegistrationProgramIds: Set<number>,
     fspQuestions: FspQuestionEntity[],
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
@@ -715,21 +716,26 @@ export class ExportMetricsService {
     data: any[];
   }> {
     const registrationAndFspId = await this.registrationRepository.find({
-      where: { id: In([...Array.from(uniqueRegistrationIds)]) },
-      select: ['id', 'fspId'],
+      where: {
+        registrationProgramId: In([
+          ...Array.from(uniqueRegistrationProgramIds),
+        ]),
+        programId: program.id,
+      },
+      select: ['registrationProgramId', 'fspId'],
     });
 
     // Create an object to group registrations by fspId
     const groupedRegistrations: Record<
       string,
-      { id: number; fspId: number }[]
+      { registrationProgramId: number; fspId: number }[]
     > = {};
     registrationAndFspId.forEach((registration) => {
-      const { id, fspId } = registration;
+      const { registrationProgramId, fspId } = registration;
       if (!groupedRegistrations[fspId]) {
         groupedRegistrations[fspId] = [];
       }
-      groupedRegistrations[fspId].push({ id, fspId });
+      groupedRegistrations[fspId].push({ registrationProgramId, fspId });
     });
 
     // Create an object to group relation options per FSP
@@ -747,7 +753,7 @@ export class ExportMetricsService {
         await this.getRegistrationsFieldsForDuplicates(
           program.id,
           relationOptionsPerFsp[fspId],
-          registrationIds.map((r) => r.id),
+          registrationIds.map((r) => r.registrationProgramId),
         );
       allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
     }
