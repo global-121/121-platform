@@ -21,7 +21,7 @@ module.exports = {
         parser: '@typescript-eslint/parser',
         ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
-        project: true,
+        // project: true, //removed because I am not able to run unit tests
         tsconfigRootDir: __dirname,
       },
       rules: {

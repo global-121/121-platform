@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegistrationsService } from '../registration/registrations.service';
+import { ResponseNoteDto } from './dto/response-note.dto';
 import { NoteEntity } from './note.entity';
 
 @Injectable()
@@ -17,7 +18,7 @@ export class NoteService {
     referenceId: string,
     text: string,
     userId: number,
-  ): Promise<NoteEntity> {
+  ): Promise<void> {
     const registration =
       await this.registrationsService.getRegistrationFromReferenceId(
         referenceId,
@@ -34,13 +35,13 @@ export class NoteService {
       text,
     };
 
-    return await this.noteRepository.save(note);
+    await this.noteRepository.save(note);
   }
 
   public async retrieveNote(
     referenceId: string,
-    programId: string,
-  ): Promise<NoteEntity[]> {
+    programId: number,
+  ): Promise<ResponseNoteDto[]> {
     const notes = await this.noteRepository
       .createQueryBuilder('note')
       .innerJoin('note.registration', 'registration')
