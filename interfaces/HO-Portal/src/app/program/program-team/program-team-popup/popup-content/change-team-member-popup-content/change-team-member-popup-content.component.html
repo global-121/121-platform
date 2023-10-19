@@ -11,25 +11,10 @@
         id="searchbar"
         name="searchQuery"
         [(ngModel)]="searchQuery"
-        (ionInput)="search($event)"
-        [debounce]="1000"
-        placeholder="{{
-          'page.program-team.popup.team-member-placeholder' | translate
-        }}"
+        disabled="true"
         search-icon="'undefined'"
       >
       </ion-searchbar>
-      <ng-container *ngIf="showSearchResults">
-        <ion-list class="ion-no-margin">
-          <ion-item
-            [button]="true"
-            *ngFor="let user of searchResults"
-            (click)="updateSearchbarValue(user.username, user.id)"
-          >
-            {{ user.username }}
-          </ion-item>
-        </ion-list>
-      </ng-container>
     </ion-row>
     <ion-row>
       <ion-label class="label">{{
@@ -53,6 +38,7 @@
         <ion-select-option
           *ngFor="let role of rolesList"
           value="{{ role.role }}"
+          [selected]="isRoleSelected(role.role)"
         >
           {{ role.label.trim() }}
         </ion-select-option>
@@ -80,7 +66,7 @@
       class="button"
       item-end
       [disabled]="!isFormComplete()"
-      >{{ 'page.program-team.popup.add.confirm' | translate }}</ion-button
+      >{{ 'page.program-team.popup.change.confirm' | translate }}</ion-button
     >
   </div>
 </form>

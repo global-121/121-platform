@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ProgramTeamPopupOperationEnum } from '../../../models/program-team-popup-operation.enum';
 import { Role, TeamMember } from '../../../models/user.model';
 import { AddTeamMemberPopupContentComponent } from './popup-content/add-team-member-popup-content/add-team-member-popup-content.component';
+import { ChangeTeamMemberPopupContentComponent } from './popup-content/change-team-member-popup-content/change-team-member-popup-content.component';
 import { RemoveTeamMemberPopupContentComponent } from './popup-content/remove-team-member-popup-content/remove-team-member-popup-content.component';
 
 @Component({
@@ -20,6 +21,7 @@ import { RemoveTeamMemberPopupContentComponent } from './popup-content/remove-te
     FormsModule,
     AddTeamMemberPopupContentComponent,
     RemoveTeamMemberPopupContentComponent,
+    ChangeTeamMemberPopupContentComponent,
   ],
   templateUrl: './program-team-popup.component.html',
   styleUrls: ['./program-team-popup.component.scss'],

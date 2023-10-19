@@ -61,7 +61,13 @@
         },
         "add": {
           "title": "Add team member",
-          "succes-message": "You’ve successfully added a team member"
+          "succes-message": "You’ve successfully added a team member",
+          "confirm": "Add user"
+        },
+        "change": {
+          "title": "Edit team member roles",
+          "succes-message": "You’ve successfully edited the role(s) of this user",
+          "confirm": "Save"
         }
       }
     },

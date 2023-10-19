@@ -29,7 +29,12 @@
       [programId]="programId"
     ></app-add-team-member-popup-content>
   </div>
-  <div *ngIf="operation === programTeamPopupOperationEnum.edit">edit</div>
+  <div *ngIf="operation === programTeamPopupOperationEnum.edit">
+    <app-change-team-member-popup-content
+      [teamMemberRow]="teamMemberRow"
+      [programId]="programId"
+    ></app-change-team-member-popup-content>
+  </div>
   <div *ngIf="operation === programTeamPopupOperationEnum.remove">
     <app-remove-team-member-popup-content
       [teamMemberRow]="teamMemberRow"

@@ -55,8 +55,18 @@ export class ProgramTeamTableComponent implements OnInit {
     row.showTeamMemberPopover = !row.showTeamMemberPopover;
   }
 
-  public editRole(row: TeamMemberRow): void {
-    console.log('row: ', row);
+  public async editRole(row: TeamMemberRow): Promise<void> {
+    row.showTeamMemberPopover = false;
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: ProgramTeamPopupComponent,
+      componentProps: {
+        operation: ProgramTeamPopupOperationEnum.edit,
+        programId: this.programId,
+        teamMemberRow: row,
+        title: this.translate.instant('page.program-team.popup.change.title'),
+      },
+    });
+    await modal.present();
   }
 
   public async removeFromTeam(row: TeamMemberRow): Promise<void> {
