@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
@@ -20,11 +21,18 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
+import { AudioModule } from './test-module/audio.module';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
-
 @Module({
   imports: [
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+      },
+    }),
+    AudioModule,
     TypeOrmModule,
     ProgramModule,
     UserModule,

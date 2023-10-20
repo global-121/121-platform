@@ -2,29 +2,49 @@
 
 ```mermaid
 graph LR
+  BullModule-->DiscoveryModule
+  DiscoveryModule-->BullModule
+  BullModule-->BullModule
+  AudioModule-->BullModule
   ProgramModule-->SmsModule
+  SmsModule-->BullModule
   ProgramModule-->FspModule
+  FspModule-->BullModule
   ProgramModule-->LookupModule
+  LookupModule-->BullModule
+  ProgramModule-->BullModule
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
+  ImageCodeModule-->BullModule
+  WhatsappModule-->BullModule
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->MessageModule
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
+  MessageModule-->BullModule
+  TransactionsModule-->BullModule
   IntersolveVoucherModule-->WhatsappModule
+  IntersolveVoucherModule-->BullModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
   IntersolveVisaModule-->MessageModule
+  IntersolveVisaModule-->BullModule
   CronjobModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
+  CommercialBankEthiopiaModule-->BullModule
+  CronjobModule-->BullModule
+  PeopleAffectedModule-->BullModule
+  InstanceModule-->BullModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
+  RegistrationChangeLogModule-->BullModule
+  RegistrationsModule-->BullModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule
@@ -33,26 +53,36 @@ graph LR
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
+  IntersolveJumboModule-->BullModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
+  AfricasTalkingModule-->BullModule
   PaymentsModule-->BelcashModule
   BelcashModule-->TransactionsModule
+  BelcashModule-->BullModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->BobFinanceModule
   BobFinanceModule-->TransactionsModule
+  BobFinanceModule-->BullModule
   PaymentsModule-->UkrPoshtaModule
   UkrPoshtaModule-->TransactionsModule
+  UkrPoshtaModule-->BullModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  VodacashModule-->BullModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
+  SafaricomModule-->BullModule
   PaymentsModule-->CommercialBankEthiopiaModule
   PaymentsModule-->RegistrationsModule
+  PaymentsModule-->BullModule
   ExportMetricsModule-->TransactionsModule
   ExportMetricsModule-->IntersolveVisaModule
   ExportMetricsModule-->IntersolveVoucherModule
   ExportMetricsModule-->RegistrationChangeLogModule
+  ExportMetricsModule-->BullModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule
+  WhatsappIncomingModule-->BullModule
 ```
