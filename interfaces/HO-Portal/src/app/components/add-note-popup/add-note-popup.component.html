@@ -75,6 +75,7 @@
     (click)="submitNote()"
     size="medium"
     class="ion-margin-start"
+    [disabled]="!noteText || loading"
   >
     {{ 'common.ok' | translate }}
     <ion-spinner
