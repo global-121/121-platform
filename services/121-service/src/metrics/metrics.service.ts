@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
-import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Not, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -18,7 +17,6 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
-import { Attributes } from '../registration/dto/update-registration.dto';
 import {
   AnswerTypes,
   CustomDataAttributes,
@@ -37,7 +35,6 @@ import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
-import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 
 @Injectable()
 export class MetricsService {
@@ -1310,34 +1307,6 @@ export class MetricsService {
       .orderBy('"registration"."id"', 'DESC')
       .distinctOn(['registration.id']);
     return await q.getRawMany();
-  }
-
-  public async getTotalTransferAmounts(
-    programId: number,
-    referenceIdsDto: ReferenceIdsDto,
-  ): Promise<TotalTransferAmounts> {
-    let registrations;
-    if (referenceIdsDto.referenceIds.length) {
-      registrations = await this.registrationRepository.find({
-        where: {
-          referenceId: In(referenceIdsDto.referenceIds),
-        },
-      });
-    } else {
-      registrations = await this.registrationRepository.find({
-        where: {
-          program: { id: programId },
-          registrationStatus: RegistrationStatusEnum.included,
-        },
-      });
-    }
-    const sum = registrations.reduce(function (a, b) {
-      return a + (b[Attributes.paymentAmountMultiplier] || 1);
-    }, 0);
-    return {
-      registrations: registrations.length,
-      transferAmounts: sum,
-    };
   }
 
   public async getProgramStats(programId: number): Promise<ProgramStats> {

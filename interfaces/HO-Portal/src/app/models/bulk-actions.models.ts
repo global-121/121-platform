@@ -31,4 +31,5 @@ export class BulkActionResult {
   public readonly totalFilterCount: number;
   public readonly applicableCount: number;
   public readonly nonApplicableCount: number;
+  public readonly sumPaymentAmountMultiplier?: number;
 }
