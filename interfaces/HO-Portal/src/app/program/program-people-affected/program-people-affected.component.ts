@@ -683,21 +683,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.submitPaymentProps.payment = null;
     }
 
-    this.visiblePeopleAffected = await this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      this.submitPaymentProps.payment,
-    );
+    await this.updatePeopleForAction(this.visiblePeopleAffected);
 
     // Change the selected people count when select all is active and the bulk actions changes
     if (this.selectAllChecked) {
-      await this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-        null,
-        true,
-      );
-      this.applyAction(null, null, true);
+      this.updatePeopleForAction(this.visiblePeopleAffected, true);
+      this.applyAction(null, true);
     }
 
     this.selectAllCheckboxVisible = true;
@@ -705,22 +696,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async updatePeopleForAction(
     people: PersonRow[],
-    action: BulkActionId,
-    payment?: number,
     disableAll?: boolean,
-  ): Promise<PersonRow[]> {
-    const updatedPersons: PersonRow[] = [];
-    for (const person of people) {
-      const updatedPerson = await this.bulkActionService.updateCheckbox(
-        action,
-        person,
-        this.programId,
-        payment,
-        disableAll,
-      );
-      updatedPersons.push(updatedPerson);
+  ): Promise<void> {
+    if (disableAll) {
+      this.visiblePeopleAffected.forEach((person) => {
+        person.checkboxDisabled = disableAll ? true : false;
+      });
     }
-    return updatedPersons;
+
+    for await (const person of people) {
+      const customBulkActionInput: CustomBulkActionInput = {
+        referenceId: person.referenceId,
+      };
+      if (this.action === BulkActionId.doPayment) {
+        customBulkActionInput.payment = this.submitPaymentProps.payment;
+      }
+      this.applyAction(customBulkActionInput, true);
+    }
+    return;
   }
 
   private async resetBulkAction() {
@@ -743,7 +736,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     if (selected.length) {
-      this.applyAction(null, customBulkActionInput, true);
+      this.applyAction(customBulkActionInput, true);
       this.applyBtnDisabled = false;
     } else {
       this.selectedCount = 0;
@@ -768,23 +761,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
       this.submitPaymentProps.referenceIds = [];
     }
-    await this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      this.submitPaymentProps.payment,
-      true,
-    );
-    this.applyAction(null, customBulkActionInput, true);
+    await this.updatePeopleForAction(this.visiblePeopleAffected, true);
+    this.applyAction(customBulkActionInput, true);
     this.applyBtnDisabled = false;
   }
 
   private async handleSelectAllUnchecked() {
     this.selectedCount = this.selectedPeople.length;
-    await this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      this.submitPaymentProps.payment,
-    );
+    this.updatePeopleForAction(this.visiblePeopleAffected);
     this.applyBtnDisabled = true;
   }
 
@@ -825,9 +809,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private setBulkActionFilters(): PaginationFilter[] {
+  private setBulkActionFilters(referenceId?: string): PaginationFilter[] {
     let filters: PaginationFilter[];
-    if (this.selectedPeople.length) {
+    if (referenceId) {
+      // This is the case where you check per row to show a checkbox or not
+      filters = [
+        {
+          value: referenceId,
+          name: 'referenceId',
+          label: 'referenceId',
+          operator: FilterOperatorEnum.eq,
+        },
+      ];
+    } else if (this.selectedPeople.length) {
+      // This is individual checkbox selection > overrides any applied filters
       filters = [
         {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
@@ -837,6 +832,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         },
       ];
     } else {
+      // This is 'select all' > pass on applied filters
       filters = [
         ...this.tableTextFilter,
         ...[
@@ -853,18 +849,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async applyAction(
-    message: string,
     customBulkActionInput?: CustomBulkActionInput,
     dryRun: boolean = false,
   ) {
     this.isInProgress = true;
 
-    if (!customBulkActionInput) {
-      customBulkActionInput = new CustomBulkActionInput();
-    }
-    customBulkActionInput.message = message;
-
-    const filters = this.setBulkActionFilters();
+    const filters = this.setBulkActionFilters(
+      customBulkActionInput?.referenceId,
+    );
     this.bulkActionService
       .applyAction(
         this.action,
@@ -876,7 +868,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(async (response) => {
         const bulkActionResult = response as BulkActionResult;
         if (dryRun) {
-          this.handleBulkActionDryRunResult(bulkActionResult);
+          this.handleBulkActionDryRunResult(
+            bulkActionResult,
+            customBulkActionInput?.referenceId,
+          );
         } else {
           this.handleBulkActionResult(bulkActionResult);
         }
@@ -895,7 +890,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
+  private handleBulkActionDryRunResult(
+    bulkActionResult: BulkActionResult,
+    referenceId?: string,
+  ) {
+    if (referenceId) {
+      this.visiblePeopleAffected.find(
+        (p) => p.referenceId === referenceId,
+      ).checkboxVisible = bulkActionResult?.applicableCount > 0;
+      return;
+    }
     this.updateSubmitWarning(
       bulkActionResult.applicableCount,
       bulkActionResult.nonApplicableCount,
@@ -1040,17 +1044,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.visiblePeopleAffected = this.createTableData(data);
     if (this.selectAllChecked) {
-      this.visiblePeopleAffected = await this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-        null,
-        true,
-      );
+      await this.updatePeopleForAction(this.visiblePeopleAffected, true);
     } else {
-      this.visiblePeopleAffected = await this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-      );
+      await this.updatePeopleForAction(this.visiblePeopleAffected);
     }
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
