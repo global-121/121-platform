@@ -896,25 +896,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-<<<<<<< HEAD
-  private filterToParams(
-    filters: PaginationFilter[],
-    dryRun: boolean,
-  ): HttpParams {
-    let params = new HttpParams();
-    params = params.append('dryRun', dryRun);
-    if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
-    }
-    return params;
-=======
   async getCbeVerificationReport(programId: number): Promise<{
     data: {
       registrationProgramId: number;
@@ -939,6 +920,25 @@ export class ProgramsServiceApiService {
         }
         return response;
       });
->>>>>>> origin/master
   }
+
+  private filterToParams(
+    filters: PaginationFilter[],
+    dryRun: boolean,
+  ): HttpParams {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return params;
+  }
+
 }
