@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramTeamPage } from './program-team.component';
+import { TeamMemberService } from '../../services/team-member.service';
 
 describe('ProgramTeamComponent', () => {
   let component: ProgramTeamPage;
@@ -16,7 +17,7 @@ describe('ProgramTeamComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     TestBed.configureTestingModule({
-      declarations: [ProgramTeamPage],
+      declarations: [],
       imports: [
         TranslateModule.forRoot(),
         RouterTestingModule,
@@ -28,6 +29,7 @@ describe('ProgramTeamComponent', () => {
           provide: ModalController,
           useValue: modalCtrlSpy,
         },
+        TeamMemberService
       ],
     }).compileComponents;
   }));

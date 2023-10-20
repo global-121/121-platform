@@ -5,8 +5,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { ProgramTeamPopupComponent } from './program-team-popup.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('ProgramTeamPopupComponent', () => {
   let component: ProgramTeamPopupComponent;
