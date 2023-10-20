@@ -50,10 +50,13 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
 
   public async search(event: CustomEvent): Promise<void> {
     const searchTerm = event.detail.value.toLowerCase();
-    this.searchResults = await this.programsServiceApiService.getUsersByName(
+    // Filter out admin user as it is in any program
+    this.searchResults = (await this.programsServiceApiService.getUsersByName(
       this.programId,
       searchTerm,
-    );
+    )).filter((user) => user.id !== 1);
+
+
     this.searchResults.length > 0 && searchTerm !== ''
       ? (this.showSearchResults = true)
       : (this.showSearchResults = false);

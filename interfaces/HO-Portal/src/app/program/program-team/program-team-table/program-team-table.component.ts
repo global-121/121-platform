@@ -44,7 +44,10 @@ export class ProgramTeamTableComponent implements OnInit {
     const programUsers: TeamMember[] =
       await this.programsService.getUsersByProgram(this.programId);
 
-    this.rows = programUsers.map((user) => ({
+    // Filter out user with id 1 (the admin user)
+    const filteredProgramUsers: TeamMember[] = programUsers.filter((user) => user.id !== 1);
+
+    this.rows = filteredProgramUsers.map((user) => ({
       ...user,
       showTeamMemberPopover: false,
     }));
