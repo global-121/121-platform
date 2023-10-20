@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
+import { MessageStatus } from '../../src/registration/enum/last-message-status';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
@@ -244,7 +245,15 @@ export async function waitForMessagesToComplete(
 
     // Check if all message histories are longer than 0
     const amountOfRegistrationWithMessages = messageHistories.filter(
-      (messageHistory) => messageHistory.length > 0,
+      (messageHistory) =>
+        messageHistory.filter(
+          (m) =>
+            [
+              MessageStatus.read,
+              MessageStatus.delivered,
+              MessageStatus.failed,
+            ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
+        ).length > 0,
     ).length;
     allMessageUpdatesSuccessful =
       amountOfRegistrationWithMessages === referenceIds.length;
