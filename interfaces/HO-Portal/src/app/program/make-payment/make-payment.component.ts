@@ -123,6 +123,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
         (response) => {
           this.totalTransferAmounts = response.sumPaymentAmountMultiplier;
           this.updateTotalAmountMessage();
+          this.checkIsEnabled();
         },
         (error) => {
           console.log('error: ', error);
@@ -134,7 +135,8 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     this.isEnabled =
       this.totalIncluded > 0 &&
       this.payment <= this.program.distributionDuration &&
-      !this.paymentInProgress;
+      !this.paymentInProgress &&
+      !!this.totalTransferAmounts;
     return this.isEnabled;
   }
 
