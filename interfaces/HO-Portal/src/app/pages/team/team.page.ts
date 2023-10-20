@@ -23,7 +23,7 @@ import { ProgramTeamPage } from '../../program/program-team/program-team.compone
     ProgramTeamPage,
   ],
 })
-export class AidWorkersPage {
+export class TeamPage {
   public programId = this.route.snapshot.params.id;
 
   constructor(private route: ActivatedRoute) {}
