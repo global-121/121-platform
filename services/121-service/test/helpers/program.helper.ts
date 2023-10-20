@@ -268,3 +268,25 @@ export async function waitForMessagesToComplete(
     throw new Error(`Timeout waiting for messages to be sent`);
   }
 }
+
+export async function startCbeValidationProcess(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validate`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
+export async function getCbeValidationReport(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
+    )
+    .set('Cookie', [accessToken]);
+}
