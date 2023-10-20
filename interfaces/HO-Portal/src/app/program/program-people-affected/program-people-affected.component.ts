@@ -883,10 +883,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       })
       .catch((error) => {
         console.log('Error:', error);
+        let err = error;
+        if (error.error?.error) {
+          err = error.error?.error;
+        }
         actionResult(
           this.alertController,
           this.translate,
-          error,
+          err,
           true,
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
