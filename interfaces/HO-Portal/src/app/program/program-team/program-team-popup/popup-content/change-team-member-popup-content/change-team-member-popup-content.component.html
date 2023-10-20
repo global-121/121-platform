@@ -23,6 +23,7 @@
     </ion-row>
     <ion-row>
       <ion-select
+        [ngClass]="{'invalid-ion-select-searchbar': !rolesAreSelected()}"
         placeholder="{{
           'page.program-team.popup.roles-placeholder' | translate
         }}"

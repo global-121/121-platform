@@ -30,7 +30,7 @@
     "program-team": {
       "pageTitle": "Program team",
       "page-description": "In this page you can create a team for your program",
-      "add-team-member": "Add/change team member",
+      "add-team-member": "Add team member",
       "edit-team-member-role": "Edit role",
       "remove-team-member": "Remove from Team",
       "table-headers": {

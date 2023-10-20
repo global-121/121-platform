@@ -50,3 +50,7 @@ ion-select {
     width: 100%;
   }
 }
+
+.invalid-ion-select-searchbar {
+  border: 1px solid var(--ion-color-danger)
+}
