@@ -679,6 +679,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.submitPaymentProps.payment = Number(
         dropdownOptionLabel.split('#')[1],
       );
+    } else {
+      this.submitPaymentProps.payment = null;
     }
 
     this.visiblePeopleAffected = await this.updatePeopleForAction(
@@ -689,7 +691,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     // Change the selected people count when select all is active and the bulk actions changes
     if (this.selectAllChecked) {
-      this.updatePeopleForAction(
+      await this.updatePeopleForAction(
         this.visiblePeopleAffected,
         this.action,
         null,
@@ -758,25 +760,31 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private handleSelectAllChecked(): void {
+  private async handleSelectAllChecked(): Promise<void> {
     this.selectedPeople = [];
-    this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      null,
-      true,
-    );
+
     let customBulkActionInput: CustomBulkActionInput = null;
     if (this.action === BulkActionId.doPayment) {
       customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
+      this.submitPaymentProps.referenceIds = [];
     }
+    await this.updatePeopleForAction(
+      this.visiblePeopleAffected,
+      this.action,
+      this.submitPaymentProps.payment,
+      true,
+    );
     this.applyAction(null, customBulkActionInput, true);
     this.applyBtnDisabled = false;
   }
 
-  private handleSelectAllUnchecked() {
+  private async handleSelectAllUnchecked() {
     this.selectedCount = this.selectedPeople.length;
-    this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
+    await this.updatePeopleForAction(
+      this.visiblePeopleAffected,
+      this.action,
+      this.submitPaymentProps.payment,
+    );
     this.applyBtnDisabled = true;
   }
 
