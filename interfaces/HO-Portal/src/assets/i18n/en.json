@@ -692,6 +692,7 @@
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",
+    "save-success": "Saved successfully",
     "timestamp": {
       "done": "Done on:"
     },
@@ -752,6 +753,10 @@
         "payment": "Payments",
         "notes": "Notes"
       },
+      "actions": "Actions",
+      "action": {
+        "add-note": "Add note"
+      },
       "activities": {
         "status": {
           "label": "Status update",
@@ -772,6 +777,12 @@
         "note": {
           "label": "Note"
         }
+      },
+      "add-note-popup": {
+        "add-note-profile": "You are about to add a note to {{ name }}'s profile.",
+        "note-visible": "The note will be visible to other 121 users who are permitted to view personal profiles.",
+        "type-note": "Type note:",
+        "note-textarea-placeholder": "Click here to type a short note"
       }
     },
     "payment-history": {
