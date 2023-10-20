@@ -52,5 +52,6 @@ ion-select {
 }
 
 .invalid-ion-select-searchbar {
-  border: 1px solid var(--ion-color-danger)
+  border: 1px solid var(--ion-color-danger);
+  margin-bottom: 8px;
 }
