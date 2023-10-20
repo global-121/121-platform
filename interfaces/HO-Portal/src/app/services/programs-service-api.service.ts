@@ -10,7 +10,7 @@ import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
-import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
+import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { PhysicalCard } from '../models/physical-card.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -172,17 +172,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/metrics/person-affected?${condition}`,
-    );
-  }
-
-  getTotalTransferAmounts(
-    programId: number | string,
-    referenceIds?: string[],
-  ): Promise<TotalTransferAmounts> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/metrics/total-transfer-amounts`,
-      { referenceIds },
     );
   }
 

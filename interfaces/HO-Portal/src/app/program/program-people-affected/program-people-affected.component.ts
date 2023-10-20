@@ -898,11 +898,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     referenceId?: string,
   ) {
     if (referenceId) {
+      // if referenceId is passed, this is only about showing row checkboxes or not
       this.visiblePeopleAffected.find(
         (p) => p.referenceId === referenceId,
       ).checkboxVisible = bulkActionResult?.applicableCount > 0;
       return;
     }
+
+    if (this.action === BulkActionId.doPayment) {
+      this.submitPaymentProps.applicableCount =
+        bulkActionResult.applicableCount;
+      this.submitPaymentProps.sumPaymentAmountMultiplier =
+        bulkActionResult.sumPaymentAmountMultiplier;
+    }
+
     this.updateSubmitWarning(
       bulkActionResult.applicableCount,
       bulkActionResult.nonApplicableCount,

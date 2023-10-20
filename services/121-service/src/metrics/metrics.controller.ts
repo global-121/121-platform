@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpException,
@@ -19,7 +18,6 @@ import {
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
-import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import {
@@ -29,7 +27,6 @@ import {
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
-import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { MetricsService } from './metrics.service';
 
 @UseGuards(PermissionsGuard)
@@ -171,26 +168,6 @@ export class MetricsController {
   public async getMonitoringData(@Param() params): Promise<any[]> {
     return await this.metricsService.getMonitoringData(
       Number(params.programId),
-    );
-  }
-
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({
-    summary: 'Get total transfer amounts of people to pay out',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 201,
-    description: 'Total number of included per program',
-  })
-  @Post('programs/:programId/metrics/total-transfer-amounts')
-  public async getTotalTransferAmounts(
-    @Param() params,
-    @Body() referenceIdsDto: ReferenceIdsDto,
-  ): Promise<TotalTransferAmounts> {
-    return await this.metricsService.getTotalTransferAmounts(
-      Number(params.programId),
-      referenceIdsDto,
     );
   }
 

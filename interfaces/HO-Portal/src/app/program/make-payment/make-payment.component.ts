@@ -26,12 +26,14 @@ import { PaymentUtils } from '../../shared/payment.utils';
 export class MakePaymentComponent implements OnInit, OnDestroy {
   @Input()
   public programId: number;
-
   @Input()
   public payment: number;
-
   @Input()
   public referenceIds: string[];
+  @Input()
+  public applicableCount: number;
+  @Input()
+  public sumPaymentAmountMultiplier: number;
 
   public isEnabled: boolean;
   public isInProgress: boolean;
@@ -87,14 +89,8 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     await this.getFspIntegrationType();
 
     this.amountInput = this.program.fixedTransferValue;
-    const totalTransferAmounts =
-      await this.programsService.getTotalTransferAmounts(
-        this.programId,
-        this.referenceIds || [],
-      );
-
-    this.totalIncluded = totalTransferAmounts.registrations;
-    this.totalTransferAmounts = totalTransferAmounts.transferAmounts;
+    this.totalIncluded = this.applicableCount;
+    this.totalTransferAmounts = this.sumPaymentAmountMultiplier;
 
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
