@@ -39,6 +39,7 @@
         [attr.aria-label]="
           'page.program.program-people-affected.filter-placeholder' | translate
         "
+        [type]="getFilterInputType()"
         [(ngModel)]="filterRowsVisibleQuery"
         [disabled]="isLoading"
         [clearInput]="true"
