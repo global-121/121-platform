@@ -6,7 +6,6 @@ import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
 import {
   Filter,
-  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -102,13 +101,12 @@ export class TableFilterRowComponent {
     // TODO: this is a hack that makes use of the fact that currently numeric fields do not contain the ilike-operator, while other fields do
     // Improve this by adding a new type-attribute to Filter class and set it properly
     if (
-      this.textFilterOption[0].allowedOperators.includes(
-        FilterOperatorEnum.ilike,
-      )
+      this.textFilterOption[0].isInteger
     ) {
-      return 'text';
-    } else {
       return 'number';
+    } else {
+      return 'text';
+
     }
   }
 }

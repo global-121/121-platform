@@ -461,6 +461,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           name: columnName.name,
           label: this.getLabelForAttribute(columnName.name),
           allowedOperators: columnName.allowedOperators,
+          isInteger: columnName.isInteger,
         });
       }
 

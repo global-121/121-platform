@@ -50,6 +50,7 @@ class FilterableAttributeDefinition {
   name: string;
   allowedOperators: FilterOperatorEnum[];
   paTableAttributes: PaTableAttribute[];
+  isInteger: boolean;
 }
 
 export class ProgramStats {

@@ -7,6 +7,7 @@ export class Filter {
   name: string;
   label: string;
   allowedOperators?: FilterOperatorEnum[];
+  isInteger?: boolean;
 }
 export class PaginationFilter extends Filter {
   value: string;
