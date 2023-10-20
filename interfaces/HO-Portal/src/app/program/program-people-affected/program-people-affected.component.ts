@@ -705,11 +705,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     for await (const person of people) {
-      const customBulkActionInput: CustomBulkActionInput = {
+      let customBulkActionInput: CustomBulkActionInput = {
         referenceId: person.referenceId,
       };
       if (this.action === BulkActionId.doPayment) {
-        customBulkActionInput.payment = this.submitPaymentProps.payment;
+        customBulkActionInput = {
+          ...customBulkActionInput,
+          ...this.getDryRunPaymentCustomBulkActionInput(),
+        };
       }
       this.applyAction(customBulkActionInput, true);
     }
