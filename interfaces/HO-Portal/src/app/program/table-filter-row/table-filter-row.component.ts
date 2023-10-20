@@ -100,13 +100,10 @@ export class TableFilterRowComponent {
   public getFilterInputType() {
     // TODO: this is a hack that makes use of the fact that currently numeric fields do not contain the ilike-operator, while other fields do
     // Improve this by adding a new type-attribute to Filter class and set it properly
-    if (
-      this.textFilterOption[0].isInteger
-    ) {
+    if (this.textFilterOption[0].isInteger) {
       return 'number';
     } else {
       return 'text';
-
     }
   }
 }
