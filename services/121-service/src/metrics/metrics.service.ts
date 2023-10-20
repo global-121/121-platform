@@ -111,7 +111,6 @@ export class MetricsService {
       programId,
       ExportType.allPeopleAffected,
       null,
-      true,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -125,7 +124,6 @@ export class MetricsService {
       programId,
       ExportType.included,
       RegistrationStatusEnum.included,
-      false,
     );
     const response = {
       fileName: 'inclusion-list',
@@ -141,7 +139,6 @@ export class MetricsService {
       programId,
       ExportType.selectedForValidation,
       RegistrationStatusEnum.selectedForValidation,
-      false,
     );
     const response = {
       fileName: ExportType.selectedForValidation,
@@ -187,7 +184,6 @@ export class MetricsService {
     programId: number,
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
-    addPaymentColumns?: boolean,
   ): Promise<object[]> {
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
@@ -200,22 +196,7 @@ export class MetricsService {
       exportType,
     );
 
-    let payments;
-    let transactions;
-    if (addPaymentColumns) {
-      payments = (await this.paymentsService.getPayments(programId))
-        .map((i) => i.payment)
-        .sort((a, b) => (a > b ? 1 : -1));
-
-      transactions = this.transactionsService
-        .getLastTransactionsSplitByPaymentQuery(programId)
-        .getRawMany();
-    }
-
     for await (const row of rows) {
-      if (addPaymentColumns) {
-        this.addPaymentFieldsToExport(row, payments, transactions);
-      }
       row['id'] = row['registrationProgramId'];
       delete row['registrationProgramId'];
     }
@@ -552,22 +533,15 @@ export class MetricsService {
   }
 
   private filterUnusedColumn(columnDetails): object[] {
-    const emptyColumns = [];
-    for (const row of columnDetails) {
-      for (const key in row) {
-        if (row[key]) {
-          emptyColumns.push(key);
-        }
-      }
-    }
     const filteredColumns = [];
     for (const row of columnDetails) {
+      const filteredRow = {};
       for (const key in row) {
-        if (!emptyColumns.includes(key)) {
-          delete row[key];
+        if (row[key]) {
+          filteredRow[key] = row[key];
         }
       }
-      filteredColumns.push(row);
+      filteredColumns.push(filteredRow);
     }
     return filteredColumns;
   }
@@ -719,6 +693,7 @@ export class MetricsService {
         }
       }
     }
+    // TODO: refactor this to use the paginate functionality
     return this.getRegisrationsForDuplicates(
       duplicatesMap,
       uniqueRegistrationIds,
@@ -730,7 +705,7 @@ export class MetricsService {
 
   private async getRegisrationsForDuplicates(
     duplicatesMap: Map<number, number[]>,
-    uniqueRegistrationIds: Set<number>,
+    uniqueRegistrationProgramIds: Set<number>,
     fspQuestions: FspQuestionEntity[],
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
@@ -739,21 +714,26 @@ export class MetricsService {
     data: any[];
   }> {
     const registrationAndFspId = await this.registrationRepository.find({
-      where: { id: In([...Array.from(uniqueRegistrationIds)]) },
-      select: ['id', 'fspId'],
+      where: {
+        registrationProgramId: In([
+          ...Array.from(uniqueRegistrationProgramIds),
+        ]),
+        programId: program.id,
+      },
+      select: ['registrationProgramId', 'fspId'],
     });
 
     // Create an object to group registrations by fspId
     const groupedRegistrations: Record<
       string,
-      { id: number; fspId: number }[]
+      { registrationProgramId: number; fspId: number }[]
     > = {};
     registrationAndFspId.forEach((registration) => {
-      const { id, fspId } = registration;
+      const { registrationProgramId, fspId } = registration;
       if (!groupedRegistrations[fspId]) {
         groupedRegistrations[fspId] = [];
       }
-      groupedRegistrations[fspId].push({ id, fspId });
+      groupedRegistrations[fspId].push({ registrationProgramId, fspId });
     });
 
     // Create an object to group relation options per FSP
@@ -763,6 +743,10 @@ export class MetricsService {
       fspQuestions,
     );
 
+    const relationOptionNoFsp = relationOptions.filter(
+      (o) => !o.relation.fspQuestionId,
+    );
+
     let allRegistrations = [];
     for (const [fspId, registrationIds] of Object.entries(
       groupedRegistrations,
@@ -770,8 +754,10 @@ export class MetricsService {
       const registrationsWithSameFspId =
         await this.getRegistrationsFieldsForDuplicates(
           program.id,
-          relationOptionsPerFsp[fspId],
-          registrationIds.map((r) => r.id),
+          relationOptionsPerFsp[fspId]
+            ? relationOptionsPerFsp[fspId]
+            : relationOptionNoFsp,
+          registrationIds.map((r) => r.registrationProgramId),
         );
       allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
     }

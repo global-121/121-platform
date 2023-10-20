@@ -23,6 +23,7 @@ import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -165,9 +166,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
+    // The order of these calls is important, because of foreign key constraints
+    // Please check if it still works if you change the order
     await this.deleteAllOneToMany([
       {
         entityClass: ImageCodeExportVouchersEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: TwilioMessageEntity,
         columnName: 'registration',
       },
       {
@@ -200,6 +207,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: LatestTransactionEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
         columnName: 'registration',
       },
     ]);
