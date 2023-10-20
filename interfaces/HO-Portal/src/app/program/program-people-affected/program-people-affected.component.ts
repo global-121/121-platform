@@ -700,7 +700,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ): Promise<void> {
     if (disableAll) {
       this.visiblePeopleAffected.forEach((person) => {
-        person.checkboxDisabled = disableAll ? true : false;
+        person.checkboxDisabled = true;
       });
     }
 
@@ -1089,7 +1089,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private getDryRunPaymentCustomBulkActionInput(): CustomBulkActionInput {
     return {
       payment: this.submitPaymentProps.payment,
-      paymentAmount: this.program.fixedTransferValue,
+      paymentAmount: null, // Not sending the amount makes the API call faster
     };
   }
 }

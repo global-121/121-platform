@@ -46,8 +46,11 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   public amountInput: number;
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
+  private dynamicPaymentId: number;
 
   public paymentInProgress = false;
+
+  private doPaymentfilters: PaginationFilter[];
 
   private tableTextFilterSubscription: Subscription;
   private tableTextFilter: PaginationFilter[];
@@ -91,11 +94,40 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     this.amountInput = this.program.fixedTransferValue;
     this.totalIncluded = this.applicableCount;
     this.totalTransferAmounts = this.sumPaymentAmountMultiplier;
+    this.dynamicPaymentId =
+      this.payment ||
+      (await this.pastPaymentsService.getNextPaymentId(this.program));
 
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
+
+    this.doPaymentfilters = this.referenceIds.length
+      ? PaymentUtils.refernceIdsToFilter(this.referenceIds)
+      : this.getTableFilters();
+
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
+    this.setPaymentAmountMultiplier();
+  }
+
+  private setPaymentAmountMultiplier(): void {
+    this.programsService
+      .doPayment(
+        this.programId,
+        this.dynamicPaymentId,
+        this.amountInput,
+        true,
+        this.doPaymentfilters,
+      )
+      .then(
+        (response) => {
+          this.totalTransferAmounts = response.sumPaymentAmountMultiplier;
+          this.updateTotalAmountMessage();
+        },
+        (error) => {
+          console.log('error: ', error);
+        },
+      );
   }
 
   private checkIsEnabled(): boolean {
@@ -108,16 +140,14 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
 
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
-
-    const paymentId =
-      this.payment ||
-      (await this.pastPaymentsService.getNextPaymentId(this.program));
-    const filters = this.referenceIds.length
-      ? PaymentUtils.refernceIdsToFilter(this.referenceIds)
-      : this.getTableFilters();
-
     await this.programsService
-      .doPayment(this.programId, paymentId, this.amountInput, false, filters)
+      .doPayment(
+        this.programId,
+        this.dynamicPaymentId,
+        this.amountInput,
+        false,
+        this.doPaymentfilters,
+      )
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),
