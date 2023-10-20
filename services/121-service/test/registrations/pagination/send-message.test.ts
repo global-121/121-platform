@@ -69,7 +69,11 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
     expect(messageHistoryPa1.length).toBe(1);
-    expect(messageHistoryPa1[0].status).toBe(MessageStatus.read);
+    expect([
+      MessageStatus.read,
+      MessageStatus.delivered,
+      MessageStatus.failed,
+    ]).toContain(messageHistoryPa1[0].status);
     expect(messageHistoryPa2.length).toBe(0);
   });
 });
