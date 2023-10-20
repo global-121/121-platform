@@ -66,7 +66,7 @@ export class PaymentHistoryAccordionComponent {
     const isSinglePayment = PaymentUtils.enableSinglePayment(
       paymentRow,
       this.canDoSinglePayment,
-      this.person,
+      this.person.status,
       this.lastPaymentId,
       false,
     );
