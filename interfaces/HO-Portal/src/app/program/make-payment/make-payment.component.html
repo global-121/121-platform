@@ -9,7 +9,6 @@
             }
     }}
   </ion-note>
-
   <ion-item
     [disabled]="!isEnabled"
     class="ion-margin-end"
@@ -38,6 +37,11 @@
   >
     {{ 'page.program.program-payout.start-payout' | translate }}
   </app-confirm-prompt>
+  <ion-spinner
+    *ngIf="!totalTransferAmounts"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
   <div
     *ngIf="paymentInProgress"
     class="ion-margin-start ion-align-items-center"
