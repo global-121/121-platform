@@ -24,6 +24,8 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
+const fspArray = Object.values(FspName).map((item) => String(item));
+const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -43,7 +45,10 @@ export class BulkImportDto {
   @IsOptional()
   public maxPayments: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: languageArray,
+    example: languageArray.join(' | '),
+  })
   @IsEnum(LanguageEnum)
   @IsOptional()
   public preferredLanguage: LanguageEnum;
@@ -73,18 +78,7 @@ export class AggregateImportResult {
   public countPaymentFailed?: number;
   public countPaymentStarted?: number;
 }
-
-const fspArray = Object.values(FspName).map((item) => String(item));
-const languageArray = Object.values(LanguageEnum).map((item) => String(item));
-
 export class ImportRegistrationsDto extends BulkImportDto {
-  @ApiProperty({
-    enum: languageArray,
-    example: languageArray.join(' | '),
-  })
-  @IsIn(languageArray)
-  public preferredLanguage: LanguageEnum;
-
   @ApiProperty({
     enum: fspArray,
     example: fspArray.join(' | '),
