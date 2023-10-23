@@ -9,12 +9,23 @@ export class User {
   isAdmin?: boolean;
 }
 
-export interface TeamMember {
+export class UserSearchResult {
   id: number;
-  name: string;
-  role: string;
-  status: StatusName;
-  lastActivity: string;
+  username: string;
+  assignedProgramIds: number[];
+}
+
+export class TeamMember {
+  id: number;
+  username: string;
+  admin: boolean;
+  active: boolean;
+  lastLogin: Date;
+  roles: Role[];
+}
+
+export class TeamMemberRow extends TeamMember {
+  showTeamMemberPopover: boolean;
 }
 
 export enum StatusName {
