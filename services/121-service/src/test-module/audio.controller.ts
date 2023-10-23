@@ -10,8 +10,12 @@ export class AudioController {
   async transcode(): Promise<void> {
     console.log('tuk');
     const test = await this.audioQueue.add('transcode', {
-      file: 'audio.mp3',
+      sid: 'audio.mp3',
+      from: '31612345678',
+      to: '31612345678',
+      body: 'tuk',
+      accountSid: 'AC123',
     });
-    console.log(test);
+    console.log('test', test);
   }
 }
