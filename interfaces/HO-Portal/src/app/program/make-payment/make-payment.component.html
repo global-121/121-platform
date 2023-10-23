@@ -37,11 +37,15 @@
   >
     {{ 'page.program.program-payout.start-payout' | translate }}
   </app-confirm-prompt>
-  <ion-spinner
-    *ngIf="!totalTransferAmounts"
-    color="primary"
-    class="ion-margin-start"
-  ></ion-spinner>
+  <div *ngIf="!totalTransferAmounts">
+    <ion-spinner
+      color="primary"
+      class="ion-margin-start"
+    ></ion-spinner>
+    <ion-note>
+      {{ 'page.program.program-payout.calculating-transfer-amount' | translate }}
+    </ion-note>
+  </div>
   <div
     *ngIf="paymentInProgress"
     class="ion-margin-start ion-align-items-center"
