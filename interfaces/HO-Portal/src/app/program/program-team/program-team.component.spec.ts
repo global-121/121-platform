@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { TeamMemberService } from '../../services/team-member.service';
 import { ProgramTeamPage } from './program-team.component';
 
 describe('ProgramTeamComponent', () => {
@@ -16,7 +17,7 @@ describe('ProgramTeamComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     TestBed.configureTestingModule({
-      declarations: [ProgramTeamPage],
+      declarations: [],
       imports: [
         TranslateModule.forRoot(),
         RouterTestingModule,
@@ -28,6 +29,7 @@ describe('ProgramTeamComponent', () => {
           provide: ModalController,
           useValue: modalCtrlSpy,
         },
+        TeamMemberService,
       ],
     }).compileComponents;
   }));

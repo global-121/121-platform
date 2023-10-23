@@ -6,13 +6,21 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Put,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { DEBUG } from '../config';
 import { Admin } from '../guards/admin.decorator';
@@ -35,7 +43,6 @@ import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
-@ApiTags('users')
 @Controller()
 export class UserController {
   private readonly userService: UserService;
@@ -44,16 +51,16 @@ export class UserController {
   }
 
   @Admin()
+  @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
-  // TODO: REFACTOR: rename to /users/roles/
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleEntity[]> {
     return await this.userService.getUserRoles();
   }
 
   @Admin()
+  @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
-  // TODO: REFACTOR: rename to /users/roles
   @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
@@ -62,9 +69,9 @@ export class UserController {
   }
 
   @Admin()
+  @ApiTags('roles')
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
-  // TODO: REFACTOR: rename to /users/roles/
   @Put('roles/:userRoleId')
   public async updateUserRole(
     @Param() params,
@@ -77,6 +84,7 @@ export class UserController {
   }
 
   @Admin()
+  @ApiTags('roles')
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   // TODO: REFACTOR: rename to /users/roles/
@@ -85,6 +93,7 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
   // TODO: REFACTOR: rename to /users
   @Post('user/aidworker')
@@ -94,6 +103,7 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
   // TODO: REFACTOR: rename to /users/person-affected
   @Post('user/person-affected')
@@ -135,6 +145,7 @@ export class UserController {
     +process.env.HIGH_THROTTLING_LIMIT || 30,
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
+  @ApiTags('users')
   @ApiOperation({ summary: 'Log in existing user' })
   // TODO: REFACTOR: rename to /users/login
   @Post('user/login')
@@ -174,6 +185,7 @@ export class UserController {
     }
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   // TODO: REFACTOR: rename to /users/logout
   @Post('user/logout')
@@ -192,6 +204,7 @@ export class UserController {
     }
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
   // TODO: REFACTOR: rename to /users/password
   @Post('user/change-password')
@@ -212,6 +225,7 @@ export class UserController {
   }
 
   @Admin()
+  @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
   // TODO: REFACTOR: rename to /users/:userid
   @Post('user/delete/:userId')
@@ -220,6 +234,7 @@ export class UserController {
     return await this.userService.delete(Number(params.userId));
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   // TODO: REFACTOR: rename to /users/
   @Post('user/delete')
@@ -238,6 +253,7 @@ export class UserController {
     return await this.userService.delete(deleterId);
   }
 
+  @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
   // TODO: REFACTOR: rename to /users
   @Get('user')
@@ -254,16 +270,30 @@ export class UserController {
     return await this.userService.findByUsername(username);
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiOperation({ summary: 'Assign Aidworker to program' })
+  @Admin()
+  @ApiTags('users/roles')
+  @ApiOperation({ summary: 'Get user roles' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @Post('programs/:programId/users/:userId/assignments')
-  public async assignFieldValidationAidworkerToProgram(
+  @Get('programs/:programId/users/:userId/roles')
+  public async getProgramRoles(@Param() params): Promise<UserRoleEntity[]> {
+    return await this.userService.getProgramRoles(
+      Number(params.programId),
+      Number(params.userId),
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiTags('users/roles')
+  @ApiOperation({ summary: 'Assign Roles and Assignment Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Put('programs/:programId/users/:userId/roles')
+  public async assignRolesAndAssignmentFieldValidationAidworkerToProgram(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    return await this.userService.assigAidworkerToProgram(
+    return await this.userService.assignAidworkerRolesAndAssignmentToProgram(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,
@@ -271,18 +301,42 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiTags('users/roles')
+  @ApiOperation({ summary: 'Assign Roles Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Patch('programs/:programId/users/:userId/roles')
+  public async assignRolesFieldValidationAidworkerToProgram(
+    @Param() params,
+    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
+    return await this.userService.assigAidworkerRolesToProgram(
+      Number(params.programId),
+      Number(params.userId),
+      assignAidworkerToProgram,
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiTags('users/roles')
   @ApiOperation({ summary: 'Remove aidworker from program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @Delete('programs/:programId/users/:userId/assignments')
-  public async deleteAidWorkerAssignment(@Param() params): Promise<void> {
-    return await this.userService.deleteAssignment(
+  @ApiBody({ type: AssignAidworkerToProgramDto, required: false })
+  @Delete('programs/:programId/users/:userId/roles')
+  public async deleteAidWorkerAssignment(
+    @Param() params,
+    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+  ): Promise<UserRoleEntity[]> {
+    return await this.userService.deleteRoles(
       Number(params.programId),
       Number(params.userId),
+      assignAidworkerToProgram,
     );
   }
 
   @Admin()
+  @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
   @Get('users')
   public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
@@ -295,6 +349,7 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramREAD)
+  @ApiTags('users')
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -313,6 +368,7 @@ export class UserController {
   // We did not create an extra permission for this as it is always used in combination with adding new users to a program
   // ProgramId is therefore not needed in the service
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiTags('users')
   @ApiOperation({
     summary:
       'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
@@ -325,7 +381,10 @@ export class UserController {
     type: [FindUserReponseDto],
   })
   @Get('programs/:programId/users/:username')
-  public async getUsersByName(@Param() params): Promise<FindUserReponseDto[]> {
-    return await this.userService.findUsersByName(params.username);
+  public async getUsersByName(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('username') username: string,
+  ): Promise<FindUserReponseDto[]> {
+    return await this.userService.findUsersByName(username);
   }
 }
