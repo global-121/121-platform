@@ -63,7 +63,7 @@ jobs:
         working-directory: ./services
         run: |
           echo 'Wait for 121-service to be up...'
-          docker compose exec 121-service npm run test:e2e
+          docker compose exec 121-service npm run test:e2e:all
 
       - name: Dump docker logs on failure
         if: failure()
