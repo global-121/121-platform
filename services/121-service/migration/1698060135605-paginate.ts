@@ -3,7 +3,26 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class Paginate1698060135605 implements MigrationInterface {
     name = 'Paginate1698060135605'
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // ############################################################
+    // Migrate name values in the name columns of fsp attributes and program questions
+    // ############################################################
+    await queryRunner.query(`UPDATE "121-service".fsp_attribute SET "name" = 'fullName' WHERE "name" = 'name'`)
+    await queryRunner.query(`UPDATE "121-service"."program_question" SET "name" = 'fullName' WHERE "name" = 'name'`)
+
+    await queryRunner.query(`UPDATE "121-service"."program_question" SET "name" = 'fullName' WHERE "name" = 'name'`)
+
+    await queryRunner.query(`
+      UPDATE "121-service"."program"
+      SET "fullnameNamingConvention" = '["fullName"]'::jsonb::json
+      WHERE   "fullnameNamingConvention"::jsonb = '["name"]'
+    `)
+
+        // ############################################################
+        // #### Generated migrations ##################################
+        // ############################################################
+
+
         await queryRunner.query(`CREATE TABLE "121-service"."latest_transaction" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "payment" integer NOT NULL DEFAULT '1', "registrationId" integer, "transactionId" integer, CONSTRAINT "registrationPaymentLatestTransactionUnique" UNIQUE ("registrationId", "payment"), CONSTRAINT "REL_10994d027e2fbaf4ff8e8bf5f4" UNIQUE ("transactionId"), CONSTRAINT "PK_dbfdd1bd40e8b22422efaf592ad" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_18f7adecdbe9b35cf252baf8b7" ON "121-service"."latest_transaction" ("created") `);
         await queryRunner.query(`CREATE INDEX "IDX_439c3da422d6de1916e4e4e815" ON "121-service"."latest_transaction" ("payment") `);
@@ -85,6 +104,8 @@ export class Paginate1698060135605 implements MigrationInterface {
             AND t."registrationId" = latest_transactions."registrationId"
             AND t.created = latest_transactions.max_created;`
       )
+
+
 
     }
 

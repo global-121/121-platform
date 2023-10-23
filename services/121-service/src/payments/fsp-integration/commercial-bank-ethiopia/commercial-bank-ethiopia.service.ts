@@ -133,7 +133,7 @@ export class CommercialBankEthiopiaService
       .andWhere(
         '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
         {
-          names: ['name', 'bankAccountNumber'],
+          names: ['fullName', 'bankAccountNumber'],
         },
       )
       .leftJoin('registration.data', 'data')
@@ -161,13 +161,13 @@ export class CommercialBankEthiopiaService
     paRegistrationData: CommercialBankEthiopiaRegistrationData[],
     program: ProgramEntity,
   ): CommercialBankEthiopiaTransferPayload {
-    let name;
+    let fullName;
     let bankAccountNumber;
     let debitTheIrRefRetry;
 
     paRegistrationData.forEach((data) => {
-      if (data.fieldName === 'name') {
-        name = data.value;
+      if (data.fieldName === 'fullName') {
+        fullName = data.value;
       } else if (data.fieldName === 'bankAccountNumber') {
         bankAccountNumber = data.value;
       } else if ((data.fieldName = 'debitTheIrRef')) {
@@ -196,7 +196,7 @@ export class CommercialBankEthiopiaService
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
       remitterName: program.titlePaApp['en'].substring(0, 35),
-      beneficiaryName: `${name}`,
+      beneficiaryName: `${fullName}`,
     };
 
     return payload;

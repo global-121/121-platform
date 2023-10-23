@@ -38,7 +38,7 @@
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "name",
+      "name": "fullname",
       "label": {
         "en": "What is your first name?"
       },
@@ -90,7 +90,7 @@
   "aboutProgram": {
     "en": "[about aid program]"
   },
-  "fullnameNamingConvention": ["name"],
+  "fullnameNamingConvention": ["fullname"],
   "languages": ["en"],
   "enableMaxPayments": true
 }
