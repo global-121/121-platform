@@ -688,23 +688,21 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     // Change the selected people count when select all is active and the bulk actions changes
     if (this.selectAllChecked) {
-      this.updatePeopleForAction(this.visiblePeopleAffected, true);
+      this.toggleDisableAllCheckboxes();
+      this.updatePeopleForAction(this.visiblePeopleAffected);
       this.applyAction(null, true);
     }
 
     this.selectAllCheckboxVisible = true;
   }
 
-  private async updatePeopleForAction(
-    people: PersonRow[],
-    disableAll?: boolean,
-  ): Promise<void> {
-    if (disableAll) {
-      this.visiblePeopleAffected.forEach((person) => {
-        person.checkboxDisabled = true;
-      });
-    }
+  private toggleDisableAllCheckboxes(): void {
+    this.visiblePeopleAffected.forEach((person) => {
+      person.checkboxDisabled = this.selectAllChecked ? true : false;
+    });
+  }
 
+  private async updatePeopleForAction(people: PersonRow[]): Promise<void> {
     for await (const person of people) {
       let customBulkActionInput: CustomBulkActionInput = {
         referenceId: person.referenceId,
@@ -765,14 +763,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
       this.submitPaymentProps.referenceIds = [];
     }
-    await this.updatePeopleForAction(this.visiblePeopleAffected, true);
+    this.toggleDisableAllCheckboxes();
     this.applyAction(customBulkActionInput, true);
     this.applyBtnDisabled = false;
   }
 
   private async handleSelectAllUnchecked() {
     this.selectedCount = this.selectedPeople.length;
-    this.updatePeopleForAction(this.visiblePeopleAffected);
+    this.toggleDisableAllCheckboxes();
     this.applyBtnDisabled = true;
   }
 
@@ -1060,11 +1058,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
-    if (this.selectAllChecked) {
-      await this.updatePeopleForAction(this.visiblePeopleAffected, true);
-    } else {
-      await this.updatePeopleForAction(this.visiblePeopleAffected);
-    }
+    this.toggleDisableAllCheckboxes();
+    await this.updatePeopleForAction(this.visiblePeopleAffected);
+
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
