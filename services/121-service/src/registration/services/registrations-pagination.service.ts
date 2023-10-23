@@ -130,9 +130,7 @@ export class RegistrationsPaginationService {
       paginateConfigCopy.searchableColumns = ['data.(value)'];
     }
 
-    // If a person has transaction read permission, add the payment filter
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
-    // console.log('queryBuilder: ', queryBuilder.getSql());
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection

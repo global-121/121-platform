@@ -14,25 +14,29 @@ import {
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
 import {
   CommercialBankEthiopiaRegistrationData,
   CommercialBankEthiopiaTransferPayload,
   CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @Injectable()
 export class CommercialBankEthiopiaService
   implements FinancialServiceProviderIntegrationInterface
 {
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  public registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(CommercialBankEthiopiaAccountEnquiriesEntity)
+  public commercialBankEthiopiaAccountEnquiriesEntity: Repository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
@@ -247,9 +251,14 @@ export class CommercialBankEthiopiaService
     return paTransactionResult;
   }
 
-  public async sendValidationPerPa(
-    programId: number,
-  ): Promise<CommercialBankEthiopiaValidationData[]> {
+  public async validateAllPas(): Promise<void> {
+    const programs = await this.getAllProgramsWithCBE();
+    for (const program of programs) {
+      await this.validatePasForProgram(program.id);
+    }
+  }
+
+  public async validatePasForProgram(programId: number): Promise<void> {
     const credentials: { username: string; password: string } =
       await this.getCommercialBankEthiopiaCredentials(programId);
 
@@ -257,8 +266,8 @@ export class CommercialBankEthiopiaService
       programId,
     );
 
-    const result = [];
     console.time('getValidationStatus loop total');
+
     for (const pa of getAllPersonsAffectedData) {
       const logString = `getValidationStatus for PA: ${pa.id}`;
       console.time(logString);
@@ -269,44 +278,66 @@ export class CommercialBankEthiopiaService
         );
       console.timeEnd(logString);
 
+      const result = {
+        registrationId: pa?.id,
+        fullNameUsedForTheMatch: pa?.fullName || null,
+        bankAccountNumberUsedForCall: pa?.bankAccountNumber || null,
+        cbeName: null,
+        namesMatch: false,
+        cbeStatus: null,
+        errorMessage: null,
+      };
+
       if (paResult?.Status?.successIndicator?._text === 'Success') {
         const accountInfo =
           paResult?.EACCOUNTCBEREMITANCEType?.[
             'ns4:gEACCOUNTCBEREMITANCEDetailType'
           ]?.['ns4:mEACCOUNTCBEREMITANCEDetailType'];
-        pa.cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
-        pa.cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
-        if (pa.fullName && pa.cbeName) {
-          pa.discrepancyName =
-            pa.cbeName.toUpperCase() === pa.fullName.toUpperCase()
-              ? 'Match'
-              : 'No match';
-        } else if (pa.fullName && !pa.cbeName) {
+        const cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
+        const cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
+
+        result.cbeName = cbeName || null;
+        result.cbeStatus = cbeStatus || null;
+
+        if (pa.fullName && cbeName) {
+          result.namesMatch =
+            pa.fullName.toUpperCase() === cbeName.toUpperCase();
+        } else if (pa.fullName && !cbeName) {
           console.log('### No pa.cbeName', JSON.stringify(paResult));
-          pa.errorMessage =
+          result.errorMessage =
             'Could not be matched: did not get a name from CBE for account number';
-        } else if (pa.cbeName && !pa.fullName) {
-          pa.errorMessage = 'Could not be matched: fullName in 121 is missing';
+        } else if (cbeName && !pa.fullName) {
+          result.errorMessage =
+            'Could not be matched: fullName in 121 is missing';
         } else {
           console.log('### No pa.cbeName & fullName', JSON.stringify(paResult));
-          pa.errorMessage =
+          result.errorMessage =
             'Could not be matched: fullName in 121 is missing and did not get a name from CBE for account number';
         }
-        result.push(pa);
       } else {
-        pa.errorMessage =
+        result.errorMessage =
           paResult.resultDescription ||
           (paResult.Status &&
             paResult.Status.messages &&
             (paResult.Status.messages.length > 0
               ? paResult.Status.messages[0]._text
               : paResult.Status.messages._text));
-        result.push(pa);
+      }
+      const existingRecord =
+        await this.commercialBankEthiopiaAccountEnquiriesEntity.findOne({
+          where: { registrationId: pa.id },
+        });
+
+      if (existingRecord) {
+        await this.commercialBankEthiopiaAccountEnquiriesEntity.update(
+          { registrationId: pa.id },
+          result,
+        );
+      } else {
+        await this.commercialBankEthiopiaAccountEnquiriesEntity.save(result);
       }
     }
     console.timeEnd('getValidationStatus loop total');
-
-    return result;
   }
 
   public async getAllPersonsAffectedData(
@@ -316,7 +347,6 @@ export class CommercialBankEthiopiaService
       .createQueryBuilder('registration')
       .select([
         'registration.id AS "id"',
-        'registration.registrationStatus AS "status"',
         'ARRAY_AGG(data.value) AS "values"',
         'ARRAY_AGG(COALESCE("programQuestion".name, "fspQuestion".name)) AS "fieldNames"',
       ])
@@ -327,6 +357,16 @@ export class CommercialBankEthiopiaService
           names: ['fullName', 'bankAccountNumber'],
         },
       )
+      .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
+        statusValues: [
+          'deleted',
+          'inclusionEnded',
+          'reject',
+          'noLongerEligible',
+          'registeredWhileNoLongerEligible',
+          'paused',
+        ],
+      })
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('data.fspQuestion', 'fspQuestion')
@@ -335,8 +375,8 @@ export class CommercialBankEthiopiaService
 
     // Create a new array by mapping the original objects
     const formattedData: any = registrationData.map((pa) => {
-      const paData = { id: pa.id, status: pa.status };
-      pa.fieldNames.forEach((fieldName, index) => {
+      const paData = { id: pa.id };
+      pa.fieldNames.forEach((fieldName: string, index: number) => {
         paData[fieldName] = pa.values[index];
       });
       return paData;
@@ -365,6 +405,55 @@ export class CommercialBankEthiopiaService
     };
 
     return credentials;
+  }
+
+  public async getAllProgramsWithCBE(): Promise<ProgramEntity[]> {
+    const programs = await this.programRepository
+      .createQueryBuilder('program')
+      .select('program.id')
+      .innerJoin(
+        'program.financialServiceProviders',
+        'financialServiceProviders',
+      )
+      .where('financialServiceProviders.fsp = :fsp', {
+        fsp: FspName.commercialBankEthiopia,
+      })
+      .getMany();
+
+    return programs;
+  }
+
+  public async getAllPaValidations(
+    programId: number,
+  ): Promise<CommercialBankEthiopiaValidationReportDto> {
+    const programPAs = await this.commercialBankEthiopiaAccountEnquiriesEntity
+      .createQueryBuilder('cbe')
+      .innerJoin('cbe.registration', 'registration')
+      .where('registration.programId = :programId', {
+        programId: programId,
+      })
+      .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
+        statusValues: [
+          'deleted',
+          'inclusionEnded',
+          'reject',
+          'noLongerEligible',
+          'registeredWhileNoLongerEligible',
+          'paused',
+        ],
+      })
+      .select([
+        'registration.registrationProgramId as "registrationProgramId"',
+        'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
+        'cbe.cbeName as "cbeName"',
+        'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
+        'cbe.errorMessage as "errorMessage"',
+        'cbe.cbeStatus as "cbeStatus"',
+        'cbe.updated as "updated"',
+      ])
+      .getRawMany();
+
+    return { data: programPAs, fileName: 'cbe-validation-report' };
   }
 
   private generateRandomNumerics(length: number): string {

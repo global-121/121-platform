@@ -9,6 +9,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import {
+  AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationViewWithPayments,
 } from '../registration/const/filter-operation.const';
@@ -178,6 +179,10 @@ export class ProgramService {
             name: name,
             allowedOperators: PaginateConfigRegistrationViewWithPayments
               .filterableColumns[name] as FilterOperator[],
+            isInteger:
+              PaginateConfigRegistrationViewWithPayments.filterableColumns[
+                name
+              ] === AllowedFilterOperatorsNumber,
           });
         } else {
           // If no allowed operators are defined than the attribute is
@@ -185,6 +190,7 @@ export class ProgramService {
           filterableAttributesPerGroup.push({
             name: name,
             allowedOperators: AllowedFilterOperatorsString,
+            isInteger: false,
           });
         }
       }

@@ -6,7 +6,7 @@ import {
   waitForStatusUpdateToComplete,
 } from '../../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
 } from '../../helpers/registration.helper';
@@ -50,7 +50,7 @@ describe('change the status of a set of registrations', () => {
     const newStatus = RegistrationStatusEnum.included; // registered to included IS possible
 
     // Act
-    const updateStatusResponse = await changePaStatus(
+    const updateStatusResponse = await awaitChangePaStatus(
       programId,
       referenceIds,
       newStatus,
@@ -89,7 +89,7 @@ describe('change the status of a set of registrations', () => {
     const newStatus = RegistrationStatusEnum.inclusionEnded; // registered to inclusion-ended IS NOT possible
 
     // Act
-    const updateStatusResponse = await changePaStatus(
+    const updateStatusResponse = await awaitChangePaStatus(
       programId,
       referenceIds,
       newStatus,
@@ -120,7 +120,7 @@ describe('change the status of a set of registrations', () => {
     filter[`filter.status`] = RegistrationStatusEnum.included; // but initial filter on included PAs leaves empty set as they are now registered
 
     // Act
-    const updateStatusResponse = await changePaStatus(
+    const updateStatusResponse = await awaitChangePaStatus(
       programId,
       referenceIds,
       newStatus,

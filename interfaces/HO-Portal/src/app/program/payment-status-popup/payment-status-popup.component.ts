@@ -13,6 +13,7 @@ import {
   TransactionCustomData,
 } from 'src/app/models/transaction-custom-data';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { actionResult } from '../../shared/action-result';
 import { StatusEnum } from './../../models/status.enum';
@@ -209,11 +210,12 @@ export class PaymentStatusPopupComponent implements OnInit {
           payoutDetails.payment,
           [payoutDetails.referenceId],
         )
-      : this.programsService.submitPayout(
+      : this.programsService.doPayment(
           payoutDetails.programId,
           payoutDetails.payment,
           payoutDetails.amount,
-          [payoutDetails.referenceId],
+          false,
+          PaymentUtils.refernceIdsToFilter([payoutDetails.referenceId]),
         );
 
     result.then(
@@ -225,7 +227,7 @@ export class PaymentStatusPopupComponent implements OnInit {
           message += this.translate.instant(
             'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
             {
-              nrPa: `<strong>${response}</strong>`,
+              nrPa: `<strong>${response.sumPaymentAmountMultiplier}</strong>`,
             },
           );
         }

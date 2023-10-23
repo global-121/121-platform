@@ -3,7 +3,7 @@ import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
 import { changePhase } from '../../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
 } from '../../helpers/registration.helper';
@@ -36,7 +36,7 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [registration1.referenceId],
         RegistrationStatusEnum.included,

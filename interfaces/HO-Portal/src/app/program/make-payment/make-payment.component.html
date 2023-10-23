@@ -2,10 +2,13 @@
   <ion-note class="ion-margin-end">
     {{
       'page.program.program-payout.make-payment.number-included'
-        | translate: { number: totalIncluded >= 0 ? totalIncluded : '?' }
+        | translate
+          : {
+              number:
+                totalIncluded >= 0 ? (totalIncluded | number: '1.0-0') : '?'
+            }
     }}
   </ion-note>
-
   <ion-item
     [disabled]="!isEnabled"
     class="ion-margin-end"
@@ -34,6 +37,17 @@
   >
     {{ 'page.program.program-payout.start-payout' | translate }}
   </app-confirm-prompt>
+  <div *ngIf="!totalTransferAmounts">
+    <ion-spinner
+      color="primary"
+      class="ion-margin-start"
+    ></ion-spinner>
+    <ion-note>
+      {{
+        'page.program.program-payout.calculating-transfer-amount' | translate
+      }}
+    </ion-note>
+  </div>
   <div
     *ngIf="paymentInProgress"
     class="ion-margin-start ion-align-items-center"

@@ -8,6 +8,7 @@ import { PaymentHistoryPopupComponent } from 'src/app/program/payment-history-po
 import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
 import { ProgramPayoutComponent } from 'src/app/program/program-payout/program-payout.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DownloadCbeVerificationReportComponent } from '../../components/download-cbe-verification-report/download-cbe-verification-report.component';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import { PaymentPage } from './payment.page';
 
@@ -26,6 +27,7 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
     PaymentHistoryPopupComponent,
+    DownloadCbeVerificationReportComponent,
   ],
   declarations: [
     PaymentPage,

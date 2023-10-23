@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateQuery } from 'nestjs-paginate';
 import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
@@ -7,17 +8,22 @@ import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
+import { BulkActionResultPaymentDto } from '../registration/dto/bulk-action-result.dto';
 import {
   ImportResult,
   ImportStatus,
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { BulkImportService } from '../registration/services/bulk-import.service';
+import { RegistrationsImportService } from '../registration/services/registrations-import.service';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -59,7 +65,9 @@ export class PaymentsService {
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
-    private readonly bulkImportService: BulkImportService,
+    private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
+    private registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async getPayments(programId: number): Promise<
@@ -81,37 +89,122 @@ export class PaymentsService {
     return payments;
   }
 
-  public async createPayment(
+  public async postPayment(
     userId: number,
     programId: number,
     payment: number,
     amount: number,
-    referenceIdsDto: ReferenceIdsDto,
-  ): Promise<number> {
-    await this.checkProgram(programId);
-    const paPaymentDataList = await this.getPaymentList(
-      referenceIdsDto.referenceIds,
-      amount,
-      programId,
+    query: PaginateQuery,
+    dryRun: boolean,
+  ): Promise<BulkActionResultPaymentDto> {
+    const paginateQuery =
+      this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
+
+    const bulkActionResultDto =
+      await this.registrationsBulkService.getBulkActionResult(
+        paginateQuery,
+        programId,
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    if (!amount) {
+      return { ...bulkActionResultDto, sumPaymentAmountMultiplier: 0 };
+    }
+
+    const registrationsForPayment =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        true,
+        true,
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
+    let totalMultiplierSum = 0;
+    // This loop is pretty fast: with 100.000 registrations it takes ~12ms
+    for (const registration of registrationsForPayment.data) {
+      totalMultiplierSum =
+        totalMultiplierSum + registration.paymentAmountMultiplier;
+    }
+    const bulkActionResultPaymentDto = {
+      ...bulkActionResultDto,
+      sumPaymentAmountMultiplier: totalMultiplierSum,
+    };
+
+    const referenceIds = registrationsForPayment.data.map(
+      (registration) => registration.referenceId,
     );
 
-    if (paPaymentDataList.length < 1) {
-      const errors = 'There are no targeted PAs for this payment';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (!dryRun && referenceIds.length > 0) {
+      this.initiatePayment(
+        userId,
+        programId,
+        payment,
+        amount,
+        referenceIds,
+      ).catch((e) => {
+        this.azureLogService.logError(e, true);
+      });
     }
+
+    return bulkActionResultPaymentDto;
+  }
+
+  private getPaymentBaseQuery(
+    payment: number,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    // Do not do payment if a registration has already one transaction for that payment number
+    return this.registrationsBulkService
+      .getBaseQuery()
+      .leftJoin(
+        'registration.latestTransactions',
+        'latest_transaction_join',
+        'latest_transaction_join.payment = :payment',
+        { payment },
+      )
+      .andWhere('latest_transaction_join.id is null')
+      .andWhere('registration.status = :status', {
+        status: RegistrationStatusEnum.included,
+      });
+  }
+
+  public async initiatePayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    amount: number,
+    referenceIds: string[],
+  ): Promise<number> {
     await this.actionService.saveAction(
       userId,
       programId,
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+    const chunkSize = 1000;
+    const chunks = [];
+    for (let i = 0; i < referenceIds.length; i += chunkSize) {
+      chunks.push(referenceIds.slice(i, i + chunkSize));
+    }
 
+    let paymentTransactionResult = 0;
+    for (const chunk of chunks) {
+      const paPaymentDataList = await this.getPaymentList(
+        chunk,
+        amount,
+        programId,
+      );
+
+      const result = await this.payout(
+        paPaymentDataList,
+        programId,
+        payment,
+        userId,
+      );
+
+      paymentTransactionResult += result;
+    }
     return paymentTransactionResult;
   }
 
@@ -140,14 +233,11 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+    this.payout(paPaymentDataList, programId, payment, userId).catch((e) => {
+      this.azureLogService.logError(e, true);
+    });
 
-    return paymentTransactionResult;
+    return paPaymentDataList.length;
   }
 
   private async checkProgram(programId: number): Promise<ProgramEntity> {
@@ -171,9 +261,7 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment).catch((e) => {
-      this.azureLogService.logError(e, true);
-    });
+    await this.makePaymentRequest(paLists, programId, payment);
     if (payment > -1) {
       await this.actionService.saveAction(
         userId,
@@ -643,7 +731,9 @@ export class PaymentsService {
   private async xmlToValidatedFspReconciliation(
     xmlFile,
   ): Promise<ImportFspReconciliationDto> {
-    const importRecords = await this.bulkImportService.validateXml(xmlFile);
+    const importRecords = await this.registrationsImportService.validateXml(
+      xmlFile,
+    );
     return await this.validateFspReconciliationXmlInput(importRecords);
   }
 
@@ -654,7 +744,7 @@ export class PaymentsService {
     let recordsCount = 0;
     for (const row of xmlArray) {
       recordsCount += 1;
-      if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
+      if (this.registrationsImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = this.vodacashService.validateReconciliationData(row);

@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
+import { MessageStatus } from '../../src/registration/enum/last-message-status';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
@@ -74,15 +75,27 @@ export async function doPayment(
   amount: number,
   referenceIds: string[],
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+
+  if (referenceIds && referenceIds.length > 0) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+
   return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
       amount: amount,
-      referenceIds: { referenceIds: referenceIds },
-    });
+    })
+    .query(queryParams);
 }
 
 export async function retryPayment(
@@ -232,7 +245,15 @@ export async function waitForMessagesToComplete(
 
     // Check if all message histories are longer than 0
     const amountOfRegistrationWithMessages = messageHistories.filter(
-      (messageHistory) => messageHistory.length > 0,
+      (messageHistory) =>
+        messageHistory.filter(
+          (m) =>
+            [
+              MessageStatus.read,
+              MessageStatus.delivered,
+              MessageStatus.failed,
+            ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
+        ).length > 0,
     ).length;
     allMessageUpdatesSuccessful =
       amountOfRegistrationWithMessages === referenceIds.length;
@@ -246,4 +267,26 @@ export async function waitForMessagesToComplete(
   if (!allMessageUpdatesSuccessful) {
     throw new Error(`Timeout waiting for messages to be sent`);
   }
+}
+
+export async function startCbeValidationProcess(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validate`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
+export async function getCbeValidationReport(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
+    )
+    .set('Cookie', [accessToken]);
 }

@@ -234,6 +234,7 @@
           "xml": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XML-file</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>"
         },
         "in-progress": "Payment in progress",
+        "calculating-transfer-amount": "Calculating total transfer amount",
         "make-export": "Export payment data",
         "last-payment": {
           "last-payment": "Last payment: {{nr}}",
@@ -242,6 +243,11 @@
           "waiting": "Waiting",
           "retry-all": "Retry all {{number}} failed",
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
+        },
+        "cbe": {
+          "btn": "CBE verification report",
+          "subHeader": "Download CBE Verification Report",
+          "message": "The data in this report is based on data that is imported every night from CBE. <br /> If you changed data today this will not be reflected in the report."
         },
         "make-payment": {
           "error": {

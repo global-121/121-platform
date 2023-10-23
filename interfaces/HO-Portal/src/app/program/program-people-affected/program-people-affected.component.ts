@@ -37,7 +37,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { TableFilterType } from 'src/app/models/table-filter.model';
-import { BulkActionsService } from 'src/app/services/bulk-actions.service';
+import {
+  BulkActionsService,
+  CustomBulkActionInput,
+} from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -142,7 +145,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     },
   ];
 
-  public tableFiltersPerColumn: { name: string; label: string }[] = [];
+  public tableFiltersPerColumn: Filter[] = [];
   private tableTextFilter: PaginationFilter[] = [];
   public columnsPerPhase: PaTableAttribute[];
 
@@ -404,9 +407,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async updateBulkActions() {
-    await this.addPaymentBulkActions();
-
-    this.bulkActions = this.bulkActionService.getBulkActions().map((action) => {
+    const notPaymentBulkActions = this.bulkActionService.getBulkActions();
+    const paymentBulkActions = await this.getPaymentBulkActions();
+    const unfilteredBulkAction = [
+      ...notPaymentBulkActions,
+      ...paymentBulkActions,
+    ];
+    this.bulkActions = unfilteredBulkAction.map((action) => {
       action.enabled =
         this.authService.hasAllPermissions(
           this.programId,
@@ -453,6 +460,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         allFilters.push({
           name: columnName.name,
           label: this.getLabelForAttribute(columnName.name),
+          allowedOperators: columnName.allowedOperators,
+          isInteger: columnName.isInteger,
         });
       }
 
@@ -470,33 +479,18 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return allFilters;
   }
 
-  private async addPaymentBulkActions() {
-    // filter out all dopayment actions to avoid duplication
-    this.bulkActions = this.bulkActions.filter(
-      (action) => action.id !== BulkActionId.doPayment,
-    );
-
+  private async getPaymentBulkActions(): Promise<BulkAction[]> {
+    // Add buaddPaymentBulkActionslk-action for 1st upcoming payment & past 5 payments
+    // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
     const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
-    let paymentId = nextPaymentId || this.program.distributionDuration;
+    const paymentId = nextPaymentId || this.program.distributionDuration;
 
-    // Add bulk-action for 1st upcoming payment & past 5 payments
-    // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
-    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
-      const paymentBulkAction = {
-        id: BulkActionId.doPayment,
-        enabled: true,
-        label: `${this.translate.instant(
-          'page.program.program-people-affected.actions.do-payment',
-        )} #${paymentId}`,
-        permissions: [Permission.PaymentCREATE],
-        phases: [ProgramPhase.payment],
-        showIfNoValidation: true,
-      };
-      this.bulkActions.push(paymentBulkAction);
-      paymentId--;
-    }
+    return this.bulkActionService.generatePaymentBulkActions(
+      paymentId,
+      nextPaymentId,
+    );
   }
 
   public hasEnabledActions(): boolean {
@@ -648,7 +642,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentHistoryPopupComponent,
       componentProps: {
-        person,
+        referenceId: person.referenceId,
         program: this.program,
         canViewPersonalData: this.canViewPersonalData,
         canViewPaymentData: this.canViewPaymentData,
@@ -686,43 +680,42 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.submitPaymentProps.payment = Number(
         dropdownOptionLabel.split('#')[1],
       );
+    } else {
+      this.submitPaymentProps.payment = null;
     }
 
-    this.visiblePeopleAffected = this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      this.submitPaymentProps.payment,
-    );
+    await this.updatePeopleForAction(this.visiblePeopleAffected);
 
     // Change the selected people count when select all is active and the bulk actions changes
     if (this.selectAllChecked) {
-      this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-        null,
-        true,
-      );
+      this.toggleDisableAllCheckboxes();
+      this.updatePeopleForAction(this.visiblePeopleAffected);
       this.applyAction(null, true);
     }
 
     this.selectAllCheckboxVisible = true;
   }
 
-  private updatePeopleForAction(
-    people: PersonRow[],
-    action: BulkActionId,
-    payment?: number,
-    disableAll?: boolean,
-  ) {
-    let registrationsWithPayment;
-    return people.map((person) =>
-      this.bulkActionService.updateCheckbox(
-        action,
-        person,
-        payment ? registrationsWithPayment.includes(person.referenceId) : null,
-        disableAll,
-      ),
-    );
+  private toggleDisableAllCheckboxes(): void {
+    this.visiblePeopleAffected.forEach((person) => {
+      person.checkboxDisabled = this.selectAllChecked ? true : false;
+    });
+  }
+
+  private async updatePeopleForAction(people: PersonRow[]): Promise<void> {
+    for await (const person of people) {
+      let customBulkActionInput: CustomBulkActionInput = {
+        referenceId: person.referenceId,
+      };
+      if (this.action === BulkActionId.doPayment) {
+        customBulkActionInput = {
+          ...customBulkActionInput,
+          ...this.getDryRunPaymentCustomBulkActionInput(),
+        };
+      }
+      this.applyAction(customBulkActionInput, true);
+    }
+    return;
   }
 
   private async resetBulkAction() {
@@ -737,12 +730,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public onSelect(selected: PersonRow[]) {
+    let customBulkActionInput: CustomBulkActionInput = null;
     if (this.action === BulkActionId.doPayment) {
+      customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
+
       this.submitPaymentProps.referenceIds = selected.map((p) => p.referenceId);
     }
 
     if (selected.length) {
-      this.applyAction(null, true);
+      this.applyAction(customBulkActionInput, true);
       this.applyBtnDisabled = false;
     } else {
       this.selectedCount = 0;
@@ -759,21 +755,22 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private handleSelectAllChecked(): void {
+  private async handleSelectAllChecked(): Promise<void> {
     this.selectedPeople = [];
-    this.updatePeopleForAction(
-      this.visiblePeopleAffected,
-      this.action,
-      null,
-      true,
-    );
-    this.applyAction(null, true);
+
+    let customBulkActionInput: CustomBulkActionInput = null;
+    if (this.action === BulkActionId.doPayment) {
+      customBulkActionInput = this.getDryRunPaymentCustomBulkActionInput();
+      this.submitPaymentProps.referenceIds = [];
+    }
+    this.toggleDisableAllCheckboxes();
+    this.applyAction(customBulkActionInput, true);
     this.applyBtnDisabled = false;
   }
 
-  private handleSelectAllUnchecked() {
+  private async handleSelectAllUnchecked() {
     this.selectedCount = this.selectedPeople.length;
-    this.updatePeopleForAction(this.visiblePeopleAffected, this.action);
+    this.toggleDisableAllCheckboxes();
     this.applyBtnDisabled = true;
   }
 
@@ -814,9 +811,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
   }
 
-  private setBulkActionFilters(): PaginationFilter[] {
+  private setBulkActionFilters(referenceId?: string): PaginationFilter[] {
     let filters: PaginationFilter[];
-    if (this.selectedPeople.length) {
+    if (referenceId) {
+      // This is the case where you check per row to show a checkbox or not
+      filters = [
+        {
+          value: referenceId,
+          name: 'referenceId',
+          label: 'referenceId',
+          operator: FilterOperatorEnum.eq,
+        },
+      ];
+    } else if (this.selectedPeople.length) {
+      // This is individual checkbox selection > overrides any applied filters
       filters = [
         {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
@@ -826,6 +834,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         },
       ];
     } else {
+      // This is 'select all' > pass on applied filters
       filters = [
         ...this.tableTextFilter,
         ...[
@@ -841,24 +850,30 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return filters;
   }
 
-  public async applyAction(confirmInput?: string, dryRun: boolean = false) {
+  public async applyAction(
+    customBulkActionInput?: CustomBulkActionInput,
+    dryRun: boolean = false,
+  ) {
     this.isInProgress = true;
 
-    const filters = this.setBulkActionFilters();
+    const filters = this.setBulkActionFilters(
+      customBulkActionInput?.referenceId,
+    );
     this.bulkActionService
       .applyAction(
         this.action,
         this.programId,
-        {
-          message: confirmInput,
-        },
+        customBulkActionInput,
         dryRun,
         filters,
       )
       .then(async (response) => {
         const bulkActionResult = response as BulkActionResult;
         if (dryRun) {
-          this.handleBulkActionDryRunResult(bulkActionResult);
+          this.handleBulkActionDryRunResult(
+            bulkActionResult,
+            customBulkActionInput?.referenceId,
+          );
         } else {
           this.handleBulkActionResult(bulkActionResult);
         }
@@ -866,10 +881,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       })
       .catch((error) => {
         console.log('Error:', error);
+        let err = error;
+        if (error.error?.error) {
+          err = error.error?.error;
+        }
         actionResult(
           this.alertController,
           this.translate,
-          error.error.errors.join('<br><br>'),
+          err,
           true,
           PubSubEvent.dataRegistrationChanged,
           this.pubSub,
@@ -877,7 +896,25 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private handleBulkActionDryRunResult(bulkActionResult: BulkActionResult) {
+  private handleBulkActionDryRunResult(
+    bulkActionResult: BulkActionResult,
+    referenceId?: string,
+  ) {
+    if (referenceId) {
+      // if referenceId is passed, this is only about showing row checkboxes or not
+      this.visiblePeopleAffected.find(
+        (p) => p.referenceId === referenceId,
+      ).checkboxVisible = bulkActionResult?.applicableCount > 0;
+      return;
+    }
+
+    if (this.action === BulkActionId.doPayment) {
+      this.submitPaymentProps.applicableCount =
+        bulkActionResult.applicableCount;
+      this.submitPaymentProps.sumPaymentAmountMultiplier =
+        bulkActionResult.sumPaymentAmountMultiplier;
+    }
+
     this.updateSubmitWarning(
       bulkActionResult.applicableCount,
       bulkActionResult.nonApplicableCount,
@@ -1021,19 +1058,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
 
     this.visiblePeopleAffected = this.createTableData(data);
-    if (this.selectAllChecked) {
-      this.visiblePeopleAffected = this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-        null,
-        true,
-      );
-    } else {
-      this.visiblePeopleAffected = this.updatePeopleForAction(
-        this.visiblePeopleAffected,
-        this.action,
-      );
-    }
+    this.toggleDisableAllCheckboxes();
+    await this.updatePeopleForAction(this.visiblePeopleAffected);
+
     this.registrationsService?.setTotalItems(meta.totalItems);
     this.registrationsService?.setCurrentPage(meta.currentPage - 1);
 
@@ -1058,5 +1085,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       // Front-end already resets to page 1 automatically. This makes sure that also API-call is reset to page 1.
       offset: 0,
     });
+  }
+
+  private getDryRunPaymentCustomBulkActionInput(): CustomBulkActionInput {
+    return {
+      payment: this.submitPaymentProps.payment,
+      paymentAmount: null, // Not sending the amount makes the API call faster
+    };
   }
 }

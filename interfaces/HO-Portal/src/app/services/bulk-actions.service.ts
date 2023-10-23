@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import Permission from '../auth/permission.enum';
-import RegistrationStatus from '../enums/registration-status.enum';
 import {
   BulkAction,
   BulkActionId,
   BulkActionResult,
 } from '../models/bulk-actions.models';
-import { PersonRow } from '../models/person.model';
 import { ProgramPhase } from '../models/program.model';
 import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
-class CustomBulkActionInput {
+export class CustomBulkActionInput {
   message?: string;
   payment?: number;
   paymentAmount?: number;
+  referenceId?: string;
 }
 
 @Injectable({
@@ -26,99 +25,6 @@ export class BulkActionsService {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {}
-
-  private hasStatus(
-    person: PersonRow,
-    requiredStates: RegistrationStatus[],
-  ): boolean {
-    return requiredStates.includes(person.registrationStatus);
-  }
-
-  public updateCheckbox(
-    action: BulkActionId,
-    personData: PersonRow,
-    hasSelectedPayment?: boolean,
-    disableAll?: boolean,
-  ) {
-    personData.checkboxDisabled = disableAll ? true : false;
-    switch (action) {
-      case BulkActionId.invite:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.imported,
-          RegistrationStatus.noLongerEligible,
-        ]);
-        break;
-      case BulkActionId.markNoLongerEligible:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.imported,
-          RegistrationStatus.invited,
-        ]);
-        break;
-      case BulkActionId.selectForValidation:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.registered,
-        ]);
-        break;
-      case BulkActionId.include:
-        personData.checkboxVisible =
-          this.hasStatus(personData, [
-            RegistrationStatus.registered,
-            RegistrationStatus.selectedForValidation,
-            RegistrationStatus.validated,
-            RegistrationStatus.rejected,
-            RegistrationStatus.inclusionEnded,
-            RegistrationStatus.paused,
-            RegistrationStatus.completed,
-          ]) &&
-          (personData.paymentCountRemaining === null ||
-            personData.paymentCountRemaining > 0);
-        break;
-      case BulkActionId.endInclusion:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.included,
-          RegistrationStatus.completed,
-        ]);
-        break;
-      case BulkActionId.pause:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.included,
-        ]);
-        break;
-      case BulkActionId.reject:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.registered,
-          RegistrationStatus.selectedForValidation,
-          RegistrationStatus.validated,
-          RegistrationStatus.included,
-          RegistrationStatus.noLongerEligible,
-          RegistrationStatus.registeredWhileNoLongerEligible,
-        ]);
-        break;
-      case BulkActionId.sendMessage:
-        personData.checkboxVisible = !!personData.phoneNumber;
-        break;
-      case BulkActionId.deletePa:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          RegistrationStatus.imported,
-          RegistrationStatus.invited,
-          RegistrationStatus.noLongerEligible,
-          RegistrationStatus.startedRegistration,
-          RegistrationStatus.registered,
-          RegistrationStatus.selectedForValidation,
-          RegistrationStatus.registeredWhileNoLongerEligible,
-          RegistrationStatus.validated,
-          RegistrationStatus.inclusionEnded,
-          RegistrationStatus.rejected,
-        ]);
-        break;
-      case BulkActionId.doPayment:
-        personData.checkboxVisible =
-          this.hasStatus(personData, [RegistrationStatus.included]) &&
-          !hasSelectedPayment;
-        break;
-    }
-    return personData;
-  }
 
   private bulkActions: BulkAction[] = [
     {
@@ -328,7 +234,7 @@ export class BulkActionsService {
       case BulkActionId.invite:
         return await this.programsService.invite(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
           dryRun,
           filters,
         );
@@ -347,35 +253,43 @@ export class BulkActionsService {
       case BulkActionId.include:
         return await this.programsService.include(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
           dryRun,
           filters,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
           dryRun,
           filters,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
           dryRun,
           filters,
         );
       case BulkActionId.pause:
         return await this.programsService.pause(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.doPayment:
+        return await this.programsService.doPayment(
+          programId,
+          customBulkActionInput.payment,
+          customBulkActionInput.paymentAmount,
           dryRun,
           filters,
         );
       case BulkActionId.sendMessage:
         return await this.programsService.sendMessage(
           programId,
-          customBulkActionInput.message,
+          customBulkActionInput?.message,
           dryRun,
           filters,
         );
@@ -390,5 +304,27 @@ export class BulkActionsService {
 
   public getBulkActions(): BulkAction[] {
     return this.bulkActions;
+  }
+
+  public generatePaymentBulkActions(
+    paymentId: number,
+    nextPaymentId: number,
+  ): BulkAction[] {
+    const paymentBulkActions: BulkAction[] = [];
+    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
+      const paymentBulkAction = {
+        id: BulkActionId.doPayment,
+        enabled: true,
+        label: `${this.translate.instant(
+          'page.program.program-people-affected.actions.do-payment',
+        )} #${paymentId}`,
+        permissions: [Permission.PaymentCREATE],
+        phases: [ProgramPhase.payment],
+        showIfNoValidation: true,
+      };
+      paymentBulkActions.push(paymentBulkAction);
+      paymentId--;
+    }
+    return paymentBulkActions;
   }
 }

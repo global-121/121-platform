@@ -9,7 +9,7 @@ import {
   retryPayment,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   importRegistrations,
   updateRegistration,
 } from '../helpers/registration.helper';
@@ -45,7 +45,7 @@ describe('Do payment to 1 PA', () => {
     it('should succesfully pay-out Visa Debit', async () => {
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -70,8 +70,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('succes');
     });
 
@@ -79,7 +81,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -104,8 +106,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE CUSTOMER ERROR');
     });
 
@@ -113,7 +117,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-wallet';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -138,8 +142,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE WALLET ERROR');
     });
 
@@ -147,7 +153,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-link-customer-wallet';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -172,8 +178,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('LINK CUSTOMER ERROR');
     });
 
@@ -181,7 +189,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-debit-card';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -206,8 +214,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('CREATE DEBIT CARD ERROR');
     });
 
@@ -215,7 +225,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-load-balance';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -253,9 +263,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doSecondPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doSecondPaymentResponse.text).toBe(
-        String(paymentReferenceIds.length),
+      expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doSecondPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain('LOAD BALANCE ERROR');
     });
@@ -266,7 +276,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'succeed';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -304,9 +314,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doSecondPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doSecondPaymentResponse.text).toBe(
-        String(paymentReferenceIds.length),
+      expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doSecondPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain('success');
     });
@@ -315,7 +325,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,
@@ -354,8 +364,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(transactionsResponse.text).toContain('success');
     });
 
@@ -364,7 +376,7 @@ describe('Do payment to 1 PA', () => {
       registrationVisa.lastName = 'mock-fail-create-customer';
       registrationVisa.paymentAmountMultiplier = 3;
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programIdVisa,
         [referenceIdVisa],
         RegistrationStatusEnum.included,

@@ -7,7 +7,7 @@ import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
@@ -53,7 +53,7 @@ describe('Load Visa debit cards and details', () => {
       (registration) => registration.referenceId,
     );
     await importRegistrations(programIdVisa, registrations, accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       referenceIds,
       RegistrationStatusEnum.included,
@@ -118,7 +118,7 @@ describe('Load Visa debit cards and details', () => {
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,
     );
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       referenceIds,
       RegistrationStatusEnum.included,

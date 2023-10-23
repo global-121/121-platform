@@ -10,7 +10,7 @@ import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
-import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
+import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { PhysicalCard } from '../models/physical-card.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -175,17 +175,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getTotalTransferAmounts(
-    programId: number | string,
-    referenceIds?: string[],
-  ): Promise<TotalTransferAmounts> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/metrics/total-transfer-amounts`,
-      { referenceIds },
-    );
-  }
-
   getPastPayments(programId: number | string): Promise<PaymentData[]> {
     return this.apiService
       .get(environment.url_121_service_api, `/programs/${programId}/payments`)
@@ -207,11 +196,15 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minPayment?: number | string,
+    payment?: number | string,
     referenceId?: string,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
     if (minPayment) {
       params = params.append('minPayment', minPayment);
+    }
+    if (payment) {
+      params = params.append('payment', payment);
     }
     if (referenceId) {
       params = params.append('referenceId', referenceId);
@@ -264,6 +257,7 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registrations/note/${referenceId}`,
     );
   }
+
   retrieveMsgHistory(
     programId: number,
     referenceId: string,
@@ -293,20 +287,25 @@ export class ProgramsServiceApiService {
     );
   }
 
-  submitPayout(
+  doPayment(
     programId: number,
     payment: number,
     amount: number,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
       {
         payment: Number(payment),
         amount: Number(amount),
-        referenceIds: { referenceIds },
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
@@ -895,6 +894,32 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/users`,
     );
+  }
+
+  async getCbeVerificationReport(programId: number): Promise<{
+    data: {
+      registrationProgramId: number;
+      fullNameUsedForTheMatch: string;
+      bankAccountNumberUsedForCall: string;
+      cbeName: string;
+      namesMatch: boolean;
+      errorMessage: string;
+      cbeStatus: string;
+      lastUpdated: string;
+    }[];
+    fileName: string;
+  }> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
+      )
+      .then((response) => {
+        if (response.data && response.data.length > 0) {
+          arrayToXlsx(response.data, response.fileName);
+        }
+        return response;
+      });
   }
 
   private filterToParams(

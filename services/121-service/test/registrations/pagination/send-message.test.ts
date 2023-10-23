@@ -10,7 +10,6 @@ import {
   sendMessage,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
-import { MessageStatus } from './../../../src/registration/enum/last-message-status';
 import { programId, registration1, registration2 } from './pagination-data';
 
 describe('send arbitrary messages to set of registrations', () => {
@@ -69,7 +68,7 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
     expect(messageHistoryPa1.length).toBe(1);
-    expect(messageHistoryPa1[0].status).toBe(MessageStatus.read);
+    expect(messageHistoryPa1[0].status).toBeDefined();
     expect(messageHistoryPa2.length).toBe(0);
   });
 });

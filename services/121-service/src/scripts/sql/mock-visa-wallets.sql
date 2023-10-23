@@ -9,7 +9,8 @@ INSERT INTO "121-service"."intersolve_visa_wallet" (
   balance,
   "cardStatus",
   "walletStatus",
-  "intersolveVisaCustomerId"
+  "intersolveVisaCustomerId",
+  "tokenCode"
 )
 SELECT
   id + (
@@ -27,5 +28,6 @@ SELECT
   "intersolveVisaCustomerId" + (
     SELECT max("intersolveVisaCustomerId")
     FROM "121-service"."intersolve_visa_wallet"
-  )
+  ),
+  uuid_generate_v4()
 FROM "121-service".intersolve_visa_wallet;

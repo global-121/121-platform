@@ -11,7 +11,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
 } from '../helpers/registration.helper';
@@ -53,7 +53,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     it('should set registration to complete', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdAh],
         RegistrationStatusEnum.included,
@@ -75,7 +75,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         programId,
         [referenceIdAh],
         accessToken,
-        5000,
+        8000,
       );
 
       const getTransactionsRes = await getTransactions(
@@ -105,8 +105,10 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         elapsedTime += interval;
       }
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 

@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -70,6 +71,7 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
@@ -82,6 +84,7 @@ export class RegistrationsController {
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -289,7 +292,7 @@ export class RegistrationsController {
   public async findAll(
     @Paginate() query: PaginateQuery,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -359,7 +362,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum;
@@ -408,7 +411,7 @@ export class RegistrationsController {
       query,
     );
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    const result = await this.registrationsService.patchRegistrationsStatus(
+    const result = await this.registrationsBulkService.patchRegistrationsStatus(
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
@@ -609,7 +612,7 @@ export class RegistrationsController {
     );
 
     const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    const result = await this.registrationsService.deleteRegistrations(
+    const result = await this.registrationsBulkService.deleteRegistrations(
       query,
       programId,
       dryRun,
@@ -753,7 +756,7 @@ export class RegistrationsController {
     @Body() body: SendCustomTextDto,
     @Paginate() query: PaginateQuery,
     @User('id') userId: number,
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
@@ -768,7 +771,7 @@ export class RegistrationsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.registrationsService.postMessages(
+    const result = await this.registrationsBulkService.postMessages(
       query,
       programId,
       body.message,

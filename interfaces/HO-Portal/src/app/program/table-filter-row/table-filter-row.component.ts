@@ -4,7 +4,11 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { StatusTableFilterComponent } from '../../components/status-table-filter/status-table-filter.component';
 import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
-import { FilterService, PaginationFilter } from '../../services/filter.service';
+import {
+  Filter,
+  FilterService,
+  PaginationFilter,
+} from '../../services/filter.service';
 
 @Component({
   selector: 'app-table-filter-row',
@@ -30,7 +34,7 @@ export class TableFilterRowComponent {
   @ViewChild('statusTableFilter')
   public statusTableFilter: StatusTableFilterComponent;
 
-  public textFilterOption: { name: string; label: string }[] = [];
+  public textFilterOption: Filter[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
@@ -58,6 +62,7 @@ export class TableFilterRowComponent {
     this.filterService.setTextFilter(
       this.textFilterOption[0].name,
       this.filterRowsVisibleQuery,
+      this.textFilterOption[0].allowedOperators,
       this.textFilterOption[0].label,
     );
     this.clearFilterCreateForm();
@@ -90,5 +95,13 @@ export class TableFilterRowComponent {
 
   public clearAllFilters() {
     this.filterService.clearAllFilters();
+  }
+
+  public getFilterInputType() {
+    if (this.textFilterOption[0].isInteger) {
+      return 'number';
+    } else {
+      return 'text';
+    }
   }
 }

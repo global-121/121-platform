@@ -12,3 +12,8 @@ export class BulkActionResultDto {
   @ApiProperty({ example: 2 })
   public readonly nonApplicableCount: number;
 }
+
+export class BulkActionResultPaymentDto extends BulkActionResultDto {
+  @ApiProperty({ example: 9 })
+  public readonly sumPaymentAmountMultiplier: number;
+}

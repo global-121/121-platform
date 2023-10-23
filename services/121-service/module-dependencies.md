@@ -17,6 +17,8 @@ graph LR
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
   IntersolveVisaModule-->MessageModule
+  CronjobModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaModule-->TransactionsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -45,7 +47,6 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   PaymentsModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   MetricsModule-->TransactionsModule

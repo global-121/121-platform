@@ -94,7 +94,7 @@ export function getRegistrations(
     .set('Cookie', [accessToken]);
 }
 
-export function changePaStatus(
+export async function awaitChangePaStatus(
   programId: number,
   referenceIds: string[],
   status: RegistrationStatusEnum,
@@ -110,7 +110,7 @@ export function changePaStatus(
       queryParams[key] = value;
     }
   }
-  return getServer()
+  const result = await getServer()
     .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
     .query(queryParams)
@@ -118,6 +118,46 @@ export function changePaStatus(
       status: status,
       message: null,
     });
+  await waitForStatusChangeToComplete(
+    programId,
+    referenceIds.length,
+    status,
+    8000,
+    accessToken,
+  );
+
+  return result;
+}
+
+export async function waitForStatusChangeToComplete(
+  programId: number,
+  amountOfRegistrations: number,
+  status: string,
+  maxWaitTimeMs: number,
+  accessToken: string,
+): Promise<void> {
+  const startTime = Date.now();
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    // Get payment transactions
+    const metrics = await personAffectedMetrics(programId, accessToken);
+    // If not all transactions are successful, wait for a short interval before checking again
+    if (
+      metrics.body.pa[status] &&
+      metrics.body.pa[status] >= amountOfRegistrations
+    ) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Wait
+  }
+}
+
+export async function personAffectedMetrics(
+  programId: number,
+  accessToken: string,
+): Promise<any> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/person-affected`)
+    .set('Cookie', [accessToken]);
 }
 
 export function sendMessage(

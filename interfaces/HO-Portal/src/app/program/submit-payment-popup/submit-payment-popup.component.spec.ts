@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MakePaymentComponent } from 'src/app/program/make-payment/make-payment.component';
@@ -22,6 +23,7 @@ describe('SubmitPaymentPopupComponent', () => {
         TranslateModule.forRoot(),
         SharedModule,
         HttpClientTestingModule,
+        RouterTestingModule,
       ],
       providers: [
         {
