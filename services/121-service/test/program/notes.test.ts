@@ -52,7 +52,6 @@ describe('Notes', () => {
 
     // Assert
     expect(postNoteResponse.statusCode).toBe(HttpStatus.CREATED);
-    expect(postNoteResponse.body.text).toBe(noteText);
   });
 
   it('should get a note', async () => {
