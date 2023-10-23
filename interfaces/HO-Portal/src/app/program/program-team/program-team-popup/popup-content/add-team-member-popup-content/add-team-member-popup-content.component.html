@@ -8,7 +8,7 @@
     </ion-row>
     <ion-row class="search-wrapper">
       <ion-searchbar
-        [ngClass]="{'invalid-ion-select-searchbar': isUserAlreadyTeamMember}"
+        [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
         id="searchbar"
         name="searchQuery"
         [(ngModel)]="searchQuery"
@@ -46,7 +46,7 @@
     </ion-row>
     <ion-row>
       <ion-select
-        [ngClass]="{'invalid-ion-select-searchbar': showRolesWarning()}"
+        [ngClass]="{ 'invalid-ion-select-searchbar': showRolesWarning() }"
         placeholder="{{
           'page.program-team.popup.roles-placeholder' | translate
         }}"

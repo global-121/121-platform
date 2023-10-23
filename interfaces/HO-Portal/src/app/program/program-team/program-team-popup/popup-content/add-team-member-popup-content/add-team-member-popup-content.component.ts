@@ -51,11 +51,12 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
   public async search(event: CustomEvent): Promise<void> {
     const searchTerm = event.detail.value.toLowerCase();
     // Filter out admin user as it is in any program
-    this.searchResults = (await this.programsServiceApiService.getUsersByName(
-      this.programId,
-      searchTerm,
-    )).filter((user) => user.id !== 1);
-
+    this.searchResults = (
+      await this.programsServiceApiService.getUsersByName(
+        this.programId,
+        searchTerm,
+      )
+    ).filter((user) => user.id !== 1);
 
     this.searchResults.length > 0 && searchTerm !== ''
       ? (this.showSearchResults = true)
@@ -63,7 +64,11 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
   }
 
   public isFormComplete(): boolean {
-    return this.searchQuery !== '' && this.selectedRoleNames.length !== 0;
+    return (
+      this.searchQuery !== '' &&
+      this.selectedRoleNames.length !== 0 &&
+      this.isUserAlreadyTeamMember === false
+    );
   }
 
   public updateSearchbarValue(userSearchResult: UserSearchResult): void {

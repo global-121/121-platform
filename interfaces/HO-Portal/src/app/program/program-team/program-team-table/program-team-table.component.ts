@@ -45,7 +45,7 @@ export class ProgramTeamTableComponent implements OnInit {
       await this.programsService.getUsersByProgram(this.programId);
 
     // Filter out user with id 1 (the admin user)
-    let filteredProgramUsers = []
+    let filteredProgramUsers = [];
     if (programUsers && programUsers.length > 0) {
       filteredProgramUsers = programUsers.filter((user) => user.id !== 1);
     }
