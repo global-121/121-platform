@@ -92,6 +92,7 @@
         color="dark"
         size="small"
         (click)="toggleTeamMemberPopover($event, row)"
+        class="meatball-menu-button"
       >
         <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
@@ -99,6 +100,7 @@
         [isOpen]="row.showTeamMemberPopover"
         [event]="popoverEvent"
         (didDismiss)="row.showTeamMemberPopover = false"
+        [showBackdrop]="false"
       >
         <ng-template>
           <app-popover-content>
