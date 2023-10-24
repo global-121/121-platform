@@ -50,12 +50,14 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
   RegistrationsImportService,
 } from './services/registrations-import.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -81,6 +83,8 @@ export class RegistrationsService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
+  @InjectRepository(RegistrationViewEntity)
+  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -90,8 +94,29 @@ export class RegistrationsService {
     private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
   ) {}
+
+  // This methods can be used to get the same formattted data as the pagination query using referenceId
+  public async getPaginateRegistrationForReferenceId(
+    referenceId: string,
+    programId: number,
+  ): Promise<RegistrationViewEntity> {
+    const queryBuilder = this.registrationViewRepository
+      .createQueryBuilder('registration')
+      .andWhere({ referenceId: referenceId });
+
+    const paginateResult =
+      await this.registrationsPaginationService.getPaginate(
+        { path: '' },
+        programId,
+        true,
+        false,
+        queryBuilder,
+      );
+    return paginateResult.data[0];
+  }
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
@@ -1178,7 +1203,7 @@ export class RegistrationsService {
   public async searchRegistration(
     rawPhoneNumber: string,
     userId: number,
-  ): Promise<RegistrationResponse[]> {
+  ): Promise<RegistrationViewEntity[]> {
     const registrations = [];
     if (!userId) {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
@@ -1189,11 +1214,6 @@ export class RegistrationsService {
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
-    const transactionPermissionsProgramIds =
-      await this.getProgramIdsUserHasPermission(
-        userId,
-        PermissionEnum.PaymentTransactionREAD,
-      );
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1240,17 +1260,10 @@ export class RegistrationsService {
       );
 
       for (const uniqueRegistration of uniqueRegistrations) {
-        const registration = (
-          await this.getRegistrations(
-            uniqueRegistration.programId,
-            true,
-            transactionPermissionsProgramIds.includes(
-              uniqueRegistration.programId,
-            ),
-            true,
-            uniqueRegistration.referenceId,
-          )
-        )[0];
+        const registration = await this.getPaginateRegistrationForReferenceId(
+          uniqueRegistration.referenceId,
+          uniqueRegistration.programId,
+        );
         registrations.push(registration);
       }
     }
