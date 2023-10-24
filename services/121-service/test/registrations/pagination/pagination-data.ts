@@ -106,8 +106,6 @@ export const expectedAttributes = [
   'preferredLanguage',
   'inclusionScore',
   'paymentAmountMultiplier',
-  'note',
-  'noteUpdated',
   'financialServiceProvider',
   'registrationProgramId',
   'personAffectedSequence',
