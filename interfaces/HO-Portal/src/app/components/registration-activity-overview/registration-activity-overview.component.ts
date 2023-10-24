@@ -73,10 +73,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [
     null,
-    ActivityOverviewType.dataChanges,
     ActivityOverviewType.payment,
-    ActivityOverviewType.message,
     ActivityOverviewType.notes,
+    ActivityOverviewType.message,
+    ActivityOverviewType.dataChanges,
     ActivityOverviewType.status,
   ];
 
