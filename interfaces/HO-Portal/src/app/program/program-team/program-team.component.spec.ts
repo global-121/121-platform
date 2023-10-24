@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { TeamMemberService } from '../../services/team-member.service';
 import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
 import { ProgramTeamComponent } from './program-team.component';
-import { TeamMemberService } from '../../services/team-member.service';
 
 describe('ProgramTeamComponent', () => {
   let component: ProgramTeamComponent;
