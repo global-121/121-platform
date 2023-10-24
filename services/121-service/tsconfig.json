@@ -20,7 +20,7 @@
     "checkJs": true,
     "incremental": true,
     "outDir": "./dist",
-    "types": ["express", "node"],
+    "types": ["express", "node", "jest"],
     "resolveJsonModule": true,
     "baseUrl": "./"
   },
