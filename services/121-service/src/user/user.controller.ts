@@ -53,6 +53,11 @@ export class UserController {
   @Admin()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of roles assigned to the user',
+    type: [UserRoleEntity],
+  })
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleEntity[]> {
     return await this.userService.getUserRoles();
@@ -61,6 +66,11 @@ export class UserController {
   @Admin()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the created role',
+    type: UserRoleEntity,
+  })
   @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
@@ -72,6 +82,15 @@ export class UserController {
   @ApiTags('roles')
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated user role',
+    type: UserRoleEntity,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Role already exists',
+  })
   @Put('roles/:userRoleId')
   public async updateUserRole(
     @Param() params,
@@ -88,6 +107,15 @@ export class UserController {
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   // TODO: REFACTOR: rename to /users/roles/
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the deleted role',
+    type: UserRoleEntity,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No role found',
+  })
   @Delete('roles/:userRoleId')
   public async deleteUserRole(@Param() params): Promise<UserRoleEntity> {
     return await this.userService.deleteUserRole(params.userRoleId);
@@ -275,6 +303,15 @@ export class UserController {
   @ApiOperation({ summary: 'Get user roles' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of roles assigned to the user',
+    type: [UserRoleEntity],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No roles found for user',
+  })
   @Get('programs/:programId/users/:userId/roles')
   public async getProgramRoles(@Param() params): Promise<UserRoleEntity[]> {
     return await this.userService.getProgramRoles(
@@ -288,6 +325,15 @@ export class UserController {
   @ApiOperation({ summary: 'Assign Roles and Assignment Aidworker to program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of roles assigned to the user',
+    type: [UserRoleEntity],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User, program or role(s) not found',
+  })
   @Put('programs/:programId/users/:userId/roles')
   public async assignRolesAndAssignmentFieldValidationAidworkerToProgram(
     @Param() params,
@@ -305,6 +351,15 @@ export class UserController {
   @ApiOperation({ summary: 'Assign Roles Aidworker to program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of roles assigned to the user',
+    type: [UserRoleEntity],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User, program or role(s) not found',
+  })
   @Patch('programs/:programId/users/:userId/roles')
   public async assignRolesFieldValidationAidworkerToProgram(
     @Param() params,
@@ -323,6 +378,15 @@ export class UserController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: AssignAidworkerToProgramDto, required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of roles assigned to the user',
+    type: [UserRoleEntity],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User, program, role(s) or assignment not found',
+  })
   @Delete('programs/:programId/users/:userId/roles')
   public async deleteAidWorkerAssignment(
     @Param() params,
