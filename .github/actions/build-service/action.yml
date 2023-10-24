@@ -31,7 +31,7 @@ runs:
     - name: Test
       shell: bash
       working-directory: ${{ inputs.servicePath }}
-      run: 'npm test'
+      run: 'npm run test:e2e:all'
 
     - name: Set VERSION of build/deployment
       shell: bash
