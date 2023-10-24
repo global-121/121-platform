@@ -1684,6 +1684,7 @@ export class RegistrationsService {
 
   public async getFspAnswersAttributes(
     referenceId: string,
+    programId: number,
   ): Promise<FspAnswersAttrInterface> {
     const qb = await this.dataSource
       .getRepository(RegistrationEntity)
@@ -1692,6 +1693,9 @@ export class RegistrationsService {
       .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
       .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
+      })
+      .andWhere('registration.programId = :programId', {
+        programId: programId,
       });
     const registration = await qb.getOne();
     const fspAnswers = await this.getFspAnswers(registration.referenceId);

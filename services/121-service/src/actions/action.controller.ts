@@ -1,5 +1,5 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, Post, Get, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PermissionEnum } from '../user/permission.enum';
@@ -28,10 +28,11 @@ export class ActionController {
     required: true,
     type: 'integer',
   })
-  @Post('programs/:programId/actions/retrieve-latest')
+  @ApiQuery({ name: 'actionType', required: true, type: 'string' })
+  @Get('programs/:programId/actions/retrieve-latest')
   public async getLatestAction(
-    @Body() actionData: ActionDto,
     @Param('programId') programId,
+    @Query() actionData: ActionDto,
   ): Promise<ActionEntity> {
     return await this.actionService.getLatestActions(
       Number(programId),

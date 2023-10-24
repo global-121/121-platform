@@ -85,11 +85,10 @@ export class ExportMetricsController {
     summary: 'Get list of to cancel vouchers only used by admin',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Get list of to cancel vouchers only used by admin',
   })
-  // TODO: REFACTOR: rename to /metrics/
-  @Post('export-metrics/to-cancel-vouchers')
+  @Get('metrics')
   public async getToCancelVouchers(): Promise<any> {
     return await this.exportMetricsService.getToCancelVouchers();
   }

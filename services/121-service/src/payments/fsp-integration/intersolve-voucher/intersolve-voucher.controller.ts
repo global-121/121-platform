@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Query,
   Post,
   Res,
   UploadedFile,
@@ -16,6 +17,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -44,19 +46,22 @@ export class IntersolveVoucherController {
     summary: 'Export Intersolve vouchers',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 201, description: 'Vouchers exported' })
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiResponse({ status: 200, description: 'Vouchers exported' })
   // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('programs/:programId/payments/intersolve/export-voucher')
+  @Get('programs/:programId/financial-service-providers/intersolve-voucher')
   public async exportVouchers(
     @Param() params,
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
+    @Query() queryParams: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
+      queryParams.referenceId,
+      Number(queryParams.payment),
       params.programId,
     );
+    console.log(queryParams.referenceId, queryParams.payment, params.programId);
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
@@ -70,16 +75,18 @@ export class IntersolveVoucherController {
     summary: 'Get Intersolve voucher balance',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 201, description: 'Vouchers balance retrieved' })
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
   // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('programs/:programId/payments/intersolve/balance')
+  @Get('programs/:programId/financial-service-providers/intersolve-voucher/balance')
   public async getBalance(
     @Param() params,
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
+    @Query() queryParams: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
+      queryParams.referenceId,
+      Number(queryParams.payment),
       params.programId,
     );
   }

@@ -616,16 +616,19 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspREAD)
   @ApiOperation({ summary: 'Find FSP and attributes' })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Found fsp and attributes',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/get-fsp')
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @Get('programs/:programId/registrations/get-fsp')
   public async getFspAnswersAttributes(
-    @Body() referenceIdDto: ReferenceIdDto,
+    @Param() params,
+    @Query() queryParams: ReferenceIdDto,
   ): Promise<FspAnswersAttrInterface> {
     return await this.registrationsService.getFspAnswersAttributes(
-      referenceIdDto.referenceId,
+      queryParams.referenceId,
+      params.programId,
     );
   }
 
