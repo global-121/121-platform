@@ -57,6 +57,7 @@ import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
+import { RegistrationResponse } from './dto/registration-response.model';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
@@ -516,7 +517,7 @@ export class RegistrationsController {
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
-  ): Promise<RegistrationViewEntity[]> {
+  ): Promise<RegistrationResponse[]> {
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);

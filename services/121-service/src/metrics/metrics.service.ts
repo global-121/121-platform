@@ -896,8 +896,13 @@ export class MetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<PaMetrics> {
-    const registrations =
-      await this.registrationsService.getRegistrationsForDashboard(programId);
+    const registrations = await this.registrationsService.getRegistrations(
+      programId,
+      false,
+      false,
+      true,
+      null,
+    );
 
     const metrics: PaMetrics = {
       [RegistrationStatusEnum.imported]:
