@@ -21,8 +21,8 @@ module.exports = {
         parser: '@typescript-eslint/parser',
         ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
-        project: true,
         tsconfigRootDir: __dirname,
+        project: ['./tsconfig.json'],
       },
       rules: {
         '@typescript-eslint/interface-name-prefix': 'off',

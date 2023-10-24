@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ProgramTeamPopupOperationEnum } from '../../../models/program-team-popup-operation.enum';
 import { Role, TeamMember } from '../../../models/user.model';
-import { SuccessPopupComponent } from '../success-popup/success-popup.component';
+import { AddTeamMemberPopupContentComponent } from './popup-content/add-team-member-popup-content/add-team-member-popup-content.component';
+import { ChangeTeamMemberPopupContentComponent } from './popup-content/change-team-member-popup-content/change-team-member-popup-content.component';
+import { RemoveTeamMemberPopupContentComponent } from './popup-content/remove-team-member-popup-content/remove-team-member-popup-content.component';
 
 @Component({
   selector: 'app-program-team-popup',
@@ -17,13 +19,26 @@ import { SuccessPopupComponent } from '../success-popup/success-popup.component'
     SharedModule,
     TranslateModule,
     FormsModule,
+    AddTeamMemberPopupContentComponent,
+    RemoveTeamMemberPopupContentComponent,
+    ChangeTeamMemberPopupContentComponent,
   ],
   templateUrl: './program-team-popup.component.html',
   styleUrls: ['./program-team-popup.component.scss'],
 })
-export class ProgramTeamPopupComponent implements OnInit {
-  private programId: number;
-  private userId: number;
+export class ProgramTeamPopupComponent {
+  @Input()
+  public operation: ProgramTeamPopupOperationEnum;
+
+  @Input()
+  public teamMemberRow: TeamMember;
+
+  @Input()
+  public title: string;
+
+  public programTeamPopupOperationEnum = ProgramTeamPopupOperationEnum;
+
+  public programId: number;
 
   public searchQuery: string = '';
   public searchResults: TeamMember[][] = [];
@@ -32,60 +47,7 @@ export class ProgramTeamPopupComponent implements OnInit {
   public rolesList: Role[] = [];
   public selectedRoleNames: string[] = [];
 
-  constructor(
-    private modalController: ModalController,
-    private programsServiceApiService: ProgramsServiceApiService,
-  ) {}
-
-  ngOnInit() {
-    this.getRoles();
-  }
-
-  public async search(event: CustomEvent): Promise<void> {
-    const searchTerm = event.detail.value.toLowerCase();
-    this.searchResults = await this.programsServiceApiService.getUsersByName(
-      this.programId,
-      searchTerm,
-    );
-    this.searchResults.length > 0 && searchTerm !== ''
-      ? (this.showSearchResults = true)
-      : (this.showSearchResults = false);
-  }
-
-  public isFormComplete(): boolean {
-    return this.searchQuery !== '' && this.selectedRoleNames.length !== 0;
-  }
-
-  public updateSearchbarValue(selectedItem: string, userId: number): void {
-    this.searchQuery = selectedItem;
-    this.userId = userId;
-    this.showSearchResults = false;
-  }
-
-  public async getRoles(): Promise<void> {
-    this.rolesList = await this.programsServiceApiService.getRoles();
-  }
-
-  public async assignTeamMember(): Promise<void> {
-    await this.programsServiceApiService.assignAidworker(
-      this.programId,
-      this.userId,
-      this.selectedRoleNames,
-    );
-    this.closeModal();
-    this.successPopup();
-  }
-
-  public async successPopup(): Promise<void> {
-    const modal: HTMLIonModalElement = await this.modalController.create({
-      component: SuccessPopupComponent,
-      componentProps: { programId: this.programId },
-    });
-    await modal.present();
-    window.setTimeout(() => {
-      modal.dismiss();
-    }, 3000);
-  }
+  constructor(private modalController: ModalController) {}
 
   public closeModal(): void {
     this.modalController.dismiss();

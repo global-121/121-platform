@@ -290,3 +290,25 @@ export async function getCbeValidationReport(
     )
     .set('Cookie', [accessToken]);
 }
+
+export async function postNote(
+  referenceId: string,
+  text: string,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/note`)
+    .set('Cookie', [accessToken])
+    .send({ referenceId: referenceId, text: text });
+}
+
+export async function getNotes(
+  referenceId: string,
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/note/${referenceId}`)
+    .set('Cookie', [accessToken]);
+}

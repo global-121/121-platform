@@ -11,6 +11,7 @@ import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { NoteModule } from './notes/notes.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
@@ -42,6 +43,7 @@ import { UserModule } from './user/user.module';
     MetricsModule,
     WhatsappModule,
     WhatsappIncomingModule,
+    NoteModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

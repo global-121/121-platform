@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,6 +19,12 @@ import { SharedModule } from 'src/app/shared/shared.module';
   styleUrls: ['./success-popup.component.scss'],
 })
 export class SuccessPopupComponent {
+  @Input()
+  public message: string;
+
+  @Input()
+  public title: string;
+
   constructor(private modalController: ModalController) {}
 
   public closeModal(): void {

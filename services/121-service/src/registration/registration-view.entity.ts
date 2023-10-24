@@ -38,7 +38,6 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.programId', 'programId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect('registration.noteUpdated', 'noteUpdated')
       .addSelect('fsp.fsp', 'financialServiceProvider')
       .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
       .addSelect('registration.paymentCount', 'paymentCount')
@@ -52,7 +51,6 @@ import { RegistrationEntity } from './registration.entity';
       )
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('registration.note', 'note')
       .leftJoin('registration.fsp', 'fsp')
       .addSelect('registration.lastMessageStatus', 'lastMessageStatus'),
 })
@@ -87,12 +85,6 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public paymentAmountMultiplier: number;
-
-  @ViewColumn()
-  public note: string;
-
-  @ViewColumn()
-  public noteUpdated: Date;
 
   @ViewColumn()
   public financialServiceProvider: FspName;

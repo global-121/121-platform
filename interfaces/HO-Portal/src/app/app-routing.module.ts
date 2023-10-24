@@ -57,10 +57,8 @@ const routes: Routes = [
       },
       {
         path: 'team',
-        loadChildren: () =>
-          import('./pages/team/team.module').then(
-            (m) => m.AidWorkersPageModule,
-          ),
+        loadComponent: () =>
+          import('./pages/team/team.page').then((m) => m.TeamPage),
         canActivate: [AuthGuard],
       },
       {

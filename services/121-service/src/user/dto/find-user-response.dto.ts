@@ -6,4 +6,7 @@ export class FindUserReponseDto {
 
   @ApiProperty({ example: 'test@example.org' })
   username: string;
+
+  @ApiProperty({ example: [1, 2] })
+  assignedProgramIds: number[];
 }

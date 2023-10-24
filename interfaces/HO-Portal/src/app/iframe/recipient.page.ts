@@ -67,12 +67,6 @@ export class RecipientPage implements OnDestroy {
     const programs = await this.progamsServiceApiService.getAllPrograms();
 
     for (const program of programs) {
-      const paTableAttributes =
-        await this.progamsServiceApiService.getPaTableAttributes(
-          program.id,
-          null,
-        );
-      program.paTableAttributes = paTableAttributes;
       programsMap[program.id] = program;
     }
     return programsMap;

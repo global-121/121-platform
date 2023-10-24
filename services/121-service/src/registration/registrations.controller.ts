@@ -55,9 +55,7 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
-import { RegistrationResponse } from './dto/registration-response.model';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
@@ -471,29 +469,6 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: 'Update note for registration' })
-  @ApiResponse({ status: 201, description: 'Update note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/note')
-  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
-    return await this.registrationsService.updateNote(
-      updateNote.referenceId,
-      updateNote.note,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get note for registration' })
-  @ApiResponse({ status: 200, description: 'Get note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true })
-  @Get('programs/:programId/registrations/note/:referenceId')
-  public async retrieveNote(@Param() params): Promise<NoteDto> {
-    return await this.registrationsService.retrieveNote(params.referenceId);
-  }
-
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -517,7 +492,7 @@ export class RegistrationsController {
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
-  ): Promise<RegistrationResponse[]> {
+  ): Promise<RegistrationViewEntity[]> {
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);

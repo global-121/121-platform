@@ -408,7 +408,6 @@ export class MetricsService {
         `registration."${GenericAttributes.preferredLanguage}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp."fspDisplayNamePortal" as financialServiceProvider`,
-        `registration."note"`,
       ])
       .andWhere({ programId: programId })
       .distinctOn(['registration.registrationProgramId'])
@@ -896,13 +895,8 @@ export class MetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<PaMetrics> {
-    const registrations = await this.registrationsService.getRegistrations(
-      programId,
-      false,
-      false,
-      true,
-      null,
-    );
+    const registrations =
+      await this.registrationsService.getRegistrationsForDashboard(programId);
 
     const metrics: PaMetrics = {
       [RegistrationStatusEnum.imported]:

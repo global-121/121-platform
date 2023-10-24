@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title
+      color="secondary"
+      style="font-weight: 600"
+    >
+      {{
+        'registration-details.activity-overview.action.add-note'
+          | translate
+          | uppercase
+      }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-row>
+    <ion-text>
+      <b>{{
+        'registration-details.activity-overview.add-note-popup.add-note-profile'
+          | translate: { name: name }
+      }}</b>
+    </ion-text>
+  </ion-row>
+  <ion-row>
+    <ion-text class="ion-margin-bottom">
+      {{
+        'registration-details.activity-overview.add-note-popup.note-visible'
+          | translate
+      }}
+    </ion-text>
+  </ion-row>
+  <ion-row>
+    <ion-text class="ion-margin-bottom">
+      <b>
+        {{
+          'registration-details.activity-overview.add-note-popup.type-note'
+            | translate
+        }}
+      </b>
+    </ion-text>
+  </ion-row>
+  <ion-textarea
+    [(ngModel)]="noteText"
+    fill="outline"
+    placeholder="{{
+      'registration-details.activity-overview.add-note-popup.note-textarea-placeholder'
+        | translate
+    }}"
+    [autoGrow]="true"
+  ></ion-textarea>
+</ion-content>
+<ion-footer class="ion-text-end ion-padding ion-no-margin">
+  <ion-button
+    (click)="closeModal()"
+    fill="clear"
+    color="danger"
+    size="medium"
+  >
+    {{ 'common.cancel' | translate }}
+  </ion-button>
+  <ion-button
+    (click)="submitNote()"
+    size="medium"
+    class="ion-margin-start"
+    [disabled]="!noteText || loading"
+  >
+    {{ 'common.ok' | translate }}
+    <ion-spinner
+      *ngIf="loading"
+      color="light"
+      class="ion-margin-start"
+    ></ion-spinner>
+  </ion-button>
+</ion-footer>

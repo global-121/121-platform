@@ -28,15 +28,13 @@
     ></ion-input>
   </ion-item>
 
-  <app-confirm-prompt
+  <ion-button
+    type="button"
     [disabled]="!isEnabled || isInProgress"
-    (confirm)="performPayment()"
-    (cancel)="resetProgress()"
-    [subHeader]="totalIncludedMessage"
-    [message]="totalAmountMessage"
+    (click)="performPayment()"
   >
     {{ 'page.program.program-payout.start-payout' | translate }}
-  </app-confirm-prompt>
+  </ion-button>
   <div *ngIf="!totalTransferAmounts">
     <ion-spinner
       color="primary"
@@ -47,6 +45,9 @@
         'page.program.program-payout.calculating-transfer-amount' | translate
       }}
     </ion-note>
+  </div>
+  <div *ngIf="totalTransferAmounts">
+    <div class="ion-margin-vertical">{{ totalAmountMessage }}</div>
   </div>
   <div
     *ngIf="paymentInProgress"
