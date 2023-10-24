@@ -30,7 +30,9 @@
     "program-team": {
       "pageTitle": "Program team",
       "page-description": "In this page you can create a team for your program",
-      "add-team-member": "Add/change team member",
+      "add-team-member": "Add team member",
+      "edit-team-member-role": "Edit role",
+      "remove-team-member": "Remove from Team",
       "table-headers": {
         "name": "Name",
         "role": "Role",
@@ -43,17 +45,32 @@
       },
       "team-members": "Team members",
       "popup": {
-        "title": "Add/change team member",
-        "cancel-button": "Cancel",
         "add-users-button": "Add user",
         "team-member": "Team member",
         "team-member-placeholder": "Select a team member",
         "roles-placeholder": "Assign a role(s)",
-        "role": "Role"
-      },
-      "success-popup": {
-        "title": "Add/change team member",
-        "message": "You’ve successfully added a team member"
+        "roles-required": "Please select at least one role",
+        "role": "Role",
+        "remove": {
+          "title": "Remove team member",
+          "introduction": "Removing the team member will result in them not having any access to program or its data.",
+          "attention": "Attention: ",
+          "explanation": "Removing team member does not mean deleting their account from the 121 portal. If you wish to delete their account, please contact the admin.",
+          "confirmation-question": "Are you sure to remove this user from the program team?",
+          "confirm": "Remove user",
+          "succes-message": "You’ve successfully removed a team member"
+        },
+        "add": {
+          "title": "Add team member",
+          "succes-message": "You’ve successfully added a team member",
+          "confirm": "Add user",
+          "already-member": "This user is already a team member"
+        },
+        "change": {
+          "title": "Edit team member roles",
+          "succes-message": "You’ve successfully edited the role(s) of this user",
+          "confirm": "Save"
+        }
       }
     },
     "login": {
@@ -702,6 +719,7 @@
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",
+    "save-success": "Saved successfully",
     "timestamp": {
       "done": "Done on:"
     },
@@ -759,7 +777,12 @@
         "dataChanges": "Data changes",
         "message": "Messages",
         "status": "Status history",
-        "payment": "Payments"
+        "payment": "Payments",
+        "notes": "Notes"
+      },
+      "actions": "Actions",
+      "action": {
+        "add-note": "Add note"
       },
       "activities": {
         "status": {
@@ -777,7 +800,16 @@
           "label": "Data change",
           "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}",
           "reason": "<br><b>Reason:</b> {{reason}}"
+        },
+        "note": {
+          "label": "Note"
         }
+      },
+      "add-note-popup": {
+        "add-note-profile": "You are about to add a note to {{ name }}'s profile.",
+        "note-visible": "The note will be visible to other 121 users who are permitted to view personal profiles.",
+        "type-note": "Type note:",
+        "note-textarea-placeholder": "Click here to type a short note"
       }
     },
     "payment-history": {

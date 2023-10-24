@@ -23,7 +23,6 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { NoteDto } from './dto/note.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
@@ -505,8 +504,6 @@ export class RegistrationsService {
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
     currentRegistration.maxPayments = importedRegistration.maxPayments;
-    currentRegistration.note = importedRegistration.note;
-    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -742,7 +739,6 @@ export class RegistrationsService {
       )
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('registration.note', 'note')
       .leftJoin('registration.fsp', 'fsp');
 
     if (programId) {
@@ -969,25 +965,6 @@ export class RegistrationsService {
         }
       }
     }
-  }
-
-  public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    registration.note = note;
-    registration.noteUpdated = new Date();
-    await this.registrationRepository.save(registration);
-    const newNote = new NoteDto();
-    newNote.note = registration.note;
-    newNote.noteUpdated = registration.noteUpdated;
-    return newNote;
-  }
-
-  public async retrieveNote(referenceId: string): Promise<NoteDto> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    const note = new NoteDto();
-    note.note = registration.note;
-    note.noteUpdated = registration.noteUpdated;
-    return note;
   }
 
   public async searchRegistration(

@@ -5,6 +5,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
 import { ProgramTeamComponent } from './program-team.component';
+import { TeamMemberService } from '../../services/team-member.service';
 
 describe('ProgramTeamComponent', () => {
   let component: ProgramTeamComponent;
@@ -16,7 +17,7 @@ describe('ProgramTeamComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     TestBed.configureTestingModule({
-      declarations: [ProgramTeamComponent],
+      declarations: [],
       imports: [
         IonicModule,
         TranslateModule.forRoot(),
@@ -29,6 +30,7 @@ describe('ProgramTeamComponent', () => {
           provide: ModalController,
           useValue: modalCtrlSpy,
         },
+        TeamMemberService,
       ],
     }).compileComponents;
   }));

@@ -86,7 +86,6 @@ export class RegistrationsBulkService {
     }
     // Get the refrenceIds for the update seperately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
-
     return resultDto;
   }
 
@@ -328,7 +327,6 @@ export class RegistrationsBulkService {
 
       // anonymize some data for this registration
       registration.phoneNumber = null;
-      registration.note = null;
       await this.registrationRepository.save(registration);
 
       // FSP-specific

@@ -22,6 +22,7 @@ import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
+import { NoteModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { UserModule } from './user/user.module';
     MetricsModule,
     WhatsappModule,
     WhatsappIncomingModule,
+    NoteModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

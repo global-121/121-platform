@@ -31,7 +31,7 @@ runs:
     - name: Test
       shell: bash
       working-directory: ${{ inputs.servicePath }}
-      run: 'npm test'
+      run: 'npm run test'
 
     - name: Set VERSION of build/deployment
       shell: bash
@@ -64,7 +64,8 @@ runs:
         rm .gitignore
         rm .prettier*
         rm Dockerfile
-        rm jest.config.js
+        rm jest.unit.config.js
+        rm jest.e2e.config.js
 
     - name: Creating ZIP package
       shell: bash

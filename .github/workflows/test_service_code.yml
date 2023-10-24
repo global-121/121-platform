@@ -36,3 +36,8 @@ jobs:
       - name: Lint
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
+
+      - name: Unit tests (optional)
+        working-directory: ${{ env.workingDirectory }}
+        continue-on-error: true
+        run: 'npm run test:unit:all'

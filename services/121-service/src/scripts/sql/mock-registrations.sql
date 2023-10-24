@@ -14,8 +14,6 @@ INSERT
 		"preferredLanguage",
 		"inclusionScore",
 		"paymentAmountMultiplier",
-		note,
-		"noteUpdated",
 		"programId",
 		"userId",
 		"fspId",

@@ -37,7 +37,9 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.role }}
+      <div *ngFor="let role of row.roles">
+        {{ role.label }}
+      </div>
     </ng-template>
   </ngx-datatable-column>
 
@@ -76,6 +78,49 @@
       ngx-datatable-cell-template
     >
       {{ row.lastLogin | date: DateFormat.dateOnly }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- Meatball menu -->
+  <ngx-datatable-column prop="">
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <ion-button
+        fill="clear"
+        color="dark"
+        size="small"
+        (click)="toggleTeamMemberPopover($event, row)"
+        class="meatball-menu-button"
+      >
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
+      </ion-button>
+      <ion-popover
+        [isOpen]="row.showTeamMemberPopover"
+        [event]="popoverEvent"
+        (didDismiss)="row.showTeamMemberPopover = false"
+        [showBackdrop]="false"
+      >
+        <ng-template>
+          <app-popover-content>
+            <ion-list>
+              <ion-item
+                button
+                (click)="editRole(row)"
+              >
+                {{ 'page.program-team.edit-team-member-role' | translate }}
+              </ion-item>
+              <ion-item
+                button
+                (click)="removeFromTeam(row)"
+              >
+                {{ 'page.program-team.remove-team-member' | translate }}
+              </ion-item>
+            </ion-list>
+          </app-popover-content>
+        </ng-template>
+      </ion-popover>
     </ng-template>
   </ngx-datatable-column>
 
