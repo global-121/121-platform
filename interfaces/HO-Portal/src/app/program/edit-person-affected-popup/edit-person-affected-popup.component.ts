@@ -70,10 +70,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public alreadyReceivedPayments = 0;
 
-  public noteModel: string;
-  public noteLastUpdate: string;
-  private noteInitialValue: string;
-
   public loading: boolean;
 
   constructor(
@@ -131,7 +127,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
-      this.getNote();
     }
 
     this.loading = false;
@@ -298,51 +293,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     );
 
     return programQuestion.options ? programQuestion.options : [];
-  }
-
-  private async getNote() {
-    const note = await this.programsService.retrieveNote(
-      this.programId,
-      this.person.referenceId,
-    );
-    this.noteInitialValue = note.note ? note.note : '';
-    this.noteModel = this.noteInitialValue;
-    this.noteLastUpdate = note.noteUpdated;
-  }
-
-  public disableNoteSaveButton(): boolean {
-    return this.noteModel === this.noteInitialValue;
-  }
-
-  public async saveNote() {
-    this.inProgress.note = true;
-    await this.programsService
-      .updateNote(this.programId, this.person.referenceId, this.noteModel)
-      .then(
-        (note) => {
-          actionResult(
-            this.alertController,
-            this.translate,
-            this.translate.instant('common.update-success'),
-            true,
-            PubSubEvent.dataRegistrationChanged,
-            this.pubSub,
-          );
-          this.noteLastUpdate = note.noteUpdated;
-          this.inProgress.note = false;
-          this.noteInitialValue = this.noteModel;
-        },
-        (error) => {
-          this.inProgress.note = false;
-          console.log('error: ', error);
-          if (error && error.error && error.error.error) {
-            const errorMessage = this.translate.instant('common.update-error', {
-              error: error.error.error,
-            });
-            actionResult(this.alertController, this.translate, errorMessage);
-          }
-        },
-      );
   }
 
   public closeModal() {

@@ -408,7 +408,6 @@ export class MetricsService {
         `registration."${GenericAttributes.preferredLanguage}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp."fspDisplayNamePortal" as financialServiceProvider`,
-        `registration."note"`,
       ])
       .andWhere({ programId: programId })
       .distinctOn(['registration.registrationProgramId'])

@@ -45,14 +45,6 @@ describe('EditPersonAffectedPopupComponent', () => {
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );
-    mockProgramsApi.retrieveNote.and.returnValue(
-      new Promise((r) =>
-        r({
-          note: 'test',
-          noteUpdated: new Date().toISOString(),
-        }),
-      ),
-    );
     mockProgramsApi.getPeopleAffected.and.returnValue(
       new Promise((r) =>
         r([

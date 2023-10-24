@@ -328,7 +328,6 @@ export class RegistrationsBulkService {
 
       // anonymize some data for this registration
       registration.phoneNumber = null;
-      registration.note = null;
       await this.registrationRepository.save(registration);
 
       // FSP-specific

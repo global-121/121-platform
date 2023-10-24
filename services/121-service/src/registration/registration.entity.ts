@@ -21,6 +21,7 @@ import {
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { NoteEntity } from '../notes/note.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
@@ -105,12 +106,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsNotEmpty()
   public paymentAmountMultiplier: number;
 
-  @Column({ nullable: true })
-  public note: string;
-
-  @Column({ nullable: true })
-  public noteUpdated: Date;
-
   /** This is an "auto" incrementing field with a registration ID per program. */
   // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
   @Column()
@@ -164,6 +159,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public latestTransactions: LatestTransactionEntity[];
 
+  @OneToMany(() => NoteEntity, (notes) => notes.registration)
+  public notes: NoteEntity[];
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     // The order of these calls is important, because of foreign key constraints
@@ -211,6 +209,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: NoteEntity,
         columnName: 'registration',
       },
     ]);
