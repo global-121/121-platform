@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
   },
   rootDir: '.',
-  testMatch: ['<rootDir>/test/**/*.test.ts'],
+  testMatch: ['<rootDir>/test/**/*.test.ts', '<rootDir>/**/*.spec.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   testTimeout: 10000,
