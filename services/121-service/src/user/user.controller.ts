@@ -227,8 +227,9 @@ export class UserController {
   @Admin()
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   // TODO: REFACTOR: rename to /users/:userid
-  @Post('user/delete/:userId')
+  @Delete('users/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(@Param() params): Promise<UserEntity> {
     return await this.userService.delete(Number(params.userId));
@@ -237,7 +238,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   // TODO: REFACTOR: rename to /users/
-  @Post('user/delete')
+  @Delete('users')
   @ApiResponse({ status: 201, description: 'User deleted' })
   @ApiResponse({
     status: 401,

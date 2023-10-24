@@ -565,17 +565,6 @@ export class RegistrationsController {
     await this.registrationsService.deleteBatch(referenceIdsData);
   }
 
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ summary: 'Delete set of registrations' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
-  public async deletePost(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.deleteBatch(referenceIdsData);
-  }
-
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Download all program answers (for validation)' })
