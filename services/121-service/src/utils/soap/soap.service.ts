@@ -143,33 +143,42 @@ export class SoapService {
   }
 
   async postCBERequest(payload: any, soapAction: string): Promise<any> {
-    try {
-      const soapRequestXml = convert.js2xml(payload, {
-        compact: false,
-        spaces: 4,
-      });
+    const soapRequestXml = convert.js2xml(payload, {
+      compact: false,
+      spaces: 4,
+    });
 
-      // Configure and send the SOAP request
-      const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
-      const headers = {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        soapAction: soapAction,
-      };
-      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
-      const cert = fs.readFileSync(certPath);
-      const agent = new https.Agent({
-        ca: cert,
-      });
+    // Configure and send the SOAP request
+    const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+    const headers = {
+      'Content-Type': 'text/xml;charset=UTF-8',
+      soapAction: soapAction,
+    };
+    const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
+    const cert = fs.readFileSync(certPath);
+    const agent = new https.Agent({
+      ca: cert,
+    });
 
-      const { response } = await soapRequest({
-        headers: headers,
-        url: soapUrl,
-        xml: soapRequestXml,
-        timeout: 150000,
-        extraOpts: {
-          httpsAgent: agent,
-        },
-      });
+    return soapRequest({
+      headers: headers,
+      url: soapUrl,
+      xml: soapRequestXml,
+      timeout: 150000,
+      extraOpts: {
+        httpsAgent: agent,
+      }
+    })
+    .then((rawResponse: any) => {
+      const response = rawResponse.response;
+      this.httpService.logMessageRequest(
+        { url: soapUrl, payload: soapRequestXml },
+        {
+          status: response.statusCode,
+          statusText: null,
+          data: response.body,
+        }
+      );
 
       // Parse the SOAP response if needed
       const parsedResponse = convert.xml2js(response.body, { compact: true });
@@ -195,8 +204,17 @@ export class SoapService {
           'ns10:AccountEnquiryResponse'
         ];
       }
-    } catch (error) {
-      throw error;
-    }
+    })
+    .catch((err: any) => {
+      this.httpService.logErrorRequest(
+        { url: soapUrl, payload: soapRequestXml },
+        {
+          status: null,
+          statusText: null,
+          data: { error: err },
+        }
+      );
+      throw err;
+    });
   }
 }
