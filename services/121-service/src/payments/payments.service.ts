@@ -191,7 +191,7 @@ export class PaymentsService {
 
   public async checkPaymentInProgressAndThrow(
     programId: number,
-  ): Promise<boolean> {
+  ): Promise<void> {
     const latestPaymentStartedAction =
       await this.actionService.getLatestActions(
         programId,
@@ -199,7 +199,7 @@ export class PaymentsService {
       );
     // If never started, then not in progress
     if (!latestPaymentStartedAction) {
-      return false;
+      return;
     }
     const latestPaymentFinishedAction =
       await this.actionService.getLatestActions(
@@ -208,17 +208,19 @@ export class PaymentsService {
       );
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {
-      return true;
+      return;
     }
     // If started and finished, then compare timestamps
-    const startTimestamp = new Date(latestPaymentStartedAction.created);
-    const finishTimestamp = new Date(latestPaymentFinishedAction.created);
+    const startTimestamp = new Date(latestPaymentStartedAction?.created);
+    const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
 
     const inProgress = finishTimestamp < startTimestamp;
     if (inProgress) {
       const errors = 'Payment is already in progress';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+
+    return;
   }
 
   private splitPaListByFsp(
