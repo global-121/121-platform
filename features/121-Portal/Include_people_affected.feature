@@ -24,9 +24,9 @@ Feature: Include people affected
     And the "status" is updated to "Included"
     And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
 
-  Scenario: Include 2000 PAs
-    Given there are 2000 "registered" PAs in the system
-    When the user uses and confirms the "include for program" action on all 2000 PAs
+  Scenario: Include 10000 PAs
+    Given there are 10000 "registered" PAs in the system
+    When the user uses and confirms the "include for program" action on all 10000 PAs
     Then this is all processed as in the scenario above, quickly and without problem
 
 
