@@ -55,6 +55,12 @@ export class CommercialBankEthiopiaApiService {
         );
         result.resultDescription =
           'Failed because of CBE connection error. Please try again later';
+      } else if (error.code === 'ENOENT') {
+        console.error(
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
+        );
+        result.resultDescription =
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription = error.response;
@@ -166,6 +172,12 @@ export class CommercialBankEthiopiaApiService {
         );
         result.resultDescription =
           'Failed because of CBE connection error. Please try again later';
+      } else if (error.code === 'ENOENT') {
+        console.error(
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
+        );
+        result.resultDescription =
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription = error.response;
@@ -258,6 +270,12 @@ export class CommercialBankEthiopiaApiService {
         );
         result.resultDescription =
           'Failed because of CBE connection error. Please try again later';
+      } else if (error.code === 'ENOENT') {
+        console.error(
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
+        );
+        result.resultDescription =
+          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription = error.response;

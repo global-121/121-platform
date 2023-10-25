@@ -154,11 +154,17 @@ export class SoapService {
       'Content-Type': 'text/xml;charset=UTF-8',
       soapAction: soapAction,
     };
-    const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
-    const cert = fs.readFileSync(certPath);
-    const agent = new https.Agent({
-      ca: cert,
-    });
+
+    let agent;
+    try {
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
+      const cert = fs.readFileSync(certPath);
+      agent = new https.Agent({
+        ca: cert,
+      });
+    } catch (error) {
+      throw error;
+    }
 
     return soapRequest({
       headers: headers,
