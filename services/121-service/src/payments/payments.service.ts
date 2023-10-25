@@ -171,16 +171,17 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment).catch((e) => {
-      this.azureLogService.logError(e, true);
-    });
-    if (payment > -1) {
-      await this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.paymentFinished,
-      );
-    }
+    this.makePaymentRequest(paLists, programId, payment)
+      .catch((e) => {
+        this.azureLogService.logError(e, true);
+      })
+      .finally(async () => {
+        await this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentFinished,
+        );
+      });
     return paPaymentDataList.length;
   }
 

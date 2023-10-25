@@ -113,26 +113,34 @@
       {{ 'page.program.program-payout.last-payment.error' | translate }}:
       <strong>{{ lastPaymentResults.error }}</strong>
     </p>
-    <app-confirm-prompt
-      *ngIf="canMakePayment && lastPaymentResults?.error > 0"
-      (confirm)="retryLastPayment()"
-      [subHeader]="
-        'page.program.program-payout.last-payment.confirm-prompt'
-          | translate: { number: lastPaymentResults?.error }
-      "
-      fill="outline"
-      color="danger"
-    >
-      <ion-icon
-        name="refresh"
-        size="small"
-        slot="start"
-        aria-hidden="true"
-      ></ion-icon>
-      {{
-        'page.program.program-payout.last-payment.retry-all'
-          | translate: { number: lastPaymentResults?.error }
-      }}
-    </app-confirm-prompt>
+    <ion-row class="ion-align-items-center">
+      <app-confirm-prompt
+        *ngIf="canMakePayment && lastPaymentResults?.error > 0"
+        (confirm)="retryLastPayment()"
+        [subHeader]="
+          'page.program.program-payout.last-payment.confirm-prompt'
+            | translate: { number: lastPaymentResults?.error }
+        "
+        fill="outline"
+        color="danger"
+        [disabled]="paymentInProgress"
+      >
+        <ion-icon
+          name="refresh"
+          size="small"
+          slot="start"
+          aria-hidden="true"
+        ></ion-icon>
+        {{
+          'page.program.program-payout.last-payment.retry-all'
+            | translate: { number: lastPaymentResults?.error }
+        }}
+      </app-confirm-prompt>
+      <ion-note
+        *ngIf="paymentInProgress"
+        class="ion-margin-start"
+        >{{ 'page.program.program-payout.in-progress' | translate }}</ion-note
+      >
+    </ion-row>
   </ion-col>
 </ion-row>
