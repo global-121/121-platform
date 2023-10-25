@@ -377,7 +377,7 @@ export class ProgramPayoutComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err && err.error && err.error.error) {
+          if (err && err.error && err.error.errors) {
             actionResult(
               this.alertController,
               this.translate,

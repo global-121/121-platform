@@ -88,6 +88,8 @@ export class PaymentsService {
     amount: number,
     referenceIdsDto: ReferenceIdsDto,
   ): Promise<number> {
+    await this.checkPaymentInProgressAndThrow(programId);
+
     await this.checkProgram(programId);
     const paPaymentDataList = await this.getPaymentList(
       referenceIdsDto.referenceIds,
@@ -121,6 +123,8 @@ export class PaymentsService {
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
+    await this.checkPaymentInProgressAndThrow(programId);
+
     await this.checkProgram(programId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
@@ -183,6 +187,38 @@ export class PaymentsService {
         );
       });
     return paPaymentDataList.length;
+  }
+
+  public async checkPaymentInProgressAndThrow(
+    programId: number,
+  ): Promise<boolean> {
+    const latestPaymentStartedAction =
+      await this.actionService.getLatestActions(
+        programId,
+        AdditionalActionType.paymentStarted,
+      );
+    // If never started, then not in progress
+    if (!latestPaymentStartedAction) {
+      return false;
+    }
+    const latestPaymentFinishedAction =
+      await this.actionService.getLatestActions(
+        programId,
+        AdditionalActionType.paymentFinished,
+      );
+    // If started, but never finished, then in progress
+    if (!latestPaymentFinishedAction) {
+      return true;
+    }
+    // If started and finished, then compare timestamps
+    const startTimestamp = new Date(latestPaymentStartedAction.created);
+    const finishTimestamp = new Date(latestPaymentFinishedAction.created);
+
+    const inProgress = finishTimestamp < startTimestamp;
+    if (inProgress) {
+      const errors = 'Payment is already in progress';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   private splitPaListByFsp(
