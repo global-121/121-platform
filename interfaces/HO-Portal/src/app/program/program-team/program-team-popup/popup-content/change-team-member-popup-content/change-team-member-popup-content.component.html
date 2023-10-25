@@ -1,0 +1,78 @@
+<!-- content -->
+<form (ngSubmit)="assignTeamMember()">
+  <ion-grid class="ion-no-margin ion-padding">
+    <ion-row>
+      <ion-label class="label">{{
+        'page.program-team.popup.team-member' | translate
+      }}</ion-label>
+    </ion-row>
+    <ion-row class="search-wrapper">
+      <ion-searchbar
+        id="searchbar"
+        name="searchQuery"
+        [(ngModel)]="searchQuery"
+        disabled="true"
+        search-icon="'undefined'"
+      >
+      </ion-searchbar>
+    </ion-row>
+    <ion-row>
+      <ion-label class="label">{{
+        'page.program-team.popup.role' | translate
+      }}</ion-label>
+    </ion-row>
+    <ion-row>
+      <ion-select
+        [ngClass]="{ 'invalid-ion-select-searchbar': !rolesAreSelected() }"
+        placeholder="{{
+          'page.program-team.popup.roles-placeholder' | translate
+        }}"
+        label-placement="start"
+        fill="outline"
+        toggleIcon="chevron-down-outline"
+        [multiple]="true"
+        interface="popover"
+        [(ngModel)]="selectedRoleNames"
+        name="selectedRoles"
+        [interfaceOptions]="{ cssClass: 'rolesDropdown' }"
+      >
+        <ion-select-option
+          *ngFor="let role of rolesList"
+          value="{{ role.role }}"
+          [selected]="isRoleSelected(role.role)"
+        >
+          {{ role.label.trim() }}
+        </ion-select-option>
+      </ion-select>
+      <div *ngIf="!rolesAreSelected()">
+        <app-warning-label
+          [warningText]="'page.program-team.popup.roles-required' | translate"
+        ></app-warning-label>
+      </div>
+    </ion-row>
+  </ion-grid>
+  <div class="buttons">
+    <!-- cancel button -->
+    <ion-button
+      (click)="closeModal()"
+      [attr.title]="'common.cancel' | translate"
+      [attr.aria-label]="'common.cancel' | translate"
+      fill="clear"
+    >
+      <u
+        ><strong>{{ 'common.cancel' | translate }}</strong></u
+      >
+    </ion-button>
+
+    <!-- add user button -->
+    <ion-button
+      type="submit"
+      shape="round"
+      fill="solid"
+      class="button"
+      item-end
+      [disabled]="!rolesAreSelected()"
+      >{{ 'page.program-team.popup.change.confirm' | translate }}</ion-button
+    >
+  </div>
+</form>
