@@ -167,54 +167,54 @@ export class SoapService {
       timeout: 150000,
       extraOpts: {
         httpsAgent: agent,
-      }
+      },
     })
-    .then((rawResponse: any) => {
-      const response = rawResponse.response;
-      this.httpService.logMessageRequest(
-        { url: soapUrl, payload: soapRequestXml },
-        {
-          status: response.statusCode,
-          statusText: null,
-          data: response.body,
-        }
-      );
+      .then((rawResponse: any) => {
+        const response = rawResponse.response;
+        this.httpService.logMessageRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: response.statusCode,
+            statusText: null,
+            data: response.body,
+          },
+        );
 
-      // Parse the SOAP response if needed
-      const parsedResponse = convert.xml2js(response.body, { compact: true });
+        // Parse the SOAP response if needed
+        const parsedResponse = convert.xml2js(response.body, { compact: true });
 
-      if (
-        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:RMTFundtransferResponse'
-        ];
-      } else if (
-        parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ]
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ];
-      } else if (
-        parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:AccountEnquiryResponse'
-        ];
-      }
-    })
-    .catch((err: any) => {
-      this.httpService.logErrorRequest(
-        { url: soapUrl, payload: soapRequestXml },
-        {
-          status: null,
-          statusText: null,
-          data: { error: err },
+        if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:RMTFundtransferResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ]
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:AccountEnquiryResponse'
+          ];
         }
-      );
-      throw err;
-    });
+      })
+      .catch((err: any) => {
+        this.httpService.logErrorRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: null,
+            statusText: null,
+            data: { error: err },
+          },
+        );
+        throw err;
+      });
   }
 }
