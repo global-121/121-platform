@@ -12,6 +12,9 @@ Feature: Manage Intersolve Visa card
     Then a popup opens
     And it shows the card number in the title
     And it shows the card Status again
+    And it shows the Current balance
+    And it shows the amount that was spend this month
+    And it shows when the card was issued
     And it shows the last used date
     And it shows a button to block/unblock the card depending on the current status of the card
     And is has red text and outline in both cases
@@ -62,7 +65,7 @@ Feature: Manage Intersolve Visa card
     And an automatic message is sent to the PA that a new card has been issued
     And a success alert is shown
     And an extra card appears in the Debit card table on top
-    And it has status 'Inactive'
+    And it has status 'Issued'
     And the old card is still there with status 'Blocked'
     And any older cards also have status 'Blocked'
     And when opening the details of the new card, it shows a balance of 0 as it is still 'Inactive' and after it is activated it shows the balance of the old card
