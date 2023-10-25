@@ -113,9 +113,11 @@
       {{ 'page.program.program-payout.last-payment.error' | translate }}:
       <strong>{{ lastPaymentResults.error }}</strong>
     </p>
-    <ion-row class="ion-align-items-center">
+    <ion-row
+      *ngIf="canMakePayment && lastPaymentResults?.error > 0"
+      class="ion-align-items-center"
+    >
       <app-confirm-prompt
-        *ngIf="canMakePayment && lastPaymentResults?.error > 0"
         (confirm)="retryLastPayment()"
         [subHeader]="
           'page.program.program-payout.last-payment.confirm-prompt'
