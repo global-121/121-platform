@@ -21,7 +21,7 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
-import { Role, TableData, User } from '../models/user.model';
+import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -232,25 +232,28 @@ export class ProgramsServiceApiService {
     );
   }
 
-  updateNote(
+  postNote(
     programId: number,
     referenceId: string,
     note: string,
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note`,
+      `/programs/${programId}/note`,
       {
         referenceId,
-        note,
+        text: note,
       },
+      false,
     );
   }
 
-  retrieveNote(programId: number, referenceId: string): Promise<Note> {
+  getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note/${referenceId}`,
+      `/programs/${programId}/note/${referenceId}`,
+      null,
+      false,
     );
   }
   retrieveMsgHistory(
@@ -670,9 +673,9 @@ export class ProgramsServiceApiService {
     userId: number,
     roles: UserRole[] | string[],
   ): Promise<Program> {
-    return this.apiService.post(
+    return this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/assignments`,
+      `/programs/${programId}/users/${userId}/roles`,
       {
         roles,
       },
@@ -685,7 +688,7 @@ export class ProgramsServiceApiService {
   ): Promise<Program> {
     return this.apiService.delete(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/assignments`,
+      `/programs/${programId}/users/${userId}/roles`,
     );
   }
 
@@ -781,7 +784,10 @@ export class ProgramsServiceApiService {
     return this.apiService.get(environment.url_121_service_api, '/roles');
   }
 
-  getUsersByName(programId: number | string, username: string): Promise<any> {
+  getUsersByName(
+    programId: number | string,
+    username: string,
+  ): Promise<UserSearchResult[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/users/${username}`,

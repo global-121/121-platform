@@ -2,7 +2,7 @@
   <ion-toolbar>
     <!-- Pop up title -->
     <ion-title>
-      {{ 'page.program-team.popup.title' | translate }}
+      {{ title }}
     </ion-title>
 
     <!-- Exit cancel button -->
@@ -23,95 +23,22 @@
 </ion-header>
 
 <!-- content -->
-
 <ion-content class="ion-padding">
-  <form (ngSubmit)="assignTeamMember()">
-    <ion-grid class="ion-no-margin ion-padding">
-      <ion-row>
-        <ion-label class="label">{{
-          'page.program-team.popup.team-member' | translate
-        }}</ion-label>
-      </ion-row>
-      <ion-row class="search-wrapper">
-        <ion-searchbar
-          id="searchbar"
-          name="searchQuery"
-          [(ngModel)]="searchQuery"
-          (ionInput)="search($event)"
-          [debounce]="1000"
-          placeholder="{{
-            'page.program-team.popup.team-member-placeholder' | translate
-          }}"
-          search-icon="'undefined'"
-        >
-        </ion-searchbar>
-        <ng-container *ngIf="showSearchResults">
-          <ion-list class="ion-no-margin">
-            <ion-item
-              [button]="true"
-              *ngFor="let user of searchResults"
-              (click)="updateSearchbarValue(user.username, user.id)"
-            >
-              {{ user.username }}
-            </ion-item>
-          </ion-list>
-        </ng-container>
-      </ion-row>
-      <ion-row>
-        <ion-label class="label">{{
-          'page.program-team.popup.role' | translate
-        }}</ion-label>
-      </ion-row>
-      <ion-row>
-        <ion-select
-          placeholder="{{
-            'page.program-team.popup.roles-placeholder' | translate
-          }}"
-          label-placement="start"
-          fill="outline"
-          toggleIcon="chevron-down-outline"
-          [multiple]="true"
-          interface="popover"
-          [(ngModel)]="selectedRoleNames"
-          name="selectedRoles"
-          [interfaceOptions]="{ cssClass: 'rolesDropdown' }"
-        >
-          <ion-select-option
-            *ngFor="let role of rolesList"
-            value="{{ role.role }}"
-          >
-            {{ role.label.trim() }}
-          </ion-select-option>
-        </ion-select>
-      </ion-row>
-    </ion-grid>
-    <div class="buttons">
-      <!-- cancel button -->
-      <ion-button
-        (click)="closeModal()"
-        [attr.title]="'common.cancel' | translate"
-        [attr.aria-label]="'common.cancel' | translate"
-        fill="clear"
-      >
-        <u
-          ><strong>{{
-            'page.program-team.popup.cancel-button' | translate
-          }}</strong></u
-        >
-      </ion-button>
-
-      <!-- add user button -->
-      <ion-button
-        type="submit"
-        shape="round"
-        fill="solid"
-        class="button"
-        item-end
-        [disabled]="!isFormComplete()"
-        >{{
-          'page.program-team.popup.add-users-button' | translate
-        }}</ion-button
-      >
-    </div>
-  </form>
+  <div *ngIf="operation === programTeamPopupOperationEnum.add">
+    <app-add-team-member-popup-content
+      [programId]="programId"
+    ></app-add-team-member-popup-content>
+  </div>
+  <div *ngIf="operation === programTeamPopupOperationEnum.edit">
+    <app-change-team-member-popup-content
+      [teamMemberRow]="teamMemberRow"
+      [programId]="programId"
+    ></app-change-team-member-popup-content>
+  </div>
+  <div *ngIf="operation === programTeamPopupOperationEnum.remove">
+    <app-remove-team-member-popup-content
+      [teamMemberRow]="teamMemberRow"
+      [programId]="programId"
+    ></app-remove-team-member-popup-content>
+  </div>
 </ion-content>

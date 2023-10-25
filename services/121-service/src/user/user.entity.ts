@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
+import { NoteEntity } from '../notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { RegistrationChangeLogEntity } from '../registration/modules/registration-change-log/registration-change-log.entity';
 import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
@@ -52,6 +53,9 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => RegistrationChangeLogEntity, (changes) => changes.user)
   public changes: RegistrationChangeLogEntity[];
+
+  @OneToMany(() => NoteEntity, (notes) => notes.user)
+  public notes: NoteEntity[];
 
   @Column()
   public userType: UserType;

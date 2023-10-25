@@ -77,8 +77,10 @@ export class PersonRow {
 }
 
 export class Note {
-  public note: string;
-  public noteUpdated: string;
+  public id: string;
+  public created: string;
+  public text: string;
+  public username: string;
 }
 
 export enum LanguageEnum {
