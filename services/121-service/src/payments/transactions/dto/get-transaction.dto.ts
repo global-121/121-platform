@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { IntersolveVoucherPayoutStatus } from '../../fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
-import { Type } from 'class-transformer';
 
 export class GetTransactionDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })

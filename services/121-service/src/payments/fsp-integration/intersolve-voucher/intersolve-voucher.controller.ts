@@ -4,8 +4,8 @@ import {
   Get,
   HttpStatus,
   Param,
-  Query,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -79,7 +79,9 @@ export class IntersolveVoucherController {
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
   // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Get('programs/:programId/financial-service-providers/intersolve-voucher/balance')
+  @Get(
+    'programs/:programId/financial-service-providers/intersolve-voucher/balance',
+  )
   public async getBalance(
     @Param() params,
     @Query() queryParams: IdentifyVoucherDto,
