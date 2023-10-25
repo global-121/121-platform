@@ -395,4 +395,8 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.isCompleted.emit(isReady);
   }
+
+  public refresh() {
+    window.location.reload();
+  }
 }
