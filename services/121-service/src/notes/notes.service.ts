@@ -38,7 +38,7 @@ export class NoteService {
     await this.noteRepository.save(note);
   }
 
-  public async retrieveNote(
+  public async retrieveNotes(
     referenceId: string,
     programId: number,
   ): Promise<ResponseNoteDto[]> {
