@@ -4,6 +4,8 @@ Feature: View dashboard page
   Background:
     Given a logged-in user with the "ProgramMetricsREAD" permissions
     Given the user views the "dashboard"-page for a given "program"
+    Given the "program" is not configured with a "monitoringDashboardUrl"
+    Given the "program" has actual data and not generated mock data
 
   Scenario: View PA-status metrics table successfully
     When the user views the "dashboard"-page
@@ -38,17 +40,11 @@ Feature: View dashboard page
     Then a CSV file is downloaded
     And it contains the translated headers and the data shown in the page
 
-  Scenario: View metrics overview successfully
-    When the user sees the "dashboard" page
-    Then the "metrics overview" is showing at the bottom
-    And it contains sections on main attributes (yellow), financial attributes (cyan), PA metrics (brown) and aidworkers (orange)
-    And a date for "Last updated" is shown with a refresh button
-
   Scenario: View PAs helped to date
     When the user views the "dashboard" page
     Then total number of PA's helped is shown on the right below the "PA-status metrics table"
     And it shows the total number of PA's helped to date for that program
-    And it also includes PAs with only failed transactions
+    And it also includes PAs with only failed and waiting transactions
     And it also still includes "deleted" PAs
     And a date for "Last updated" is shown with a refresh button
     And an info icon is shown
