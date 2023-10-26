@@ -59,6 +59,12 @@
     accent-color: var(--ion-color-primary);
   }
 
+  .datatable-footer {
+    .datatable-pager .pager li.disabled a {
+      opacity: 0.33;
+    }
+  }
+
   /**
    * Progress bar animations
    */
