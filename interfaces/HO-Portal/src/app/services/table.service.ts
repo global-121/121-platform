@@ -142,6 +142,7 @@ export class TableService {
           ProgramPhase.inclusion,
           ProgramPhase.payment,
         ],
+        permissions: [Permission.RegistrationNotificationREAD],
         minWidth: 200,
         width: 200,
       },
