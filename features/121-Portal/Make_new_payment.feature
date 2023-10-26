@@ -239,7 +239,7 @@ Feature: Make a new payment
 
   Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
     Given the Person Affected has been imported as registered
-    Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
+    Given an obligatory field is missing ("phoneNumber", "National ID number")
     Given requested value is not valid
     When payment is requested
     Then a failed payment appears for the PA with the missing data
