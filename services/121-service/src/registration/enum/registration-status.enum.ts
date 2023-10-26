@@ -13,6 +13,7 @@ export enum RegistrationStatusEnum {
   deleted = 'deleted',
   completed = 'completed',
   paused = 'paused',
+  created = 'created',
 }
 
 export enum RegistrationStatusTimestampField {
