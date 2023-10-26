@@ -551,7 +551,7 @@ export class RegistrationsService {
     const twilioMessages = await this.twilioMessageRepository.find({
       where: { registrationId: importedRegistration.id },
     });
-    if (twilioMessages) {
+    if (twilioMessages && twilioMessages.length > 0) {
       for (const message of twilioMessages) {
         message.registration = updatedRegistration;
       }
