@@ -532,7 +532,7 @@
           "close-popup": "You can close this popup."
         },
         "bulk-action-conditions": {
-          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>{Imported}</i> or <i>No longer eligible</i>.",
+          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
           "select-for-validation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
           "end-inclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
