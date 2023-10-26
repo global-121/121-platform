@@ -227,7 +227,7 @@ export class PaymentStatusPopupComponent implements OnInit {
           message += this.translate.instant(
             'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
             {
-              nrPa: `<strong>${response.sumPaymentAmountMultiplier}</strong>`,
+              nrPa: `<strong>${response.applicableCount}</strong>`,
             },
           );
         }
