@@ -229,7 +229,17 @@ export class RegistrationsService {
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
-        result = currentStatus !== RegistrationStatusEnum.deleted;
+        result = [
+          RegistrationStatusEnum.noLongerEligible,
+          RegistrationStatusEnum.invited,
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.created,
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.rejected,
+          RegistrationStatusEnum.inclusionEnded,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.completed:
         result = [RegistrationStatusEnum.included].includes(currentStatus);

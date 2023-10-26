@@ -96,10 +96,15 @@ export class RegistrationsBulkService {
   ): Promise<BulkActionResultDto> {
     paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
 
+    const allowedCurrentStatuses = this.getAllowedCurrentStatusesForNewStatus(
+      RegistrationStatusEnum.deleted,
+    );
+    console.log('allowedCurrentStatuses: ', allowedCurrentStatuses);
+
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+      this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
     );
 
     const registrationForUpdate =
@@ -108,7 +113,7 @@ export class RegistrationsBulkService {
         programId,
         false,
         true,
-        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,

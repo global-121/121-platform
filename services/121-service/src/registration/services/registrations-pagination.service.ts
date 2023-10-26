@@ -134,13 +134,11 @@ export class RegistrationsPaginationService {
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
-    console.time('paginate');
     const result = await paginate<RegistrationViewEntity>(
       query,
       queryBuilder,
       paginateConfigCopy,
     );
-    console.timeEnd('paginate');
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
