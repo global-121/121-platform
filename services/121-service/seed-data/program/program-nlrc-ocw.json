@@ -18,7 +18,7 @@
   "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
   "distributionFrequency": "2-weeks",
-  "distributionDuration": 20,
+  "distributionDuration": 100,
   "fixedTransferValue": 22,
   "financialServiceProviders": [
     {
@@ -146,7 +146,5 @@
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl", "ar", "tr"],
-  "enableMaxPayments": false,
-  "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
-  "evaluationDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9"
+  "enableMaxPayments": false
 }
