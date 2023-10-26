@@ -48,11 +48,6 @@
     And user clicks on "X" on popup
     And Popup is closed
 
-  Scenario: View roles permissions tab
-    When User clicks on "Roles and permissions" tab
-    Then Admin and Regular roles are displayed
-    And Under admin "Admin can view and edit data, add new user and create new project"
-
   Scenario: View error messages
     Given user clicks on Add user button
     And popup window is displayed

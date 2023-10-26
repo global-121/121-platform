@@ -14,11 +14,10 @@ Feature: Export People Affected list
     And it does not show any attributes that are not directly visible in the PA-table, such as "note"
     And it shows all program questions which have "all-people-affected" as "export" attribute
     And it shows all program custom attributes which have "all-people-affected" as "export" attribute
-    And it shows payment information for each done payment
     And any columns that only contain null-values are automatically filtered out
 
-  Scenario: Export inclusion list with 5000 PAs
-    Given there are 5000 PAs in the system
+  Scenario: Export inclusion list with 15000 PAs
+    Given there are 15000 PAs in the system
     When the user clicks the "export people affected" and confirms the confirm prompt
     Then an Excel-file is downloaded as in the scenario above quickly and without problem
 

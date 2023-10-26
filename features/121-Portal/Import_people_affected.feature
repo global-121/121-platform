@@ -53,7 +53,7 @@ Feature: Import people affected
     When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, etc.)
     Then the "OK" button becomes enabled
     When the user clicks "OK" to confirm the import
-    Then a feedback popup appears that "Something went wrong with the export" and it explains possible reasons
+    Then a feedback popup appears that "Something went wrong with the import" and it explains possible reasons
 
   Scenario: Person Affected registers with imported phone number
     Given a "phoneNumber" is successfully imported
