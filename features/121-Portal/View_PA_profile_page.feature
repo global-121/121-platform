@@ -5,10 +5,10 @@ Feature: View PA profile page
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user is viewing the PA table
     Given 1 or more PAs with at least status "created"
-    Given the user sees the PA name
+    Given the user sees the PA number
 
   Scenario: Open profile page
-    When the user clicks on the PA name
+    When the user clicks on the PA number
     Then the profile page for that PA is opened
 
   Scenario: View Personal information table
@@ -37,18 +37,6 @@ Feature: View PA profile page
     And older cards should have status "Blocked"
     And the 1 current card can have status "Inactive", "Active" or "Blocked"
   >> See 'Manage_Intersolve_Visa_card.feature' for more scenarios related to this table
-
-  Scenario: View Payment overview table
-    Given the PA's status is either "included", "completed", "inclusionEnded", or "rejected"
-    Given a logged-in user with "PaymentREAD" and "PaymentTransactionREAD" permissions
-    Then the user sees the "Payment overview" table
-    And it shows the latest payment if it exists
-    And it shows a list of four payments or up until the payment limit if it is set
-    And it shows the status of the transaction for made payments
-    And it shows "Planned" for future payments
-    Given the user sees the "Show All" button
-    When the user clicks on the "Show All" button
-    Then the Payment History pupup opens
 
   Scenario: View Activity overview
     Given the user sees the "Activity overview" table
