@@ -365,7 +365,7 @@ export class ProgramPayoutComponent implements OnInit {
             message += this.translate.instant(
               'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
-                nrPa: `<strong>${response.applicableCount}</strong>`,
+                nrPa: `<strong>${response}</strong>`,
               },
             );
           }
