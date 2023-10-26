@@ -881,6 +881,7 @@ export class RegistrationsService {
         });
       }
     }
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
     return registration;
   }
 
