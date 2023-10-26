@@ -34,26 +34,6 @@ Feature: Edit information on Person Affected
     And there is a "save" button
     And there is a 'Last updated on' mention if there is a current version of the note available
 
-  Scenario: Successfully update note
-    Given a logged-in user with "RegistrationPersonalREAD" permission
-    Given the user has opened the popup to edit information
-    And whether the user has changed something or not in the "note" field
-    When the user presses the "save" button
-    Then the content of the "note" field is written to the database
-    And the date+time of this action is written to the database
-    And a feedback message is shown that the save was successful
-    When the user closes this feedback message
-    When the user opens the popup for the same PA again
-    Then the user sees the updated note
-    And the user sees a new "last updated" time
-
-  Scenario: Unsuccessfully update note
-    Given a logged-in user with "RegistrationPersonalREAD" permission
-    Given something goes wrong for some reason (which cannot be simulated by the tester)
-    When the user presses the "save" button
-    Then a feedback message that something went wrong is given
-    And it gives the basic error type if possible, e.g. "Bad Request"
-
   Scenario: Update paymentAmountMultiplier successfully
     Given no automatic calculation of paymentAmountMultiplier is configured for the program
     Given a logged-in user with "RegistrationPersonalREAD" permission
