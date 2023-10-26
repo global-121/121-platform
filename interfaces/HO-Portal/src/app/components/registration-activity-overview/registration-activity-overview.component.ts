@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import StatusDate from 'src/app/enums/status-dates.enum';
 import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -13,6 +12,7 @@ import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
@@ -274,7 +274,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           this.person.referenceId,
         );
 
-      for (const statusChange of this.getStatusChanges()) {
+      for (const statusChange of await this.getStatusChanges()) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
           label: this.translate.instant(
@@ -386,21 +386,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return map[type];
   }
 
-  private getStatusChanges(): { status: string; date: Date }[] {
-    const statusChanges = [];
-    for (const status of Object.keys(StatusDate)) {
-      const statusChangeDateValue = this.person[StatusDate[status]];
-      if (statusChangeDateValue) {
-        statusChanges.push({
-          status,
-          date: new Date(statusChangeDateValue),
-        });
-      }
-    }
-
-    return statusChanges;
-  }
-
   private loadPermissions() {
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
@@ -439,5 +424,24 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     });
 
     await modal.present();
+  }
+
+  private async getStatusChanges(): Promise<
+    {
+      status: RegistrationStatus;
+      date: Date;
+    }[]
+  > {
+    const changes = await this.programsService.getRegistrationStatusChanges(
+      this.program.id,
+      this.person.referenceId,
+    );
+
+    return changes.map((change) => {
+      return {
+        status: change.status,
+        date: new Date(change.date),
+      };
+    });
   }
 }

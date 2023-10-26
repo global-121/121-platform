@@ -66,6 +66,7 @@ import {
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
@@ -802,6 +803,21 @@ export class RegistrationsController {
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,
+    );
+  }
+
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationREAD)
+  @ApiOperation({ summary: 'Get registration status changes' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Get('programs/:programId/registrations/status-changes/:referenceId')
+  public async getRegistrationStatusChanges(
+    @Param() params,
+  ): Promise<RegistrationStatusChangeEntity[]> {
+    return await this.registrationsService.getRegistrationStatusChanges(
+      params.programId,
+      params.referenceId,
     );
   }
 }

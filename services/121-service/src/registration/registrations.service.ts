@@ -1432,4 +1432,25 @@ export class RegistrationsService {
       where: { programId: programId, registrationProgramId: paId },
     });
   }
+
+  public async getRegistrationStatusChanges(
+    programId: number,
+    referenceId: string,
+  ): Promise<any[]> {
+    const statusChanges = await this.registrationStatusChangeRepository.find({
+      where: {
+        registration: { referenceId: referenceId, programId: programId },
+      },
+      relations: ['registration'],
+    });
+
+    return await Promise.all(
+      statusChanges.map((statusChange) => {
+        return {
+          status: statusChange.registrationStatus,
+          date: statusChange.created,
+        };
+      }),
+    );
+  }
 }
