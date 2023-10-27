@@ -1,7 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  In,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -1436,13 +1442,22 @@ export class RegistrationsService {
   public async getRegistrationStatusChanges(
     programId: number,
     referenceId: string,
+    onlyLatest: boolean,
   ): Promise<any[]> {
-    const statusChanges = await this.registrationStatusChangeRepository.find({
+    let options: FindManyOptions = {
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },
       relations: ['registration'],
-    });
+    };
+
+    if (onlyLatest) {
+      options = { ...options, order: { created: 'DESC' }, take: 1 };
+    }
+
+    const statusChanges = await this.registrationStatusChangeRepository.find(
+      options,
+    );
 
     return await Promise.all(
       statusChanges.map((statusChange) => {
