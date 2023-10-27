@@ -4,7 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 import Permission from '../auth/permission.enum';
 import { AnswerType } from '../models/fsp.model';
-import { PersonTableColumn } from '../models/person.model';
+import {
+  PersonDefaultAttributes,
+  PersonTableColumn,
+} from '../models/person.model';
 import { Program, ProgramPhase } from '../models/program.model';
 import { TranslatableString } from '../models/translatable-string.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -181,6 +184,14 @@ export class TableService {
     }
 
     for (const colPerPhase of columnsPerPhase) {
+      // Skip dynamic columns that are already added as default column
+      if (
+        colPerPhase.name === PersonDefaultAttributes.phoneNumber ||
+        program.fullnameNamingConvention.includes(colPerPhase.name)
+      ) {
+        continue;
+      }
+
       const addCol: any = {
         prop: colPerPhase.name,
         name: this.createColumnNameLabel(
