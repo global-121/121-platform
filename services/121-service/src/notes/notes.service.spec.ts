@@ -66,7 +66,7 @@ describe('NotesService', () => {
 
       // Mock the createNote method to return the array of notes
       const createNoteMock = jest
-        .spyOn(controller, 'retrieveNote')
+        .spyOn(controller, 'retrieveNotes')
         .mockResolvedValue(result);
 
       const params = {
@@ -74,7 +74,7 @@ describe('NotesService', () => {
         programId: 1,
       };
 
-      const response = await controller.retrieveNote(params);
+      const response = await controller.retrieveNotes(params);
 
       // Ensure that the response matches the expected result
       expect(response).toEqual(result);

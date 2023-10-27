@@ -29,7 +29,18 @@ export class NoteController {
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ summary: 'Create note for registration' })
-  @ApiResponse({ status: 201, description: 'Create note for registration' })
+  @ApiResponse({
+    status: 201,
+    description: 'Created new note for registration',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'ReferenceId is not known',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/note')
   public async createNote(
@@ -49,13 +60,17 @@ export class NoteController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get note for registration' })
-  @ApiResponse({ status: 200, description: 'Get note for registration' })
+  @ApiOperation({ summary: 'Get notes for registration' })
+  @ApiResponse({
+    status: 200,
+    description: 'Retrieved notes for registration',
+    type: [ResponseNoteDto],
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true })
   @Get(':programId/note/:referenceId')
-  public async retrieveNote(@Param() params): Promise<ResponseNoteDto[]> {
-    return await this.noteService.retrieveNote(
+  public async retrieveNotes(@Param() params): Promise<ResponseNoteDto[]> {
+    return await this.noteService.retrieveNotes(
       params.referenceId,
       params.programId,
     );
