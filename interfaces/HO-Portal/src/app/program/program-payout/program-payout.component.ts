@@ -230,6 +230,9 @@ export class ProgramPayoutComponent implements OnInit {
   private fillPaymentHistory(pastPayments: Payment[]): void {
     pastPayments.forEach((pastPayment) => {
       const payment = this.getPaymentById(pastPayment.id);
+      if (!payment) {
+        return;
+      }
       payment.paymentDate = pastPayment.paymentDate;
       payment.statusOpen = false;
       payment.isExportAvailable = true;
