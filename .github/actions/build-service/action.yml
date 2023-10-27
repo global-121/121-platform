@@ -57,6 +57,7 @@ runs:
       run: |
         npm prune --omit=dev --no-fund --no-audit
         rm -r .vscode/
+        rm -r test/
         rm -r ./*.md
         rm .dockerignore
         rm .eslintrc.js
