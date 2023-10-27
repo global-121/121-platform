@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './help.page.html',
   styleUrls: ['./help.page.scss'],
 })
-export class HelpPage {
-  constructor() {}
-}
+export class HelpPage {}

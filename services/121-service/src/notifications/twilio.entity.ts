@@ -48,9 +48,6 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ type: 'timestamp' })
   public dateCreated: Date;
 
-  @Column({ type: 'int', nullable: true })
-  public registrationId: number;
-
   @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;
 
@@ -66,6 +63,9 @@ export class TwilioMessageEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
+  @Index()
+  @Column({ type: 'int', nullable: true })
+  public registrationId: number;
 
   @Column({ type: 'int', default: 0 })
   public retryCount: number;

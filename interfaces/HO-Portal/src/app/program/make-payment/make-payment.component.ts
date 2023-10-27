@@ -1,29 +1,39 @@
-import { formatCurrency } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { formatCurrency, formatNumber } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { FspIntegrationType } from '../../models/fsp.model';
+import {
+  FilterOperatorEnum,
+  FilterService,
+  PaginationFilter,
+} from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
+import { PaymentUtils } from '../../shared/payment.utils';
 
 @Component({
   selector: 'app-make-payment',
   templateUrl: './make-payment.component.html',
   styleUrls: ['./make-payment.component.scss'],
 })
-export class MakePaymentComponent implements OnInit {
+export class MakePaymentComponent implements OnInit, OnDestroy {
   @Input()
   public programId: number;
-
   @Input()
   public payment: number;
-
   @Input()
   public referenceIds: string[];
+  @Input()
+  public applicableCount: number;
+  @Input()
+  public sumPaymentAmountMultiplier: number;
 
   public isEnabled: boolean;
   public isInProgress: boolean;
@@ -36,8 +46,19 @@ export class MakePaymentComponent implements OnInit {
   public amountInput: number;
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
+  private dynamicPaymentId: number;
 
   public paymentInProgress = false;
+
+  private doPaymentfilters: PaginationFilter[];
+
+  private tableTextFilterSubscription: Subscription;
+  private tableTextFilter: PaginationFilter[];
+
+  private tableSatusFilterSubscription: Subscription;
+  private tableStatusFilter: RegistrationStatus[];
+
+  private locale: string;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -45,12 +66,24 @@ export class MakePaymentComponent implements OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
     private router: Router,
+    private filterService: FilterService,
   ) {
+    this.locale = environment.defaultLocale;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.ngOnInit();
       }
     });
+
+    this.tableTextFilterSubscription = this.filterService.textFilter$.subscribe(
+      this.onTextFilterChange,
+    );
+    this.tableSatusFilterSubscription =
+      this.filterService.statusFilter$.subscribe(this.onStatusFilterChange);
+  }
+  ngOnDestroy(): void {
+    this.tableTextFilterSubscription.unsubscribe();
+    this.tableSatusFilterSubscription.unsubscribe();
   }
 
   async ngOnInit() {
@@ -59,43 +92,82 @@ export class MakePaymentComponent implements OnInit {
     await this.getFspIntegrationType();
 
     this.amountInput = this.program.fixedTransferValue;
-    const totalTransferAmounts =
-      await this.programsService.getTotalTransferAmounts(
-        this.programId,
-        this.referenceIds || [],
-      );
-
-    this.totalIncluded = totalTransferAmounts.registrations;
-    this.totalTransferAmounts = totalTransferAmounts.transferAmounts;
+    this.totalIncluded = this.applicableCount;
+    this.totalTransferAmounts = this.sumPaymentAmountMultiplier;
+    this.dynamicPaymentId =
+      this.payment ||
+      (await this.pastPaymentsService.getNextPaymentId(this.program));
 
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
+
+    this.doPaymentfilters = this.referenceIds.length
+      ? PaymentUtils.refernceIdsToFilter(this.referenceIds)
+      : this.getTableFilters();
+
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
+    this.setPaymentAmountMultiplier();
+  }
+
+  private setPaymentAmountMultiplier(): void {
+    this.programsService
+      .doPayment(
+        this.programId,
+        this.dynamicPaymentId,
+        this.amountInput,
+        true,
+        this.doPaymentfilters,
+      )
+      .then(
+        (response) => {
+          this.totalTransferAmounts = response.sumPaymentAmountMultiplier;
+          this.updateTotalAmountMessage();
+          this.checkIsEnabled();
+        },
+        (error) => {
+          console.log('error: ', error);
+        },
+      );
   }
 
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
       this.payment <= this.program.distributionDuration &&
-      !this.paymentInProgress;
+      !this.paymentInProgress &&
+      !!this.totalTransferAmounts;
     return this.isEnabled;
   }
 
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
-
-    const paymentId =
-      this.payment ||
-      (await this.pastPaymentsService.getNextPaymentId(this.program));
-    const referenceIds = this.referenceIds.length ? this.referenceIds : null;
-
     await this.programsService
-      .submitPayout(this.programId, paymentId, this.amountInput, referenceIds)
+      .doPayment(
+        this.programId,
+        this.dynamicPaymentId,
+        this.amountInput,
+        false,
+        this.doPaymentfilters,
+      )
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),
       );
+  }
+
+  private getTableFilters(): PaginationFilter[] {
+    return [
+      ...this.tableTextFilter,
+      ...[
+        {
+          name: 'status',
+          label: 'status',
+          value: this.tableStatusFilter.join(','),
+          operator: FilterOperatorEnum.in,
+        },
+      ],
+    ];
   }
 
   async getFspIntegrationType() {
@@ -139,7 +211,7 @@ export class MakePaymentComponent implements OnInit {
     let message = '';
 
     if (response) {
-      message += this.getPaymentResultText(response);
+      message += this.getPaymentResultText(response.applicableCount);
     }
     actionResult(this.alertController, this.translate, message, true);
   }
@@ -175,7 +247,7 @@ export class MakePaymentComponent implements OnInit {
 
     this.totalIncludedMessage = this.translate.instant(
       'page.program.program-payout.total-included',
-      { totalIncluded: this.totalIncluded },
+      { totalIncluded: formatNumber(this.totalIncluded, this.locale) },
     );
 
     this.totalAmountMessage = this.translate.instant(
@@ -187,4 +259,12 @@ export class MakePaymentComponent implements OnInit {
   public refresh() {
     window.location.reload();
   }
+
+  private onTextFilterChange = (filter: PaginationFilter[]) => {
+    this.tableTextFilter = filter;
+  };
+
+  private onStatusFilterChange = (filter: RegistrationStatus[]) => {
+    this.tableStatusFilter = filter;
+  };
 }

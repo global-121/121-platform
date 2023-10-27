@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
-import { ProgramTeamPage } from '../../program/program-team/program-team.component';
+import { ProgramTeamComponent } from '../../program/program-team/program-team.component';
 
 @Component({
   selector: 'app-team',
@@ -20,7 +20,7 @@ import { ProgramTeamPage } from '../../program/program-team/program-team.compone
     HeaderComponent,
     TranslateModule,
     ProgramNavigationComponent,
-    ProgramTeamPage,
+    ProgramTeamComponent,
   ],
 })
 export class TeamPage {

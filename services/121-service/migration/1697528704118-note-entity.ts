@@ -17,9 +17,11 @@ export class noteEntity1697528704118 implements MigrationInterface {
       `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_5b87d9d19127bd5d92026017a7b" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(`INSERT INTO "121-service"."note" (created, updated, "registrationId", "userId", "text")
-        SELECT reg."noteUpdated", reg."noteUpdated", reg."id", 1, reg.note
+      SELECT reg."noteUpdated", reg."noteUpdated", reg."id", (SELECT id
+      FROM "121-service"."user" WHERE username = 'admin@example.org'
+      ), reg.note
         FROM "121-service"."registration" reg
-        WHERE reg.note IS NOT NULL;`);
+        WHERE reg.note IS NOT NULL; `);
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" DROP COLUMN "noteUpdated"`,
     );

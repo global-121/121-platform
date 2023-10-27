@@ -19,7 +19,7 @@ import { ProgramTeamTableComponent } from './program-team-table/program-team-tab
     TranslateModule,
   ],
 })
-export class ProgramTeamPage {
+export class ProgramTeamComponent {
   public programId: number;
 
   constructor(

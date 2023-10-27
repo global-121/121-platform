@@ -5,7 +5,7 @@
         'page.program.program-people-affected.edit-person-affected-popup.popup-title'
           | translate
             : {
-                pa: 'PA #' + person.registrationProgramId
+                pa: person.personAffectedSequence
               }
       }}
     </ion-title>
@@ -168,13 +168,14 @@
           *ngIf="
             (!canUpdatePaData || !canUpdatePaFsp) &&
             fspList.length === programFspLength &&
-            person?.fsp
+            person?.financialServiceProvider
           "
           class="ion-margin-vertical"
         >
           <strong
             >{{
-              'page.program.program-people-affected.column.fsp' | translate
+              'page.program.program-people-affected.column.fspDisplayNamePortal'
+                | translate
             }}:</strong
           >
           &nbsp;&nbsp;
@@ -185,11 +186,12 @@
             canUpdatePaData &&
             canUpdatePaFsp &&
             fspList.length === programFspLength &&
-            person?.fsp
+            person?.financialServiceProvider
           "
           [fspList]="fspList"
           [label]="
-            'page.program.program-people-affected.column.fsp' | translate
+            'page.program.program-people-affected.column.fspDisplayNamePortal'
+              | translate
           "
           [value]="person?.fspDisplayNamePortal"
           [referenceId]="person?.referenceId"

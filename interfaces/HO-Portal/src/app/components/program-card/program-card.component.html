@@ -66,7 +66,7 @@
                 context: {
                   statAmount:
                     programStats?.targetedPeople > 0
-                      ? programStats?.targetedPeople
+                      ? (programStats?.targetedPeople | number: '1.0-0')
                       : '-',
                   statName: 'targeted'
                 }
@@ -80,7 +80,7 @@
                 context: {
                   statAmount:
                     programStats?.includedPeople > 0
-                      ? programStats?.includedPeople
+                      ? (programStats?.includedPeople | number: '1.0-0')
                       : '-',
                   statName: 'included'
                 }

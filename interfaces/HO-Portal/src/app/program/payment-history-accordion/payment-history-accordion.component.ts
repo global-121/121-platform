@@ -66,7 +66,7 @@ export class PaymentHistoryAccordionComponent {
     const isSinglePayment = PaymentUtils.enableSinglePayment(
       paymentRow,
       this.canDoSinglePayment,
-      this.person,
+      this.person.status,
       this.lastPaymentId,
       false,
     );
@@ -132,7 +132,7 @@ export class PaymentHistoryAccordionComponent {
     if (this.canDoSinglePayment) {
       showRetryButton = !hasWaiting && hasError;
       doSinglePaymentDetails = {
-        paNr: this.person.registrationProgramId,
+        paNr: this.person.personAffectedSequence,
         amount: this.program.fixedTransferValue,
         currency: this.program.currency,
         multiplier: this.person.paymentAmountMultiplier

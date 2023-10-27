@@ -230,6 +230,9 @@ export class ProgramPayoutComponent implements OnInit {
   private fillPaymentHistory(pastPayments: Payment[]): void {
     pastPayments.forEach((pastPayment) => {
       const payment = this.getPaymentById(pastPayment.id);
+      if (!payment) {
+        return;
+      }
       payment.paymentDate = pastPayment.paymentDate;
       payment.statusOpen = false;
       payment.isExportAvailable = true;
@@ -365,7 +368,7 @@ export class ProgramPayoutComponent implements OnInit {
             message += this.translate.instant(
               'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
-                nrPa: `<strong>${response}</strong>`,
+                nrPa: `<strong>${response.applicableCount}</strong>`,
               },
             );
           }

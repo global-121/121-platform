@@ -9,7 +9,6 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
-import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -50,8 +49,6 @@ export class IntersolveVoucherService
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  public twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -416,19 +413,25 @@ export class IntersolveVoucherService
       return;
     }
 
-    await this.transactionRepository.update(
-      { id: transactionId },
-      {
-        status: status,
-        errorMessage:
-          status === StatusEnum.error
-            ? (statusCallbackData.ErrorMessage || '') +
-              ' (ErrorCode: ' +
-              statusCallbackData.ErrorCode +
-              ')'
-            : null,
-      },
-    );
+    const transactionToUpdateFilter = {
+      id: transactionId,
+    };
+    // if success, then only update if transaction is a 'voucher sent' message
+    // if error, then always update
+    if (status === StatusEnum.success) {
+      transactionToUpdateFilter['transactionStep'] = 2;
+    }
+
+    await this.transactionRepository.update(transactionToUpdateFilter, {
+      status: status,
+      errorMessage:
+        status === StatusEnum.error
+          ? (statusCallbackData.ErrorMessage || '') +
+            ' (ErrorCode: ' +
+            statusCallbackData.ErrorCode +
+            ')'
+          : null,
+    });
   }
 
   public async exportVouchers(

@@ -1,6 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramMetricsMock from 'src/app/mocks/api.program-metrics.mock';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -47,8 +48,12 @@ describe('MetricsStatesComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MetricsStatesComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        IonicModule,
+        TranslateModule.forRoot(),
+        FormsModule,
+        SharedModule,
+      ],
       providers: [
         provideMagicalMock(ProgramsServiceApiService),
         provideMagicalMock(PastPaymentsService),

@@ -8,6 +8,7 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { MessageContentType } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
+import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
@@ -26,12 +27,13 @@ export class WhatsappService {
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
-
   private readonly fallbackLanguage = 'en';
   private readonly whatsappTemplatedMessageKeys = [
     String(ProgramNotificationEnum.whatsappPayment),
     String(ProgramNotificationEnum.whatsappGenericMessage),
   ];
+
+  constructor(private readonly lastMessageService: LastMessageStatusService) {}
 
   public async sendWhatsapp(
     message: string,
@@ -184,6 +186,7 @@ export class WhatsappService {
       }
       await this.twilioMessageRepository.save(twilioMessage);
     }
+    await this.lastMessageService.updateLastMessageStatus(message.sid);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

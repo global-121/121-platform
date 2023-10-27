@@ -1,11 +1,12 @@
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
+  awaitChangePaStatus,
   blockVisaCard,
-  changePaStatus,
   getMessageHistory,
   getVisaWalletsAndDetails,
   importRegistrations,
@@ -41,10 +42,10 @@ describe('Block visa debit card', () => {
   it('should succesfully block a Visa Debit card', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       [referenceIdVisa],
-      'include',
+      RegistrationStatusEnum.included,
       accessToken,
     );
     const paymentReferenceIds = [referenceIdVisa];
@@ -77,6 +78,7 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
+    await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       referenceIdVisa,
@@ -95,10 +97,10 @@ describe('Block visa debit card', () => {
   it('should succesfully unblock a Visa Debit card', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await changePaStatus(
+    await awaitChangePaStatus(
       programIdVisa,
       [referenceIdVisa],
-      'include',
+      RegistrationStatusEnum.included,
       accessToken,
     );
     const paymentReferenceIds = [referenceIdVisa];
@@ -130,6 +132,8 @@ describe('Block visa debit card', () => {
       referenceIdVisa,
       accessToken,
     );
+
+    await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       referenceIdVisa,
