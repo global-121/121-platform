@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - master
-      - 'feat.paginate'
     paths:
       - '.github/workflows/test_service_code.yml'
       - 'services/121-service/**'
