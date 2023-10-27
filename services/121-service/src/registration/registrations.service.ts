@@ -514,6 +514,7 @@ export class RegistrationsService {
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
     currentRegistration.maxPayments = importedRegistration.maxPayments;
+    currentRegistration.notes = importedRegistration.notes;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -592,7 +593,7 @@ export class RegistrationsService {
         registrationStatus: In(importStatuses),
         programId: programId,
       },
-      relations: ['fsp', 'data', 'fsp.questions'],
+      relations: ['fsp', 'data', 'fsp.questions', 'notes'],
     });
   }
 
