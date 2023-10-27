@@ -67,7 +67,7 @@ Feature: View PA profile page
     When the user clicks on the "Actions" button
     Then the user sees the "Add note" option
     When the user clicks on the "Add note" option
-    Then the user sees the "Add note" popup 
+    Then the user sees the "Add note" popup
     When the user types some text in the 'Type note:' field
     Then the user sees the 'OK' button enable
     When the user clicks on the 'OK' button
@@ -76,17 +76,9 @@ Feature: View PA profile page
     And the user sees the updated note in the "Activity overview" table
 
   Scenario: Unsuccessfully update note
-    Given a logged-in user with "RegistrationPersonalUPDATE" permission
-    Given the user sees the "Activity overview" table
+    Given the same assumptions as in the 'successfully add note' scenario
     Given something goes wrong for some reason (which cannot be simulated by the tester)
-    Given the user sees the "Actions" button in the top right corner
-    When the user clicks on the "Actions" button
-    Then the user sees the "Add note" option
-    When the user clicks on the "Add note" option
-    Then the user sees the "Add note" popup 
-    When the user types some text in the 'Type note:' field
-    Then the user sees the 'OK' button enable
-    When the user clicks on the 'OK' button
+    When the user follows the same steps as in the 'successfully add note' scenario and clicks on the 'OK' button
     Then a feedback message that something went wrong is given
     And it gives the basic error type if possible, e.g. "Bad Request"
 
