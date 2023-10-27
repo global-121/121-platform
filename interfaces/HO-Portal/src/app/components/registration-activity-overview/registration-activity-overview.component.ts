@@ -79,6 +79,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     ActivityOverviewType.dataChanges,
     ActivityOverviewType.status,
   ];
+  public canUpdatePersonalData: boolean;
 
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
@@ -406,6 +407,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],
+    );
+    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+      this.program.id,
+      [Permission.RegistrationPersonalUPDATE],
     );
     this.canViewMessageHistory = this.authService.hasAllPermissions(
       this.program.id,

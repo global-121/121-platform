@@ -59,3 +59,34 @@ Feature: View PA profile page
     When the user clicks on the "Payments" tab
     Then the user sees the the list of payments in the table
     And all the tabs have a count of updates next to them
+
+  Scenario: Successfully add note
+    Given a logged-in user with "RegistrationPersonalUPDATE" permission
+    Given the user sees the "Activity overview" table
+    And the user sees the "Actions" button in the top right corner
+    When the user clicks on the "Actions" button
+    Then the user sees the "Add note" option
+    When the user clicks on the "Add note" option
+    Then the user sees the "Add note" popup
+    When the user types some text in the 'Type note:' field
+    Then the user sees the 'OK' button enable
+    When the user clicks on the 'OK' button
+    Then the user sees a feedback message that the note was added successfully
+    And the page refreshes
+    And the user sees the updated note in the "Activity overview" table
+
+  Scenario: Unsuccessfully update note
+    Given the same assumptions as in the 'successfully add note' scenario
+    Given something goes wrong for some reason (which cannot be simulated by the tester)
+    When the user follows the same steps as in the 'successfully add note' scenario and clicks on the 'OK' button
+    Then a feedback message that something went wrong is given
+    And it gives the basic error type if possible, e.g. "Bad Request"
+
+  Scenario: Successfully view note(s)
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user sees the "Activity overview" table
+    Given the user sees the "All" tab and the list of all available updates in the table
+    Given the user sees the "Notes" tab
+    When the user clicks on the "Notes" tab
+    Then the user sees the list of notes in the table
+    And this information includes the date and time of the note and the user who made the note

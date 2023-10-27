@@ -27,7 +27,6 @@ Feature: Edit information on Person Affected
     And a dropdown-list with the current chosen FSP is shown
     And all input-fields have an accompanying "save" button which is disabled
     And there is an explanation, including PII-warning
-    And it shows a placeholder if no note currently saved
     And there is a "save" button
 
   Scenario: Update paymentAmountMultiplier successfully
