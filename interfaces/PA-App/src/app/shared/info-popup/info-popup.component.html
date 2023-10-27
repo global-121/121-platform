@@ -1,9 +1,6 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
-      <app-play-text-audio
-        [key]="headingKey ? headingKey : 'shared.more-info'"
-      ></app-play-text-audio>
     </ion-buttons>
     <ion-title>
       <ng-container *ngIf="headingKey">{{
@@ -37,7 +34,6 @@
     *ngIf="messageKey"
     class="ion-float-end ion-margin-start"
   >
-    <app-play-text-audio [key]="messageKey"></app-play-text-audio>
   </div>
   <div
     *ngIf="messageKey"

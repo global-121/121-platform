@@ -1,10 +1,6 @@
 <section>
   <app-dialogue-turn>
     <p>
-      <app-play-text-audio
-        key="personal.enroll-in-program.introduction-information"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.enroll-in-program.introduction-information' | translate
@@ -28,10 +24,6 @@
     [isSpoken]="hasAnswered"
   >
     <p>
-      <app-play-text-audio
-        key="personal.enroll-in-program.please-confirm"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       {{ 'personal.enroll-in-program.please-confirm' | translate }}
     </p>
   </app-dialogue-turn>
@@ -62,11 +54,6 @@
           lines="full"
           class="ion-no-padding"
         >
-          <app-play-text-audio
-            key="personal.enroll-in-program.submit-confirm"
-            slot="start"
-            class="ion-no-margin ion-margin-end"
-          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -88,11 +75,6 @@
           class="ion-no-padding"
           lines="full"
         >
-          <app-play-text-audio
-            key="personal.enroll-in-program.change"
-            slot="start"
-            class="ion-no-margin ion-margin-end"
-          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -114,10 +96,6 @@
         *ngIf="submitChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <app-play-text-audio
-          key="shared.submit-button"
-          size="default"
-        ></app-play-text-audio>
         <ion-button
           type="button"
           (click)="doSubmitAction()"

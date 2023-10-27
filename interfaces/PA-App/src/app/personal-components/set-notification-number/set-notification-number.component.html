@@ -1,32 +1,16 @@
 <section *ngIf="isCanceled === false">
   <app-dialogue-turn [isSpoken]="isCanceled === false">
     <p>
-      <app-play-text-audio
-        key="personal.set-notification-number.introduction1"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       {{ 'personal.set-notification-number.introduction1' | translate }}
     </p>
     <ul>
       <li>
-        <app-play-text-audio
-          key="personal.set-notification-number.introduction2"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.set-notification-number.introduction2' | translate }}
       </li>
       <li>
-        <app-play-text-audio
-          key="personal.set-notification-number.introduction3"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.set-notification-number.introduction3' | translate }}
       </li>
       <li>
-        <app-play-text-audio
-          key="personal.set-notification-number.introduction4"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.set-notification-number.introduction4' | translate }}
       </li>
     </ul>
@@ -37,9 +21,6 @@
   >
     <form (ngSubmit)="submitPhoneNumber(phone)">
       <p>
-        <app-play-text-audio
-          key="personal.set-notification-number.input-label"
-        ></app-play-text-audio>
         <ion-label
           [innerHTML]="
             'personal.set-notification-number.input-label'
@@ -68,10 +49,6 @@
         *ngIf="!isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <app-play-text-audio
-          key="personal.set-notification-number.submit"
-          size="default"
-        ></app-play-text-audio>
         <ion-button
           type="submit"
           [disabled]="isDisabled || !phone"
@@ -85,10 +62,6 @@
         *ngIf="!isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <app-play-text-audio
-          key="personal.set-notification-number.skip"
-          size="default"
-        ></app-play-text-audio>
         <ion-button
           type="reset"
           (click)="skipPhone()"
@@ -107,10 +80,6 @@
     [isSpoken]="hasValidationError"
   >
     <p>
-      <app-play-text-audio
-        key="personal.set-notification-number.validation.phone-number"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       {{
         'personal.set-notification-number.validation.phone-number' | translate
       }}
@@ -121,10 +90,6 @@
     [isSpoken]="choiceMade"
   >
     <p *ngIf="!phoneSkipped">
-      <app-play-text-audio
-        key="personal.set-notification-number.conclusion-submitted"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.set-notification-number.conclusion-submitted'
@@ -133,10 +98,6 @@
       ></span>
     </p>
     <p *ngIf="phoneSkipped">
-      <app-play-text-audio
-        key="personal.set-notification-number.conclusion-skipped"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span>
         {{ 'personal.set-notification-number.conclusion-skipped' | translate }}
       </span>

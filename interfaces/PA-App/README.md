@@ -16,30 +16,6 @@ Next to the 'generic' dependencies/libraries/components [used by all interfaces]
   A component to play, (pre-)load and handle audio-files.
   - Documentation: <https://github.com/goldfire/howler.js#documentation>
 
-## Assets
-
-### Audio files
-
-The PA-App uses audio-files to make the [interface-text](./src/assets/i18n/en.json) accessible in spoken form.
-
-Audio-file creation/processing:
-
-- Add the audio-file(s) to `./src/assets/i18n/<locale>/` where:
-
-  - `locale` is an [IETF BCP47](https://tools.ietf.org/html/bcp47) language-string; like `en` or `fr_BE`, etc.
-
-- Set the audio files' filenames to: `<translation.string.key>.mp3` where:
-
-  - `translation.string.key` is the path used in the text-translation file, see [`en.json`](./src/assets/i18n/en.json)
-
-- If source-audio is only available in `*.m4a`-files, convert to `*.mp3` first, by running the script:  
-  `npm run generate-assets-audio -- <locale> --convertFrom m4a`
-
-- Convert the audio files to the specified format(s) by running the script:  
-  `npm run generate-assets-audio -- <locale>`
-
----
-
 ## License
 
 Released under the Apache 2.0 License. See [LICENSE](LICENSE).
