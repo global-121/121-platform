@@ -211,7 +211,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     let message = '';
 
     if (response) {
-      message += this.getPaymentResultText(response.sumPaymentAmountMultiplier);
+      message += this.getPaymentResultText(response.applicableCount);
     }
     actionResult(this.alertController, this.translate, message, true);
   }

@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.103.2...master)
 
+## Deprecated
+
+- AW-App will no longer receive updates/fixes/changes (untill decided otherwise)
+
 ---
+
 ## [1.103.2](https://github.com/global-121/121-platform/compare/v1.103.1...v1.103.2) - 2023-10-23
 
 ### Fixed
@@ -1223,7 +1228,7 @@ Nothing. Dummy release upgrade to test automatic deploy through webhook on minor
 
 ### Added
 
-- 2021-05-05: Added endpoint to upload registered PA's via CSV-file for testing purposes
+- 2021-05-05: Added endpoint to upload registered PAs via CSV-file for testing purposes
 
 ## [1.2.3](https://github.com/global-121/121-platform/compare/v1.2.2...v1.2.3) - 2021-04-20
 

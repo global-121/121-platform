@@ -339,7 +339,6 @@ export class RegistrationsImportService {
       );
       countImported += 1;
     }
-    console.log('registrationDataArrayAllPa: ', registrationDataArrayAllPa);
     await this.registrationDataRepository.save(registrationDataArrayAllPa, {
       chunk: 5000,
     });

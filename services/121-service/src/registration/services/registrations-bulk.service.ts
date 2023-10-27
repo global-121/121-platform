@@ -99,7 +99,6 @@ export class RegistrationsBulkService {
     const allowedCurrentStatuses = this.getAllowedCurrentStatusesForNewStatus(
       RegistrationStatusEnum.deleted,
     );
-    console.log('allowedCurrentStatuses: ', allowedCurrentStatuses);
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,

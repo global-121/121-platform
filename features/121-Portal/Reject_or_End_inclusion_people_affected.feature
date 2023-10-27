@@ -61,6 +61,4 @@ Feature: Reject or end inclusion of people affected (extension of View_and_Manag
     Given there are People Affected which are marked as no longer eligible
     And some of these have completed a registration
     When the user searches in the PA-table for status "Registered while no longer eligible" (either through filtering or sorting + scrolling)
-    Then these People Affected should have a filled "Completed Vulnerability Assessment" column
-    And a filled "No longer eligible" column
-    And these people can subsequently be selected for rejection (see scenarios: 'Use bulk-action "reject from program"' and 'Confirm "reject from program" action')
+    Then these people can subsequently be selected for rejection (see scenarios: 'Use bulk-action "reject from program"' and 'Confirm "reject from program" action')

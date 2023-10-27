@@ -9,8 +9,7 @@
     And possible Roles can be configured per program
     And status can be Active
     And last login is displayed in format (dd/mm/yyyy) or empty
-    And user clicks on a column users are sorted alphabetically or numerically
-    And above Team Members table on the left side filtering field is displayed
+    And user clicks on a sortable column users are sorted alphabetically or numerically
     And on the right side on top of user table "Add/change team member" button is displayed
 
   Scenario: Add New Team member
@@ -24,7 +23,6 @@
     And Popup is closed
 
   Scenario: Edit Team members Role
-
     Given There is a team member on the list
     When User clicks on Three dot icon on the right side of row where team member is displayed
     And Meatball menu is displayed
