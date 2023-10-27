@@ -45,6 +45,7 @@ export class StatusTableFilterComponent {
       RegistrationStatus.selectedForValidation,
       RegistrationStatus.rejected,
       RegistrationStatus.inclusionEnded,
+      RegistrationStatus.paused,
     ],
     [ProgramPhase.payment]: [
       RegistrationStatus.included,
