@@ -726,6 +726,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.selectAllChecked = false;
 
     this.selectedPeople = [];
+    this.selectedCount = 0;
     this.isInProgress = false;
   }
 
@@ -982,6 +983,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       PubSubEvent.dataRegistrationChanged,
       this.pubSub,
     );
+    this.resetBulkAction();
   }
 
   public paComparator(a: string, b: string) {
