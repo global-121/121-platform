@@ -12,10 +12,10 @@ import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
-import RegistrationStatus from '../../enums/registration-status.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
@@ -66,6 +66,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   @Input()
   public canViewVouchers = false;
+
+  @Input()
+  public statusChanges: RegistrationStatusChange[];
 
   public DateFormat = DateFormat;
   public firstPaymentToShow = 1;
@@ -274,13 +277,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           this.person.referenceId,
         );
 
-      for (const statusChange of await this.getStatusChanges()) {
+      for (const statusChange of this.statusChanges) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.status.label',
           ),
-          date: statusChange.date,
+          date: new Date(statusChange.date),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.status.description',
             {
@@ -424,24 +427,5 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     });
 
     await modal.present();
-  }
-
-  private async getStatusChanges(): Promise<
-    {
-      status: RegistrationStatus;
-      date: Date;
-    }[]
-  > {
-    const changes = await this.programsService.getRegistrationStatusChanges(
-      this.program.id,
-      this.person.referenceId,
-    );
-
-    return changes.map((change) => {
-      return {
-        status: change.status,
-        date: new Date(change.date),
-      };
-    });
   }
 }

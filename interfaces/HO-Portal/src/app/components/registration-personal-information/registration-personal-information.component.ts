@@ -39,6 +39,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   @Input()
   private programId: number;
 
+  @Input()
+  public currentStatus: RegistrationStatusChange;
+
   public personalInfoTable: TableItem[];
   private tableAttributes: PaTableAttribute[];
   private tableAttributesToShow = [
@@ -97,9 +100,8 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     this.personalInfoTable = [];
 
     if (this.person?.status) {
-      const latestStatus = await this.getLatestStatus();
-      const statusKey = latestStatus?.status
-        ? latestStatus.status
+      const statusKey = this.currentStatus?.status
+        ? this.currentStatus.status
         : this.person?.status;
       this.personalInfoTable.push({
         label: this.getLabel('status', {
@@ -107,9 +109,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
             'page.program.program-people-affected.status.' + statusKey,
           ),
         }),
-        value: latestStatus?.date
+        value: this.currentStatus?.date
           ? formatDate(
-              new Date(latestStatus.date),
+              new Date(this.currentStatus.date),
               DateFormat.dateOnly,
               this.locale,
             )
@@ -208,14 +210,5 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       this.programId,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
-  }
-
-  private async getLatestStatus(): Promise<RegistrationStatusChange> {
-    return (
-      await this.programsService.getRegistrationStatusChanges(
-        this.programId,
-        this.person.referenceId,
-      )
-    )[0];
   }
 }
