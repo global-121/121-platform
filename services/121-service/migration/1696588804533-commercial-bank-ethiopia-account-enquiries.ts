@@ -15,15 +15,9 @@ export class commercialBankEthiopiaAccountEnquiries1696588804533
     await queryRunner.query(
       `ALTER TABLE "121-service"."commercial-bank-ethiopia-account-enquiries" ADD CONSTRAINT "FK_718c48c84b802de3cf219e2fc1d" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_cd56d3267e8553557ec97c6741b" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_cd56d3267e8553557ec97c6741b"`,
-    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."commercial-bank-ethiopia-account-enquiries" DROP CONSTRAINT "FK_718c48c84b802de3cf219e2fc1d"`,
     );

@@ -1,9 +1,11 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Check, Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { NameConstraintQuestions } from '../shared/const';
 import { CascadeDeleteEntity } from './../base.entity';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { InstanceEntity } from './instance.entity';
 
 @Entity('monitoring_question')
+@Check(`"name" NOT IN (${NameConstraintQuestions})`)
 export class MonitoringQuestionEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;

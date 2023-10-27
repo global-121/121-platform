@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, ValidateNested } from 'class-validator';
-import { ReferenceIdsMin1Dto } from './../../registration/dto/referenc-id-min-1.dto';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CreatePaymentDto {
   @ApiProperty({ example: 1 })
@@ -9,9 +7,6 @@ export class CreatePaymentDto {
   public readonly payment: number;
   @ApiProperty({ example: 10 })
   @IsNumber()
-  public readonly amount: number;
-  @ApiProperty()
-  @ValidateNested()
-  @Type(() => ReferenceIdsMin1Dto)
-  public readonly referenceIds: ReferenceIdsMin1Dto;
+  @IsOptional()
+  public readonly amount?: number;
 }

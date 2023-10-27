@@ -1,6 +1,5 @@
 import Permission from '../auth/permission.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
 // Model for data from the API
@@ -11,33 +10,23 @@ export class Person {
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
-  startedRegistrationDate?: string;
-  importedDate?: string;
-  invitedDate?: string;
-  noLongerEligibleDate?: string;
-  registeredWhileNoLongerEligibleDate?: string;
-  registeredDate?: string;
-  selectedForValidationDate?: string;
-  validationDate?: string;
-  inclusionDate?: string;
-  inclusionEndDate?: string;
-  rejectionDate?: string;
-  completedDate?: string;
+  registrationCreated?: string;
   status: RegistrationStatus;
-  hasNote?: boolean;
-  hasPhoneNumber?: boolean;
-  fsp?: string;
+  note?: string;
+  financialServiceProvider?: string;
   fspDisplayNamePortal?: string;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
   registrationProgramId: number;
-  payment?: number;
-  nrPayments?: number;
-  paymentDate?: string;
-  transactionAmount?: number;
-  transactionStatus?: string;
-  errorMessage?: string;
+  personAffectedSequence: string;
+  lastTransactionPaymentNumber?: number;
+  paymentCount?: number;
+  paymentCountRemaining?: number;
+  lastTransactionCreated?: string;
+  lastTransactionAmount?: number;
+  lastTransactionStatus?: string;
+  lastTransactionErrorMessage?: string;
   lastMessageStatus?: string;
   lastMessageType?: string;
 }
@@ -47,33 +36,24 @@ export class PersonRow {
   id: number;
   referenceId: string;
   checkboxVisible: boolean;
-  pa: string; // Display label
-  status: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
-  statusLabel: string;
+  checkboxDisabled?: boolean = false;
+  registrationProgramId: string; // Display label
+  registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  status: string;
   hasNote: boolean;
-  hasPhoneNumber?: boolean;
-  digitalIdCreated?: string;
-  vulnerabilityAssessmentCompleted?: string | null;
-  selectedForValidation?: string | null;
-  vulnerabilityAssessmentValidated?: string | null;
+  registrationCreated?: string;
   inclusionScore?: number;
-  included?: string | null;
-  rejected?: string | null;
-  inclusionEnded?: string | null;
-  imported?: string | null;
-  invited?: string | null;
-  markedNoLongerEligible?: string | null;
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
-  fspDisplayNamePortal?: string | null;
+  financialServiceProvider?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
-  paymentsLeft?: number | null;
+  paymentCount?: number;
+  paymentCountRemaining?: number | null;
   preferredLanguage?: string | null;
-  paymentHistory?: PaymentColumnDetail;
+  paymentHistoryColumn?: string;
   lastMessageStatus?: string;
-  messages?: string;
 }
 
 export class Note {
@@ -107,6 +87,8 @@ export class PersonTableColumn {
   permissions: Permission[];
   showIfNoValidation: boolean;
   headerClass: string;
+  minWidth?: number;
+  width?: number;
 }
 
 export const PA_STATUS_ORDER = [

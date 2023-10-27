@@ -34,11 +34,13 @@ describe('Import a registration', () => {
       programId,
       accessToken,
     );
-    const registration = result.body[0];
+    const registration = result.body.data[0];
     for (const key in registrationVisa) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration['fsp']).toBe(registrationVisa[key]);
+        expect(registration['financialServiceProvider']).toBe(
+          registrationVisa[key],
+        );
       } else {
         // eslint-disable-next-line jest/no-conditional-expect
         expect(registration[key]).toBe(registrationVisa[key]);

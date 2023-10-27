@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateQuery } from 'nestjs-paginate';
 import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
@@ -8,16 +9,24 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import {
+  BulkActionResultDto,
+  BulkActionResultPaymentDto,
+} from '../registration/dto/bulk-action-result.dto';
+import {
   ImportResult,
   ImportStatus,
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { BulkImportService } from '../registration/services/bulk-import.service';
+import { RegistrationsImportService } from '../registration/services/registrations-import.service';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -59,7 +68,9 @@ export class PaymentsService {
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
-    private readonly bulkImportService: BulkImportService,
+    private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
+    private registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async getPayments(programId: number): Promise<
@@ -81,39 +92,124 @@ export class PaymentsService {
     return payments;
   }
 
-  public async createPayment(
+  public async postPayment(
     userId: number,
     programId: number,
     payment: number,
     amount: number,
-    referenceIdsDto: ReferenceIdsDto,
-  ): Promise<number> {
+    query: PaginateQuery,
+    dryRun: boolean,
+  ): Promise<BulkActionResultPaymentDto> {
     await this.checkPaymentInProgressAndThrow(programId);
 
-    await this.checkProgram(programId);
-    const paPaymentDataList = await this.getPaymentList(
-      referenceIdsDto.referenceIds,
-      amount,
-      programId,
+    const paginateQuery =
+      this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
+
+    const bulkActionResultDto =
+      await this.registrationsBulkService.getBulkActionResult(
+        paginateQuery,
+        programId,
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    if (!amount) {
+      return { ...bulkActionResultDto, sumPaymentAmountMultiplier: 0 };
+    }
+
+    const registrationsForPayment =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        true,
+        true,
+        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
+    let totalMultiplierSum = 0;
+    // This loop is pretty fast: with 100.000 registrations it takes ~12ms
+    for (const registration of registrationsForPayment.data) {
+      totalMultiplierSum =
+        totalMultiplierSum + registration.paymentAmountMultiplier;
+    }
+    const bulkActionResultPaymentDto = {
+      ...bulkActionResultDto,
+      sumPaymentAmountMultiplier: totalMultiplierSum,
+    };
+
+    const referenceIds = registrationsForPayment.data.map(
+      (registration) => registration.referenceId,
     );
 
-    if (paPaymentDataList.length < 1) {
-      const errors = 'There are no targeted PAs for this payment';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (!dryRun && referenceIds.length > 0) {
+      this.initiatePayment(
+        userId,
+        programId,
+        payment,
+        amount,
+        referenceIds,
+      ).catch((e) => {
+        this.azureLogService.logError(e, true);
+      });
     }
+
+    return bulkActionResultPaymentDto;
+  }
+
+  private getPaymentBaseQuery(
+    payment: number,
+  ): SelectQueryBuilder<RegistrationViewEntity> {
+    // Do not do payment if a registration has already one transaction for that payment number
+    return this.registrationsBulkService
+      .getBaseQuery()
+      .leftJoin(
+        'registration.latestTransactions',
+        'latest_transaction_join',
+        'latest_transaction_join.payment = :payment',
+        { payment },
+      )
+      .andWhere('latest_transaction_join.id is null')
+      .andWhere('registration.status = :status', {
+        status: RegistrationStatusEnum.included,
+      });
+  }
+
+  public async initiatePayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    amount: number,
+    referenceIds: string[],
+  ): Promise<number> {
     await this.actionService.saveAction(
       userId,
       programId,
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+    const chunkSize = 1000;
+    const chunks = [];
+    for (let i = 0; i < referenceIds.length; i += chunkSize) {
+      chunks.push(referenceIds.slice(i, i + chunkSize));
+    }
 
+    let paymentTransactionResult = 0;
+    for (const chunk of chunks) {
+      const paPaymentDataList = await this.getPaymentList(
+        chunk,
+        amount,
+        programId,
+      );
+
+      const result = await this.payout(
+        paPaymentDataList,
+        programId,
+        payment,
+        userId,
+      );
+
+      paymentTransactionResult += result;
+    }
     return paymentTransactionResult;
   }
 
@@ -122,7 +218,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
-  ): Promise<number> {
+  ): Promise<BulkActionResultDto> {
     await this.checkPaymentInProgressAndThrow(programId);
 
     await this.checkProgram(programId);
@@ -144,14 +240,15 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      userId,
-    );
+    this.payout(paPaymentDataList, programId, payment, userId).catch((e) => {
+      this.azureLogService.logError(e, true);
+    });
 
-    return paymentTransactionResult;
+    return {
+      totalFilterCount: paPaymentDataList.length,
+      applicableCount: paPaymentDataList.length,
+      nonApplicableCount: 0,
+    };
   }
 
   private async checkProgram(programId: number): Promise<ProgramEntity> {
@@ -192,15 +289,17 @@ export class PaymentsService {
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
+    let inProgress = false;
     const latestPaymentStartedAction =
       await this.actionService.getLatestActions(
         programId,
         AdditionalActionType.paymentStarted,
       );
-    // If never started, then not in progress
+    // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return;
     }
+
     const latestPaymentFinishedAction =
       await this.actionService.getLatestActions(
         programId,
@@ -208,18 +307,18 @@ export class PaymentsService {
       );
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {
-      return;
+      inProgress = true;
+    } else {
+      // If started and finished, then compare timestamps
+      const startTimestamp = new Date(latestPaymentStartedAction?.created);
+      const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
+      inProgress = finishTimestamp < startTimestamp;
     }
-    // If started and finished, then compare timestamps
-    const startTimestamp = new Date(latestPaymentStartedAction?.created);
-    const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
 
-    const inProgress = finishTimestamp < startTimestamp;
     if (inProgress) {
       const errors = 'Payment is already in progress';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-
     return;
   }
 
@@ -380,7 +479,13 @@ export class PaymentsService {
     payment: number,
   ): Promise<RegistrationEntity[]> {
     const waitingReferenceIds = (
-      await this.getTransactionsByStatus(programId, payment, StatusEnum.waiting)
+      await this.transactionService.getLastTransactions(
+        programId,
+        null,
+        payment,
+        null,
+        StatusEnum.waiting,
+      )
     ).map((t) => t.referenceId);
     return await this.registrationRepository.find({
       where: { referenceId: In(waitingReferenceIds) },
@@ -476,7 +581,13 @@ export class PaymentsService {
       // If no referenceIds passed, retry all failed transactions for this payment
       // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
-        await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
+        await this.transactionService.getLastTransactions(
+          programId,
+          null,
+          payment,
+          null,
+          StatusEnum.error,
+        )
       ).map((t) => t.referenceId);
       // .. if nothing found, throw an error
       if (!failedReferenceIds.length) {
@@ -515,31 +626,20 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
-  private async getTransactionsByStatus(
-    programId: number,
-    payment: number,
-    status: StatusEnum,
-  ): Promise<any[]> {
-    const allLatestTransactionAttemptsPerPa =
-      await this.transactionService.getTransactions(programId, false, payment);
-    const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
-      (t) => t.payment === payment && t.status === status,
-    );
-    return failedTransactions;
-  }
-
   public async getFspInstructions(
     programId,
     payment,
     userId: number,
   ): Promise<FspInstructions> {
-    const transactions = await this.transactionService.getTransactions(
-      programId,
-      false,
-    );
-    const paymentTransactions = transactions.filter(
-      (transaction) => transaction.payment === payment,
-    );
+    const paymentTransactions =
+      await this.transactionService.getLastTransactions(
+        programId,
+        null,
+        payment,
+        null,
+        null,
+      );
+
     const csvInstructions = [];
     let xmlInstructions: string;
 
@@ -681,7 +781,9 @@ export class PaymentsService {
   private async xmlToValidatedFspReconciliation(
     xmlFile,
   ): Promise<ImportFspReconciliationDto> {
-    const importRecords = await this.bulkImportService.validateXml(xmlFile);
+    const importRecords = await this.registrationsImportService.validateXml(
+      xmlFile,
+    );
     return await this.validateFspReconciliationXmlInput(importRecords);
   }
 
@@ -692,7 +794,7 @@ export class PaymentsService {
     let recordsCount = 0;
     for (const row of xmlArray) {
       recordsCount += 1;
-      if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
+      if (this.registrationsImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = this.vodacashService.validateReconciliationData(row);

@@ -1,7 +1,7 @@
 @ho-portal
 Feature: Export unused vouchers
 
-  Background: 
+  Background:
     Given a selected program with "Intersolve" FSP
     Given a logged-in user with "RegistrationPersonalEXPORT" permissions
 
@@ -14,5 +14,5 @@ Feature: Export unused vouchers
     When the user confirms
     Then an Excel is downloaded
     And it contains all currently unused vouchers for the given program only
-    And it contains columns: payment, issueDate, whatsappPhoneNumber, phoneNumber, name
+    And it contains columns: payment, issueDate, whatsappPhoneNumber, phoneNumber, lastExternalUpdate, name
 

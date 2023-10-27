@@ -8,6 +8,7 @@
       <app-registration-personal-information
         [person]="person"
         [programId]="person?.programId"
+        [currentStatus]="statusChanges[0]"
         class="ion-margin-bottom"
         style="display: block"
       ></app-registration-personal-information>
@@ -15,7 +16,7 @@
       <ng-container
         *ngIf="
           canViewPhysicalCards(person.programId) &&
-          fspHasPhysicalCardSupport(person.fsp)
+          fspHasPhysicalCardSupport(person.financialServiceProvider)
         "
       >
         <div class="ion-margin-vertical ion-padding-vertical">
@@ -23,7 +24,7 @@
             [programId]="person.programId"
             [referenceId]="person.referenceId"
             [currency]="program.currency"
-            [nrPayments]="person.nrPayments"
+            [nrPayments]="person.paymentCount"
             [registrationStatus]="person.status"
           ></app-registration-physical-card-overview>
         </div>
@@ -38,6 +39,7 @@
       <app-registration-activity-overview
         [person]="person"
         [program]="program"
+        [statusChanges]="statusChanges"
       ></app-registration-activity-overview>
     </ion-col>
   </ion-row>

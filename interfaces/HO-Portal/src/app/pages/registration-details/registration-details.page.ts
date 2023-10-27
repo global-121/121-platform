@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { RegistrationProfileComponent } from 'src/app/components/registration-profile/registration-profile.component';
-import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -41,9 +41,9 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   public loading = true;
   public person: Person;
 
-  public canViewPersonalData: boolean;
-  private canViewPaymentData: boolean;
   public canViewPhysicalCards: boolean;
+  public canViewPersonalData: boolean;
+  public canViewPaymentData: boolean;
 
   private pubSubSubscription: Subscription;
 
@@ -104,13 +104,13 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     const person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        this.canViewPersonalData,
-        this.canViewPaymentData,
+        1,
+        1,
         this.referenceId,
       )
-    )[0];
+    ).data[0];
 
-    if (person.status === RegistrationStatusEnum.deleted) {
+    if (person.status === RegistrationStatus.deleted) {
       return null;
     }
 

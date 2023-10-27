@@ -11,3 +11,4 @@ Feature: Synchronize Intersolve Visa customer data to 121 data
     And potentially phone number and/or address fields are updated in the 121-Platform (or not, this endpoint just syncs)
     When the user calls the "/api/programs/{programId}/financial-service-providers/intersolve-visa/customers/{referenceId}" endpoint
     Then the phone number and the address fields of the Intersolve Customer are updated at Intersolve to be the same as in the 121 registration
+    And - if non-mock - this could be checked by accessing the Intersolve customer API directly (integration environment only)

@@ -1,10 +1,10 @@
-// Source, see: https://github.com/swimlane/ngx-datatable/blob/16.1.1/projects/swimlane/ngx-datatable/src/lib/components/datatable.component.scss
+// Source, see: https://github.com/swimlane/ngx-datatable/blob/20.1.0/projects/swimlane/ngx-datatable/src/lib/components/datatable.component.scss
 .ngx-datatable {
   display: block;
   overflow: hidden;
   justify-content: center;
   position: relative;
-  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 
   [hidden] {
     display: none !important;
@@ -25,6 +25,7 @@
     .datatable-body {
       overflow-y: auto;
     }
+
     &.virtualized {
       .datatable-body {
         .datatable-row-wrapper {
@@ -51,6 +52,7 @@
     .datatable-header {
       .datatable-header-inner {
         white-space: nowrap;
+
         .datatable-header-cell {
           white-space: nowrap;
           overflow: hidden;
@@ -273,6 +275,7 @@
       .page-count {
         flex: 1 1 40%;
       }
+
       .datatable-pager {
         flex: 1 1 60%;
       }

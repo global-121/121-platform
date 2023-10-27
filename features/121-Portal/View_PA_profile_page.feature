@@ -5,10 +5,10 @@ Feature: View PA profile page
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user is viewing the PA table
     Given 1 or more PAs with at least status "created"
-    Given the user sees the PA name
+    Given the user sees the PA number
 
   Scenario: Open profile page
-    When the user clicks on the PA name
+    When the user clicks on the PA number
     Then the profile page for that PA is opened
 
   Scenario: View Personal information table
@@ -38,18 +38,6 @@ Feature: View PA profile page
     And the 1 current card can have status "Inactive", "Active" or "Blocked"
   >> See 'Manage_Intersolve_Visa_card.feature' for more scenarios related to this table
 
-  Scenario: View Payment overview table
-    Given the PA's status is either "included", "completed", "inclusionEnded", or "rejected"
-    Given a logged-in user with "PaymentREAD" and "PaymentTransactionREAD" permissions
-    Then the user sees the "Payment overview" table
-    And it shows the latest payment if it exists
-    And it shows a list of four payments or up until the payment limit if it is set
-    And it shows the status of the transaction for made payments
-    And it shows "Planned" for future payments
-    Given the user sees the "Show All" button
-    When the user clicks on the "Show All" button
-    Then the Payment History pupup opens
-
   Scenario: View Activity overview
     Given the user sees the "Activity overview" table
     And the user sees the "All" tab and the list of all available updates in the table
@@ -71,3 +59,34 @@ Feature: View PA profile page
     When the user clicks on the "Payments" tab
     Then the user sees the the list of payments in the table
     And all the tabs have a count of updates next to them
+
+  Scenario: Successfully add note
+    Given a logged-in user with "RegistrationPersonalUPDATE" permission
+    Given the user sees the "Activity overview" table
+    And the user sees the "Actions" button in the top right corner
+    When the user clicks on the "Actions" button
+    Then the user sees the "Add note" option
+    When the user clicks on the "Add note" option
+    Then the user sees the "Add note" popup
+    When the user types some text in the 'Type note:' field
+    Then the user sees the 'OK' button enable
+    When the user clicks on the 'OK' button
+    Then the user sees a feedback message that the note was added successfully
+    And the page refreshes
+    And the user sees the updated note in the "Activity overview" table
+
+  Scenario: Unsuccessfully update note
+    Given the same assumptions as in the 'successfully add note' scenario
+    Given something goes wrong for some reason (which cannot be simulated by the tester)
+    When the user follows the same steps as in the 'successfully add note' scenario and clicks on the 'OK' button
+    Then a feedback message that something went wrong is given
+    And it gives the basic error type if possible, e.g. "Bad Request"
+
+  Scenario: Successfully view note(s)
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user sees the "Activity overview" table
+    Given the user sees the "All" tab and the list of all available updates in the table
+    Given the user sees the "Notes" tab
+    When the user clicks on the "Notes" tab
+    Then the user sees the list of notes in the table
+    And this information includes the date and time of the note and the user who made the note

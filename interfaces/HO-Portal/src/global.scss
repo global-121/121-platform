@@ -307,6 +307,9 @@ ion-input.custom-border {
   }
 }
 
+/*
+	Component: Tabs
+*/
 .tabs {
   display: flex;
   flex-direction: row;
@@ -320,15 +323,6 @@ ion-input.custom-border {
   --background: #f4f7fa;
   margin-right: 16px;
   --color-checked: #4f22d7;
-}
-
-ion-searchbar ion-icon {
-  width: 20px !important;
-  color: var(--ion-color-medium-shade);
-}
-
-ion-searchbar .searchbar-input {
-  padding-inline-start: 5px !important;
 }
 
 .rolesDropdown {

@@ -1,10 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageAidworkersComponent } from './manage-aidworkers.component';
 
 describe('ManageAidworkersComponent', () => {
@@ -16,8 +19,13 @@ describe('ManageAidworkersComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ManageAidworkersComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        IonicModule,
+        FormsModule,
+        TranslateModule.forRoot(),
+        SharedModule,
+        NgxDatatableModule,
+      ],
       providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));

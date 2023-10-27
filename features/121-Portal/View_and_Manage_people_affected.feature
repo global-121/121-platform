@@ -22,11 +22,10 @@ Feature: View and manage people affected (generic features)
     Then the users sees the columns mentioned in the previous scenario
     And for each person a "status" is shown
     And all above columns are fixed when scrolling horizontally
-    And depending on which "page" several "status change date" columns are shown
     And "transfer value" column is shown
     And "inclusion score" column is shown (if "validation" is configured for the program)
     And "financial service provider" column is shown
-    And "payment history column" is shown (in "payment" page only)
+    And "payment history" is shown (in "payment" page only)
 
   Scenario: View payment history column and popup
   >> See View_payment_history_popup.feature
@@ -35,8 +34,8 @@ Feature: View and manage people affected (generic features)
     Given the logged-in user also has "RegistrationPersonalREAD" permission
     When the user views the PA-table
     Then the user sees all columns available in previous scenario
-    And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA
-    And for each person a "name" is shown
+    And the "i" button in front of the "PA identifier"
+    And for each person the columns that make up the "name" are shown
     And for each person a "phone number" is shown
     And all above columns are fixed when scrolling horizontally
     And "custom attribute" columns are shown if configured to be showing for that phase
@@ -48,13 +47,6 @@ Feature: View and manage people affected (generic features)
     When the user clicks one of the "custom attribute" columns with type 'boolean'
     Then the clicked "custom attribute" is updated
     And a popup with 'update successful' appears
-
-  Scenario: Filter rows of PA-table by string
-    Given the table with all "people affected" relevant to the selected program phase is shown
-    When the user enters any free text "abc" in the "filter field"
-    Then the table immediately updates to show only rows where at least one case of "abc" is found as substring in any of the columns
-    When the user removes the text again or presses the "X" close option
-    Then the table shows all rows again
 
   Scenario: Filter rows of PA-table by People Affected status
     Given the table with all "people affected" relevant to the selected program phase is shown
@@ -69,6 +61,50 @@ Feature: View and manage people affected (generic features)
     Then the table immediately updates to show only rows that match the status selection
     When the user clicks on "cancel"
     Then the table keeps the row that matched the previous status selection
+
+  --- Filter PA-table START ---
+
+  Scenario: Filter rows of PA-table by one filterable column
+    Given the table with all "people affected" relevant to the selected program phase is shown
+    When the user clicks on the "select column" filter dropdown above the table
+    Then a dropdown with all the filterable columns appears
+    And the dropdown contains a search bar to search the columns to filter
+    When the user makes a selection
+    Then a text field appears on the right of the dropdown
+    And if its a "numeric" field then only numeric characters are allowed, otherwise all is allowed
+    When the user writes the value of the filter
+    Then the "apply filter" button is enabled
+    When the user clicks on "apply filter" or presses the "enter" button on the keyboard
+    Then the value is used on the selected column to filter the table
+    And a text showing the number of "fitered recipients" appears below the dropdown
+    And a chip showing the selected column and the filter value appears next to it on the right
+    And on the right side of the page the "clear all filters" button appears
+    And the dropdown is reset to an empty selection
+    And the search bar and the "apply filter" button disappear
+
+  Scenario: Filter rows of PA-table by multiple filterable columns
+    Given the table has been filtered for one column already
+    When the user selects another column and applies the filter
+    Then the already filtered table is additionally filtered by this second filter
+    And the "filtered recipients" count updates according to the two filters applied
+    And a second chip showing column and value appears next to the previous one
+    And the filter row above is reset again
+
+  Scenario: Remove one column filter from the PA-table
+    Given there is at least one column filter applied to the table
+    When the user clicks on the "x" inside one of the applied filter chips
+    Then the filter is removed from the table
+    And the chip disappears
+    And if there is still one column filter applied, the "filtered recipients" count is updated
+
+  Scenario: Remove all column filters from the PA-table
+    Given there is at least one column filter applied to the table
+    When the user clicks "x" on the last chip remaining or clicks on "clear all filters"
+    Then all filters are removed from the table
+    And all chips disappear
+    And the "filtered recipient" count disappears
+
+  --- Filter PA-table END ---
 
   Scenario: Show People Affected of all phases
     Given the table with all "people affected" relevant to the selected program phase is shown
@@ -90,7 +126,7 @@ Feature: View and manage people affected (generic features)
     And it is dependent on "selected phase" of the program
   - registration: invite / mark as no longer eligible / select for validation / send message / delete PA
   - inclusion: include / reject / send message / delete PA
-  - payment: reject / end inclusion / send message / do payment
+  - payment: include / reject / end inclusion / pause / send message / do payment
 
   Scenario: Select "bulk action" while rows eligible
     Given at least 1 person is eligible for the "bulk action"
@@ -123,8 +159,6 @@ Feature: View and manage people affected (generic features)
     And the "header checkbox" is unchecked
     When the "user" checks the "header checkbox"
     Then all "row checkboxes" are selected and the "header checkbox" is selected
-    When the "user" un-checks the "header checkbox"
-    Then all "row checkboxes" are selected and the "header checkbox" is selected
 
   Scenario: Deselect all rows given full selection
     Given current "full" selection
@@ -132,19 +166,9 @@ Feature: View and manage people affected (generic features)
     Then all "row checkboxes" are unchecked
 
   Scenario: Select all rows given partial selection
-    Given current "partial" selection
+    Given 1 "row checkbox" is selected
     When user checks "header checkbox"
     Then all "row checkboxes" are checked
-
-  Scenario: Unselect row given full selection
-    Given current "full" selection
-    When user un-checks single "row checkbox"
-    Then the "header checkbox" also un-checks
-
-  Scenario: Select row given (N-1) selection
-    Given currently all eligible rows except 1 are selected
-    When user checks last eligible row through "row checkbox"
-    Then "header checkbox" also automatically checks
 
   Scenario: Apply action without message-option
     Given a "bulk action" is selected
@@ -180,13 +204,12 @@ Feature: View and manage people affected (generic features)
     And all "row checkboxes" and "header checkbox" disappear
     And - if the action has an SMS-action and it is used - an SMS is sent to the PA
 
-  Scenario: View and Filter PA-table with 2000 PAs
-    Given there are 2000 PAs in the system
-    When the user scrolls through the PA-table
+  Scenario: View and Filter PA-table with 100000 PAs
+    Given there are 100000 PAs in the system
+    When the user clicks through the PA-table
     Then this goes quickly and without problem
     When the user uses the text or status filter functions
     Then the PA-table updates to only filtered rows quickly and without problem
 
   Scenario: View Message History
-
-  Scenario: Export current PA Table view
+>> This is tested with Cypress. See message-history.cy.ts

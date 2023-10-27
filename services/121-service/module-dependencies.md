@@ -25,9 +25,9 @@ graph LR
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
-  ExportMetricsModule-->ProgramModule
-  ExportMetricsModule-->RegistrationsModule
-  ExportMetricsModule-->PaymentsModule
+  MetricsModule-->ProgramModule
+  MetricsModule-->RegistrationsModule
+  MetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
@@ -48,10 +48,11 @@ graph LR
   SafaricomModule-->TransactionsModule
   PaymentsModule-->CommercialBankEthiopiaModule
   PaymentsModule-->RegistrationsModule
-  ExportMetricsModule-->TransactionsModule
-  ExportMetricsModule-->IntersolveVisaModule
-  ExportMetricsModule-->IntersolveVoucherModule
-  ExportMetricsModule-->RegistrationChangeLogModule
+  PaymentsModule-->ProgramModule
+  MetricsModule-->TransactionsModule
+  MetricsModule-->IntersolveVisaModule
+  MetricsModule-->IntersolveVoucherModule
+  MetricsModule-->RegistrationChangeLogModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

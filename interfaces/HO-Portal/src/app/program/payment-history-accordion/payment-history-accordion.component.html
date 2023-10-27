@@ -190,13 +190,13 @@
                 "
               >
                 <ion-item>
-                  <ion-label
-                    class="accordion-text text-bold"
-                    [innerHTML]="
-                      'page.program.program-people-affected.transaction.custom-data.' +
-                        attribute | translate
-                    "
-                  >
+                  <ion-label class="accordion-text">
+                    <strong>
+                      {{
+                        'page.program.program-people-affected.transaction.custom-data.' +
+                          attribute | translate
+                      }}:
+                    </strong>
                     <ion-text
                       id="hover-trigger"
                       *ngIf="paymentRow.transaction?.status"
