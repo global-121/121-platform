@@ -60,6 +60,7 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   async ngOnInit() {
     if (this.singlePayoutDetails) {
+      this.updateTotalAmountMessage();
       this.singlePaymentPayout = this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.single-payment.start-payout',
         { paNr: this.singlePayoutDetails.paNr },

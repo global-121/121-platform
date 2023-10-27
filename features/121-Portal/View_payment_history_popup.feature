@@ -18,7 +18,7 @@ Feature: View payment history column and popup
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
     And each row starts with a money icon
-    And then Transfer #X is mentioned
+    And then Payment #X is mentioned
     And - for payments that are done for the PA - on the right side of the payment number the distribution date is displayed in format DD-MM-YYYY, hh:mm
     And under the payment number it mentions the status Successful/Waiting/Failed
     And the status text and outline is green if Successful
@@ -51,6 +51,7 @@ Feature: View payment history column and popup
 
     When the user clicks 'start payout now'
     Then an 'Are you sure?' popup appears
+    And it contains the total amount to be paid out
 
     When the user confirms
     Then a payment is executed for this PA only (identical to payments done in: Make_new_payment.feature)
