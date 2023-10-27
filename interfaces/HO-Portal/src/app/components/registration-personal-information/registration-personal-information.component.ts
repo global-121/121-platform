@@ -3,12 +3,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import StatusDate from 'src/app/enums/status-dates.enum';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { PaTableAttribute, ProgramPhase } from '../../models/program.model';
+import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -38,6 +38,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
   @Input()
   private programId: number;
+
+  @Input()
+  public currentStatus: RegistrationStatusChange;
 
   public personalInfoTable: TableItem[];
   private tableAttributes: PaTableAttribute[];
@@ -93,20 +96,26 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     return this.translate.instant(translatePrefix + key, interpolateParams);
   }
 
-  private fillPersonalInfoTable() {
+  private async fillPersonalInfoTable() {
     this.personalInfoTable = [];
-    if (this.person[StatusDate[this.person.status]]) {
+
+    if (this.person?.status) {
+      const statusKey = this.currentStatus?.status
+        ? this.currentStatus.status
+        : this.person?.status;
       this.personalInfoTable.push({
         label: this.getLabel('status', {
           status: this.translate.instant(
-            'page.program.program-people-affected.status.' + this.person.status,
+            'page.program.program-people-affected.status.' + statusKey,
           ),
         }),
-        value: formatDate(
-          new Date(this.person[StatusDate[this.person.status]]),
-          DateFormat.dateOnly,
-          this.locale,
-        ),
+        value: this.currentStatus?.date
+          ? formatDate(
+              new Date(this.currentStatus.date),
+              DateFormat.dateOnly,
+              this.locale,
+            )
+          : '',
       });
     }
     this.personalInfoTable.push({
