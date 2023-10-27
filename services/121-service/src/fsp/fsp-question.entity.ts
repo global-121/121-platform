@@ -1,4 +1,5 @@
 import {
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -8,11 +9,13 @@ import {
 } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { NameConstraintQuestions } from '../shared/const';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 // TODO: REFACTOR: rename table name into fsp_question so it aligns with Entity class name
 @Unique('fspQuestionUnique', ['name', 'fspId'])
 @Entity('fsp_attribute')
+@Check(`"name" NOT IN (${NameConstraintQuestions})`)
 export class FspQuestionEntity extends Base121Entity {
   @Column()
   public name: string;

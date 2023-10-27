@@ -25,7 +25,7 @@ import { StatusEnum } from './../../models/status.enum';
 })
 export class PaymentHistoryPopupComponent implements OnInit {
   @Input()
-  public person: Person;
+  public referenceId: string;
 
   @Input()
   public program: Program;
@@ -45,6 +45,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   @Input()
   private canDoSinglePayment = false;
 
+  public person: Person;
   public firstPaymentToShow = 1;
   public lastPaymentId: number;
   public content: any;
@@ -64,7 +65,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.programId = this.program?.id;
-    this.paDisplayName = `PA #${this.person?.registrationProgramId}`;
+    await this.getPersonData();
+    this.paDisplayName = this.person?.personAffectedSequence;
 
     if (this.canViewPersonalData) {
       this.paDisplayName = this.person?.name;
@@ -76,12 +78,23 @@ export class PaymentHistoryPopupComponent implements OnInit {
       );
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
-        this.firstPaymentToShow,
+        null,
+        null,
         this.person?.referenceId,
       );
       this.fillPaymentRows();
       this.paymentRows.reverse();
     }
+  }
+
+  private async getPersonData() {
+    const res = await this.programsService.getPeopleAffected(
+      this.programId,
+      1,
+      1,
+      this.referenceId,
+    );
+    this.person = res.data[0];
   }
 
   public closeModal() {
@@ -108,7 +121,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     return PaymentUtils.enableSinglePayment(
       paymentRow,
       this.canDoSinglePayment,
-      this.person,
+      this.person.status,
       this.lastPaymentId,
       this.paymentInProgress,
     );
@@ -160,7 +173,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
           this.canDoSinglePayment,
-          this.person,
+          this.person.status,
           this.lastPaymentId,
           false,
         )

@@ -14,6 +14,6 @@ export class SubmitPaymentPopupComponent {
   constructor(private modalController: ModalController) {}
 
   public closeModal() {
-    this.modalController.dismiss();
+    this.modalController.dismiss(null, 'cancel');
   }
 }

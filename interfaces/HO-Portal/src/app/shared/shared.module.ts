@@ -9,9 +9,9 @@ import { HeaderComponent } from '../components/header/header.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
+import { SelectTypeaheadComponent } from '../components/select-typeahead/select-typeahead.component';
+import { StatusTableFilterComponent } from '../components/status-table-filter/status-table-filter.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
-import { TableFilterPopoverComponent } from '../components/table-filter/table-filter-popover/table-filter-popover.component';
-import { TableFilterComponent } from '../components/table-filter/table-filter.component';
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
@@ -26,6 +26,7 @@ import { ImportFspReconciliationComponent } from '../program/import-fsp-reconcil
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
@@ -55,11 +56,11 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TooltipComponent,
     UpdateFspComponent,
     UpdatePropertyItemComponent,
-    TableFilterComponent,
-    TableFilterPopoverComponent,
+    StatusTableFilterComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
     DatetimePickerComponent,
+    TableFilterRowComponent,
   ],
   imports: [
     CommonModule,
@@ -72,6 +73,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UserStateComponent,
     ProgramNavigationComponent,
     PhaseNavigationComponent,
+    SelectTypeaheadComponent,
   ],
   exports: [
     BulkImportComponent,
@@ -99,10 +101,10 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdateFspComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
-    TableFilterComponent,
-    TableFilterPopoverComponent,
+    StatusTableFilterComponent,
     ProgramCardComponent,
     MessageHistoryPopupComponent,
+    TableFilterRowComponent,
   ],
 })
 export class SharedModule {}

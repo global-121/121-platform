@@ -15,7 +15,6 @@ class TestHostComponent {
 const safeFallbackUrl = 'about:blank';
 
 describe('DashboardIframeComponent', () => {
-  let component: DashboardIframeComponent;
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
@@ -25,7 +24,6 @@ describe('DashboardIframeComponent', () => {
     });
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
-    component = fixture.debugElement.children[0].componentInstance;
 
     fixture.detectChanges();
   });
@@ -34,7 +32,7 @@ describe('DashboardIframeComponent', () => {
     expect(testHost).toBeTruthy();
   });
 
-  xit('should allow Power BI dasboard', () => {
+  it('should allow Power BI dasboard', () => {
     // Arrange
     const testUrl = 'https://app.powerbi.com/view?id=example123';
 
@@ -43,10 +41,10 @@ describe('DashboardIframeComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    expect(component.safeUrl).toBe(testUrl);
+    expect(fixture.nativeElement.querySelector('iframe').src).toBe(testUrl);
   });
 
-  xit('should NOT allow malicous URLs', () => {
+  it('should NOT allow malicous URLs', () => {
     // Arrange
     const testUrls = [
       'http://app.powerbi.com/view?id=example123insecure',
@@ -60,7 +58,9 @@ describe('DashboardIframeComponent', () => {
       fixture.detectChanges();
 
       // Assert
-      expect(component.safeUrl).toBe(safeFallbackUrl);
+      expect(fixture.nativeElement.querySelector('iframe').src).toBe(
+        safeFallbackUrl,
+      );
     });
   });
 });

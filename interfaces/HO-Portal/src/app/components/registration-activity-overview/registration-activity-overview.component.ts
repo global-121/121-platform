@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import StatusDate from 'src/app/enums/status-dates.enum';
 import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -16,6 +15,7 @@ import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
@@ -67,6 +67,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   public canViewVouchers = false;
 
+  @Input()
+  public statusChanges: RegistrationStatusChange[];
+
   public DateFormat = DateFormat;
   public firstPaymentToShow = 1;
   public activityOverview: ActivityOverviewItem[];
@@ -79,6 +82,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     ActivityOverviewType.dataChanges,
     ActivityOverviewType.status,
   ];
+  public canUpdatePersonalData: boolean;
 
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
@@ -119,7 +123,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       );
       this.pastTransactions = await this.programsService.getTransactions(
         this.program.id,
-        this.firstPaymentToShow,
+        null,
+        null,
         this.person?.referenceId,
       );
       this.pastPayments = await this.programsService.getPastPayments(
@@ -165,7 +170,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return PaymentUtils.enableSinglePayment(
       paymentRow,
       this.canDoSinglePayment,
-      this.person,
+      this.person.status,
       this.lastPaymentId,
       false,
     );
@@ -223,7 +228,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
           false,
-          this.person,
+          this.person.status,
           this.lastPaymentId,
           false,
         )
@@ -274,13 +279,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           this.person.referenceId,
         );
 
-      for (const statusChange of this.getStatusChanges()) {
+      for (const statusChange of this.statusChanges) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.status.label',
           ),
-          date: statusChange.date,
+          date: new Date(statusChange.date),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.status.description',
             {
@@ -386,25 +391,14 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return map[type];
   }
 
-  private getStatusChanges(): { status: string; date: Date }[] {
-    const statusChanges = [];
-    for (const status of Object.keys(StatusDate)) {
-      const statusChangeDateValue = this.person[StatusDate[status]];
-      if (statusChangeDateValue) {
-        statusChanges.push({
-          status,
-          date: new Date(statusChangeDateValue),
-        });
-      }
-    }
-
-    return statusChanges;
-  }
-
   private loadPermissions() {
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],
+    );
+    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+      this.program.id,
+      [Permission.RegistrationPersonalUPDATE],
     );
     this.canViewMessageHistory = this.authService.hasAllPermissions(
       this.program.id,

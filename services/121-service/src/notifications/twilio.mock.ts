@@ -98,16 +98,19 @@ export class TwilioClientMock {
           statuses = [TwilioStatus.queued, TwilioStatus.sent];
         }
         for (const status of statuses) {
-          await this.sendStatusResponse121(
+          this.sendStatusResponse121(
             twilioMessagesCreateDto,
             messageSid,
             status,
-          );
+          ).catch((e) => {
+            console.log('TWILIO MOCK: Error sending status response: ', e);
+          });
         }
       }
       if (
         twilioMessagesCreateDto.messageType ===
-        IntersolveVoucherPayoutStatus.InitialMessage
+          IntersolveVoucherPayoutStatus.InitialMessage &&
+        !twilioMessagesCreateDto.to.includes('15005550002')
       ) {
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
           (e) => {
@@ -115,6 +118,7 @@ export class TwilioClientMock {
           },
         );
       }
+      await new Promise((resolve) => setTimeout(resolve, 30));
       return response;
     }
 

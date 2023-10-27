@@ -19,5 +19,4 @@ Feature: Select people affected for validation (extension of View_and_Manage_peo
   Scenario: Confirm "select for validation" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
     When the "bulk action" is "select for validation"
-    Then the "changed data" is that the "selected for validation" timestamp is filled for the selected rows
-    And the "status" is updated to "Selected for validation"
+    Then the "status" is updated to "Selected for validation"

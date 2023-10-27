@@ -53,22 +53,20 @@ Feature: Import people affected
     When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, etc.)
     Then the "OK" button becomes enabled
     When the user clicks "OK" to confirm the import
-    Then a feedback popup appears that "Something went wrong with the export" and it explains possible reasons
+    Then a feedback popup appears that "Something went wrong with the import" and it explains possible reasons
 
   Scenario: Person Affected registers with imported phone number
     Given a "phoneNumber" is successfully imported
     And there has been no registration with this "phoneNumber" yet (from after the import)
+    And the PA was either invited or not (including a stored message or not therefore)
     And a note was created
     When a new Person Affected starts registrations with this "phoneNumber" (see PA-app/New_registration.feature)
     Then a new row with status "Created" is shown in the PA-table in HO-portal
-    And the row with status "Imported" is also still shown, because without the phone-number the system cannot know yet they belong together
+    And the row with status "Imported"/"Invited" is also still shown, because without the phone-number the system cannot know yet they belong together
     When the Person Affected finishes registrations with using the known "phoneNumber"
     Then the two rows are merged into one row with status "Registered"
-    And the "programCustomAttributes" are visible
-    And the "imported date" is visible
-    And the "created digital ID" date is visible
-    And the "completed vulnerability assessment" date is visible
-    And the "inclusion score" is visible
+    And the "registration created" date is visible
+    And the invitation message is transferred (if applicable)
     And the "note" is visible
 
   Scenario: Person Affected registers with unknown phone number

@@ -97,11 +97,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.person = (
       await this.programsService.getPeopleAffected(
         this.programId,
-        this.canViewPersonalData,
-        this.canViewPaymentData,
+        1,
+        1,
         this.referenceId,
       )
-    )[0];
+    ).data?.[0];
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
@@ -115,7 +115,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
 
-      const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
+      const fspObject = this.fspList.find(
+        (f) => f.fsp === this.person?.financialServiceProvider,
+      );
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
           this.paTableAttributesInput,
@@ -170,7 +172,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
       if (
         value !== '' &&
-        (Number(value) === 0 || Number(value) <= this.person.nrPayments)
+        (Number(value) === 0 || Number(value) <= this.person.paymentCount)
       ) {
         this.showAttributeErrorAlert('too-low', attribute);
         return;
@@ -233,7 +235,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private fillPaTableAttributes() {
     this.programFspLength = this.fspList.length;
     for (const fspItem of this.fspList) {
-      if (fspItem.fsp === this.person.fsp) {
+      if (fspItem.fsp === this.person.financialServiceProvider) {
         this.personFsp = fspItem;
       }
     }

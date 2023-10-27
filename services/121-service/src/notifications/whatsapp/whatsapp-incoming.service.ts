@@ -15,6 +15,7 @@ import {
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
+import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -57,6 +58,7 @@ export class WhatsappIncomingService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
+    private readonly lastMessageService: LastMessageStatusService,
   ) {}
 
   public getGenericNotificationText(
@@ -132,6 +134,9 @@ export class WhatsappIncomingService {
         errorCode: callbackData.ErrorCode,
         errorMessage: callbackData.ErrorMessage,
       },
+    );
+    await this.lastMessageService.updateLastMessageStatus(
+      callbackData.MessageSid,
     );
 
     // Update intersolve voucher transaction status if applicable
@@ -393,7 +398,7 @@ export class WhatsappIncomingService {
       }
     }
 
-    // Start loop over (potentially) multiple PA's
+    // Start loop over (potentially) multiple PAs
     let firstVoucherSent = false;
     for await (const registration of registrationsWithOpenVouchers) {
       const intersolveVouchersPerPa = registration.images.map(
@@ -412,14 +417,14 @@ export class WhatsappIncomingService {
           intersolveVoucher,
         );
 
-        // Only include text with first voucher (across PA's and payments)
+        // Only include text with first voucher (across PAs and payments)
         let message = firstVoucherSent
           ? ''
           : program.notifications[language][
               ProgramNotificationEnum.whatsappVoucher
             ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
-        await this.whatsappService.sendWhatsapp(
+        const messageSid = await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,
           IntersolveVoucherPayoutStatus.VoucherSent,
@@ -440,6 +445,7 @@ export class WhatsappIncomingService {
           StatusEnum.success,
           null,
           registration.programId,
+          messageSid,
         );
 
         // Add small delay/sleep to ensure the order in which messages are received

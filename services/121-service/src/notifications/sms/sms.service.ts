@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { MessageContentType } from '../enum/message-type.enum';
+import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { EXTERNAL_API } from './../../config';
@@ -11,6 +12,8 @@ import { EXTERNAL_API } from './../../config';
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+
+  constructor(private readonly lastMessageService: LastMessageStatusService) {}
 
   public async sendSms(
     message: string,
@@ -73,6 +76,7 @@ export class SmsService {
       twilioMessage.errorMessage = message.errorMessage;
     }
     await this.twilioMessageRepository.save(twilioMessage);
+    await this.lastMessageService.updateLastMessageStatus(message.sid);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
@@ -86,6 +90,9 @@ export class SmsService {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },
+    );
+    await this.lastMessageService.updateLastMessageStatus(
+      callbackData.MessageSid,
     );
   }
 }

@@ -98,6 +98,7 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
+      "editableInPortal": true,
       "shortLabel": {
         "en": "Date of Birth"
       }
@@ -146,51 +147,13 @@
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
+      "editableInPortal": true,
       "scoring": {
         "multiplier": 2
       },
       "shortLabel": {
         "en": "Dragon Nr."
       }
-    },
-    {
-      "name": "skills",
-      "label": {
-        "en": "3. My skills include .. ?"
-      },
-      "answerType": "multi-select",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "demoOption1",
-          "label": {
-            "en": "Demo option 1"
-          }
-        },
-        {
-          "option": "demoOption2",
-          "label": {
-            "en": "Demo option 2"
-          }
-        },
-        {
-          "option": "demoOption3",
-          "label": {
-            "en": "Demo option 3"
-          }
-        }
-      ],
-      "scoring": {
-        "demoOption1": 10,
-        "demoOption2": 200,
-        "demoOption3": 3000
-      },
-      "shortLabel": {
-        "en": "Skills"
-      },
-      "editableInPortal": true,
-      "phases": ["registrationValidation"],
-      "export": ["all-people-affected", "included", "selected-for-validation"]
     }
   ],
   "programCustomAttributes": [

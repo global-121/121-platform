@@ -57,6 +57,7 @@ const programsArray: Program[] = [
     aidworkerAssignments: [],
     fullnameNamingConvention: [],
     paTableAttributes: [],
+    filterableAttributes: [],
   },
 ];
 // Copy 2:
