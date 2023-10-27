@@ -8,7 +8,7 @@ export const environment = {
   // Configuration/Feature-switches:
   isDebug: true, // Controls debugging features
   showDebug: false, // Controls debugging features
-  useAnimation: false, // Use animations and delays in the interface
+  useAnimation: true, // Use animations and delays in the interface
   disableTextPlayer: false, // Hide player and don't attempt to find audio-files
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
   useServiceWorker: true, // Enable 'offline' support
