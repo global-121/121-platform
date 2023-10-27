@@ -1442,18 +1442,14 @@ export class RegistrationsService {
   public async getRegistrationStatusChanges(
     programId: number,
     referenceId: string,
-    onlyLatest: boolean,
   ): Promise<any[]> {
-    let options: FindManyOptions = {
+    const options: FindManyOptions = {
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },
       relations: ['registration'],
+      order: { created: 'DESC' },
     };
-
-    if (onlyLatest) {
-      options = { ...options, order: { created: 'DESC' }, take: 1 };
-    }
 
     const statusChanges = await this.registrationStatusChangeRepository.find(
       options,

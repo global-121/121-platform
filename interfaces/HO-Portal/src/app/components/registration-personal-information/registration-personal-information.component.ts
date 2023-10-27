@@ -95,21 +95,25 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
   private async fillPersonalInfoTable() {
     this.personalInfoTable = [];
-    if (this.person.status) {
-      const latestStatus = await this.getLatestStatus();
 
+    if (this.person?.status) {
+      const latestStatus = await this.getLatestStatus();
+      const statusKey = latestStatus?.status
+        ? latestStatus.status
+        : this.person?.status;
       this.personalInfoTable.push({
         label: this.getLabel('status', {
           status: this.translate.instant(
-            'page.program.program-people-affected.status.' +
-              latestStatus.status,
+            'page.program.program-people-affected.status.' + statusKey,
           ),
         }),
-        value: formatDate(
-          new Date(latestStatus.date),
-          DateFormat.dateOnly,
-          this.locale,
-        ),
+        value: latestStatus?.date
+          ? formatDate(
+              new Date(latestStatus.date),
+              DateFormat.dateOnly,
+              this.locale,
+            )
+          : '',
       });
     }
     this.personalInfoTable.push({
@@ -211,7 +215,6 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       await this.programsService.getRegistrationStatusChanges(
         this.programId,
         this.person.referenceId,
-        true,
       )
     )[0];
   }

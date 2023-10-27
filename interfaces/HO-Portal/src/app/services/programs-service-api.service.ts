@@ -951,13 +951,10 @@ export class ProgramsServiceApiService {
   public async getRegistrationStatusChanges(
     programId: number,
     referenceId: string,
-    onlyLatest = false,
   ): Promise<RegistrationStatusChange[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/status-changes/${referenceId}${
-        onlyLatest ? '?onlyLatest=true' : ''
-      }`,
+      `/programs/${programId}/registrations/status-changes/${referenceId}`,
     );
   }
 }

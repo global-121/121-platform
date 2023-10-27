@@ -811,23 +811,13 @@ export class RegistrationsController {
   @ApiOperation({ summary: 'Get registration status changes' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({
-    name: 'onlyLatest',
-    required: false,
-    type: 'boolean',
-    description: 'Get only the latest status',
-  })
   @Get('programs/:programId/registrations/status-changes/:referenceId')
   public async getRegistrationStatusChanges(
     @Param() params,
-    @Query() queryParams,
   ): Promise<RegistrationStatusChangeEntity[]> {
-    const onlyLatest = queryParams.onlyLatest === 'true';
-
     return await this.registrationsService.getRegistrationStatusChanges(
       params.programId,
       params.referenceId,
-      onlyLatest,
     );
   }
 }
