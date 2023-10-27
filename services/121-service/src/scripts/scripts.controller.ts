@@ -5,7 +5,6 @@ import { DataSource } from 'typeorm';
 import { SeedEthJointResponse } from './seed-eth-joint-response';
 import { SeedMultipleKRCS } from './seed-multiple-krcs';
 import { SeedMultipleNLRC } from './seed-multiple-nlrc';
-import { SeedMultipleNLRCMockData } from './seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
@@ -14,7 +13,6 @@ import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
-
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
@@ -87,6 +85,8 @@ export class ScriptsController {
       script == SeedScript.nlrcMultipleMock &&
       process.env.NODE_ENV == 'development'
     ) {
+      const module = await import('./seed-multiple-nlrc-mock');
+      const SeedMultipleNLRCMockData = module.SeedMultipleNLRCMockData;
       seed = new SeedMultipleNLRCMockData(this.dataSource);
     } else {
       return res
