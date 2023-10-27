@@ -398,7 +398,7 @@ export class WhatsappIncomingService {
       }
     }
 
-    // Start loop over (potentially) multiple PA's
+    // Start loop over (potentially) multiple PAs
     let firstVoucherSent = false;
     for await (const registration of registrationsWithOpenVouchers) {
       const intersolveVouchersPerPa = registration.images.map(
@@ -417,7 +417,7 @@ export class WhatsappIncomingService {
           intersolveVoucher,
         );
 
-        // Only include text with first voucher (across PA's and payments)
+        // Only include text with first voucher (across PAs and payments)
         let message = firstVoucherSent
           ? ''
           : program.notifications[language][
