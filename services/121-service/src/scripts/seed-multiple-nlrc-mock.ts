@@ -2,12 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs';
 import path from 'path';
 import { DataSource } from 'typeorm';
-import { changePhase, doPayment } from '../../test/helpers/program.helper';
-import {
-  awaitChangePaStatus,
-  importRegistrations,
-} from '../../test/helpers/registration.helper';
-import { getAccessToken } from '../../test/helpers/utility.helper';
 import {
   amountVisa,
   referenceIdVisa,
@@ -78,6 +72,23 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     const seedMultiple = new SeedMultipleNLRC(this.dataSource);
     await seedMultiple.run();
 
+    let getAccessToken,
+      changePhase,
+      doPayment,
+      awaitChangePaStatus,
+      importRegistrations;
+    if (process.env.NODE_ENV == 'development') {
+      const utilityModule = await import('../../test/helpers/utility.helper');
+      getAccessToken = utilityModule.getAccessToken;
+      const programModule = await import('../../test/helpers/program.helper');
+      changePhase = programModule.changePhase;
+      doPayment = programModule.doPayment;
+      const registrationModule = await import(
+        '../../test/helpers/registration.helper'
+      );
+      awaitChangePaStatus = registrationModule.awaitChangePaStatus;
+      importRegistrations = registrationModule.importRegistrations;
+    }
     // Set up 1 registration with 1 payment and 1 message
     // TODO: this uses helper functions from the API-test folder, move this to a shared location
     const programIdVisa = 3;
