@@ -1228,7 +1228,7 @@ Nothing. Dummy release upgrade to test automatic deploy through webhook on minor
 
 ### Added
 
-- 2021-05-05: Added endpoint to upload registered PA's via CSV-file for testing purposes
+- 2021-05-05: Added endpoint to upload registered PAs via CSV-file for testing purposes
 
 ## [1.2.3](https://github.com/global-121/121-platform/compare/v1.2.2...v1.2.3) - 2021-04-20
 

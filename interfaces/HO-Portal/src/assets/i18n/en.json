@@ -212,7 +212,7 @@
         },
         "totals": {
           "total-helped-to-date": "Total number of individual PA helped to date",
-          "tooltip": "PA's that received one or more payments"
+          "tooltip": "PAs that received one or more payments"
         },
         "over-time": {
           "pa": {
@@ -360,10 +360,10 @@
           "include": "Include in program",
           "reject": "Reject from program",
           "end-inclusion": "End inclusion in program",
-          "send-message": "Send Message to PA's",
+          "send-message": "Send Message to PAs",
           "delete-pa": "Delete PA",
           "do-payment": "Do payment",
-          "pause": "Pause PA's"
+          "pause": "Pause PAs"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
