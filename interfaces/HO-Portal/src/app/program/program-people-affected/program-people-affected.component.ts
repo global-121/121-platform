@@ -48,6 +48,7 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { AnswerType } from '../../models/fsp.model';
 import {
   MessageStatus,
   MessageStatusMapping,
@@ -585,6 +586,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       if (value === 'false') {
         value = false;
       }
+      if (paTableAttribute.type === AnswerType.PhoneNumber) {
+        value = formatPhoneNumber(value);
+      }
       personRow[paTableAttribute.name] = value;
     }
     return personRow;
@@ -930,8 +934,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         { action: this.getCurrentBulkAction().label },
       );
 
-      const text = `${nobodyToSelectTest}\n${conditionsToSelectText}
-          `;
+      const text = `${nobodyToSelectTest}\n${conditionsToSelectText}`;
 
       this.resetBulkAction();
       actionResult(
