@@ -233,9 +233,9 @@ export class IntersolveVisaService
       );
 
       // if error, return error
-      if (!createCustomerResult.data.success) {
+      if (!createCustomerResult.data?.success) {
         paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = createCustomerResult.data.errors.length
+        paTransactionResult.message = createCustomerResult.data?.errors?.length
           ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
               createCustomerResult.data.errors,
             )}`
