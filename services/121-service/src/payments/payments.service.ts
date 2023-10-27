@@ -8,7 +8,10 @@ import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
-import { BulkActionResultPaymentDto } from '../registration/dto/bulk-action-result.dto';
+import {
+  BulkActionResultDto,
+  BulkActionResultPaymentDto,
+} from '../registration/dto/bulk-action-result.dto';
 import {
   ImportResult,
   ImportStatus,
@@ -213,7 +216,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
-  ): Promise<number> {
+  ): Promise<BulkActionResultDto> {
     await this.checkProgram(programId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
@@ -237,7 +240,11 @@ export class PaymentsService {
       this.azureLogService.logError(e, true);
     });
 
-    return paPaymentDataList.length;
+    return {
+      totalFilterCount: paPaymentDataList.length,
+      applicableCount: paPaymentDataList.length,
+      nonApplicableCount: 0,
+    };
   }
 
   private async checkProgram(programId: number): Promise<ProgramEntity> {

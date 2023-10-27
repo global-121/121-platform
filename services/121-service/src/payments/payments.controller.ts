@@ -156,7 +156,7 @@ export class PaymentsController {
     @Body() data: RetryPaymentDto,
     @Param('programId', ParseIntPipe) programId: number,
     @User('id') userId: number,
-  ): Promise<number> {
+  ): Promise<BulkActionResultDto> {
     return await this.paymentsService.retryPayment(
       userId,
       programId,
