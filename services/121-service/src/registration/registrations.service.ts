@@ -185,6 +185,7 @@ export class RegistrationsService {
         result = [
           RegistrationStatusEnum.imported,
           RegistrationStatusEnum.invited,
+          RegistrationStatusEnum.startedRegistration, // needed to transfer 'no longer eligible' status to registration from PA-app
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.registeredWhileNoLongerEligible:
