@@ -24,8 +24,8 @@ Feature: Make a new payment
   Scenario: Send payment instructions with changed transfer value
     Given the "Do payment" prompt is open
     Given the user changes the Transfer value to "20"
-    And the user clicks the button "start payout now"
-    And the total maximum amount reflects the changed amount per PA
+    When the user clicks the button "start payout now"
+    Then the total maximum amount reflects the changed amount per PA
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
