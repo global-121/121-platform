@@ -3,7 +3,7 @@ Feature: Include people affected
 
   Background:
     Given a logged-in user with the "RegistrationStatusIncludedUPDATE" permission
-    Given the "selected phase" is the "inclusion" phase
+    Given the "selected phase" is the "inclusion" or "payment" phase
 
   Scenario: View "include for program" action
     When opening the "action dropdown"
@@ -12,7 +12,7 @@ Feature: Include people affected
   Scenario: Use bulk-action "include for program"
     Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
     When user selects the "include for program" action
-    Then the eligible rows are those with status "registered", "selected for validation", "validated", "rejected" and "inclusion ended"
+    Then the eligible rows are those with status "registered", "selected for validation", "validated", "rejected", "inclusion ended" and "paused" (in "inclusion phase") or "completed" (in "payment" phase)
 
   Scenario: Confirm "include for program" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)

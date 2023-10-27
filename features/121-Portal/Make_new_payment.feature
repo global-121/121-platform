@@ -16,8 +16,6 @@ Feature: Make a new payment
     When clicking the "apply action" button
     Then the pop-up "Do payment" is shown
     And the "Transfer Value" is filled in with the program's default value
-    When the user clicks the button "start payout now"
-    Then the pop-up "Are you sure?" is shown
     And the pop-up shows the number of PAs to pay out to
     And it shows the maximum total amount to pay out
     And this total amount reflects that some PAs may receive more than the supplied "Transfer Value" because of a "paymentAmountMultiplier" greater than 1
@@ -26,9 +24,8 @@ Feature: Make a new payment
   Scenario: Send payment instructions with changed transfer value
     Given the "Do payment" prompt is open
     Given the user changes the Transfer value to "20"
-    And the user clicks the button "start payout now"
-    And the pop-up "Are you sure?" is shown
-    And the total maximum amount reflects the changed amount per PA
+    When the user clicks the button "start payout now"
+    Then the total maximum amount reflects the changed amount per PA
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
@@ -46,8 +43,7 @@ Feature: Make a new payment
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
     And the "bulk action" dropdown list now shows the next available payment to do
-    And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
-    When clicking
+    When clicking "Payment history"
     Then the payment history popup opens
     And it shows the payment number, the payment state, the payment date+time and the transaction amount
     And the payment state shows 'Success' when the payment went through
@@ -56,13 +52,13 @@ Feature: Make a new payment
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
     And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, date
 
-  Scenario: Send payment instructions for 5000 PAs
-    Given there are 5000 PAs in the system
+  Scenario: Send payment instructions for 10000 PAs
+    Given there are 10000 PAs in the system
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
     Then the user selects the "Do payment" action
-    And the user selects all 5000 PAs
+    And the user selects all 10000 PAs
     And the user clicks the "Apply action" button and the "Do payment" popup shows up
-    When the user clicks the "start payout now" button and confirms the confirm prompt
+    When the user clicks the "start payout now" button
     Then the message "Payout request successfully sent to X PAs" is shown
     And it mentions that it can take some time (very rough estimation: 0.5 seconds per PA)
     And it shows an "OK" button
@@ -135,12 +131,6 @@ Feature: Make a new payment
 
   Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-voucher" to Financial Service Provider "Intersolve-visa"
     Given the Person Affected has been updated having Intersolve Financial Service Provider "Intersolve-voucher" to having with Financial Service Provider "Intersolve-visa"
-    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
-    And the notification is about receiving their Visa card
-
-  Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been updated having from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to having with Financial Service Provider "Intersolve-visa"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about receiving their Visa card
@@ -249,7 +239,7 @@ Feature: Make a new payment
 
   Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
     Given the Person Affected has been imported as registered
-    Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
+    Given an obligatory field is missing ("phoneNumber", "National ID number")
     Given requested value is not valid
     When payment is requested
     Then a failed payment appears for the PA with the missing data
