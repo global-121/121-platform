@@ -234,7 +234,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.noLongerEligible,
           RegistrationStatusEnum.invited,
           RegistrationStatusEnum.imported,
-          RegistrationStatusEnum.created,
+          RegistrationStatusEnum.startedRegistration,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.selectedForValidation,
           RegistrationStatusEnum.validated,
