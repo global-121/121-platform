@@ -100,7 +100,9 @@ export class PaymentsService {
     query: PaginateQuery,
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
-    await this.checkPaymentInProgressAndThrow(programId);
+    if (!dryRun) {
+      await this.checkPaymentInProgressAndThrow(programId);
+    }
 
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
