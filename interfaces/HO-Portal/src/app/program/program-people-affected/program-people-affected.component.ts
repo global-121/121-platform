@@ -982,6 +982,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       PubSubEvent.dataRegistrationChanged,
       this.pubSub,
     );
+    this.resetBulkAction()
   }
 
   public paComparator(a: string, b: string) {
