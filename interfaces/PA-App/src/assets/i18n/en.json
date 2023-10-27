@@ -115,11 +115,6 @@
     "retry": "Try again",
     "submit-button": "Send"
   },
-  "speak-text": {
-    "loading": "Loading",
-    "pause": "Pause",
-    "play": "Play"
-  },
   "tabs": {
     "account": "Account",
     "community": "Community",
