@@ -62,26 +62,29 @@ Feature: View and manage people affected (generic features)
     When the user clicks on "cancel"
     Then the table keeps the row that matched the previous status selection
 
+  --- Filter PA-table START ---
+
   Scenario: Filter rows of PA-table by one filterable column
     Given the table with all "people affected" relevant to the selected program phase is shown
     When the user clicks on the "select column" filter dropdown above the table
     Then a dropdown with all the filterable columns appears
     And the dropdown contains a search bar to search the columns to filter
-    When the user makes a a selection
+    When the user makes a selection
     Then a text field appears on the right of the dropdown
+    And if its a "numeric" field then only numeric characters are allowed, otherwise all is allowed
     When the user writes the value of the filter
-    Then a the "apply filter" button is enabled
+    Then the "apply filter" button is enabled
     When the user clicks on "apply filter" or presses the "enter" button on the keyboard
     Then the value is used on the selected column to filter the table
-    And A text showing the number of "fitered recipients" appears below the dropdown
-    And a chip showing the selecte column and the filter value appears next to it on the right
+    And a text showing the number of "fitered recipients" appears below the dropdown
+    And a chip showing the selected column and the filter value appears next to it on the right
     And on the right side of the page the "clear all filters" button appears
-    And dropdow is reset to an empty selection
+    And the dropdown is reset to an empty selection
     And the search bar and the "apply filter" button disappear
 
   Scenario: Filter rows of PA-table by multiple filterable columns
     Given the table has been filtered for one column already
-    When the user selects another colum and applies the filter
+    When the user selects another column and applies the filter
     Then the already filtered table is additionally filtered by this second filter
     And the "filtered recipients" count updates according to the two filters applied
     And a second chip showing column and value appears next to the previous one
@@ -100,6 +103,8 @@ Feature: View and manage people affected (generic features)
     Then all filters are removed from the table
     And all chips disappear
     And the "filtered recipient" count disappears
+
+  --- Filter PA-table END ---
 
   Scenario: Show People Affected of all phases
     Given the table with all "people affected" relevant to the selected program phase is shown
