@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Export duplicates fixed
+- Improve error handling on timeout visa payment
 
 ## [1.103.0](https://github.com/global-121/121-platform/compare/v1.102.3...v1.103.0) - 2023-10-12
 
