@@ -288,6 +288,7 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
+  // TODO: refactor this to use 1 query + include payment-id in action-table + share logic between front-end and back-end
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
