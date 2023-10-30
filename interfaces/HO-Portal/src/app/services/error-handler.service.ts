@@ -11,7 +11,7 @@ export class ErrorHandlerService extends ErrorHandler {
     super();
   }
 
-  handleError(error: Error) {
+  override handleError(error: Error) {
     this.loggingService.logException(error);
     const originalError = this.getOriginalError(error);
 
@@ -43,6 +43,7 @@ export class ErrorHandlerService extends ErrorHandler {
     if (error.error.errors && typeof error.error.errors === 'string') {
       return '<br><br>' + error.error.errors + '<br>';
     }
+    return '';
   }
 
   private formatConstraintsErrors(errors, attribute?: string): string {
