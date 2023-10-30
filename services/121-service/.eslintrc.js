@@ -19,9 +19,9 @@ module.exports = {
       extends: [
         'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
-        // 'plugin:@typescript-eslint/recommended-type-checked',
+        // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
-        // 'plugin:@typescript-eslint/stylistic-type-checked',
+        // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
