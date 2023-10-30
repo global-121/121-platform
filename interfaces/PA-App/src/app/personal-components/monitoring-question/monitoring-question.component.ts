@@ -17,7 +17,7 @@ export class MonitoringQuestionComponent
   extends PersonalDirective
   implements OnInit
 {
-  public isCanceled = false;
+  public override isCanceled = false;
   public monitoringQuestion: MonitoringInfo;
 
   public monitoringChoice: string;
@@ -41,13 +41,13 @@ export class MonitoringQuestionComponent
     this.initNew();
   }
 
-  async initNew() {
+  override async initNew() {
     await this.getMonitoringQuestion();
 
     this.conversationService.stopLoading();
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.isCanceled = this.data.isCanceled;
     if (this.isCanceled) {
       return;

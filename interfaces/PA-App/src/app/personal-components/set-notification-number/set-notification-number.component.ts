@@ -16,7 +16,7 @@ export class SetNotificationNumberComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   public languageCode: string;
 
@@ -49,7 +49,7 @@ export class SetNotificationNumberComponent
     this.initNew();
   }
 
-  async initNew() {
+  override async initNew() {
     await this.checkExistingPhoneNumber();
 
     if (this.isCanceled) {
@@ -59,7 +59,7 @@ export class SetNotificationNumberComponent
     this.placeholder = await this.getPlaceholder();
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.isCanceled = this.data.isCanceled;
 
     if (this.isCanceled) {

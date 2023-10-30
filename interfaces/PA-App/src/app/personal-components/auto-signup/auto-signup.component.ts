@@ -18,7 +18,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 })
 export class AutoSignupComponent extends PersonalDirective implements OnInit {
   @Input()
-  public data: any;
+  public override data: any;
 
   constructor(
     public conversationService: ConversationService,
@@ -37,7 +37,7 @@ export class AutoSignupComponent extends PersonalDirective implements OnInit {
     this.initNew();
   }
 
-  initNew() {
+  override initNew() {
     this.signup();
   }
 

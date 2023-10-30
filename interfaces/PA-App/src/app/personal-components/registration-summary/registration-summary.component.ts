@@ -22,7 +22,7 @@ export class RegistrationSummaryComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   public validation: boolean;
 
@@ -62,7 +62,7 @@ export class RegistrationSummaryComponent
     this.initNew();
   }
 
-  async initNew() {
+  override async initNew() {
     this.conversationService.startLoading();
 
     await this.getProgram();
@@ -86,7 +86,7 @@ export class RegistrationSummaryComponent
     this.checkStatus();
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.isDisabled = this.data.isDisabled;
     this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;

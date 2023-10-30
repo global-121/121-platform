@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.104.0...master)
 
+### Changed
+
+- Upgraded Node.js to v18 for PA-App. Make sure to use your Node version manager to install+run the newest version.
+
 ### Removed
 
 - All audio-features are removed from the PA-App. To prevent a lot of "local changes" during development,
