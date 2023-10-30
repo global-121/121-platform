@@ -413,9 +413,8 @@ export class WhatsappIncomingService {
 
       // Loop over current and (potentially) old vouchers per PA
       for await (const intersolveVoucher of intersolveVouchersPerPa) {
-        const mediaUrl = await this.imageCodeService.createVoucherUrl(
-          intersolveVoucher,
-        );
+        const mediaUrl =
+          await this.imageCodeService.createVoucherUrl(intersolveVoucher);
 
         // Only include text with first voucher (across PAs and payments)
         let message = firstVoucherSent

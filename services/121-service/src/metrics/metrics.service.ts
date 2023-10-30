@@ -587,8 +587,8 @@ export class MetricsService {
     fileName: ExportType;
     data: any[];
   }> {
-    const duplicatesMap: Map<number, number[]> = new Map();
-    const uniqueRegistrationIds: Set<number> = new Set();
+    const duplicatesMap = new Map<number, number[]>();
+    const uniqueRegistrationIds = new Set<number>();
 
     const programQuestions = await this.programQuestionRepository.find({
       where: {
@@ -782,7 +782,7 @@ export class MetricsService {
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
     fspQuestions: FspQuestionEntity[],
-  ): { [key: number]: RegistrationDataOptions[] } {
+  ): Record<number, RegistrationDataOptions[]> {
     const relationOptionsPerFsp = {};
     for (const fsp of program.financialServiceProviders) {
       // Get all non fsp questions
@@ -845,9 +845,8 @@ export class MetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('transaction.financialServiceProvider', 'fsp');
 
-    const additionalFspExportFields = await this.getAdditionalFspExportFields(
-      programId,
-    );
+    const additionalFspExportFields =
+      await this.getAdditionalFspExportFields(programId);
 
     for (const field of additionalFspExportFields) {
       const nestedParts = field.split('.');

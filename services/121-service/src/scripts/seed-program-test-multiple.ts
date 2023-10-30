@@ -47,9 +47,8 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     // ******************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityValidation = await this.seedHelper.addProgram(
-      programValidation,
-    );
+    const programEntityValidation =
+      await this.seedHelper.addProgram(programValidation);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityValidation, true);

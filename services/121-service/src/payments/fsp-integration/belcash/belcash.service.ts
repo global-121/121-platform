@@ -129,9 +129,8 @@ export class BelcashService
   public async processTransactionStatus(
     belcashCallbackData: BelcashPaymentStatusDto,
   ): Promise<void> {
-    const belcashRequest = await this.belcashRequestRepository.save(
-      belcashCallbackData,
-    );
+    const belcashRequest =
+      await this.belcashRequestRepository.save(belcashCallbackData);
 
     const successStatuses = ['PROCESSED'];
     const errorStatuses = ['CANCELED', 'EXPIRED', 'DENIED', 'FAILED'];

@@ -12,6 +12,4 @@ export interface Answer {
   label: string;
 }
 
-export interface AnswerSet {
-  [code: string]: Answer;
-}
+export type AnswerSet = Record<string, Answer>;
