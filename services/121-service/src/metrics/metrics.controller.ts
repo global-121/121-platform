@@ -78,13 +78,13 @@ export class MetricsController {
 
   @Admin()
   @ApiOperation({
-    summary: 'Get list of to cancel vouchers only used by admin',
+    summary: 'Get list of vouchers to cancel, only used by admin',
   })
   @ApiResponse({
     status: 200,
-    description: 'Get list of to cancel vouchers only used by admin',
+    description: 'Retrieved list of vouchers to cancel',
   })
-  @Get('metrics')
+  @Get('metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<any> {
     return await this.metricsService.getToCancelVouchers();
   }

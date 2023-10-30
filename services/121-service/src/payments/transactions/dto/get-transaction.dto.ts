@@ -30,12 +30,19 @@ export class GetTransactionDto {
 }
 
 export class GetTransactionOutputDto {
+  @ApiProperty({ example: new Date() })
   public readonly paymentDate: Date;
+  @ApiProperty({ example: 1 })
   public readonly payment: number;
+  @ApiProperty({ example: 'referenceId' })
   public readonly referenceId: string;
+  @ApiProperty({ example: StatusEnum.success })
   public readonly status: StatusEnum;
+  @ApiProperty({ example: 10 })
   public readonly amount: number;
+  @ApiProperty({ example: 'errorMessage' })
   public readonly errorMessage: string;
+  @ApiProperty({ example: {} })
   public readonly customData: object;
 }
 

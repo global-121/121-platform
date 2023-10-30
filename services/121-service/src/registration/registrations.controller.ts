@@ -469,7 +469,6 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -634,7 +633,7 @@ export class RegistrationsController {
   @ApiParam({
     name: 'referenceId',
   })
-  @Get('registrations/get/:referenceId')
+  @Get('registrations/:referenceId')
   public async getRegistration(
     @Param() params,
     @User('id') userId: number,
@@ -651,21 +650,19 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspREAD)
-  @ApiOperation({ summary: 'Find FSP and attributes' })
+  @ApiOperation({ summary: 'Get FSP-attribute answers' })
   @ApiResponse({
     status: 200,
-    description: 'Found fsp and attributes',
+    description: 'Retrieved FSP-attribute answers',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/get-fsp')
+  @Get('programs/:programId/registrations/fsp-attributes')
   public async getFspAnswersAttributes(
-    @Param() params,
     @Query() queryParams: ReferenceIdDto,
   ): Promise<FspAnswersAttrInterface> {
     return await this.registrationsService.getFspAnswersAttributes(
       queryParams.referenceId,
-      params.programId,
     );
   }
 

@@ -121,10 +121,14 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
+  // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
-  // TODO: REFACTOR: rename to /users
-  @Post('user/aidworker')
+  @ApiResponse({
+    status: 201,
+    description: 'Created new Aid Worker user',
+  })
+  @Post('users')
   public async createAw(
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
@@ -133,8 +137,11 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
-  // TODO: REFACTOR: rename to /users/person-affected
-  @Post('user/person-affected')
+  @ApiResponse({
+    status: 201,
+    description: 'Created new Person Affected user',
+  })
+  @Post('users/person-affected')
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
     @Res() res,
@@ -175,8 +182,15 @@ export class UserController {
   )
   @ApiTags('users')
   @ApiOperation({ summary: 'Log in existing user' })
-  // TODO: REFACTOR: rename to /users/login
-  @Post('user/login')
+  @ApiResponse({
+    status: 201,
+    description: 'Logged in successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Wrong username and/or password',
+  })
+  @Post('users/login')
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
@@ -215,8 +229,7 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
-  // TODO: REFACTOR: rename to /users/logout
-  @Post('user/logout')
+  @Post('users/logout')
   public async logout(@Res() res): Promise<UserRO> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
@@ -234,9 +247,12 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
-  // TODO: REFACTOR: rename to /users/password
-  @Post('user/change-password')
-  @ApiResponse({ status: 201, description: 'Changed password of user' })
+  @Post('users/password')
+  @ApiResponse({
+    status: 201,
+    description: 'Changed password of user',
+    type: UpdateUserDto,
+  })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
@@ -255,8 +271,8 @@ export class UserController {
   @Admin()
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
+  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  // TODO: REFACTOR: rename to /users/:userid
   @Delete('users/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(@Param() params): Promise<UserEntity> {
@@ -265,9 +281,8 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
-  // TODO: REFACTOR: rename to /users/
   @Delete('users')
-  @ApiResponse({ status: 201, description: 'User deleted' })
+  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
@@ -284,8 +299,7 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
-  // TODO: REFACTOR: rename to /users
-  @Get('user')
+  @Get('users')
   @ApiResponse({ status: 200, description: 'User returned' })
   @ApiResponse({
     status: 401,

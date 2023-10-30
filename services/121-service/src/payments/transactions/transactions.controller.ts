@@ -47,8 +47,8 @@ export class TransactionsController {
   })
   @ApiResponse({
     status: 200,
-    type: TransactionReturnDto,
-    isArray: true,
+    description: 'Retrieved transactions',
+    type: [TransactionReturnDto],
   })
   @Get('programs/:programId/payments/transactions')
   public async getTransactions(
@@ -62,10 +62,10 @@ export class TransactionsController {
       Number(minPayment),
       Number(payment),
       referenceId,
-      null,
     );
   }
 
+  // TODO: REFACTOR combine this endpoint with GET /payments/transactions above (or remove the need for this one altogether)
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ summary: 'Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -75,6 +75,8 @@ export class TransactionsController {
   @ApiQuery({ name: 'customDataValue', required: false, type: 'string' })
   @ApiResponse({
     status: 200,
+    description: 'Retrieved single transaction',
+    type: GetTransactionOutputDto,
   })
   @Get('programs/:programId/payments/transactions/one')
   public async getTransaction(

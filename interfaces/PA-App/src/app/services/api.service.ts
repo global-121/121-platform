@@ -9,10 +9,10 @@ export enum ApiPath {
   customData = '/registrations/custom-data',
   dataStorage = '/people-affected/data-storage',
   fsp = '/registrations/fsp',
-  personAffected = '/user/person-affected',
+  personAffected = '/users/person-affected',
   phoneNumber = '/registrations/phone',
   registrations = '/registrations',
-  logout = '/user/logout',
+  logout = '/users/logout',
   register = '/registrations/register',
 }
 
@@ -78,6 +78,31 @@ export class ApiService {
             `ApiService POST: ${security} ${endpoint}${path}:`,
             body,
             `\nResponse:`,
+            response,
+          ),
+        ),
+      );
+  }
+
+  delete(
+    endpoint: string,
+    path: ApiPath | string,
+    body?: object,
+    anonymous = false,
+  ): Observable<any> {
+    const security = this.showSecurity(anonymous);
+
+    return this.http
+      .delete(endpoint + path, {
+        headers: this.createHeaders(),
+        withCredentials: true,
+        body: body,
+      })
+      .pipe(
+        tap((response) =>
+          console.log(
+            `ApiService DELETE: ${security} ${endpoint}${path}`,
+            '\nResponse:',
             response,
           ),
         ),

@@ -61,7 +61,7 @@ The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
 ### API Sign-up/Log-in
 
 - If you have no users in your database yet, start with running one of the [reset/seed-scripts above](#seed-the-database).
-- If you have already created the above user earlier, make a request: `POST /user/login`'. Change the example-value where necessary, and execute.
+- If you have already created the above user earlier, make a request: `POST /users/login`'. Change the example-value where necessary, and execute.
 - The 121-service will respond with a (httpOnly-)Cookie containing the users's details and permissions, the cookie will be used automatically on subsequent requests.
 - This will give access to each API-endpoint for which a `Permission` is specified and a matching `Permission` is present in the users' token/cookie.
 

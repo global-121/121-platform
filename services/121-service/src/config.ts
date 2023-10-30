@@ -50,7 +50,8 @@ export const API_PATHS = {
   whatsAppIncoming: 'notifications/whatsapp/incoming',
   whatsAppStatusTemplateTest: 'notifications/whatsapp/templates',
   imageCode: 'notifications/imageCode/',
-  voucherInstructions: 'payments/intersolve/instruction/',
+  voucherInstructions:
+    'financial-service-providers/intersolve-voucher/instructions/',
   safaricomResult: 'payments/safaricom/transaction',
   safaricomQueueTimeout: 'payments/safaricom/timeout',
 };
