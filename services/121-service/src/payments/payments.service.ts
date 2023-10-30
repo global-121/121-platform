@@ -100,6 +100,10 @@ export class PaymentsService {
     query: PaginateQuery,
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
+    if (!dryRun) {
+      await this.checkPaymentInProgressAndThrow(programId);
+    }
+
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
 
@@ -217,6 +221,8 @@ export class PaymentsService {
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<BulkActionResultDto> {
+    await this.checkPaymentInProgressAndThrow(programId);
+
     await this.checkProgram(programId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
@@ -268,15 +274,55 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    await this.makePaymentRequest(paLists, programId, payment);
-    if (payment > -1) {
-      await this.actionService.saveAction(
-        userId,
+    this.makePaymentRequest(paLists, programId, payment)
+      .catch((e) => {
+        this.azureLogService.logError(e, true);
+      })
+      .finally(async () => {
+        await this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentFinished,
+        );
+      });
+    return paPaymentDataList.length;
+  }
+
+  // TODO: refactor this to use 1 query + include payment-id in action-table + share logic between front-end and back-end
+  public async checkPaymentInProgressAndThrow(
+    programId: number,
+  ): Promise<void> {
+    let inProgress = false;
+    const latestPaymentStartedAction =
+      await this.actionService.getLatestActions(
+        programId,
+        AdditionalActionType.paymentStarted,
+      );
+    // If never started, then not in progress, return early
+    if (!latestPaymentStartedAction) {
+      return;
+    }
+
+    const latestPaymentFinishedAction =
+      await this.actionService.getLatestActions(
         programId,
         AdditionalActionType.paymentFinished,
       );
+    // If started, but never finished, then in progress
+    if (!latestPaymentFinishedAction) {
+      inProgress = true;
+    } else {
+      // If started and finished, then compare timestamps
+      const startTimestamp = new Date(latestPaymentStartedAction?.created);
+      const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
+      inProgress = finishTimestamp < startTimestamp;
     }
-    return paPaymentDataList.length;
+
+    if (inProgress) {
+      const errors = 'Payment is already in progress';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+    return;
   }
 
   private splitPaListByFsp(
