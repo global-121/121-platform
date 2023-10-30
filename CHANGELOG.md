@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded Node.js to v18 for PA-App. Make sure to use your Node version manager to install+run the newest version.
+- Upgraded Node.js to v18 for PA-App + HO-Portal.  
+  Make sure to use your Node version manager to install+run the newest version.
+- Upgraded Node.js to v18 for 121-service.  
+  Make sure to recreate the Docker image using `npm run start:services`.
 
 ### Removed
 
