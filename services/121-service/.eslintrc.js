@@ -17,16 +17,19 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser', // Specifies the ESLint parser
       extends: [
-        'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
         'plugin:jest/recommended',
+        'plugin:@typescript-eslint/recommended',
+        // 'plugin:@typescript-eslint/recommended-type-checked',
+        'plugin:@typescript-eslint/stylistic',
+        // 'plugin:@typescript-eslint/stylistic-type-checked',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
         parser: '@typescript-eslint/parser',
         ecmaVersion: 2021, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
+        project: true,
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
       },
       rules: {
         '@typescript-eslint/interface-name-prefix': 'off',
