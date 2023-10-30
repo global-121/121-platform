@@ -1,9 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import {
-  ApplicationInsights,
-  ITelemetryItem,
-} from '@microsoft/applicationinsights-web';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { SeverityLevel } from 'src/app/models/severity-level.enum';
 import { environment } from 'src/environments/environment';
 import {
@@ -76,21 +73,7 @@ export class LoggingService {
     });
 
     this.appInsights.loadAppInsights();
-    this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
     this.appInsightsEnabled = true;
-  }
-
-  private addTelemetryProcessor(envelope: ITelemetryItem): boolean {
-    // filter missing audio files
-    if (
-      envelope.baseData.responseCode === 404 &&
-      envelope.baseData.name.match('/assets/i18n/')
-    ) {
-      return false;
-    }
-
-    // only if all criteria pass then log:
-    return true;
   }
 
   public logPageView(name?: string): void {
