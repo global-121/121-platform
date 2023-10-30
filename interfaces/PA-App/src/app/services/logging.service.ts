@@ -73,12 +73,7 @@ export class LoggingService {
     });
 
     this.appInsights.loadAppInsights();
-    this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
     this.appInsightsEnabled = true;
-  }
-
-  private addTelemetryProcessor(): boolean {
-    return true;
   }
 
   public logPageView(name?: string): void {

@@ -1,6 +1,5 @@
 <ion-header>
   <ion-toolbar color="dark">
-    <ion-buttons slot="start"> </ion-buttons>
     <ion-title>
       <ng-container *ngIf="headingKey">{{
         headingKey | translate
@@ -29,10 +28,6 @@
   fullscreen
   class="ion-padding"
 >
-  <div
-    *ngIf="messageKey"
-    class="ion-float-end ion-margin-start"
-  ></div>
   <div
     *ngIf="messageKey"
     [innerHTML]="messageKey | translate"

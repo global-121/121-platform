@@ -12,9 +12,9 @@ Some specific information need to be configured before use:
 
 Next to the 'generic' dependencies/libraries/components [used by all interfaces](../README.md#Dependencies-in-use), the PA-app also uses:
 
-- [Howler](https://howlerjs.com/)
-  A component to play, (pre-)load and handle audio-files.
-  - Documentation: <https://github.com/goldfire/howler.js#documentation>
+- ...
+
+---
 
 ## License
 
