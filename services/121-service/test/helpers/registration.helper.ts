@@ -41,10 +41,12 @@ export function searchRegistrationByReferenceId(
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {
+  const queryParams = {
+    'filter.referenceId': referenceId,
+  };
   return getServer()
-    .get(
-      `/programs/${programId}/registrations/?referenceId=${referenceId}&paymentData=false&personalData=true`,
-    )
+    .get(`/programs/${programId}/registrations`)
+    .query(queryParams)
     .set('Cookie', [accessToken]);
 }
 
