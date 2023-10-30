@@ -143,60 +143,84 @@ export class SoapService {
   }
 
   async postCBERequest(payload: any, soapAction: string): Promise<any> {
-    try {
-      const soapRequestXml = convert.js2xml(payload, {
-        compact: false,
-        spaces: 4,
-      });
+    const soapRequestXml = convert.js2xml(payload, {
+      compact: false,
+      spaces: 4,
+    });
 
-      // Configure and send the SOAP request
-      const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
-      const headers = {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        soapAction: soapAction,
-      };
+    // Configure and send the SOAP request
+    const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+    const headers = {
+      'Content-Type': 'text/xml;charset=UTF-8',
+      soapAction: soapAction,
+    };
+
+    let agent;
+    try {
       const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
       const cert = fs.readFileSync(certPath);
-      const agent = new https.Agent({
+      agent = new https.Agent({
         ca: cert,
       });
-
-      const { response } = await soapRequest({
-        headers: headers,
-        url: soapUrl,
-        xml: soapRequestXml,
-        timeout: 150000,
-        extraOpts: {
-          httpsAgent: agent,
-        },
-      });
-
-      // Parse the SOAP response if needed
-      const parsedResponse = convert.xml2js(response.body, { compact: true });
-
-      if (
-        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:RMTFundtransferResponse'
-        ];
-      } else if (
-        parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ]
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:CBERemitanceTransactionStatusResponse'
-        ];
-      } else if (
-        parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
-      ) {
-        return parsedResponse['S:Envelope']['S:Body'][
-          'ns10:AccountEnquiryResponse'
-        ];
-      }
     } catch (error) {
       throw error;
     }
+
+    return soapRequest({
+      headers: headers,
+      url: soapUrl,
+      xml: soapRequestXml,
+      timeout: 150000,
+      extraOpts: {
+        httpsAgent: agent,
+      },
+    })
+      .then((rawResponse: any) => {
+        const response = rawResponse.response;
+        this.httpService.logMessageRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: response.statusCode,
+            statusText: null,
+            data: response.body,
+          },
+        );
+
+        // Parse the SOAP response if needed
+        const parsedResponse = convert.xml2js(response.body, { compact: true });
+
+        if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:RMTFundtransferResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ]
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:AccountEnquiryResponse'
+          ];
+        }
+      })
+      .catch((err: any) => {
+        this.httpService.logErrorRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: null,
+            statusText: null,
+            data: { error: err },
+          },
+        );
+        throw err;
+      });
   }
 }

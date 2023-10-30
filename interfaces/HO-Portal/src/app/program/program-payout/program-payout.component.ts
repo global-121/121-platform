@@ -64,6 +64,7 @@ export class ProgramPayoutComponent implements OnInit {
   public nextPaymentId: number;
   public minPayment: number;
   public maxPayment: number;
+  public paymentInProgress = false;
 
   public showCbeValidationButton: boolean;
 
@@ -110,6 +111,9 @@ export class ProgramPayoutComponent implements OnInit {
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
     this.showCbeValidationButton = this.checkShowCbeValidation();
+
+    this.paymentInProgress =
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
   }
 
   private checkCanViewPayment(): boolean {
@@ -376,7 +380,7 @@ export class ProgramPayoutComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err && err.error && err.error.error) {
+          if (err && err.error && err.error.errors) {
             actionResult(
               this.alertController,
               this.translate,
@@ -393,5 +397,9 @@ export class ProgramPayoutComponent implements OnInit {
       this.lastPaymentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
+  }
+
+  public refresh() {
+    window.location.reload();
   }
 }
