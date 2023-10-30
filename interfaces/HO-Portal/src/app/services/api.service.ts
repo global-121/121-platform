@@ -96,7 +96,7 @@ export class ApiService {
       this.http
         .post(endpoint + path, body, {
           headers: this.createHeaders(isUpload),
-          responseType: responseAsBlob ? 'blob' : null,
+          responseType: responseAsBlob ? 'blob' : undefined,
           withCredentials: true,
           params,
         })

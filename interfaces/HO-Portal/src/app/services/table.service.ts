@@ -226,7 +226,7 @@ export class TableService {
       return this.translatableStringService.get(columnShortlLabel);
     }
 
-    this.translate.instant(
+    return this.translate.instant(
       `page.program.program-people-affected.column.${columnName}`,
     );
   }

@@ -137,7 +137,10 @@ export class PaymentStatusPopupComponent implements OnInit {
     return '';
   }
 
-  public async getTransactionTime(customKey: string, customValue: string) {
+  public async getTransactionTime(
+    customKey: string,
+    customValue: string,
+  ): Promise<string | null> {
     const transaction = await this.programsService.getTransaction(
       this.payoutDetails.referenceId,
       this.payoutDetails.programId,
@@ -157,6 +160,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         this.locale,
       );
     }
+    return null;
   }
 
   public updateTotalAmountMessage(): void {
