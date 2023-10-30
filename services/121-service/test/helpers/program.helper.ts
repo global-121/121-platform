@@ -54,8 +54,8 @@ export async function publishProgram(
   programId: number,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/change-phase`)
-    .send({ newPhase: 'registrationValidation' });
+    .patch(`/programs/${programId}`)
+    .send({ phase: 'registrationValidation' });
 }
 
 export async function changePhase(
@@ -64,9 +64,9 @@ export async function changePhase(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/change-phase`)
+    .patch(`/programs/${programId}`)
     .set('Cookie', [accessToken])
-    .send({ newPhase: newPhase });
+    .send({ phase: newPhase });
 }
 
 export async function doPayment(

@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Res,
@@ -26,11 +27,7 @@ import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
-import { ChangePhaseDto } from './dto/change-phase.dto';
-import {
-  CreateProgramCustomAttributeDto,
-  CreateProgramCustomAttributesDto,
-} from './dto/create-program-custom-attribute.dto';
+import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
   CreateProgramQuestionDto,
@@ -40,7 +37,7 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
-import { ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
@@ -150,26 +147,10 @@ export class ProgramController {
       .send('The program has been successfully deleted.');
   }
 
-  @Permissions(PermissionEnum.ProgramPhaseUPDATE)
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PATCH /api/programs/:programid
-  @Post(':programId/change-phase')
-  public async changePhase(
-    @Param() params,
-    @Body() changePhaseData: ChangePhaseDto,
-  ): Promise<SimpleProgramRO> {
-    return this.programService.changePhase(
-      Number(params.programId),
-      changePhaseData.newPhase,
-    );
-  }
-
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PATCH /api/programs/:programid
-  @Post(':programId/update')
+  @Patch(':programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
@@ -196,15 +177,21 @@ export class ProgramController {
 
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ summary: 'Update program question' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return program question',
+    type: ProgramQuestionEntity,
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PATCH /api/programs/:programid/program-questions/:programquestionid,
-  @Post(':programId/update/program-question')
+  @ApiParam({ name: 'programQuestionId', required: true, type: 'integer' })
+  @Patch(':programId/program-questions/:programQuestionId')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
     @Param() params,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
       Number(params.programId),
+      Number(params.programQuestionId),
       updateProgramQuestionDto,
     );
   }
@@ -232,27 +219,37 @@ export class ProgramController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/custom-attributes')
   public async createProgramCustomAttribute(
-    @Body() updateProgramQuestionDto: CreateProgramCustomAttributeDto,
+    @Body() createProgramQuestionDto: CreateProgramCustomAttributeDto,
     @Param() params,
   ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.createProgramCustomAttribute(
       Number(params.programId),
-      updateProgramQuestionDto,
+      createProgramQuestionDto,
     );
   }
 
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ summary: 'Update program custom attributes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return program custom attributes',
+    type: ProgramCustomAttributeEntity,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No attribute found for given program and custom attribute id',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PUT /api/programs/:programid/program-custom-attributes
-  @Post(':programId/update/program-custom-attributes')
+  @ApiParam({ name: 'customAttributeId', required: true, type: 'integer' })
+  @Patch(':programId/custom-attributes/:customAttributeId')
   public async updateProgramCustomAttributes(
     @Param() params,
-    @Body() updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
-  ): Promise<ProgramCustomAttributeEntity[]> {
+    @Body() createProgramCustomAttributeDto: CreateProgramCustomAttributeDto,
+  ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.updateProgramCustomAttributes(
       Number(params.programId),
-      updateProgramCustomAttributes,
+      Number(params.customAttributeId),
+      createProgramCustomAttributeDto,
     );
   }
 

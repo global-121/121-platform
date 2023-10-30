@@ -150,11 +150,11 @@ export class ProgramsServiceApiService {
   }
 
   advancePhase(programId: number, newPhase: string): Promise<any> {
-    return this.apiService.post(
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/change-phase`,
+      `/programs/${programId}`,
       {
-        newPhase,
+        phase: newPhase,
       },
     );
   }
@@ -245,7 +245,7 @@ export class ProgramsServiceApiService {
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/note`,
+      `/programs/${programId}/notes`,
       {
         referenceId,
         text: note,
@@ -257,7 +257,7 @@ export class ProgramsServiceApiService {
   getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/note/${referenceId}`,
+      `/programs/${programId}/notes/${referenceId}`,
       null,
       false,
     );
@@ -812,9 +812,9 @@ export class ProgramsServiceApiService {
   }
 
   updateProgram(programId: number, updateBody: object): Promise<Program> {
-    return this.apiService.post(
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/update`,
+      `/programs/${programId}`,
       updateBody,
     );
   }

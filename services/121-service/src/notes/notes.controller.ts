@@ -42,7 +42,7 @@ export class NoteController {
     description: 'ReferenceId is not known',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/note')
+  @Post(':programId/notes')
   public async createNote(
     @User('id') userId: number,
     @Body() createNote: CreateNoteDto,
@@ -68,7 +68,7 @@ export class NoteController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true })
-  @Get(':programId/note/:referenceId')
+  @Get(':programId/notes/:referenceId')
   public async retrieveNotes(@Param() params): Promise<ResponseNoteDto[]> {
     return await this.noteService.retrieveNotes(
       params.referenceId,

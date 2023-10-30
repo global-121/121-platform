@@ -124,13 +124,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
   public readonly label: JSON;
 
   @ApiProperty({
-    examples: [
-      AnswerTypes.numeric,
-      AnswerTypes.dropdown,
-      AnswerTypes.tel,
-      AnswerTypes.text,
-      AnswerTypes.date,
-    ],
+    example: AnswerTypes.numeric,
     required: false,
   })
   @IsOptional()
@@ -142,7 +136,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     AnswerTypes.text,
     AnswerTypes.date,
   ])
-  public readonly answerType: string;
+  public readonly answerType: AnswerTypes;
 
   @ApiProperty({ example: 'standard', required: false })
   @IsIn(['standard', 'custom'])

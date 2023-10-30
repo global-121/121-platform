@@ -27,7 +27,7 @@ import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import {
   CreateProgramCustomAttributeDto,
-  CreateProgramCustomAttributesDto,
+  UpdateProgramCustomAttributeDto,
 } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
@@ -500,45 +500,23 @@ export class ProgramService {
 
   public async updateProgramCustomAttributes(
     programId: number,
-    updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
-  ): Promise<ProgramCustomAttributeEntity[]> {
-    const savedAttributes: ProgramCustomAttributeEntity[] = [];
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['programCustomAttributes'],
-    });
-
-    for (const attribute of updateProgramCustomAttributes.attributes) {
-      const oldAttribute = await this.programCustomAttributeRepository.findOne({
-        where: { name: attribute.name, programId: programId },
-      });
-      if (oldAttribute) {
-        // If existing: update ..
-        oldAttribute.type = attribute.type;
-        oldAttribute.label = attribute.label;
-        const savedAttribute = await this.programCustomAttributeRepository.save(
-          oldAttribute,
-        );
-        savedAttributes.push(savedAttribute);
-        const attributeIndex = program.programCustomAttributes.findIndex(
-          (attr) => attr.id === savedAttribute.id,
-        );
-        program.programCustomAttributes[attributeIndex] = savedAttribute;
-      } else {
-        // .. otherwise, create new
-        const newCustomAttribute = attribute as ProgramCustomAttributeEntity;
-        newCustomAttribute.programId = programId;
-
-        // attribute.programId = programId;
-        const savedAttribute = await this.programCustomAttributeRepository.save(
-          newCustomAttribute,
-        );
-        savedAttributes.push(savedAttribute);
-        program.programCustomAttributes.push(savedAttribute);
-      }
+    customAttributeId: number,
+    updateProgramCustomAttributeDto: UpdateProgramCustomAttributeDto,
+  ): Promise<ProgramCustomAttributeEntity> {
+    const customAttribute = await this.programCustomAttributeRepository.findOne(
+      {
+        where: { id: customAttributeId, programId: programId },
+      },
+    );
+    if (!customAttribute) {
+      const errors = `No program custom attribute found with id ${customAttributeId} for program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    await this.programRepository.save(program);
-    return savedAttributes;
+
+    for (const property of Object.keys(updateProgramCustomAttributeDto)) {
+      customAttribute[property] = updateProgramCustomAttributeDto[property];
+    }
+    return await this.programCustomAttributeRepository.save(customAttribute);
   }
 
   private async validateAttributeName(
@@ -639,23 +617,22 @@ export class ProgramService {
 
   public async updateProgramQuestion(
     programId: number,
+    programQuestionId: number,
     updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     const programQuestion = await this.programQuestionRepository.findOne({
       where: {
-        name: updateProgramQuestionDto.name,
+        id: programQuestionId,
         programId: programId,
       },
     });
     if (!programQuestion) {
-      const errors = `No programQuestion found with name ${updateProgramQuestionDto.name}`;
+      const errors = `No programQuestion found with id ${programQuestionId} for program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     for (const attribute in updateProgramQuestionDto) {
-      if (attribute !== 'name') {
-        programQuestion[attribute] = updateProgramQuestionDto[attribute];
-      }
+      programQuestion[attribute] = updateProgramQuestionDto[attribute];
     }
 
     await this.programQuestionRepository.save(programQuestion);
