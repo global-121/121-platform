@@ -13,11 +13,12 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
 })
 export class MessageHistoryPopupComponent implements OnInit {
   @Input()
-  public person: Person;
+  public referenceId: string;
 
   @Input()
   public programId: number;
 
+  public person: Person;
   public DateFormat = DateFormat;
   public messageHistory: Message[];
   public historySize = 5;
@@ -32,14 +33,24 @@ export class MessageHistoryPopupComponent implements OnInit {
     private modalController: ModalController,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.getPersonData();
     this.getMessageHistory();
   }
 
+  private async getPersonData() {
+    const res = await this.programsService.getPeopleAffected(
+      this.programId,
+      1,
+      1,
+      this.referenceId,
+    );
+    this.person = res.data[0];
+  }
   private async getMessageHistory() {
     this.messageHistory = await this.programsService.retrieveMsgHistory(
       this.programId,
-      this.person?.referenceId,
+      this.referenceId,
     );
   }
   public async loadMore(historyLength) {

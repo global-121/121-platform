@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { getServer } from './utility.helper';
 
 export function importRegistrations(
@@ -14,13 +15,25 @@ export function importRegistrations(
 
 export function deleteRegistrations(
   programId: number,
-  registrationReferenceIds: { referenceIds: string[] },
+  referenceIds: string[],
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+
   return getServer()
     .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .send(registrationReferenceIds);
+    .send()
+    .query(queryParams);
 }
 
 export function searchRegistrationByReferenceId(
@@ -52,12 +65,28 @@ export function getRegistrations(
   programId: number,
   attributes: string[],
   accessToken: string,
+  page?: number,
+  limit?: number,
+  filter: { [key: string]: string } = {},
+  sort?: { field: string; direction: 'ASC' | 'DESC' },
 ): Promise<request.Response> {
-  const queryParams = {
-    personalData: true,
-  };
+  const queryParams = {};
   if (attributes) {
-    queryParams['attributes'] = attributes.join(',');
+    queryParams['select'] = attributes.join(',');
+  }
+  if (page) {
+    queryParams['page'] = String(page);
+  }
+  if (limit) {
+    queryParams['limit'] = String(limit);
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+  if (sort) {
+    queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
   }
   return getServer()
     .get(`/programs/${programId}/registrations`)
@@ -65,19 +94,88 @@ export function getRegistrations(
     .set('Cookie', [accessToken]);
 }
 
-export function changePaStatus(
+export async function awaitChangePaStatus(
   programId: number,
-  registrations: string[],
-  action: string,
+  referenceIds: string[],
+  status: RegistrationStatusEnum,
   accessToken: string,
+  filter: { [key: string]: string } = {},
 ): Promise<request.Response> {
-  return getServer()
-    .post(`/programs/${programId}/registrations/${action}`)
+  const queryParams = {};
+  if (referenceIds) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+  const result = await getServer()
+    .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
-      referenceIds: registrations,
+      status: status,
       message: null,
     });
+  await waitForStatusChangeToComplete(
+    programId,
+    referenceIds.length,
+    status,
+    8000,
+    accessToken,
+  );
+
+  return result;
+}
+
+export async function waitForStatusChangeToComplete(
+  programId: number,
+  amountOfRegistrations: number,
+  status: string,
+  maxWaitTimeMs: number,
+  accessToken: string,
+): Promise<void> {
+  const startTime = Date.now();
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    // Get payment transactions
+    const metrics = await personAffectedMetrics(programId, accessToken);
+    // If not all transactions are successful, wait for a short interval before checking again
+    if (
+      metrics.body.pa[status] &&
+      metrics.body.pa[status] >= amountOfRegistrations
+    ) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Wait
+  }
+}
+
+export async function personAffectedMetrics(
+  programId: number,
+  accessToken: string,
+): Promise<any> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/person-affected`)
+    .set('Cookie', [accessToken]);
+}
+
+export function sendMessage(
+  programId: number,
+  referenceIds: string[],
+  message: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const filter = {
+    ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
+  };
+  return getServer()
+    .post(`/programs/${programId}/registrations/message`)
+    .set('Cookie', [accessToken])
+    .send({
+      message: message,
+    })
+    .query(filter);
 }
 
 export function updateRegistration(

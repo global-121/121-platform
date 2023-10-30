@@ -6,7 +6,7 @@ export async function actionResult(
   alertController: AlertController,
   translateService: TranslateService,
   resultMessage: string,
-  refresh: boolean = false,
+  refresh = false,
   pubsubEvent?: PubSubEvent,
   pubsubService?: PubSubService,
 ) {

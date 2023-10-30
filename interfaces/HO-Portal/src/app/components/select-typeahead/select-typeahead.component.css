@@ -1,0 +1,38 @@
+.select-typeahead--trigger-wrapper {
+  position: relative;
+  padding: 0.45em;
+}
+
+/* The actionable button is placed 'on top of' the 'real' <ion-select> input-element  */
+.select-typeahead--trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+}
+
+.select-typeahead--proxy::part(container) {
+  width: 100%;
+}
+
+/*
+  This proxy should not be interacted with;
+  It is only there to contain + show the input-data.
+  Styled as 'enabled' to override .select-disabled,
+    Except: When trigger is really disabled.
+*/
+.select-typeahead--proxy.select-disabled:not(
+    .select-typeahead--trigger[disabled] + .select-typeahead--proxy
+  ) {
+  opacity: 1;
+}
+.select-typeahead--proxy:not(.select-label-placement-stacked) {
+  min-height: auto;
+}
+
+.select-typeahead--popover ion-content::part(scroll) {
+  --height-of-item: 3rem;
+  max-height: calc(7.75 * var(--height-of-item));
+}

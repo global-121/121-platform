@@ -32,5 +32,9 @@ import { SeedProgramValidation } from './seed-program-validation';
 export class ScriptsModule {}
 
 export interface InterfaceScript {
-  run(): Promise<void>;
+  run(
+    squareString?: string,
+    nrPaymentsString?: string,
+    squareNumberBulkMessageString?: string,
+  ): Promise<void>;
 }

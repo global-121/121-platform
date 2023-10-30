@@ -67,12 +67,6 @@ export class RecipientPage implements OnDestroy {
     const programs = await this.progamsServiceApiService.getAllPrograms();
 
     for (const program of programs) {
-      const paTableAttributes =
-        await this.progamsServiceApiService.getPaTableAttributes(
-          program.id,
-          null,
-        );
-      program.paTableAttributes = paTableAttributes;
       programsMap[program.id] = program;
     }
     return programsMap;
@@ -91,7 +85,7 @@ export class RecipientPage implements OnDestroy {
     return paList.map((pa) => {
       return {
         ...pa,
-        name: pa.name ? pa.name : `PA #${pa.id}`,
+        name: pa.name ? pa.name : `PA #${pa.personAffectedSequence}`,
         programTitle: this.translatableString.get(
           this.programsMap[pa.programId].titlePortal,
         ),

@@ -10,7 +10,7 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { ExportType } from '../../export-metrics/dto/export-details.dto';
+import { ExportType } from '../../metrics/dto/export-details.dto';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { CreateOptionsDto } from './create-options.dto';

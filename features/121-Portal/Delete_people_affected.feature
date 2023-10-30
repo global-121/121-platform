@@ -8,7 +8,7 @@ Feature: Delete people affected (extension of View_and_Manage_people_affected.fe
   Scenario: Use bulk-action "delete PA"
     Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
     When user selects the "delete PA" action
-    Then all rows except PAs with status "included" should be eligible
+    Then all rows except PAs with status "included", "completed", or "paused" should be eligible
 
   Scenario: Confirm "delete PA" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)

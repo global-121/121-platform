@@ -21,6 +21,8 @@ export interface SubmitPaymentProps {
   programId: number;
   payment: number;
   referenceIds: string[];
+  applicableCount?: number;
+  sumPaymentAmountMultiplier?: number;
 }
 
 export interface DuplicateAttributesProps {

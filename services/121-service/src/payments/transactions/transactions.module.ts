@@ -9,6 +9,7 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserModule } from '../../user/user.module';
 import { UserEntity } from './../../user/user.entity';
+import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
@@ -18,6 +19,7 @@ import { TransactionsService } from './transactions.service';
     TypeOrmModule.forFeature([
       ProgramEntity,
       TransactionEntity,
+      LatestTransactionEntity,
       RegistrationEntity,
       FinancialServiceProviderEntity,
       UserEntity,

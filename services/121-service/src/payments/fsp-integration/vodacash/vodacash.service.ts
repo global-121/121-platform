@@ -11,7 +11,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
-import { TransactionEntity } from '../../transactions/transaction.entity';
+import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 
@@ -54,7 +54,7 @@ export class VodacashService
 
   public async getFspInstructions(
     registration: RegistrationEntity,
-    transaction: TransactionEntity,
+    transaction: TransactionReturnDto,
     vodacashInstructionsXml: string,
   ): Promise<any> {
     const locationBaseXml =

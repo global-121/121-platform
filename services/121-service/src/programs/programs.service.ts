@@ -1,12 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilterOperator } from 'nestjs-paginate';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
-import { ExportType } from '../export-metrics/dto/export-details.dto';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { ExportType } from '../metrics/dto/export-details.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import {
+  AllowedFilterOperatorsNumber,
+  AllowedFilterOperatorsString,
+  PaginateConfigRegistrationViewWithPayments,
+} from '../registration/const/filter-operation.const';
+import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
+import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import {
   Attribute,
   QuestionType,
@@ -87,6 +95,9 @@ export class ProgramService {
         program.id,
       );
 
+      // TODO: Get these attributes from some enum or something
+      program['filterableAttributes'] = this.getFilterableAttributes(program);
+
       if (!includeMetricsUrl) {
         delete program.monitoringDashboardUrl;
         delete program.evaluationDashboardUrl;
@@ -94,6 +105,85 @@ export class ProgramService {
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
+  }
+
+  public getFilterableAttributes(
+    program: ProgramEntity,
+  ): { group: string; filters: FilterAttributeDto[] }[] {
+    const genericPaAttributeFilters = [
+      'personAffectedSequence',
+      'referenceId',
+      'phoneNumber',
+      'preferredLanguage',
+      'inclusionScore',
+      'paymentAmountMultiplier',
+      'fspDisplayNamePortal',
+    ];
+    const paAttributesNameArray = program['paTableAttributes'].map(
+      (paAttribute: Attribute) => paAttribute.name,
+    );
+
+    let filterableAttributeNames = [
+      {
+        group: 'payments',
+        filters: ['failedPayment', 'waitingPayment', 'successPayment'],
+      },
+      {
+        group: 'messages',
+        filters: ['lastMessageStatus'],
+      },
+      {
+        group: 'paAttributes',
+        filters: [
+          ...new Set([...genericPaAttributeFilters, ...paAttributesNameArray]),
+        ],
+      },
+    ];
+    if (program.enableMaxPayments) {
+      filterableAttributeNames = [
+        ...filterableAttributeNames,
+        ...[
+          {
+            group: 'maxPayments',
+            filters: ['maxPayments', 'paymentCount', 'paymentCountRemaining'],
+          },
+        ],
+      ];
+    }
+
+    const filterableAttributes = [];
+    for (const group of filterableAttributeNames) {
+      const filterableAttributesPerGroup: FilterAttributeDto[] = [];
+      for (const name of group.filters) {
+        if (
+          PaginateConfigRegistrationViewWithPayments.filterableColumns[name]
+        ) {
+          filterableAttributesPerGroup.push({
+            name: name,
+            allowedOperators: PaginateConfigRegistrationViewWithPayments
+              .filterableColumns[name] as FilterOperator[],
+            isInteger:
+              PaginateConfigRegistrationViewWithPayments.filterableColumns[
+                name
+              ] === AllowedFilterOperatorsNumber,
+          });
+        } else {
+          // If no allowed operators are defined than the attribute is
+          // registration data which is stored as a string
+          filterableAttributesPerGroup.push({
+            name: name,
+            allowedOperators: AllowedFilterOperatorsString,
+            isInteger: false,
+          });
+        }
+      }
+      filterableAttributes.push({
+        group: group.group,
+        filters: filterableAttributesPerGroup,
+      });
+    }
+
+    return filterableAttributes;
   }
 
   public async getCreateProgramDto(
@@ -645,7 +735,21 @@ export class ProgramService {
   public async getPaTableAttributes(
     programId: number,
     phase?: ProgramPhase,
+    userId?: number,
   ): Promise<Attribute[]> {
+    if (userId) {
+      const hasPersonalRead = await this.userService.canActivate(
+        [PermissionEnum.RegistrationPersonalREAD],
+        programId,
+        userId,
+      );
+      if (!hasPersonalRead) {
+        // If a person does not have personal read permission we should
+        // not show registration data columns in the portal
+        return [];
+      }
+    }
+
     let queryCustomAttr = this.dataSource
       .getRepository(ProgramCustomAttributeEntity)
       .createQueryBuilder('programCustomAttribute')
@@ -750,5 +854,58 @@ export class ProgramService {
     });
 
     return [...customAttributes, ...programQuestions];
+  }
+
+  public async getAllRelationProgram(
+    programId: number,
+  ): Promise<RegistrationDataInfo[]> {
+    const relations: RegistrationDataInfo[] = [];
+    const programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
+    for (const attribute of programCustomAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.type,
+        relation: {
+          programCustomAttributeId: attribute.id,
+        },
+      });
+    }
+
+    const programQuestions = await this.programQuestionRepository.find({
+      where: { program: { id: programId } },
+    });
+
+    for (const question of programQuestions) {
+      relations.push({
+        name: question.name,
+        type: question.answerType,
+        relation: {
+          programQuestionId: question.id,
+        },
+      });
+    }
+
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp', 'fsp.program'],
+    });
+    const programFspAttributes = fspAttributes.filter((a) =>
+      a.fsp.program.map((p) => p.id).includes(programId),
+    );
+
+    for (const attribute of programFspAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.answerType,
+        relation: {
+          fspQuestionId: attribute.id,
+        },
+        fspId: attribute.fspId,
+      });
+    }
+
+    return relations;
   }
 }

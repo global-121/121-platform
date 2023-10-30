@@ -1,3 +1,14 @@
+const formatArray = (array: string[]): string => {
+  return array
+    .map((item, index) => {
+      if (index === array.length - 1) {
+        return `'${item}'`;
+      }
+      return `'${item}',`;
+    })
+    .join(' ');
+};
+
 export const nameConstraintQuestionsArray = [
   'id',
   'status',
@@ -5,8 +16,6 @@ export const nameConstraintQuestionsArray = [
   'preferredLanguage',
   'inclusionScore',
   'paymentAmountMultiplier',
-  'note',
-  'noteUpdated',
   'financialServiceProvider',
   'registrationProgramId',
   'maxPayments',
@@ -16,7 +25,8 @@ export const nameConstraintQuestionsArray = [
   'lastTransactionAmount',
   'lastTransactionErrorMessage',
   'lastTransactionCustomData',
-  'amountPaymentsReceived',
+  'paymentCount',
+  'paymentCountRemaining',
   'importedDate',
   'invitedDate',
   'startedRegistrationDate',
@@ -33,11 +43,11 @@ export const nameConstraintQuestionsArray = [
   'lastMessageStatus',
   'lastMessageType',
 ];
-export const NameConstraintQuestions = nameConstraintQuestionsArray
-  .map((item, index) => {
-    if (index === nameConstraintQuestionsArray.length - 1) {
-      return `'${item}'`;
-    }
-    return `'${item}',`;
-  })
-  .join(' ');
+
+export const NameConstraintQuestions = formatArray(
+  nameConstraintQuestionsArray,
+);
+
+//To avoid endpoint confusion in registration.controller
+const referenceIdConstraintArray = ['status'];
+export const ReferenceIdConstraints = formatArray(referenceIdConstraintArray);

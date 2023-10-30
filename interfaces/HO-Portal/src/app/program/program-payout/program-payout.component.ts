@@ -64,6 +64,7 @@ export class ProgramPayoutComponent implements OnInit {
   public nextPaymentId: number;
   public minPayment: number;
   public maxPayment: number;
+  public paymentInProgress = false;
 
   public showCbeValidationButton: boolean;
 
@@ -110,6 +111,9 @@ export class ProgramPayoutComponent implements OnInit {
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
     this.showCbeValidationButton = this.checkShowCbeValidation();
+
+    this.paymentInProgress =
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
   }
 
   private checkCanViewPayment(): boolean {
@@ -230,6 +234,9 @@ export class ProgramPayoutComponent implements OnInit {
   private fillPaymentHistory(pastPayments: Payment[]): void {
     pastPayments.forEach((pastPayment) => {
       const payment = this.getPaymentById(pastPayment.id);
+      if (!payment) {
+        return;
+      }
       payment.paymentDate = pastPayment.paymentDate;
       payment.statusOpen = false;
       payment.isExportAvailable = true;
@@ -365,7 +372,7 @@ export class ProgramPayoutComponent implements OnInit {
             message += this.translate.instant(
               'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
-                nrPa: `<strong>${response}</strong>`,
+                nrPa: `<strong>${response.applicableCount}</strong>`,
               },
             );
           }
@@ -373,7 +380,7 @@ export class ProgramPayoutComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err && err.error && err.error.error) {
+          if (err && err.error && err.error.errors) {
             actionResult(
               this.alertController,
               this.translate,
@@ -390,5 +397,9 @@ export class ProgramPayoutComponent implements OnInit {
       this.lastPaymentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
+  }
+
+  public refresh() {
+    window.location.reload();
   }
 }

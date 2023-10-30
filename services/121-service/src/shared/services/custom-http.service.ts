@@ -44,8 +44,12 @@ export class CustomHttpService {
             return response;
           }),
           catchError((err) => {
-            this.logErrorRequest({ headers, url, payload: null }, err.response);
-            return of(err.response);
+            const errorResponse = err.response || this.setNoResponseError(err);
+            this.logErrorRequest(
+              { headers, url, payload: null },
+              errorResponse,
+            );
+            return of(errorResponse);
           }),
         ),
     );
@@ -70,11 +74,12 @@ export class CustomHttpService {
             return response;
           }),
           catchError((err) => {
+            const errorResponse = err.response || this.setNoResponseError(err);
             this.logErrorRequest(
               { headers, url, payload: payload },
-              err.response,
+              errorResponse,
             );
-            return of(err.response);
+            return of(errorResponse);
           }),
         ),
     );
@@ -99,11 +104,12 @@ export class CustomHttpService {
             return response;
           }),
           catchError((err) => {
+            const errorResponse = err.response || this.setNoResponseError(err);
             this.logErrorRequest(
               { headers, url, payload: payload },
-              err.response,
+              errorResponse,
             );
-            return of(err.response);
+            return of(errorResponse);
           }),
         ),
     );
@@ -119,6 +125,14 @@ export class CustomHttpService {
       }
     }
     return returnHeaders;
+  }
+
+  private setNoResponseError(err: any): Response {
+    return {
+      status: err.errno,
+      statusText: err.code,
+      data: err.cause,
+    };
   }
 
   public logMessageRequest(request: Request, response: Response): void {

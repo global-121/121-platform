@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,7 +36,6 @@ describe('MetricsTotalsComponent', () => {
         SharedModule,
         NoopAnimationsModule,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
