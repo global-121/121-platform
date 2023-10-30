@@ -145,7 +145,10 @@ export class CommercialBankEthiopiaService
     const nonEmptyRegistrationData = registrationData.map(
       (data: CommercialBankEthiopiaRegistrationData) => {
         for (const key in data) {
-          if (data.hasOwnProperty(key) && data[key] === null) {
+          if (
+            Object.prototype.hasOwnProperty.call(data, key) &&
+            data[key] === null
+          ) {
             delete data[key];
           }
         }

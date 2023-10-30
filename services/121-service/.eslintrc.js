@@ -1,3 +1,4 @@
+/** @type {import('@typescript-eslint/utils/dist/ts-eslint/Linter').Linter.Config} */
 module.exports = {
   overrides: [
     {
@@ -5,6 +6,10 @@ module.exports = {
       extends: ['eslint:recommended', 'plugin:prettier/recommended'],
       env: {
         node: true,
+      },
+      parserOptions: {
+        sourceType: 'script',
+        ecmaVersion: 2021,
       },
       rules: {},
     },
@@ -14,7 +19,6 @@ module.exports = {
       extends: [
         'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
         'plugin:jest/recommended',
-        // 'prettier/@typescript-eslint', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
