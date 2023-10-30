@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.103.2...master)
 
+### Removed
+
+- All audio-features are removed from the PA-App. Do prevent a lot of "local changes" during development,
+  make sure to remove any previously generated `*.webm`/`*.mp3` audio-files at: `/interfaces/PA-App/src/assets/<language-code>`
+
 ## Deprecated
 
 - AW-App will no longer receive updates/fixes/changes (untill decided otherwise)
