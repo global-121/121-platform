@@ -1,25 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  In,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
+import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
-import { AzureLogService } from '../shared/services/azure-log.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -29,8 +29,7 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { NoteDto } from './dto/note.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
@@ -43,8 +42,6 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
   CustomDataAttributes,
-  GenericAttributes,
-  QuestionType,
 } from './enum/custom-data-attributes';
 import { LanguageEnum } from './enum/language.enum';
 import {
@@ -55,9 +52,14 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import {
+  ImportType,
+  RegistrationsImportService,
+} from './services/registrations-import.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -79,31 +81,44 @@ export class RegistrationsService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
-  @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
-  @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
-  @InjectRepository(SafaricomRequestEntity)
-  private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
+  @InjectRepository(RegistrationViewEntity)
+  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly azureLogService: AzureLogService,
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
-    private readonly bulkImportService: BulkImportService,
+    private readonly registrationsImportService: RegistrationsImportService,
     private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly lastMessageStatusService: LastMessageStatusService,
   ) {}
+
+  // This methods can be used to get the same formattted data as the pagination query using referenceId
+  public async getPaginateRegistrationForReferenceId(
+    referenceId: string,
+    programId: number,
+  ): Promise<RegistrationViewEntity> {
+    const queryBuilder = this.registrationViewRepository
+      .createQueryBuilder('registration')
+      .andWhere({ referenceId: referenceId });
+
+    const paginateResult =
+      await this.registrationsPaginationService.getPaginate(
+        { path: '' },
+        programId,
+        true,
+        false,
+        queryBuilder,
+      );
+    return paginateResult.data[0];
+  }
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
@@ -142,11 +157,13 @@ export class RegistrationsService {
     const registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
     );
-    registrationToUpdate.registrationStatus = status;
-    return await this.registrationRepository.save(registrationToUpdate);
+    if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
+      registrationToUpdate.registrationStatus = status;
+      return await this.registrationRepository.save(registrationToUpdate);
+    }
   }
 
-  private canChangeStatus(
+  public canChangeStatus(
     currentStatus: RegistrationStatusEnum,
     newStatus: RegistrationStatusEnum,
   ): boolean {
@@ -174,6 +191,7 @@ export class RegistrationsService {
         result = [
           RegistrationStatusEnum.imported,
           RegistrationStatusEnum.invited,
+          RegistrationStatusEnum.startedRegistration, // needed to transfer 'no longer eligible' status to registration from PA-app
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.registeredWhileNoLongerEligible:
@@ -218,7 +236,17 @@ export class RegistrationsService {
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
-        result = currentStatus !== RegistrationStatusEnum.deleted;
+        result = [
+          RegistrationStatusEnum.noLongerEligible,
+          RegistrationStatusEnum.invited,
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.startedRegistration,
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.rejected,
+          RegistrationStatusEnum.inclusionEnded,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.completed:
         result = [RegistrationStatusEnum.included].includes(currentStatus);
@@ -493,8 +521,7 @@ export class RegistrationsService {
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
     currentRegistration.maxPayments = importedRegistration.maxPayments;
-    currentRegistration.note = importedRegistration.note;
-    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
+    currentRegistration.notes = importedRegistration.notes;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -532,11 +559,15 @@ export class RegistrationsService {
     const twilioMessages = await this.twilioMessageRepository.find({
       where: { registrationId: importedRegistration.id },
     });
-    if (twilioMessages) {
+    if (twilioMessages && twilioMessages.length > 0) {
       for (const message of twilioMessages) {
         message.registration = updatedRegistration;
       }
       await this.twilioMessageRepository.save(twilioMessages);
+      // Update the last message status of the new registration
+      await this.lastMessageStatusService.updateLastMessageStatus(
+        twilioMessages[0].sid,
+      );
     }
 
     // .. then delete the imported registration
@@ -569,7 +600,7 @@ export class RegistrationsService {
         registrationStatus: In(importStatuses),
         programId: programId,
       },
-      relations: ['fsp', 'data', 'fsp.questions'],
+      relations: ['fsp', 'data', 'fsp.questions', 'notes'],
     });
   }
 
@@ -638,7 +669,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importBulk(csvFile, program, userId);
+    return await this.registrationsImportService.importBulk(
+      csvFile,
+      program,
+      userId,
+    );
   }
 
   public async getImportRegistrationsTemplate(
@@ -648,7 +683,7 @@ export class RegistrationsService {
     if (!Object.values(ImportType).includes(type)) {
       throw new HttpException('Wrong import type', HttpStatus.BAD_REQUEST);
     }
-    return await this.bulkImportService.getImportRegistrationsTemplate(
+    return await this.registrationsImportService.getImportRegistrationsTemplate(
       programId,
       type,
     );
@@ -659,7 +694,10 @@ export class RegistrationsService {
     programId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importRegistrations(csvFile, program);
+    return await this.registrationsImportService.importRegistrations(
+      csvFile,
+      program,
+    );
   }
 
   public async importValidatedRegistrations(
@@ -667,7 +705,7 @@ export class RegistrationsService {
     programId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.importValidatedRegistrations(
+    return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
     );
@@ -677,7 +715,7 @@ export class RegistrationsService {
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    return await this.bulkImportService.validateRegistrationsInput(
+    return await this.registrationsImportService.validateRegistrationsInput(
       validatedJsonData,
       programId,
     );
@@ -695,25 +733,13 @@ export class RegistrationsService {
     return program;
   }
 
-  public async getRegistrations(
+  public async getRegistrationsForDashboard(
     programId: number,
-    includePersonalData: boolean,
-    includePaymentData: boolean,
-    includeDeletedRegistrations: boolean,
-    referenceId: string,
-    filterOnPayment?: number,
-    requestedDynamicAttributes?: string[],
   ): Promise<RegistrationResponse[]> {
     let q = this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
       .where('1 = 1');
-
-    if (includePaymentData) {
-      q = this.includeTransactionData(q);
-    }
-
-    q = this.includeLastMessage(q);
 
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
@@ -731,149 +757,17 @@ export class RegistrationsService {
       )
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('registration.note', 'note')
       .leftJoin('registration.fsp', 'fsp');
-
-    if (includePersonalData) {
-      let dynamicAttributes = await this.programService.getPaTableAttributes(
-        programId,
-      );
-      dynamicAttributes = dynamicAttributes.filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex(
-            (t) =>
-              t.name === value.name &&
-              t.questionType === value.questionType &&
-              t.type === value.type,
-          ),
-      ); // deduplicate attributes
-
-      const subquery = this.registrationDataRepository
-        .createQueryBuilder('rd')
-        .leftJoin('rd.programQuestion', 'programQuestion')
-        .leftJoin('rd.programCustomAttribute', 'programCustomAttribute')
-        .leftJoin('rd.fspQuestion', 'fspQuestion')
-        .select('"registrationId"')
-        .groupBy('"registrationId"');
-      for (const dynamicAttribute of dynamicAttributes) {
-        if (dynamicAttribute.name === GenericAttributes.phoneNumber) {
-          continue;
-        }
-        if (
-          !requestedDynamicAttributes || // if the param is not passed, then return all (instead of nothing)
-          requestedDynamicAttributes.includes(dynamicAttribute.name) // if someting passed, return only those
-        ) {
-          if (dynamicAttribute.questionType === QuestionType.programQuestion) {
-            if (dynamicAttribute.type === AnswerTypes.multiSelect) {
-              // Currently multi-select is only used for program-questions
-              subquery.addSelect(
-                `ARRAY_REMOVE(ARRAY_AGG(CASE WHEN programQuestion.name = '${dynamicAttribute.name}' THEN rd.value END),NULL)`,
-                dynamicAttribute.name,
-              );
-            } else {
-              subquery.addSelect(
-                `MAX(CASE WHEN programQuestion.name = '${dynamicAttribute.name}' THEN rd.value END)`,
-                dynamicAttribute.name,
-              );
-            }
-          } else if (
-            dynamicAttribute.questionType ===
-            QuestionType.programCustomAttribute
-          ) {
-            subquery.addSelect(
-              `MAX(CASE WHEN programCustomAttribute.name = '${dynamicAttribute.name}' THEN rd.value END)`,
-              dynamicAttribute.name,
-            );
-          } else if (
-            dynamicAttribute.questionType === QuestionType.fspQuestion
-          ) {
-            subquery.addSelect(
-              `MAX(CASE WHEN "fspQuestion".name = '${dynamicAttribute.name}' THEN rd.value END)`,
-              dynamicAttribute.name,
-            );
-          }
-        }
-      }
-      q.leftJoinAndSelect(
-        `(${subquery.getQuery()})`,
-        'subquery',
-        'subquery."registrationId" = registration.id',
-      );
-    }
 
     if (programId) {
       q.andWhere('registration.program.id = :programId', {
         programId: programId,
       });
     }
-
-    if (filterOnPayment) {
-      q.leftJoin(
-        TransactionEntity,
-        'transaction',
-        'transaction."registrationId" = registration.id',
-      ).andWhere('transaction.payment = :payment', {
-        payment: filterOnPayment,
-      });
-    }
-
     this.addStatusChangeToQuery(q);
-    if (!includeDeletedRegistrations) {
-      q.andWhere('registration.registrationStatus != :status', {
-        status: RegistrationStatusEnum.deleted,
-      });
-    }
-
-    if (referenceId) {
-      q.addSelect('registration.programId', 'programId');
-      q.andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
-      });
-    }
 
     const rows = await q.getRawMany();
-
-    if (!includePersonalData) {
-      for (const row of rows) {
-        row['hasPhoneNumber'] = !!row.phoneNumber;
-        delete row.phoneNumber;
-      }
-      return rows;
-    }
-
-    const program = await this.programService.findProgramOrThrow(programId);
-    for (const row of rows) {
-      row['name'] = this.getName(row, program);
-      row['hasNote'] = !!row.note;
-      row['hasPhoneNumber'] = !!row.phoneNumber;
-    }
     return rows;
-  }
-
-  private includeLastMessage(
-    q: SelectQueryBuilder<RegistrationEntity>,
-  ): SelectQueryBuilder<RegistrationEntity> {
-    q.leftJoin(
-      (qb) =>
-        qb
-          .from(TwilioMessageEntity, 'messages')
-          .select('MAX("created")', 'created')
-          .addSelect('"registrationId"', 'registrationId')
-          .groupBy('"registrationId"'),
-      'messages_max_created',
-      'messages_max_created."registrationId" = registration.id',
-    )
-      .leftJoin(
-        'registration.twilioMessages',
-        'twilioMessages',
-        `twilioMessages.created = messages_max_created.created`,
-      )
-      .addSelect([
-        '"twilioMessages"."status" AS "lastMessageStatus"',
-        '"twilioMessages"."type" AS "lastMessageType"',
-      ]);
-    return q;
   }
 
   public addStatusChangeToQuery(
@@ -892,69 +786,6 @@ export class RegistrationsService {
           `registration.id = ${registrationStatus}.registrationId AND ${registrationStatus}.registrationStatus = '${registrationStatus}'`,
         );
     }
-  }
-
-  private includeTransactionData(
-    q: SelectQueryBuilder<RegistrationEntity>,
-  ): SelectQueryBuilder<RegistrationEntity> {
-    q.leftJoin(
-      (qb) =>
-        qb
-          .from(TransactionEntity, 'transactions')
-          .select('MAX("payment")', 'payment')
-          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
-          .addSelect('"registrationId"', 'registrationId')
-          .groupBy('"registrationId"'),
-      'transaction_max_payment',
-      'transaction_max_payment."registrationId" = registration.id',
-    )
-      .leftJoin(
-        (qb) =>
-          qb
-            .from(TransactionEntity, 'transactions')
-            .select('MAX("transactionStep")', 'transactionStep')
-            .addSelect('"payment"', 'payment')
-            .groupBy('"payment"')
-            .addSelect('"registrationId"', 'registrationId')
-            .addGroupBy('"registrationId"'),
-        'transaction_max_transaction_step',
-        `transaction_max_transaction_step."registrationId" = registration.id
-      AND transaction_max_transaction_step.payment = transaction_max_payment.payment`,
-      )
-      .leftJoin(
-        (qb) =>
-          qb
-            .from(TransactionEntity, 'transactions')
-            .select('MAX("created")', 'created')
-            .addSelect('"payment"', 'payment')
-            .groupBy('"payment"')
-            .addSelect('"transactionStep"', 'transactionStep')
-            .addGroupBy('"transactionStep"')
-            .addSelect('"registrationId"', 'registrationId')
-            .addGroupBy('"registrationId"'),
-        'transaction_max_created',
-        `transaction_max_created."registrationId" = registration.id
-      AND transaction_max_created.payment = transaction_max_payment.payment
-      AND transaction_max_created."transactionStep" = transaction_max_transaction_step."transactionStep"`,
-      )
-      .leftJoin(
-        'registration.transactions',
-        'transaction',
-        `transaction."registrationId" = transaction_max_created."registrationId"
-      AND transaction.payment = transaction_max_created.payment
-      AND transaction."transactionStep" = transaction_max_created."transactionStep"
-      AND transaction."created" = transaction_max_created."created"`,
-      )
-      .addSelect([
-        'transaction.created AS "paymentDate"',
-        'transaction.payment AS payment',
-        'transaction.status AS "transactionStatus"',
-        'transaction.amount AS "transactionAmount"',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-        'transaction_max_payment."nrPayments" as "nrPayments"',
-      ]);
-    return q;
   }
 
   public async getLatestDateForRegistrationStatus(
@@ -1068,6 +899,7 @@ export class RegistrationsService {
         });
       }
     }
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
     return registration;
   }
 
@@ -1154,92 +986,10 @@ export class RegistrationsService {
     }
   }
 
-  public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    registration.note = note;
-    registration.noteUpdated = new Date();
-    await this.registrationRepository.save(registration);
-    const newNote = new NoteDto();
-    newNote.note = registration.note;
-    newNote.noteUpdated = registration.noteUpdated;
-    return newNote;
-  }
-
-  public async retrieveNote(referenceId: string): Promise<NoteDto> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    const note = new NoteDto();
-    note.note = registration.note;
-    note.noteUpdated = registration.noteUpdated;
-    return note;
-  }
-
-  public async updateRegistrationStatusBatch(
-    referenceIdsDto: ReferenceIdsDto,
-    registrationStatus: RegistrationStatusEnum,
-    message?: string,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    const errors = [];
-    for (const referenceId of referenceIdsDto.referenceIds) {
-      const registrationToUpdate = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-      });
-      if (!registrationToUpdate) {
-        errors.push(`Registration '${referenceId}' is not found`);
-      } else if (
-        !this.canChangeStatus(
-          registrationToUpdate.registrationStatus,
-          registrationStatus,
-        )
-      ) {
-        errors.push(
-          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
-        );
-      }
-    }
-    if (errors.length === 0) {
-      let programId;
-      let program;
-      for (const referenceId of referenceIdsDto.referenceIds) {
-        const updatedRegistration = await this.setRegistrationStatus(
-          referenceId,
-          registrationStatus,
-        );
-        if (message) {
-          if (updatedRegistration.programId !== programId) {
-            programId = updatedRegistration.programId;
-            // avoid a query per PA if not necessary
-            program = await this.programRepository.findOne({
-              where: { id: programId },
-            });
-          }
-          const tryWhatsappFirst =
-            registrationStatus === RegistrationStatusEnum.invited
-              ? program.tryWhatsAppFirst
-              : false;
-          this.messageService
-            .sendTextMessage(
-              updatedRegistration,
-              programId,
-              message,
-              null,
-              tryWhatsappFirst,
-              messageContentType,
-            )
-            .catch((error) => {
-              this.azureLogService.logError(error, true);
-            });
-        }
-      }
-    } else {
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-  }
-
   public async searchRegistration(
     rawPhoneNumber: string,
     userId: number,
-  ): Promise<RegistrationResponse[]> {
+  ): Promise<RegistrationViewEntity[]> {
     const registrations = [];
     if (!userId) {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
@@ -1250,11 +1000,6 @@ export class RegistrationsService {
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
-    const transactionPermissionsProgramIds =
-      await this.getProgramIdsUserHasPermission(
-        userId,
-        PermissionEnum.PaymentTransactionREAD,
-      );
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1301,17 +1046,10 @@ export class RegistrationsService {
       );
 
       for (const uniqueRegistration of uniqueRegistrations) {
-        const registration = (
-          await this.getRegistrations(
-            uniqueRegistration.programId,
-            true,
-            transactionPermissionsProgramIds.includes(
-              uniqueRegistration.programId,
-            ),
-            true,
-            uniqueRegistration.referenceId,
-          )
-        )[0];
+        const registration = await this.getPaginateRegistrationForReferenceId(
+          uniqueRegistration.referenceId,
+          uniqueRegistration.programId,
+        );
         registrations.push(registration);
       }
     }
@@ -1463,85 +1201,6 @@ export class RegistrationsService {
       );
     }
     return await this.registrationRepository.save(updatedRegistration);
-  }
-
-  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
-    // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
-    await this.updateRegistrationStatusBatch(
-      referenceIdsDto,
-      RegistrationStatusEnum.deleted,
-    );
-
-    for await (const referenceId of referenceIdsDto.referenceIds) {
-      const registration = await this.getRegistrationFromReferenceId(
-        referenceId,
-        ['user'],
-      );
-
-      // Delete all data for this registration
-      await this.registrationDataRepository.delete({
-        registrationId: registration.id,
-      });
-      if (registration.user) {
-        await this.personAffectedAppDataRepository.delete({
-          user: { id: registration.user.id },
-        });
-      }
-      await this.twilioMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.whatsappPendingMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.tryWhatsappRepository.delete({
-        registrationId: registration.id,
-      });
-
-      // anonymize some data for this registration
-      registration.phoneNumber = null;
-      registration.note = null;
-      await this.registrationRepository.save(registration);
-
-      // FSP-specific
-      // intersolve-voucher
-      const voucherImages = await this.imageCodeExportVouchersRepo.find({
-        where: { registrationId: registration.id },
-        relations: ['voucher'],
-      });
-      const vouchersToUpdate = [];
-      for await (const voucherImage of voucherImages) {
-        const voucher = await this.intersolveVoucherRepo.findOne({
-          where: { id: voucherImage.voucher.id },
-        });
-        voucher.whatsappPhoneNumber = null;
-        vouchersToUpdate.push(voucher);
-      }
-      await this.intersolveVoucherRepo.save(vouchersToUpdate);
-      //safaricom
-      const safaricomRequests = await this.safaricomRequestRepo.find({
-        where: { transaction: { registration: { id: registration.id } } },
-        relations: ['transaction', 'transaction.registration'],
-      });
-      const requestsToUpdate = [];
-      for (const request of safaricomRequests) {
-        request.requestResult = JSON.parse(
-          JSON.stringify(request.requestResult).replace(request.partyB, ''),
-        );
-        request.paymentResult = JSON.parse(
-          JSON.stringify(request.paymentResult).replace(request.partyB, ''),
-        );
-        request.transaction.customData = JSON.parse(
-          JSON.stringify(request.transaction.customData).replace(
-            request.partyB,
-            '',
-          ),
-        );
-        request.partyB = '';
-        requestsToUpdate.push(request);
-      }
-      await this.safaricomRequestRepo.save(requestsToUpdate);
-      // TODO: at_notification + belcash_request
-    }
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
@@ -1734,38 +1393,6 @@ export class RegistrationsService {
     }
   }
 
-  public async sendCustomTextMessage(
-    referenceIds: string[],
-    message: string,
-  ): Promise<void> {
-    const validRegistrations: RegistrationEntity[] = [];
-    for (const referenceId of referenceIds) {
-      const registration = await this.getRegistrationFromReferenceId(
-        referenceId,
-        ['program'],
-      );
-      if (!registration.phoneNumber) {
-        const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
-      validRegistrations.push(registration);
-    }
-    for (const validRegistration of validRegistrations) {
-      this.messageService
-        .sendTextMessage(
-          validRegistration,
-          validRegistration.program.id,
-          message,
-          null,
-          null,
-          MessageContentType.custom,
-        )
-        .catch((err) => {
-          console.log('err: ', err);
-        });
-    }
-  }
-
   public async getMessageHistoryRegistration(
     referenceId: string,
   ): Promise<MessageHistoryDto[]> {
@@ -1809,11 +1436,35 @@ export class RegistrationsService {
     programId: number,
     paId: number,
   ): Promise<RegistrationEntity> {
-    const q = await this.registrationRepository.findOne({
+    return await this.registrationRepository.findOne({
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
+  }
 
-    return q;
+  public async getRegistrationStatusChanges(
+    programId: number,
+    referenceId: string,
+  ): Promise<any[]> {
+    const options: FindManyOptions = {
+      where: {
+        registration: { referenceId: referenceId, programId: programId },
+      },
+      relations: ['registration'],
+      order: { created: 'DESC' },
+    };
+
+    const statusChanges = await this.registrationStatusChangeRepository.find(
+      options,
+    );
+
+    return await Promise.all(
+      statusChanges.map((statusChange) => {
+        return {
+          status: statusChange.registrationStatus,
+          date: statusChange.created,
+        };
+      }),
+    );
   }
 }

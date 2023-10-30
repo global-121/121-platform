@@ -1,3 +1,4 @@
+import { FilterOperatorEnum } from '../services/filter.service';
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { LanguageEnum } from './person.model';
@@ -34,9 +35,22 @@ export class Program {
   languages: LanguageEnum[];
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
-  paTableAttributes: PaTableAttribute[];
+  paTableAttributes: Attribute[];
+  filterableAttributes: FilterableAttributeGroup[];
   monitoringDashboardUrl?: string;
   evaluationDashboardUrl?: string;
+}
+
+class FilterableAttributeGroup {
+  group: string;
+  filters: FilterableAttributeDefinition[];
+}
+
+class FilterableAttributeDefinition {
+  name: string;
+  allowedOperators: FilterOperatorEnum[];
+  paTableAttributes: PaTableAttribute[];
+  isInteger: boolean;
 }
 
 export class ProgramStats {

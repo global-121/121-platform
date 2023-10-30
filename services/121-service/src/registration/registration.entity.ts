@@ -4,10 +4,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  Min,
 } from 'class-validator';
 import {
   BeforeRemove,
   Brackets,
+  Check,
   Column,
   Entity,
   Index,
@@ -19,12 +21,15 @@ import {
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { NoteEntity } from '../notes/note.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ReferenceIdConstraints } from '../shared/const';
 import { UserEntity } from '../user/user.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
@@ -42,6 +47,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
+@Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
@@ -100,15 +106,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsNotEmpty()
   public paymentAmountMultiplier: number;
 
-  @Column({ nullable: true })
-  public note: string;
-
-  @Column({ nullable: true })
-  public noteUpdated: Date;
-
   /** This is an "auto" incrementing field with a registration ID per program. */
   // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
   @Column()
+  @Index()
   public registrationProgramId: number;
 
   @Column({ nullable: true })
@@ -116,6 +117,17 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsPositive()
   @IsOptional()
   public maxPayments: number;
+
+  @Column({ default: 'no messages yet' })
+  public lastMessageStatus: string;
+
+  // This is a count of the number of transactions with a distinct on the paymentId
+  // can be failed or successful or waiting transactions
+  @Column({ default: 0 })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  public paymentCount: number;
 
   @OneToMany(
     (_type) => TransactionEntity,
@@ -140,6 +152,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
+
+  @OneToMany(
+    () => LatestTransactionEntity,
+    (latestTransactions) => latestTransactions.registration,
+  )
+  public latestTransactions: LatestTransactionEntity[];
+
+  @OneToMany(() => NoteEntity, (notes) => notes.registration)
+  public notes: NoteEntity[];
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
@@ -183,7 +204,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
+        entityClass: LatestTransactionEntity,
+        columnName: 'registration',
+      },
+      {
         entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: NoteEntity,
         columnName: 'registration',
       },
     ]);

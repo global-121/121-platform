@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import StatusDate from 'src/app/enums/status-dates.enum';
 import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -16,9 +15,11 @@ import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
+import { AddNotePopupComponent } from '../add-note-popup/add-note-popup.component';
 
 class ActivityOverviewItem {
   type: string;
@@ -39,6 +40,7 @@ enum ActivityOverviewType {
   dataChanges = 'dataChanges',
   payment = 'payment',
   message = 'message',
+  notes = 'notes',
   status = 'status',
 }
 
@@ -49,6 +51,7 @@ enum ActivityOverviewType {
     IonicModule,
     TranslateModule,
     PaymentHistoryAccordionComponent,
+    AddNotePopupComponent,
   ],
   selector: 'app-registration-activity-overview',
   templateUrl: './registration-activity-overview.component.html',
@@ -64,17 +67,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   public canViewVouchers = false;
 
+  @Input()
+  public statusChanges: RegistrationStatusChange[];
+
   public DateFormat = DateFormat;
   public firstPaymentToShow = 1;
   public activityOverview: ActivityOverviewItem[];
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [
     null,
-    ActivityOverviewType.dataChanges,
     ActivityOverviewType.payment,
+    ActivityOverviewType.notes,
     ActivityOverviewType.message,
+    ActivityOverviewType.dataChanges,
     ActivityOverviewType.status,
   ];
+  public canUpdatePersonalData: boolean;
 
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
@@ -91,6 +99,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private pastPaymentsService: PastPaymentsService,
     private translatableString: TranslatableStringService,
     private enumService: EnumService,
+    private modalController: ModalController,
   ) {}
 
   async ngOnInit() {
@@ -114,7 +123,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       );
       this.pastTransactions = await this.programsService.getTransactions(
         this.program.id,
-        this.firstPaymentToShow,
+        null,
+        null,
         this.person?.referenceId,
       );
       this.pastPayments = await this.programsService.getPastPayments(
@@ -160,7 +170,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return PaymentUtils.enableSinglePayment(
       paymentRow,
       this.canDoSinglePayment,
-      this.person,
+      this.person.status,
       this.lastPaymentId,
       false,
     );
@@ -218,7 +228,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         PaymentUtils.enableSinglePayment(
           paymentRowValue,
           false,
-          this.person,
+          this.person.status,
           this.lastPaymentId,
           false,
         )
@@ -269,13 +279,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           this.person.referenceId,
         );
 
-      for (const statusChange of this.getStatusChanges()) {
+      for (const statusChange of this.statusChanges) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.status.label',
           ),
-          date: statusChange.date,
+          date: new Date(statusChange.date),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.status.description',
             {
@@ -337,6 +347,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           chipText: change.user.username,
         });
       }
+
+      const notes = await this.programsService.getNotes(
+        this.program.id,
+        this.person.referenceId,
+      );
+      for (const note of notes) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.notes,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.note.label',
+          ),
+          date: new Date(note.created),
+          description: note.text,
+          chipText: note.username,
+        });
+      }
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
@@ -360,29 +386,19 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       [ActivityOverviewType.dataChanges]: 'document-text-outline',
       [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
+      [ActivityOverviewType.notes]: 'clipboard-outline',
     };
     return map[type];
-  }
-
-  private getStatusChanges(): { status: string; date: Date }[] {
-    const statusChanges = [];
-    for (const status of Object.keys(StatusDate)) {
-      const statusChangeDateValue = this.person[StatusDate[status]];
-      if (statusChangeDateValue) {
-        statusChanges.push({
-          status,
-          date: new Date(statusChangeDateValue),
-        });
-      }
-    }
-
-    return statusChanges;
   }
 
   private loadPermissions() {
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],
+    );
+    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+      this.program.id,
+      [Permission.RegistrationPersonalUPDATE],
     );
     this.canViewMessageHistory = this.authService.hasAllPermissions(
       this.program.id,
@@ -404,5 +420,18 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     this.canViewVouchers = this.authService.hasAllPermissions(this.program.id, [
       Permission.PaymentVoucherREAD,
     ]);
+  }
+
+  async openAddNoteModal() {
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: AddNotePopupComponent,
+      componentProps: {
+        programId: this.program.id,
+        referenceId: this.person?.referenceId,
+        name: this.person?.name,
+      },
+    });
+
+    await modal.present();
   }
 }

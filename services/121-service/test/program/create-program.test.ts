@@ -6,9 +6,8 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   assertArraysAreEqual,
   assertObjectsAreEqual,
-  getProgram,
-  postProgram,
-} from '../helpers/program.helper';
+} from '../helpers/assert.helper';
+import { getProgram, postProgram } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Create program questions', () => {

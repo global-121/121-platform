@@ -1,19 +1,11 @@
-/*
- * Tools - above the table
- ***************************************************************************/
-.filter-input {
-  min-width: 16em;
-  max-width: 30%;
-  min-height: 40px;
+:host {
+  display: block;
+  min-height: 100%; // Ensure to always fill the viewport; So the top filter-row stays in the same place
 }
 
 /*
  * ngx-datatable + related components
  ***************************************************************************/
-
-.data-table--max-height {
-  height: 72vh;
-}
 
 .proxy-scrollbar {
   width: 100%;
@@ -52,7 +44,7 @@
 }
 
 .payment-history-button {
-  width: 180px;
+  width: 90px;
 }
 
 .status-pop-up {
@@ -65,6 +57,13 @@
     color: var(--ion-color-danger);
     border-color: currentColor;
   }
+}
+
+.no-message {
+  display: block;
+}
+.no-message:first-letter {
+  text-transform: uppercase;
 }
 
 .checkmark {

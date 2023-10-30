@@ -1,5 +1,6 @@
 import {
   BeforeRemove,
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -8,12 +9,14 @@ import {
   Unique,
 } from 'typeorm';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { NameConstraintQuestions } from '../shared/const';
 import { CascadeDeleteEntity } from './../base.entity';
 import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
 import { ProgramEntity } from './program.entity';
 
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')
+@Check(`"name" NOT IN (${NameConstraintQuestions})`)
 export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;

@@ -1,14 +1,18 @@
+import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import {
   PaymentRowDetail,
   TransactionCustomDataAttributes,
 } from '../models/payment.model';
-import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
 import { IntersolvePayoutStatus } from '../models/transaction-custom-data';
 import { Transaction } from '../models/transaction.model';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+} from '../services/filter.service';
 
 export class PaymentUtils {
   static getPaymentRowInfo(
@@ -57,7 +61,7 @@ export class PaymentUtils {
   static enableSinglePayment(
     paymentRow: PaymentRowDetail,
     canDoSinglePayment: boolean,
-    person: Person,
+    registrationStatus: RegistrationStatusEnum,
     lastPaymentId: number,
     paymentInProgress: boolean,
   ): boolean {
@@ -65,7 +69,7 @@ export class PaymentUtils {
       return false;
     }
     const permission = canDoSinglePayment;
-    const included = person.status === RegistrationStatus.included;
+    const included = registrationStatus === RegistrationStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= lastPaymentId;
     // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
@@ -123,5 +127,16 @@ export class PaymentUtils {
     } else {
       return [];
     }
+  }
+
+  static refernceIdsToFilter(referenceIds: string[]): PaginationFilter[] {
+    return [
+      {
+        value: referenceIds.join(','),
+        name: 'referenceId',
+        label: 'referenceId',
+        operator: FilterOperatorEnum.in,
+      },
+    ];
   }
 }

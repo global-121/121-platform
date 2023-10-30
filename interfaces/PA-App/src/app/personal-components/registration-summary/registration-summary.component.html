@@ -3,10 +3,6 @@
   [isSpoken]="showSomethingWentWrong === true"
 >
   <p>
-    <app-play-text-audio
-      key="connection.error-retry"
-      class="ion-float-start ion-margin-end"
-    ></app-play-text-audio>
     <span [innerHTML]="'connection.error-retry' | translate"></span>
   </p>
   <p>
@@ -24,10 +20,6 @@
     [isSpoken]="validation"
   >
     <p>
-      <app-play-text-audio
-        key="personal.registration-summary.validation-conclusion"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.registration-summary.validation-conclusion' | translate
@@ -41,11 +33,6 @@
     [isSpoken]="validation && meetingDocuments?.length > 0"
   >
     <p>
-      <app-play-text-audio
-        key="personal.registration-summary.documents"
-        class="ion-float-start ion-margin-end"
-      >
-      </app-play-text-audio>
       {{ 'personal.registration-summary.documents' | translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
@@ -59,10 +46,6 @@
     [isSpoken]="!validation && !!registrationStatus"
   >
     <p>
-      <app-play-text-audio
-        key="personal.registration-summary.no-validation-conclusion"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.registration-summary.no-validation-conclusion' | translate

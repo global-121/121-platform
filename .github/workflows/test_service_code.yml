@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - master
-      - 'feat.paginate'
     paths:
       - '.github/workflows/test_service_code.yml'
       - 'services/121-service/**'
@@ -23,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '${{ env.workingDirectory }}/.node-version'
           cache: 'npm'
@@ -36,3 +35,15 @@ jobs:
       - name: Lint
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
+
+      - name: Unit-Test (optional)
+        working-directory: ${{ env.workingDirectory }}
+        continue-on-error: true
+        env:
+            NODE_ENV: development
+            TWILIO_SID: AC
+            MOCK_TWILIO: TRUE
+            MOCK_INTERSOLVE: TRUE
+            MOCK_VODACASH: TRUE
+            MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
+        run: 'npm run test:unit:all'

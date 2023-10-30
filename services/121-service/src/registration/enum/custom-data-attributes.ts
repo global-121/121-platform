@@ -1,3 +1,5 @@
+import { FspName } from '../../fsp/enum/fsp-name.enum';
+
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',
   whatsappPhoneNumber = 'whatsappPhoneNumber',
@@ -40,7 +42,9 @@ export class Attribute {
   public label: object;
   public shortLabel?: object;
   public options?: JSON;
-  public questionType?: QuestionType;
+  public questionType?: QuestionType; // TODO: remove this in after implementing pagination
+  public fspNames?: FspName[];
+  public questionTypes?: QuestionType[];
 }
 
 export enum QuestionType {

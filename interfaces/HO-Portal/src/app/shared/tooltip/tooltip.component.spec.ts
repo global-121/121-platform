@@ -1,5 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { IonicModule } from '@ionic/angular';
 import { TooltipComponent } from './tooltip.component';
 
 describe('TooltipComponent', () => {
@@ -9,7 +9,7 @@ describe('TooltipComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TooltipComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [IonicModule],
     }).compileComponents();
   }));
 
@@ -55,8 +55,6 @@ describe('TooltipComponent', () => {
     jasmine.clock().tick(1000);
 
     const tooltipContent: HTMLElement = document.querySelector('ion-popover');
-
-    console.log('tooltipContent: ', tooltipContent);
 
     expect(tooltipContent).toBeTruthy();
 

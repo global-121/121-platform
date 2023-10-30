@@ -32,12 +32,12 @@
         </ng-container>
       </select>
       <app-confirm-prompt
-        [disabled]="applyBtnDisabled"
-        (confirm)="applyAction($event)"
+        [disabled]="applyBtnDisabled || isInProgress"
+        (confirm)="applyAction({ message: $event })"
         [subHeader]="
           'page.program.program-people-affected.submit-warning' | translate
         "
-        [message]="submitWarning.message"
+        [message]="submitWarning"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
         [submitPaymentProps]="submitPaymentProps"
         [action]="action"
@@ -53,100 +53,17 @@
       ></ion-spinner>
     </ion-row>
   </div>
-  <div>
-    <ion-row
-      *ngIf="program"
-      class="ion-align-items-center"
-    >
-      <ion-button
-        class="ion-padding-end"
-        (click)="refreshData()"
-      >
-        <ion-icon name="refresh"></ion-icon>
-      </ion-button>
-      <ion-item
-        lines="none"
-        style="border: 1px solid #d1d4d7; border-radius: 4px; height: 40px"
-        class="ion-align-items-start"
-      >
-        <ion-icon
-          name="funnel"
-          [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          aria-hidden="true"
-          size="small"
-          slot="start"
-          class="ion-margin-end"
-          style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
-          color="black"
-        ></ion-icon>
-        <ion-input
-          [placeholder]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          [attr.aria-label]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
-          "
-          (ionInput)="applyTextFieldFilter($event.detail.value)"
-          [debounce]="1000"
-          [value]="filterRowsVisibleQuery"
-          [clearInput]="true"
-          class="filter-input"
-        >
-        </ion-input>
-      </ion-item>
-
-      <ion-label class="ion-margin-start">
-        {{
-          'page.program.program-people-affected.filter-btn.common.filter-by'
-            | translate
-        }}
-      </ion-label>
-
-      <ng-container *ngFor="let tableFilter of tableFilters">
-        <app-table-filter
-          *ngIf="showTableFilter(tableFilter.prop)"
-          [buttonLabel]="
-            'page.program.program-people-affected.filter-btn.btn-label.' +
-              tableFilter.prop | translate
-          "
-          [type]="tableFilter.type"
-          [description]="
-            'page.program.program-people-affected.filter-btn.' +
-              tableFilter.description | translate
-          "
-          (filter)="applyTableFilter(tableFilter.prop, $event)"
-          [filterProps]="{
-            allOptions: tableFilterState[tableFilter.prop]?.visible,
-            currentSelection: tableFilterState[tableFilter.prop]?.selected
-          }"
-        ></app-table-filter>
-      </ng-container>
-
-      <ion-button
-        (click)="exportTableView()"
-        [disabled]="visiblePeopleAffected.length === 0"
-      >
-        <ion-icon
-          name="download"
-          slot="start"
-        ></ion-icon>
-        {{
-          'page.program.program-people-affected.export-list.button-label'
-            | translate
-        }}</ion-button
-      >
-    </ion-row>
-  </div>
 </ion-row>
+
+<app-table-filter-row
+  #tableFilterRow
+  [isLoading]="isLoading"
+  [allFilters]="tableFiltersPerColumn"
+  [programId]="programId"
+  [thisPhase]="thisPhase"
+  [filteredCount]="pageMetaData?.totalItems"
+/>
+
 <div
   #proxyScrollbar
   class="proxy-scrollbar"
@@ -155,26 +72,28 @@
 >
   <div class="proxy-scrollbar--content"></div>
 </div>
+
 <ngx-datatable
   #people
-  class="bootstrap data-table--max-height"
-  [rowHeight]="65"
-  [scrollbarV]="true"
+  class="bootstrap"
   [scrollbarH]="true"
   [headerHeight]="95"
   [footerHeight]="50"
-  [virtualization]="true"
   [reorderable]="false"
-  sortType="single"
-  [sorts]="[{ prop: 'pa', dir: 'asc' }]"
+  [externalSorting]="true"
+  (sort)="onSort($event)"
   [loadingIndicator]="isLoading"
   [columns]="columns"
   [rows]="visiblePeopleAffected"
   selectionType="checkbox"
-  [displayCheck]="isRowSelectable"
   [selected]="selectedPeople"
   (select)="onSelect($event.selected)"
-  [selectCheck]="isRowSelectable"
+  [rowHeight]="65"
+  [externalPaging]="true"
+  [count]="pageMetaData?.totalItems"
+  [offset]="pageMetaData?.currentPage"
+  [limit]="pageMetaData?.itemsPerPage"
+  (page)="setPage($event)"
 >
   <ngx-datatable-column
     prop="selected"
@@ -182,21 +101,17 @@
     [width]="75"
     [frozenLeft]="true"
     headerClass="ion-align-self-end"
+    [headerCheckboxable]="false"
   >
-    <ng-template
-      ngx-datatable-header-template
-      let-value="value"
-      let-allRowsSelected="allRowsSelected"
-      let-selectFn="selectFn"
-    >
+    <ng-template ngx-datatable-header-template>
+      <input
+        type="checkbox"
+        [checked]="selectAllChecked"
+        [disabled]="!selectAllCheckboxVisible"
+        [ngStyle]="selectAllCheckboxVisible ? {} : { visibility: 'hidden' }"
+        (change)="onSelectAll()"
+      />
       <label>
-        <input
-          type="checkbox"
-          [checked]="headerChecked"
-          [disabled]="!headerSelectAllVisible"
-          [ngStyle]="headerSelectAllVisible ? {} : { visibility: 'hidden' }"
-          (change)="selectFn(!allRowsSelected)"
-        />
         {{ 'page.program.program-people-affected.column.select' | translate }}
       </label>
     </ng-template>
@@ -205,21 +120,24 @@
       ngx-datatable-cell-template
       let-row="row"
       let-value="value"
-      let-isSelected="isSelected"
       let-onCheckboxChangeFn="onCheckboxChangeFn"
     >
       <input
         type="checkbox"
-        [checked]="isSelected"
         (change)="onCheckboxChangeFn($event)"
+        [checked]="isRowSelected(row.referenceId)"
         *ngIf="row.checkboxVisible"
+        [disabled]="row.checkboxDisabled"
       />
     </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    prop="pa"
-    [name]="'page.program.program-people-affected.column.person' | translate"
+    prop="registrationProgramId"
+    [name]="
+      'page.program.program-people-affected.column.personAffectedSequence'
+        | translate
+    "
     [minWidth]="130"
     [width]="130"
     frozenLeft="true"
@@ -276,7 +194,12 @@
           ></ion-icon>
         </button>
         &nbsp;&nbsp;
-        <span>{{ value }}</span>
+        <a
+          class="registration-details-link ion-text-nowrap"
+          [routerLink]="['..', 'registration', row.id]"
+        >
+          <span>{{ value }}</span>
+        </a>
       </div>
     </ng-template>
   </ngx-datatable-column>
@@ -326,15 +249,21 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'messages' &&
+          column.prop !== 'lastMessageStatus' &&
           column.prop !== 'name'
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
       </ng-container>
-      <ng-container *ngIf="column.prop === 'messages'">
+      <ng-container *ngIf="column.prop === 'lastMessageStatus'">
         <button
-          *ngIf="row.lastMessageStatus"
+          *ngIf="
+            row.lastMessageStatus !==
+            (
+              'page.program.program-people-affected.last-message.no-message'
+              | translate
+            ).toLowerCase()
+          "
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
             'is-error': hasMessageError(row.lastMessageStatus)
@@ -343,17 +272,18 @@
         >
           {{ value }}
         </button>
-        <span *ngIf="!row.lastMessageStatus">
-          {{ value }}
-        </span>
-      </ng-container>
-      <ng-container *ngIf="column.prop === 'name'">
-        <a
-          class="registration-details-link ion-text-nowrap"
-          [routerLink]="['..', 'registration', row.id]"
+        <span
+          *ngIf="
+            row.lastMessageStatus.toLowerCase() ===
+            (
+              'page.program.program-people-affected.last-message.no-message'
+              | translate
+            ).toLowerCase()
+          "
+          class="no-message"
         >
           {{ value }}
-        </a>
+        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
@@ -380,7 +310,7 @@
     "
     prop="inclusionScore"
     [name]="
-      'page.program.program-people-affected.column.inclusion-score' | translate
+      'page.program.program-people-affected.column.inclusionScore' | translate
     "
     minWidth="80"
     [draggable]="columnDefaults.draggable"
@@ -404,7 +334,6 @@
     >
       <ng-container *ngIf="value">
         <button
-          *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
@@ -416,16 +345,47 @@
           "
           (click)="paymentHistoryPopup(row)"
           [ngClass]="{
-            'is-error': hasError(row),
             'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
           {{ value }}
         </button>
-        <span *ngIf="!row.paymentHistory?.paymentIndex">
-          {{ value }}
-        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
+
+  <ngx-datatable-footer>
+    <ng-template
+      ngx-datatable-footer-template
+      let-rowCount="rowCount"
+      let-pageSize="pageSize"
+      let-curPage="curPage"
+    >
+      <div style="padding: 5px 10px">
+        <div>
+          {{
+            'page.program.program-people-affected.footer-selected-of-total'
+              | translate
+                : {
+                    selectedCount: selectedCount | number: '1.0-0',
+                    totalCount: pageMetaData?.totalItems || 0 | number: '1.0-0'
+                  }
+          }}
+        </div>
+      </div>
+      <datatable-pager
+        class="datatable-pager"
+        [pagerLeftArrowIcon]="'datatable-icon-left'"
+        [pagerRightArrowIcon]="'datatable-icon-right'"
+        [pagerPreviousIcon]="'datatable-icon-prev'"
+        [pagerNextIcon]="'datatable-icon-skip'"
+        [page]="curPage"
+        [size]="pageSize"
+        [count]="rowCount"
+        [hidden]="!(rowCount / pageSize > 1)"
+        (change)="people.onFooterPage($event)"
+      >
+      </datatable-pager>
+    </ng-template>
+  </ngx-datatable-footer>
 </ngx-datatable>

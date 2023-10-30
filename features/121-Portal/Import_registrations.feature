@@ -22,7 +22,6 @@ Feature: Import registrations
     And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
     And it has the dynamic columns for programQuestions of that program
     And it has the dynamic "programCustomAttributes" of that program
-    And any "multi-select" attributes are pipe-delimited strings
     And it has as delimiter ";" or ","
     And it has "X" rows
     And the input of each cell is valid

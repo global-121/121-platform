@@ -3,10 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
   ParseArrayPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -28,6 +30,12 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import {
+  Paginate,
+  Paginated,
+  PaginatedSwaggerDocs,
+  PaginateQuery,
+} from 'nestjs-paginate';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -37,15 +45,18 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
+import {
+  PaginateConfigRegistrationViewOnlyFilters,
+  PaginateConfigRegistrationViewWithPayments,
+} from './const/filter-operation.const';
+import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { MessageDto } from './dto/message.dto';
-import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { RegistrationResponse } from './dto/registration-response.model';
+import { ReferenceIdDto } from './dto/reference-id.dto';
+import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
@@ -55,8 +66,12 @@ import {
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationsBulkService } from './services/registrations-bulk.service';
+import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -65,10 +80,11 @@ export class FileUploadDto {
 @UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
 @Controller()
 export class RegistrationsController {
-  private readonly registrationsService: RegistrationsService;
-  public constructor(registrationsService: RegistrationsService) {
-    this.registrationsService = registrationsService;
-  }
+  public constructor(
+    private readonly registrationsService: RegistrationsService,
+    private readonly registrationsPaginateService: RegistrationsPaginationService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
+  ) {}
 
   @ApiTags('programs/registrations')
   @ApiOperation({ summary: 'Create registration' })
@@ -259,56 +275,155 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
-    summary: 'Get all registrations for program',
+    summary:
+      'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
-  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
-  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
-  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
-  @ApiResponse({
-    status: 201,
-    description: 'Got all People Affected for program EXCLUDING personal data',
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
   })
   @Get('programs/:programId/registrations')
-  public async getPeopleAffected(
-    @Param('programId') programId: number,
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewWithPayments,
+  )
+  public async findAll(
+    @Paginate() query: PaginateQuery,
     @User('id') userId: number,
-    @Query() queryParams,
-  ): Promise<any[]> {
-    const personalData = queryParams.personalData === 'true';
-    const paymentData = queryParams.paymentData === 'true';
-    if (personalData) {
-      await this.registrationsService.checkPermissionAndThrow(
+    @Param('programId', ParseIntPipe) programId: number,
+  ): Promise<Paginated<RegistrationViewEntity>> {
+    const hasPersonalRead =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
+        programId,
         PermissionEnum.RegistrationPersonalREAD,
-        Number(programId),
       );
-    }
-    if (paymentData || queryParams.filterOnPayment) {
-      await this.registrationsService.checkPermissionAndThrow(
-        userId,
-        PermissionEnum.PaymentTransactionREAD,
-        Number(programId),
-      );
-    }
 
-    let attributes: [];
-    if (queryParams.attributes || queryParams.attributes === '') {
-      attributes =
-        queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
-    }
-
-    return await this.registrationsService.getRegistrations(
-      Number(programId),
-      personalData,
-      paymentData,
-      true,
-      queryParams.referenceId,
-      queryParams.filterOnPayment,
-      attributes,
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
     );
+
+    return await this.registrationsPaginateService.getPaginate(
+      query,
+      Number(programId),
+      hasPersonalRead,
+      false,
+    );
+  }
+
+  @ApiTags('programs/registrations')
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for the registration status update',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'The registration status update was succesfully started',
+    type: BulkActionResultDto,
+  })
+  @ApiOperation({
+    summary:
+      'Update registration status of set of PAs that can be defined via filter parameters.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registration statuses will be updated or messages will be sent.  Instead it will return data on how many registrations this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Patch('programs/:programId/registrations/status')
+  public async patchRegistrationsStatus(
+    @Paginate() query: PaginateQuery,
+    @Body() statusUpdateDto: RegistrationStatusPatchDto,
+    @User('id') userId: number,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultDto> {
+    let permission: PermissionEnum;
+    let messageContentType: MessageContentType;
+    const registrationStatus = statusUpdateDto.status;
+    switch (registrationStatus) {
+      case RegistrationStatusEnum.included:
+        permission = PermissionEnum.RegistrationStatusIncludedUPDATE;
+        messageContentType = MessageContentType.included;
+      case RegistrationStatusEnum.rejected:
+        permission = PermissionEnum.RegistrationStatusRejectedUPDATE;
+        messageContentType = MessageContentType.rejected;
+      case RegistrationStatusEnum.inclusionEnded:
+        permission = PermissionEnum.RegistrationStatusInclusionEndedUPDATE;
+        messageContentType = MessageContentType.inclusionEnded;
+      case RegistrationStatusEnum.paused:
+        permission = PermissionEnum.RegistrationStatusPausedUPDATE;
+        messageContentType = MessageContentType.paused;
+      case RegistrationStatusEnum.invited:
+        permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
+        messageContentType = MessageContentType.invited;
+      case RegistrationStatusEnum.selectedForValidation:
+        permission =
+          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE;
+      case RegistrationStatusEnum.noLongerEligible:
+        permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
+    }
+    if (!permission) {
+      const errors = `The status ${registrationStatus} is unknown or cannot be changed to via API`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+    const hasPermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        permission,
+      );
+    if (!hasPermission) {
+      const errors = `User does not have permission to update registration status to included`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
+    );
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const result = await this.registrationsBulkService.patchRegistrationsStatus(
+      query,
+      programId,
+      registrationStatus as RegistrationStatusEnum,
+      dryRun,
+      statusUpdateDto.message,
+      messageContentType,
+    );
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('programs/registrations')
@@ -322,6 +437,7 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
     @Param() params,
@@ -354,142 +470,6 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: 'Update note for registration' })
-  @ApiResponse({ status: 201, description: 'Update note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/note')
-  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
-    return await this.registrationsService.updateNote(
-      updateNote.referenceId,
-      updateNote.note,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get note for registration' })
-  @ApiResponse({ status: 200, description: 'Get note for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true })
-  @Get('programs/:programId/registrations/note/:referenceId')
-  public async retrieveNote(@Param() params): Promise<NoteDto> {
-    return await this.registrationsService.retrieveNote(params.referenceId);
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
-  @ApiOperation({ summary: 'Mark set of PAs for validation' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/select-validation')
-  public async selectForValidation(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.selectedForValidation,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
-  @ApiOperation({ summary: 'Mark set of PAs as no longer eligible' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/no-longer-eligible')
-  public async markNoLongerEligible(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.noLongerEligible,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
-  @ApiOperation({ summary: 'Include set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/include')
-  public async include(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.included,
-      messageData.message,
-      MessageContentType.included,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusInclusionEndedUPDATE)
-  @ApiOperation({ summary: 'End inclusion of set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/end')
-  public async end(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.inclusionEnded,
-      messageData.message,
-      MessageContentType.inclusionEnded,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
-  @ApiOperation({ summary: 'Reject set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/reject')
-  public async reject(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.rejected,
-      messageData.message,
-      MessageContentType.rejected,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
-  @ApiOperation({ summary: 'Invite set of PAs for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/invite')
-  public async invite(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.invited,
-      messageData.message,
-      MessageContentType.invited,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationStatusPausedUPDATE)
-  @ApiOperation({ summary: 'Pause set of PAs' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/pause')
-  public async pause(
-    @Body() referenceIdsData: ReferenceIdsDto,
-    @Body() messageData: MessageDto,
-  ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
-      referenceIdsData,
-      RegistrationStatusEnum.paused,
-      messageData.message,
-      MessageContentType.paused,
-    );
-  }
-
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -513,7 +493,7 @@ export class RegistrationsController {
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
-  ): Promise<RegistrationResponse[]> {
+  ): Promise<RegistrationViewEntity[]> {
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -555,25 +535,71 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for deleting set of registrations',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'Deleting set of registrations was succesfully started',
+    type: BulkActionResultDto,
+  })
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no registrations will be deleted. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Delete('programs/:programId/registrations')
   public async delete(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.deleteBatch(referenceIdsData);
-  }
+    @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
+    @Param('programId') programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultDto> {
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
+    );
 
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ summary: 'Delete set of registrations' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
-  public async deletePost(
-    @Body() referenceIdsData: ReferenceIdsDto,
-  ): Promise<void> {
-    await this.registrationsService.deleteBatch(referenceIdsData);
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const result = await this.registrationsBulkService.deleteRegistrations(
+      query,
+      programId,
+      dryRun,
+    );
+
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('registrations')
@@ -659,20 +685,81 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationNotificationCREATE)
+  @ApiResponse({
+    status: 200,
+    description: 'Dry run result for sending a bulk message',
+    type: BulkActionResultDto,
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'Sending bulk message was succesfully started',
+    type: BulkActionResultDto,
+  })
   @ApiOperation({
     summary:
-      'Send custom text-message (whatsapp or sms) to array of registrations',
+      'Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/text-message')
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewOnlyFilters,
+  )
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description:
+      'When this parameter is set to `true`, the function will simulate the execution of the process without actually making any changes, so no messages will be sent. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Permissions(PermissionEnum.RegistrationNotificationCREATE)
+  @Post('programs/:programId/registrations/message')
   public async sendCustomTextMessage(
-    @Body() data: SendCustomTextDto,
-  ): Promise<void> {
-    return await this.registrationsService.sendCustomTextMessage(
-      data.referenceIds,
-      data.message,
+    @Body() body: SendCustomTextDto,
+    @Paginate() query: PaginateQuery,
+    @User('id') userId: number,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+  ): Promise<BulkActionResultDto> {
+    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+      userId,
+      programId,
+      query,
     );
+    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    if (!dryRun && body.skipMessageValidation) {
+      throw new HttpException(
+        'skipping Message Validation is only allowed in dryRun case',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const result = await this.registrationsBulkService.postMessages(
+      query,
+      programId,
+      body.message,
+      dryRun,
+    );
+
+    if (dryRun) {
+      // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
+      // I did not find another way to send a different status code than with a HttpException
+      throw new HttpException(result, HttpStatus.OK);
+    }
+    return result;
   }
 
   @ApiTags('programs/registrations')
@@ -716,6 +803,21 @@ export class RegistrationsController {
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,
+    );
+  }
+
+  @ApiTags('programs/registrations')
+  @Permissions(PermissionEnum.RegistrationREAD)
+  @ApiOperation({ summary: 'Get registration status changes' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Get('programs/:programId/registrations/status-changes/:referenceId')
+  public async getRegistrationStatusChanges(
+    @Param() params,
+  ): Promise<RegistrationStatusChangeEntity[]> {
+    return await this.registrationsService.getRegistrationStatusChanges(
+      params.programId,
+      params.referenceId,
     );
   }
 }

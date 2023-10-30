@@ -17,7 +17,9 @@ import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  TransactionReturnDto,
 } from './dto/get-transaction.dto';
+import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 
 @Injectable()
@@ -26,6 +28,8 @@ export class TransactionsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(LatestTransactionEntity)
+  private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -37,27 +41,75 @@ export class TransactionsService {
 
   public constructor(private readonly messageService: MessageService) {}
 
-  public async getTransactions(
+  public async getLastTransactions(
     programId: number,
-    splitByTransactionStep: boolean,
     minPayment?: number,
+    specificPayment?: number,
     referenceId?: string,
-  ): Promise<any> {
-    const transactions =
-      await this.getLatestAttemptPerPaAndPaymentTransactionsQuery(
-        programId,
-        splitByTransactionStep,
-        minPayment,
-        referenceId,
-      ).getRawMany();
-    return transactions;
+    status?: StatusEnum,
+  ): Promise<TransactionReturnDto[]> {
+    return this.getLastTransactionsQuery(
+      programId,
+      minPayment,
+      specificPayment,
+      referenceId,
+      status,
+    ).getRawMany();
   }
 
-  public getLatestAttemptPerPaAndPaymentTransactionsQuery(
+  public getLastTransactionsQuery(
     programId: number,
-    splitByTransactionStep: boolean,
     minPayment?: number,
+    specificPayment?: number,
     referenceId?: string,
+    status?: StatusEnum,
+  ): SelectQueryBuilder<TransactionEntity> {
+    let transactionQuery = this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
+        '"referenceId"',
+        'status',
+        'amount',
+        'transaction.errorMessage as "errorMessage"',
+        'transaction.customData as "customData"',
+        'fsp.fspDisplayNamePortal as "fspName"',
+        'fsp.fsp as "fsp"',
+      ])
+      .leftJoin('transaction.financialServiceProvider', 'fsp')
+      .leftJoin('transaction.registration', 'r')
+      .innerJoin('transaction.latestTransaction', 'lt')
+      .where('transaction."programId" = :programId', {
+        programId: programId,
+      })
+      .andWhere('transaction.payment >= :minPayment', {
+        minPayment: minPayment || 0,
+      });
+    if (specificPayment) {
+      transactionQuery = transactionQuery.andWhere(
+        'transaction.payment = :specificpayment',
+        { specificpayment: specificPayment },
+      );
+    }
+
+    if (referenceId) {
+      transactionQuery = transactionQuery.andWhere(
+        '"referenceId" = :referenceId',
+        { referenceId: referenceId },
+      );
+    }
+    if (status) {
+      transactionQuery = transactionQuery.andWhere(
+        'transaction.status = :status',
+        { status: status },
+      );
+    }
+    return transactionQuery;
+  }
+
+  public getLastTransactionsSplitByPaymentQuery(
+    programId: number,
   ): SelectQueryBuilder<any> {
     const maxAttemptPerPaAndPayment = this.transactionRepository
       .createQueryBuilder('transaction')
@@ -69,14 +121,11 @@ export class TransactionsService {
         programId: programId,
       })
       .groupBy('payment')
-      .addGroupBy('"registrationId"');
+      .addGroupBy('"registrationId"')
+      .addSelect('"transactionStep"')
+      .addGroupBy('"transactionStep"');
 
-    if (splitByTransactionStep) {
-      maxAttemptPerPaAndPayment
-        .addSelect('"transactionStep"')
-        .addGroupBy('"transactionStep"');
-    }
-    let transactionQuery = this.transactionRepository
+    const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
@@ -99,16 +148,7 @@ export class TransactionsService {
       .where('transaction.program.id = :programId', {
         programId: programId,
       })
-      .andWhere('transaction.payment >= :minPayment', {
-        minPayment: minPayment || 0,
-      })
       .andWhere('subquery.max_attempt IS NOT NULL');
-    if (referenceId) {
-      transactionQuery = transactionQuery.andWhere(
-        '"referenceId" = :referenceId',
-        { referenceId: referenceId },
-      );
-    }
     return transactionQuery;
   }
 
@@ -206,10 +246,11 @@ export class TransactionsService {
       );
     }
 
-    if (program.enableMaxPayments && registration.maxPayments) {
-      await this.checkAndUpdateMaxPaymentRegistration(registration);
-    }
-
+    await this.updatePaymentCountRegistration(
+      registration,
+      program.enableMaxPayments,
+    );
+    await this.updateLatestTransaction(transaction);
     if (
       transactionResponse.status === StatusEnum.success &&
       fsp.notifyOnTransaction &&
@@ -260,8 +301,37 @@ export class TransactionsService {
     return message;
   }
 
-  private async checkAndUpdateMaxPaymentRegistration(
+  private async updateLatestTransaction(
+    transaction: TransactionEntity,
+  ): Promise<void> {
+    const latestTransaction = new LatestTransactionEntity();
+    latestTransaction.registrationId = transaction.registrationId;
+    latestTransaction.payment = transaction.payment;
+    latestTransaction.transactionId = transaction.id;
+    try {
+      // Try to insert a new LatestTransactionEntity
+      await this.latestTransactionRepository.insert(latestTransaction);
+    } catch (error) {
+      if (error.code === '23505') {
+        // 23505 is the code for unique violation in PostgreSQL
+        // If a unique constraint violation occurred, update the existing LatestTransactionEntity
+        await this.latestTransactionRepository.update(
+          {
+            registrationId: latestTransaction.registrationId,
+            payment: latestTransaction.payment,
+          },
+          latestTransaction,
+        );
+      } else {
+        // If some other error occurred, rethrow it
+        throw error;
+      }
+    }
+  }
+
+  private async updatePaymentCountRegistration(
     registration: RegistrationEntity,
+    enableMaxPayments: boolean,
   ): Promise<void> {
     // Get current amount of payments done to PA
     const { currentPaymentCount } = await this.transactionRepository
@@ -276,12 +346,20 @@ export class TransactionsService {
       })
       .getRawOne();
     // Match that against registration.maxPayments
-    if (
-      currentPaymentCount >= registration.maxPayments &&
-      registration.registrationStatus === RegistrationStatusEnum.included
-    ) {
-      registration.registrationStatus = RegistrationStatusEnum.completed;
-      await this.registrationRepository.save(registration);
+
+    await this.registrationRepository.update(registration.id, {
+      paymentCount: currentPaymentCount,
+    });
+
+    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
+    if (enableMaxPayments && registration.maxPayments) {
+      if (
+        currentPaymentCount >= registration.maxPayments &&
+        registration.registrationStatus === RegistrationStatusEnum.included
+      ) {
+        registration.registrationStatus = RegistrationStatusEnum.completed;
+        await this.registrationRepository.save(registration);
+      }
     }
   }
 

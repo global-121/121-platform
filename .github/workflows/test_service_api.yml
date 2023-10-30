@@ -7,9 +7,9 @@ on:
   pull_request:
     branches:
       - 'master'
-      - 'feat.paginate'
     paths:
       - '.github/workflows/test_service_api.yml'
+      - '.github/actions/build-service/action.yml'
       - 'services/121-service/**'
       - '!**.md'
   push:
@@ -17,6 +17,7 @@ on:
       - 'release/*'
     paths:
       - '.github/workflows/test_service_api.yml'
+      - '.github/actions/build-service/action.yml'
       - 'services/121-service/**'
       - '!**.md'
 
@@ -63,7 +64,7 @@ jobs:
         working-directory: ./services
         run: |
           echo 'Wait for 121-service to be up...'
-          docker compose exec 121-service npm run test:e2e
+          docker compose exec 121-service npm run test:e2e:all
 
       - name: Dump docker logs on failure
         if: failure()

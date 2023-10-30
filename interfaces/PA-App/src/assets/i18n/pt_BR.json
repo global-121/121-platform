@@ -94,11 +94,6 @@
     "retry": "Tente novamente",
     "submit-button": "Enviar"
   },
-  "speak-text": {
-    "loading": "Carregando",
-    "pause": "Pausar",
-    "play": "Executar"
-  },
   "tabs": {
     "account": "Conta",
     "community": "Comunidade",

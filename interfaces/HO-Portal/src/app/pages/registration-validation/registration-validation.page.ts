@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -21,6 +22,9 @@ export class RegistrationValidationPage implements OnInit {
   public enumExportType = ExportType;
   public hasDuplicateAttributes: boolean;
 
+  @ViewChild('table')
+  public table: ProgramPeopleAffectedComponent;
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -36,5 +40,13 @@ export class RegistrationValidationPage implements OnInit {
 
   public onReady(state: boolean) {
     this.isReady = state;
+  }
+
+  public ionViewDidEnter() {
+    this.table.initComponent();
+  }
+
+  public ionViewWillLeave() {
+    this.table.ngOnDestroy();
   }
 }

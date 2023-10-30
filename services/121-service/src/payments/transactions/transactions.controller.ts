@@ -20,6 +20,7 @@ import { PermissionEnum } from '../../user/permission.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
@@ -38,6 +39,14 @@ export class TransactionsController {
     name: 'minPayment',
     required: false,
     type: 'integer',
+    description:
+      'Request transactions that are higher or equal as a payment index',
+  })
+  @ApiQuery({
+    name: 'payment',
+    required: false,
+    type: 'integer',
+    description: 'Request a transaction from a specific payment index',
   })
   @ApiQuery({
     name: 'referenceId',
@@ -46,18 +55,22 @@ export class TransactionsController {
   })
   @ApiResponse({
     status: 200,
+    type: TransactionReturnDto,
+    isArray: true,
   })
   @Get('programs/:programId/payments/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('minPayment') minPayment: number,
     @Query('referenceId') referenceId: string,
-  ): Promise<any> {
-    return await this.transactionsService.getTransactions(
+    @Query('payment') payment: number,
+  ): Promise<TransactionReturnDto[]> {
+    return await this.transactionsService.getLastTransactions(
       Number(programId),
-      false,
-      minPayment,
+      Number(minPayment),
+      Number(payment),
       referenceId,
+      null,
     );
   }
 

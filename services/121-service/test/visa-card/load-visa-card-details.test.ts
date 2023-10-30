@@ -1,15 +1,13 @@
 import { IntersolveVisaCardStatus } from './../../src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 /* eslint-disable jest/no-conditional-expect */
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
+import { changePhase, doPayment } from '../helpers/program.helper';
 import {
-  changePhase,
-  doPayment,
-  waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
-import {
-  changePaStatus,
+  awaitChangePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
@@ -55,7 +53,12 @@ describe('Load Visa debit cards and details', () => {
       (registration) => registration.referenceId,
     );
     await importRegistrations(programIdVisa, registrations, accessToken);
-    await changePaStatus(programIdVisa, referenceIds, 'include', accessToken);
+    await awaitChangePaStatus(
+      programIdVisa,
+      referenceIds,
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
     await doPayment(
       programIdVisa,
       paymentNrVisa,
@@ -115,7 +118,12 @@ describe('Load Visa debit cards and details', () => {
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,
     );
-    await changePaStatus(programIdVisa, referenceIds, 'include', accessToken);
+    await awaitChangePaStatus(
+      programIdVisa,
+      referenceIds,
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
 
     // Act
     const unknownResponse = await getVisaWalletsAndDetails(

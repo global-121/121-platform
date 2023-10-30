@@ -9,7 +9,8 @@ import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
-import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
+import { PaginationMetadata } from '../models/pagination-metadata.model';
+import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { PhysicalCard } from '../models/physical-card.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -20,11 +21,17 @@ import {
   ProgramStats,
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
+import { RegistrationStatusChange } from '../models/registration-status-change.model';
 import { Transaction } from '../models/transaction.model';
 import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
+import {
+  FilterOperatorEnum,
+  PaginationFilter,
+  PaginationSort,
+} from './filter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -83,13 +90,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
+  deleteRegistrations(
+    programId: number,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
+  ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      {
-        referenceIds,
-      },
+      null,
+      false,
+      params,
     );
   }
 
@@ -110,7 +122,7 @@ export class ProgramsServiceApiService {
     for (const programId of programIds) {
       const stats = await this.apiService.get(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/program-stats-summary`,
+        `/programs/${programId}/metrics/program-stats-summary`,
       );
 
       programStats.push(stats);
@@ -150,7 +162,7 @@ export class ProgramsServiceApiService {
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/person-affected`,
+      `/programs/${programId}/metrics/person-affected`,
     );
   }
 
@@ -160,18 +172,7 @@ export class ProgramsServiceApiService {
   ): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/person-affected?${condition}`,
-    );
-  }
-
-  getTotalTransferAmounts(
-    programId: number | string,
-    referenceIds?: string[],
-  ): Promise<TotalTransferAmounts> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/total-transfer-amounts`,
-      { referenceIds },
+      `/programs/${programId}/metrics/person-affected?${condition}`,
     );
   }
 
@@ -196,11 +197,15 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minPayment?: number | string,
+    payment?: number | string,
     referenceId?: string,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
     if (minPayment) {
       params = params.append('minPayment', minPayment);
+    }
+    if (payment) {
+      params = params.append('payment', payment);
     }
     if (referenceId) {
       params = params.append('referenceId', referenceId);
@@ -232,27 +237,31 @@ export class ProgramsServiceApiService {
     );
   }
 
-  updateNote(
+  postNote(
     programId: number,
     referenceId: string,
     note: string,
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note`,
+      `/programs/${programId}/note`,
       {
         referenceId,
-        note,
+        text: note,
       },
+      false,
     );
   }
 
-  retrieveNote(programId: number, referenceId: string): Promise<Note> {
+  getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/note/${referenceId}`,
+      `/programs/${programId}/note/${referenceId}`,
+      null,
+      false,
     );
   }
+
   retrieveMsgHistory(
     programId: number,
     referenceId: string,
@@ -282,20 +291,25 @@ export class ProgramsServiceApiService {
     );
   }
 
-  submitPayout(
+  doPayment(
     programId: number,
     payment: number,
     amount: number,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
       {
         payment: Number(payment),
         amount: Number(amount),
-        referenceIds: { referenceIds },
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
@@ -435,7 +449,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/${programId}/export-metrics/export-list/${type}`,
+        `/programs/${programId}/metrics/export-list/${type}`,
         false,
         params,
       )
@@ -518,116 +532,197 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getPeopleAffected(
+  async getPeopleAffected(
     programId: number | string,
-    personalData: boolean,
-    paymentData: boolean,
+    limit: number,
+    page: number,
     referenceId?: string,
     filterOnPayment?: number,
     attributes?: string[],
-  ): Promise<Person[]> {
+    statuses?: RegistrationStatus[],
+    filters?: PaginationFilter[],
+    sort?: PaginationSort,
+    // TODO: Fix the 'any' for the 'links' parameter
+  ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
     let params = new HttpParams();
-    params = params.append('personalData', personalData);
-    params = params.append('paymentData', paymentData);
+    params = params.append('limit', limit);
+    params = params.append('page', page);
+    // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
-      params = params.append('referenceId', referenceId);
+      params = params.append('filter.referenceId', referenceId);
     }
     if (filterOnPayment) {
       params = params.append('filterOnPayment', filterOnPayment);
     }
     if (attributes) {
-      params = params.append('attributes', attributes.join());
+      params = params.append('select', attributes.join());
     }
-    return this.apiService.get(
+    if (statuses) {
+      params = params.append('filter.status', `$in:${statuses.join(',')}`);
+    }
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    if (sort) {
+      params = params.append('sortBy', `${sort.column}:${sort.direction}`);
+    }
+    const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
       false,
       params,
     );
+    return { data, meta, links };
   }
 
   private updatePaStatus(
     action: string,
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
     message?: string,
   ): Promise<any> {
-    return this.apiService.post(
+    const params = this.filterToParams(filters, dryRun);
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${action}`,
+      `/programs/${programId}/registrations/status`,
       {
-        referenceIds,
+        status: action,
         message,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
   selectForValidation(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('select-validation', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.selectedForValidation,
+      programId,
+      dryRun,
+      filters,
+    );
   }
 
   markNoLongerEligible(
     programId: number | string,
-    referenceIds: string[],
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('no-longer-eligible', programId, referenceIds);
+    return this.updatePaStatus(
+      RegistrationStatus.noLongerEligible,
+      programId,
+      dryRun,
+      filters,
+    );
   }
 
   invite(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('invite', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.invited,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   include(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('include', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.included,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   end(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('end', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.inclusionEnded,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   reject(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('reject', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.rejected,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   pause(
     programId: number | string,
-    referenceIds: string[],
     message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
-    return this.updatePaStatus('pause', programId, referenceIds, message);
+    return this.updatePaStatus(
+      RegistrationStatus.paused,
+      programId,
+      dryRun,
+      filters,
+      message,
+    );
   }
 
   sendMessage(
-    referenceIds: string[],
-    message: string,
     programId: number,
+    message: string,
+    dryRun: boolean = false,
+    filters?: PaginationFilter[],
   ): Promise<any> {
+    const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/text-message`,
+      `/programs/${programId}/registrations/message`,
       {
-        referenceIds,
         message,
+        skipMessageValidation: dryRun,
       },
+      false,
+      false,
+      false,
+      params,
     );
   }
 
@@ -692,7 +787,7 @@ export class ProgramsServiceApiService {
   getPaymentsWithStateSums(programId: number | string): Promise<any> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/export-metrics/payment-state-sums`,
+      `/programs/${programId}/metrics/payment-state-sums`,
     );
   }
 
@@ -773,6 +868,16 @@ export class ProgramsServiceApiService {
     );
   }
 
+  async getRegistrationStatusCount(
+    programId: number,
+  ): Promise<{ status: RegistrationStatus; statusCount: number }[]> {
+    return await this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/metrics/registration-status`,
+      false,
+    );
+  }
+
   getAllUsers(): Promise<TableData[] | null> {
     return this.apiService.get(environment.url_121_service_api, '/users');
   }
@@ -822,5 +927,34 @@ export class ProgramsServiceApiService {
         }
         return response;
       });
+  }
+
+  private filterToParams(
+    filters: PaginationFilter[],
+    dryRun: boolean,
+  ): HttpParams {
+    let params = new HttpParams();
+    params = params.append('dryRun', dryRun);
+    if (filters) {
+      for (const filter of filters) {
+        const defaultFilter = FilterOperatorEnum.ilike;
+        const operator = filter.operator ? filter.operator : defaultFilter;
+        params = params.append(
+          `filter.${filter.name}`,
+          `${operator}:${filter.value}`,
+        );
+      }
+    }
+    return params;
+  }
+
+  public async getRegistrationStatusChanges(
+    programId: number,
+    referenceId: string,
+  ): Promise<RegistrationStatusChange[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/registrations/status-changes/${referenceId}`,
+    );
   }
 }

@@ -5,15 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.103.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.104.0...master)
+
+### Removed
+
+- All audio-features are removed from the PA-App. To prevent a lot of "local changes" during development,
+  make sure to remove any previously generated `*.webm`/`*.mp3` audio-files at: `/interfaces/PA-App/src/assets/<language-code>`
 
 ---
+
+## [1.104.0](https://github.com/global-121/121-platform/compare/v1.103.3...v1.104.0) - 2023-10-30
+
+### Changed
+
+- Load registrations using back-end pagination including filtering & sorting (using [nestjs-paginate](https://github.com/ppetzold/nestjs-paginate))
+- Write and see multiple notes per registration
+- Improved functionality for configuring roles of users
+
+### Deprecated
+
+- AW-App will no longer receive updates/fixes/changes (untill decided otherwise)
+
+## [1.103.3](https://github.com/global-121/121-platform/compare/v1.103.2...v1.103.3) - 2023-10-25
+
+### Fixed
+
+- Prohibit starting a payment in both front-end and back-nd, while another is still in progress
+- Store CBE full request and response in Azure logs
+
+## [1.103.2](https://github.com/global-121/121-platform/compare/v1.103.1...v1.103.2) - 2023-10-23
+
+### Fixed
+
+- Payment name to fullName ethopia
 
 ## [1.103.1](https://github.com/global-121/121-platform/compare/v1.103.0...v1.103.1) - 2023-10-19
 
 ### Fixed
 
 - Export duplicates fixed
+- Improve error handling on timeout visa payment
 
 ## [1.103.0](https://github.com/global-121/121-platform/compare/v1.102.3...v1.103.0) - 2023-10-12
 
@@ -1218,7 +1249,7 @@ Nothing. Dummy release upgrade to test automatic deploy through webhook on minor
 
 ### Added
 
-- 2021-05-05: Added endpoint to upload registered PA's via CSV-file for testing purposes
+- 2021-05-05: Added endpoint to upload registered PAs via CSV-file for testing purposes
 
 ## [1.2.3](https://github.com/global-121/121-platform/compare/v1.2.2...v1.2.3) - 2021-04-20
 

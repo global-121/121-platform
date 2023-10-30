@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
@@ -10,7 +11,7 @@ import {
   getTransactions,
 } from '../helpers/program.helper';
 import {
-  changePaStatus,
+  awaitChangePaStatus,
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
@@ -55,10 +56,10 @@ describe('Do payment to 1 PA', () => {
     it('should succesfully pay-out', async () => {
       // Arrange
       await importRegistrations(programId, [registrationJumbo], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdJumbo],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];
@@ -89,8 +90,10 @@ describe('Do payment to 1 PA', () => {
         await waitFor(2_000);
       }
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
     });
@@ -99,10 +102,10 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       registrationJumbo.addressCity = null;
       await importRegistrations(programId, [registrationJumbo], accessToken);
-      await changePaStatus(
+      await awaitChangePaStatus(
         programId,
         [referenceIdJumbo],
-        'include',
+        RegistrationStatusEnum.included,
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];
@@ -133,8 +136,10 @@ describe('Do payment to 1 PA', () => {
         await waitFor(2_000);
       }
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(getTransactionsBody[0].status).toBe(StatusEnum.error);
       expect(getTransactionsBody[0].errorMessage).toContain(
         IntersolveJumboResultCode.InvalidOrderLine,

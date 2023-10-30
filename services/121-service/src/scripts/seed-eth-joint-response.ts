@@ -9,7 +9,7 @@ import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
 @Injectable()
-export class SeedProgramDorcasEth implements InterfaceScript {
+export class SeedEthJointResponse implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
@@ -54,4 +54,4 @@ export class SeedProgramDorcasEth implements InterfaceScript {
   }
 }
 
-export default SeedProgramDorcasEth;
+export default SeedEthJointResponse;

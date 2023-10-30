@@ -97,7 +97,6 @@ Using application such as EspoCRM to call our API
 - [Fill payment details](PA-App/Fill_payment_details.feature)
 - Answer monitoring questions
 - Generic PA-App components
-  - [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
   - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
   - Changes based on instance-configuration/values
 

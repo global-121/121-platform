@@ -212,7 +212,7 @@
         },
         "totals": {
           "total-helped-to-date": "Total number of individual PA helped to date",
-          "tooltip": "PA's that received one or more payments"
+          "tooltip": "PAs that received one or more payments"
         },
         "over-time": {
           "pa": {
@@ -251,6 +251,7 @@
           "xml": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XML-file</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>"
         },
         "in-progress": "Payment in progress",
+        "calculating-transfer-amount": "Calculating total transfer amount",
         "make-export": "Export payment data",
         "last-payment": {
           "last-payment": "Last payment: {{nr}}",
@@ -277,7 +278,7 @@
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
-        "filter-placeholder": "Type to filter on any column...",
+        "filter-placeholder": "Type value...",
         "filter-toggle": "Show all",
         "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
         "filter-btn": {
@@ -288,53 +289,43 @@
             "apply-btn": "Apply"
           },
           "btn-label": {
-            "paStatus": "Status",
-            "paymentsLeft": "Remaining payments"
-          },
-          "payments-left-option": {
-            "no-maximum": "No maximum",
-            "more-than-three": "> 3 remaining",
-            "zero-three": " remaining"
+            "paStatus": "Status"
           },
           "empty-selection-alert-message": "Please select at least one option",
-          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected",
-          "remaining-payment-description": "Select to filter People Affected by payments remaining"
+          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "last-message": {
-          "no-message": "No messages yet",
-          "message-status": "Last message:"
+          "no-message": "No messages yet"
         },
         "max-payments": {
           "left": "remaining"
         },
         "column": {
           "select": "Select",
-          "person": "Person Affected",
+          "personAffectedSequence": "Person Affected",
           "status": "Status",
-          "imported": "Imported",
-          "invited": "Invited",
-          "no-longer-eligible": "No longer eligible",
-          "digital-id-created": "Created Digital ID",
-          "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
-          "selected-for-validation": "Selected for validation",
-          "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
-          "inclusion-score": "Inclusion score",
-          "included": "Included",
-          "rejected": "Rejected",
-          "inclusion-ended": "Inclusion ended",
+          "registration-created": "Registration created",
+          "inclusionScore": "Inclusion score",
           "name": "Name",
           "dob": "Date of birth",
-          "phone-number": "Phonenumber",
+          "phoneNumber": "Phonenumber",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
-          "maxPayments": "Max payments",
-          "fsp": "Financial Service Provider",
+          "maxPayments": "Max. payments",
+          "fspDisplayNamePortal": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
           "payment-history": "Payment history",
-          "last-message-status": "Messages",
-          "hasNote": "Has Note"
+          "lastMessageStatus": "Last message",
+          "hasNote": "Has Note",
+          "referenceId": "Reference ID",
+          "note": "Note",
+          "paymentCount": "Payments so far",
+          "paymentCountRemaining": "Remaining payments",
+          "failedPayment": "Failed for payment #",
+          "waitingPayment": "Waiting for payment #",
+          "successPayment": "Successful for payment #"
         },
         "language": {
           "en": "English",
@@ -369,10 +360,10 @@
           "include": "Include in program",
           "reject": "Reject from program",
           "end-inclusion": "End inclusion in program",
-          "send-message": "Send Message to PA's",
+          "send-message": "Send Message to PAs",
           "delete-pa": "Delete PA",
           "do-payment": "Do payment",
-          "pause": "Pause PA's"
+          "pause": "Pause PAs"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
@@ -384,13 +375,14 @@
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "People Affected",
+        "submit-warning-people-affected": "Perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected.",
+        "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "transaction": {
           "error": "Failed",
           "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
           "success": "Success",
-          "no-payment-yet": "No payment yet",
+          "payments-popup": "Payments",
           "show-status": "Show status",
           "do-single-payment": "Do single payment",
           "payment-number": "Payment #{{number}}",
@@ -530,19 +522,37 @@
           "download-voucher": "Download voucher",
           "single-payment": {
             "intro": "Do payment for 1 PA only",
-            "start-payout": "Start payout now for PA #{{paNr}}",
+            "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status-changed": "You successfully changed the status to <strong>{{pastatus}}</strong> for <strong>{{panumber}}</strong> People Affected.",
-        "pa-moved-phase": "These People Affected might be visible in another phase after this status change.",
+        "bulk-action-response": {
+          "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>The operation can take some time to process. Inspect the PA-table below for the up-to-date status.",
+          "pa-moved-phase": "People Affected might be visible in another phase after this status change.",
+          "close-popup": "You can close this popup."
+        },
+        "bulk-action-conditions": {
+          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
+          "select-for-validation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
+          "end-inclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
+          "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
+          "mark-no-longer-eligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
+          "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
+          "delete-pa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
+          "send-message": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
+          "do-payment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
+        },
         "payment-history-popup": {
           "title": "Payment history"
-        },
-        "export-list": {
-          "button-label": "Export list",
-          "success-message": "Export list successful. You can find the Excel file in the downloads folder."
         }
+      },
+      "table-filter-row": {
+        "select-column-to-filter": "Type or select column to filter",
+        "apply-filter": "Apply Filter",
+        "remove-filter": "Remove filter",
+        "clear-all": "Clear all filters",
+        "filtered-results": "Filtered recipients"
       },
       "bulk-import": {
         "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
@@ -709,6 +719,7 @@
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",
+    "save-success": "Saved successfully",
     "timestamp": {
       "done": "Done on:"
     },
@@ -766,7 +777,12 @@
         "dataChanges": "Data changes",
         "message": "Messages",
         "status": "Status history",
-        "payment": "Payments"
+        "payment": "Payments",
+        "notes": "Notes"
+      },
+      "actions": "Actions",
+      "action": {
+        "add-note": "Add note"
       },
       "activities": {
         "status": {
@@ -784,7 +800,16 @@
           "label": "Data change",
           "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}",
           "reason": "<br><b>Reason:</b> {{reason}}"
+        },
+        "note": {
+          "label": "Note"
         }
+      },
+      "add-note-popup": {
+        "add-note-profile": "You are about to add a note to {{ name }}'s profile.",
+        "note-visible": "The note will be visible to other 121 users who are permitted to view personal profiles.",
+        "type-note": "Type note:",
+        "note-textarea-placeholder": "Click here to type a short note"
       }
     },
     "payment-history": {
@@ -798,6 +823,9 @@
   "file-picker": {
     "label": "Select a file",
     "download-template-button": "Download template CSV-file"
+  },
+  "select-typeahead": {
+    "placeholder": "Select..."
   },
   "password-toggle": {
     "show": "Show password",

@@ -1,5 +1,6 @@
 import {
   BeforeRemove,
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -7,12 +8,14 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { ExportType } from '../export-metrics/dto/export-details.dto';
+import { ExportType } from '../metrics/dto/export-details.dto';
+import { NameConstraintQuestions } from '../shared/const';
 import { CascadeDeleteEntity } from './../base.entity';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { ProgramEntity } from './program.entity';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
+@Check(`"name" NOT IN (${NameConstraintQuestions})`)
 @Entity('program_question')
 export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column()

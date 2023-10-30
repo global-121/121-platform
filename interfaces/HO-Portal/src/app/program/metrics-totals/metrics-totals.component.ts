@@ -25,14 +25,10 @@ export class MetricsTotalsComponent implements OnChanges {
   }
 
   public async update() {
-    this.lastUpdated = getValueOrUnknown(this.program.updated);
-    this.total = await this.getTotals();
-  }
-
-  private async getTotals() {
     const programMetrics = await this.programService.getMetricsById(
       this.program.id,
     );
-    return programMetrics.pa.totalPaHelped;
+    this.lastUpdated = getValueOrUnknown(programMetrics.updated);
+    this.total = programMetrics.pa.totalPaHelped;
   }
 }

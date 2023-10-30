@@ -1,8 +1,46 @@
-<ion-text>
-  <h1 class="ion-padding-start">
-    {{ 'registration-details.activity-overview.title' | translate }}
-  </h1>
-</ion-text>
+<ion-row class="ion-justify-content-between ion-align-items-center">
+  <ion-text>
+    <h1 class="ion-padding-start ion-no-margin">
+      {{ 'registration-details.activity-overview.title' | translate }}
+    </h1>
+  </ion-text>
+  <ng-container *ngIf="canUpdatePersonalData">
+    <ion-button
+      id="bottom-start"
+      fill="outline"
+      color="primary"
+      size="medium"
+      shape="round"
+    >
+      {{ 'registration-details.activity-overview.actions' | translate }} &nbsp;
+      <ion-icon name="chevron-down-outline"></ion-icon>
+    </ion-button>
+    <ion-popover
+      trigger="bottom-start"
+      side="bottom"
+      alignment="start"
+      [showBackdrop]="false"
+      [dismissOnSelect]="true"
+    >
+      <ng-template>
+        <app-popover-content>
+          <ion-list>
+            <ion-item
+              button
+              (click)="openAddNoteModal()"
+              lines="none"
+            >
+              {{
+                'registration-details.activity-overview.action.add-note'
+                  | translate
+              }}
+            </ion-item>
+          </ion-list>
+        </app-popover-content>
+      </ng-template>
+    </ion-popover>
+  </ng-container>
+</ion-row>
 
 <ion-card>
   <ion-item
