@@ -20,7 +20,7 @@ export class ConsentQuestionComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   public instanceInformation: InstanceInformation;
 
@@ -43,7 +43,7 @@ export class ConsentQuestionComponent
     }
   }
 
-  initHistory() {
+  override initHistory() {
     this.isDisabled = true;
     this.userConsent = this.data.userConsent;
   }

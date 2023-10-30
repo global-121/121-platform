@@ -15,7 +15,7 @@ import { PersonalComponents } from '../personal-components.enum';
   styleUrls: ['./next-pa.component.scss'],
 })
 export class NextPaComponent extends PersonalDirective implements OnInit {
-  public isCanceled = false;
+  public override isCanceled = false;
   public showSavePa = true;
   public disableSavePa = false;
   public showAddAnotherPa = false;
@@ -47,11 +47,11 @@ export class NextPaComponent extends PersonalDirective implements OnInit {
     }
   }
 
-  async initNew() {
+  override async initNew() {
     this.conversationService.stopLoading();
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.isCanceled = this.data.isCanceled;
     if (this.isCanceled) {
       return;

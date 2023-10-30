@@ -15,11 +15,11 @@ export class ContactDetailsComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   public contactDetails: string;
 
-  public isCanceled = false;
+  public override isCanceled = false;
 
   constructor(
     public conversationService: ConversationService,
@@ -37,7 +37,7 @@ export class ContactDetailsComponent
     this.complete();
   }
 
-  initHistory() {
+  override initHistory() {
     this.isDisabled = true;
     this.isCanceled = this.data.isCanceled;
   }
