@@ -432,7 +432,7 @@ export class RegistrationsController {
     summary: 'Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Updated provided attributes of registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

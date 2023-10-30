@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { AdminAuthGuard } from './../guards/admin.guard';
@@ -24,9 +24,20 @@ export class InstanceController {
     return await this.instanceService.getInstance();
   }
 
+  // TODO: we assume only 1 instance. Therefore not patching by instance-id/name. This could be changed in the future.
   @Admin()
   @ApiOperation({ summary: 'Update instance' })
-  @Post('update')
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully updated instance',
+    type: InstanceEntity,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No instance found',
+    type: InstanceEntity,
+  })
+  @Patch()
   public async updateInstance(
     @Body() updateInstanceDto: UpdateInstanceDto,
   ): Promise<InstanceEntity> {
@@ -35,7 +46,12 @@ export class InstanceController {
 
   @Admin()
   @ApiOperation({ summary: 'Update monitoring question' })
-  @Put('monitoringQuestion')
+  @ApiResponse({
+    status: 404,
+    description: 'No instance found',
+    type: InstanceEntity,
+  })
+  @Patch('monitoringQuestion')
   public async updateMonitoringQuestion(
     @Body() updateMonitoringQuestionDto: UpdateMonitoringQuestionDto,
   ): Promise<MonitoringQuestionEntity> {
