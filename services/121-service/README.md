@@ -19,7 +19,7 @@ See instructions to get started in the main [`README`](../../README.md#getting-s
 
 Make sure to update any dependencies from _within_ the Docker-container, with:
 
-    docker compose exec  121-service  npm install --save
+    docker compose exec 121-service  npm install --save
 
 ## Database
 
@@ -31,23 +31,23 @@ During development the database-structure will change (e.g. an extra column in a
 
 Any time, the database-structure is adapted, before pushing, run:
 
-    docker exec -it 121-service npm run migration:generate migration/<name>
+    docker exec -it 121-service  npm run migration:generate migration/<name>
 
 This stores all edits in a migration-file, which is pushed along with your code.
 On test- and production-server, this file is automatically run within the `npm prestart` command.
 To run this file locally, do:
 
-    docker exec -it 121-service npm run migration:run
+    docker exec -it 121-service  npm run migration:run
 
 If you want to revert one migration you can run:
 
-    docker exec -it 121-service npm run migration:revert
+    docker exec -it 121-service  npm run migration:revert
 
 ### Seed the database
 
 To create the database initially, you have to run a command once:
 
-    docker exex -it 121-service npm run setup
+    docker exex -it 121-service  npm run setup
 
 This will add 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
 
@@ -77,15 +77,19 @@ For FSP-specific instructions, see the README.md in each individual FSP-folder, 
 
 ### Testing
 
-To run the api tests:
+To run the Unit-tests: (replace `:all` with `:watch` to run during development)
 
-    docker exec 121-service npm run test:e2e
+    docker exec 121-service  npm run test:unit:all
+
+To run the API/Integration tests: (replace `:all` with `:watch` to run during development)
+
+    docker exec 121-service  npm run test:e2e:all
 
 ### Debugging
 
-To enter the 121-service in the terminal use:
+To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Docker Desktop)
 
-    docker exec -it 121-service /bin/sh
+    docker exec -it 121-service  /bin/sh
 
 ---
 
