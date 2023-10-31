@@ -274,7 +274,7 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment)
+    void this.makePaymentRequest(paLists, programId, payment)
       .catch((e) => {
         this.azureLogService.logError(e, true);
       })

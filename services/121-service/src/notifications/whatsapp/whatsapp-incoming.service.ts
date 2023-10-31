@@ -478,20 +478,17 @@ export class WhatsappIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.whatsappService
-            .sendWhatsapp(
-              message.body,
-              message.to,
-              message.messageType
-                ? (message.messageType as IntersolveVoucherPayoutStatus)
-                : null,
-              message.mediaUrl,
-              message.registrationId,
-              message.contentType,
-            )
-            .then(async () => {
-              await this.whatsappPendingMessageRepo.remove(message);
-            });
+          await this.whatsappService.sendWhatsapp(
+            message.body,
+            message.to,
+            message.messageType
+              ? (message.messageType as IntersolveVoucherPayoutStatus)
+              : null,
+            message.mediaUrl,
+            message.registrationId,
+            message.contentType,
+          );
+          await this.whatsappPendingMessageRepo.remove(message);
           await waitFor(2_000);
         }
       }
