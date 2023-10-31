@@ -516,9 +516,8 @@ export class ProgramService {
         // If existing: update ..
         oldAttribute.type = attribute.type;
         oldAttribute.label = attribute.label;
-        const savedAttribute = await this.programCustomAttributeRepository.save(
-          oldAttribute,
-        );
+        const savedAttribute =
+          await this.programCustomAttributeRepository.save(oldAttribute);
         savedAttributes.push(savedAttribute);
         const attributeIndex = program.programCustomAttributes.findIndex(
           (attr) => attr.id === savedAttribute.id,
@@ -530,9 +529,8 @@ export class ProgramService {
         newCustomAttribute.programId = programId;
 
         // attribute.programId = programId;
-        const savedAttribute = await this.programCustomAttributeRepository.save(
-          newCustomAttribute,
-        );
+        const savedAttribute =
+          await this.programCustomAttributeRepository.save(newCustomAttribute);
         savedAttributes.push(savedAttribute);
         program.programCustomAttributes.push(savedAttribute);
       }

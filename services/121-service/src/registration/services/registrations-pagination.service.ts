@@ -35,11 +35,11 @@ import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
-type Filter = {
+interface Filter {
   comparator: FilterComparator;
   findOperator: FindOperator<string>;
-};
-type ColumnsFilters = { [columnName: string]: Filter[] };
+}
+type ColumnsFilters = Record<string, Filter[]>;
 
 @Injectable()
 export class RegistrationsPaginationService {
@@ -68,9 +68,8 @@ export class RegistrationsPaginationService {
     }
 
     const orignalSelect = query.select ? [...query.select] : [];
-    const fullnameNamingConvention = await this.getFullNameNamingConvention(
-      programId,
-    );
+    const fullnameNamingConvention =
+      await this.getFullNameNamingConvention(programId);
 
     if (query.select && query.select.includes('name')) {
       if (fullnameNamingConvention) {
@@ -287,7 +286,7 @@ export class RegistrationsPaginationService {
   private createFilterObjects(
     registrationDataNamesProgram: string[],
     allowedFilterOperators: FilterOperator[],
-  ): { [column: string]: FilterOperator[] | true } {
+  ): Record<string, FilterOperator[] | true> {
     const filterObject = {};
     for (const name of registrationDataNamesProgram) {
       filterObject[name] = allowedFilterOperators;

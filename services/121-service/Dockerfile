@@ -1,4 +1,4 @@
-FROM node:16-slim as base
+FROM node:18-slim as base
 
 WORKDIR /home/node/app
 
@@ -11,7 +11,6 @@ RUN npm ci
 COPY . .
 
 CMD ["npm", "start"]
-
 
 FROM base as development
 

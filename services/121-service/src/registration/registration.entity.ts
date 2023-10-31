@@ -219,9 +219,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   public async getRegistrationValueByName(name: string): Promise<string> {
-    const registrationDataResult = await this.getRegistrationDataValueByName(
-      name,
-    );
+    const registrationDataResult =
+      await this.getRegistrationDataValueByName(name);
     if (registrationDataResult) {
       return registrationDataResult;
     } else {
@@ -659,9 +658,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       for (const nameColumn of JSON.parse(
         JSON.stringify(program.fullnameNamingConvention),
       )) {
-        const singleName = await this.getRegistrationDataValueByName(
-          nameColumn,
-        );
+        const singleName =
+          await this.getRegistrationDataValueByName(nameColumn);
         if (singleName) {
           fullnameConcat.push(singleName);
         }
