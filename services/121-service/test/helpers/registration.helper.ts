@@ -18,7 +18,7 @@ export function deleteRegistrations(
   programId: number,
   referenceIds: string[],
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (referenceIds) {
@@ -70,7 +70,7 @@ export function getRegistrations(
   accessToken: string,
   page?: number,
   limit?: number,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
   sort?: { field: string; direction: 'ASC' | 'DESC' },
 ): Promise<request.Response> {
   const queryParams = {};
@@ -102,7 +102,7 @@ export async function awaitChangePaStatus(
   referenceIds: string[],
   status: RegistrationStatusEnum,
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (referenceIds) {
