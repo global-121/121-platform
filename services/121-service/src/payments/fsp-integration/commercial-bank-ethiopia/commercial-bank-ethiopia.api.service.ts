@@ -45,25 +45,25 @@ export class CommercialBankEthiopiaApiService {
       return responseBody;
     } catch (error) {
       // Handle errors here
-      const result: any = {
-        resultDescription: 'Unknown error occurred.',
+      const result = {
+        resultDescription: null,
       };
 
-      if (error.code === 'ENOTFOUND') {
-        console.error(
-          'Failed because of CBE connection error. Please try again later',
-        );
+      if (error.code === 'ENOTFOUND' || error.code === 'ECONNABORTED') {
+        console.error('Failed because of CBE connection error or timeout.');
         result.resultDescription =
-          'Failed because of CBE connection error. Please try again later';
+          'Failed because of CBE connection error or timeout. Please try again later.';
       } else if (error.code === 'ENOENT') {
         console.error(
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
+          'Failed because the certificate file is not found or not valid.',
         );
         result.resultDescription =
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
+          'Failed because the certificate file is not found or not valid. Please contact the 121 development team.';
       } else {
         console.error('Unknown error occurred:', error.response);
-        result.resultDescription = error.response;
+        result.resultDescription =
+          error.response ||
+          'Failed because of an unknown error. Please contact the 121 development team.';
       }
 
       return result;
