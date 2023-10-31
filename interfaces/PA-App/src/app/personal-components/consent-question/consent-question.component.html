@@ -33,46 +33,31 @@
     "
   >
     <ion-item
-      color="light"
       lines="full"
+      color="light"
       class="ion-no-padding"
+      style="width: 100%"
+      [disabled]="isDisabled"
     >
-      <ion-item
-        lines="none"
-        color="light"
-        class="ion-no-padding"
-        style="width: 100%"
-      >
-        <ion-radio
-          [value]="consentChoices.agree"
-          [disabled]="isDisabled"
-        >
-          <ion-text class="ion-text-wrap">
-            {{ 'personal.consent-question.agree' | translate }}
-          </ion-text>
-        </ion-radio>
-      </ion-item>
+      <ion-radio [value]="consentChoices.agree">
+        <ion-text class="ion-text-wrap">
+          {{ 'personal.consent-question.agree' | translate }}
+        </ion-text>
+      </ion-radio>
     </ion-item>
     <ion-item
+      lines="full"
+      lines="none"
       color="light"
       class="ion-no-padding"
-      lines="full"
+      style="width: 100%"
+      [disabled]="isDisabled"
     >
-      <ion-item
-        lines="none"
-        color="light"
-        class="ion-no-padding"
-        style="width: 100%"
-      >
-        <ion-radio
-          [value]="consentChoices.disagree"
-          [disabled]="isDisabled"
-        >
-          <ion-text class="ion-text-wrap">
-            {{ 'personal.consent-question.disagree' | translate }}
-          </ion-text>
-        </ion-radio>
-      </ion-item>
+      <ion-radio [value]="consentChoices.disagree">
+        <ion-text class="ion-text-wrap">
+          {{ 'personal.consent-question.disagree' | translate }}
+        </ion-text>
+      </ion-radio>
     </ion-item>
   </ion-radio-group>
   <ion-row
