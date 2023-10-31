@@ -84,13 +84,16 @@ export class MetricsController {
     status: 200,
     description: 'Retrieved list of vouchers to cancel',
   })
+  // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
   @Get('metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<any> {
     return await this.metricsService.getToCancelVouchers();
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get metrics by program-id' })
+  @ApiOperation({
+    summary: 'Get metrics about people affected for dashboard page',
+  })
   @ApiParam({
     name: 'programId',
     required: true,

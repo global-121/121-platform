@@ -497,7 +497,7 @@ export class ProgramsServiceApiService {
     params = params.append('payment', payment);
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-voucher/balance`,
+      `/programs/${programId}/financial-service-providers/intersolve-voucher/vouchers/balance`,
       false,
       false,
       params,

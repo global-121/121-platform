@@ -18,7 +18,7 @@ export class InstanceController {
     this.instanceService = instanceService;
   }
 
-  @ApiOperation({ summary: 'Get instance' })
+  @ApiOperation({ summary: 'Get instance data' })
   @Get()
   public async getInstance(): Promise<InstanceEntity> {
     return await this.instanceService.getInstance();
@@ -26,7 +26,7 @@ export class InstanceController {
 
   // TODO: we assume only 1 instance. Therefore not patching by instance-id/name. This could be changed in the future.
   @Admin()
-  @ApiOperation({ summary: 'Update instance' })
+  @ApiOperation({ summary: 'Update instance data' })
   @ApiResponse({
     status: 200,
     description: 'Successfully updated instance',
@@ -45,7 +45,7 @@ export class InstanceController {
   }
 
   @Admin()
-  @ApiOperation({ summary: 'Update monitoring question' })
+  @ApiOperation({ summary: 'Update instance monitoring question' })
   @ApiResponse({
     status: 404,
     description: 'No instance found',

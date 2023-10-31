@@ -43,7 +43,7 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Export Intersolve voucher',
+    summary: 'Export Intersolve voucher image',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -73,14 +73,14 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Get Intersolve voucher balance',
+    summary: 'Get balance of Intersolve voucher',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Voucher balance retrieved' })
   @Get(
-    'programs/:programId/financial-service-providers/intersolve-voucher/balance',
+    'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
   )
   public async getBalance(
     @Param() params,
@@ -94,7 +94,8 @@ export class IntersolveVoucherController {
   }
 
   @ApiOperation({
-    summary: 'Get intersolve instructions',
+    summary:
+      'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
