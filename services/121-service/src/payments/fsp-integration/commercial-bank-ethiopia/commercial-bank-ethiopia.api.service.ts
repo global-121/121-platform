@@ -50,9 +50,7 @@ export class CommercialBankEthiopiaApiService {
       };
 
       if (error.code === 'ENOTFOUND' || error.code === 'ECONNABORTED') {
-        console.error(
-          'Failed because of CBE connection error or timeout.',
-        );
+        console.error('Failed because of CBE connection error or timeout.');
         result.resultDescription =
           'Failed because of CBE connection error or timeout. Please try again later.';
       } else if (error.code === 'ENOENT') {
