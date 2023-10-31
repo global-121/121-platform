@@ -23,6 +23,14 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@nestjs/throttler'
+        update-types:
+          ['version-update:semver-major']
+      - dependency-name: '@types/node'
+        update-types:
+          ['version-update:semver-major']
+      - dependency-name: 'bwip-js'
+      - dependency-name: 'jimp'
       - dependency-name: 'typescript'
 
   - package-ecosystem: npm
