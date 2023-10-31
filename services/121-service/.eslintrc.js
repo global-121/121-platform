@@ -51,6 +51,14 @@ module.exports = {
             argsIgnorePattern: '^_',
           },
         ],
+        'promise/no-nesting': 'error',
+        'promise/no-callback-in-promise': 'error',
+        'promise/no-multiple-resolved': 'error',
+        'promise/no-promise-in-callback': 'error',
+        'promise/no-return-in-finally': 'error',
+        // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
+        // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
+        'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
       },
     },
