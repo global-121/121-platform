@@ -162,12 +162,12 @@ export class CustomHttpService {
   public logErrorRequest(request: Request, error: Response): void {
     if (this.defaultClient) {
       try {
-        const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
+        const requestContent = `URL: ${request.url}. Payload: ${this.stringify(
           request.payload,
         )}`;
         const responseContent = `Response error: ${error.status} ${
           error.statusText
-        } - Body: ${JSON.stringify(error.data)}`;
+        } - Body: ${this.stringify(error.data)}`;
         this.defaultClient.trackException({
           // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
           exception: new Error(
@@ -183,5 +183,22 @@ export class CustomHttpService {
         console.log('An error occured in logErrorRequest: ', error);
       }
     }
+  }
+
+  public stringify(obj): string {
+    let cache = [];
+    const str = JSON.stringify(obj, (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    });
+    cache = null; // reset the cache
+    return str;
   }
 }

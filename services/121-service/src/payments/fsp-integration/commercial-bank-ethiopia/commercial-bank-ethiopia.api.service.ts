@@ -61,9 +61,17 @@ export class CommercialBankEthiopiaApiService {
         );
         result.resultDescription =
           'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
+      } else if (error.code === 'ECONNABORTED') {
+        console.error(
+          'Failed because of CBE connection timeout. Please try again later',
+        );
+        result.resultDescription =
+          'Failed because of CBE connection timeout. Please try again later';
       } else {
         console.error('Unknown error occurred:', error.response);
-        result.resultDescription = error.response;
+        result.resultDescription =
+          error.response ||
+          'Failed because of an unknown error. Please contact the 121 team.';
       }
 
       return result;
