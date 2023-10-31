@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import * as africastalking from 'africastalking';
 import { waitFor } from '../../../utils/waitFor.helper';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class AfricasTalkingApiService {
       apiKey: process.env.AFRICASTALKING_API_KEY,
       username: process.env.AFRICASTALKING_USERNAME,
     };
-    const AfricasTalking = require('africastalking')(credentials);
+    const AfricasTalking = africastalking(credentials);
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
