@@ -3,12 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { waitFor } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class AfricasTalkingApiService {
   public async sendPaymentPerPa(payload): Promise<PaTransactionResultDto> {
-    // A timeout of 123ms to not overload africa's talking server
-    await new Promise((r) => setTimeout(r, 123));
+    // Wait to not overload the africa's talking server
+    await waitFor(123);
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
       username: process.env.AFRICASTALKING_USERNAME,

@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { getServer } from './utility.helper';
 
 export function importRegistrations(
@@ -149,7 +150,7 @@ export async function waitForStatusChangeToComplete(
     ) {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Wait
+    await waitFor(100);
   }
 }
 

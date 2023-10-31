@@ -14,7 +14,8 @@ import {
   awaitChangePaStatus,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Do payment to 1 PA', () => {
   const programId = 3;
