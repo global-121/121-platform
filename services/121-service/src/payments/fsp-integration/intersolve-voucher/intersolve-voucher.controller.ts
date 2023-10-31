@@ -62,7 +62,6 @@ export class IntersolveVoucherController {
       Number(queryParams.payment),
       params.programId,
     );
-    console.log(queryParams.referenceId, queryParams.payment, params.programId);
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
