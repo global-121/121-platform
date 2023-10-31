@@ -15,13 +15,14 @@ module.exports = {
     },
     {
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser', // Specifies the ESLint parser
+      parser: '@typescript-eslint/parser',
       extends: [
         'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
         // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
         // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
+        'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
