@@ -12,8 +12,6 @@
 #     command: "tail -f /dev/null"
 #
 
-# TODO: The below line bugs Developers, what is it for?
-# name: global-121-platform
 
 services:
   121db:
@@ -45,3 +43,4 @@ services:
       target: development
     volumes:
       - './121-service:/home/node/app'
+

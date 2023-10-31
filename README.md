@@ -165,14 +165,6 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
-### Re-use `node_modules` in your local IDE
-
-If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root:
-
-    npm run sync-dev-dependencies:121-service
-
-This is a one-time copy, so when there are updates in the container, you have to run the command again.
-
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
