@@ -23,6 +23,9 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@types/node'
+        update-types:
+          ['version-update:semver-major']
       - dependency-name: 'typescript'
 
   - package-ecosystem: npm
