@@ -53,7 +53,7 @@
     "@nestjs/swagger": "^7.1.14",
     "@nestjs/terminus": "^10.1.1",
     "@nestjs/testing": "^10.2.7",
-    "@nestjs/throttler": "^4.2.1",
+    "@nestjs/throttler": "^5.0.1",
     "@nestjs/typeorm": "^10.0.0",
     "africastalking": "^0.5.5",
     "applicationinsights": "^1.8.8",
