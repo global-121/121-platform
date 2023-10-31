@@ -278,13 +278,14 @@ export class PaymentsService {
       .catch((e) => {
         this.azureLogService.logError(e, true);
       })
-      .finally(async () => {
-        await this.actionService.saveAction(
+      .finally(() => {
+        void this.actionService.saveAction(
           userId,
           programId,
           AdditionalActionType.paymentFinished,
         );
       });
+
     return paPaymentDataList.length;
   }
 
