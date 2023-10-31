@@ -344,6 +344,7 @@ export class IntersolveVoucherService
             IntersolvePayoutStatus:
               IntersolveVoucherPayoutStatus.InitialMessage,
           };
+          return result;
         },
         (error) => {
           result.message = error;
