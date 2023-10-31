@@ -32,7 +32,7 @@ export class SelectLanguageComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   public languages: LanguageOption[];
   public languageChoice: string;
@@ -58,7 +58,7 @@ export class SelectLanguageComponent
     }
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.languageChoice = this.data.languageChoice;
     this.languageChoiceName = this.getLanguageName(this.data.languageChoice);
     await this.translate.use(this.languageChoice).toPromise();

@@ -13,19 +13,14 @@
 
 See: [status.121.global](https://status.121.global/)
 
-| Interfaces | Test Status                                                                                                                                                                                                                  |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
-| AW-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
-| HO-Portal  | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+### Tests Status
 
-| Service     | Test Status                                                                                                                                                                                                                   |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 121-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
+[![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
+[![Test Interface: Register (PA)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml)
+[![Test Interface: Verify (AW)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml)
+[![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
+[![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
 
-### Integration Tests Status
-
-[![API tests](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml)  
 See: [Testing](#testing)
 
 ---
@@ -170,14 +165,6 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
-### Re-use `node_modules` in your local IDE
-
-If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root:
-
-    npm run sync-dev-dependencies:121-service
-
-This is a one-time copy, so when there are updates in the container, you have to run the command again.
-
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
@@ -276,8 +263,8 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
-  - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
-- Integration (API) tests to test the endpoints of the 121-service; Run with `docker exec 121-service npm run test:e2e` `services/121-service`-folder.
+  - Unit-tests and API/integration-tests for all services; Run with `npm test` in each `services/*`-folder.
+    See: `121-service/README.md`/[Testing](./services/121-service/README.md#testing) for details.
 
 ### When to use an API-test? (back-end + db? only)
 

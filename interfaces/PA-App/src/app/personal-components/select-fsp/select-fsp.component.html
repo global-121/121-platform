@@ -1,10 +1,6 @@
 <section>
   <app-dialogue-turn>
     <p>
-      <app-play-text-audio
-        key="personal.select-fsp.introduction"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       {{ 'personal.select-fsp.introduction' | translate }}
     </p>
   </app-dialogue-turn>
@@ -39,10 +35,6 @@
         *ngIf="fspChoice && !fspSubmitted"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <app-play-text-audio
-          key="shared.submit-button"
-          size="default"
-        ></app-play-text-audio>
         <ion-button
           type="submit"
           [disabled]="fspSubmitted || isDisabled"
@@ -59,10 +51,6 @@
     [isSpoken]="fspSubmitted"
   >
     <p>
-      <app-play-text-audio
-        key="personal.select-fsp.conclusion"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.select-fsp.conclusion'
@@ -82,10 +70,6 @@
       [isSpoken]="true"
     >
       <p>
-        <app-play-text-audio
-          key="personal.select-fsp.attributes.introduction"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.introduction' | translate }}
       </p>
     </app-dialogue-turn>
@@ -104,10 +88,6 @@
       [isSpoken]="showResultSuccess"
     >
       <p>
-        <app-play-text-audio
-          key="personal.select-fsp.attributes.success"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.success' | translate }}
       </p>
     </app-dialogue-turn>
@@ -116,10 +96,6 @@
       [isSpoken]="showResultError"
     >
       <p>
-        <app-play-text-audio
-          key="personal.select-fsp.attributes.error"
-          class="ion-float-start ion-margin-end"
-        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.error' | translate }}
       </p>
     </app-dialogue-turn>

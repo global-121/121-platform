@@ -119,6 +119,7 @@ export class ProgramsServiceApiService {
           if (error.error instanceof ErrorEvent) {
             // Client-side error:
             console.error(error);
+            return null;
           } else {
             // In case of server-side error (400/500):
             // Only on a 404-error, act as if nothing happened...

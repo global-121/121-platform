@@ -154,9 +154,8 @@ export class RegistrationsService {
     referenceId: string,
     status: RegistrationStatusEnum,
   ): Promise<RegistrationEntity> {
-    const registrationToUpdate = await this.getRegistrationFromReferenceId(
-      referenceId,
-    );
+    const registrationToUpdate =
+      await this.getRegistrationFromReferenceId(referenceId);
     if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
       registrationToUpdate.registrationStatus = status;
       return await this.registrationRepository.save(registrationToUpdate);
@@ -464,9 +463,8 @@ export class RegistrationsService {
     preferredLanguage: LanguageEnum,
     useForInvitationMatching?: boolean,
   ): Promise<void> {
-    const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
-      phoneNumber,
-    );
+    const sanitizedPhoneNr =
+      await this.lookupService.lookupAndCorrect(phoneNumber);
 
     const currentRegistration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -542,9 +540,8 @@ export class RegistrationsService {
     );
 
     // .. and save the updated import-registration
-    const updatedRegistration = await this.registrationRepository.save(
-      currentRegistration,
-    );
+    const updatedRegistration =
+      await this.registrationRepository.save(currentRegistration);
 
     // .. and update the try whatsapp entity
     const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
@@ -876,18 +873,16 @@ export class RegistrationsService {
     );
 
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue = await registration.getRegistrationValueByName(
-        attributeKey,
-      );
+      const oldValue =
+        await registration.getRegistrationValueByName(attributeKey);
       const attributeValue = partialRegistration[attributeKey];
       registration = await this.updateAttribute(
         attributeKey,
         attributeValue,
         registration,
       );
-      const newValue = await registration.getRegistrationValueByName(
-        attributeKey,
-      );
+      const newValue =
+        await registration.getRegistrationValueByName(attributeKey);
       if (String(oldValue) !== String(newValue)) {
         await this.registrationChangeLog.save({
           registration,
@@ -937,9 +932,8 @@ export class RegistrationsService {
         }
       }
     }
-    const savedRegistration = await this.registrationRepository.save(
-      registration,
-    );
+    const savedRegistration =
+      await this.registrationRepository.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         registration.program,
@@ -1007,9 +1001,8 @@ export class RegistrationsService {
         CustomDataAttributes.whatsappPhoneNumber as string,
       ];
 
-      const phoneNumber = await this.lookupService.lookupAndCorrect(
-        rawPhoneNumber,
-      );
+      const phoneNumber =
+        await this.lookupService.lookupAndCorrect(rawPhoneNumber);
 
       const matchingRegistrations = (
         await this.registrationRepository.find({
@@ -1060,9 +1053,8 @@ export class RegistrationsService {
     userId: number,
     permission: PermissionEnum,
   ): Promise<number[]> {
-    const user = await this.programService.findUserProgramAssignmentsOrThrow(
-      userId,
-    );
+    const user =
+      await this.programService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
@@ -1204,9 +1196,8 @@ export class RegistrationsService {
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user = await this.programService.findUserProgramAssignmentsOrThrow(
-      userId,
-    );
+    const user =
+      await this.programService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),
@@ -1454,9 +1445,8 @@ export class RegistrationsService {
       order: { created: 'DESC' },
     };
 
-    const statusChanges = await this.registrationStatusChangeRepository.find(
-      options,
-    );
+    const statusChanges =
+      await this.registrationStatusChangeRepository.find(options);
 
     return await Promise.all(
       statusChanges.map((statusChange) => {

@@ -73,11 +73,6 @@
     "retry": "Coba lagi",
     "submit-button": "Kirim"
   },
-  "speak-text": {
-    "loading": "Sedang memuat..",
-    "pause": "Pause",
-    "play": "Play"
-  },
   "tabs": {
     "account": "Akun",
     "community": "Komunitas",

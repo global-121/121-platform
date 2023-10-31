@@ -23,9 +23,8 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityBaringo = await this.seedHelper.addProgram(
-      programBaringo,
-    );
+    const programEntityBaringo =
+      await this.seedHelper.addProgram(programBaringo);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityBaringo, false);
@@ -39,9 +38,8 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTurkana = await this.seedHelper.addProgram(
-      programTurkana,
-    );
+    const programEntityTurkana =
+      await this.seedHelper.addProgram(programTurkana);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityTurkana, false);
@@ -51,9 +49,8 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityWestPokot = await this.seedHelper.addProgram(
-      programWestPokot,
-    );
+    const programEntityWestPokot =
+      await this.seedHelper.addProgram(programWestPokot);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityWestPokot, false);

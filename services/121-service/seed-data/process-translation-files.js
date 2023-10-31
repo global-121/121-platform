@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 // EXAMPLES
 
@@ -46,7 +45,10 @@ function isTranslatableString(object) {
   if (!object || typeof object !== 'object') {
     return false;
   }
-  return object.hasOwnProperty('en') && typeof object['en'] === 'string';
+  return (
+    Object.prototype.hasOwnProperty.call(object, 'en') &&
+    typeof object['en'] === 'string'
+  );
 }
 
 /**

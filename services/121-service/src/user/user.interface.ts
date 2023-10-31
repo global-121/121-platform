@@ -18,6 +18,4 @@ export interface UserToken {
   admin: boolean;
 }
 
-export interface UserPermissions {
-  [programId: number]: PermissionEnum[];
-}
+export type UserPermissions = Record<number, PermissionEnum[]>;

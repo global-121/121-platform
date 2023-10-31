@@ -235,9 +235,8 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
-    const resultTransaction = await this.transactionRepository.save(
-      transaction,
-    );
+    const resultTransaction =
+      await this.transactionRepository.save(transaction);
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },

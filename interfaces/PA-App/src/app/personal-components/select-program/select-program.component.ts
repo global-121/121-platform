@@ -25,7 +25,7 @@ export class SelectProgramComponent
   implements OnInit
 {
   @Input()
-  public data;
+  public override data;
 
   public programs: Program[];
   public programChoice: number;
@@ -50,7 +50,7 @@ export class SelectProgramComponent
     this.initNew();
   }
 
-  initHistory() {
+  override initHistory() {
     this.isDisabled = true;
     const chosenProgram = this.data.chosenProgram;
 
@@ -58,7 +58,7 @@ export class SelectProgramComponent
     this.programs = [chosenProgram];
   }
 
-  async initNew() {
+  override async initNew() {
     await this.getPrograms();
   }
 

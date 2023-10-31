@@ -17,6 +17,8 @@ export class EnumService {
     switch (attributeName) {
       case 'preferredLanguage':
         return this.getPreferredLanguageLabel(value);
+      default:
+        return '';
     }
   }
 

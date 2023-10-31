@@ -9,8 +9,6 @@ export enum LoggingEvent {
   accountCreated = 'account-created',
   accountDeleteFail = 'account-delete-fail',
   accountDeleteSucces = 'account-delete-succes',
-  audioPause = 'audio-pause',
-  audioPlay = 'audio-play',
   error = 'error',
   exception = 'exception',
   languageChosen = 'language-chosen',

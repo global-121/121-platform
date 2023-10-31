@@ -1,9 +1,6 @@
 <section #selectLanguage>
   <app-dialogue-turn>
     <p *ngFor="let language of languages">
-      <app-play-text-audio
-        [key]="language.introductionKey"
-      ></app-play-text-audio>
       {{ language.introduction | translate }}
     </p>
   </app-dialogue-turn>
@@ -20,11 +17,6 @@
           lines="full"
           class="ion-no-padding"
         >
-          <app-play-text-audio
-            [key]="language.languageKey"
-            slot="start"
-            class="ion-no-margin ion-margin-end"
-          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -46,10 +38,6 @@
         *ngIf="languageChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <app-play-text-audio
-          key="shared.submit-button"
-          size="default"
-        ></app-play-text-audio>
         <ion-button
           type="submit"
           expand="block"
@@ -65,10 +53,6 @@
     [isSpoken]="isDisabled"
   >
     <p>
-      <app-play-text-audio
-        key="personal.select-language.result"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.select-language.result'

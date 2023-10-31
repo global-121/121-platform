@@ -497,9 +497,8 @@ export class RegistrationsImportService {
   ): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
-    const programCustomAttributes = await this.getProgramCustomAttributes(
-      programId,
-    );
+    const programCustomAttributes =
+      await this.getProgramCustomAttributes(programId);
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
@@ -589,9 +588,8 @@ export class RegistrationsImportService {
 
   private async getDynamicAttributes(programId: number): Promise<Attribute[]> {
     let attributes = [];
-    const programCustomAttributes = await this.getProgramCustomAttributes(
-      programId,
-    );
+    const programCustomAttributes =
+      await this.getProgramCustomAttributes(programId);
     attributes = [...attributes, ...programCustomAttributes];
 
     const programQuestions = (

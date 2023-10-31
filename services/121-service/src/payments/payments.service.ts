@@ -784,9 +784,8 @@ export class PaymentsService {
   private async xmlToValidatedFspReconciliation(
     xmlFile,
   ): Promise<ImportFspReconciliationDto> {
-    const importRecords = await this.registrationsImportService.validateXml(
-      xmlFile,
-    );
+    const importRecords =
+      await this.registrationsImportService.validateXml(xmlFile);
     return await this.validateFspReconciliationXmlInput(importRecords);
   }
 

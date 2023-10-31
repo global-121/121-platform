@@ -8,6 +8,32 @@ updates:
       interval: 'weekly'
 
   - package-ecosystem: npm
+    directory: '/services/121-service'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 3
+    versioning-strategy: increase
+    groups:
+      types:
+        patterns: ['@types/*']
+      eslint:
+        patterns: ['*eslint*']
+      nestjs:
+        patterns: ['@nestjs/*']
+    ignore:
+      # Dependencies below are ordered alphabetically!
+      - dependency-name: '@nestjs/throttler'
+        update-types:
+          ['version-update:semver-major']
+      - dependency-name: '@types/node'
+        update-types:
+          ['version-update:semver-major']
+      - dependency-name: 'bwip-js'
+      - dependency-name: 'jimp'
+      - dependency-name: 'typescript'
+
+  - package-ecosystem: npm
     directory: '/interfaces/HO-Portal'
     schedule:
       interval: weekly

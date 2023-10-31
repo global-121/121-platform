@@ -145,7 +145,10 @@ export class CommercialBankEthiopiaService
     const nonEmptyRegistrationData = registrationData.map(
       (data: CommercialBankEthiopiaRegistrationData) => {
         for (const key in data) {
-          if (data.hasOwnProperty(key) && data[key] === null) {
+          if (
+            Object.prototype.hasOwnProperty.call(data, key) &&
+            data[key] === null
+          ) {
             delete data[key];
           }
         }
@@ -262,9 +265,8 @@ export class CommercialBankEthiopiaService
     const credentials: { username: string; password: string } =
       await this.getCommercialBankEthiopiaCredentials(programId);
 
-    const getAllPersonsAffectedData = await this.getAllPersonsAffectedData(
-      programId,
-    );
+    const getAllPersonsAffectedData =
+      await this.getAllPersonsAffectedData(programId);
 
     console.time('getValidationStatus loop total');
 

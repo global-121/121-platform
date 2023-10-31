@@ -173,31 +173,15 @@
     >
       <app-dialogue-turn [isSpoken]="checkValidationError(question.code)">
         <p *ngIf="question.answerType === answerType.PhoneNumber">
-          <app-play-text-audio
-            key="q-and-a-set.validation.phone-number"
-            class="ion-float-start ion-margin-end"
-          ></app-play-text-audio>
           {{ 'q-and-a-set.validation.phone-number' | translate }}
         </p>
         <p *ngIf="question.answerType === answerType.Number">
-          <app-play-text-audio
-            key="q-and-a-set.validation.number"
-            class="ion-float-start ion-margin-end"
-          ></app-play-text-audio>
           {{ 'q-and-a-set.validation.number' | translate }}
         </p>
         <p *ngIf="question.answerType === answerType.Date">
-          <app-play-text-audio
-            key="q-and-a-set.validation.date"
-            class="ion-float-start ion-margin-end"
-          ></app-play-text-audio>
           {{ 'q-and-a-set.validation.date' | translate }}
         </p>
         <p *ngIf="question.answerType === answerType.Email">
-          <app-play-text-audio
-            key="q-and-a-set.validation.date"
-            class="ion-float-start ion-margin-end"
-          ></app-play-text-audio>
           {{ 'q-and-a-set.validation.email' | translate }}
         </p>
         <p
@@ -206,10 +190,6 @@
             question.answerType === answerType.MultiSelect
           "
         >
-          <app-play-text-audio
-            key="q-and-a-set.validation.required"
-            class="ion-float-start ion-margin-end"
-          ></app-play-text-audio>
           {{ 'q-and-a-set.validation.required' | translate }}
         </p>
       </app-dialogue-turn>
@@ -231,10 +211,6 @@
     "
   >
     <p>
-      <app-play-text-audio
-        key="q-and-a-set.validation.generic-error"
-        class="ion-float-start ion-margin-end"
-      ></app-play-text-audio>
       {{ 'q-and-a-set.validation.generic-error' | translate }}
     </p>
   </app-dialogue-turn>
@@ -246,10 +222,6 @@
     [isSpoken]="theForm.valid && !checkValidationErrors() && allQuestionsShown"
   >
     <ion-row class="ion-nowrap ion-align-items-center">
-      <app-play-text-audio
-        [key]="submitLabel"
-        size="default"
-      ></app-play-text-audio>
       <ion-button
         type="button"
         (click)="doSubmit()"

@@ -34,7 +34,7 @@ export class EnrollInProgramComponent
   implements OnInit
 {
   @Input()
-  public data: any;
+  public override data: any;
 
   private programId: number;
   private currentProgram: Program;
@@ -71,7 +71,7 @@ export class EnrollInProgramComponent
     this.initNew();
   }
 
-  initHistory() {
+  override initHistory() {
     this.isDisabled = true;
     this.submitChoice = this.submitActions.confirm;
     this.currentProgram = this.data.currentProgram;
@@ -82,7 +82,7 @@ export class EnrollInProgramComponent
     this.hasChangedAnswers = false;
   }
 
-  async initNew() {
+  override async initNew() {
     this.conversationService.startLoading();
     await this.getProgramDetails();
     this.conversationService.stopLoading();

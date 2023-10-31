@@ -73,11 +73,6 @@
     "retry": "Probeer opnieuw",
     "submit-button": "Versturen"
   },
-  "speak-text": {
-    "loading": "Aan het laden",
-    "pause": "Pauze",
-    "play": "Afspelen"
-  },
   "tabs": {
     "account": "Account",
     "community": "Gemeenschap",

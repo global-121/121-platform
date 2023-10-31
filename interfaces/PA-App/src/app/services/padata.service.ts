@@ -61,6 +61,7 @@ export class PaDataService {
     if (instance) {
       return instance;
     }
+    return null;
   }
 
   public async getReferenceId(): Promise<string> {
@@ -84,6 +85,7 @@ export class PaDataService {
     if (programs) {
       return programs;
     }
+    return null;
   }
 
   public async getProgram(programId: number): Promise<Program> {
@@ -99,9 +101,10 @@ export class PaDataService {
     if (program) {
       return program;
     }
+    return null;
   }
 
-  public async getFspById(fspId: number) {
+  public async getFspById(fspId: number): Promise<Fsp> {
     const fspKey = this.detailFspKeyPrefix + fspId;
     if (!this.isOffline) {
       const detailedFsp = await this.programService.getFspById(fspId);
@@ -113,6 +116,7 @@ export class PaDataService {
     if (fsp) {
       return fsp;
     }
+    return null;
   }
 
   public async getCurrentProgram(): Promise<Program> {
@@ -194,9 +198,10 @@ export class PaDataService {
           const offlineUser: User = { username };
           this.saveUserInStorage(offlineUser);
           this.setLoggedIn(offlineUser);
+          return offlineUser;
         } else {
           if (!user) {
-            return;
+            return null;
           }
           console.log('PaData: Account created.');
           this.saveUserInStorage(user);

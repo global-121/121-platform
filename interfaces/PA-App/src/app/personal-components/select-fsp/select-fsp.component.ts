@@ -21,7 +21,7 @@ import { PersonalDirective } from '../personal-component.class';
 })
 export class SelectFspComponent extends PersonalDirective implements OnInit {
   @Input()
-  public data: any;
+  public override data: any;
 
   private referenceId: string;
   public program: Program;
@@ -58,7 +58,7 @@ export class SelectFspComponent extends PersonalDirective implements OnInit {
     this.initNew();
   }
 
-  async initNew() {
+  override async initNew() {
     this.conversationService.startLoading();
     this.fsps = this.program.financialServiceProviders;
     this.fsps.forEach(
@@ -71,7 +71,7 @@ export class SelectFspComponent extends PersonalDirective implements OnInit {
     this.conversationService.stopLoading();
   }
 
-  async initHistory() {
+  override async initHistory() {
     this.isDisabled = true;
     this.fspSubmitted = true;
     this.chosenFsp = this.data.fsp;

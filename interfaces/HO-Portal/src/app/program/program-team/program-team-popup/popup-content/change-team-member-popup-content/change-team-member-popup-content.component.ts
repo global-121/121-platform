@@ -62,13 +62,14 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
     this.selectedRoleNames = this.teamMemberRow.roles.map((role) => role.role);
   }
 
-  public isRoleSelected(roleName: string) {
+  public isRoleSelected(roleName: string): boolean {
     if (this.teamMemberRow.roles) {
       const selected = this.teamMemberRow.roles.some(
         (role) => role.role === roleName,
       );
       return selected;
     }
+    return false;
   }
 
   public async assignTeamMember(): Promise<void> {

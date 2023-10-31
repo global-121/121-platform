@@ -1,9 +1,5 @@
 <app-dialogue-turn>
   <p>
-    <app-play-text-audio
-      key="personal.consent-question.question"
-      class="ion-float-start ion-margin-end"
-    ></app-play-text-audio>
     <span
       [innerHTML]="
         'personal.consent-question.question'
@@ -24,10 +20,6 @@
 </app-dialogue-turn>
 <app-dialogue-turn actor="self">
   <p>
-    <app-play-text-audio
-      key="personal.consent-question.answer"
-      class="ion-float-start ion-margin-end"
-    ></app-play-text-audio>
     <span [innerHTML]="'personal.consent-question.answer' | translate"></span>
   </p>
   <ion-radio-group
@@ -45,11 +37,6 @@
       lines="full"
       class="ion-no-padding"
     >
-      <app-play-text-audio
-        key="personal.consent-question.agree"
-        slot="start"
-        class="ion-no-margin ion-margin-end"
-      ></app-play-text-audio>
       <ion-item
         lines="none"
         color="light"
@@ -71,11 +58,6 @@
       class="ion-no-padding"
       lines="full"
     >
-      <app-play-text-audio
-        key="personal.consent-question.disagree"
-        slot="start"
-        class="ion-no-margin ion-margin-end"
-      ></app-play-text-audio>
       <ion-item
         lines="none"
         color="light"
@@ -97,10 +79,6 @@
     *ngIf="(consentChoice || userConsent) && !isDisabled"
     class="ion-nowrap ion-align-items-center ion-margin-top"
   >
-    <app-play-text-audio
-      key="shared.submit-button"
-      size="default"
-    ></app-play-text-audio>
     <ion-button
       type="button"
       (click)="submitConsent()"

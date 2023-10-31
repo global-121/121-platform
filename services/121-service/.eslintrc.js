@@ -1,3 +1,4 @@
+/** @type {import('@typescript-eslint/utils/dist/ts-eslint/Linter').Linter.Config} */
 module.exports = {
   overrides: [
     {
@@ -6,23 +7,29 @@ module.exports = {
       env: {
         node: true,
       },
+      parserOptions: {
+        sourceType: 'script',
+        ecmaVersion: 2021,
+      },
       rules: {},
     },
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser', // Specifies the ESLint parser
       extends: [
-        'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
         'plugin:jest/recommended',
-        // 'prettier/@typescript-eslint', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
+        'plugin:@typescript-eslint/recommended',
+        // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
+        'plugin:@typescript-eslint/stylistic',
+        // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
         parser: '@typescript-eslint/parser',
-        ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
+        ecmaVersion: 2021, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
+        project: true,
         tsconfigRootDir: __dirname,
-        project: ['./tsconfig.json'],
       },
       rules: {
         '@typescript-eslint/interface-name-prefix': 'off',

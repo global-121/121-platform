@@ -797,9 +797,8 @@ export class IntersolveVoucherService
       })
       .getMany();
     for await (const voucher of voucherWithBalanceRaw) {
-      const voucherWithBalance = await this.createVoucherWithBalanceDto(
-        voucher,
-      );
+      const voucherWithBalance =
+        await this.createVoucherWithBalanceDto(voucher);
       vouchersWithBalance.push(voucherWithBalance);
     }
     return vouchersWithBalance;
