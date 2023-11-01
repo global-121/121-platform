@@ -101,50 +101,6 @@ export class TransactionsService {
     return transactionQuery;
   }
 
-  public getLastTransactionsSplitByPaymentQuery(
-    programId: number,
-  ): SelectQueryBuilder<any> {
-    const maxAttemptPerPaAndPayment = this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select(['payment', '"registrationId"'])
-      .addSelect(
-        `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
-      )
-      .where('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .groupBy('payment')
-      .addGroupBy('"registrationId"')
-      .addSelect('"transactionStep"')
-      .addGroupBy('"transactionStep"');
-
-    const transactionQuery = this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select([
-        'transaction.created AS "paymentDate"',
-        'transaction.payment AS payment',
-        '"referenceId"',
-        'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-        'fsp.fspDisplayNamePortal as "fspName"',
-        'fsp.fsp as "fsp"',
-      ])
-      .leftJoin('transaction.financialServiceProvider', 'fsp')
-      .leftJoin(
-        '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
-        'subquery',
-        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(transaction.created as varchar) = subquery.max_attempt`,
-      )
-      .leftJoin('transaction.registration', 'r')
-      .where('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .andWhere('subquery.max_attempt IS NOT NULL');
-    return transactionQuery;
-  }
-
   public async getTransaction(
     programId: number,
     input: GetTransactionDto,
