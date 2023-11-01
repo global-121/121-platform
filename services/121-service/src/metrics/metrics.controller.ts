@@ -4,7 +4,6 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -79,19 +78,22 @@ export class MetricsController {
 
   @Admin()
   @ApiOperation({
-    summary: 'Get list of to cancel vouchers only used by admin',
+    summary: 'Get list of vouchers to cancel, only used by admin',
   })
   @ApiResponse({
-    status: 201,
-    description: 'Get list of to cancel vouchers only used by admin',
+    status: 200,
+    description: 'Retrieved list of vouchers to cancel',
   })
-  @Post('metrics/to-cancel-vouchers')
+  // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
+  @Get('metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<any> {
     return await this.metricsService.getToCancelVouchers();
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get metrics by program-id' })
+  @ApiOperation({
+    summary: 'Get metrics about people affected for dashboard page',
+  })
   @ApiParam({
     name: 'programId',
     required: true,

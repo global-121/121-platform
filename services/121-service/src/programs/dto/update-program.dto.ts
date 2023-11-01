@@ -2,13 +2,24 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class UpdateProgramDto {
+  @ApiProperty({
+    enum: ProgramPhase,
+    example: ProgramPhase.registrationValidation,
+  })
+  @IsString()
+  @IsEnum(ProgramPhase)
+  @IsOptional()
+  public readonly phase: ProgramPhase;
+
   @ApiProperty()
   @IsOptional()
   @IsBoolean()

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import crypto from 'crypto';
 import {
   BeforeInsert,
@@ -20,9 +21,11 @@ import { UserType } from './user-type-enum';
 export class UserEntity extends CascadeDeleteEntity {
   @Index({ unique: true })
   @Column({ nullable: true })
+  @ApiProperty({ example: 'username' })
   public username: string;
 
   @Column({ select: false })
+  @ApiProperty()
   public password: string;
 
   @BeforeInsert()
@@ -58,9 +61,11 @@ export class UserEntity extends CascadeDeleteEntity {
   public notes: NoteEntity[];
 
   @Column()
+  @ApiProperty({ example: UserType.aidWorker })
   public userType: UserType;
 
   @Column({ default: false })
+  @ApiProperty({ example: false })
   public admin: boolean;
 
   @BeforeRemove()
@@ -86,11 +91,14 @@ export class UserEntity extends CascadeDeleteEntity {
   }
 
   @Column({ nullable: true, select: false })
+  @ApiProperty()
   public salt: string;
 
   @Column({ default: true })
+  @ApiProperty({ example: true })
   public active: boolean;
 
   @Column({ nullable: true })
+  @ApiProperty({ example: new Date() })
   public lastLogin: Date;
 }

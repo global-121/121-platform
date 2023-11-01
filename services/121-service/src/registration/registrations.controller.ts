@@ -432,7 +432,7 @@ export class RegistrationsController {
     summary: 'Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Updated provided attributes of registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -469,7 +469,6 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -634,7 +633,7 @@ export class RegistrationsController {
   @ApiParam({
     name: 'referenceId',
   })
-  @Get('registrations/get/:referenceId')
+  @Get('registrations/:referenceId')
   public async getRegistration(
     @Param() params,
     @User('id') userId: number,
@@ -651,18 +650,19 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspREAD)
-  @ApiOperation({ summary: 'Find FSP and attributes' })
+  @ApiOperation({ summary: 'Get FSP-attribute answers' })
   @ApiResponse({
-    status: 201,
-    description: 'Found fsp and attributes',
+    status: 200,
+    description: 'Retrieved FSP-attribute answers',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/get-fsp')
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @Get('programs/:programId/registrations/fsp-attributes')
   public async getFspAnswersAttributes(
-    @Body() referenceIdDto: ReferenceIdDto,
+    @Query() queryParams: ReferenceIdDto,
   ): Promise<FspAnswersAttrInterface> {
     return await this.registrationsService.getFspAnswersAttributes(
-      referenceIdDto.referenceId,
+      queryParams.referenceId,
     );
   }
 

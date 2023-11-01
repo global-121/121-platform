@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
@@ -16,12 +14,7 @@ export enum CustomAttributeType {
   tel = 'tel',
 }
 
-export class CreateProgramCustomAttributeDto {
-  @ApiProperty({ example: 'district' })
-  @IsNotEmpty()
-  @IsString()
-  public readonly name: string;
-
+export class UpdateProgramCustomAttributeDto {
   @ApiProperty({ example: 'text' })
   @IsNotEmpty()
   @IsString()
@@ -53,22 +46,9 @@ export class CreateProgramCustomAttributeDto {
   public duplicateCheck: boolean;
 }
 
-export class CreateProgramCustomAttributesDto {
-  @ApiProperty({
-    example: [
-      {
-        name: 'mycustom',
-        type: 'text',
-        label: { en: 'MyCustom' },
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
-      },
-    ],
-  })
-  @ValidateNested()
-  @Type(() => CreateProgramCustomAttributeDto)
-  public readonly attributes: CreateProgramCustomAttributeDto[];
+export class CreateProgramCustomAttributeDto extends UpdateProgramCustomAttributeDto {
+  @ApiProperty({ example: 'district' })
+  @IsNotEmpty()
+  @IsString()
+  public readonly name: string;
 }

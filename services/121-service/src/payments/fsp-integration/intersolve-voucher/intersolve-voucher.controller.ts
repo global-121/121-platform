@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -16,6 +17,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -41,20 +43,23 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Export Intersolve vouchers',
+    summary: 'Export Intersolve voucher image',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 201, description: 'Vouchers exported' })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('programs/:programId/payments/intersolve/export-voucher')
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiResponse({ status: 200, description: 'Voucher exported' })
+  @Get(
+    'programs/:programId/financial-service-providers/intersolve-voucher/vouchers',
+  )
   public async exportVouchers(
     @Param() params,
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
+    @Query() queryParams: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
+      queryParams.referenceId,
+      Number(queryParams.payment),
       params.programId,
     );
     const bufferStream = new stream.PassThrough();
@@ -67,30 +72,35 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Get Intersolve voucher balance',
+    summary: 'Get balance of Intersolve voucher',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 201, description: 'Vouchers balance retrieved' })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('programs/:programId/payments/intersolve/balance')
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiResponse({ status: 200, description: 'Voucher balance retrieved' })
+  @Get(
+    'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
+  )
   public async getBalance(
     @Param() params,
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
+    @Query() queryParams: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
+      queryParams.referenceId,
+      Number(queryParams.payment),
       params.programId,
     );
   }
 
   @ApiOperation({
-    summary: 'Get intersolve instructions',
+    summary:
+      'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Get('programs/:programId/payments/intersolve/instruction')
+  @Get(
+    'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
+  )
   public async intersolveInstructions(
     @Res() response: Response,
     @Param() params,
@@ -114,8 +124,9 @@ export class IntersolveVoucherController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({ status: 201, description: 'Post intersolve instructions' })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('programs/:programId/payments/intersolve/instruction')
+  @Post(
+    'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
+  )
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,
@@ -127,14 +138,16 @@ export class IntersolveVoucherController {
     );
   }
 
+  //TODO: mention this in WORKFLOWS?
   @Admin()
   @ApiOperation({
     summary: 'Start a job to update all voucher balances of a program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 201, description: 'Voucher update job started' })
-  // TODO: REFACTOR: rename to /programs/:programid/financial-service-providers/intersolve-voucher
-  @Post('/programs/:programId/payments/intersolve/batch-jobs')
+  @Post(
+    '/programs/:programId/financial-service-providers/intersolve-voucher/batch-jobs',
+  )
   public async createJob(
     @Body() jobDetails: IntersolveVoucherJobDetails,
     @Param() param,

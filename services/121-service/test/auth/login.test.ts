@@ -20,7 +20,7 @@ describe('Authentication', () => {
       const testUser = fixtureUser;
 
       // Act
-      const response = await getServer().post('/user/login').send(testUser);
+      const response = await getServer().post('/users/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -46,7 +46,7 @@ describe('Authentication', () => {
       };
 
       // Act
-      const response = await getServer().post('/user/login').send(testUser);
+      const response = await getServer().post('/users/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);

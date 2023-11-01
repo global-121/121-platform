@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Check,
   Column,
@@ -18,29 +19,37 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
 export class FspQuestionEntity extends Base121Entity {
   @Column()
+  @ApiProperty({ example: 'name' })
   public name: string;
 
   @Column('json')
+  @ApiProperty({ example: { en: 'label' } })
   public label: JSON;
 
   @Column('json', { nullable: true })
+  @ApiProperty({ example: { en: 'placeholder' } })
   public placeholder: JSON;
 
   @Column('json', { nullable: true })
+  @ApiProperty({ example: [] })
   public options: JSON;
 
   @Column('json', {
     default: ['all-people-affected', 'included', 'selected-for-validation'],
   })
+  @ApiProperty({ example: [] })
   public export: JSON;
 
   @Column()
+  @ApiProperty({ example: 'tel' })
   public answerType: string;
 
   @Column({ default: false })
+  @ApiProperty({ example: false })
   public duplicateCheck: boolean;
 
   @Column('json', { default: [] })
+  @ApiProperty({ example: [] })
   public phases: JSON;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity, (fsp) => fsp.questions)
