@@ -43,6 +43,7 @@ export class ApiService {
     endpoint: string,
     path: string,
     anonymous = false,
+    responseAsBlob = false,
     params = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
@@ -51,6 +52,7 @@ export class ApiService {
       this.http
         .get(endpoint + path, {
           headers: this.createHeaders(anonymous),
+          responseType: responseAsBlob ? 'blob' : null,
           withCredentials: true,
           params,
         })

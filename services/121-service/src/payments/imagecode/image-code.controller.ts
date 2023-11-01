@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import stream from 'stream';
@@ -15,11 +15,15 @@ export class ImageCodeController {
   }
 
   @SkipThrottle()
+  @ApiOperation({
+    summary: 'Get voucher image to include in WhatsApp - called by Twilio',
+  })
   @ApiResponse({
     status: 200,
     description: 'Collect voucher image via WhatsApp',
   })
   @ApiParam({ name: 'secret' })
+  // TODO: rename to /financial-service-providers/intersolve-voucher/vouchers/:secret
   @Get(':secret')
   public async get(@Param() params, @Res() response: Response): Promise<void> {
     const blob = await this.imageCodeService.get(params.secret);

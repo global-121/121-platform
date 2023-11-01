@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -55,8 +47,8 @@ export class TransactionsController {
   })
   @ApiResponse({
     status: 200,
-    type: TransactionReturnDto,
-    isArray: true,
+    description: 'Retrieved transactions',
+    type: [TransactionReturnDto],
   })
   @Get('programs/:programId/payments/transactions')
   public async getTransactions(
@@ -70,24 +62,30 @@ export class TransactionsController {
       Number(minPayment),
       Number(payment),
       referenceId,
-      null,
     );
   }
 
+  // TODO: REFACTOR combine this endpoint with GET /payments/transactions above (or remove the need for this one altogether)
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ summary: 'Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'customDataKey', required: false, type: 'string' })
+  @ApiQuery({ name: 'customDataValue', required: false, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: 200,
+    description: 'Retrieved single transaction',
+    type: GetTransactionOutputDto,
   })
-  @Post('programs/:programId/payments/transactions/one')
+  @Get('programs/:programId/payments/transactions/one')
   public async getTransaction(
     @Param() params,
-    @Body() data: GetTransactionDto,
+    @Query() queryParams: GetTransactionDto,
   ): Promise<GetTransactionOutputDto> {
     return await this.transactionsService.getTransaction(
       params.programId,
-      data,
+      queryParams,
     );
   }
 }

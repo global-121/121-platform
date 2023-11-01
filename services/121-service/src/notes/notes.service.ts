@@ -18,10 +18,13 @@ export class NoteService {
     referenceId: string,
     text: string,
     userId: number,
+    programId: number,
   ): Promise<void> {
     const registration =
       await this.registrationsService.getRegistrationFromReferenceId(
         referenceId,
+        null,
+        programId,
       );
 
     if (!registration) {

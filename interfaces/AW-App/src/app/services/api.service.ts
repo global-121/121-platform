@@ -2,6 +2,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -40,6 +41,7 @@ export class ApiService {
     endpoint: string,
     path: string,
     anonymous: boolean = false,
+    params: HttpParams = null,
   ): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService GET: ${security} ${endpoint}${path}`);
@@ -48,11 +50,14 @@ export class ApiService {
       .get(endpoint + path, {
         headers: this.createHeaders(),
         withCredentials: true,
+        params,
       })
       .pipe(
         tap((response) =>
           console.log(
-            `ApiService GET: ${security} ${endpoint}${path}`,
+            `ApiService GET: ${security} ${endpoint}${path}${
+              params ? `\nParams ${params}` : ''
+            }`,
             `\nResponse:`,
             response,
           ),

@@ -121,10 +121,27 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
+  @Admin()
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Get all users' })
+  @Get('users')
+  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.userService.getUsers();
+  }
+
+  // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
-  // TODO: REFACTOR: rename to /users
-  @Post('user/aidworker')
+  @ApiResponse({
+    status: 201,
+    description: 'Created new Aid Worker user',
+  })
+  @Post('users')
   public async createAw(
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
@@ -133,8 +150,11 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
-  // TODO: REFACTOR: rename to /users/person-affected
-  @Post('user/person-affected')
+  @ApiResponse({
+    status: 201,
+    description: 'Created new Person Affected user',
+  })
+  @Post('users/person-affected')
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
     @Res() res,
@@ -175,9 +195,68 @@ export class UserController {
   )
   @ApiTags('users')
   @ApiOperation({ summary: 'Log in existing user' })
-  // TODO: REFACTOR: rename to /users/login
-  @Post('user/login')
+  @ApiResponse({
+    status: 201,
+    description: 'Logged in successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Wrong username and/or password',
+  })
+  @Post('users/login')
   public async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res() res,
+    @Req() req,
+  ): Promise<UserRO> {
+    try {
+      const loginResponse = await this.userService.login(loginUserDto);
+      const origin = req.get('origin');
+      const serviceWorkerDebug = origin?.includes('8088');
+
+      res.cookie(
+        loginResponse.cookieSettings.tokenKey,
+        loginResponse.cookieSettings.tokenValue,
+        {
+          sameSite: serviceWorkerDebug
+            ? 'None'
+            : loginResponse.cookieSettings.sameSite,
+          secure: serviceWorkerDebug
+            ? true
+            : loginResponse.cookieSettings.secure,
+          expires: loginResponse.cookieSettings.expires,
+          httpOnly: loginResponse.cookieSettings.httpOnly,
+        },
+      );
+      return res.send({
+        username: loginResponse.userRo.user.username,
+        permissions: loginResponse.userRo.user.permissions,
+        access_token_general: loginResponse.token,
+        expires: loginResponse.cookieSettings.expires,
+        isAdmin: loginResponse.userRo.user.isAdmin,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO: remove this endpoint when all external systems have updated their login endpoint to /users/login
+  @Throttle(
+    +process.env.HIGH_THROTTLING_LIMIT || 30,
+    +process.env.HIGH_THROTTLING_TTL || 60,
+  )
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Log in existing user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Logged in successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Wrong username and/or password',
+  })
+  @Post('user/login')
+  public async loginOld(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
     @Req() req,
@@ -215,8 +294,7 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
-  // TODO: REFACTOR: rename to /users/logout
-  @Post('user/logout')
+  @Post('users/logout')
   public async logout(@Res() res): Promise<UserRO> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
@@ -234,9 +312,13 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
-  // TODO: REFACTOR: rename to /users/password
-  @Post('user/change-password')
-  @ApiResponse({ status: 201, description: 'Changed password of user' })
+  // TODO: Change this in to a PATCH request
+  @Post('users/password')
+  @ApiResponse({
+    status: 201,
+    description: 'Changed password of user',
+    type: UpdateUserDto,
+  })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
@@ -255,8 +337,9 @@ export class UserController {
   @Admin()
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
-  // TODO: REFACTOR: rename to /users/:userid
-  @Post('user/delete/:userId')
+  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Delete('users/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(@Param() params): Promise<UserEntity> {
     return await this.userService.delete(Number(params.userId));
@@ -264,9 +347,8 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
-  // TODO: REFACTOR: rename to /users/
-  @Post('user/delete')
-  @ApiResponse({ status: 201, description: 'User deleted' })
+  @Delete('users')
+  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
@@ -283,8 +365,7 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
-  // TODO: REFACTOR: rename to /users
-  @Get('user')
+  @Get('users')
   @ApiResponse({ status: 200, description: 'User returned' })
   @ApiResponse({
     status: 401,
@@ -397,19 +478,6 @@ export class UserController {
       Number(params.userId),
       assignAidworkerToProgram,
     );
-  }
-
-  @Admin()
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Get all users' })
-  @Get('users')
-  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
-    return await this.userService.getUsers();
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramREAD)

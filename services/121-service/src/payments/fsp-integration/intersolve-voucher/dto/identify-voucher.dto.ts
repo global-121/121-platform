@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNumber, Length } from 'class-validator';
 
 export class IdentifyVoucherDto {
@@ -7,5 +8,6 @@ export class IdentifyVoucherDto {
   public readonly referenceId: string;
   @ApiProperty({ example: 1 })
   @IsNumber()
+  @Type(() => Number)
   public readonly payment: number;
 }

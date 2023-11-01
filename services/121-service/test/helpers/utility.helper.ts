@@ -22,7 +22,7 @@ export function resetDB(seedScript: SeedScript): Promise<request.Response> {
 }
 
 export function loginAsAdmin(): Promise<request.Response> {
-  return getServer().post(`/user/login`).send({
+  return getServer().post(`/users/login`).send({
     username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   });
@@ -39,7 +39,7 @@ export async function getAccessToken(): Promise<string> {
 }
 
 export function loginAsProgramManager(): Promise<request.Response> {
-  return getServer().post(`/user/login`).send({
+  return getServer().post(`/users/login`).send({
     username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
     password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
   });

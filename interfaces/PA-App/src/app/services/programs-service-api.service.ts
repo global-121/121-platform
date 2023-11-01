@@ -48,7 +48,10 @@ export class ProgramsServiceApiService {
 
   getFspById(fspId: number): Promise<Fsp> {
     return this.apiService
-      .get(environment.url_121_service_api, '/fsp/' + fspId)
+      .get(
+        environment.url_121_service_api,
+        '/financial-service-providers/' + fspId,
+      )
       .toPromise();
   }
 
@@ -65,7 +68,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/user/login',
+        '/users/login',
         {
           username,
           password,
@@ -77,7 +80,7 @@ export class ProgramsServiceApiService {
 
   logout(completedRegistration: boolean): Promise<null> {
     return this.syncService
-      .tryPost(environment.url_121_service_api, '/user/logout', {
+      .tryPost(environment.url_121_service_api, '/users/logout', {
         completedRegistration,
       })
       .toPromise();
@@ -85,7 +88,7 @@ export class ProgramsServiceApiService {
 
   deleteData(): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/user/delete', {}, false)
+      .delete(environment.url_121_service_api, '/users', {}, false)
       .toPromise();
   }
 

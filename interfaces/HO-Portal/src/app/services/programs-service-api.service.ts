@@ -45,7 +45,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/user/login',
+        '/users/login',
         {
           username,
           password,
@@ -68,7 +68,7 @@ export class ProgramsServiceApiService {
   logout(): Promise<null> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/user/logout',
+      '/users/logout',
       {},
       true,
     );
@@ -81,7 +81,7 @@ export class ProgramsServiceApiService {
   ): Promise<null> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/user/change-password',
+      '/users/password',
       {
         username,
         password,
@@ -150,11 +150,11 @@ export class ProgramsServiceApiService {
   }
 
   advancePhase(programId: number, newPhase: string): Promise<any> {
-    return this.apiService.post(
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/change-phase`,
+      `/programs/${programId}`,
       {
-        newPhase,
+        phase: newPhase,
       },
     );
   }
@@ -214,6 +214,7 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/payments/transactions`,
       false,
+      false,
       params,
     );
   }
@@ -244,7 +245,7 @@ export class ProgramsServiceApiService {
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/note`,
+      `/programs/${programId}/notes`,
       {
         referenceId,
         text: note,
@@ -256,7 +257,7 @@ export class ProgramsServiceApiService {
   getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/note/${referenceId}`,
+      `/programs/${programId}/notes/${referenceId}`,
       null,
       false,
     );
@@ -279,15 +280,21 @@ export class ProgramsServiceApiService {
     customDataKey: string,
     customDataValue: string,
   ): Promise<any | Transaction> {
-    return this.apiService.post(
+    let params = new HttpParams();
+    params = params.append('referenceId', referenceId);
+    params = params.append('payment', payment);
+    if (customDataKey) {
+      params = params.append('customDataKey', customDataKey);
+    }
+    if (customDataValue) {
+      params = params.append('customDataValue', customDataValue);
+    }
+    return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/payments/transactions/one`,
-      {
-        referenceId,
-        payment: Number(payment),
-        customDataKey,
-        customDataValue,
-      },
+      false,
+      false,
+      params,
     );
   }
 
@@ -451,6 +458,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         `/programs/${programId}/metrics/export-list/${type}`,
         false,
+        false,
         params,
       )
       .then((response) => {
@@ -466,15 +474,16 @@ export class ProgramsServiceApiService {
     payment: number,
     programId: number,
   ): Promise<Blob> {
-    return this.apiService.post(
+    let params = new HttpParams();
+    params = params.append('referenceId', referenceId);
+    params = params.append('payment', payment);
+
+    return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/intersolve/export-voucher`,
-      {
-        referenceId,
-        payment,
-      },
+      `/programs/${programId}/financial-service-providers/intersolve-voucher/vouchers`,
       false,
       true,
+      params,
     );
   }
 
@@ -483,13 +492,15 @@ export class ProgramsServiceApiService {
     payment: number,
     programId: number,
   ): Promise<number> {
-    return this.apiService.post(
+    let params = new HttpParams();
+    params = params.append('referenceId', referenceId);
+    params = params.append('payment', payment);
+    return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/intersolve/balance`,
-      {
-        referenceId,
-        payment,
-      },
+      `/programs/${programId}/financial-service-providers/intersolve-voucher/vouchers/balance`,
+      false,
+      false,
+      params,
     );
   }
 
@@ -576,6 +587,7 @@ export class ProgramsServiceApiService {
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
+      false,
       false,
       params,
     );
@@ -726,38 +738,26 @@ export class ProgramsServiceApiService {
     );
   }
 
-  saveAction(actionType: ActionType, programId: number | string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/actions/save`,
-      {
-        actionType,
-      },
-    );
-  }
-
   retrieveLatestActions(
     actionType: ExportType | ActionType,
     programId: number | string,
   ): Promise<LatestAction> {
-    return this.apiService.post(
+    let params = new HttpParams();
+    params = params.append('actionType', actionType);
+    return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/actions/retrieve-latest`,
-      {
-        actionType,
-      },
+      `/programs/${programId}/actions`,
+      false,
+      false,
+      params,
     );
   }
 
   addUser(email: string, password: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/user/aidworker',
-      {
-        email,
-        password,
-      },
-    );
+    return this.apiService.post(environment.url_121_service_api, '/users', {
+      email,
+      password,
+    });
   }
 
   assignAidworker(
@@ -794,7 +794,7 @@ export class ProgramsServiceApiService {
   getFspById(fspId: number): Promise<Fsp> {
     return this.apiService.get(
       environment.url_121_service_api,
-      '/fsp/' + fspId,
+      '/financial-service-providers/' + fspId,
     );
   }
 
@@ -812,9 +812,9 @@ export class ProgramsServiceApiService {
   }
 
   updateProgram(programId: number, updateBody: object): Promise<Program> {
-    return this.apiService.post(
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/update`,
+      `/programs/${programId}`,
       updateBody,
     );
   }
@@ -842,7 +842,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/registrations/?phonenumber=${phoneNumber}`,
-      false,
     );
   }
 
@@ -853,7 +852,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/referenceid/${paId}`,
-      false,
     );
   }
 
@@ -864,7 +862,6 @@ export class ProgramsServiceApiService {
     return await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
-      false,
     );
   }
 
@@ -874,7 +871,6 @@ export class ProgramsServiceApiService {
     return await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/metrics/registration-status`,
-      false,
     );
   }
 
