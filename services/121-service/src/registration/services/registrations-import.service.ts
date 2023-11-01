@@ -139,7 +139,7 @@ export class RegistrationsImportService {
       const savedRegistration = await newRegistration.save();
       for (const att of programCustomAttributes) {
         if (!att.name || !record[att.name]) {
-          return;
+          continue;
         }
 
         const data = new RegistrationDataEntity();
