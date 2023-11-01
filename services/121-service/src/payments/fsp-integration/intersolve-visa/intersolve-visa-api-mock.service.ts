@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { waitForRandomDelayShort } from '../../../utils/waitFor.helper';
+import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
@@ -29,7 +29,7 @@ export class IntersolveVisaApiMockService {
   public async createCustomerMock(
     payload: IntersolveCreateCustomerDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
     const res = new IntersolveCreateCustomerResponseBodyDto();
     res.data = {
       success: true,
@@ -82,7 +82,7 @@ export class IntersolveVisaApiMockService {
   public async createWalletMock(
     holderId: string,
   ): Promise<IntersolveCreateWalletResponseDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
     const response = new IntersolveCreateWalletResponseDto();
     response.status = 200;
     response.statusText = 'OK';
@@ -224,7 +224,7 @@ export class IntersolveVisaApiMockService {
   public async linkCustomerToWalletMock(
     tokenCode: string,
   ): Promise<IntersolveLinkWalletCustomerResponseDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
 
     const res: IntersolveLinkWalletCustomerResponseDto = {
       status: 204,
@@ -248,7 +248,7 @@ export class IntersolveVisaApiMockService {
   public async createDebitCardMock(
     tokenCode: string,
   ): Promise<IntersolveCreateDebitCardResponseDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
 
     const res: IntersolveCreateDebitCardResponseDto = {
       status: 200,
@@ -272,7 +272,7 @@ export class IntersolveVisaApiMockService {
   public async loadBalanceCardMock(
     tokenCode: string,
   ): Promise<IntersolveLoadResponseDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
 
     const response = {
       data: {
@@ -492,7 +492,7 @@ export class IntersolveVisaApiMockService {
   }
 
   public async toggleBlockWalletMock(): Promise<IntersolveBlockWalletResponseDto> {
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
 
     // for the response it does not matter if it's blocked or unblocked
     const res: IntersolveBlockWalletResponseDto = {

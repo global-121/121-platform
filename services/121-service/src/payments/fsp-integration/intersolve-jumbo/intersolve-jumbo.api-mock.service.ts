@@ -8,7 +8,7 @@ export class IntersolveJumboApiMockService {
   public async createPreOrder(
     preOrderDtoBatch: PreOrderInfoDto[],
   ): Promise<object> {
-    await waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
     const response = {
       'tns:CreatePreOrderResponse': {
         WebserviceRequest: {
@@ -55,7 +55,7 @@ export class IntersolveJumboApiMockService {
   }
 
   public async approvePreOrder(): Promise<object> {
-    await waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     const response = {
       'tns:ApprovePreOrderResponse': {

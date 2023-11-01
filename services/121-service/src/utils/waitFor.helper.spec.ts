@@ -1,8 +1,4 @@
-import {
-  waitFor,
-  waitForRandomDelay,
-  waitForRandomDelayShort,
-} from './waitFor.helper';
+import { waitFor, waitForRandomDelay } from './waitFor.helper';
 
 describe('waitFor helpers', () => {
   it('waitFor - should wait for the specified time', async () => {
@@ -27,7 +23,7 @@ describe('waitFor helpers', () => {
     const start = Date.now();
 
     // Act
-    await waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     // Assert
     const end = Date.now();
@@ -36,12 +32,12 @@ describe('waitFor helpers', () => {
     expect(elapsed).toBeLessThanOrEqual(300);
   });
 
-  it('waitForRandomDelayShort - should wait for a random delay between "50" and "100" milliseconds', async () => {
+  it('waitForRandomDelay - should wait for a random delay between "50" and "100" milliseconds', async () => {
     // Arrange
     const start = Date.now();
 
     // Act
-    await waitForRandomDelayShort();
+    await waitForRandomDelay(50, 100);
 
     // Assert
     const end = Date.now();

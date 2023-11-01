@@ -5,7 +5,7 @@ import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-co
 @Injectable()
 export class IntersolveVoucherMockService {
   public async post(payload: any): Promise<any> {
-    await waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
     const soapBody = payload.elements[0].elements.find(
       (e) => e.name === 'soap:Body',
     );

@@ -5,10 +5,9 @@ export async function waitFor(timeInMs: number): Promise<void> {
   return setTimeout(timeInMs);
 }
 
-export async function waitForRandomDelay(): Promise<void> {
-  return await waitFor(getRandomInt(100, 300));
-}
-
-export async function waitForRandomDelayShort(): Promise<void> {
-  return await waitFor(getRandomInt(50, 100));
+export async function waitForRandomDelay(
+  minTimeInMs: number,
+  maxTimeInMs: number,
+): Promise<void> {
+  return await waitFor(getRandomInt(minTimeInMs, maxTimeInMs));
 }
