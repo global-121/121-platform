@@ -20,11 +20,9 @@
           color="light"
           lines="full"
           class="ion-no-padding"
+          [disabled]="fspSubmitted"
         >
-          <ion-radio
-            [value]="fsp.id"
-            [disabled]="fspSubmitted"
-          >
+          <ion-radio [value]="fsp.id">
             <ion-text class="ion-text-wrap">
               {{ fsp.fspDisplayNamePaApp }}
             </ion-text>

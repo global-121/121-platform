@@ -8,30 +8,21 @@
     <form (submit)="submitLanguage()">
       <ion-radio-group
         (ionChange)="changeLanguage($event)"
-        [disabled]="languageChoice && isDisabled"
         [value]="languageChoice"
       >
         <ion-item
           *ngFor="let language of languages"
-          color="light"
           lines="full"
+          color="light"
           class="ion-no-padding"
+          style="width: 100%"
+          [disabled]="!!languageChoice && isDisabled"
         >
-          <ion-item
-            lines="none"
-            color="light"
-            class="ion-no-padding"
-            style="width: 100%"
-          >
-            <ion-radio
-              [value]="language.id"
-              [disabled]="languageChoice && isDisabled"
-            >
-              <ion-text class="ion-text-wrap">
-                {{ language.language }}
-              </ion-text>
-            </ion-radio>
-          </ion-item>
+          <ion-radio [value]="language.id">
+            <ion-text class="ion-text-wrap">
+              {{ language.language }}
+            </ion-text>
+          </ion-radio>
         </ion-item>
       </ion-radio-group>
       <ion-row
