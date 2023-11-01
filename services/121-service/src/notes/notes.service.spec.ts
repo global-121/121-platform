@@ -50,7 +50,7 @@ describe('NotesService', () => {
       expect(response).toEqual(undefined);
 
       // Ensure that the createNote method was called with the correct arguments
-      expect(createNoteMock).toHaveBeenCalledWith(1, note);
+      expect(createNoteMock).toHaveBeenCalledWith(1, programId, note);
     });
 
     it('should get notes', async () => {
