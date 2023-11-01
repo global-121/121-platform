@@ -76,7 +76,7 @@ export async function doPayment(
   amount: number,
   referenceIds: string[],
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
@@ -275,8 +275,8 @@ export async function startCbeValidationProcess(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(
-      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validate`,
+    .post(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`,
     )
     .set('Cookie', [accessToken]);
 }

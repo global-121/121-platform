@@ -106,8 +106,7 @@ export class IntersolveVisaController {
 
   @Admin()
   @ApiOperation({
-    summary:
-      'Send FSP Visa Customer data of a registration to Intersolve',
+    summary: 'Send FSP Visa Customer data of a registration to Intersolve',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -115,7 +114,7 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Customer data updated',
   })
-  // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/updated
+  // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/sync
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
   )
