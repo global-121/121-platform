@@ -50,46 +50,31 @@
         [value]="isDisabled ? submitChoice : ''"
       >
         <ion-item
-          color="light"
           lines="full"
+          color="light"
           class="ion-no-padding"
+          style="width: 100%"
+          [disabled]="isDisabled"
         >
-          <ion-item
-            lines="none"
-            color="light"
-            class="ion-no-padding"
-            style="width: 100%"
-          >
-            <ion-radio
-              [value]="submitActions.confirm"
-              [disabled]="isDisabled"
-            >
-              <ion-text class="ion-text-wrap">
-                {{ 'personal.enroll-in-program.submit-confirm' | translate }}
-              </ion-text>
-            </ion-radio>
-          </ion-item>
+          <ion-radio [value]="submitActions.confirm">
+            <ion-text class="ion-text-wrap">
+              {{ 'personal.enroll-in-program.submit-confirm' | translate }}
+            </ion-text>
+          </ion-radio>
         </ion-item>
+
         <ion-item
+          lines="full"
           color="light"
           class="ion-no-padding"
-          lines="full"
+          style="width: 100%"
+          [disabled]="isDisabled"
         >
-          <ion-item
-            lines="none"
-            color="light"
-            class="ion-no-padding"
-            style="width: 100%"
-          >
-            <ion-radio
-              [value]="submitActions.change"
-              [disabled]="isDisabled"
-            >
-              <ion-text class="ion-text-wrap">
-                {{ 'personal.enroll-in-program.change' | translate }}
-              </ion-text>
-            </ion-radio>
-          </ion-item>
+          <ion-radio [value]="submitActions.change">
+            <ion-text class="ion-text-wrap">
+              {{ 'personal.enroll-in-program.change' | translate }}
+            </ion-text>
+          </ion-radio>
         </ion-item>
       </ion-radio-group>
       <ion-row

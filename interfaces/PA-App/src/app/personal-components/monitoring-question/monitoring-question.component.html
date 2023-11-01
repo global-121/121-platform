@@ -12,11 +12,9 @@
         color="light"
         lines="full"
         class="ion-no-padding"
+        [disabled]="monitoringSubmitted"
       >
-        <ion-radio
-          [value]="option.option"
-          [disabled]="monitoringSubmitted"
-        >
+        <ion-radio [value]="option.option">
           <ion-text
             class="ion-text-wrap"
             [innerHTML]="option.label"
