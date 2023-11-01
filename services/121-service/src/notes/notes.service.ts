@@ -1,17 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { RegistrationRepository } from '../registration/registration.repository';
 import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
-import { NoteEntity } from './note.entity';
+import { NoteRepository } from './notes.repository';
 
 @Injectable()
 export class NoteService {
-  @InjectRepository(NoteEntity)
-  private noteRepository: Repository<NoteEntity>;
+  // @InjectRepository(NoteEntity)
+  // private noteRepository: Repository<NoteEntity>;
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
+    private readonly noteRepository: NoteRepository,
+    private readonly registrationsRepo: RegistrationRepository,
   ) {}
 
   public async createNote(
@@ -19,10 +20,17 @@ export class NoteService {
     text: string,
     userId: number,
   ): Promise<void> {
-    const registration =
-      await this.registrationsService.getRegistrationFromReferenceId(
-        referenceId,
-      );
+    // const registration =
+    //   await this.registrationsService.getRegistrationFromReferenceId(
+    //     referenceId,
+    //   );
+
+    // This should only return registrations for which this User has the correct scope
+    const registrations = await this.registrationsRepo.find({
+      where: { referenceId },
+    });
+
+    const registration = registrations[0];
 
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known.`;
@@ -33,6 +41,7 @@ export class NoteService {
       registrationId: registration.id,
       userId,
       text,
+      scope: registration.scope,
     };
 
     await this.noteRepository.save(note);

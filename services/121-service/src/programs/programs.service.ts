@@ -463,6 +463,7 @@ export class ProgramService {
       userId,
       {
         roles: [DefaultUserRole.ProgramAdmin],
+        scope: '',
       },
     );
     return newProgram;

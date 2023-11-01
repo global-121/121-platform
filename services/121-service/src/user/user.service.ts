@@ -250,6 +250,7 @@ export class UserService {
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
+        programAssignment.scope = assignAidworkerToProgram.scope;
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles;
       }

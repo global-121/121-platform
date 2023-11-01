@@ -804,4 +804,13 @@ export class RegistrationsController {
       params.paId,
     );
   }
+
+  @ApiTags('aaaaaa')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Permissions(PermissionEnum.RegistrationREAD)
+  @Get('programs/:programId/registrations/test')
+  public async test(@Param() params): Promise<any> {
+    console.log('params: ', params);
+    return await this.registrationsService.test();
+  }
 }

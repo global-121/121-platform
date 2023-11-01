@@ -20,6 +20,7 @@ import {
   Unique,
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
+import { ScopedBase121Entity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -31,7 +32,6 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ReferenceIdConstraints } from '../shared/const';
 import { UserEntity } from '../user/user.entity';
-import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
@@ -49,7 +49,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
-export class RegistrationEntity extends CascadeDeleteEntity {
+export class RegistrationEntity extends ScopedBase121Entity {
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;

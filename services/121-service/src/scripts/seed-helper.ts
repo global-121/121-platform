@@ -267,6 +267,8 @@ export class SeedHelper {
       id: userId,
     });
     await assignmentRepository.save({
+      // This should be removed its just here for testing
+      scope: userId === 2 ? 'utrecht' : 'zeeland',
       user: user,
       program: await programRepository.findOne({
         where: {

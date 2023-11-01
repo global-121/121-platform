@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Index,
   PrimaryGeneratedColumn,
@@ -41,4 +42,13 @@ export class CascadeDeleteEntity extends Base121Entity {
 class CascadeDeleteInput {
   public columnName: string;
   public entityClass: any;
+}
+
+export class ScopedBase121Entity extends CascadeDeleteEntity {
+  // TODO: add some database constraints to make sure that scope is always lowercase
+  // TODO: DO not make this nullable but set everything to empty string in migration
+  // Also not use the setting {default: ''} because than we will forget to set it later just one time '' in the migration
+  // Add index
+  @Column({ nullable: true })
+  public scope: string;
 }

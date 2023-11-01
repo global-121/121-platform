@@ -1,10 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../base.entity';
+import { ScopedBase121Entity } from '../base.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { UserEntity } from '../user/user.entity';
 
 @Entity('note')
-export class NoteEntity extends Base121Entity {
+export class NoteEntity extends ScopedBase121Entity {
   @ManyToOne(() => RegistrationEntity, (registration) => registration.notes)
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;

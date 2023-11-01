@@ -48,6 +48,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
+import { RegistrationRepository } from './registration.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
@@ -92,6 +93,7 @@ export class RegistrationsService {
     private readonly dataSource: DataSource,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
+    private readonly registrationRepository2: RegistrationRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -1434,5 +1436,15 @@ export class RegistrationsService {
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
+  }
+
+  public async test(): Promise<any> {
+    const r = await this.registrationRepository2.find({
+      where: {
+        preferredLanguage: 'en' as any,
+      },
+    });
+    console.log('r: ', r);
+    return r;
   }
 }
