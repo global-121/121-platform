@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -45,6 +46,7 @@ export class NoteController {
   @Post(':programId/note')
   public async createNote(
     @User('id') userId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
     if (!userId) {
@@ -56,6 +58,7 @@ export class NoteController {
       createNote.referenceId,
       createNote.text,
       userId,
+      programId,
     );
   }
 
