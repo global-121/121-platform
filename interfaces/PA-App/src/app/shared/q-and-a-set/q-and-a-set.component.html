@@ -25,11 +25,9 @@
               color="light"
               lines="full"
               class="ion-no-padding"
+              [disabled]="isSubmitted"
             >
-              <ion-radio
-                [value]="option.value"
-                [disabled]="isSubmitted"
-              >
+              <ion-radio [value]="option.value">
                 <ion-text class="ion-text-wrap">
                   {{ option.label }}
                 </ion-text>
