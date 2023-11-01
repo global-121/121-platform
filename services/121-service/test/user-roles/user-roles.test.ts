@@ -24,7 +24,7 @@ describe('Load PA table', () => {
   ];
 
   // This test takes a lot of time because there are my statusses to check
-  jest.setTimeout(20000);
+  jest.setTimeout(20_000);
 
   describe('using the "attributes" query-parameter', () => {
     let accessToken: string;

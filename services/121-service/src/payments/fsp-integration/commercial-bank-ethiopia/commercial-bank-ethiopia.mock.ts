@@ -1,16 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaMockService {
-  public async waitForRandomDelay(): Promise<void> {
-    const min = 100;
-    const max = 300;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return new Promise((resolve) => setTimeout(resolve, randomNumber));
-  }
-
   public async postCBETransfer(payment): Promise<any> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     const mockScenario = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
 
@@ -133,7 +127,7 @@ export class CommercialBankEthiopiaMockService {
   }
 
   public async postCBETransaction(payment): Promise<any> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     const response = {
       Status: {
@@ -155,7 +149,7 @@ export class CommercialBankEthiopiaMockService {
   }
 
   public async postCBEValidation(payload): Promise<any> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     const mockScenario = 'success'; // 'other-failure' / 'no-response' to test the corresponding scenario
 

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -101,8 +102,8 @@ export class BelcashService
     referenceId: string,
     authorizationToken: string,
   ): Promise<PaTransactionResultDto> {
-    // A timeout of 100ms to not overload belcash server
-    await new Promise((r) => setTimeout(r, 2000));
+    // Wait to not overload belcash server
+    await waitFor(2_000);
 
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName = FspName.belcash;

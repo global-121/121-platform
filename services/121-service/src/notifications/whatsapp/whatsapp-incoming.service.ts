@@ -29,6 +29,7 @@ import { IntersolveVoucherService } from './../../payments/fsp-integration/inter
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappService } from './whatsapp.service';
+import { waitFor } from '../../utils/waitFor.helper';
 
 @Injectable()
 export class WhatsappIncomingService {
@@ -174,8 +175,8 @@ export class WhatsappIncomingService {
         retryCount: message.retryCount + 1,
       },
     );
-    // Wait for 30 seconds before retrying
-    await new Promise((resolve) => setTimeout(resolve, 30000));
+    // Wait before retrying
+    await waitFor(30_000);
     await this.whatsappService.sendWhatsapp(
       message.body,
       callbackData.To.replace(/\D/g, ''),
@@ -447,8 +448,8 @@ export class WhatsappIncomingService {
           messageSid,
         );
 
-        // Add small delay/sleep to ensure the order in which messages are received
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Add small delay to ensure the order in which messages are received
+        await waitFor(2_000);
       }
 
       // Send instruction message only once (outside of loops)
@@ -490,8 +491,9 @@ export class WhatsappIncomingService {
             )
             .then(async () => {
               await this.whatsappPendingMessageRepo.remove(message);
+              return;
             });
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await waitFor(2_000);
         }
       }
     }

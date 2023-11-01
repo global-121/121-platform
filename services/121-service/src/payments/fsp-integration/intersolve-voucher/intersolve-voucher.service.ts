@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import { DataSource, IsNull, Not, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
@@ -344,6 +344,7 @@ export class IntersolveVoucherService
             IntersolvePayoutStatus:
               IntersolveVoucherPayoutStatus.InitialMessage,
           };
+          return;
         },
         (error) => {
           result.message = error;
@@ -351,19 +352,6 @@ export class IntersolveVoucherService
         },
       );
     return result;
-  }
-
-  private async getLanguage(referenceId: string): Promise<string> {
-    return (
-      (
-        await this.registrationRepository.findOne({
-          where: {
-            referenceId: referenceId,
-            preferredLanguage: Not(IsNull()),
-          },
-        })
-      )?.preferredLanguage || this.fallbackLanguage
-    );
   }
 
   public getNotificationText(

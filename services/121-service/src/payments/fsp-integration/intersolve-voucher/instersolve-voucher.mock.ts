@@ -1,17 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 
 @Injectable()
 export class IntersolveVoucherMockService {
-  public async waitForRandomDelay(): Promise<void> {
-    const min = 100;
-    const max = 300;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return new Promise((resolve) => setTimeout(resolve, randomNumber));
-  }
-
   public async post(payload: any): Promise<any> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
     const soapBody = payload.elements[0].elements.find(
       (e) => e.name === 'soap:Body',
     );

@@ -1,19 +1,20 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import * as africastalking from 'africastalking';
+import { waitFor } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class AfricasTalkingApiService {
   public async sendPaymentPerPa(payload): Promise<PaTransactionResultDto> {
-    // A timeout of 123ms to not overload africa's talking server
-    await new Promise((r) => setTimeout(r, 123));
+    // Wait to not overload the africa's talking server
+    await waitFor(123);
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
       username: process.env.AFRICASTALKING_USERNAME,
     };
-    const AfricasTalking = require('africastalking')(credentials);
+    const AfricasTalking = africastalking(credentials);
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
@@ -24,15 +25,14 @@ export class AfricasTalkingApiService {
     paTransactionResult.calculatedAmount =
       payload.recipients[0].metadata.amount;
 
-    let result;
-    await payments
+    const result = await payments
       .mobileB2C(payload)
       .then((response: any) => {
-        result = { response: response };
+        return { response: response };
       })
       .catch((error: any) => {
         console.log('error: ', error);
-        result = { error: error };
+        return { error: error };
       });
 
     if (result.response?.entries[0]?.errorMessage) {

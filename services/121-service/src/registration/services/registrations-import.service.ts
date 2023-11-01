@@ -137,18 +137,22 @@ export class RegistrationsImportService {
       newRegistration.program = program;
 
       const savedRegistration = await newRegistration.save();
-      programCustomAttributes.forEach(async (att) => {
-        if (record[att.name]) {
-          const data = new RegistrationDataEntity();
-          data.value =
-            att.type === CustomAttributeType.boolean
-              ? this.stringToBoolean(record[att.name], false)
-              : record[att.name];
-          data.programCustomAttribute = att;
-          data.registrationId = savedRegistration.id;
-          await this.registrationDataRepository.save(data);
+      for (const att of programCustomAttributes) {
+        if (!att.name || !record[att.name]) {
+          continue;
         }
-      });
+
+        const data = new RegistrationDataEntity();
+
+        data.value =
+          att.type === CustomAttributeType.boolean
+            ? this.stringToBoolean(record[att.name], false)
+            : record[att.name];
+        data.programCustomAttribute = att;
+        data.registrationId = savedRegistration.id;
+
+        await this.registrationDataRepository.save(data);
+      }
 
       // Save already before status change, otherwise 'registration.subscriber' does not work
       savedRegistration.registrationStatus = RegistrationStatusEnum.imported;

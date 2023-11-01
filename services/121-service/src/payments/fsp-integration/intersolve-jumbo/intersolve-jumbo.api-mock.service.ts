@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 
 @Injectable()
 export class IntersolveJumboApiMockService {
-  public async waitForRandomDelay(): Promise<void> {
-    const min = 100;
-    const max = 300;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return new Promise((resolve) => setTimeout(resolve, randomNumber));
-  }
-
   public async createPreOrder(
     preOrderDtoBatch: PreOrderInfoDto[],
   ): Promise<object> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
     const response = {
       'tns:CreatePreOrderResponse': {
         WebserviceRequest: {
@@ -61,7 +55,7 @@ export class IntersolveJumboApiMockService {
   }
 
   public async approvePreOrder(): Promise<object> {
-    await this.waitForRandomDelay();
+    await waitForRandomDelay(100, 300);
 
     const response = {
       'tns:ApprovePreOrderResponse': {

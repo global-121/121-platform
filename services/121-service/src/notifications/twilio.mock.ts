@@ -9,6 +9,7 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from './twilio.dto';
+import { waitFor } from '../utils/waitFor.helper';
 
 class PhoneNumbers {
   public phoneNumber;
@@ -118,7 +119,7 @@ export class TwilioClientMock {
           },
         );
       }
-      await new Promise((resolve) => setTimeout(resolve, 30));
+      await waitFor(30);
       return response;
     }
 
@@ -178,7 +179,7 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise((r) => setTimeout(r, 3000));
+        await waitFor(3_000);
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to;

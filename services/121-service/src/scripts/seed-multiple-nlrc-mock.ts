@@ -9,6 +9,7 @@ import {
 } from '../../test/visa-card/visa-card.data';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 
@@ -114,7 +115,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       [referenceIdVisa],
       accessToken,
     );
-    await new Promise((r) => setTimeout(r, 3000));
+    await waitFor(3_000);
 
     // Blow up data given the parameters
     await this.multiplyRegistrations(powerNrRegistrations);
