@@ -37,7 +37,7 @@ export class ApiService {
   get(
     endpoint: string,
     path: string,
-    anonymous: boolean = true,
+    anonymous = true,
   ): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService GET: ${security} ${endpoint}${path}`);
@@ -62,7 +62,7 @@ export class ApiService {
     endpoint: string,
     path: ApiPath | string,
     body: object,
-    anonymous: boolean = false,
+    anonymous = false,
   ): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
