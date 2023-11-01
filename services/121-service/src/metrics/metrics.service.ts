@@ -845,8 +845,9 @@ export class MetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('transaction.financialServiceProvider', 'fsp');
 
-    const additionalFspExportFields =
-      await this.getAdditionalFspExportFields(programId);
+    const additionalFspExportFields = await this.getAdditionalFspExportFields(
+      programId,
+    );
 
     for (const field of additionalFspExportFields) {
       const nestedParts = field.split('.');
@@ -1309,7 +1310,6 @@ export class MetricsService {
     // Use this method to get only the latest attempt per PA per payment
     const transactionsQuery = this.transactionsService.getLastTransactionsQuery(
       programId,
-      null,
       null,
       null,
       StatusEnum.success,

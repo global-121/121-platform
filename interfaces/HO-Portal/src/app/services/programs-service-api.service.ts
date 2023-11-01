@@ -196,14 +196,10 @@ export class ProgramsServiceApiService {
 
   getTransactions(
     programId: number | string,
-    minPayment?: number | string,
     payment?: number | string,
     referenceId?: string,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
-    if (minPayment) {
-      params = params.append('minPayment', minPayment);
-    }
     if (payment) {
       params = params.append('payment', payment);
     }

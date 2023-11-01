@@ -485,7 +485,6 @@ export class PaymentsService {
     const waitingReferenceIds = (
       await this.transactionService.getLastTransactions(
         programId,
-        null,
         payment,
         null,
         StatusEnum.waiting,
@@ -587,7 +586,6 @@ export class PaymentsService {
       const failedReferenceIds = (
         await this.transactionService.getLastTransactions(
           programId,
-          null,
           payment,
           null,
           StatusEnum.error,
@@ -638,7 +636,6 @@ export class PaymentsService {
     const paymentTransactions =
       await this.transactionService.getLastTransactions(
         programId,
-        null,
         payment,
         null,
         null,

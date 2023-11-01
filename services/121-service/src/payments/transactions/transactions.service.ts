@@ -43,15 +43,13 @@ export class TransactionsService {
 
   public async getLastTransactions(
     programId: number,
-    minPayment?: number,
-    specificPayment?: number,
+    payment?: number,
     referenceId?: string,
     status?: StatusEnum,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
-      minPayment,
-      specificPayment,
+      payment,
       referenceId,
       status,
     ).getRawMany();
@@ -59,8 +57,7 @@ export class TransactionsService {
 
   public getLastTransactionsQuery(
     programId: number,
-    minPayment?: number,
-    specificPayment?: number,
+    payment?: number,
     referenceId?: string,
     status?: StatusEnum,
   ): SelectQueryBuilder<TransactionEntity> {
@@ -82,17 +79,13 @@ export class TransactionsService {
       .innerJoin('transaction.latestTransaction', 'lt')
       .where('transaction."programId" = :programId', {
         programId: programId,
-      })
-      .andWhere('transaction.payment >= :minPayment', {
-        minPayment: minPayment || 0,
       });
-    if (specificPayment) {
+    if (payment) {
       transactionQuery = transactionQuery.andWhere(
-        'transaction.payment = :specificpayment',
-        { specificpayment: specificPayment },
+        'transaction.payment = :payment',
+        { payment: payment },
       );
     }
-
     if (referenceId) {
       transactionQuery = transactionQuery.andWhere(
         '"referenceId" = :referenceId',
@@ -234,8 +227,9 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
-    const resultTransaction =
-      await this.transactionRepository.save(transaction);
+    const resultTransaction = await this.transactionRepository.save(
+      transaction,
+    );
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },
