@@ -299,6 +299,7 @@ export class UserController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
+  // TODO: Change this in to a PATCH request
   @Post('users/password')
   @ApiResponse({
     status: 201,
