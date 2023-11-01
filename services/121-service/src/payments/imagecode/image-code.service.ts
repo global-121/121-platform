@@ -132,7 +132,7 @@ export class ImageCodeService {
       // Add the generated barcode
       await Jimp.read(barcodeImage).then(async (barcode) => {
         image.composite(barcode, 120, 652);
-        return image;
+        return;
       });
 
       await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then((font) => {
@@ -154,7 +154,7 @@ export class ImageCodeService {
         ); // Below "Prijs:"
         image.print(font, 640, 730, voucherData.pin); // Below "Pincode:"
         image.print(font, 225, 800, voucherData.code); // Barcode numbers
-        return image;
+        return;
       });
 
       return image;

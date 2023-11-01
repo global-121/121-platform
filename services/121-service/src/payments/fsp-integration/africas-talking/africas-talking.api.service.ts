@@ -25,16 +25,14 @@ export class AfricasTalkingApiService {
     paTransactionResult.calculatedAmount =
       payload.recipients[0].metadata.amount;
 
-    let result;
-    await payments
+    let result = await payments
       .mobileB2C(payload)
       .then((response: any) => {
-        result = { response: response };
-        return;
+        return { response: response };
       })
       .catch((error: any) => {
         console.log('error: ', error);
-        result = { error: error };
+        return { error: error };
       });
 
     if (result.response?.entries[0]?.errorMessage) {

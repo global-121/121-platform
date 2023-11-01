@@ -344,7 +344,7 @@ export class IntersolveVoucherService
             IntersolvePayoutStatus:
               IntersolveVoucherPayoutStatus.InitialMessage,
           };
-          return result;
+          return;
         },
         (error) => {
           result.message = error;
@@ -352,19 +352,6 @@ export class IntersolveVoucherService
         },
       );
     return result;
-  }
-
-  private async getLanguage(referenceId: string): Promise<string> {
-    return (
-      (
-        await this.registrationRepository.findOne({
-          where: {
-            referenceId: referenceId,
-            preferredLanguage: Not(IsNull()),
-          },
-        })
-      )?.preferredLanguage || this.fallbackLanguage
-    );
   }
 
   public getNotificationText(
