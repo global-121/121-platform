@@ -22,6 +22,7 @@ import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -50,6 +51,12 @@ import { UserModule } from './user/user.module';
     ThrottlerModule.forRoot({
       ttl: +process.env.GENERIC_THROTTLING_TTL || 60,
       limit: +process.env.GENERIC_THROTTLING_LIMIT || 3000,
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: +process.env.REDIS_PORT,
+      },
     }),
   ],
   controllers: [AppController],
