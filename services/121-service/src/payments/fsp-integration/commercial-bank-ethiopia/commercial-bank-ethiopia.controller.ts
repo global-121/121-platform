@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
@@ -18,11 +18,13 @@ export class CommercialBankEthiopiaController {
 
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
-    summary: 'Returns a list of PAs with their validation status',
+    summary:
+      'Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
   })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of PAs with their validation status',
+    description:
+      'An array of Registrations with the latest retrieved account enquiry data',
     type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -39,15 +41,17 @@ export class CommercialBankEthiopiaController {
 
   @Admin()
   @ApiOperation({
-    summary: 'Validate all persons affected that are in this program.',
+    summary:
+      'Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Done validating all persons affected in this program.',
+    description:
+      'Done getting and storing account enquiry data for all registrations in this program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get(
-    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validate',
+  @Post(
+    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
   )
   public async validate(@Param('programId') programId: number): Promise<void> {
     return this.commercialBankEthiopiaService.validatePasForProgram(

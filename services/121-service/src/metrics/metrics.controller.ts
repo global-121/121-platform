@@ -50,6 +50,7 @@ export class MetricsController {
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
+  // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
   @Get('programs/:programId/metrics/export-list/:exportType')
   public async getExportList(
     @Param('programId') programId: number,
