@@ -25,7 +25,7 @@ export class AfricasTalkingApiService {
     paTransactionResult.calculatedAmount =
       payload.recipients[0].metadata.amount;
 
-    let result = await payments
+    const result = await payments
       .mobileB2C(payload)
       .then((response: any) => {
         return { response: response };
