@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { getServer } from './utility.helper';
 
 export function importRegistrations(
@@ -17,7 +18,7 @@ export function deleteRegistrations(
   programId: number,
   referenceIds: string[],
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (referenceIds) {
@@ -69,7 +70,7 @@ export function getRegistrations(
   accessToken: string,
   page?: number,
   limit?: number,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
   sort?: { field: string; direction: 'ASC' | 'DESC' },
 ): Promise<request.Response> {
   const queryParams = {};
@@ -101,7 +102,7 @@ export async function awaitChangePaStatus(
   referenceIds: string[],
   status: RegistrationStatusEnum,
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (referenceIds) {
@@ -149,7 +150,7 @@ export async function waitForStatusChangeToComplete(
     ) {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Wait
+    await waitFor(100);
   }
 }
 

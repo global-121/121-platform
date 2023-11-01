@@ -15,7 +15,8 @@ import {
   getRegistrations,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = 1;

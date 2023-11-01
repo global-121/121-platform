@@ -38,18 +38,19 @@ describe('NotesService', () => {
         .spyOn(controller, 'createNote')
         .mockResolvedValue();
 
+      const programId = 1;
       const note = {
         referenceId: 'dsadsaasd12123dsa',
         text: 'test1',
       };
 
-      const response = await controller.createNote(1, note);
+      const response = await controller.createNote(1, programId, note);
 
       // Ensure that the response matches the expected result
       expect(response).toEqual(undefined);
 
       // Ensure that the createNote method was called with the correct arguments
-      expect(createNoteMock).toHaveBeenCalledWith(1, note);
+      expect(createNoteMock).toHaveBeenCalledWith(1, programId, note);
     });
 
     it('should get notes', async () => {

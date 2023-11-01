@@ -44,11 +44,9 @@
             color="light"
             class="ion-no-padding"
             style="width: 100%"
+            [disabled]="isDisabled"
           >
-            <ion-radio
-              [value]="program.id"
-              [disabled]="isDisabled"
-            >
+            <ion-radio [value]="program.id">
               <ion-text class="ion-text-wrap">
                 {{ program.titlePaApp }}
                 <p>

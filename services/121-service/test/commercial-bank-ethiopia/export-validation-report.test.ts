@@ -7,7 +7,8 @@ import {
   startCbeValidationProcess,
 } from '../helpers/program.helper';
 import { importRegistrations } from '../helpers/registration.helper';
-import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Export CBE validation report', () => {
   const programId = 1;

@@ -1,5 +1,5 @@
 import { getTransactions } from './program.helper';
-import { waitFor } from './utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 export const assertArraysAreEqual = (
   actualArray: any[],

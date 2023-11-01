@@ -9,7 +9,8 @@ import {
   getVisaWalletsAndDetails,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Export Visa debit card report', () => {
   const programId = 3;

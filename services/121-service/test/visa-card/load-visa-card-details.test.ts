@@ -12,7 +12,8 @@ import {
   importRegistrations,
   issueNewVisaCard,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   amountVisa,
   paymentNrVisa,
@@ -21,7 +22,7 @@ import {
 } from './visa-card.data';
 
 // This test takes a lot of time because there are my statusses to check
-jest.setTimeout(40000);
+jest.setTimeout(40_000);
 
 describe('Load Visa debit cards and details', () => {
   let accessToken: string;

@@ -210,6 +210,7 @@ export class SoapService {
             'ns10:AccountEnquiryResponse'
           ];
         }
+        return null;
       })
       .catch((err: any) => {
         this.httpService.logErrorRequest(

@@ -16,6 +16,7 @@ import { TransactionsService } from '../../transactions/transactions.service';
 import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 import { SafaricomRequestEntity } from './safaricom-request.entity';
 import { SafaricomApiService } from './safaricom.api.service';
+import { waitFor } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class SafaricomService {
@@ -207,7 +208,7 @@ export class SafaricomService {
       .getMany();
     if (safaricomDbRequest[0] === undefined && attempt <= 3) {
       attempt++;
-      await new Promise((resolve) => setTimeout(resolve, 850));
+      await waitFor(850);
       await this.processSafaricomResult(safaricomPaymentResultData, attempt);
       return;
     }

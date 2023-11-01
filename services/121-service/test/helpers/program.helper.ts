@@ -6,7 +6,8 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
-import { getServer, waitFor } from './utility.helper';
+import { getServer } from './utility.helper';
+import { waitFor } from '../../src/utils/waitFor.helper';
 
 export async function postProgram(
   program: CreateProgramDto,
