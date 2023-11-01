@@ -34,11 +34,7 @@ export class ApiService {
     });
   }
 
-  get(
-    endpoint: string,
-    path: string,
-    anonymous = true,
-  ): Observable<any> {
+  get(endpoint: string, path: string, anonymous = true): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService GET: ${security} ${endpoint}${path}`);
 
