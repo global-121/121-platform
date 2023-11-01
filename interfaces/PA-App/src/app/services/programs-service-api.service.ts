@@ -48,7 +48,7 @@ export class ProgramsServiceApiService {
 
   getFspById(fspId: number): Promise<Fsp> {
     return this.apiService
-      .get(environment.url_121_service_api, '/fsp/' + fspId)
+      .get(environment.url_121_service_api, '/financial-service-providers/' + fspId)
       .toPromise();
   }
 

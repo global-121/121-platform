@@ -121,6 +121,19 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
+  @Admin()
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Get all users' })
+  @Get('users')
+  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.userService.getUsers();
+  }
+
   // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
@@ -465,19 +478,6 @@ export class UserController {
       Number(params.userId),
       assignAidworkerToProgram,
     );
-  }
-
-  @Admin()
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Get all users' })
-  @Get('users')
-  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
-    return await this.userService.getUsers();
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramREAD)
