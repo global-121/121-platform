@@ -41,6 +41,7 @@ import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
+import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @Controller()
@@ -59,7 +60,7 @@ export class UserController {
     type: [UserRoleEntity],
   })
   @Get('roles')
-  public async getUserRoles(): Promise<UserRoleEntity[]> {
+  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
     return await this.userService.getUserRoles();
   }
 

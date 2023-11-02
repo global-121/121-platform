@@ -25,6 +25,7 @@ import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
+import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -96,11 +97,19 @@ export class UserService {
     );
   }
 
-  public async getUserRoles(): Promise<UserRoleEntity[]> {
-    return await this.userRoleRepository.find({
-      relations: ['permissions'],
-    });
+  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
+  const userRoles = await this.userRoleRepository.find({
+    relations: ['permissions'],
+  });
+
+    return userRoles.map(userRole => ({
+      id: userRole.id,
+      role: userRole.role,
+      label: userRole.label,
+      permissions: userRole.permissions.map(permission => permission.name),
+    }));
   }
+
 
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
