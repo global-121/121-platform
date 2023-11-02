@@ -20,6 +20,9 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
+import { MessageJobDto } from '../../notifications/message-job.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -50,7 +53,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    private readonly messageService: MessageService,
+    @InjectQueue('message') private readonly messageQueue: Queue,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -131,7 +134,11 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+    paginateQuery = this.setQueryPropertiesBulkAction(
+      paginateQuery,
+      false,
+      true,
+    );
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
@@ -139,19 +146,34 @@ export class RegistrationsBulkService {
       this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
     );
 
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        false,
-        true,
-        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
     if (!dryRun) {
-      this.sendCustomTextMessage(referenceIds, message).catch((error) => {
+      const registrationForUpdate =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          // TODO: Make this dynamic / a permission check
+          true,
+          true,
+          this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+        );
+      // TODO: Add pref. language & whatsapp phone number & phone number
+      const mappedRegistrationData: MessageJobDto[] =
+        registrationForUpdate.data.map((registration) => {
+          return {
+            id: registration.id,
+            referenceId: registration.referenceId,
+            preferredLanguage: registration.preferredLanguage,
+            whatsappPhoneNumber: registration['whatsappPhoneNumber'],
+            phoneNumber: registration.phoneNumber,
+            programId: programId,
+            message: message,
+            key: null,
+            // TODO: Find how to deal with this
+            // tryWhatsApp: false,
+            messageContentType: MessageContentType.custom,
+          };
+        });
+      this.sendCustomTextMessage(mappedRegistrationData).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -198,10 +220,17 @@ export class RegistrationsBulkService {
   public setQueryPropertiesBulkAction(
     query: PaginateQuery,
     includePaymentMultiplier = false,
+    includeSendMessageProperties = false,
   ): PaginateQuery {
     query.select = ['referenceId'];
     if (includePaymentMultiplier) {
       query.select.push('paymentAmountMultiplier');
+    }
+    if (includeSendMessageProperties) {
+      query.select.push('id');
+      query.select.push('preferredLanguage');
+      query.select.push('whatsappPhoneNumber');
+      query.select.push('phoneNumber');
     }
     query.page = null;
     return query;
@@ -273,14 +302,15 @@ export class RegistrationsBulkService {
             ? program.tryWhatsAppFirst
             : false;
         try {
-          await this.messageService.sendTextMessage(
-            updatedRegistration,
-            programId,
-            message,
-            null,
-            tryWhatsappFirst,
-            messageContentType,
-          );
+          // TODO: Add this to the queue too?
+          // await this.messageService.sendTextMessage(
+          //   updatedRegistration.referenceId,
+          //   programId,
+          //   message,
+          //   null,
+          //   tryWhatsappFirst,
+          //   messageContentType,
+          // );
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
@@ -376,27 +406,12 @@ export class RegistrationsBulkService {
   }
 
   private async sendCustomTextMessage(
-    referenceIds: string[],
-    message: string,
+    messageJobs: MessageJobDto[],
   ): Promise<void> {
-    const validRegistrations: RegistrationEntity[] = [];
-    for (const referenceId of referenceIds) {
-      const registration =
-        await this.registrationsService.getRegistrationFromReferenceId(
-          referenceId,
-          ['program'],
-        );
-      validRegistrations.push(registration);
-    }
-    for (const validRegistration of validRegistrations) {
-      await this.messageService.sendTextMessage(
-        validRegistration,
-        validRegistration.program.id,
-        message,
-        null,
-        null,
-        MessageContentType.custom,
-      );
+    for (const messageJob of messageJobs) {
+      this.messageQueue.add('send', messageJob).catch((error) => {
+        console.warn('Error in sendCustomTextMessage: ', error);
+      });
     }
   }
 

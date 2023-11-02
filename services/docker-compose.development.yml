@@ -42,6 +42,7 @@ services:
     build:
       target: development
     volumes:
+      - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
 
   121-redis:
@@ -49,3 +50,6 @@ services:
     image: 'redis:6.0-alpine'
     ports:
       - '6379:6379'
+
+volumes:
+  121_service_node_modules:

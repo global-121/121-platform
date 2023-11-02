@@ -2,12 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { MessageContentType } from './enum/message-type.enum';
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
+import { MessageJobDto } from './message-job.dto';
 
 @Injectable()
 export class MessageService {
@@ -22,31 +21,22 @@ export class MessageService {
     private readonly dataSource: DataSource,
   ) {}
 
-  public async sendTextMessage(
-    registration: RegistrationEntity,
-    programId: number,
-    message?: string,
-    key?: string,
-    tryWhatsApp = false,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    if (!message && !key) {
+  public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
+    if (!messageJobDto.message && !messageJobDto.key) {
       throw new HttpException(
         'A message or a key should be supplied.',
         HttpStatus.BAD_REQUEST,
       );
     }
     try {
-      const whatsappNumber = await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      );
+      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
 
-      const messageText = message
-        ? message
+      const messageText = messageJobDto.message
+        ? messageJobDto.message
         : await this.getNotificationText(
-            registration.preferredLanguage,
-            key,
-            programId,
+            messageJobDto.preferredLanguage,
+            messageJobDto.key,
+            messageJobDto.programId,
           );
       if (whatsappNumber) {
         await this.whatsappService
@@ -55,20 +45,24 @@ export class MessageService {
             whatsappNumber,
             null,
             null,
-            registration.id,
-            messageContentType,
+            messageJobDto.id,
+            messageJobDto.messageContentType,
           )
           .catch((error) => {
             console.warn('Error in queueMessageSendTemplate: ', error);
           });
-      } else if (tryWhatsApp && registration.phoneNumber) {
-        await this.tryWhatsapp(registration, messageText, messageContentType);
-      } else if (registration.phoneNumber) {
+      } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
+        await this.tryWhatsapp(
+          messageJobDto,
+          messageText,
+          messageJobDto.messageContentType,
+        );
+      } else if (messageJobDto.phoneNumber) {
         await this.smsService.sendSms(
           messageText,
-          registration.phoneNumber,
-          registration.id,
-          messageContentType,
+          messageJobDto.phoneNumber,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
         );
       } else {
         throw new HttpException(
@@ -105,21 +99,21 @@ export class MessageService {
   }
 
   private async tryWhatsapp(
-    registration: RegistrationEntity,
+    messageJobDto: MessageJobDto,
     messageText,
     messageContentType?: MessageContentType,
   ): Promise<void> {
     const result = await this.whatsappService.queueMessageSendTemplate(
       messageText,
-      registration.phoneNumber,
+      messageJobDto.phoneNumber,
       null,
       null,
-      registration.id,
+      messageJobDto.id,
       messageContentType,
     );
     const tryWhatsapp = {
       sid: result,
-      registration,
+      registrationId: messageJobDto.id,
     };
     await this.tryWhatsappRepository.save(tryWhatsapp);
   }

@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -64,6 +63,7 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
+import { MessageJobDto } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -79,7 +79,6 @@ export class IntersolveVisaService
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
-    private readonly messageService: MessageService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
@@ -761,14 +760,30 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    await this.messageService.sendTextMessage(
-      wallet.intersolveVisaCustomer.registration,
-      programId,
-      null,
-      notificationKey,
-      false,
-      MessageContentType.custom,
-    );
+    const messageJob: MessageJobDto = {
+      id: wallet.intersolveVisaCustomer.registration.id,
+      referenceId: wallet.intersolveVisaCustomer.registration.referenceId,
+      preferredLanguage:
+        wallet.intersolveVisaCustomer.registration.preferredLanguage,
+      // TODO: Figure out this whatsappPhoneNumber
+      whatsappPhoneNumber: null,
+      phoneNumber: wallet.intersolveVisaCustomer.registration.phoneNumber,
+      programId: programId,
+      message: null,
+      key: notificationKey,
+      tryWhatsApp: false,
+      messageContentType: MessageContentType.custom,
+    };
+    console.log('messageJob: ', messageJob);
+    // TODO: Replace this with adding it to the queue
+    // await this.messageService.sendTextMessage(
+    //   wallet.intersolveVisaCustomer.registration,
+    //   programId,
+    //   null,
+    //   notificationKey,
+    //   false,
+    //   MessageContentType.custom,
+    // );
     return result;
   }
 
@@ -1115,14 +1130,29 @@ export class IntersolveVisaService
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
-    await this.messageService.sendTextMessage(
-      registration,
-      programId,
-      null,
-      ProgramNotificationEnum.reissueVisaCard,
-      false,
-      MessageContentType.custom,
-    );
+    const messageJob: MessageJobDto = {
+      id: registration.id,
+      referenceId: registration.referenceId,
+      preferredLanguage: registration.preferredLanguage,
+      // TODO: Figure out this whatsappPhoneNumber
+      whatsappPhoneNumber: null,
+      phoneNumber: registration.phoneNumber,
+      programId: programId,
+      message: null,
+      key: ProgramNotificationEnum.reissueVisaCard,
+      tryWhatsApp: false,
+      messageContentType: MessageContentType.custom,
+    };
+    console.log('messageJob: ', messageJob);
+    // TODO: Replace this with adding it to the queue
+    // await this.messageService.sendTextMessage(
+    //   registration,
+    //   programId,
+    //   null,
+    //   ProgramNotificationEnum.reissueVisaCard,
+    //   false,
+    //   MessageContentType.custom,
+    // );
   }
 
   private async tryToBlockWallet(tokenCode: string): Promise<void> {

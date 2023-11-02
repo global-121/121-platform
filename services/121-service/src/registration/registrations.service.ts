@@ -638,14 +638,15 @@ export class RegistrationsService {
 
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    await this.messageService.sendTextMessage(
-      registration,
-      registration.program.id,
-      null,
-      RegistrationStatusEnum.registered,
-      null,
-      MessageContentType.registered,
-    );
+    // TODO: Replace with: adding this to the queue
+    // await this.messageService.sendTextMessage(
+    //   registration.referenceId,
+    //   registration.program.id,
+    //   null,
+    //   RegistrationStatusEnum.registered,
+    //   null,
+    //   MessageContentType.registered,
+    // );
 
     if (
       !registerResult ||

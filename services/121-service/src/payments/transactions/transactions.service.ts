@@ -39,7 +39,7 @@ export class TransactionsService {
 
   private readonly fallbackLanguage = 'en';
 
-  public constructor(private readonly messageService: MessageService) {}
+  public constructor() {}
 
   public async getLastTransactions(
     programId: number,
@@ -265,14 +265,16 @@ export class TransactionsService {
           program.notifications,
           transactionNotifcation,
         );
-        await this.messageService.sendTextMessage(
-          registration,
-          program.id,
-          message,
-          null,
-          false,
-          MessageContentType.payment,
-        );
+
+        // TODO: Replace with: adding this to the queue
+        // await this.messageService.sendTextMessage(
+        //   registration.referenceId,
+        //   program.id,
+        //   message,
+        //   null,
+        //   false,
+        //   MessageContentType.payment,
+        // );
       }
     }
     return resultTransaction;

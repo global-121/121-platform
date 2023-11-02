@@ -54,9 +54,13 @@ import { BullModule } from '@nestjs/bull';
     }),
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_HOST,
-        port: +process.env.REDIS_PORT,
+        // TODO: Fix this with .env (see https://github.com/nestjs/bull/issues/453#issuecomment-722905948)
+        // host: process.env.REDIS_HOST,
+        // port: Number(process.env.REDIS_PORT),
+        host: '121-redis',
+        port: 6379,
       },
+      // TODO: Add prefix for queues here (maybe program name or something)
     }),
   ],
   controllers: [AppController],
