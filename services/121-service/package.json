@@ -73,7 +73,7 @@
     "rxjs": "^7.8.1",
     "soap": "^0.33.0",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.14.2",
+    "tsconfig-paths": "^4.2.0",
     "twilio": "^3.84.1",
     "typeorm": "^0.3.6",
     "typescript": "^4.9.5",
