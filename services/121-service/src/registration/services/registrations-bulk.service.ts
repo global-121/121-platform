@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { And, In, IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
-import { MessageService } from '../../notifications/message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whatsapp-pending-message.entity';
@@ -156,7 +155,6 @@ export class RegistrationsBulkService {
           true,
           this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
         );
-      // TODO: Add pref. language & whatsapp phone number & phone number
       const mappedRegistrationData: MessageJobDto[] =
         registrationForUpdate.data.map((registration) => {
           return {
