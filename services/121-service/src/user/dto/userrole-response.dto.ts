@@ -14,7 +14,9 @@ export class UserRoleResponseDTO {
   @IsNotEmpty()
   public readonly label: string;
 
-  @ApiProperty({ example: ['registration:attribute.update', 'registration:fsp.read'] })
+  @ApiProperty({
+    example: ['registration:attribute.update', 'registration:fsp.read'],
+  })
   @IsNotEmpty()
   public readonly permissions: string[];
 }
