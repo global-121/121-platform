@@ -2,6 +2,7 @@
 
 ```mermaid
 graph LR
+  BullModule-->BullModule
   DiscoveryModule-->BullModule
   ProgramModule-->SmsModule
   SmsModule-->BullModule

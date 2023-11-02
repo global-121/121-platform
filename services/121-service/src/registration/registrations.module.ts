@@ -38,6 +38,8 @@ import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { BullModule } from '@nestjs/bull';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -73,6 +75,15 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     MessageModule,
     IntersolveVisaModule,
     RegistrationChangeLogModule,
+    BullModule.registerQueue({
+      name: 'message',
+      processors: [
+        {
+          name: 'optimize',
+          path: join(__dirname, 'processors/message.processor.ts'),
+        },
+      ],
+    }),
   ],
   providers: [
     RegistrationsService,
