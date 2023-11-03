@@ -64,6 +64,7 @@ import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { MessageJobDto } from '../../../notifications/message-job.dto';
+import { MessageService } from '../../../notifications/message.service';
 
 @Injectable()
 export class IntersolveVisaService
@@ -80,6 +81,7 @@ export class IntersolveVisaService
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
+    private readonly messageService: MessageService,
   ) {}
 
   public async getTransactionInfo(
@@ -765,8 +767,10 @@ export class IntersolveVisaService
       referenceId: wallet.intersolveVisaCustomer.registration.referenceId,
       preferredLanguage:
         wallet.intersolveVisaCustomer.registration.preferredLanguage,
-      // TODO: Queueing: Figure out this whatsappPhoneNumber
-      whatsappPhoneNumber: null,
+      whatsappPhoneNumber:
+        await wallet.intersolveVisaCustomer.registration.getRegistrationDataValueByName(
+          CustomDataAttributes.whatsappPhoneNumber,
+        ),
       phoneNumber: wallet.intersolveVisaCustomer.registration.phoneNumber,
       programId: programId,
       message: null,
@@ -774,16 +778,7 @@ export class IntersolveVisaService
       tryWhatsApp: false,
       messageContentType: MessageContentType.custom,
     };
-    console.log('messageJob: ', messageJob);
-    // TODO: Queueing: Replace this with adding it to the queue
-    // await this.messageService.sendTextMessage(
-    //   wallet.intersolveVisaCustomer.registration,
-    //   programId,
-    //   null,
-    //   notificationKey,
-    //   false,
-    //   MessageContentType.custom,
-    // );
+    await this.messageService.addMessageToQueue(messageJob);
     return result;
   }
 
@@ -1134,8 +1129,9 @@ export class IntersolveVisaService
       id: registration.id,
       referenceId: registration.referenceId,
       preferredLanguage: registration.preferredLanguage,
-      // TODO: Queueing: Figure out this whatsappPhoneNumber
-      whatsappPhoneNumber: null,
+      whatsappPhoneNumber: await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.whatsappPhoneNumber,
+      ),
       phoneNumber: registration.phoneNumber,
       programId: programId,
       message: null,
@@ -1143,16 +1139,8 @@ export class IntersolveVisaService
       tryWhatsApp: false,
       messageContentType: MessageContentType.custom,
     };
-    console.log('messageJob: ', messageJob);
-    // TODO: Queueing: Replace this with adding it to the queue
-    // await this.messageService.sendTextMessage(
-    //   registration,
-    //   programId,
-    //   null,
-    //   ProgramNotificationEnum.reissueVisaCard,
-    //   false,
-    //   MessageContentType.custom,
-    // );
+
+    await this.messageService.addMessageToQueue(messageJob);
   }
 
   private async tryToBlockWallet(tokenCode: string): Promise<void> {

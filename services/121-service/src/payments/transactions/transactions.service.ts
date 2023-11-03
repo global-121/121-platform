@@ -21,6 +21,7 @@ import {
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
+import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class TransactionsService {
@@ -39,7 +40,7 @@ export class TransactionsService {
 
   private readonly fallbackLanguage = 'en';
 
-  public constructor() {}
+  public constructor(private readonly messageService: MessageService) {}
 
   public async getLastTransactions(
     programId: number,
@@ -265,16 +266,22 @@ export class TransactionsService {
           program.notifications,
           transactionNotifcation,
         );
-
-        // TODO: Queueing: Replace with: adding this to the queue
-        // await this.messageService.sendTextMessage(
-        //   registration.referenceId,
-        //   program.id,
-        //   message,
-        //   null,
-        //   false,
-        //   MessageContentType.payment,
-        // );
+        const messageJob = {
+          id: registration.id,
+          referenceId: registration.referenceId,
+          preferredLanguage: registration.preferredLanguage,
+          whatsappPhoneNumber:
+            await registration.getRegistrationDataValueByName(
+              CustomDataAttributes.whatsappPhoneNumber,
+            ),
+          phoneNumber: registration.phoneNumber,
+          programId: programId,
+          message: message,
+          key: null,
+          tryWhatsApp: false,
+          messageContentType: MessageContentType.payment,
+        };
+        await this.messageService.addMessageToQueue(messageJob);
       }
     }
     return resultTransaction;

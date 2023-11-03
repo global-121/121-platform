@@ -60,8 +60,6 @@ import {
   RegistrationsImportService,
 } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
-import { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class RegistrationsService {
@@ -100,7 +98,6 @@ export class RegistrationsService {
     private readonly dataSource: DataSource,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
-    @InjectQueue('message') private readonly messageQueue: Queue,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -645,8 +642,9 @@ export class RegistrationsService {
       id: registration.id,
       referenceId: registration.referenceId,
       preferredLanguage: registration.preferredLanguage,
-      // TODO: Queueing: Check if this works
-      whatsappPhoneNumber: registration['whatsappPhoneNumber'],
+      whatsappPhoneNumber: await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.whatsappPhoneNumber,
+      ),
       phoneNumber: registration.phoneNumber,
       programId: registration.program.id,
       message: null,
@@ -654,9 +652,7 @@ export class RegistrationsService {
       tryWhatsApp: null,
       messageContentType: MessageContentType.registered,
     };
-    this.messageQueue.add('send', messageJob).catch((error) => {
-      console.warn('Error in sendCustomTextMessage: ', error);
-    });
+    await this.messageService.addMessageToQueue(messageJob);
 
     if (
       !registerResult ||

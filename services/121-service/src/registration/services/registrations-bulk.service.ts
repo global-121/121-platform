@@ -20,8 +20,7 @@ import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 import { MessageJobDto } from '../../notifications/message-job.dto';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+import { MessageService } from '../../notifications/message.service';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -52,7 +51,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    @InjectQueue('message') private readonly messageQueue: Queue,
+    private readonly messageService: MessageService,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -161,13 +160,13 @@ export class RegistrationsBulkService {
             id: registration.id,
             referenceId: registration.referenceId,
             preferredLanguage: registration.preferredLanguage,
+            // TODO: improve OR consider getting whatsappPhoneNumber in messageService.sendTextMessage instead of passing to queue
             whatsappPhoneNumber: registration['whatsappPhoneNumber'],
             phoneNumber: registration.phoneNumber,
             programId: programId,
             message: message,
             key: null,
-            // TODO: Find how to deal with this
-            // tryWhatsApp: false,
+            tryWhatsApp: false,
             messageContentType: MessageContentType.custom,
           };
         });
@@ -312,9 +311,7 @@ export class RegistrationsBulkService {
             tryWhatsApp: tryWhatsappFirst,
             messageContentType: messageContentType,
           };
-          this.messageQueue.add('send', messageJob).catch((error) => {
-            console.warn('Error in sendCustomTextMessage: ', error);
-          });
+          await this.messageService.addMessageToQueue(messageJob);
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
@@ -413,9 +410,7 @@ export class RegistrationsBulkService {
     messageJobs: MessageJobDto[],
   ): Promise<void> {
     for (const messageJob of messageJobs) {
-      this.messageQueue.add('send', messageJob).catch((error) => {
-        console.warn('Error in sendCustomTextMessage: ', error);
-      });
+      await this.messageService.addMessageToQueue(messageJob);
     }
   }
 

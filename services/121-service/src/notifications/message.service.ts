@@ -7,6 +7,8 @@ import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageJobDto } from './message-job.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class MessageService {
@@ -19,7 +21,14 @@ export class MessageService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
+    @InjectQueue('message') private readonly messageQueue: Queue,
   ) {}
+
+  public async addMessageToQueue(messageJob: MessageJobDto): Promise<void> {
+    this.messageQueue.add('send', messageJob).catch((error) => {
+      console.warn('Error in sendCustomTextMessage: ', error);
+    });
+  }
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
     if (!messageJobDto.message && !messageJobDto.key) {
