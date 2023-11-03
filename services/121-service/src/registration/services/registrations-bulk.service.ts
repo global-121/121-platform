@@ -300,15 +300,21 @@ export class RegistrationsBulkService {
             ? program.tryWhatsAppFirst
             : false;
         try {
-          // TODO: Add this to the queue too?
-          // await this.messageService.sendTextMessage(
-          //   updatedRegistration.referenceId,
-          //   programId,
-          //   message,
-          //   null,
-          //   tryWhatsappFirst,
-          //   messageContentType,
-          // );
+          const messageJob = {
+            id: updatedRegistration.id,
+            referenceId: updatedRegistration.referenceId,
+            preferredLanguage: updatedRegistration.preferredLanguage,
+            whatsappPhoneNumber: updatedRegistration['whatsappPhoneNumber'],
+            phoneNumber: updatedRegistration.phoneNumber,
+            programId: programId,
+            message: message,
+            key: null,
+            tryWhatsApp: tryWhatsappFirst,
+            messageContentType: messageContentType,
+          };
+          this.messageQueue.add('send', messageJob).catch((error) => {
+            console.warn('Error in sendCustomTextMessage: ', error);
+          });
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
