@@ -19,6 +19,10 @@ import { MessageProcessor } from './processors/message.processor';
           path: 'src/notifications/processors/message.processor.ts',
         },
       ],
+      limiter: {
+        max: 600, // Max number of jobs processed
+        duration: 60000, // per duration in milliseconds
+      },
     }),
   ],
   providers: [MessageService, MessageProcessor],

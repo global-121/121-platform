@@ -25,9 +25,11 @@ export class MessageService {
   ) {}
 
   public async addMessageToQueue(messageJob: MessageJobDto): Promise<void> {
-    this.messageQueue.add('send', messageJob).catch((error) => {
-      console.warn('Error in sendCustomTextMessage: ', error);
-    });
+    try {
+      await this.messageQueue.add('send', messageJob);
+    } catch (error) {
+      console.warn('Error in addMessageToQueue: ', error);
+    }
   }
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {

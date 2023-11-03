@@ -9,7 +9,7 @@ export class MessageProcessor {
   @Process('send')
   async handleSend(job: Job): Promise<any> {
     const messageJobData = job.data;
-    this.messageService.sendTextMessage(messageJobData).catch((error) => {
+    await this.messageService.sendTextMessage(messageJobData).catch((error) => {
       console.warn('Error in handleSend: ', error);
     });
   }

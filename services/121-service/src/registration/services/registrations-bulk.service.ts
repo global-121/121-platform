@@ -132,12 +132,12 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
+    const chunkSize = 10000;
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
       true,
     );
-
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
@@ -145,17 +145,49 @@ export class RegistrationsBulkService {
     );
 
     if (!dryRun) {
-      const registrationForUpdate =
+      this.sendMessagesChunked(
+        paginateQuery,
+        programId,
+        message,
+        chunkSize,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
+    }
+    return resultDto;
+  }
+
+  private async sendMessagesChunked(
+    paginateQuery: PaginateQuery,
+    programId: number,
+    message: string,
+    chunkSize: number,
+  ): Promise<void> {
+    paginateQuery.limit = chunkSize;
+    const registrationsMetadata =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        // TODO: Make this dynamic / a permission check
+        true,
+        false,
+        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
+      paginateQuery.page = i + 1;
+      const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
           programId,
           // TODO: Make this dynamic / a permission check
           true,
-          true,
+          false,
           this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
         );
+
       const mappedRegistrationData: MessageJobDto[] =
-        registrationForUpdate.data.map((registration) => {
+        registrationsForUpdate.data.map((registration) => {
           return {
             id: registration.id,
             referenceId: registration.referenceId,
@@ -170,11 +202,12 @@ export class RegistrationsBulkService {
             messageContentType: MessageContentType.custom,
           };
         });
-      this.sendCustomTextMessage(mappedRegistrationData).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
+      for (const messageJob of mappedRegistrationData) {
+        this.messageService.addMessageToQueue(messageJob).catch((error) => {
+          this.azureLogService.logError(error, true);
+        });
+      }
     }
-    return resultDto;
   }
 
   public async getBulkActionResult(
