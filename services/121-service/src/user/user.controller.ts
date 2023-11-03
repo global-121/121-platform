@@ -57,7 +57,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    type: [UserRoleResponseDTO],
   })
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
