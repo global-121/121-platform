@@ -36,7 +36,6 @@ import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEnum } from './permission.enum';
-import { UserRoleEntity } from './user-role.entity';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
