@@ -19,7 +19,6 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
-import { MessageJobDto } from '../../notifications/message-job.dto';
 import { MessageService } from '../../notifications/message.service';
 
 @Injectable()
@@ -185,28 +184,13 @@ export class RegistrationsBulkService {
           false,
           this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
         );
-
-      const mappedRegistrationData: MessageJobDto[] =
-        registrationsForUpdate.data.map((registration) => {
-          return {
-            id: registration.id,
-            referenceId: registration.referenceId,
-            preferredLanguage: registration.preferredLanguage,
-            // TODO: improve OR consider getting whatsappPhoneNumber in messageService.sendTextMessage instead of passing to queue
-            whatsappPhoneNumber: registration['whatsappPhoneNumber'],
-            phoneNumber: registration.phoneNumber,
-            programId: programId,
-            message: message,
-            key: null,
-            tryWhatsApp: false,
-            messageContentType: MessageContentType.custom,
-          };
-        });
-      for (const messageJob of mappedRegistrationData) {
-        this.messageService.addMessageToQueue(messageJob).catch((error) => {
-          this.azureLogService.logError(error, true);
-        });
-      }
+      this.sendCustomTextMessage(
+        registrationsForUpdate.data,
+        programId,
+        message,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
     }
   }
 
@@ -332,19 +316,14 @@ export class RegistrationsBulkService {
             ? program.tryWhatsAppFirst
             : false;
         try {
-          const messageJob = {
-            id: updatedRegistration.id,
-            referenceId: updatedRegistration.referenceId,
-            preferredLanguage: updatedRegistration.preferredLanguage,
-            whatsappPhoneNumber: updatedRegistration['whatsappPhoneNumber'],
-            phoneNumber: updatedRegistration.phoneNumber,
-            programId: programId,
-            message: message,
-            key: null,
-            tryWhatsApp: tryWhatsappFirst,
-            messageContentType: messageContentType,
-          };
-          await this.messageService.addMessageToQueue(messageJob);
+          await this.messageService.addMessageToQueue(
+            updatedRegistration,
+            programId,
+            message,
+            null,
+            tryWhatsappFirst,
+            messageContentType,
+          );
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
@@ -440,10 +419,19 @@ export class RegistrationsBulkService {
   }
 
   private async sendCustomTextMessage(
-    messageJobs: MessageJobDto[],
+    registrations: RegistrationViewEntity[],
+    programId: number,
+    message: string,
   ): Promise<void> {
-    for (const messageJob of messageJobs) {
-      await this.messageService.addMessageToQueue(messageJob);
+    for (const registration of registrations) {
+      await this.messageService.addMessageToQueue(
+        registration,
+        programId,
+        message,
+        null,
+        false,
+        MessageContentType.custom,
+      );
     }
   }
 

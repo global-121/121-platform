@@ -638,21 +638,14 @@ export class RegistrationsService {
 
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    const messageJob = {
-      id: registration.id,
-      referenceId: registration.referenceId,
-      preferredLanguage: registration.preferredLanguage,
-      whatsappPhoneNumber: await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      ),
-      phoneNumber: registration.phoneNumber,
-      programId: registration.program.id,
-      message: null,
-      key: RegistrationStatusEnum.registered,
-      tryWhatsApp: null,
-      messageContentType: MessageContentType.registered,
-    };
-    await this.messageService.addMessageToQueue(messageJob);
+    await this.messageService.addMessageToQueue(
+      registration,
+      registration.program.id,
+      null,
+      RegistrationStatusEnum.registered,
+      null,
+      MessageContentType.registered,
+    );
 
     if (
       !registerResult ||
