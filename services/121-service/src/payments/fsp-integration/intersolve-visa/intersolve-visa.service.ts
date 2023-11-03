@@ -765,7 +765,7 @@ export class IntersolveVisaService
       referenceId: wallet.intersolveVisaCustomer.registration.referenceId,
       preferredLanguage:
         wallet.intersolveVisaCustomer.registration.preferredLanguage,
-      // TODO: Figure out this whatsappPhoneNumber
+      // TODO: Queueing: Figure out this whatsappPhoneNumber
       whatsappPhoneNumber: null,
       phoneNumber: wallet.intersolveVisaCustomer.registration.phoneNumber,
       programId: programId,
@@ -775,7 +775,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
     };
     console.log('messageJob: ', messageJob);
-    // TODO: Replace this with adding it to the queue
+    // TODO: Queueing: Replace this with adding it to the queue
     // await this.messageService.sendTextMessage(
     //   wallet.intersolveVisaCustomer.registration,
     //   programId,
@@ -1134,7 +1134,7 @@ export class IntersolveVisaService
       id: registration.id,
       referenceId: registration.referenceId,
       preferredLanguage: registration.preferredLanguage,
-      // TODO: Figure out this whatsappPhoneNumber
+      // TODO: Queueing: Figure out this whatsappPhoneNumber
       whatsappPhoneNumber: null,
       phoneNumber: registration.phoneNumber,
       programId: programId,
@@ -1144,7 +1144,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
     };
     console.log('messageJob: ', messageJob);
-    // TODO: Replace this with adding it to the queue
+    // TODO: Queueing: Replace this with adding it to the queue
     // await this.messageService.sendTextMessage(
     //   registration,
     //   programId,

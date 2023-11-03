@@ -266,7 +266,7 @@ export class TransactionsService {
           transactionNotifcation,
         );
 
-        // TODO: Replace with: adding this to the queue
+        // TODO: Queueing: Replace with: adding this to the queue
         // await this.messageService.sendTextMessage(
         //   registration.referenceId,
         //   program.id,
