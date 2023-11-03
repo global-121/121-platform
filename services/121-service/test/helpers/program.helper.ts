@@ -119,9 +119,9 @@ export async function getTransactions(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/payments/transactions`)
+    .get(`/programs/${programId}/transactions`)
     .set('Cookie', [accessToken])
-    .query({ minPayment: paymentNr, referenceId: referenceId });
+    .query({ payment: paymentNr, referenceId: referenceId });
 }
 
 export async function exportList(
