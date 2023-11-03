@@ -22,7 +22,7 @@ import {
 } from '../models/program.model';
 import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { RegistrationStatusChange } from '../models/registration-status-change.model';
-import { Transaction } from '../models/transaction.model';
+import { PaymentSummary, Transaction } from '../models/transaction.model';
 import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
@@ -196,22 +196,26 @@ export class ProgramsServiceApiService {
 
   getTransactions(
     programId: number | string,
-    payment?: number | string,
-    referenceId?: string,
+    referenceId: string,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
-    if (payment) {
-      params = params.append('payment', payment);
-    }
-    if (referenceId) {
-      params = params.append('referenceId', referenceId);
-    }
+    params = params.append('referenceId', referenceId);
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/payments/transactions`,
       false,
       false,
       params,
+    );
+  }
+
+  getPaymentSummary(
+    programId: number | string,
+    payment: number | string,
+  ): Promise<PaymentSummary> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments/${payment}`,
     );
   }
 

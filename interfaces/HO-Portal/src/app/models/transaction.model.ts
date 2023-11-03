@@ -19,3 +19,9 @@ export class Transaction {
   fspName: string;
   fsp: FspName;
 }
+
+export class PaymentSummary {
+  nrSuccess: number;
+  nrWaiting: number;
+  nrError: number;
+}

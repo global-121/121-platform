@@ -12,6 +12,7 @@ import { PermissionEnum } from '../../user/permission.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  PaymentReturnDto,
   TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
@@ -56,7 +57,33 @@ export class TransactionsController {
     );
   }
 
-  // TODO: REFACTOR combine this endpoint with GET /payments/transactions above (or remove the need for this one altogether)
+  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @ApiOperation({ summary: 'Get payment aggregate results' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'payment',
+    required: true,
+    type: 'integer',
+    description: 'Request transactions from a specific payment index',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Retrieved payment aggregate results',
+    type: PaymentReturnDto,
+  })
+  // NOTE this endpoint must be below GET /payments/transactions to avoid endpoint confusion
+  @Get('programs/:programId/payments/:payment')
+  public async getPaymentAggregation(
+    @Param('programId') programId: number,
+    @Query('payment') payment: number,
+  ): Promise<PaymentReturnDto> {
+    return await this.transactionsService.getPaymentAggregation(
+      Number(programId),
+      Number(payment),
+    );
+  }
+
+  // TODO: REFACTOR combine this endpoint with GET /payments/transactions (or remove the need for this one altogether)
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ summary: 'Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

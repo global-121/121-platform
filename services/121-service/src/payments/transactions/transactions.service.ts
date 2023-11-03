@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageService } from '../../notifications/message.service';
@@ -17,6 +17,7 @@ import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
+  PaymentReturnDto,
   TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
@@ -39,7 +40,10 @@ export class TransactionsService {
 
   private readonly fallbackLanguage = 'en';
 
-  public constructor(private readonly messageService: MessageService) {}
+  public constructor(
+    private readonly messageService: MessageService,
+    private readonly dataSource: DataSource,
+  ) {}
 
   public async getLastTransactions(
     programId: number,
@@ -53,6 +57,38 @@ export class TransactionsService {
       referenceId,
       status,
     ).getRawMany();
+  }
+
+  public async getPaymentAggregation(
+    programId: number,
+    payment: number,
+  ): Promise<PaymentReturnDto> {
+    const aggregateResults = await this.dataSource
+      .createQueryBuilder()
+      .select(['status', 'COUNT(*) as count'])
+      .from(
+        '(' +
+          this.getLastTransactionsQuery(programId, payment).getQuery() +
+          ')',
+        'transactions',
+      )
+      .setParameters(
+        this.getLastTransactionsQuery(programId, payment).getParameters(),
+      )
+      .groupBy('status')
+      .getRawMany();
+
+    return {
+      nrSuccess:
+        aggregateResults.find((row) => row.status === StatusEnum.success)
+          ?.count || 0,
+      nrWaiting:
+        aggregateResults.find((row) => row.status === StatusEnum.waiting)
+          ?.count || 0,
+      nrError:
+        aggregateResults.find((row) => row.status === StatusEnum.error)
+          ?.count || 0,
+    };
   }
 
   public getLastTransactionsQuery(
