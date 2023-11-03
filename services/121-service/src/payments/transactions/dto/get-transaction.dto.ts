@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { IntersolveVoucherPayoutStatus } from '../../fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 
@@ -10,22 +17,32 @@ export class GetTransactionDto {
   @ApiProperty({ example: 1 })
   @IsNotEmpty()
   @IsNumber()
+  @Type(() => Number)
   public readonly payment: number;
   @ApiProperty({ example: 'IntersolvePayoutStatus' })
+  @IsOptional()
   @IsString()
   public readonly customDataKey?: string;
   @ApiProperty({ example: IntersolveVoucherPayoutStatus.InitialMessage })
+  @IsOptional()
   @IsString()
   public readonly customDataValue?: string;
 }
 
 export class GetTransactionOutputDto {
+  @ApiProperty({ example: new Date() })
   public readonly paymentDate: Date;
+  @ApiProperty({ example: 1 })
   public readonly payment: number;
+  @ApiProperty({ example: 'referenceId' })
   public readonly referenceId: string;
+  @ApiProperty({ example: StatusEnum.success })
   public readonly status: StatusEnum;
+  @ApiProperty({ example: 10 })
   public readonly amount: number;
+  @ApiProperty({ example: 'errorMessage' })
   public readonly errorMessage: string;
+  @ApiProperty({ example: {} })
   public readonly customData: object;
 }
 

@@ -1,5 +1,5 @@
 import { Controller, Get, Module } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckResult,
@@ -18,6 +18,7 @@ export class HealthController {
     private db: TypeOrmHealthIndicator,
   ) {}
 
+  @ApiOperation({ summary: 'Get health of instance' })
   @Get('health')
   @HealthCheck()
   public check(): Promise<HealthCheckResult> {
@@ -26,6 +27,7 @@ export class HealthController {
     ]);
   }
 
+  @ApiOperation({ summary: 'Get version of instance' })
   @Get('version')
   public version(): {
     schemaVersion: number;

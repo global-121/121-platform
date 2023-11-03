@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -23,7 +24,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/user/login',
+        '/users/login',
         {
           username,
           password,
@@ -47,13 +48,13 @@ export class ProgramsServiceApiService {
 
   logout(): Promise<null> {
     return this.apiService
-      .post(environment.url_121_service_api, '/user/logout', {}, true)
+      .post(environment.url_121_service_api, '/users/logout', {}, true)
       .toPromise();
   }
 
   changePassword(password: string): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/user/change-password', {
+      .post(environment.url_121_service_api, '/users/password', {
         password,
       })
       .toPromise();
@@ -91,17 +92,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getFspAttributesAsnwers(
+  getFspAttributesAnswers(
     referenceId: string,
     programId: number,
   ): Promise<any> {
+    let params = new HttpParams();
+    params = params.append('referenceId', referenceId);
     return this.apiService
-      .post(
+      .get(
         environment.url_121_service_api,
-        `/programs/${programId}/registrations/get-fsp/`,
-        {
-          referenceId,
-        },
+        `/programs/${programId}/registrations/fsp-attributes/`,
+        false,
+        params,
       )
       .toPromise();
   }

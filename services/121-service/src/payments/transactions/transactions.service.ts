@@ -132,6 +132,7 @@ export class TransactionsService {
       })
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
+
     if (transactions.length === 0) {
       return null;
     }

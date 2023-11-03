@@ -1,10 +1,24 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { ActionEntity } from './action.entity';
+import { ActionEntity, ActionType } from './action.entity';
 import { ActionService } from './action.service';
 import { ActionDto } from './dto/action.dto';
 
@@ -18,7 +32,7 @@ export class ActionController {
   }
 
   @Permissions(PermissionEnum.ActionREAD)
-  @ApiOperation({ summary: 'Get latest action of type ' })
+  @ApiOperation({ summary: 'Get latest action of given action-type ' })
   @ApiResponse({
     status: 200,
     description: 'Returned latest action for given program-id and action-type.',
@@ -28,17 +42,19 @@ export class ActionController {
     required: true,
     type: 'integer',
   })
-  @Post('programs/:programId/actions/retrieve-latest')
+  @ApiQuery({ name: 'actionType', required: true, type: 'string' })
+  @Get('programs/:programId/actions')
   public async getLatestAction(
-    @Body() actionData: ActionDto,
     @Param('programId') programId,
+    @Query('actionType') actionType: ActionType,
   ): Promise<ActionEntity> {
     return await this.actionService.getLatestActions(
       Number(programId),
-      actionData.actionType,
+      actionType,
     );
   }
 
+  // TODO: this endpoint is not used currently, remove it?
   @Permissions(PermissionEnum.ActionCREATE)
   @ApiOperation({ summary: 'Save action by id' })
   @ApiResponse({ status: 201, description: 'Action saved' })
@@ -47,7 +63,7 @@ export class ActionController {
     required: true,
     type: 'integer',
   })
-  @Post('programs/:programId/actions/save')
+  @Post('programs/:programId/actions')
   public async saveAction(
     @User('id') userId: number,
     @Body() actionData: ActionDto,

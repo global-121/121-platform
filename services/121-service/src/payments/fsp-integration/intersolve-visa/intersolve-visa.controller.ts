@@ -31,19 +31,20 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardREAD)
   @ApiOperation({
-    summary: 'Get Intersolve Visa wallets and details',
+    summary: 'Get Intersolve Visa wallet data related to a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
-    description: 'Wallets and details retrieved',
+    description: 'Wallets data retrieved',
     type: GetWalletsResponseDto,
   })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-visa/wallets',
   )
   public async getVisaWalletsAndDetails(
+    // TODO: REFACTOR: rename to registration.referenceid
     @Query('referenceId') referenceId,
     @Param() params,
   ): Promise<GetWalletsResponseDto> {
@@ -64,6 +65,7 @@ export class IntersolveVisaController {
     description:
       'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
   })
+  // TODO: change to PATCH programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode + combine with unblock endpoint
   @Post(
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/block',
   )
@@ -88,6 +90,7 @@ export class IntersolveVisaController {
     description:
       'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked)',
   })
+  // TODO: change to PATCH programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode + combine with block endpoint
   @Post(
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/unblock',
   )
@@ -103,8 +106,7 @@ export class IntersolveVisaController {
 
   @Admin()
   @ApiOperation({
-    summary:
-      'Update Intersolve Visa customer data to same as 121 registration data',
+    summary: 'Send FSP Visa Customer data of a registration to Intersolve',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -112,6 +114,7 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Customer data updated',
   })
+  // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/sync
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
   )
@@ -124,14 +127,16 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardCREATE)
   @ApiOperation({
-    summary: 'Issue new wallet and card for Intersolve Visa customer',
+    summary:
+      'Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 200,
-    description: 'Issued new wallet and card',
+    description: 'Wallet and card replaced',
   })
+  // TODO: REFACTOR: PUT /api/programs/{programId}/financial-service-providers/intersolve-visa/wallets/:tokencode
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )

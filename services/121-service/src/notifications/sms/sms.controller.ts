@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { SmsService } from './sms.service';
 
@@ -12,6 +12,9 @@ export class SmsController {
   }
 
   @SkipThrottle()
+  @ApiOperation({
+    summary: 'Status callback used by Twilio to notify us of SMS status.',
+  })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {

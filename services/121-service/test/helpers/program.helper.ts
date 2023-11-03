@@ -55,8 +55,8 @@ export async function publishProgram(
   programId: number,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/change-phase`)
-    .send({ newPhase: 'registrationValidation' });
+    .patch(`/programs/${programId}`)
+    .send({ phase: 'registrationValidation' });
 }
 
 export async function changePhase(
@@ -65,9 +65,9 @@ export async function changePhase(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/change-phase`)
+    .patch(`/programs/${programId}`)
     .set('Cookie', [accessToken])
-    .send({ newPhase: newPhase });
+    .send({ phase: newPhase });
 }
 
 export async function doPayment(
@@ -76,7 +76,7 @@ export async function doPayment(
   amount: number,
   referenceIds: string[],
   accessToken: string,
-  filter: { [key: string]: string } = {},
+  filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
@@ -275,8 +275,8 @@ export async function startCbeValidationProcess(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(
-      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validate`,
+    .post(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`,
     )
     .set('Cookie', [accessToken]);
 }
@@ -299,7 +299,7 @@ export async function postNote(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/note`)
+    .post(`/programs/${programId}/notes`)
     .set('Cookie', [accessToken])
     .send({ referenceId: referenceId, text: text });
 }
@@ -310,6 +310,6 @@ export async function getNotes(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/note/${referenceId}`)
+    .get(`/programs/${programId}/notes/${referenceId}`)
     .set('Cookie', [accessToken]);
 }

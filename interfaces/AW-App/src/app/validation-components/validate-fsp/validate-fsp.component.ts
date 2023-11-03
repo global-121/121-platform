@@ -120,7 +120,7 @@ export class ValidateFspComponent implements ValidationComponent, OnInit {
 
   private async findFspAnswersOnline(referenceId: string, programId: number) {
     try {
-      const response = await this.programsService.getFspAttributesAsnwers(
+      const response = await this.programsService.getFspAttributesAnswers(
         referenceId,
         programId,
       );

@@ -3,22 +3,12 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
-export class FspAttributeDto {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  public readonly fsp: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  public readonly name: string;
-
-  @ApiProperty({ example: { en: 'FSP display name' } })
+export class UpdateFspAttributeDto {
+  @ApiProperty({ example: { en: 'attribute label' } })
   @IsOptional()
   public label: JSON;
 
-  @ApiProperty({ example: { en: 'FSP display name' } })
+  @ApiProperty({ example: { en: 'attribute placeholder' } })
   @IsOptional()
   public placeholder: JSON;
 
@@ -66,12 +56,14 @@ export class FspAttributeDto {
   public phases: JSON;
 }
 
-export class UpdateFspDto {
+export class CreateFspAttributeDto extends UpdateFspAttributeDto {
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
-  public readonly fsp: string;
+  @IsNotEmpty()
+  public readonly name: string;
+}
 
+export class UpdateFspDto {
   @ApiProperty({ example: { en: 'FSP PA-app display name' } })
   @IsOptional()
   public readonly fspDisplayNamePaApp: JSON;

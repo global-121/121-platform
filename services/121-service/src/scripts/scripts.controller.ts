@@ -46,7 +46,7 @@ export class ScriptsController {
     required: false,
     description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x, e.g. 4=16 messages per PA)`,
   })
-  @ApiOperation({ summary: 'Reset database' })
+  @ApiOperation({ summary: 'Reset instance database' })
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
