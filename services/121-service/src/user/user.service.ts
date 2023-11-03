@@ -102,17 +102,26 @@ export class UserService {
       relations: ['permissions'],
     });
 
-    return userRoles.map((userRole) => ({
+    return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
+  }
+
+  private getUserRoleResponse(userRole: UserRoleEntity): UserRoleResponseDTO {
+    const userRoleResponse: UserRoleResponseDTO = {
       id: userRole.id,
       role: userRole.role,
       label: userRole.label,
-      permissions: userRole.permissions.map((permission) => permission.name),
-    }));
+    };
+    if (userRole.permissions) {
+      userRoleResponse.permissions = userRole.permissions.map(
+        (permission) => permission.name,
+      );
+    }
+    return userRoleResponse;
   }
 
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.userRoleRepository.findOne({
       where: { role: userRoleData.role },
     });
@@ -131,13 +140,14 @@ export class UserService {
     }
     userRoleEntity.permissions = permissionEntities;
 
-    return await this.userRoleRepository.save(userRoleEntity);
+    const createdUserRole = await this.userRoleRepository.save(userRoleEntity);
+    return this.getUserRoleResponse(createdUserRole);
   }
 
   public async updateUserRole(
     userRoleId: number,
     userRoleData: UpdateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
     existingRole.label = userRoleData.label;
     const permissionEntities = [];
@@ -148,12 +158,16 @@ export class UserService {
     }
     existingRole.permissions = permissionEntities;
 
-    return await this.userRoleRepository.save(existingRole);
+    const savedUserRole = await this.userRoleRepository.save(existingRole);
+    return this.getUserRoleResponse(savedUserRole);
   }
 
-  public async deleteUserRole(userRoleId: number): Promise<UserRoleEntity> {
+  public async deleteUserRole(
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
-    return await this.userRoleRepository.remove(existingRole);
+    const deletedUserRole = await this.userRoleRepository.remove(existingRole);
+    return this.getUserRoleResponse(deletedUserRole);
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {

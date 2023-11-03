@@ -70,12 +70,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the created role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     return await this.userService.addUserRole(userRoleData);
   }
 
@@ -86,7 +86,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the updated user role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @ApiResponse({
     status: 400,
@@ -96,7 +96,7 @@ export class UserController {
   public async updateUserRole(
     @Param() params,
     @Body() userRoleData: UpdateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     return await this.userService.updateUserRole(
       params.userRoleId,
       userRoleData,
@@ -111,14 +111,14 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the deleted role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @ApiResponse({
     status: 404,
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleEntity> {
+  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
