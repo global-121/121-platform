@@ -42,6 +42,8 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 import { RetryPaymentDto } from './dto/retry-payment.dto';
 import { PaymentsService } from './payments.service';
+import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
+import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments')
@@ -63,6 +65,30 @@ export class PaymentsController {
   public async getPayments(@Param() params): Promise<any> {
     // TODO: REFACTOR: use a DTO to define stable structure of result body
     return await this.paymentsService.getPayments(Number(params.programId));
+  }
+
+  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @ApiOperation({ summary: 'Get payment aggregate results' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'payment',
+    required: true,
+    type: 'integer',
+    description: 'Request transactions from a specific payment index',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Retrieved payment aggregate results',
+    type: PaymentReturnDto,
+  })
+  @Get('programs/:programId/payments/:payment')
+  public async getPaymentAggregation(
+    @Param() params: GetPaymentAggregationDto,
+  ): Promise<PaymentReturnDto> {
+    return await this.paymentsService.getPaymentAggregation(
+      Number(params.programId),
+      Number(params.payment),
+    );
   }
 
   @Permissions(PermissionEnum.PaymentCREATE)

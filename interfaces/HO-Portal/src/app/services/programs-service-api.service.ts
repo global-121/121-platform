@@ -202,7 +202,7 @@ export class ProgramsServiceApiService {
     params = params.append('referenceId', referenceId);
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/transactions`,
+      `/programs/${programId}/transactions`,
       false,
       false,
       params,
@@ -291,7 +291,7 @@ export class ProgramsServiceApiService {
     }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/transactions/one`,
+      `/programs/${programId}/transactions/one`,
       false,
       false,
       params,

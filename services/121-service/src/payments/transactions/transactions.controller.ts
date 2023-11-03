@@ -12,13 +12,12 @@ import { PermissionEnum } from '../../user/permission.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
-  PaymentReturnDto,
   TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('payments/transactions')
+@ApiTags('transactions')
 @Controller()
 export class TransactionsController {
   public constructor(
@@ -44,7 +43,7 @@ export class TransactionsController {
     description: 'Retrieved transactions',
     type: [TransactionReturnDto],
   })
-  @Get('programs/:programId/payments/transactions')
+  @Get('programs/:programId/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('referenceId') referenceId: string,
@@ -54,32 +53,6 @@ export class TransactionsController {
       Number(programId),
       Number(payment),
       referenceId,
-    );
-  }
-
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: 'Get payment aggregate results' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({
-    name: 'payment',
-    required: true,
-    type: 'integer',
-    description: 'Request transactions from a specific payment index',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Retrieved payment aggregate results',
-    type: PaymentReturnDto,
-  })
-  // NOTE this endpoint must be below GET /payments/transactions to avoid endpoint confusion
-  @Get('programs/:programId/payments/:payment')
-  public async getPaymentAggregation(
-    @Param('programId') programId: number,
-    @Query('payment') payment: number,
-  ): Promise<PaymentReturnDto> {
-    return await this.transactionsService.getPaymentAggregation(
-      Number(programId),
-      Number(payment),
     );
   }
 
@@ -96,7 +69,7 @@ export class TransactionsController {
     description: 'Retrieved single transaction',
     type: GetTransactionOutputDto,
   })
-  @Get('programs/:programId/payments/transactions/one')
+  @Get('programs/:programId/transactions/one')
   public async getTransaction(
     @Param() params,
     @Query() queryParams: GetTransactionDto,
