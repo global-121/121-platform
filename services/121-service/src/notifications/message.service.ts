@@ -9,6 +9,9 @@ import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageJobDto } from './message-job.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 
 @Injectable()
 export class MessageService {
@@ -24,7 +27,34 @@ export class MessageService {
     @InjectQueue('message') private readonly messageQueue: Queue,
   ) {}
 
-  public async addMessageToQueue(messageJob: MessageJobDto): Promise<void> {
+  public async addMessageToQueue(
+    registration: RegistrationEntity | RegistrationViewEntity,
+    programId: number,
+    message: string,
+    key: string,
+    tryWhatsApp: boolean,
+    messageContentType: MessageContentType,
+  ): Promise<void> {
+    let whatsappPhoneNumber;
+    if (registration instanceof RegistrationViewEntity) {
+      whatsappPhoneNumber = registration['whatsappPhoneNumber'];
+    } else if (registration instanceof RegistrationEntity) {
+      whatsappPhoneNumber = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.whatsappPhoneNumber,
+      );
+    }
+    const messageJob: MessageJobDto = {
+      id: registration.id,
+      referenceId: registration.referenceId,
+      preferredLanguage: registration.preferredLanguage,
+      whatsappPhoneNumber: whatsappPhoneNumber,
+      phoneNumber: registration.phoneNumber,
+      programId,
+      message,
+      key,
+      tryWhatsApp,
+      messageContentType,
+    };
     this.messageQueue.add('send', messageJob).catch((error) => {
       console.warn('Error in sendCustomTextMessage: ', error);
     });

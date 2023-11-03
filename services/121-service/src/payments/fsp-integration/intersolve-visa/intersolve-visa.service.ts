@@ -762,23 +762,14 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    const messageJob: MessageJobDto = {
-      id: wallet.intersolveVisaCustomer.registration.id,
-      referenceId: wallet.intersolveVisaCustomer.registration.referenceId,
-      preferredLanguage:
-        wallet.intersolveVisaCustomer.registration.preferredLanguage,
-      whatsappPhoneNumber:
-        await wallet.intersolveVisaCustomer.registration.getRegistrationDataValueByName(
-          CustomDataAttributes.whatsappPhoneNumber,
-        ),
-      phoneNumber: wallet.intersolveVisaCustomer.registration.phoneNumber,
-      programId: programId,
-      message: null,
-      key: notificationKey,
-      tryWhatsApp: false,
-      messageContentType: MessageContentType.custom,
-    };
-    await this.messageService.addMessageToQueue(messageJob);
+    await this.messageService.addMessageToQueue(
+      wallet.intersolveVisaCustomer.registration,
+      programId,
+      null,
+      notificationKey,
+      false,
+      MessageContentType.custom,
+    );
     return result;
   }
 
@@ -1125,22 +1116,14 @@ export class IntersolveVisaService
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
-    const messageJob: MessageJobDto = {
-      id: registration.id,
-      referenceId: registration.referenceId,
-      preferredLanguage: registration.preferredLanguage,
-      whatsappPhoneNumber: await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      ),
-      phoneNumber: registration.phoneNumber,
-      programId: programId,
-      message: null,
-      key: ProgramNotificationEnum.reissueVisaCard,
-      tryWhatsApp: false,
-      messageContentType: MessageContentType.custom,
-    };
-
-    await this.messageService.addMessageToQueue(messageJob);
+    await this.messageService.addMessageToQueue(
+      registration,
+      programId,
+      null,
+      ProgramNotificationEnum.reissueVisaCard,
+      false,
+      MessageContentType.custom,
+    );
   }
 
   private async tryToBlockWallet(tokenCode: string): Promise<void> {
