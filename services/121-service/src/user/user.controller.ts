@@ -55,7 +55,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
+    description: 'Returns a list of roles and their permissions',
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
