@@ -13,6 +13,7 @@ graph LR
   TransactionsModule-->MessageModule
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
+  MessageModule-->MessageTemplateModule
   IntersolveVoucherModule-->WhatsappModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
