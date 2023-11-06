@@ -7,6 +7,7 @@ ion-chip {
   font-size: 14px;
   opacity: 1;
   margin: 0;
+  align-items: center;
 
   &.active {
     --background: var(--fiveten-success-200);
