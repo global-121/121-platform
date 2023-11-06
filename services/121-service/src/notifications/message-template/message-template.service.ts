@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,25 +12,44 @@ export class MessageTemplateService {
   public async getMessageTemplatesByProgramId(
     programId: number,
   ): Promise<MessageTemplateEntity[]> {
-    const templates = await this.messageTemplateRepository.find({
+    return await this.messageTemplateRepository.find({
       where: { programId: programId },
     });
-
-    return await Promise.all(templates);
   }
 
   public async createMessageTemplate(
+    programId: number,
     postData: MessageTemplateDto,
   ): Promise<MessageTemplateEntity> {
     const template = new MessageTemplateEntity();
-    template.programId = postData.programId;
+    template.programId = programId;
     template.type = postData.type;
     template.language = postData.language;
     template.message = postData.message;
     template.isWhatsappTemplate = postData.isWhatsappTemplate;
 
-    const saved = await this.messageTemplateRepository.save(template);
+    return await this.messageTemplateRepository.save(template);
+  }
 
-    return saved;
+  public async updateMessageTemplate(
+    programId: number,
+    messageId: number,
+    updateMessageTemplateDto: MessageTemplateDto,
+  ): Promise<MessageTemplateEntity> {
+    const template = await this.messageTemplateRepository.findOne({
+      where: { programId: programId, id: messageId },
+    });
+    if (!template) {
+      const errors = `No message template found with id ${messageId} in program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (const key in updateMessageTemplateDto) {
+      if (key !== 'template') {
+        template[key] = updateMessageTemplateDto[key];
+      }
+    }
+
+    return await this.messageTemplateRepository.save(template);
   }
 }

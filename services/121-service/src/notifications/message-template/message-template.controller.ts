@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiConsumes,
   ApiOperation,
@@ -11,7 +11,7 @@ import { MessageTemplateEntity } from './message-template.entity';
 import { MessageTemplateDto } from './dto/message-template.dto';
 
 @ApiTags('notifications')
-@Controller('notifications/message-template')
+@Controller('notifications')
 export class MessageTemplateController {
   public constructor(
     private readonly messageTemplateService: MessageTemplateService,
@@ -29,7 +29,7 @@ export class MessageTemplateController {
     required: true,
     type: 'integer',
   })
-  @Get(':programId')
+  @Get(':programId/message-template')
   public async getMessageTemplatesByProgramId(
     @Param('programId') programId,
   ): Promise<MessageTemplateEntity[]> {
@@ -43,12 +43,40 @@ export class MessageTemplateController {
     status: 201,
     description: 'Created new message template',
   })
-  @Post('create')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/message-template')
   public async createMessageTemplate(
+    @Param('programId') programId: number,
     @Body() templateData: MessageTemplateDto,
   ): Promise<MessageTemplateEntity> {
     return await this.messageTemplateService.createMessageTemplate(
+      Number(programId),
       templateData,
+    );
+  }
+
+  @ApiOperation({ summary: 'Update message template' })
+  @ApiResponse({
+    status: 200,
+    description: 'Message template updated',
+    type: MessageTemplateEntity,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No message template found with given id',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'messageId', required: true, type: 'integer' })
+  @Patch(':programId/message-template/:messageId')
+  public async updateFsp(
+    @Param('programId') programId: number,
+    @Param('messageId') messageId: number,
+    @Body() updateMessageTemplateDto: MessageTemplateDto,
+  ): Promise<MessageTemplateEntity> {
+    return await this.messageTemplateService.updateMessageTemplate(
+      Number(programId),
+      Number(messageId),
+      updateMessageTemplateDto,
     );
   }
 }
