@@ -1,0 +1,18 @@
+# Logs
+logs
+*.log
+.DS_Store
+npm-debug.log*
+
+# Dependency directory
+node_modules
+.config/configstore
+
+# Generated assets / caches
+.npm
+dist
+coverage
+swagger-spec.json
+
+#IDEs
+.idea

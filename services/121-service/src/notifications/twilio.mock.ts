@@ -10,27 +10,30 @@ import {
   TwilioStatusCallbackDto,
 } from './twilio.dto';
 import { waitFor } from '../utils/waitFor.helper';
+import { CustomHttpService } from '../shared/services/custom-http.service';
 
 class PhoneNumbers {
   public phoneNumber;
-  public constructor(phoneNumber = '+31600000000') {
+  public constructor(
+    phoneNumber = '+31600000000',
+    private readonly customHttpService: CustomHttpService,
+  ) {
     this.phoneNumber = phoneNumber;
   }
   public async fetch(_: any): Promise<any> {
-    if (!this.phoneNumber) {
-      this.phoneNumber = '+31600000000';
-    }
-
-    return {
-      phoneNumber: this.phoneNumber,
-      nationalFormat: this.phoneNumber,
-    };
+    return this.customHttpService.get<{
+      phoneNumber: string;
+      nationalFormat: string;
+    }>(
+      `${process.env.TWILIO_MOCK_SERVICE_URL}api/lookups/phonenumbers?phoneNumber=${this.phoneNumber}`,
+    );
   }
 }
 
 class LookUp {
+  public constructor(private readonly customHttpService: CustomHttpService) {}
   public phoneNumbers(nr): any {
-    return new PhoneNumbers(nr);
+    return new PhoneNumbers(nr, this.customHttpService);
   }
 }
 
@@ -38,9 +41,13 @@ class LookUp {
 export class TwilioClientMock {
   public messages;
   public lookups;
+  public httpService;
+  public customHttpService;
   public constructor() {
+    this.httpService = new HttpService();
+    this.customHttpService = new CustomHttpService(this.httpService);
     this.messages = new this.Messages();
-    this.lookups = new LookUp();
+    this.lookups = new LookUp(this.customHttpService);
   }
 
   public Messages = class {
