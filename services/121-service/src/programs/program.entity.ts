@@ -25,6 +25,7 @@ import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-c
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -154,6 +155,12 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true, default: null })
   public evaluationDashboardUrl: string;
+
+  @OneToMany(
+    () => MessageTemplateEntity,
+    (messageTemplates) => messageTemplates.program,
+  )
+  public messageTemplates: MessageTemplateEntity[];
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
