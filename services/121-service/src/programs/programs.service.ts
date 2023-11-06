@@ -113,6 +113,7 @@ export class ProgramService {
     const genericPaAttributeFilters = [
       'personAffectedSequence',
       'referenceId',
+      'registrationCreatedDate',
       'phoneNumber',
       'preferredLanguage',
       'inclusionScore',

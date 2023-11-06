@@ -15,7 +15,6 @@ import {
   Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
-import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FspIntegrationType } from '../../models/fsp.model';
@@ -176,42 +175,15 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
-    const results = {
-      error: 0,
-      success: 0,
-      waiting: 0,
-    };
-
-    const transactions = await this.programsService.getTransactions(
+    const paymentSummary = await this.programsService.getPaymentSummary(
       this.programId,
       this.lastPaymentId,
     );
 
-    let paymentTransactions;
-    if (transactions && transactions.length) {
-      paymentTransactions = transactions.filter(
-        (transaction) => transaction.payment === this.lastPaymentId,
-      );
-    }
-
-    if (!paymentTransactions || !paymentTransactions.length) {
-      return results;
-    }
-
-    const taError = paymentTransactions.filter(
-      (t) => t.status === StatusEnum.error,
-    );
-    const taDone = paymentTransactions.filter(
-      (t) => t.status === StatusEnum.success,
-    );
-    const taWait = paymentTransactions.filter(
-      (t) => t.status === StatusEnum.waiting,
-    );
-
     return {
-      error: taError.length,
-      success: taDone.length,
-      waiting: taWait.length,
+      error: paymentSummary?.nrError || 0,
+      success: paymentSummary?.nrSuccess || 0,
+      waiting: paymentSummary?.nrWaiting || 0,
     };
   }
 
