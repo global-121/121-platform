@@ -29,11 +29,6 @@
   "meetingDocuments": {
     "en": ""
   },
-  "notifications": {
-    "en": {
-      "registered": "This is a message from KRCS.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
-    }
-  },
   "bankAccountNumberPlaceholder": "1000263499216",
   "programCustomAttributes": [],
   "programQuestions": [
