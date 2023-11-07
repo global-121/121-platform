@@ -5,12 +5,10 @@ import { UserRoleEntity } from './../src/user/user-role.entity';
 import { DefaultUserRole } from './../src/user/user-role.enum';
 
 export class rolesPermissions1642520954620 implements MigrationInterface {
-  public constructor(queryRunner: QueryRunner) {}
-
   name = 'rolesPermissions1642520954620';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const resultCreate = await queryRunner.query(
+    await queryRunner.query(
       `CREATE TABLE "121-service"."permission" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying NOT NULL, CONSTRAINT "PK_3b8b97af9d9d8807e41e6f48362" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
@@ -183,7 +181,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
       }
       defaultRoleEntity.role = defaultRole.role;
       defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter(permission =>
+      defaultRoleEntity.permissions = permissions.filter((permission) =>
         defaultRole.permissions.includes(permission.name),
       );
       userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
