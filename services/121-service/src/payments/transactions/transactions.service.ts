@@ -21,7 +21,6 @@ import {
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class TransactionsService {

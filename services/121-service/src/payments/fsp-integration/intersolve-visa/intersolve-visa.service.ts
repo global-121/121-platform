@@ -63,7 +63,6 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { MessageJobDto } from '../../../notifications/message-job.dto';
 import { MessageService } from '../../../notifications/message.service';
 
 @Injectable()
