@@ -18,7 +18,7 @@ export class MessageTemplateEntity extends Base121Entity {
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates)
   @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  public program?: ProgramEntity;
   @Column()
   public programId: number;
 }

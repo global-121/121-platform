@@ -11,6 +11,7 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 describe('Message template', () => {
   let accessToken: string;
   const programId = 1;
+  const messageId = 1;
   const messageTemplate = {
     type: 'test',
     language: 'en',
@@ -33,16 +34,6 @@ describe('Message template', () => {
 
     // Assert
     expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.CREATED);
-    expect(postMessageTemplateResult.body.type).toBe(messageTemplate.type);
-    expect(postMessageTemplateResult.body.language).toBe(
-      messageTemplate.language,
-    );
-    expect(postMessageTemplateResult.body.message).toBe(
-      messageTemplate.message,
-    );
-    expect(postMessageTemplateResult.body.isWhatsappTemplate).toBe(
-      messageTemplate.isWhatsappTemplate,
-    );
   });
 
   it('should get all message template by programId', async () => {
@@ -70,16 +61,12 @@ describe('Message template', () => {
   });
 
   it('should update message template by id', async () => {
-    const postMessageTemplateResponse = await postMessageTemplate(
-      programId,
-      messageTemplate,
-      accessToken,
-    );
+    await postMessageTemplate(programId, messageTemplate, accessToken);
 
     const typeMessageTemplate = 'test1';
     await updateMessageTemplate(
       programId,
-      postMessageTemplateResponse.body.id,
+      messageId,
       { type: typeMessageTemplate },
       accessToken,
     );

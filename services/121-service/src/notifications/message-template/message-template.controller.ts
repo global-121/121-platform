@@ -48,8 +48,8 @@ export class MessageTemplateController {
   public async createMessageTemplate(
     @Param('programId') programId: number,
     @Body() templateData: MessageTemplateDto,
-  ): Promise<MessageTemplateEntity> {
-    return await this.messageTemplateService.createMessageTemplate(
+  ): Promise<void> {
+    await this.messageTemplateService.createMessageTemplate(
       Number(programId),
       templateData,
     );
@@ -68,7 +68,7 @@ export class MessageTemplateController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'messageId', required: true, type: 'integer' })
   @Patch(':programId/message-template/:messageId')
-  public async updateFsp(
+  public async updateMessageTemplate(
     @Param('programId') programId: number,
     @Param('messageId') messageId: number,
     @Body() updateMessageTemplateDto: MessageTemplateDto,

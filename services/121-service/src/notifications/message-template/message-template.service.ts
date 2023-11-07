@@ -20,7 +20,7 @@ export class MessageTemplateService {
   public async createMessageTemplate(
     programId: number,
     postData: MessageTemplateDto,
-  ): Promise<MessageTemplateEntity> {
+  ): Promise<void> {
     const template = new MessageTemplateEntity();
     template.programId = programId;
     template.type = postData.type;
@@ -28,7 +28,7 @@ export class MessageTemplateService {
     template.message = postData.message;
     template.isWhatsappTemplate = postData.isWhatsappTemplate;
 
-    return await this.messageTemplateRepository.save(template);
+    await this.messageTemplateRepository.save(template);
   }
 
   public async updateMessageTemplate(
