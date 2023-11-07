@@ -13,8 +13,8 @@ import {
   APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
-  EXTERNAL_API,
   PORT,
+  ROOT_URL,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from './config';
@@ -31,7 +31,7 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(EXTERNAL_API.root)
+    .addServer(ROOT_URL)
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {

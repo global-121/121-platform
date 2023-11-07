@@ -13,12 +13,11 @@ class PhoneNumbers {
     this.phoneNumber = phoneNumber;
   }
   public async fetch(_: any): Promise<any> {
-    return this.customHttpService.get<{
-      phoneNumber: string;
-      nationalFormat: string;
-    }>(
-      `${process.env.TWILIO_MOCK_SERVICE_URL}api/lookups/phonenumbers?phoneNumber=${this.phoneNumber}`,
-    );
+    return (
+      await this.customHttpService.get<any>(
+        `${process.env.TWILIO_MOCK_SERVICE_URL}api/lookups/phonenumbers?phoneNumber=${this.phoneNumber}`,
+      )
+    ).data;
   }
 }
 
@@ -34,10 +33,12 @@ class Messages {
   public async create(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
   ): Promise<object> {
-    return this.customHttpService.post<any>(
-      `${process.env.TWILIO_MOCK_SERVICE_URL}api/messages`,
-      twilioMessagesCreateDto,
-    );
+    return (
+      await this.customHttpService.post<any>(
+        `${process.env.TWILIO_MOCK_SERVICE_URL}api/messages`,
+        twilioMessagesCreateDto,
+      )
+    ).data;
   }
 }
 

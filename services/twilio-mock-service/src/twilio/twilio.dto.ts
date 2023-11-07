@@ -124,3 +124,8 @@ export class TwilioIncomingCallbackDto {
   @IsOptional()
   public Body: string;
 }
+
+export enum IntersolveVoucherPayoutStatus {
+  InitialMessage = 'InitialMessage',
+  VoucherSent = 'VoucherSent',
+}

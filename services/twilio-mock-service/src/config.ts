@@ -4,7 +4,7 @@ export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV);
 export const PORT = 3001;
 export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 
-const rootUrl =
+export const ROOT_URL =
   process.env.NODE_ENV === 'development'
     ? `http://localhost:${PORT}/`
     : process.env.TWILIO_MOCK_SERVICE_URL;
@@ -35,7 +35,7 @@ export const SWAGGER_CUSTOM_CSS = `
 export const SWAGGER_CUSTOM_JS = `
 const loc = window.location;
 const currentUrl = loc.origin + '/';
-const envUrl = '${rootUrl}';
+const envUrl = '${ROOT_URL}';
 if (currentUrl !== envUrl ) {
   loc.replace(loc.href.replace(currentUrl,envUrl));
 }
@@ -43,6 +43,20 @@ if (currentUrl !== envUrl ) {
 
 // Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
+export const API_PATHS = {
+  smsStatus: 'notifications/sms/status',
+  whatsAppStatus: 'notifications/whatsapp/status',
+  whatsAppIncoming: 'notifications/whatsapp/incoming',
+};
+const externalApi121Service = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
+const rootApi121Service =
+  process.env.NODE_ENV === 'development'
+    ? `http://${process.env.IPV4_121_SERVICE}:${process.env.PORT_121_SERVICE}/`
+    : process.env.EXTERNAL_121_SERVICE_URL;
+
 export const EXTERNAL_API = {
-  root: rootUrl,
+  rootApi: `${rootApi121Service}api`,
+  smsStatus: externalApi121Service + API_PATHS.smsStatus,
+  whatsAppStatus: externalApi121Service + API_PATHS.whatsAppStatus,
+  whatsAppIncoming: externalApi121Service + API_PATHS.whatsAppIncoming,
 };
