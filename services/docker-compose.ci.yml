@@ -24,3 +24,9 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+
+  121-redis:
+    # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
+    image: 'redis:6.0-alpine'
+    ports:
+      - '6379:6379'
