@@ -1,0 +1,9 @@
+{
+  "registered": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "en": "This is a message from Help a Child DRC.\n\nWe have received your application for support.\n\nYou will receive another SMS with more information within 1 week.",
+      "fr": "Ceci est un message de Help a Child DRC.\n\nNous avons reçu votre demande de soutien.\n\nVous recevrez un autre SMS avec plus d'informations dans 1 semaine."
+    }
+  }
+}
