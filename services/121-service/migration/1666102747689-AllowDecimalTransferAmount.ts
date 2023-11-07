@@ -32,7 +32,7 @@ export class AllowDecimalTransferAmount1666102747689
       `ALTER TABLE "121-service"."program" DROP COLUMN "fixedTransferValue_TEMP"`,
     );
 
-    queryRunner.query(
+    await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_barcode" RENAME COLUMN "amount" TO "amount_TEMP"`,
     );
     await queryRunner.query(
