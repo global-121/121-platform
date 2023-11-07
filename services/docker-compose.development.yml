@@ -12,7 +12,6 @@
 #     command: "tail -f /dev/null"
 #
 
-
 services:
   121db:
     image: 'postgres:14'

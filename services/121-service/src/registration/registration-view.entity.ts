@@ -33,6 +33,10 @@ import { RegistrationEntity } from './registration.entity';
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.created', 'registrationCreated')
+      .addSelect(
+        `TO_CHAR(registration.created,'yyyy-mm-dd')`,
+        'registrationCreatedDate',
+      )
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.programId', 'programId')
@@ -70,6 +74,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public registrationCreated: string;
+
+  @ViewColumn()
+  public registrationCreatedDate: string;
 
   @ViewColumn()
   public referenceId: string;

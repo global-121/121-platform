@@ -17,7 +17,7 @@ import {
 import { TransactionsService } from './transactions.service';
 
 @UseGuards(PermissionsGuard)
-@ApiTags('payments/transactions')
+@ApiTags('transactions')
 @Controller()
 export class TransactionsController {
   public constructor(
@@ -28,17 +28,10 @@ export class TransactionsController {
   @ApiOperation({ summary: 'Get all transactions' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({
-    name: 'minPayment',
-    required: false,
-    type: 'integer',
-    description:
-      'Request transactions that are higher or equal as a payment index',
-  })
-  @ApiQuery({
     name: 'payment',
     required: false,
     type: 'integer',
-    description: 'Request a transaction from a specific payment index',
+    description: 'Request transactions from a specific payment index',
   })
   @ApiQuery({
     name: 'referenceId',
@@ -50,22 +43,20 @@ export class TransactionsController {
     description: 'Retrieved transactions',
     type: [TransactionReturnDto],
   })
-  @Get('programs/:programId/payments/transactions')
+  @Get('programs/:programId/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
-    @Query('minPayment') minPayment: number,
     @Query('referenceId') referenceId: string,
     @Query('payment') payment: number,
   ): Promise<TransactionReturnDto[]> {
     return await this.transactionsService.getLastTransactions(
       Number(programId),
-      Number(minPayment),
       Number(payment),
       referenceId,
     );
   }
 
-  // TODO: REFACTOR combine this endpoint with GET /payments/transactions above (or remove the need for this one altogether)
+  // TODO: REFACTOR combine this endpoint with GET /payments/transactions (or remove the need for this one altogether)
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ summary: 'Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -78,7 +69,7 @@ export class TransactionsController {
     description: 'Retrieved single transaction',
     type: GetTransactionOutputDto,
   })
-  @Get('programs/:programId/payments/transactions/one')
+  @Get('programs/:programId/transactions/one')
   public async getTransaction(
     @Param() params,
     @Query() queryParams: GetTransactionDto,

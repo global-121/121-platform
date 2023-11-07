@@ -99,10 +99,14 @@ export class TableService {
       {
         prop: 'registrationCreated',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.registration-created',
+          'page.program.program-people-affected.column.registrationCreated',
         ),
         ...this.getColumnDefaults(),
-        phases: [ProgramPhase.registrationValidation],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.payment,
+        ],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
       },
