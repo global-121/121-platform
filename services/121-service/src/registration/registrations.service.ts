@@ -988,7 +988,6 @@ export class RegistrationsService {
     if (!userId) {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
-    // const programIds = user.programAssignments.map(p => p.program.id);
 
     const programIds = await this.getProgramIdsUserHasPermission(
       userId,
@@ -1001,8 +1000,13 @@ export class RegistrationsService {
         CustomDataAttributes.whatsappPhoneNumber as string,
       ];
 
-      const phoneNumber =
-        await this.lookupService.lookupAndCorrect(rawPhoneNumber);
+      const phoneNumber = await this.lookupService.lookupAndCorrect(
+        rawPhoneNumber,
+        true,
+      );
+      if (!phoneNumber) {
+        return registrations;
+      }
 
       const matchingRegistrations = (
         await this.registrationRepository.find({
