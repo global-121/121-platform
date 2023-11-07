@@ -214,9 +214,9 @@ export class TransactionsService {
           program.notifications,
           transactionNotifcation,
         );
-        await this.messageService.sendTextMessage(
+        await this.messageService.addMessageToQueue(
           registration,
-          program.id,
+          programId,
           message,
           null,
           false,

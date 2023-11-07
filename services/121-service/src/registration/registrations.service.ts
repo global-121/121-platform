@@ -638,7 +638,7 @@ export class RegistrationsService {
 
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    await this.messageService.sendTextMessage(
+    await this.messageService.addMessageToQueue(
       registration,
       registration.program.id,
       null,

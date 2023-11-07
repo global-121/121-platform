@@ -12,7 +12,6 @@
 #     command: "tail -f /dev/null"
 #
 
-
 services:
   121db:
     image: 'postgres:14'
@@ -73,6 +72,12 @@ services:
       - 'twilio_mock_service_node_modules:/home/node/app/node_modules'
       - './twilio-mock-service:/home/node/app'
 
+  121-redis:
+    # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
+    image: 'redis:6.0-alpine'
+    ports:
+      - '6379:6379'
+
 volumes:
   121_service_node_modules:
   twilio_mock_service_node_modules:
@@ -84,4 +89,3 @@ networks:
       driver: default
       config:
         - subnet: 11.0.0.0/24
-

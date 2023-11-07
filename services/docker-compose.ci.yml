@@ -57,6 +57,12 @@ services:
       retries: 10
       start_period: 30s
       timeout: 10s
+      
+  121-redis:
+    # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
+    image: 'redis:6.0-alpine'
+    ports:
+      - '6379:6379'
 
 networks:
   pool_network:
@@ -65,3 +71,4 @@ networks:
       driver: default
       config:
         - subnet: 11.0.0.0/24
+

@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -64,6 +63,7 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
+import { MessageService } from '../../../notifications/message.service';
 
 @Injectable()
 export class IntersolveVisaService
@@ -79,8 +79,8 @@ export class IntersolveVisaService
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
-    private readonly messageService: MessageService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
+    private readonly messageService: MessageService,
   ) {}
 
   public async getTransactionInfo(
@@ -761,7 +761,7 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    await this.messageService.sendTextMessage(
+    await this.messageService.addMessageToQueue(
       wallet.intersolveVisaCustomer.registration,
       programId,
       null,
@@ -1115,7 +1115,7 @@ export class IntersolveVisaService
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
-    await this.messageService.sendTextMessage(
+    await this.messageService.addMessageToQueue(
       registration,
       programId,
       null,
