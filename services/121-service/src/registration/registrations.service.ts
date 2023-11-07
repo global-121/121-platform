@@ -1000,13 +1000,8 @@ export class RegistrationsService {
         CustomDataAttributes.whatsappPhoneNumber as string,
       ];
 
-      const phoneNumber = await this.lookupService.lookupAndCorrect(
-        rawPhoneNumber,
-        true,
-      );
-      if (!phoneNumber) {
-        return registrations;
-      }
+      const phoneNumber =
+        await this.lookupService.lookupAndCorrect(rawPhoneNumber);
 
       const matchingRegistrations = (
         await this.registrationRepository.find({

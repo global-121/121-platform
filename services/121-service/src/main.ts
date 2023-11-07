@@ -24,7 +24,6 @@ import {
   SWAGGER_CUSTOM_JS,
 } from './config';
 import appInsights = require('applicationinsights');
-import { AzureLogService } from './shared/services/azure-log.service';
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`
@@ -171,25 +170,6 @@ async function bootstrap(): Promise<void> {
 
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
-
-  // Set up generic error handling:
-  process.on('unhandledRejection', (reason: string, promise: Promise<any>) => {
-    console.warn('Unhandled Rejection:', reason, promise);
-    throw reason;
-  });
-
-  process.on('uncaughtException', (error: Error) => {
-    console.warn('Uncaught Exception:', error);
-
-    const logService = new AzureLogService();
-    if (logService) {
-      logService.logError(error, true);
-      logService.logError(new Error('Uncaught Exception: restarting'), true);
-    }
-
-    // Trigger a reboot, as the app is in an unknown state.
-    process.exit(1);
-  });
 }
 void bootstrap();
 
