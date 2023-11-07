@@ -61,7 +61,6 @@ import { BullModule } from '@nestjs/bull';
       defaultJobOptions: {
         removeOnComplete: true,
       },
-      // TODO: Queueing: Add prefix for queues here (maybe program name or something)
     }),
   ],
   controllers: [AppController],
