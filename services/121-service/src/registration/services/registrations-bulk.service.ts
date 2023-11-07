@@ -19,7 +19,6 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
-import { MessageJobDto } from '../../notifications/message-job.dto';
 import { MessageService } from '../../notifications/message.service';
 
 @Injectable()
@@ -132,12 +131,12 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
+    const chunkSize = 10000;
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
       true,
     );
-
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
@@ -145,36 +144,54 @@ export class RegistrationsBulkService {
     );
 
     if (!dryRun) {
-      const registrationForUpdate =
+      this.sendMessagesChunked(
+        paginateQuery,
+        programId,
+        message,
+        chunkSize,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
+    }
+    return resultDto;
+  }
+
+  private async sendMessagesChunked(
+    paginateQuery: PaginateQuery,
+    programId: number,
+    message: string,
+    chunkSize: number,
+  ): Promise<void> {
+    paginateQuery.limit = chunkSize;
+    const registrationsMetadata =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        // TODO: Make this dynamic / a permission check
+        true,
+        false,
+        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+
+    for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
+      paginateQuery.page = i + 1;
+      const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
           programId,
           // TODO: Make this dynamic / a permission check
           true,
-          true,
+          false,
           this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
         );
-      const mappedRegistrationData: MessageJobDto[] =
-        registrationForUpdate.data.map((registration) => {
-          return {
-            id: registration.id,
-            referenceId: registration.referenceId,
-            preferredLanguage: registration.preferredLanguage,
-            // TODO: improve OR consider getting whatsappPhoneNumber in messageService.sendTextMessage instead of passing to queue
-            whatsappPhoneNumber: registration['whatsappPhoneNumber'],
-            phoneNumber: registration.phoneNumber,
-            programId: programId,
-            message: message,
-            key: null,
-            tryWhatsApp: false,
-            messageContentType: MessageContentType.custom,
-          };
-        });
-      this.sendCustomTextMessage(mappedRegistrationData).catch((error) => {
+      this.sendCustomTextMessage(
+        registrationsForUpdate.data,
+        programId,
+        message,
+      ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
-    return resultDto;
   }
 
   public async getBulkActionResult(
@@ -299,19 +316,14 @@ export class RegistrationsBulkService {
             ? program.tryWhatsAppFirst
             : false;
         try {
-          const messageJob = {
-            id: updatedRegistration.id,
-            referenceId: updatedRegistration.referenceId,
-            preferredLanguage: updatedRegistration.preferredLanguage,
-            whatsappPhoneNumber: updatedRegistration['whatsappPhoneNumber'],
-            phoneNumber: updatedRegistration.phoneNumber,
-            programId: programId,
-            message: message,
-            key: null,
-            tryWhatsApp: tryWhatsappFirst,
-            messageContentType: messageContentType,
-          };
-          await this.messageService.addMessageToQueue(messageJob);
+          await this.messageService.addMessageToQueue(
+            updatedRegistration,
+            programId,
+            message,
+            null,
+            tryWhatsappFirst,
+            messageContentType,
+          );
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
@@ -407,10 +419,19 @@ export class RegistrationsBulkService {
   }
 
   private async sendCustomTextMessage(
-    messageJobs: MessageJobDto[],
+    registrations: RegistrationViewEntity[],
+    programId: number,
+    message: string,
   ): Promise<void> {
-    for (const messageJob of messageJobs) {
-      await this.messageService.addMessageToQueue(messageJob);
+    for (const registration of registrations) {
+      await this.messageService.addMessageToQueue(
+        registration,
+        programId,
+        message,
+        null,
+        false,
+        MessageContentType.custom,
+      );
     }
   }
 

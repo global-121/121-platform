@@ -215,22 +215,14 @@ export class TransactionsService {
           program.notifications,
           transactionNotifcation,
         );
-        const messageJob = {
-          id: registration.id,
-          referenceId: registration.referenceId,
-          preferredLanguage: registration.preferredLanguage,
-          whatsappPhoneNumber:
-            await registration.getRegistrationDataValueByName(
-              CustomDataAttributes.whatsappPhoneNumber,
-            ),
-          phoneNumber: registration.phoneNumber,
-          programId: programId,
-          message: message,
-          key: null,
-          tryWhatsApp: false,
-          messageContentType: MessageContentType.payment,
-        };
-        await this.messageService.addMessageToQueue(messageJob);
+        await this.messageService.addMessageToQueue(
+          registration,
+          programId,
+          message,
+          null,
+          false,
+          MessageContentType.payment,
+        );
       }
     }
     return resultTransaction;
