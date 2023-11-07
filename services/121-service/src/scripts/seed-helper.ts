@@ -15,6 +15,7 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 export class SeedHelper {
   public constructor(private dataSource: DataSource) {}
@@ -194,6 +195,7 @@ export class SeedHelper {
         }
       }
     }
+
     return await programRepository.save(foundProgram);
   }
 
@@ -289,5 +291,48 @@ export class SeedHelper {
     await this.assignAidworker(adminUser.id, programId, [
       DefaultUserRole.ProgramAdmin,
     ]);
+  }
+
+  public async addMessageTemplates(
+    messageTemplatesExample: any,
+    program: ProgramEntity,
+  ): Promise<void> {
+    const messageTemplatesExampleDump = JSON.stringify(messageTemplatesExample);
+    const messageTemplates = JSON.parse(messageTemplatesExampleDump);
+
+    const messageTemplateRepo = this.dataSource.getRepository(
+      MessageTemplateEntity,
+    );
+    for (const messageType of Object.keys(messageTemplates)) {
+      const languages = messageTemplates[messageType].message;
+      for (const language of Object.keys(languages)) {
+        const template = await this.createMessageTemplate(
+          program,
+          messageType,
+          language,
+          languages[language],
+          messageTemplates[messageType].isWhatsappTemplate,
+        );
+
+        await messageTemplateRepo.save(template);
+      }
+    }
+  }
+
+  public async createMessageTemplate(
+    program: ProgramEntity,
+    type: string,
+    language: string,
+    message: string,
+    isWhatsappTemplate: boolean,
+  ): Promise<MessageTemplateEntity> {
+    const messageTemplateEntity = new MessageTemplateEntity();
+    messageTemplateEntity.program = program;
+    messageTemplateEntity.type = type;
+    messageTemplateEntity.language = language;
+    messageTemplateEntity.message = message;
+    messageTemplateEntity.isWhatsappTemplate = isWhatsappTemplate;
+
+    return messageTemplateEntity;
   }
 }

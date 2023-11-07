@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
 import programPilotNL2 from '../../seed-data/program/program-pilot-nl-2.json';
+import messageTemplatePilotNL2 from '../../seed-data/message-template/message-template-pilot-nl-2.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -18,6 +19,9 @@ export class SeedPilotNL2Program implements InterfaceScript {
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programPilotNL2);
+
+    // ***** CREATE MESSAGE TEMPLATES *****
+    await this.seedHelper.addMessageTemplates(messageTemplatePilotNL2, program);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(program, false);
