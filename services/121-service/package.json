@@ -55,7 +55,7 @@
     "@nestjs/testing": "^10.2.7",
     "@nestjs/throttler": "^4.2.1",
     "@nestjs/typeorm": "^10.0.0",
-    "africastalking": "^0.5.5",
+    "africastalking": "^0.6.3",
     "applicationinsights": "^2.9.0",
     "bwip-js": "^2.0.11",
     "class-transformer": "^0.5.1",
