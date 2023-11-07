@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npm run lint:seed-data && npm run lint:code && npm run lint:syntax",
-    "lint:code": "eslint \"src/**/*.{ts,js}\"",
+    "lint:code": "eslint \"src/**/*.{ts,js}\" \"migration/*.ts\" \"test/**/*.ts\"",
     "fix:code": "npm run lint:code -- --fix",
     "lint:seed-data": "prettier --check \"seed-data/**/*.json\"",
     "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",

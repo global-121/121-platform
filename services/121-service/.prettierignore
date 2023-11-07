@@ -1,5 +1,4 @@
 dist
 package*.json
-migration/*.ts
 coverage
 node_modules*
