@@ -57,7 +57,7 @@ export class WhatsappService {
       payload['mediaUrl'] = mediaUrl;
     }
     if (!!process.env.MOCK_TWILIO) {
-      payload['messageType'] = messageType;
+      payload['messageContentType'] = messageContentType;
     }
     return twilioClient.messages
       .create(payload)

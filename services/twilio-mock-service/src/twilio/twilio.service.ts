@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
-  IntersolveVoucherPayoutStatus,
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
   TwilioStatus,
@@ -89,8 +88,9 @@ export class TwilioService {
       }
     }
     if (
-      twilioMessagesCreateDto.messageType ===
-        IntersolveVoucherPayoutStatus.InitialMessage &&
+      ['payment-templated', 'generic-templated'].includes(
+        twilioMessagesCreateDto.messageContentType,
+      ) &&
       !twilioMessagesCreateDto.to.includes('15005550002')
     ) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(

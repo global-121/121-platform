@@ -38,10 +38,10 @@ export class TwilioMessagesCreateDto {
   @IsOptional()
   public readonly mediaUrl: string;
 
-  @ApiProperty({ example: 'custom' })
+  @ApiProperty({ example: 'generic-templated' })
   @IsString()
   @IsOptional()
-  public readonly messageType: string;
+  public readonly messageContentType: string;
 }
 
 class AccountSidObject {
@@ -123,9 +123,4 @@ export class TwilioIncomingCallbackDto {
   @IsString()
   @IsOptional()
   public Body: string;
-}
-
-export enum IntersolveVoucherPayoutStatus {
-  InitialMessage = 'InitialMessage',
-  VoucherSent = 'VoucherSent',
 }
