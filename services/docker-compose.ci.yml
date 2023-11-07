@@ -15,6 +15,9 @@ services:
     ports:
       - '5438:5432'
     restart: unless-stopped
+    networks:
+      pool_network:
+        ipv4_address: 11.0.0.6
     healthcheck:
       test:
         [
@@ -24,6 +27,11 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+
+  121-service:
+    networks:
+      pool_network:
+        ipv4_address: 11.0.0.7
 
   twilio-mock-service:
     build:
@@ -40,9 +48,20 @@ services:
     stdin_open: true
     tty: true
     restart: on-failure
+    networks:
+      pool_network:
+        ipv4_address: 11.0.0.8
     healthcheck:
       test: curl --fail http://localhost:3001/api/lookups/phonenumbers || exit 1
       interval: 3s
       retries: 10
       start_period: 30s
       timeout: 10s
+
+networks:
+  pool_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 11.0.0.0/24
