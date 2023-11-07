@@ -50,7 +50,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Admin()
+  //No permission decorator possible because this endpoint is program-agnostic, instead check in service
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
@@ -59,8 +59,10 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
-    return await this.userService.getUserRoles();
+  public async getUserRoles(
+    @User('id') userId: number,
+  ): Promise<UserRoleResponseDTO[]> {
+    return await this.userService.getUserRoles(userId);
   }
 
   @Admin()
@@ -381,7 +383,7 @@ export class UserController {
 
   @Admin()
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Get user roles' })
+  @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({

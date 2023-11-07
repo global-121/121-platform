@@ -26,6 +26,7 @@ import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
+import { PermissionEnum } from './permission.enum';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -97,12 +98,57 @@ export class UserService {
     );
   }
 
-  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
+  public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
+    // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
+    await this.getProgramIdsUserHasPermission(
+      userId,
+      PermissionEnum.AidWorkerProgramREAD,
+    );
     const userRoles = await this.userRoleRepository.find({
       relations: ['permissions'],
     });
 
     return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
+  }
+
+  public async getProgramIdsUserHasPermission(
+    userId: number,
+    permission: PermissionEnum,
+  ): Promise<number[]> {
+    const user = await this.findUserProgramAssignmentsOrThrow(userId);
+    const programIds = [];
+    for (const assignment of user.programAssignments) {
+      for (const role of assignment.roles) {
+        if (role.permissions.map((p) => p.name).includes(permission)) {
+          programIds.push(assignment.programId);
+        }
+      }
+    }
+    return programIds;
+  }
+
+  // TODO: REFACTOR: the Controller should throw the HTTP Status Code
+  public async findUserProgramAssignmentsOrThrow(
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    return user;
   }
 
   private getUserRoleResponse(userRole: UserRoleEntity): UserRoleResponseDTO {
