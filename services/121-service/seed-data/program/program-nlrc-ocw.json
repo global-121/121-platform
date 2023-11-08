@@ -62,7 +62,7 @@
     },
     "nl": {
       "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
-      "whatsappGenericMessage": "Er is een een bericht voor jou. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "whatsappGenericMessage": "Er is een bericht voor u. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
       "whatsappReply": "Dit is een automatisch bericht. Vragen? Check www.schoolmaaltijden.nl, bel, sms of WhatsApp 097 010 204 851 of per mail via info@schoolmaaltijden.nl\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
       "whatsappPayment": "Beste ouder/verzorger, we willen u uw Albert Heijn boodschappenkaart sturen. Deze staat klaar om naar uw Whatsapp te worden gestuurd. Antwoord op dit bericht met ‘ja’ om uw kaart te ontvangen.  \nMvg, Rode Kruis/Programma Schoolmaaltijden",
       "whatsappVoucher": "Beste ouder/verzorger, hierbij ontvangt u:\n- Een Albert Heijn boodschappenkaart. Dat is het plaatje met de barcode;\n- Uitleg over hoe u de Albert Heijn boodschappenkaart kunt gebruiken.\n\nOp de Albert Heijn boodschappenkaart staat een bedrag van €{{1}} euro. U kunt de kaart gebruiken in alle Albert Heijn supermarkten in Nederland en België. U kunt de kaart meerdere keren gebruiken, zolang er geld op staat.\n\nVoor vragen kunt u terecht op de website www.schoolmaaltijden.nl. Ook kunt u terecht bij onze Klantenservice via telefoon, sms of Whatsapp naar 097 010 204 851 (geopend ma-vrij 09.00-17.00) of mailen naar info@schoolmaaltijden.nl. \n\nMvg, het Rode Kruis/Programma Schoolmaaltijden",
