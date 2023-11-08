@@ -1,4 +1,4 @@
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
+import messageTemplatesOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
@@ -82,6 +82,8 @@ describe('Issue new Visa debit card', () => {
       WalletCardStatus121.Blocked,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(programOCW.notifications.en.reissueVisaCard);
+    expect(lastMessage.body).toBe(
+      messageTemplatesOCW.reissueVisaCard.message.en,
+    );
   });
 });
