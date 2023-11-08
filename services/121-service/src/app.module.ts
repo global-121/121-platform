@@ -57,6 +57,7 @@ import { BullModule } from '@nestjs/bull';
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
       },
+      prefix: process.env.ENV_NAME,
       defaultJobOptions: {
         removeOnComplete: true,
         attempts: 3,
@@ -65,7 +66,6 @@ import { BullModule } from '@nestjs/bull';
           delay: 5000,
         },
       },
-      // TODO: Queueing: Add prefix for queues here (maybe program name or something)
     }),
   ],
   controllers: [AppController],
