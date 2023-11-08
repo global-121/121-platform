@@ -91,6 +91,7 @@ export class MessageService {
           )
           .catch((error) => {
             console.warn('Error in queueMessageSendTemplate: ', error);
+            throw error;
           });
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
         await this.tryWhatsapp(

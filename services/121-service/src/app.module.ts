@@ -59,6 +59,11 @@ import { BullModule } from '@nestjs/bull';
       },
       defaultJobOptions: {
         removeOnComplete: true,
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 5000,
+        },
       },
       // TODO: Queueing: Add prefix for queues here (maybe program name or something)
     }),

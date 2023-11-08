@@ -59,38 +59,39 @@ export class WhatsappService {
     if (!!process.env.MOCK_TWILIO) {
       payload['messageType'] = messageType;
     }
-    return twilioClient.messages
-      .create(payload)
-      .then(async (message) => {
-        await this.storeSendWhatsapp(
-          message,
-          registrationId,
-          mediaUrl,
-          messageContentType,
-          existingSidToUpdate,
-        );
-        return message.sid;
-      })
-      .catch(async (err) => {
-        console.log('Error from Twilio:', err);
-        const failedMessage = {
-          accountSid: process.env.TWILIO_SID,
-          body: payload.body,
-          mediaUrl: mediaUrl,
-          to: payload.to,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          dateCreated: new Date().toISOString(),
-          sid: `failed-${uuid()}`,
-          status: 'failed',
-          errorCode: err.code,
-        };
-        await this.storeSendWhatsapp(
-          failedMessage,
-          registrationId,
-          mediaUrl,
-          messageContentType,
-        );
-      });
+    try {
+      const createMessageResult = await twilioClient.messages.create(payload);
+      await this.storeSendWhatsapp(
+        createMessageResult,
+        registrationId,
+        mediaUrl,
+        messageContentType,
+        existingSidToUpdate,
+      );
+      console.log('createMessageResult: ', createMessageResult);
+      return createMessageResult.sid;
+    } catch (error) {
+      // TODO: Replace this with the logger service (?)
+      console.log('Error from Twilio:', error);
+      const failedMessage = {
+        accountSid: process.env.TWILIO_SID,
+        body: payload.body,
+        mediaUrl: mediaUrl,
+        to: payload.to,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        dateCreated: new Date().toISOString(),
+        sid: `failed-${uuid()}`,
+        status: 'failed',
+        errorCode: error.code,
+      };
+      await this.storeSendWhatsapp(
+        failedMessage,
+        registrationId,
+        mediaUrl,
+        messageContentType,
+      );
+      throw error;
+    }
   }
 
   public async queueMessageSendTemplate(
@@ -119,7 +120,7 @@ export class WhatsappService {
       language,
       registration.program,
     );
-    return this.sendWhatsapp(
+    return await this.sendWhatsapp(
       whatsappGenericMessage,
       recipientPhoneNr,
       messageType,
