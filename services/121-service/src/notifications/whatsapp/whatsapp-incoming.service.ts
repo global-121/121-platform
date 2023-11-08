@@ -30,6 +30,8 @@ import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappService } from './whatsapp.service';
 import { waitFor } from '../../utils/waitFor.helper';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class WhatsappIncomingService {
@@ -60,6 +62,8 @@ export class WhatsappIncomingService {
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
     private readonly lastMessageService: LastMessageStatusService,
+    @InjectQueue('messageStatusCallback')
+    private readonly messageStatusCallbackQueue: Queue,
   ) {}
 
   public getGenericNotificationText(
@@ -86,7 +90,17 @@ export class WhatsappIncomingService {
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
-  public async statusCallback(
+  public async addStatusCallbackToQueue(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
+    try {
+      await this.messageStatusCallbackQueue.add('send', callbackData);
+    } catch (error) {
+      console.warn('Error in addMessageToQueue: ', error);
+    }
+  }
+
+  public async processStatusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     if (

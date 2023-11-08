@@ -23,6 +23,8 @@ import { WhatsappIncomingService } from './whatsapp-incoming.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { WhatsappModule } from './whatsapp.module';
+import { BullModule } from '@nestjs/bull';
+import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
 
 @Module({
   imports: [
@@ -42,10 +44,27 @@ import { WhatsappModule } from './whatsapp.module';
     UserModule,
     IntersolveVoucherModule,
     WhatsappModule,
+    BullModule.registerQueue({
+      name: 'messageStatusCallback',
+      processors: [
+        {
+          path: 'src/notifications/processors/message-status-callback.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 600, // Max number of jobs processed
+        duration: 60000, // per duration in milliseconds
+      },
+    }),
   ],
-  providers: [WhatsappIncomingService, SmsService, LastMessageStatusService],
+  providers: [
+    WhatsappIncomingService,
+    SmsService,
+    LastMessageStatusService,
+    MessageStatusCallbackProcessor,
+  ],
   controllers: [WhatsappIncomingController],
-  exports: [WhatsappIncomingService],
+  exports: [WhatsappIncomingService, BullModule],
 })
 export class WhatsappIncomingModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {

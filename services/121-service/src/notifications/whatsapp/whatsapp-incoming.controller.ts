@@ -22,10 +22,12 @@ export class WhatsappIncomingController {
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
-  public async statusCallback(
+  public async addStatusCallbackToQueue(
     @Body() callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    return await this.whatsappIncomingService.statusCallback(callbackData);
+    return await this.whatsappIncomingService.addStatusCallbackToQueue(
+      callbackData,
+    );
   }
 
   @SkipThrottle()
