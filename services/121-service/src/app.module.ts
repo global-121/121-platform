@@ -60,11 +60,6 @@ import { BullModule } from '@nestjs/bull';
       prefix: process.env.ENV_NAME,
       defaultJobOptions: {
         removeOnComplete: true,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
       },
     }),
   ],

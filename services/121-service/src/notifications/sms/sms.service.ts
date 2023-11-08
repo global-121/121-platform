@@ -23,34 +23,33 @@ export class SmsService {
   ): Promise<void> {
     const hasPlus = recipientPhoneNr.startsWith('+');
 
-    twilioClient.messages
-      .create({
+    let messageToStore;
+    try {
+      messageToStore = await twilioClient.messages.create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
         to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
-      })
-      .then((message) =>
-        this.storeSendSms(message, registrationId, messageContentType),
-      )
-      .catch(async (err) => {
-        console.log('Error from Twilio:', err);
-        const failedMessage = {
-          accountSid: process.env.TWILIO_SID,
-          body: message,
-          to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          dateCreated: new Date().toISOString(),
-          sid: `failed-${uuid()}`,
-          status: 'failed',
-          errorCode: err.code,
-        };
-        await this.storeSendSms(
-          failedMessage,
-          registrationId,
-          messageContentType,
-        );
       });
+    } catch (error) {
+      console.log('Error from Twilio:', error);
+      messageToStore = {
+        accountSid: process.env.TWILIO_SID,
+        body: message,
+        to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        dateCreated: new Date().toISOString(),
+        sid: `failed-${uuid()}`,
+        status: 'failed',
+        errorCode: error.code,
+      };
+    } finally {
+      await this.storeSendSms(
+        messageToStore,
+        registrationId,
+        messageContentType,
+      );
+    }
   }
 
   public async storeSendSms(
