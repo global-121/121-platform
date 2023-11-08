@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { MessageContentType } from './enum/message-type.enum';
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
+import { MessageTemplateEntity } from './message-template/message-template.entity';
 
 @Injectable()
 export class MessageService {
@@ -87,21 +87,28 @@ export class MessageService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const program = await this.dataSource
-      .getRepository(ProgramEntity)
-      .findOneBy({
-        id: programId,
+    const messageTemplates = await this.dataSource
+      .getRepository(MessageTemplateEntity)
+      .findBy({
+        program: { id: programId },
+        type: key,
       });
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
 
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
+    const notification = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    if (notifications[key]) {
-      return notifications[key];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
     }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
+
+    return '';
   }
 
   private async tryWhatsapp(

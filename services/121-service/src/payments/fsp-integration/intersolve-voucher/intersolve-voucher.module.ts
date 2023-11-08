@@ -21,6 +21,7 @@ import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
+import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     UserModule,
     TransactionsModule,
     WhatsappModule,
+    MessageTemplateModule,
   ],
   providers: [
     IntersolveVoucherService,

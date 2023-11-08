@@ -165,11 +165,12 @@ export class IntersolveVoucherCronService {
           continue;
         }
         const language = await this.getLanguageForRegistration(referenceId);
-        let whatsappPayment = this.intersolveVoucherService.getNotificationText(
-          registration.program,
-          ProgramNotificationEnum.whatsappPayment,
-          language,
-        );
+        let whatsappPayment =
+          await this.intersolveVoucherService.getNotificationText(
+            registration.program,
+            ProgramNotificationEnum.whatsappPayment,
+            language,
+          );
         whatsappPayment = whatsappPayment
           .split('{{1}}')
           .join(unsentIntersolveVoucher.amount);

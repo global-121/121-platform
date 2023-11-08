@@ -30,6 +30,7 @@ import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappService } from './whatsapp.service';
 import { waitFor } from '../../utils/waitFor.helper';
+import { MessageTemplateService } from '../message-template/message-template.service';
 
 @Injectable()
 export class WhatsappIncomingService {
@@ -60,23 +61,35 @@ export class WhatsappIncomingService {
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
     private readonly lastMessageService: LastMessageStatusService,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
-  public getGenericNotificationText(
+  public async getGenericNotificationText(
     language: string,
     program: ProgramEntity,
-  ): string {
+  ): Promise<string> {
     const key = ProgramNotificationEnum.whatsappGenericMessage;
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        program.id,
+        key,
+      );
 
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
+    const notification = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    if (notifications[key]) {
-      return notifications[key];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
     }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
+
+    return '';
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
@@ -372,10 +385,19 @@ export class WhatsappIncomingService {
         const language =
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
+
+        await this.messageTemplateService.getMessageTemplatesByProgramId(
+          program.id,
+          ProgramNotificationEnum.whatsappReply,
+          language,
+        );
+
         const whatsappDefaultReply =
-          program.notifications[language][
-            ProgramNotificationEnum.whatsappReply
-          ];
+          await this.messageTemplateService.getMessageTemplatesByProgramId(
+            program.id,
+            ProgramNotificationEnum.whatsappReply,
+            language,
+          )[0];
         await this.whatsappService.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
@@ -420,9 +442,12 @@ export class WhatsappIncomingService {
         // Only include text with first voucher (across PAs and payments)
         let message = firstVoucherSent
           ? ''
-          : program.notifications[language][
-              ProgramNotificationEnum.whatsappVoucher
-            ];
+          : await this.messageTemplateService.getMessageTemplatesByProgramId(
+              program.id,
+              ProgramNotificationEnum.whatsappVoucher,
+              language,
+            )[0];
+
         message = message.split('{{1}}').join(intersolveVoucher.amount);
         const messageSid = await this.whatsappService.sendWhatsapp(
           message,

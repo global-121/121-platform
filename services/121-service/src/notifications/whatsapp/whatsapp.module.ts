@@ -20,6 +20,7 @@ import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity'
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { WhatsappController } from './whatsapp.controller';
 import { WhatsappService } from './whatsapp.service';
+import { MessageTemplateModule } from '../message-template/message-template.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { WhatsappService } from './whatsapp.service';
     ]),
     ImageCodeModule,
     UserModule,
+    MessageTemplateModule,
   ],
   providers: [WhatsappService, SmsService, LastMessageStatusService],
   controllers: [WhatsappController],

@@ -96,22 +96,6 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly meetingDocuments: JSON;
 
-  @ApiProperty({
-    example: {
-      en: {
-        included: 'You have been included in this program.',
-        rejected:
-          'Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.',
-      },
-      nl: {
-        included: 'Je zit wel in het programma',
-        rejected: 'Je zit niet in het programma',
-      },
-    },
-  })
-  @IsOptional()
-  public readonly notifications: JSON;
-
   @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   @IsOptional()

@@ -11,9 +11,21 @@ export class MessageTemplateService {
 
   public async getMessageTemplatesByProgramId(
     programId: number,
+    type?: string,
+    language?: string,
   ): Promise<MessageTemplateEntity[]> {
+    let where: any = { programId: programId };
+
+    if (type) {
+      where = { ...where, type: type };
+    }
+
+    if (language) {
+      where = { ...where, language: language };
+    }
+
     return await this.messageTemplateRepository.find({
-      where: { programId: programId },
+      where: where,
     });
   }
 
