@@ -78,9 +78,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public meetingDocuments: JSON;
 
-  @Column('json', { nullable: true })
-  public notifications: JSON;
-
   @Column({ nullable: true })
   public phoneNumberPlaceholder: string;
 

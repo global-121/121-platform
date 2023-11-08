@@ -223,7 +223,6 @@ export class ProgramService {
       targetNrRegistrations: programEntity.targetNrRegistrations,
       tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
       meetingDocuments: programEntity.meetingDocuments,
-      notifications: programEntity.notifications,
       phoneNumberPlaceholder: programEntity.phoneNumberPlaceholder,
       programCustomAttributes: programEntity.programCustomAttributes.map(
         (programCustomAttribute) => {
@@ -389,7 +388,6 @@ export class ProgramService {
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     program.meetingDocuments = programData.meetingDocuments;
-    program.notifications = programData.notifications;
     program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.aboutProgram = programData.aboutProgram;
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
