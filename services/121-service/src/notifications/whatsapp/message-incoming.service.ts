@@ -23,9 +23,9 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherPayoutStatus } from './../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
-import { IntersolveVoucherEntity } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { IntersolveVoucherService } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappService } from './whatsapp.service';
@@ -34,7 +34,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
 @Injectable()
-export class WhatsappIncomingService {
+export class MessageIncomingService {
   @InjectRepository(IntersolveVoucherEntity)
   private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TwilioMessageEntity)
@@ -90,17 +90,40 @@ export class WhatsappIncomingService {
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
-  public async addStatusCallbackToQueue(
+  public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     try {
       await this.messageStatusCallbackQueue.add('send', callbackData);
     } catch (error) {
-      console.warn('Error in addMessageToQueue: ', error);
+      console.warn('Error in adding SMS status callback to queue: ', error);
     }
   }
 
-  public async processStatusCallback(
+  public async processSmsStatusCallback(callbackData): Promise<void> {
+    await this.twilioMessageRepository.update(
+      { sid: callbackData.MessageSid },
+      { status: callbackData.SmsStatus },
+    );
+    await this.lastMessageService.updateLastMessageStatus(
+      callbackData.MessageSid,
+    );
+  }
+
+  public async addWhatsappStatusCallbackToQueue(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
+    try {
+      await this.messageStatusCallbackQueue.add('send', callbackData);
+    } catch (error) {
+      console.warn(
+        'Error in adding WhatsApp status callback to queue: ',
+        error,
+      );
+    }
+  }
+
+  public async processWhatsappStatusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     if (
@@ -332,7 +355,7 @@ export class WhatsappIncomingService {
     return value.replace('whatsapp:+', '');
   }
 
-  public async handleIncoming(
+  public async handleIncomingWhatsapp(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
     if (!callbackData.From) {

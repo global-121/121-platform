@@ -1,21 +1,29 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { WhatsappIncomingService } from '../whatsapp/whatsapp-incoming.service';
+import { MessageIncomingService } from '../whatsapp/message-incoming.service';
 
 @Processor('messageStatusCallback')
 export class MessageStatusCallbackProcessor {
   constructor(
-    private readonly whatsappIncomingService: WhatsappIncomingService,
+    private readonly messageIncomingService: MessageIncomingService,
   ) {}
 
   @Process('send')
   async handleStatusCallback(job: Job): Promise<any> {
     const callbackData = job.data;
-    // console.log('callbackData: ', callbackData.MessageStatus);
-    await this.whatsappIncomingService
-      .processStatusCallback(callbackData)
-      .catch((error) => {
-        console.warn('Error in handleStatusCallback: ', error);
-      });
+    // TODO: is this substring check too heavy? Alternative is to have separate queues/processors/etc for whatsapp/sms
+    if (callbackData.To.includes('whatsapp')) {
+      await this.messageIncomingService
+        .processWhatsappStatusCallback(callbackData)
+        .catch((error) => {
+          console.warn('Error in Whatsapp handleStatusCallback: ', error);
+        });
+    } else {
+      await this.messageIncomingService
+        .processSmsStatusCallback(callbackData)
+        .catch((error) => {
+          console.warn('Error in SMS handleStatusCallback: ', error);
+        });
+    }
   }
 }

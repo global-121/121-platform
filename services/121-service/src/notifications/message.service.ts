@@ -70,8 +70,6 @@ export class MessageService {
       );
     }
     try {
-      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
-
       const messageText = messageJobDto.message
         ? messageJobDto.message
         : await this.getNotificationText(
@@ -79,6 +77,8 @@ export class MessageService {
             messageJobDto.key,
             messageJobDto.programId,
           );
+
+      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
         await this.whatsappService
           .queueMessageSendTemplate(
