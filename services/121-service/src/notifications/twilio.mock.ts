@@ -145,6 +145,7 @@ export class TwilioClientMock {
       const request = new TwilioStatusCallbackDto();
       request.MessageSid = messageSid;
       request.MessageStatus = status;
+      request.SmsStatus = status;
       request.To = twilioMessagesCreateDto.to; //add this to distinguish whatsapp/sms in queue processor
 
       if (twilioMessagesCreateDto.to.includes('15005550001')) {

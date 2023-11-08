@@ -103,7 +103,7 @@ export class MessageIncomingService {
   public async processSmsStatusCallback(callbackData): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
-      { status: callbackData.SmsStatus },
+      { status: callbackData.SmsStatus || callbackData.MessageStatus },
     );
     await this.lastMessageService.updateLastMessageStatus(
       callbackData.MessageSid,

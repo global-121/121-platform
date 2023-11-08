@@ -20,19 +20,20 @@ export class SmsService {
     recipientPhoneNr: string,
     registrationId: number,
     messageContentType?: MessageContentType,
-  ): Promise<void> {
+  ): Promise<any> {
     const hasPlus = recipientPhoneNr.startsWith('+');
     const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
 
-    twilioClient.messages
+    return twilioClient.messages
       .create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
         to,
       })
-      .then((message) =>
-        this.storeSendSms(message, registrationId, messageContentType),
+      .then(
+        async (message) =>
+          await this.storeSendSms(message, registrationId, messageContentType),
       )
       .catch(async (err) => {
         console.log('Error from Twilio:', err);
