@@ -17,14 +17,14 @@ import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { IntersolveVoucherModule } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { MessageIncomingController } from './message-incoming.controller';
 import { MessageIncomingService } from './message-incoming.service';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { WhatsappModule } from './whatsapp.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
+import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
+import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 
 @Module({
   imports: [

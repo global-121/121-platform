@@ -14,7 +14,6 @@ import { NoteModule } from './notes/notes.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
-import { MessageIncomingModule } from './notifications/whatsapp/message-incoming.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
@@ -23,6 +22,7 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 import { BullModule } from '@nestjs/bull';
+import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
 
 @Module({
   imports: [
