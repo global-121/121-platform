@@ -95,6 +95,9 @@ export class TwilioStatusCallbackDto {
   public SmsSid: string;
 
   @IsOptional()
+  public SmsStatus: string;
+
+  @IsOptional()
   public To: string;
 }
 

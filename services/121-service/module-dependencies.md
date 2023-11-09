@@ -53,8 +53,8 @@ graph LR
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationChangeLogModule
-  WhatsappIncomingModule-->ImageCodeModule
-  WhatsappIncomingModule-->IntersolveVoucherModule
-  WhatsappIncomingModule-->WhatsappModule
+  MessageIncomingModule-->ImageCodeModule
+  MessageIncomingModule-->IntersolveVoucherModule
+  MessageIncomingModule-->WhatsappModule
   NoteModule-->RegistrationsModule
 ```

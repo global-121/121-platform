@@ -16,13 +16,15 @@ import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherModule } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
-import { WhatsappIncomingController } from './whatsapp-incoming.controller';
-import { WhatsappIncomingService } from './whatsapp-incoming.service';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { WhatsappModule } from './whatsapp.module';
+import { IntersolveVoucherModule } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { MessageIncomingController } from './message-incoming.controller';
+import { MessageIncomingService } from './message-incoming.service';
+import { BullModule } from '@nestjs/bull';
+import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
+import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
+import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -42,12 +44,29 @@ import { WhatsappModule } from './whatsapp.module';
     UserModule,
     IntersolveVoucherModule,
     WhatsappModule,
+    BullModule.registerQueue({
+      name: 'messageStatusCallback',
+      processors: [
+        {
+          path: 'src/notifications/processors/message-status-callback.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 600, // Max number of jobs processed
+        duration: 60000, // per duration in milliseconds
+      },
+    }),
   ],
-  providers: [WhatsappIncomingService, SmsService, LastMessageStatusService],
-  controllers: [WhatsappIncomingController],
-  exports: [WhatsappIncomingService],
+  providers: [
+    MessageIncomingService,
+    SmsService,
+    LastMessageStatusService,
+    MessageStatusCallbackProcessor,
+  ],
+  controllers: [MessageIncomingController],
+  exports: [MessageIncomingService, BullModule],
 })
-export class WhatsappIncomingModule implements NestModule {
+export class MessageIncomingModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AuthMiddlewareTwilio).forRoutes(
       {
