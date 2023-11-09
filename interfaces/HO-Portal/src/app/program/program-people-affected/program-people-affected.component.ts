@@ -154,6 +154,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
+  public messageTemplates: [];
 
   constructor(
     private authService: AuthService,
@@ -261,6 +262,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.setupFilterSubscriptions();
+
+    this.messageTemplates =
+      await this.registrationsService.getMessageTemplatesByProgramId(
+        this.programId,
+      );
 
     await this.updateBulkActions();
 
@@ -415,6 +421,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ...paymentBulkActions,
     ];
     this.bulkActions = unfilteredBulkAction.map((action) => {
+      this.messageTemplates.map((messageTemplate: any) => {
+        if (messageTemplate.type === action.id) {
+          action.confirmConditions.isTemplated = true;
+        }
+      });
+
       action.enabled =
         this.authService.hasAllPermissions(
           this.programId,

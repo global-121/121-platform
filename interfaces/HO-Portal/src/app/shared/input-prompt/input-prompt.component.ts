@@ -24,6 +24,7 @@ export interface InputProps {
     length: number;
     type: 'min' | 'max';
   };
+  isTemplated?: boolean;
 }
 
 @Component({

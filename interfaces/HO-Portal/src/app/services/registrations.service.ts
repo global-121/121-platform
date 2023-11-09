@@ -70,4 +70,8 @@ export class RegistrationsService {
   public getPageMetadata(): PaginationMetadata {
     return this.pageMetaData;
   }
+
+  public getMessageTemplatesByProgramId(programId: number) {
+    return this.programsService.getMessageTemplatesByProgram(programId);
+  }
 }

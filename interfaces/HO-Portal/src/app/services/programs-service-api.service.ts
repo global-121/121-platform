@@ -953,4 +953,11 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registrations/status-changes/${referenceId}`,
     );
   }
+
+  getMessageTemplatesByProgram(programId: number): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/notifications/${programId}/message-template`,
+    );
+  }
 }
