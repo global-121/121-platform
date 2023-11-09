@@ -6,6 +6,7 @@ import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from './whatsapp/whatsapp.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageProcessor } from './processors/message.processor';
+import { AzureLogService } from '../shared/services/azure-log.service';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { MessageProcessor } from './processors/message.processor';
       },
     }),
   ],
-  providers: [MessageService, MessageProcessor],
+  providers: [MessageService, MessageProcessor, AzureLogService],
   controllers: [],
   exports: [MessageService, BullModule],
 })

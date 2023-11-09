@@ -78,6 +78,7 @@ export class WhatsappService {
         status: 'failed',
         errorCode: error.code,
       };
+      throw error;
     } finally {
       await this.storeSendWhatsapp(
         messageToStore,
