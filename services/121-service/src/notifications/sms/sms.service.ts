@@ -20,8 +20,9 @@ export class SmsService {
     recipientPhoneNr: string,
     registrationId: number,
     messageContentType?: MessageContentType,
-  ): Promise<void> {
+  ): Promise<any> {
     const hasPlus = recipientPhoneNr.startsWith('+');
+    const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
 
     let messageToStore;
     try {
@@ -29,14 +30,14 @@ export class SmsService {
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
+        to: to,
       });
     } catch (error) {
       console.log('Error from Twilio:', error);
       messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: message,
-        to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
+        to: to,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         dateCreated: new Date().toISOString(),
         sid: `failed-${uuid()}`,
@@ -75,6 +76,7 @@ export class SmsService {
       twilioMessage.errorMessage = message.errorMessage;
     }
     await this.twilioMessageRepository.save(twilioMessage);
+    // TODO: performance of processing SMS is slow, commenting out below line would solve that
     await this.lastMessageService.updateLastMessageStatus(message.sid);
   }
 
@@ -83,15 +85,5 @@ export class SmsService {
       sid: sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
-  }
-
-  public async statusCallback(callbackData): Promise<void> {
-    await this.twilioMessageRepository.update(
-      { sid: callbackData.MessageSid },
-      { status: callbackData.SmsStatus },
-    );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
   }
 }
