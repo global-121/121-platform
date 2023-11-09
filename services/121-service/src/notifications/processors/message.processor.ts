@@ -10,8 +10,6 @@ export class MessageProcessor {
   @Process(ProcessName.send)
   async handleSend(job: Job): Promise<any> {
     const messageJobData = job.data;
-    await this.messageService.sendTextMessage(messageJobData).catch((error) => {
-      console.warn('Error in handleSend: ', error);
-    });
+    await this.messageService.sendTextMessage(messageJobData);
   }
 }

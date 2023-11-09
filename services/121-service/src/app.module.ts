@@ -56,6 +56,10 @@ import { MessageIncomingModule } from './notifications/message-incoming/message-
       redis: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASSWORD
+          ? process.env.REDIS_PASSWORD
+          : null,
+        tls: process.env.REDIS_PASSWORD ? {} : null, // This enables SSL
       },
       prefix: process.env.ENV_NAME,
       defaultJobOptions: {
