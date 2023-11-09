@@ -93,11 +93,7 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    try {
-      await this.messageStatusCallbackQueue.add('sms', callbackData);
-    } catch (error) {
-      console.warn('Error in adding SMS status callback to queue: ', error);
-    }
+    await this.messageStatusCallbackQueue.add('sms', callbackData);
   }
 
   public async processSmsStatusCallback(callbackData): Promise<void> {
@@ -113,14 +109,7 @@ export class MessageIncomingService {
   public async addWhatsappStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    try {
-      await this.messageStatusCallbackQueue.add('whatsapp', callbackData);
-    } catch (error) {
-      console.warn(
-        'Error in adding WhatsApp status callback to queue: ',
-        error,
-      );
-    }
+    await this.messageStatusCallbackQueue.add('whatsapp', callbackData);
   }
 
   public async processWhatsappStatusCallback(
