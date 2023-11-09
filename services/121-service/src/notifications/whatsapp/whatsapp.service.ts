@@ -59,21 +59,15 @@ export class WhatsappService {
     if (!!process.env.MOCK_TWILIO) {
       payload['messageType'] = messageType;
     }
+    let errorOccurred = false;
+    let messageToStore;
     try {
-      const createMessageResult = await twilioClient.messages.create(payload);
-      await this.storeSendWhatsapp(
-        createMessageResult,
-        registrationId,
-        mediaUrl,
-        messageContentType,
-        existingSidToUpdate,
-      );
-      console.log('createMessageResult: ', createMessageResult);
-      return createMessageResult.sid;
+      messageToStore = await twilioClient.messages.create(payload);
+      return messageToStore.sid;
     } catch (error) {
-      // TODO: Replace this with the logger service (?)
+      errorOccurred = true;
       console.log('Error from Twilio:', error);
-      const failedMessage = {
+      messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: payload.body,
         mediaUrl: mediaUrl,
@@ -84,13 +78,14 @@ export class WhatsappService {
         status: 'failed',
         errorCode: error.code,
       };
+    } finally {
       await this.storeSendWhatsapp(
-        failedMessage,
+        messageToStore,
         registrationId,
         mediaUrl,
         messageContentType,
+        errorOccurred ? null : existingSidToUpdate,
       );
-      throw error;
     }
   }
 
