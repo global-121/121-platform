@@ -16,6 +16,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   QueryFailedError,
   Unique,
 } from 'typeorm';
@@ -45,6 +46,7 @@ import { RegistrationDataError } from './errors/registration-data.error';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -118,9 +120,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsOptional()
   public maxPayments: number;
 
-  @Column({ default: 'no messages yet' })
-  public lastMessageStatus: string;
-
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions
   @Column({ default: 0 })
@@ -158,6 +157,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     (latestTransactions) => latestTransactions.registration,
   )
   public latestTransactions: LatestTransactionEntity[];
+
+  @OneToOne(
+    () => LatestMessageEntity,
+    (latestMessage) => latestMessage.registration,
+  )
+  public latestMessage: LatestMessageEntity;
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
   public notes: NoteEntity[];

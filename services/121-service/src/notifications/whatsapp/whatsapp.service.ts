@@ -182,7 +182,7 @@ export class WhatsappService {
       }
       await this.twilioMessageRepository.save(twilioMessage);
     }
-    await this.lastMessageService.updateLastMessageStatus(message.sid);
+    await this.lastMessageService.updateLatestMessage(message);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

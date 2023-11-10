@@ -215,7 +215,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       `truncate table "121-service"."latest_transaction"`,
     );
     const queryUpdateLatestTransaction = readSqlFile(
-      '../../src/scripts/sql/mock-lastest-transactions.sql',
+      '../../src/scripts/sql/mock-latest-transactions.sql',
     );
     await this.dataSource.query(queryUpdateLatestTransaction);
     console.log(`**Done updating latest transactions**`);
@@ -231,6 +231,16 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       );
       await this.dataSource.query(queryNrMessageBulk);
     }
+
+    console.log(`**Updating latest messages. This can take a minute..** `);
+    await this.dataSource.query(
+      `truncate table "121-service"."latest_message"`,
+    );
+    const queryUpdateLatestMessage = readSqlFile(
+      '../../src/scripts/sql/mock-latest-message.sql',
+    );
+    await this.dataSource.query(queryUpdateLatestMessage);
+    console.log(`**Done updating latest message**`);
   }
 
   private async updateSequenceNumbers(): Promise<void> {

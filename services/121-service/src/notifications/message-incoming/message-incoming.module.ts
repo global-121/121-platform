@@ -26,6 +26,7 @@ import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-messa
 import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
 import { AzureLogService } from '../../shared/services/azure-log.service';
+import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AzureLogService } from '../../shared/services/azure-log.service';
       TryWhatsappEntity,
       WhatsappPendingMessageEntity,
       WhatsappTemplateTestEntity,
+      LatestMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
@@ -62,9 +64,9 @@ import { AzureLogService } from '../../shared/services/azure-log.service';
   providers: [
     MessageIncomingService,
     SmsService,
-    LastMessageStatusService,
     MessageStatusCallbackProcessor,
     AzureLogService,
+    LastMessageStatusService,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],
