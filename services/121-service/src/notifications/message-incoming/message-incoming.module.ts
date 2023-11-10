@@ -25,6 +25,7 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
+import { AzureLogService } from '../../shared/services/azure-log.service';
 
 @Module({
   imports: [
@@ -49,11 +50,12 @@ import { WhatsappModule } from '../whatsapp/whatsapp.module';
       processors: [
         {
           path: 'src/notifications/processors/message-status-callback.processor.ts',
+          concurrency: 4,
         },
       ],
       limiter: {
-        max: 600, // Max number of jobs processed
-        duration: 60000, // per duration in milliseconds
+        max: 10, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
       },
     }),
   ],
@@ -62,6 +64,7 @@ import { WhatsappModule } from '../whatsapp/whatsapp.module';
     SmsService,
     LastMessageStatusService,
     MessageStatusCallbackProcessor,
+    AzureLogService,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],

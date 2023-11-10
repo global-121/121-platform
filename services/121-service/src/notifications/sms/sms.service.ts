@@ -20,7 +20,7 @@ export class SmsService {
     recipientPhoneNr: string,
     registrationId: number,
     messageContentType?: MessageContentType,
-  ): Promise<any> {
+  ): Promise<void> {
     const hasPlus = recipientPhoneNr.startsWith('+');
     const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
 
@@ -44,6 +44,7 @@ export class SmsService {
         status: 'failed',
         errorCode: error.code,
       };
+      throw error;
     } finally {
       await this.storeSendSms(
         messageToStore,

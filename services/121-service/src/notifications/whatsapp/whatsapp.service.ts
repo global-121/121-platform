@@ -43,7 +43,7 @@ export class WhatsappService {
     registrationId?: number,
     messageContentType?: MessageContentType,
     existingSidToUpdate?: string,
-  ): Promise<any> {
+  ): Promise<string> {
     const hasPlus = recipientPhoneNr.startsWith('+');
 
     const payload = {
