@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { TwilioService } from './twilio.service';
-import { TwilioMessagesCreateDto } from './twilio.dto';
 
 @Controller()
 export class TwilioController {
@@ -13,8 +12,8 @@ export class TwilioController {
     required: true,
     type: 'string',
   })
-  @Get('lookups/phonenumbers')
-  public fetchPhoneNumber(@Query('phoneNumber') phoneNumber: string): {
+  @Get('v1/PhoneNumbers/:phoneNumber')
+  public fetchPhoneNumber(@Param('phoneNumber') phoneNumber: string): {
     phoneNumber: string;
     nationalFormat: string;
   } {
@@ -22,10 +21,11 @@ export class TwilioController {
   }
 
   @ApiOperation({ summary: 'Create message ' })
-  @Post('messages')
+  @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(
-    @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto,
-  ): object {
-    return this.twilioService.createMessage(twilioMessagesCreateDto);
+    @Body() twilioMessagesCreateDto: any,
+    @Param('accountSid') accountSid: string
+    ): object {
+    return this.twilioService.createMessage(twilioMessagesCreateDto, accountSid);
   }
 }

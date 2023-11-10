@@ -28,36 +28,37 @@ export class TwilioService {
 
   public createMessage(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
-  ): object {
+    accountSid: string,
+    ): object {
     const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
     const response = {
-      body: twilioMessagesCreateDto.body,
-      numSegments: twilioMessagesCreateDto.mediaUrl ? '1' : '0',
+      body: twilioMessagesCreateDto.Body,
+      numSegments: twilioMessagesCreateDto.MediaUrl ? '1' : '0',
       direction: 'outbound-api',
-      from: twilioMessagesCreateDto.from,
-      to: twilioMessagesCreateDto.to,
+      from: twilioMessagesCreateDto.From,
+      to: twilioMessagesCreateDto.To,
       dateUpdated: new Date(),
       price: null,
-      errorMessage: null,
-      uri: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.messagingServiceSid}.json`,
-      accountSid: process.env.TWILIO_SID,
-      numMedia: twilioMessagesCreateDto.mediaUrl ? '1' : '0',
+      error_message: null,
+      uri: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}.json`,
+      account_sid: accountSid,
+      numMedia: twilioMessagesCreateDto.MediaUrl ? '1' : '0',
       status: 'accepted',
-      messagingServiceSid: twilioMessagesCreateDto.messagingServiceSid,
+      messaging_service_sid: twilioMessagesCreateDto.MessagingServiceSid,
       sid: messageSid,
-      dateSent: null,
-      dateCreated: new Date(),
-      errorCode: null,
-      priceUnit: null,
-      apiVersion: '2010-04-01',
+      date_sent: null,
+      date_created: new Date(),
+      error_code: null,
+      price_unit: null,
+      api_version: '2010-04-01',
       subresourceUris: {
-        media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.messagingServiceSid}/Media.json`,
+        media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
       },
     };
-    if (twilioMessagesCreateDto.to.includes('15005550001')) {
+    if (twilioMessagesCreateDto.To.includes('15005550001')) {
       response.status = TwilioStatus.failed;
-      response.errorCode = '1';
-      response.errorMessage = 'Magic fail';
+      response.error_code = '1';
+      response.error_message = 'Magic fail';
       this.sendStatusResponse121(
         twilioMessagesCreateDto,
         messageSid,
@@ -67,7 +68,7 @@ export class TwilioService {
       });
     } else {
       let statuses = [];
-      if (twilioMessagesCreateDto.to.includes('whatsapp')) {
+      if (twilioMessagesCreateDto.To.includes('whatsapp')) {
         statuses = [
           TwilioStatus.queued,
           TwilioStatus.sent,
@@ -89,9 +90,9 @@ export class TwilioService {
     }
     if (
       ['payment-templated', 'generic-templated'].includes(
-        twilioMessagesCreateDto.messageContentType,
+        twilioMessagesCreateDto.MessageContentType,
       ) &&
-      !twilioMessagesCreateDto.to.includes('15005550002')
+      !twilioMessagesCreateDto.To.includes('15005550002')
     ) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
         (e) => {
@@ -121,26 +122,26 @@ export class TwilioService {
     messageSid: string,
     status: TwilioStatus,
   ): Promise<void> {
-    if (twilioMessagesCreateDto.from) {
+    if (twilioMessagesCreateDto.From) {
       const request = new TwilioStatusCallbackDto();
       request.MessageSid = messageSid;
       request.MessageStatus = status;
 
-      if (twilioMessagesCreateDto.to.includes('15005550001')) {
+      if (twilioMessagesCreateDto.To.includes('15005550001')) {
         request.ErrorCode = '1';
         request.ErrorMessage = 'Magic fail';
       }
       const httpService = new HttpService();
-      const urlExternal = twilioMessagesCreateDto.to.includes('whatsapp')
-        ? EXTERNAL_API.whatsAppStatus
-        : EXTERNAL_API.smsStatus;
+      const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
+      ? EXTERNAL_API.whatsAppStatus
+      : EXTERNAL_API.smsStatus;
 
       try {
         // Try to reach 121-service through external API url
         await lastValueFrom(httpService.post(urlExternal, request));
       } catch (error) {
         // In case external API is not reachable try internal network
-        const path = twilioMessagesCreateDto.to.includes('whatsapp')
+        const path = twilioMessagesCreateDto.To.includes('whatsapp')
           ? API_PATHS.whatsAppStatus
           : API_PATHS.smsStatus;
         const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
@@ -156,13 +157,13 @@ export class TwilioService {
     messageSid: string,
   ): Promise<void> {
     if (
-      twilioMessagesCreateDto.from &&
-      twilioMessagesCreateDto.from.includes('whatsapp')
+      twilioMessagesCreateDto.From &&
+      twilioMessagesCreateDto.From.includes('whatsapp')
     ) {
       await setTimeout(3000);
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
-      request.From = twilioMessagesCreateDto.to;
+      request.From = twilioMessagesCreateDto.To;
       request.To = process.env.TWILIO_WHATSAPP_NUMBER;
       const httpService = new HttpService();
       try {
