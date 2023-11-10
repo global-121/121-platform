@@ -80,19 +80,14 @@ export class MessageService {
 
       const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
-        await this.whatsappService
-          .queueMessageSendTemplate(
-            messageText,
-            whatsappNumber,
-            null,
-            null,
-            messageJobDto.id,
-            messageJobDto.messageContentType,
-          )
-          .catch((error) => {
-            console.warn('Error in queueMessageSendTemplate: ', error);
-            throw error;
-          });
+        await this.whatsappService.queueMessageSendTemplate(
+          messageText,
+          whatsappNumber,
+          null,
+          null,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+        );
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
         await this.tryWhatsapp(
           messageJobDto,

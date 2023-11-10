@@ -66,7 +66,6 @@ export class WhatsappService {
       return messageToStore.sid;
     } catch (error) {
       errorOccurred = true;
-      console.log('Error from Twilio:', error);
       messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: payload.body,
