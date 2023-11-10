@@ -258,6 +258,8 @@ export class WhatsappService {
         });
         return 'Succes';
       });
+      // Wait 2 seconds to prevent Twilio from exceeded Rate limit for Channel
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 
@@ -325,6 +327,11 @@ export class WhatsappService {
     const resultsLanguage = {};
 
     for (const messageTemplate of messagesTemplates) {
+      // Initialize the language property if it doesn't exist
+      if (!resultsLanguage[messageTemplate.language]) {
+        resultsLanguage[messageTemplate.language] = {};
+      }
+
       const whatsappTemplateTestEntity =
         await this.whatsappTemplateTestRepository.findOne({
           where: {

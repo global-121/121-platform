@@ -15,7 +15,7 @@ export class WhatsappController {
   @Admin()
   @ApiOperation({
     summary:
-      'Tests all the templates of the platform. Copy paste the sessionId after this call to /notifications/whatsapp/templates/:sessionId to see the results',
+      'Tests all the templates of the platform. This API call will take few minutes. Copy paste the sessionId after this call to /notifications/whatsapp/templates/:sessionId to see the results',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Get('templates')
