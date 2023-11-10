@@ -2,7 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MessageService } from '../message.service';
 import { AzureLogService } from '../../shared/services/azure-log.service';
-import { ProcessName, ProcessorName } from './processor.names.enum';
+import { ProcessName, ProcessorName } from '../enum/processor.names.enum';
 
 @Processor(ProcessorName.message)
 export class MessageProcessor {

@@ -1,7 +1,7 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MessageIncomingService } from '../message-incoming/message-incoming.service';
-import { ProcessorName, ProcessName } from './processor.names.enum';
+import { ProcessorName, ProcessName } from '../enum/processor.names.enum';
 @Processor(ProcessorName.messageStatusCallback)
 export class MessageStatusCallbackProcessor {
   constructor(

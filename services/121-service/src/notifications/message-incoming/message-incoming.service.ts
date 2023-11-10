@@ -32,6 +32,7 @@ import { Queue } from 'bull';
 import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
+import { ProcessName } from '../enum/processor.names.enum';
 
 @Injectable()
 export class MessageIncomingService {
@@ -93,7 +94,7 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.messageStatusCallbackQueue.add('sms', callbackData);
+    await this.messageStatusCallbackQueue.add(ProcessName.sms, callbackData);
   }
 
   public async processSmsStatusCallback(callbackData): Promise<void> {
@@ -109,7 +110,10 @@ export class MessageIncomingService {
   public async addWhatsappStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.messageStatusCallbackQueue.add('whatsapp', callbackData);
+    await this.messageStatusCallbackQueue.add(
+      ProcessName.whatsapp,
+      callbackData,
+    );
   }
 
   public async processWhatsappStatusCallback(
