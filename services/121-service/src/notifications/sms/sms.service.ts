@@ -91,8 +91,9 @@ export class SmsService {
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },
     );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
+    // This is commented out because we think this is causing performance issues
+    // await this.lastMessageService.updateLastMessageStatus(
+    //   callbackData.MessageSid,
+    // );
   }
 }
