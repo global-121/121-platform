@@ -61,7 +61,7 @@ import { MessageIncomingModule } from './notifications/message-incoming/message-
           : null,
         tls: process.env.REDIS_PASSWORD ? {} : null, // This enables SSL
       },
-      prefix: process.env.ENV_NAME,
+      prefix: process.env.REDIS_PREFIX,
       defaultJobOptions: {
         removeOnComplete: true,
       },

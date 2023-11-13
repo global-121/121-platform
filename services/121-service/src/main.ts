@@ -70,14 +70,12 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
-
-  if (process.env.NODE_ENV !== 'development' && !process.env.ENV_NAME) {
-    throw new Error('ENV_NAME not set when not in development mode');
+  if (!process.env.REDIS_PREFIX) {
+    throw new Error('REDIS_PREFIX not set');
   }
-  if (process.env.ENV_NAME.includes(':')) {
-    throw new Error(
-      'ENV_NAME should not contain a colon (or redis will not work)',
-    );
+  const notAllowedRegex = /[\0\n\r :]/;
+  if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
+    throw new Error('REDIS_PREFIX contains one or more not allowed characters');
   }
 
   let corsAllowList: string[] | RegExp[];
