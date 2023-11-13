@@ -6,6 +6,7 @@ import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from './whatsapp/whatsapp.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageProcessor } from './processors/message.processor';
+import { AzureLogService } from '../shared/services/azure-log.service';
 
 @Module({
   imports: [
@@ -17,15 +18,16 @@ import { MessageProcessor } from './processors/message.processor';
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
+          concurrency: 8,
         },
       ],
       limiter: {
-        max: 600, // Max number of jobs processed
-        duration: 60000, // per duration in milliseconds
+        max: 10, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
       },
     }),
   ],
-  providers: [MessageService, MessageProcessor],
+  providers: [MessageService, MessageProcessor, AzureLogService],
   controllers: [],
   exports: [MessageService, BullModule],
 })

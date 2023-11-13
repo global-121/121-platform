@@ -12,6 +12,7 @@ import { Queue } from 'bull';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { ProcessName } from './enum/processor.names.enum';
 
 @Injectable()
 export class MessageService {
@@ -56,7 +57,7 @@ export class MessageService {
       messageContentType,
     };
     try {
-      await this.messageQueue.add('send', messageJob);
+      await this.messageQueue.add(ProcessName.send, messageJob);
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }
@@ -70,8 +71,6 @@ export class MessageService {
       );
     }
     try {
-      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
-
       const messageText = messageJobDto.message
         ? messageJobDto.message
         : await this.getNotificationText(
@@ -79,19 +78,17 @@ export class MessageService {
             messageJobDto.key,
             messageJobDto.programId,
           );
+
+      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
-        await this.whatsappService
-          .queueMessageSendTemplate(
-            messageText,
-            whatsappNumber,
-            null,
-            null,
-            messageJobDto.id,
-            messageJobDto.messageContentType,
-          )
-          .catch((error) => {
-            console.warn('Error in queueMessageSendTemplate: ', error);
-          });
+        await this.whatsappService.queueMessageSendTemplate(
+          messageText,
+          whatsappNumber,
+          null,
+          null,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+        );
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
         await this.tryWhatsapp(
           messageJobDto,

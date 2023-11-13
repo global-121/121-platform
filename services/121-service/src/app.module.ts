@@ -14,7 +14,6 @@ import { NoteModule } from './notes/notes.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
-import { WhatsappIncomingModule } from './notifications/whatsapp/whatsapp-incoming.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
@@ -23,6 +22,7 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 import { BullModule } from '@nestjs/bull';
+import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
 
 @Module({
   imports: [
@@ -42,7 +42,7 @@ import { BullModule } from '@nestjs/bull';
     MessageModule,
     MetricsModule,
     WhatsappModule,
-    WhatsappIncomingModule,
+    MessageIncomingModule,
     NoteModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
@@ -56,11 +56,15 @@ import { BullModule } from '@nestjs/bull';
       redis: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASSWORD
+          ? process.env.REDIS_PASSWORD
+          : null,
+        tls: process.env.REDIS_PASSWORD ? {} : null, // This enables SSL
       },
+      prefix: process.env.ENV_NAME,
       defaultJobOptions: {
         removeOnComplete: true,
       },
-      // TODO: Queueing: Add prefix for queues here (maybe program name or something)
     }),
   ],
   controllers: [AppController],
