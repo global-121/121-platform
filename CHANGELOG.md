@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.1...master)
 
+## Removed
+
+- CORS configuration should be hanndled via the Azure Portal for each App Service instance.  
+  See: A step in the "How to set up a new instance"-guide in the wiki.
+
 ---
 ## [1.105.2](https://github.com/global-121/121-platform/compare/v1.105.1...v1.105.2) - 2023-11-07
 
