@@ -13,16 +13,16 @@ import { setTimeout } from 'node:timers/promises';
 @Injectable()
 export class TwilioService {
   public fetchPhoneNumber(phoneNumber: string): {
-    phoneNumber: string;
-    nationalFormat: string;
+    phone_number: string;
+    national_format: string;
   } {
     if (!phoneNumber) {
       phoneNumber = '+31600000000';
     }
 
     return {
-      phoneNumber: phoneNumber,
-      nationalFormat: phoneNumber,
+      phone_number: phoneNumber,
+      national_format: phoneNumber,
     };
   }
 
@@ -88,10 +88,15 @@ export class TwilioService {
         });
       }
     }
+    let isYesMessage = false;
+    for (const messageType of ['payment-templated', 'generic-templated']) {
+      if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
+        isYesMessage = true;
+      }
+    }
+
     if (
-      ['payment-templated', 'generic-templated'].includes(
-        twilioMessagesCreateDto.MessageContentType,
-      ) &&
+      isYesMessage &&
       !twilioMessagesCreateDto.To.includes('15005550002')
     ) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(

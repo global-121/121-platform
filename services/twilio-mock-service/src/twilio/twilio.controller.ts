@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { TwilioService } from './twilio.service';
 
@@ -14,8 +14,8 @@ export class TwilioController {
   })
   @Get('v1/PhoneNumbers/:phoneNumber')
   public fetchPhoneNumber(@Param('phoneNumber') phoneNumber: string): {
-    phoneNumber: string;
-    nationalFormat: string;
+    phone_number: string;
+    national_format: string;
   } {
     return this.twilioService.fetchPhoneNumber(phoneNumber);
   }
