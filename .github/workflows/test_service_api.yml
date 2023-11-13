@@ -29,7 +29,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Create .env variables file
+      - name: Set ENV-variables for test-environment
         run: |
           /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
           /bin/sed -i '/^PORT_121_SERVICE=/s/=.*/=3000/' ./services/.env.example
@@ -52,6 +52,11 @@ jobs:
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env.example
           cp ./services/.env.example services/.env
+
+      - name: Force set database schema to a clean state
+        working-directory: ./services
+        run: |
+          /bin/sed -i '/synchronize/s/false/true/' ./121-service/ormconfig.ts
 
       - name: Build containers
         working-directory: ./services
