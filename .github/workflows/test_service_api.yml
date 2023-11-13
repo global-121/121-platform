@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
       - 'services/121-service/**'
       - '!**.md'
   push:
@@ -18,6 +19,7 @@ on:
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
       - 'services/121-service/**'
       - '!**.md'
 
