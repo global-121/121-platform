@@ -71,6 +71,15 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
+  if (process.env.NODE_ENV !== 'development' && !process.env.ENV_NAME) {
+    throw new Error('ENV_NAME not set when not in development mode');
+  }
+  if (process.env.ENV_NAME.includes(':')) {
+    throw new Error(
+      'ENV_NAME should not contain a colon (or redis will not work)',
+    );
+  }
+
   let corsAllowList: string[] | RegExp[];
 
   if (!!process.env.CORS_ALLOW_LIST) {
