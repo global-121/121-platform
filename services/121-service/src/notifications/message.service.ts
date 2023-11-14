@@ -59,7 +59,8 @@ export class MessageService {
         if (
           ReplacedByGenericTemplateMessageTypes.includes(
             messageJobDto.messageContentType,
-          )
+          ) &&
+          !messageJobDto.customData?.replyMessage
         ) {
           await this.storePendingMessageAndSendTemplate(
             messageText,
@@ -123,6 +124,10 @@ export class MessageService {
               messageSid,
               messageJobDto.customData.intersolveVoucherId,
             );
+          } else if (messageJobDto.customData?.replyMessage) {
+            await this.whatsappPendingMessageRepo.delete({
+              id: messageJobDto.customData.pendingMessageId,
+            });
           }
         }
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {

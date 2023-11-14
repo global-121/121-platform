@@ -516,24 +516,8 @@ export class MessageIncomingService {
             false,
             message.contentType,
             message.mediaUrl,
+            { replyMessage: true, pendingMessageId: message.id },
           );
-          // TODO 1: handle result (removal: see below) on processing side
-          // TODO 2: there is an endless circle here, where this message will again end up in pending message etc etc. Instead, initially we should not add to queue, but call storePendingMessageAndSendTemplate
-          // await this.whatsappService
-          //   .sendWhatsapp(
-          //     message.body,
-          //     message.to,
-          //     message.messageType
-          //       ? (message.messageType as IntersolveVoucherPayoutStatus)
-          //       : null,
-          //     message.mediaUrl,
-          //     message.registrationId,
-          //     message.contentType,
-          //   )
-          //   .then(async () => {
-          //     await this.whatsappPendingMessageRepo.remove(message);
-          //     return;
-          //   });
           await waitFor(2_000);
         }
       }
