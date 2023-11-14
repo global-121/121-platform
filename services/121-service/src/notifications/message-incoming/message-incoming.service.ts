@@ -472,6 +472,7 @@ export class MessageIncomingService {
           {
             payment: intersolveVoucher.payment,
             amount: intersolveVoucher.amount,
+            intersolveVoucherId: intersolveVoucher.id,
           },
         );
         firstVoucherSent = true;

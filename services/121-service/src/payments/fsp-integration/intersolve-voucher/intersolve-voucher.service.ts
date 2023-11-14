@@ -323,44 +323,16 @@ export class IntersolveVoucherService
       null,
       false,
       MessageContentType.paymentTemplated,
+      null,
+      { payment: payment, amount: calculatedAmount },
     );
-    // TODO: move the result handling to the processor. This is super-difficult however, because we actually expect an updated result.status etc here as well..
-    // await this.whatsappService
-    //   .sendWhatsapp(
-    //     whatsappPayment,
-    //     paymentInfo.paymentAddress,
+    result.status = StatusEnum.waiting;
+    //TODO: we used to also store result.customData.messageSid here, but it seems not actually used, but on the other hand, we do have messageSid in prod-database. So I'm not sure what's going on here.
+    // result.customData = {
+    //   messageSid: messageSid,
+    //   IntersolvePayoutStatus:
     //     IntersolveVoucherPayoutStatus.InitialMessage,
-    //     null,
-    //     registration.id,
-    //     MessageContentType.paymentTemplated,
-    //   )
-    //   .then(
-    //     async (response) => {
-    //       const messageSid = response;
-    //       await this.storeTransactionResult(
-    //         payment,
-    //         calculatedAmount,
-    //         registration.id,
-    //         1,
-    //         StatusEnum.waiting,
-    //         null,
-    //         registration.programId,
-    //         messageSid,
-    //       );
-
-    //       result.status = StatusEnum.waiting;
-    //       result.customData = {
-    //         messageSid: messageSid,
-    //         IntersolvePayoutStatus:
-    //           IntersolveVoucherPayoutStatus.InitialMessage,
-    //       };
-    //       return;
-    //     },
-    //     (error) => {
-    //       result.message = error;
-    //       result.status = StatusEnum.error;
-    //     },
-    //   );
+    // };
     return result;
   }
 

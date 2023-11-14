@@ -38,12 +38,13 @@ export class MessageService {
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
-    if (!messageJobDto.message && !messageJobDto.key) {
-      throw new HttpException(
-        'A message or a key should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // TODO: this was not being followed e.g. for payment-instructions. Can we just remove it?
+    // if (!messageJobDto.message && !messageJobDto.key) {
+    //   throw new HttpException(
+    //     'A message or a key should be supplied.',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     try {
       const messageText = messageJobDto.message
         ? messageJobDto.message
@@ -69,31 +70,55 @@ export class MessageService {
             messageJobDto.messageContentType,
           );
         } else {
-          const messageSid = await this.whatsappService.sendWhatsapp(
-            messageJobDto.message,
-            messageJobDto.phoneNumber,
-            null,
-            messageJobDto.mediaUrl,
-            messageJobDto.id,
-            messageJobDto.messageContentType,
-            // TODO: Add messageSid to update existing message
-            null,
-          );
+          let messageSid: string;
+          let errorMessage: any;
+          await this.whatsappService
+            .sendWhatsapp(
+              messageJobDto.message,
+              messageJobDto.phoneNumber,
+              null,
+              messageJobDto.mediaUrl,
+              messageJobDto.id,
+              messageJobDto.messageContentType,
+              // TODO: Add messageSid to update existing message
+              null,
+            )
+            .then(
+              (response) => {
+                messageSid = response;
+                return;
+              },
+              (error) => {
+                if (
+                  (messageJobDto.messageContentType =
+                    MessageContentType.paymentTemplated)
+                ) {
+                  errorMessage = error;
+                } else {
+                  throw error;
+                }
+              },
+            );
           if (
-            messageJobDto.messageContentType ===
-            MessageContentType.paymentTemplated
-          ) {
-            // TODO: move here the result handling from intersolve-voucher.service.ts
-          } else if (
-            messageJobDto.messageContentType === MessageContentType.payment
+            [
+              MessageContentType.paymentTemplated,
+              MessageContentType.payment,
+            ].includes(messageJobDto.messageContentType)
           ) {
             await this.intersolveVoucherService.storeTransactionResult(
               messageJobDto.customData.payment,
               messageJobDto.customData.amount,
               messageJobDto.id,
-              2,
-              StatusEnum.success,
-              null,
+              messageJobDto.messageContentType ===
+                MessageContentType.paymentTemplated
+                ? 1
+                : 2,
+              messageJobDto.messageContentType === MessageContentType.payment
+                ? StatusEnum.success
+                : messageSid
+                ? StatusEnum.waiting
+                : StatusEnum.error,
+              errorMessage,
               messageJobDto.programId,
               messageSid,
               messageJobDto.customData.intersolveVoucherId,
