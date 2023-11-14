@@ -424,6 +424,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.messageTemplates.map((messageTemplate: any) => {
         if (messageTemplate.type === action.id) {
           action.confirmConditions.isTemplated = true;
+          action.confirmConditions.explanation = messageTemplate.message;
+          action.confirmConditions.inputRequired = false;
         }
       });
 

@@ -36,24 +36,33 @@
     *ngIf="inputProps"
     class="ion-margin-vertical"
   >
+    <ion-item
+      *ngIf="inputProps.checkbox"
+      lines="none"
+      style="--background: none"
+    >
+      <ion-checkbox
+        slot="start"
+        [checked]="checked"
+        (ionChange)="checkboxChange($event.detail.checked)"
+      >
+        <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
+      </ion-checkbox>
+    </ion-item>
     <div
-      *ngIf="!inputProps.isTemplated; else elseBlock"
+      *ngIf="inputProps.isTemplated; else elseBlock"
       class="ion-margin-vertical"
     >
-      <ion-item
-        *ngIf="inputProps.checkbox"
-        lines="none"
-        style="--background: none"
-      >
-        <ion-checkbox
-          slot="start"
-          [checked]="checked"
-          (ionChange)="checkboxChange($event.detail.checked)"
-        >
-          <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
-        </ion-checkbox>
-      </ion-item>
+      <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">
+        <div
+          *ngIf="inputProps.explanation"
+          [innerHTML]="inputProps.explanation"
+          class="ion-margin-vertical"
+        ></div>
+      </div>
+    </div>
 
+    <ng-template #elseBlock>
       <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">
         <div
           *ngIf="inputProps.explanation"
@@ -134,13 +143,6 @@
           {{ inputProps.inputConstraint?.length }})
         </ion-note>
       </div>
-    </div>
-
-    <ng-template #elseBlock>
-      <p class="ion-margin-vertical">
-        <!--TODO: we have to change this message to be more descriptible-->
-        There is already a message template that is being used.
-      </p>
     </ng-template>
   </div>
 </ion-content>
