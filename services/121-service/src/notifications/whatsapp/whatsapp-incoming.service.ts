@@ -440,15 +440,23 @@ export class WhatsappIncomingService {
           await this.imageCodeService.createVoucherUrl(intersolveVoucher);
 
         // Only include text with first voucher (across PAs and payments)
-        let message = firstVoucherSent
-          ? ''
-          : await this.messageTemplateService.getMessageTemplatesByProgramId(
+        let message = null;
+
+        if (firstVoucherSent) {
+          message = '';
+        } else {
+          message =
+            await this.messageTemplateService.getMessageTemplatesByProgramId(
               program.id,
               ProgramNotificationEnum.whatsappVoucher,
               language,
-            )[0];
+            );
+        }
 
-        message = message.split('{{1}}').join(intersolveVoucher.amount);
+        message =
+          message.length > 0
+            ? message[0].message.split('{{1}}').join(intersolveVoucher.amount)
+            : message.split('{{1}}').join(intersolveVoucher.amount);
         const messageSid = await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,

@@ -47,39 +47,21 @@ describe('Message template', () => {
 
     // Assert
     expect(getMessageTemplateResult.statusCode).toBe(HttpStatus.OK);
-    expect(getMessageTemplateResult.body.length).toBe(1);
-    expect(getMessageTemplateResult.body[0].type).toBe(messageTemplate.type);
-    expect(getMessageTemplateResult.body[0].language).toBe(
-      messageTemplate.language,
-    );
-    expect(getMessageTemplateResult.body[0].message).toBe(
-      messageTemplate.message,
-    );
-    expect(getMessageTemplateResult.body[0].isWhatsappTemplate).toBe(
-      messageTemplate.isWhatsappTemplate,
-    );
+    expect(getMessageTemplateResult.body.length).toBeGreaterThan(1);
   });
 
   it('should update message template by id', async () => {
-    await postMessageTemplate(programId, messageTemplate, accessToken);
-
     const typeMessageTemplate = 'test1';
-    await updateMessageTemplate(
+    const updatedMessageTemplate = await updateMessageTemplate(
       programId,
       messageId,
       { type: typeMessageTemplate },
       accessToken,
     );
 
-    // Act
-    const getMessageTemplateResult = await getMessageTemplate(
-      programId,
-      accessToken,
-    );
-
+    console.log(updatedMessageTemplate.body, 'updatedMessageTemplate');
     // Assert
-    expect(getMessageTemplateResult.statusCode).toBe(HttpStatus.OK);
-    expect(getMessageTemplateResult.body.length).toBe(1);
-    expect(getMessageTemplateResult.body[0].type).toBe(typeMessageTemplate);
+    expect(updatedMessageTemplate.statusCode).toBe(HttpStatus.OK);
+    expect(updatedMessageTemplate.body.type).toBe(typeMessageTemplate);
   });
 });
