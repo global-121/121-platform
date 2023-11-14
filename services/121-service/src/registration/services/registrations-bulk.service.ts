@@ -184,13 +184,11 @@ export class RegistrationsBulkService {
           false,
           this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
         );
-      this.sendCustomTextMessage(
-        registrationsForUpdate.data,
-        programId,
-        message,
-      ).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
+      this.sendCustomTextMessage(registrationsForUpdate.data, message).catch(
+        (error) => {
+          this.azureLogService.logError(error, true);
+        },
+      );
     }
   }
 
@@ -318,7 +316,6 @@ export class RegistrationsBulkService {
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
-            programId,
             message,
             null,
             tryWhatsappFirst,
@@ -420,13 +417,11 @@ export class RegistrationsBulkService {
 
   private async sendCustomTextMessage(
     registrations: RegistrationViewEntity[],
-    programId: number,
     message: string,
   ): Promise<void> {
     for (const registration of registrations) {
       await this.queueMessageService.addMessageToQueue(
         registration,
-        programId,
         message,
         null,
         false,

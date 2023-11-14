@@ -318,7 +318,6 @@ export class IntersolveVoucherService
 
     await this.queueMessageService.addMessageToQueue(
       registration,
-      programId,
       whatsappPayment,
       null,
       false,

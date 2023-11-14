@@ -16,7 +16,6 @@ export class QueueMessageService {
 
   public async addMessageToQueue(
     registration: RegistrationEntity | RegistrationViewEntity,
-    programId: number,
     message: string,
     key: string,
     tryWhatsApp: boolean,
@@ -38,7 +37,7 @@ export class QueueMessageService {
       preferredLanguage: registration.preferredLanguage,
       whatsappPhoneNumber: whatsappPhoneNumber,
       phoneNumber: registration.phoneNumber,
-      programId,
+      programId: registration.programId,
       message,
       key,
       tryWhatsApp,

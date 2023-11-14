@@ -179,7 +179,6 @@ export class IntersolveVoucherCronService {
         // TODO: check this
         await this.queueMessageService.addMessageToQueue(
           registration,
-          registration.programId,
           whatsappPayment,
           null,
           false,

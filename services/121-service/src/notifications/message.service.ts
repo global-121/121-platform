@@ -106,6 +106,7 @@ export class MessageService {
               MessageContentType.payment,
             ].includes(messageJobDto.messageContentType)
           ) {
+            // If this is either the initial or the follow-up intersolve-voucher message, then store transaction result
             await this.intersolveVoucherService.storeTransactionResult(
               messageJobDto.customData.payment,
               messageJobDto.customData.amount,
@@ -124,7 +125,13 @@ export class MessageService {
               messageSid,
               messageJobDto.customData.intersolveVoucherId,
             );
-          } else if (messageJobDto.customData?.replyMessage) {
+          } else if (
+            ReplacedByGenericTemplateMessageTypes.includes(
+              messageJobDto.messageContentType,
+            ) &&
+            messageJobDto.customData?.replyMessage
+          ) {
+            // If this is a reply message on a pending message, delete the pending message
             await this.whatsappPendingMessageRepo.delete({
               id: messageJobDto.customData.pendingMessageId,
             });
@@ -184,7 +191,6 @@ export class MessageService {
     );
     await this.queueMessageService.addMessageToQueue(
       registration,
-      registration.programId,
       whatsappGenericMessage,
       null,
       false,

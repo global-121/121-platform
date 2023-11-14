@@ -763,7 +763,6 @@ export class IntersolveVisaService
 
     await this.queueMessageService.addMessageToQueue(
       wallet.intersolveVisaCustomer.registration,
-      programId,
       null,
       notificationKey,
       false,
@@ -1117,7 +1116,6 @@ export class IntersolveVisaService
     });
     await this.queueMessageService.addMessageToQueue(
       registration,
-      programId,
       null,
       ProgramNotificationEnum.reissueVisaCard,
       false,

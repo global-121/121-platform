@@ -640,7 +640,6 @@ export class RegistrationsService {
 
     await this.queueMessageService.addMessageToQueue(
       registration,
-      registration.program.id,
       null,
       RegistrationStatusEnum.registered,
       null,

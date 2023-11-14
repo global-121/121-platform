@@ -130,7 +130,7 @@ export class MessageIncomingService {
         relations: ['registration'],
       });
       if (tryWhatsapp) {
-        await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
+        await this.handleTryWhatsappResult(callbackData, tryWhatsapp);
       }
     }
 
@@ -209,20 +209,21 @@ export class MessageIncomingService {
     );
     // Wait before retrying
     await waitFor(30_000);
-    // TODO: Don't have any registration info here, how to handle this
-    // await this.queueMessageService.addMessageToQueue()
-    await this.whatsappService.sendWhatsapp(
+    const registration = await this.registrationRepository.findOne({
+      where: { id: message.registrationId },
+    });
+    await this.queueMessageService.addMessageToQueue(
+      registration,
       message.body,
-      callbackData.To.replace(/\D/g, ''),
       null,
-      message.mediaUrl,
-      message.registrationId,
+      false,
       message.contentType,
-      callbackData.MessageSid,
+      message.mediaUrl,
+      { replyMessage: true, pendingMessageId: message.id },
     );
   }
 
-  private async handleWhatsappTestResult(
+  private async handleTryWhatsappResult(
     callbackData: TwilioStatusCallbackDto,
     tryWhatsapp: TryWhatsappEntity,
   ): Promise<void> {
@@ -241,7 +242,6 @@ export class MessageIncomingService {
       for (const w of whatsapPendingMessages) {
         await this.queueMessageService.addMessageToQueue(
           w.registration,
-          w.registration.programId,
           w.body,
           null,
           false,
@@ -415,7 +415,6 @@ export class MessageIncomingService {
           ];
         await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
-          program.id,
           whatsappDefaultReply,
           null,
           false,
@@ -426,7 +425,6 @@ export class MessageIncomingService {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code
         await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
-          program.id,
           this.genericDefaultReplies[this.fallbackLanguage],
           null,
           false,
@@ -463,7 +461,6 @@ export class MessageIncomingService {
         message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.queueMessageService.addMessageToQueue(
           registration,
-          program.id,
           message,
           null,
           false,
@@ -485,7 +482,6 @@ export class MessageIncomingService {
       if (registrationsWithOpenVouchers.length > 0) {
         await this.queueMessageService.addMessageToQueue(
           registration,
-          program.id,
           '',
           null,
           false,
@@ -510,7 +506,6 @@ export class MessageIncomingService {
         for (const message of registration.whatsappPendingMessages) {
           await this.queueMessageService.addMessageToQueue(
             registration,
-            registration.programId,
             message.body,
             null,
             false,

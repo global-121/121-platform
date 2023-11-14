@@ -219,7 +219,6 @@ export class TransactionsService {
         );
         await this.queueMessageService.addMessageToQueue(
           registration,
-          programId,
           message,
           null,
           false,
