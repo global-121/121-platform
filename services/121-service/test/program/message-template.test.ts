@@ -59,7 +59,6 @@ describe('Message template', () => {
       accessToken,
     );
 
-    console.log(updatedMessageTemplate.body, 'updatedMessageTemplate');
     // Assert
     expect(updatedMessageTemplate.statusCode).toBe(HttpStatus.OK);
     expect(updatedMessageTemplate.body.type).toBe(typeMessageTemplate);
