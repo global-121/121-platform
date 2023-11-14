@@ -1,0 +1,23 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [Greece] All'
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  deploy_portal:
+    name: 'Build + Deploy: Portal'
+    uses: ./.github/workflows/deploy_client-greece_portal.yml
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+
+  deploy_service:
+    name: 'Build + Deploy: 121-Service'
+    uses: ./.github/workflows/deploy_client-greece_service.yml
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
