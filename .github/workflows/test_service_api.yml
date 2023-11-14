@@ -77,6 +77,5 @@ jobs:
           echo 'Wait for 121-service to be up...'
           docker compose exec 121-service npm run test:e2e:all
 
-      - name: Dump docker logs on failure
-        if: failure()
+      - name: Docker logs
         uses: jwalton/gh-docker-logs@v2
