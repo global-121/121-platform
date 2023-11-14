@@ -81,8 +81,7 @@ export class MessageService {
               messageJobDto.mediaUrl,
               messageJobDto.id,
               messageJobDto.messageContentType,
-              // TODO: Add messageSid to update existing message
-              null,
+              messageJobDto.customData?.existingMessageSid,
             )
             .then(
               (response) => {

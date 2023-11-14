@@ -22,4 +22,5 @@ export class MessageJobCustomDataDto {
   intersolveVoucherId?: number;
   replyMessage?: boolean;
   pendingMessageId?: number;
+  existingMessageSid?: string;
 }
