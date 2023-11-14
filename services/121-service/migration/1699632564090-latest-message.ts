@@ -42,6 +42,37 @@ export class LatestMessage1699632564090 implements MigrationInterface {
         'SELECT "registration"."id" AS "id", "registration"."created" AS "registrationCreated", "registration"."programId" AS "programId", "registration"."registrationStatus" AS "status", "registration"."referenceId" AS "referenceId", "registration"."phoneNumber" AS "phoneNumber", "registration"."preferredLanguage" AS "preferredLanguage", "registration"."inclusionScore" AS "inclusionScore", "registration"."paymentAmountMultiplier" AS "paymentAmountMultiplier", "registration"."maxPayments" AS "maxPayments", "registration"."paymentCount" AS "paymentCount", "fsp"."fsp" AS "financialServiceProvider", "fsp"."fspDisplayNamePortal" AS "fspDisplayNamePortal", CAST(CONCAT(\'PA #\',registration."registrationProgramId") as VARCHAR) AS "personAffectedSequence", registration."registrationProgramId" AS "registrationProgramId", TO_CHAR("registration"."created",\'yyyy-mm-dd\') AS "registrationCreatedDate", "registration"."maxPayments" - "registration"."paymentCount" AS "paymentCountRemaining", COALESCE(message.type || \': \' || message.status,\'no messages yet\') AS "lastMessageStatus" FROM "121-service"."registration" "registration" LEFT JOIN "121-service"."fsp" "fsp" ON "fsp"."id"="registration"."fspId"  LEFT JOIN "121-service"."latest_message" "latestMessage" ON "latestMessage"."registrationId"="registration"."id"  LEFT JOIN "121-service"."twilio_message" "message" ON "message"."id"="latestMessage"."messageId" ORDER BY "registration"."registrationProgramId" ASC',
       ],
     );
+
+    // ############################################################
+    // Custom written inserts
+    // ############################################################
+    await queryRunner.query(`
+    INSERT INTO "121-service".latest_message
+        (created, updated, "registrationId", "messageId")
+              select
+              	created
+              	,created
+                ,"registrationId" 
+                ,"messageId" 
+              FROM
+                (
+                SELECT
+                  DISTINCT ON
+                  (registration.id) registration.id AS "registrationId",
+                  twilio_message."id" AS "messageId",
+                  twilio_message.created as created
+                FROM
+                "121-service".registration
+                LEFT JOIN "121-service".twilio_message
+            ON
+                  twilio_message."registrationId" = registration.id
+                ORDER BY
+                  registration.id,
+                  twilio_message.created DESC
+              ) latestmessage
+              WHERE
+                latestmessage."messageId" IS NOT NULL
+            `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
