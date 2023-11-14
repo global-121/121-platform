@@ -1,7 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MessageModule } from '../../../notifications/message.module';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
@@ -16,6 +15,7 @@ import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
+import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
     ]),
     UserModule,
     TransactionsModule,
-    MessageModule,
+    QueueMessageModule,
   ],
   providers: [
     IntersolveVisaService,

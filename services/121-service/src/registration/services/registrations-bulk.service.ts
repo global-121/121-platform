@@ -19,7 +19,7 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
-import { MessageService } from '../../notifications/message.service';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -50,7 +50,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -316,7 +316,7 @@ export class RegistrationsBulkService {
             ? program.tryWhatsAppFirst
             : false;
         try {
-          await this.messageService.addMessageToQueue(
+          await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
             programId,
             message,
@@ -424,7 +424,7 @@ export class RegistrationsBulkService {
     message: string,
   ): Promise<void> {
     for (const registration of registrations) {
-      await this.messageService.addMessageToQueue(
+      await this.queueMessageService.addMessageToQueue(
         registration,
         programId,
         message,

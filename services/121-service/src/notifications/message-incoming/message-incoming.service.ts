@@ -34,6 +34,7 @@ import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-messa
 import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { ProcessName } from '../enum/processor.names.enum';
 import { MessageService } from '../message.service';
+import { QueueMessageService } from '../queue-message/queue-message.service';
 
 @Injectable()
 export class MessageIncomingService {
@@ -61,12 +62,11 @@ export class MessageIncomingService {
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly whatsappService: WhatsappService,
-    private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
     private readonly lastMessageService: LastMessageStatusService,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public getGenericNotificationText(
@@ -210,7 +210,7 @@ export class MessageIncomingService {
     // Wait before retrying
     await waitFor(30_000);
     // TODO: Don't have any registration info here, how to handle this
-    // await this.messageService.addMessageToQueue()
+    // await this.queueMessageService.addMessageToQueue()
     await this.whatsappService.sendWhatsapp(
       message.body,
       callbackData.To.replace(/\D/g, ''),
@@ -239,7 +239,7 @@ export class MessageIncomingService {
         },
       );
       for (const w of whatsapPendingMessages) {
-        await this.messageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue(
           w.registration,
           w.registration.programId,
           w.body,
@@ -413,7 +413,7 @@ export class MessageIncomingService {
           program.notifications[language][
             ProgramNotificationEnum.whatsappReply
           ];
-        await this.messageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
           program.id,
           whatsappDefaultReply,
@@ -424,7 +424,7 @@ export class MessageIncomingService {
         return;
       } else {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code
-        await this.messageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
           program.id,
           this.genericDefaultReplies[this.fallbackLanguage],
@@ -461,7 +461,7 @@ export class MessageIncomingService {
               ProgramNotificationEnum.whatsappVoucher
             ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
-        await this.messageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue(
           registration,
           program.id,
           message,
@@ -469,30 +469,12 @@ export class MessageIncomingService {
           false,
           MessageContentType.payment,
           mediaUrl,
-        );
-        const messageSid = await this.whatsappService.sendWhatsapp(
-          message,
-          fromNumber,
-          IntersolveVoucherPayoutStatus.VoucherSent,
-          mediaUrl,
-          registration.id,
-          MessageContentType.payment,
+          {
+            payment: intersolveVoucher.payment,
+            amount: intersolveVoucher.amount,
+          },
         );
         firstVoucherSent = true;
-
-        // Save results
-        intersolveVoucher.send = true;
-        await this.intersolveVoucherRepository.save(intersolveVoucher);
-        await this.intersolveVoucherService.storeTransactionResult(
-          intersolveVoucher.payment,
-          intersolveVoucher.amount,
-          registration.id,
-          2,
-          StatusEnum.success,
-          null,
-          registration.programId,
-          messageSid,
-        );
 
         // Add small delay to ensure the order in which messages are received
         await waitFor(2_000);
@@ -500,13 +482,14 @@ export class MessageIncomingService {
 
       // Send instruction message only once (outside of loops)
       if (registrationsWithOpenVouchers.length > 0) {
-        await this.whatsappService.sendWhatsapp(
+        await this.queueMessageService.addMessageToQueue(
+          registration,
+          program.id,
           '',
-          fromNumber,
           null,
-          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
-          registration.id,
+          false,
           MessageContentType.paymentInstructions,
+          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
         );
       }
     }
@@ -524,21 +507,32 @@ export class MessageIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.whatsappService
-            .sendWhatsapp(
-              message.body,
-              message.to,
-              message.messageType
-                ? (message.messageType as IntersolveVoucherPayoutStatus)
-                : null,
-              message.mediaUrl,
-              message.registrationId,
-              message.contentType,
-            )
-            .then(async () => {
-              await this.whatsappPendingMessageRepo.remove(message);
-              return;
-            });
+          await this.queueMessageService.addMessageToQueue(
+            registration,
+            registration.programId,
+            message.body,
+            null,
+            false,
+            message.contentType,
+            message.mediaUrl,
+          );
+          // TODO 1: handle result (removal: see below) on processing side
+          // TODO 2: there is an endless circle here, where this message will again end up in pending message etc etc. Instead, initially we should not add to queue, but call storePendingMessageAndSendTemplate
+          // await this.whatsappService
+          //   .sendWhatsapp(
+          //     message.body,
+          //     message.to,
+          //     message.messageType
+          //       ? (message.messageType as IntersolveVoucherPayoutStatus)
+          //       : null,
+          //     message.mediaUrl,
+          //     message.registrationId,
+          //     message.contentType,
+          //   )
+          //   .then(async () => {
+          //     await this.whatsappPendingMessageRepo.remove(message);
+          //     return;
+          //   });
           await waitFor(2_000);
         }
       }

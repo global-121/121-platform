@@ -2,22 +2,30 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { MessageContentType } from './enum/message-type.enum';
+import {
+  MessageContentType,
+  ReplacedByGenericTemplateMessageTypes,
+} from './enum/message-type.enum';
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageJobDto } from './message-job.dto';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { ProcessName } from './enum/processor.names.enum';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
+import { ProgramNotificationEnum } from './enum/program-notification.enum';
+import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { StatusEnum } from '../shared/enum/status.enum';
+import { QueueMessageService } from './queue-message/queue-message.service';
 
 @Injectable()
 export class MessageService {
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(WhatsappPendingMessageEntity)
+  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -25,45 +33,9 @@ export class MessageService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
-    @InjectQueue('message') private readonly messageQueue: Queue,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
-
-  public async addMessageToQueue(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    programId: number,
-    message: string,
-    key: string,
-    tryWhatsApp: boolean,
-    messageContentType?: MessageContentType,
-    mediaUrl?: string,
-  ): Promise<void> {
-    let whatsappPhoneNumber;
-    if (registration instanceof RegistrationViewEntity) {
-      whatsappPhoneNumber = registration['whatsappPhoneNumber'];
-    } else if (registration instanceof RegistrationEntity) {
-      whatsappPhoneNumber = await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      );
-    }
-    const messageJob: MessageJobDto = {
-      id: registration.id,
-      referenceId: registration.referenceId,
-      preferredLanguage: registration.preferredLanguage,
-      whatsappPhoneNumber: whatsappPhoneNumber,
-      phoneNumber: registration.phoneNumber,
-      programId,
-      message,
-      key,
-      tryWhatsApp,
-      messageContentType,
-      mediaUrl,
-    };
-    try {
-      await this.messageQueue.add(ProcessName.send, messageJob);
-    } catch (error) {
-      console.warn('Error in addMessageToQueue: ', error);
-    }
-  }
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
     if (!messageJobDto.message && !messageJobDto.key) {
@@ -83,8 +55,12 @@ export class MessageService {
 
       const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
-        if (messageJobDto.messageContentType === MessageContentType.custom) {
-          await this.whatsappService.storePendingMessageAndSendTemplate(
+        if (
+          ReplacedByGenericTemplateMessageTypes.includes(
+            messageJobDto.messageContentType,
+          )
+        ) {
+          await this.storePendingMessageAndSendTemplate(
             messageText,
             whatsappNumber,
             null,
@@ -93,7 +69,7 @@ export class MessageService {
             messageJobDto.messageContentType,
           );
         } else {
-          await this.whatsappService.sendWhatsapp(
+          const messageSid = await this.whatsappService.sendWhatsapp(
             messageJobDto.message,
             messageJobDto.phoneNumber,
             null,
@@ -103,6 +79,26 @@ export class MessageService {
             // TODO: Add messageSid to update existing message
             null,
           );
+          if (
+            messageJobDto.messageContentType ===
+            MessageContentType.paymentTemplated
+          ) {
+            // TODO: move here the result handling from intersolve-voucher.service.ts
+          } else if (
+            messageJobDto.messageContentType === MessageContentType.payment
+          ) {
+            await this.intersolveVoucherService.storeTransactionResult(
+              messageJobDto.customData.payment,
+              messageJobDto.customData.amount,
+              messageJobDto.id,
+              2,
+              StatusEnum.success,
+              null,
+              messageJobDto.programId,
+              messageSid,
+              messageJobDto.customData.intersolveVoucherId,
+            );
+          }
         }
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
         await this.tryWhatsapp(
@@ -129,7 +125,45 @@ export class MessageService {
     }
   }
 
-  public async getNotificationText(
+  private async storePendingMessageAndSendTemplate(
+    message: string,
+    recipientPhoneNr: string,
+    messageType: null | IntersolveVoucherPayoutStatus,
+    mediaUrl: null | string,
+    registrationId: number,
+    messageContentType: MessageContentType,
+  ): Promise<void> {
+    const pendingMesssage = new WhatsappPendingMessageEntity();
+    pendingMesssage.body = message;
+    pendingMesssage.to = recipientPhoneNr;
+    pendingMesssage.mediaUrl = mediaUrl;
+    pendingMesssage.messageType = messageType;
+    pendingMesssage.registrationId = registrationId;
+    pendingMesssage.contentType = messageContentType;
+    await this.whatsappPendingMessageRepo.save(pendingMesssage);
+
+    const registration = await this.registrationRepository.findOne({
+      where: { id: registrationId },
+      relations: ['program'],
+    });
+    const language = registration.preferredLanguage || this.fallbackLanguage;
+    const whatsappGenericMessage = await this.getNotificationText(
+      language,
+      ProgramNotificationEnum.whatsappGenericMessage,
+      registration.program.id,
+    );
+    await this.queueMessageService.addMessageToQueue(
+      registration,
+      registration.programId,
+      whatsappGenericMessage,
+      null,
+      false,
+      MessageContentType.genericTemplated,
+      null,
+    );
+  }
+
+  private async getNotificationText(
     language: string,
     key: string,
     programId: number,
@@ -156,17 +190,16 @@ export class MessageService {
     messageText,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    const result =
-      await this.whatsappService.storePendingMessageAndSendTemplate(
-        messageText,
-        messageJobDto.phoneNumber,
-        null,
-        null,
-        messageJobDto.id,
-        messageContentType,
-      );
+    await this.storePendingMessageAndSendTemplate(
+      messageText,
+      messageJobDto.phoneNumber,
+      null,
+      null,
+      messageJobDto.id,
+      messageContentType,
+    );
     const tryWhatsapp = {
-      sid: result,
+      sid: 'SM1234567890', //  TODO: make dynamic + move result handling to processor
       registrationId: messageJobDto.id,
     };
     await this.tryWhatsappRepository.save(tryWhatsapp);

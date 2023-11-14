@@ -13,4 +13,11 @@ export class MessageJobDto {
   tryWhatsApp? = false;
   messageContentType?: MessageContentType;
   mediaUrl?: string;
+  customData?: MessageJobCustomDataDto;
+}
+
+export class MessageJobCustomDataDto {
+  payment: number;
+  amount: number;
+  intersolveVoucherId?: number;
 }

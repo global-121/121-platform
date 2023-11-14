@@ -10,21 +10,24 @@ graph LR
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
-  TransactionsModule-->MessageModule
-  MessageModule-->WhatsappModule
-  MessageModule-->SmsModule
+  TransactionsModule-->QueueMessageModule
   IntersolveVoucherModule-->WhatsappModule
+  IntersolveVoucherModule-->QueueMessageModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->MessageModule
+  IntersolveVisaModule-->QueueMessageModule
   CronjobModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
-  RegistrationsModule-->MessageModule
+  RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
+  MessageModule-->WhatsappModule
+  MessageModule-->SmsModule
+  MessageModule-->QueueMessageModule
+  MessageModule-->IntersolveVoucherModule
   MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule
@@ -56,5 +59,6 @@ graph LR
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
+  MessageIncomingModule-->QueueMessageModule
   NoteModule-->RegistrationsModule
 ```
