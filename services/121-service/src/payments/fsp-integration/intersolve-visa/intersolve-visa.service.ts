@@ -598,7 +598,7 @@ export class IntersolveVisaService
 
     const transactionInfo = await this.getTransactionInfo(
       wallet.tokenCode,
-      this.getFirstTimeOfCurrentMonth(),
+      this.getFirstTimeOfLastMonth(),
     );
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
@@ -608,11 +608,11 @@ export class IntersolveVisaService
     return await this.intersolveVisaWalletRepository.save(wallet);
   }
 
-  private getFirstTimeOfCurrentMonth(): Date {
+  private getFirstTimeOfLastMonth(): Date {
     const currentDate = new Date(); // Get the current date and time
     const firstDayOfCurrentMonth = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth(),
+      currentDate.getMonth() - 1,
       1,
     );
     const firstTimeOfFirstDay = new Date(
