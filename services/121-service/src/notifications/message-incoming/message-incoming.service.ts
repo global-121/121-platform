@@ -33,6 +33,7 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { ProcessName } from '../enum/processor.names.enum';
+import { MessageService } from '../message.service';
 
 @Injectable()
 export class MessageIncomingService {
@@ -65,6 +66,7 @@ export class MessageIncomingService {
     private readonly lastMessageService: LastMessageStatusService,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
+    private readonly messageService: MessageService,
   ) {}
 
   public getGenericNotificationText(
@@ -207,6 +209,8 @@ export class MessageIncomingService {
     );
     // Wait before retrying
     await waitFor(30_000);
+    // TODO: Don't have any registration info here, how to handle this
+    // await this.messageService.addMessageToQueue()
     await this.whatsappService.sendWhatsapp(
       message.body,
       callbackData.To.replace(/\D/g, ''),
@@ -235,10 +239,13 @@ export class MessageIncomingService {
         },
       );
       for (const w of whatsapPendingMessages) {
-        await this.smsService.sendSms(
+        await this.messageService.addMessageToQueue(
+          w.registration,
+          w.registration.programId,
           w.body,
-          w.registration.phoneNumber,
-          w.registration.id,
+          null,
+          false,
+          null,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -406,23 +413,23 @@ export class MessageIncomingService {
           program.notifications[language][
             ProgramNotificationEnum.whatsappReply
           ];
-        await this.whatsappService.sendWhatsapp(
+        await this.messageService.addMessageToQueue(
+          registrationsWithPhoneNumber[0],
+          program.id,
           whatsappDefaultReply,
-          fromNumber,
           null,
-          null,
-          null,
+          false,
           MessageContentType.defaultReply,
         );
         return;
       } else {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code
-        await this.whatsappService.sendWhatsapp(
+        await this.messageService.addMessageToQueue(
+          registrationsWithPhoneNumber[0],
+          program.id,
           this.genericDefaultReplies[this.fallbackLanguage],
-          fromNumber,
           null,
-          null,
-          null,
+          false,
           MessageContentType.defaultReply,
         );
         return;
@@ -454,6 +461,15 @@ export class MessageIncomingService {
               ProgramNotificationEnum.whatsappVoucher
             ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
+        await this.messageService.addMessageToQueue(
+          registration,
+          program.id,
+          message,
+          null,
+          false,
+          MessageContentType.payment,
+          mediaUrl,
+        );
         const messageSid = await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,

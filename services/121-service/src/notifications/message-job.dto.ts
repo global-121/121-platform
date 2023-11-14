@@ -12,4 +12,5 @@ export class MessageJobDto {
   key?: string;
   tryWhatsApp? = false;
   messageContentType?: MessageContentType;
+  mediaUrl?: string;
 }

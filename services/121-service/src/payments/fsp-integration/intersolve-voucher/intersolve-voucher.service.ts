@@ -30,6 +30,7 @@ import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
+import { MessageService } from '../../../notifications/message.service';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -57,7 +58,7 @@ export class IntersolveVoucherService
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly dataSource: DataSource,
+    private readonly messageService: MessageService,
   ) {}
 
   public async sendPayment(
@@ -315,6 +316,15 @@ export class IntersolveVoucherService
       .split('{{1}}')
       .join(String(calculatedAmount));
 
+    // await this.messageService.addMessageToQueue(
+    //   registration,
+    //   programId,
+    //   whatsappPayment,
+    //   null,
+    //   false,
+    //   MessageContentType.paymentTemplated,
+    //   null,
+    // );
     await this.whatsappService
       .sendWhatsapp(
         whatsappPayment,

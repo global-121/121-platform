@@ -34,7 +34,8 @@ export class MessageService {
     message: string,
     key: string,
     tryWhatsApp: boolean,
-    messageContentType: MessageContentType,
+    messageContentType?: MessageContentType,
+    mediaUrl?: string,
   ): Promise<void> {
     let whatsappPhoneNumber;
     if (registration instanceof RegistrationViewEntity) {
@@ -55,6 +56,7 @@ export class MessageService {
       key,
       tryWhatsApp,
       messageContentType,
+      mediaUrl,
     };
     try {
       await this.messageQueue.add(ProcessName.send, messageJob);
@@ -81,14 +83,27 @@ export class MessageService {
 
       const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
-        await this.whatsappService.queueMessageSendTemplate(
-          messageText,
-          whatsappNumber,
-          null,
-          null,
-          messageJobDto.id,
-          messageJobDto.messageContentType,
-        );
+        if (messageJobDto.messageContentType === MessageContentType.custom) {
+          await this.whatsappService.storePendingMessageAndSendTemplate(
+            messageText,
+            whatsappNumber,
+            null,
+            null,
+            messageJobDto.id,
+            messageJobDto.messageContentType,
+          );
+        } else {
+          await this.whatsappService.sendWhatsapp(
+            messageJobDto.message,
+            messageJobDto.phoneNumber,
+            null,
+            messageJobDto.mediaUrl,
+            messageJobDto.id,
+            messageJobDto.messageContentType,
+            // TODO: Add messageSid to update existing message
+            null,
+          );
+        }
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
         await this.tryWhatsapp(
           messageJobDto,
@@ -141,14 +156,15 @@ export class MessageService {
     messageText,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    const result = await this.whatsappService.queueMessageSendTemplate(
-      messageText,
-      messageJobDto.phoneNumber,
-      null,
-      null,
-      messageJobDto.id,
-      messageContentType,
-    );
+    const result =
+      await this.whatsappService.storePendingMessageAndSendTemplate(
+        messageText,
+        messageJobDto.phoneNumber,
+        null,
+        null,
+        messageJobDto.id,
+        messageContentType,
+      );
     const tryWhatsapp = {
       sid: result,
       registrationId: messageJobDto.id,

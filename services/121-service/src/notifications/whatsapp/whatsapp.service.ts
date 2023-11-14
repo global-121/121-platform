@@ -14,6 +14,7 @@ import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
+import { MessageService } from '../message.service';
 
 @Injectable()
 export class WhatsappService {
@@ -33,7 +34,10 @@ export class WhatsappService {
     String(ProgramNotificationEnum.whatsappGenericMessage),
   ];
 
-  constructor(private readonly lastMessageService: LastMessageStatusService) {}
+  constructor(
+    private readonly lastMessageService: LastMessageStatusService,
+    private readonly messageService: MessageService,
+  ) {}
 
   public async sendWhatsapp(
     message: string,
@@ -89,14 +93,14 @@ export class WhatsappService {
     }
   }
 
-  public async queueMessageSendTemplate(
+  public async storePendingMessageAndSendTemplate(
     message: string,
     recipientPhoneNr: string,
     messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId: number,
     messageContentType: MessageContentType,
-  ): Promise<any> {
+  ): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
     pendingMesssage.to = recipientPhoneNr;
@@ -115,14 +119,23 @@ export class WhatsappService {
       language,
       registration.program,
     );
-    return await this.sendWhatsapp(
+    await this.messageService.addMessageToQueue(
+      registration,
+      registration.programId,
       whatsappGenericMessage,
-      recipientPhoneNr,
-      messageType,
-      mediaUrl,
-      registrationId,
+      null,
+      false,
       MessageContentType.genericTemplated,
+      null,
     );
+    // return await this.sendWhatsapp(
+    //   whatsappGenericMessage,
+    //   recipientPhoneNr,
+    //   messageType,
+    //   mediaUrl,
+    //   registrationId,
+    //   MessageContentType.genericTemplated,
+    // );
   }
 
   public getGenericNotificationText(
