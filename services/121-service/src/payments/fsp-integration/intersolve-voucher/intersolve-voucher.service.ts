@@ -327,12 +327,6 @@ export class IntersolveVoucherService
       { payment: payment, amount: calculatedAmount },
     );
     result.status = StatusEnum.waiting;
-    //TODO: we used to also store result.customData.messageSid here, but it seems not actually used, but on the other hand, we do have messageSid in prod-database. So I'm not sure what's going on here.
-    // result.customData = {
-    //   messageSid: messageSid,
-    //   IntersolvePayoutStatus:
-    //     IntersolveVoucherPayoutStatus.InitialMessage,
-    // };
     return result;
   }
 
