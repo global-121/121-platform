@@ -18,11 +18,11 @@ import { AzureLogService } from '../shared/services/azure-log.service';
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
-          concurrency: 8,
+          concurrency: 16,
         },
       ],
       limiter: {
-        max: 10, // Max number of jobs processed
+        max: 50, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),

@@ -78,16 +78,8 @@ async function bootstrap(): Promise<void> {
     throw new Error('REDIS_PREFIX contains one or more not allowed characters');
   }
 
-  let corsAllowList: string[] | RegExp[];
-
-  if (!!process.env.CORS_ALLOW_LIST) {
-    corsAllowList = process.env.CORS_ALLOW_LIST.split(',').map(
-      (origin) => new RegExp(origin),
-    );
-  }
-
   app.enableCors({
-    origin: DEBUG ? true : corsAllowList || false,
+    origin: DEBUG,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

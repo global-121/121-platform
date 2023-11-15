@@ -1,0 +1,51 @@
+{
+  "name": "twilio-mock-service",
+  "author": "121.global",
+  "homepage": "https://www.121.global/",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/global-121/121-platform.git",
+    "directory": "services/twilio-mock-service"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "npm run lint:code && npm run lint:syntax",
+    "lint:code": "eslint \"src/**/*.{ts,js}\"",
+    "fix:code": "npm run lint:code -- --fix",
+    "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
+    "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write",
+    "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node index.js",
+    "prestart:dev": "npm install --no-fund --no-audit --no-save",
+    "start:dev": "tsc-watch --noClear --onSuccess \"  node --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json"
+  },
+  "private": true,
+  "dependencies": {
+    "@nestjs/axios": "^3.0.1",
+    "@nestjs/common": "^10.2.7",
+    "@nestjs/core": "^10.2.7",
+    "@nestjs/platform-express": "^10.2.7",
+    "@nestjs/schedule": "^4.0.0",
+    "@nestjs/swagger": "^7.1.14",
+    "@nestjs/terminus": "^10.1.1",
+    "@nestjs/testing": "^10.2.7",
+    "@nestjs/throttler": "^4.2.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "cookie-parser": "^1.4.6",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.20",
+    "@types/lodash": "^4.14.200",
+    "@types/node": "^18.18.8",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "3.0.3",
+    "prettier-plugin-organize-imports": "^3.2.3",
+    "tsc-watch": "^6.0.4"
+  }
+}

@@ -11,10 +11,15 @@ import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { SmsService } from './sms.service';
+import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TwilioMessageEntity, RegistrationEntity]),
+    TypeOrmModule.forFeature([
+      TwilioMessageEntity,
+      RegistrationEntity,
+      LatestMessageEntity,
+    ]),
   ],
   providers: [SmsService, LastMessageStatusService],
   controllers: [],

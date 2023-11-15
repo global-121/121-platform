@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
       - 'services/121-service/**'
       - '!**.md'
   push:
@@ -18,6 +19,7 @@ on:
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
       - 'services/121-service/**'
       - '!**.md'
 
@@ -29,20 +31,27 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Create .env variables file
+      - name: Set ENV-variables for test-environment
         run: |
+          /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
+          /bin/sed -i '/^PORT_121_SERVICE=/s/=.*/=3000/' ./services/.env.example
+          /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
+          /bin/sed -i '/^RESET_SECRET=/s/=.*/=reset-secret/' ./services/.env.example
+          /bin/sed -i '/^SECRETS_121_SERVICE_SECRET=/s/=.*/=token-secret/' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
-          /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
-          /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
           /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
-          /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
+          /bin/sed -i '/^TWILIO_MOCK_SERVICE_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
           /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
@@ -50,18 +59,29 @@ jobs:
           /bin/sed -i '/^REDIS_HOST=/s/=.*/=services-121-redis-1/' ./services/.env.example
           /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
           /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
+          /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env.example
           cp ./services/.env.example services/.env
+
+      - name: Force set database schema to a clean state
+        working-directory: ./services
+        run: |
+          /bin/sed -i '/synchronize/s/false/true/' ./121-service/ormconfig.ts
 
       - name: Build containers
         working-directory: ./services
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
 
-      - name: Run 121-service
+      - name: Run 121-service and twilio-mock-service
         working-directory: ./services
         run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
 
-      - name: Wait for healthchecks
-        run: timeout 120s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+      - name: Wait for healthcheck 121-service
+        run: timeout 180s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+
+      - name: Wait for healthcheck twilio-mock-service
+        run: timeout 30s sh -c 'until docker ps | grep twilio-mock-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
 
       - name: Run API tests with Jest
         working-directory: ./services
@@ -69,6 +89,5 @@ jobs:
           echo 'Wait for 121-service to be up...'
           docker compose exec 121-service npm run test:e2e:all
 
-      - name: Dump docker logs on failure
-        if: failure()
+      - name: Docker logs
         uses: jwalton/gh-docker-logs@v2

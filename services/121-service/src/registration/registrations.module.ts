@@ -38,6 +38,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       SafaricomRequestEntity,
       RegistrationViewEntity,
       LatestTransactionEntity,
+      LatestMessageEntity,
     ]),
     UserModule,
     HttpModule,
