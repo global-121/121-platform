@@ -12,8 +12,6 @@ import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/pro
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { CronjobService } from './cronjob.service';
-import { LastMessageStatusService } from '../notifications/last-message-status.service';
-import { TwilioMessageEntity } from '../notifications/twilio.entity';
 
 @Module({
   imports: [
@@ -25,14 +23,13 @@ import { TwilioMessageEntity } from '../notifications/twilio.entity';
       TransactionEntity,
       ProgramFspConfigurationEntity,
       IntersolveVisaWalletEntity,
-      TwilioMessageEntity,
     ]),
     WhatsappModule,
     IntersolveVoucherModule,
     IntersolveVisaModule,
     CommercialBankEthiopiaModule,
   ],
-  providers: [CronjobService, LastMessageStatusService],
+  providers: [CronjobService],
   controllers: [],
   exports: [CronjobService],
 })
