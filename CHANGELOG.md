@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.5...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.6...master)
 
 ---
+## [1.105.6](https://github.com/global-121/121-platform/compare/v1.105.5...v1.105.6) - 2023-11-15
+
+### Fixed
+
+- Cannot include completed PA with 0 remaining payments
 
 ## [1.105.5](https://github.com/global-121/121-platform/compare/v1.105.4...v1.105.5) - 2023-11-15
 
