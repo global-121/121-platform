@@ -21,7 +21,7 @@ if (!!process.env.MOCK_TWILIO) {
   const { RequestClient } = twilio;
   mockClient = {
     httpClient: new PrismClient(
-      process.env.TWILIO_MOCK_SERVICE_URL,
+      `${process.env.TWILIO_MOCK_SERVICE_URL}api`,
       new RequestClient(),
     ),
   };

@@ -27,9 +27,6 @@ services:
     ports:
       - '5438:5432'
     restart: unless-stopped
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.6
     healthcheck:
       test:
         [
@@ -43,9 +40,6 @@ services:
   121-service:
     build:
       target: development
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.7
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
@@ -65,9 +59,6 @@ services:
     stdin_open: true
     tty: true
     restart: on-failure
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.8
     volumes:
       - 'twilio_mock_service_node_modules:/home/node/app/node_modules'
       - './twilio-mock-service:/home/node/app'
@@ -81,11 +72,3 @@ services:
 volumes:
   121_service_node_modules:
   twilio_mock_service_node_modules:
-
-networks:
-  pool_network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 11.0.0.0/24

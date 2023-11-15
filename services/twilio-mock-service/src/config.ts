@@ -51,7 +51,7 @@ export const API_PATHS = {
 const externalApi121Service = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 const rootApi121Service =
   process.env.NODE_ENV === 'development'
-    ? `http://${process.env.IPV4_121_SERVICE}:${process.env.PORT_121_SERVICE}/`
+    ? `http://121-service:${process.env.PORT_121_SERVICE}/`
     : process.env.EXTERNAL_121_SERVICE_URL;
 
 export const EXTERNAL_API = {

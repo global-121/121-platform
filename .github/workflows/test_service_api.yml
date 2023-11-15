@@ -51,8 +51,7 @@ jobs:
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
-          /bin/sed -i '/^IPV4_121_SERVICE=/s/=.*/=11.0.0.7/' ./services/.env.example
-          /bin/sed -i '/^TWILIO_MOCK_SERVICE_URL=/s/=.*/=http:\/\/11.0.0.8:3001\//' ./services/.env.example
+          /bin/sed -i '/^TWILIO_MOCK_SERVICE_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
           /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example

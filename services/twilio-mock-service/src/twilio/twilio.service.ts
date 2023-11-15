@@ -95,10 +95,7 @@ export class TwilioService {
       }
     }
 
-    if (
-      isYesMessage &&
-      !twilioMessagesCreateDto.To.includes('15005550002')
-    ) {
+    if (isYesMessage && !twilioMessagesCreateDto.To.includes('15005550002')) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
         (e) => {
           console.log('TWILIO MOCK: Error sending incoming whatsapp ', e);
@@ -127,33 +124,31 @@ export class TwilioService {
     messageSid: string,
     status: TwilioStatus,
   ): Promise<void> {
-    if (twilioMessagesCreateDto.From) {
-      const request = new TwilioStatusCallbackDto();
-      request.MessageSid = messageSid;
-      request.MessageStatus = status;
+    const request = new TwilioStatusCallbackDto();
+    request.MessageSid = messageSid;
+    request.MessageStatus = status;
 
-      if (twilioMessagesCreateDto.To.includes('15005550001')) {
-        request.ErrorCode = '1';
-        request.ErrorMessage = 'Magic fail';
-      }
-      const httpService = new HttpService();
-      const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
+    if (twilioMessagesCreateDto.To.includes('15005550001')) {
+      request.ErrorCode = '1';
+      request.ErrorMessage = 'Magic fail';
+    }
+    const httpService = new HttpService();
+    const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
       ? EXTERNAL_API.whatsAppStatus
       : EXTERNAL_API.smsStatus;
 
-      try {
-        // Try to reach 121-service through external API url
-        await lastValueFrom(httpService.post(urlExternal, request));
-      } catch (error) {
-        // In case external API is not reachable try internal network
-        const path = twilioMessagesCreateDto.To.includes('whatsapp')
-          ? API_PATHS.whatsAppStatus
-          : API_PATHS.smsStatus;
-        const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
-        await lastValueFrom(httpService.post(urlInternal, request)).catch(
-          (error) => console.log(error),
-        );
-      }
+    try {
+      // Try to reach 121-service through external API url
+      await lastValueFrom(httpService.post(urlExternal, request));
+    } catch (error) {
+      // In case external API is not reachable try internal network
+      const path = twilioMessagesCreateDto.To.includes('whatsapp')
+        ? API_PATHS.whatsAppStatus
+        : API_PATHS.smsStatus;
+      const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
+      await lastValueFrom(httpService.post(urlInternal, request)).catch(
+        (error) => console.log(error),
+      );
     }
   }
 

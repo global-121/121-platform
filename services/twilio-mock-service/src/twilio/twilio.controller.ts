@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { ApiOperation, ApiParam } from '@nestjs/swagger';
 import { TwilioService } from './twilio.service';
 
 @Controller()
@@ -7,7 +7,7 @@ export class TwilioController {
   public constructor(private readonly twilioService: TwilioService) {}
 
   @ApiOperation({ summary: 'Fetch phoneNumber ' })
-  @ApiQuery({
+  @ApiParam({
     name: 'phoneNumber',
     required: true,
     type: 'string',
@@ -21,11 +21,19 @@ export class TwilioController {
   }
 
   @ApiOperation({ summary: 'Create message ' })
+  @ApiParam({
+    name: 'accountSid',
+    required: true,
+    type: 'string',
+  })
   @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(
     @Body() twilioMessagesCreateDto: any,
-    @Param('accountSid') accountSid: string
-    ): object {
-    return this.twilioService.createMessage(twilioMessagesCreateDto, accountSid);
+    @Param('accountSid') accountSid: string,
+  ): object {
+    return this.twilioService.createMessage(
+      twilioMessagesCreateDto,
+      accountSid,
+    );
   }
 }
