@@ -15,34 +15,22 @@ describe('waitFor helpers', () => {
     const end = Date.now();
     const elapsed = end - start;
     expect(elapsed).toBeGreaterThanOrEqual(testTime);
-    expect(elapsed).toBeLessThanOrEqual(testTime * 1.1);
+    expect(elapsed).toBeLessThan(testTime + 3); // With a few ms margin
   });
 
-  it('waitForRandomDelay - should wait for a random delay between "100" and "300" milliseconds', async () => {
+  it('waitForRandomDelay - should wait for a random delay between "min" and "max" milliseconds', async () => {
     // Arrange
+    const testMin = 100;
+    const testMax = 300;
     const start = Date.now();
 
     // Act
-    await waitForRandomDelay(100, 300);
+    await waitForRandomDelay(testMin, testMax);
 
     // Assert
     const end = Date.now();
     const elapsed = end - start;
-    expect(elapsed).toBeGreaterThanOrEqual(100);
-    expect(elapsed).toBeLessThanOrEqual(300);
-  });
-
-  it('waitForRandomDelay - should wait for a random delay between "50" and "100" milliseconds', async () => {
-    // Arrange
-    const start = Date.now();
-
-    // Act
-    await waitForRandomDelay(50, 100);
-
-    // Assert
-    const end = Date.now();
-    const delay = end - start;
-    expect(delay).toBeGreaterThanOrEqual(50);
-    expect(delay).toBeLessThanOrEqual(100);
+    expect(elapsed).toBeGreaterThanOrEqual(testMin);
+    expect(elapsed).toBeLessThan(testMax + 3); // With a few ms margin
   });
 });

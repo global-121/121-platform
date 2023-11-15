@@ -101,10 +101,6 @@ export class MessageIncomingService {
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus || callbackData.MessageStatus },
     );
-    // no longer needed
-    // await this.lastMessageService.updateLastMessageStatus(
-    //   callbackData.MessageSid,
-    // );
   }
 
   public async addWhatsappStatusCallbackToQueue(
@@ -166,10 +162,6 @@ export class MessageIncomingService {
         errorMessage: callbackData.ErrorMessage,
       },
     );
-    // no longer needed
-    // await this.lastMessageService.updateLastMessageStatus(
-    //   callbackData.MessageSid,
-    // );
 
     // Update intersolve voucher transaction status if applicable
     const relevantStatuses = [
