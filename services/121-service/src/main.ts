@@ -71,16 +71,8 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
-  let corsAllowList: string[] | RegExp[];
-
-  if (!!process.env.CORS_ALLOW_LIST) {
-    corsAllowList = process.env.CORS_ALLOW_LIST.split(',').map(
-      (origin) => new RegExp(origin),
-    );
-  }
-
   app.enableCors({
-    origin: DEBUG ? true : corsAllowList || false,
+    origin: DEBUG,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

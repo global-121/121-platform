@@ -62,7 +62,6 @@ export class MessageIncomingService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
-    private readonly lastMessageService: LastMessageStatusService,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
   ) {}
@@ -101,9 +100,6 @@ export class MessageIncomingService {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus || callbackData.MessageStatus },
-    );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
     );
   }
 
@@ -165,9 +161,6 @@ export class MessageIncomingService {
         errorCode: callbackData.ErrorCode,
         errorMessage: callbackData.ErrorMessage,
       },
-    );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
     );
 
     // Update intersolve voucher transaction status if applicable

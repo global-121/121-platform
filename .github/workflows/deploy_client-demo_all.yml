@@ -1,0 +1,29 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [demo] All'
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  deploy_portal:
+    name: 'Build + Deploy: Portal'
+    uses: ./.github/workflows/deploy_client-demo_portal.yml
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_WATER_00DCCC603: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_WATER_00DCCC603 }}
+
+  deploy_register:
+    name: 'Build + Deploy: Register (PA)'
+    uses: ./.github/workflows/deploy_client-demo_register.yml
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_OCEAN_0C3FEEC03: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_OCEAN_0C3FEEC03 }}
+
+  deploy_service:
+    name: 'Build + Deploy: 121-Service'
+    uses: ./.github/workflows/deploy_client-demo_service.yml
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}

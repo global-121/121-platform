@@ -92,11 +92,11 @@ export async function doPayment(
   return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
       payment: paymentNr,
       amount: amount,
-    })
-    .query(queryParams);
+    });
 }
 
 export async function retryPayment(

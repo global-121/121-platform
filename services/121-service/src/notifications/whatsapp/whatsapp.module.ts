@@ -20,6 +20,7 @@ import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity'
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { WhatsappController } from './whatsapp.controller';
 import { WhatsappService } from './whatsapp.service';
+import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { WhatsappService } from './whatsapp.service';
       TryWhatsappEntity,
       WhatsappPendingMessageEntity,
       WhatsappTemplateTestEntity,
+      LatestMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
