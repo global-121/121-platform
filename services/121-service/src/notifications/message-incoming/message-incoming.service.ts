@@ -15,7 +15,6 @@ import {
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
