@@ -76,8 +76,9 @@ export class SmsService {
     if (message.errorMessage) {
       twilioMessage.errorMessage = message.errorMessage;
     }
-    await this.twilioMessageRepository.save(twilioMessage);
-    await this.lastMessageService.updateLatestMessage(message);
+    const twilioMessageSave =
+      await this.twilioMessageRepository.save(twilioMessage);
+    await this.lastMessageService.updateLatestMessage(twilioMessageSave);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
