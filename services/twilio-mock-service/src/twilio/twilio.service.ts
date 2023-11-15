@@ -29,7 +29,7 @@ export class TwilioService {
   public createMessage(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     accountSid: string,
-    ): object {
+  ): object {
     const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
     const response = {
       body: twilioMessagesCreateDto.Body,
