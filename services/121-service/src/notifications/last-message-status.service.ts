@@ -15,23 +15,14 @@ export class LastMessageStatusService {
     const latestMessage = new LatestMessageEntity();
     latestMessage.registrationId = message.registrationId;
     latestMessage.messageId = message.id;
-    try {
-      // Try to insert a new LatestTransactionEntity
+    const updateResult = await this.latestMessageRepository.update(
+      {
+        registrationId: latestMessage.registrationId,
+      },
+      latestMessage,
+    );
+    if (updateResult.affected === 0) {
       await this.latestMessageRepository.insert(latestMessage);
-    } catch (error) {
-      if (error.code === '23505') {
-        // 23505 is the code for unique violation in PostgreSQL
-        // If a unique constraint violation occurred, update the existing LatestMessageEntity
-        await this.latestMessageRepository.update(
-          {
-            registrationId: latestMessage.registrationId,
-          },
-          latestMessage,
-        );
-      } else {
-        // If some other error occurred, rethrow it
-        throw error;
-      }
     }
   }
 }
