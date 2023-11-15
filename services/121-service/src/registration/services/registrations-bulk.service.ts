@@ -214,12 +214,13 @@ export class RegistrationsBulkService {
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    const query = this.getBaseQuery().andWhere({
+    let query = this.getBaseQuery().andWhere({
       status: In(allowedCurrentStatuses),
     });
     if (registrationStatus === RegistrationStatusEnum.included) {
-      query.andWhere(
-        'registration."paymentCountRemaining" > 0 || registration."paymentCountRemaining" IS NULL',
+      // this prohibits going from completed to included if 0 remaining payments
+      query = query.andWhere(
+        '(registration."paymentCountRemaining" > 0 OR registration."paymentCountRemaining" IS NULL)',
       );
     }
     return query;
