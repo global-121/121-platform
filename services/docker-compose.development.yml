@@ -44,6 +44,25 @@ services:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
 
+  twilio-mock-service:
+    build:
+      context: twilio-mock-service
+      target: development
+    init: true
+    container_name: twilio-mock-service
+    env_file:
+      - .env
+    environment:
+      - GLOBAL_121_VERSION
+    ports:
+      - '3001:3001'
+    stdin_open: true
+    tty: true
+    restart: on-failure
+    volumes:
+      - 'twilio_mock_service_node_modules:/home/node/app/node_modules'
+      - './twilio-mock-service:/home/node/app'
+
   121-redis:
     # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
     image: 'redis:6.0-alpine'
@@ -52,3 +71,4 @@ services:
 
 volumes:
   121_service_node_modules:
+  twilio_mock_service_node_modules:

@@ -50,14 +50,16 @@ export class WhatsappService {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-      statusCallback: EXTERNAL_API.whatsAppStatus,
+      statusCallback: !!process.env.MOCK_TWILIO // This is needed to send reply messages when using MOCK_TWILIO
+        ? `${EXTERNAL_API.whatsAppStatus}?messageContentType=${messageContentType}`
+        : EXTERNAL_API.whatsAppStatus,
       to: `whatsapp:${hasPlus ? '' : '+'}${recipientPhoneNr}`,
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
     if (!!process.env.MOCK_TWILIO) {
-      payload['messageType'] = messageType;
+      payload['messageContentType'] = messageContentType;
     }
     let errorOccurred = false;
     let messageToStore;

@@ -1,10 +1,34 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { TwilioClientMock } from './twilio.mock';
+let mockClient = null as any;
+const twilio = require('twilio');
+if (!!process.env.MOCK_TWILIO) {
+  class PrismClient {
+    public prismUrl: string;
+    public requestClient: any;
+    constructor(prismUrl, requestClient) {
+      this.prismUrl = prismUrl;
+      this.requestClient = requestClient;
+    }
+    public request(opts): any {
+      opts.uri = opts.uri.replace(
+        /^https\:\/\/.*?\.twilio\.com/,
+        this.prismUrl,
+      );
+      return this.requestClient.request(opts);
+    }
+  }
 
-export const twilioClient = !!process.env.MOCK_TWILIO
-  ? new TwilioClientMock()
-  : require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTHTOKEN);
+  const { RequestClient } = twilio;
+  mockClient = {
+    httpClient: new PrismClient(
+      `${process.env.TWILIO_MOCK_SERVICE_URL}api`,
+      new RequestClient(),
+    ),
+  };
+}
 
-export const twilio = !!process.env.MOCK_TWILIO
-  ? new TwilioClientMock()
-  : require('twilio');
+export const twilioClient = twilio(
+  process.env.TWILIO_SID,
+  process.env.TWILIO_AUTHTOKEN,
+  mockClient,
+);
