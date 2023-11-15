@@ -23,7 +23,6 @@ INSERT
 			max("registrationProgramId")
 		FROM
 			"121-service"."registration"),
-		"maxPayments",
-		"lastMessageStatus"
+		"maxPayments"
 	FROM
 		"121-service".registration);

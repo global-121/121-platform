@@ -22,7 +22,8 @@
             SELECT count(id)
             FROM "121-service"."twilio_message"
           ),
-          created,
+          created + random() * (timestamp '2023-01-01 00:00:00' -
+                   timestamp '2023-01-02 00:00:00'),
           "accountSid",
           body,
           "to",

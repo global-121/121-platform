@@ -555,6 +555,7 @@ export class RegistrationsService {
     // .. and update the twilio messages (to keep history of the invite message etc.)
     const twilioMessages = await this.twilioMessageRepository.find({
       where: { registrationId: importedRegistration.id },
+      order: { created: 'DESC' },
     });
     if (twilioMessages && twilioMessages.length > 0) {
       for (const message of twilioMessages) {
@@ -562,8 +563,8 @@ export class RegistrationsService {
       }
       await this.twilioMessageRepository.save(twilioMessages);
       // Update the last message status of the new registration
-      await this.lastMessageStatusService.updateLastMessageStatus(
-        twilioMessages[0].sid,
+      await this.lastMessageStatusService.updateLatestMessage(
+        twilioMessages[0],
       );
     }
 

@@ -76,9 +76,9 @@ export class SmsService {
     if (message.errorMessage) {
       twilioMessage.errorMessage = message.errorMessage;
     }
-    await this.twilioMessageRepository.save(twilioMessage);
-    // TODO: performance of processing SMS is slow, commenting out below line would solve that
-    await this.lastMessageService.updateLastMessageStatus(message.sid);
+    const twilioMessageSave =
+      await this.twilioMessageRepository.save(twilioMessage);
+    await this.lastMessageService.updateLatestMessage(twilioMessageSave);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

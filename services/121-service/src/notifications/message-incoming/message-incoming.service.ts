@@ -62,7 +62,6 @@ export class MessageIncomingService {
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
-    private readonly lastMessageService: LastMessageStatusService,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
   ) {}
@@ -102,9 +101,10 @@ export class MessageIncomingService {
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus || callbackData.MessageStatus },
     );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
+    // no longer needed
+    // await this.lastMessageService.updateLastMessageStatus(
+    //   callbackData.MessageSid,
+    // );
   }
 
   public async addWhatsappStatusCallbackToQueue(
@@ -166,9 +166,10 @@ export class MessageIncomingService {
         errorMessage: callbackData.ErrorMessage,
       },
     );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
+    // no longer needed
+    // await this.lastMessageService.updateLastMessageStatus(
+    //   callbackData.MessageSid,
+    // );
 
     // Update intersolve voucher transaction status if applicable
     const relevantStatuses = [

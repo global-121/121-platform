@@ -6,9 +6,9 @@ import {
   ManyToOne,
   OneToOne,
 } from 'typeorm';
+import { Base121Entity } from '../base.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Base121Entity } from './../base.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
 import { MessageContentType } from './enum/message-type.enum';
 
 export enum NotificationType {
