@@ -70,7 +70,7 @@ export class RegistrationsBulkService {
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
+      this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter(
@@ -79,7 +79,10 @@ export class RegistrationsBulkService {
         registrationStatus,
         message,
         messageContentType,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getStatusUpdateBaseQuery(
+          allowedCurrentStatuses,
+          registrationStatus,
+        ),
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -103,7 +106,7 @@ export class RegistrationsBulkService {
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
+      this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
 
     const registrationForUpdate =
@@ -112,7 +115,7 @@ export class RegistrationsBulkService {
         programId,
         false,
         true,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
@@ -136,7 +139,7 @@ export class RegistrationsBulkService {
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+      this.getCustomMessageBaseQuery(),
     );
 
     const registrationForUpdate =
@@ -145,7 +148,7 @@ export class RegistrationsBulkService {
         programId,
         false,
         true,
-        this.getCustomMessageBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getCustomMessageBaseQuery(),
       );
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
@@ -209,8 +212,18 @@ export class RegistrationsBulkService {
 
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
+    registrationStatus?: RegistrationStatusEnum,
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    return this.getBaseQuery().andWhere({ status: In(allowedCurrentStatuses) });
+    let query = this.getBaseQuery().andWhere({
+      status: In(allowedCurrentStatuses),
+    });
+    if (registrationStatus === RegistrationStatusEnum.included) {
+      // this prohibits going from completed to included if 0 remaining payments
+      query = query.andWhere(
+        '(registration."paymentCountRemaining" > 0 OR registration."paymentCountRemaining" IS NULL)',
+      );
+    }
+    return query;
   }
 
   private getCustomMessageBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
