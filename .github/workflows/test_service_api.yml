@@ -58,6 +58,7 @@ jobs:
           /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
           /bin/sed -i '/^REDIS_HOST=/s/=.*/=services-121-redis-1/' ./services/.env.example
           /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
+          /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env.example
