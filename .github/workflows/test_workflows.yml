@@ -17,5 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint
+      - name: Lint GitHub Action workflows
         uses: raven-actions/actionlint@v1
+        continue-on-error: true
+
+      - name: Lint .env files
+        uses: dotenv-linter/action-dotenv-linter@v2
+        with:
+          reporter: github-code-suggestions
+          dotenv_linter_flags: --skip UnorderedKey
