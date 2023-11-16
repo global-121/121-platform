@@ -12,7 +12,6 @@ import { ApplicationModule } from './app.module';
 import {
   APP_FAVICON,
   APP_TITLE,
-  APP_VERSION,
   PORT,
   ROOT_URL,
   SWAGGER_CUSTOM_CSS,
@@ -41,7 +40,6 @@ async function bootstrap(): Promise<void> {
       SWAGGER_CUSTOM_JS,
     ).toString('base64url')}`,
     swaggerOptions: {
-      persistAuthorization: true,
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
       defaultModelExpandDepth: 10,
@@ -62,16 +60,12 @@ async function bootstrap(): Promise<void> {
       },
     }),
   );
-  app.use(bodyParser.json({ limit: '25mb' }));
+  app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
-      limit: '25mb',
       extended: true,
     }),
   );
-  app.use(cookieParser());
-
-  const server = await app.listen(PORT);
-  server.setTimeout(10 * 60 * 1000);
+  await app.listen(PORT);
 }
 void bootstrap();
