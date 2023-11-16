@@ -19,7 +19,11 @@ jobs:
 
       - name: Lint GitHub Action workflows
         uses: raven-actions/actionlint@v1
-        continue-on-error: true
+        with:
+          group-result: false
+          shellcheck: true
+          pyflakes: false
+          flags: '-ignore SC2086'
 
       - name: Lint .env files
         uses: dotenv-linter/action-dotenv-linter@v2
