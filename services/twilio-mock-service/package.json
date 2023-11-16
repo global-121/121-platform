@@ -15,7 +15,7 @@
     "fix:code": "npm run lint:code -- --fix",
     "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
     "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write",
-    "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node index.js",
+    "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit --no-save",
     "start:dev": "tsc-watch --noClear --onSuccess \"  node --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json"
   },
