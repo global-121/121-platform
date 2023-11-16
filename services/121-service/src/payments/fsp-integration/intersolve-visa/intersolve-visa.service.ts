@@ -98,7 +98,6 @@ export class IntersolveVisaService
         (t) => t.type === 'RESERVATION',
       );
     }
-
     return {
       lastUsedDate: this.getLastTransactionDate(walletReserveTransactions),
       spentThisMonth: this.calculateSpentThisMonth(walletReserveTransactions),
@@ -598,7 +597,7 @@ export class IntersolveVisaService
 
     const transactionInfo = await this.getTransactionInfo(
       wallet.tokenCode,
-      this.getFirstTimeOfCurrentMonth(),
+      this.getTwoMonthAgo(),
     );
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
@@ -608,17 +607,10 @@ export class IntersolveVisaService
     return await this.intersolveVisaWalletRepository.save(wallet);
   }
 
-  private getFirstTimeOfCurrentMonth(): Date {
-    const currentDate = new Date(); // Get the current date and time
-    const firstDayOfCurrentMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1,
-    );
-    const firstTimeOfFirstDay = new Date(
-      firstDayOfCurrentMonth.setHours(0, 0, 0, 0),
-    ); // Set time to midnight
-    return firstTimeOfFirstDay;
+  private getTwoMonthAgo(): Date {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 2);
+    return date;
   }
 
   public async getVisaWalletsAndDetails(
