@@ -33,8 +33,6 @@ services:
     container_name: twilio-mock-service
     env_file:
       - .env
-    environment:
-      - GLOBAL_121_VERSION
     ports:
       - '3001:3001'
     stdin_open: true
@@ -52,4 +50,3 @@ services:
     image: 'redis:6.0-alpine'
     ports:
       - '6379:6379'
-

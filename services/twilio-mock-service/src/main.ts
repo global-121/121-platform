@@ -30,7 +30,6 @@ async function bootstrap(): Promise<void> {
 
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
-    .setVersion(APP_VERSION)
     .addServer(ROOT_URL)
     .build();
   const document = SwaggerModule.createDocument(app, options);

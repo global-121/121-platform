@@ -1,6 +1,5 @@
 import packageJson = require('../package.json');
 
-export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV);
 export const PORT = 3001;
 export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 
@@ -11,7 +10,6 @@ export const ROOT_URL =
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
-export const APP_VERSION = process.env.GLOBAL_121_VERSION;
 
 let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {
@@ -19,7 +17,7 @@ if (process.env.ENV_NAME) {
 }
 export const APP_TITLE = appTitle;
 
-let headerStyle = '#171e50';
+let headerStyle = '#FFA368';
 let favIconUrl = '';
 
 if (process.env.ENV_ICON) {
