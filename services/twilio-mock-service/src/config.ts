@@ -7,7 +7,7 @@ export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 export const ROOT_URL =
   process.env.NODE_ENV === 'development'
     ? `http://localhost:${PORT}/`
-    : process.env.TWILIO_MOCK_SERVICE_URL;
+    : process.env.MOCK_TWILIO_URL;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
