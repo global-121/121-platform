@@ -114,7 +114,7 @@ export class MessageService {
     }
   }
 
-  public async getNotificationText(
+  private async getNotificationText(
     language: string,
     key: string,
     programId: number,
