@@ -1,6 +1,6 @@
 import packageJson = require('../package.json');
 
-export const PORT = 3001;
+export const PORT = process.env.NODE_ENV === 'development' ? 3001: 8080;
 export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 
 export const ROOT_URL =
