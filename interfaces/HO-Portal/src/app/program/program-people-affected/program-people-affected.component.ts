@@ -52,6 +52,7 @@ import { AnswerType } from '../../models/fsp.model';
 import {
   MessageStatus,
   MessageStatusMapping,
+  MessageTemplate,
 } from '../../models/message.model';
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
@@ -154,7 +155,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
-  public messageTemplates: [];
+  public messageTemplates: MessageTemplate[];
 
   constructor(
     private authService: AuthService,
@@ -264,9 +265,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.setupFilterSubscriptions();
 
     this.messageTemplates =
-      await this.registrationsService.getMessageTemplatesByProgramId(
-        this.programId,
-      );
+      await this.programsService.getMessageTemplatesByProgram(this.programId);
 
     await this.updateBulkActions();
 
@@ -421,14 +420,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       ...paymentBulkActions,
     ];
     this.bulkActions = unfilteredBulkAction.map((action) => {
-      this.messageTemplates.map((messageTemplate: any) => {
-        if (messageTemplate.type === action.id) {
-          action.confirmConditions.isTemplated = true;
-          action.confirmConditions.explanation = messageTemplate.message;
-          action.confirmConditions.inputRequired = false;
-        }
-      });
-
       action.enabled =
         this.authService.hasAllPermissions(
           this.programId,
@@ -802,7 +793,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public getCurrentBulkAction(): BulkAction {
-    return this.bulkActions.find((i: BulkAction) => i.id === this.action);
+    const action = this.bulkActions.find(
+      (i: BulkAction) => i.id === this.action,
+    );
+
+    const messageTemplate = this.messageTemplates?.find(
+      (template) => template.type === this.action && template.language == 'en',
+    );
+
+    if (messageTemplate) {
+      action.confirmConditions.isTemplated = true;
+      action.confirmConditions.explanation = messageTemplate.message;
+      action.confirmConditions.inputRequired = false;
+    }
+    return action;
   }
 
   private updateSubmitWarning(
