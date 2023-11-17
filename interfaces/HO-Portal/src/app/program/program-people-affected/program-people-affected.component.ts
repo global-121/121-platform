@@ -811,6 +811,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         'page.program.program-people-affected.action-inputs.templated-support',
       );
       action.confirmConditions.inputRequired = false;
+      action.confirmConditions.checkboxChecked = true;
     }
     return action;
   }
