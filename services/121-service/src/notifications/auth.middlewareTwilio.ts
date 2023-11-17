@@ -13,7 +13,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
   ): Promise<any> {
     const twilioSignature = req.headers['x-twilio-signature'];
 
-    if (DEBUG) {
+    if (process.env.MOCK_TWILIO) {
       return next();
     }
 
