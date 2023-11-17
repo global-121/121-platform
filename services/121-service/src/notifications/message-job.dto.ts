@@ -12,4 +12,15 @@ export class MessageJobDto {
   key?: string;
   tryWhatsApp? = false;
   messageContentType?: MessageContentType;
+  mediaUrl?: string;
+  customData?: MessageJobCustomDataDto;
+}
+
+export class MessageJobCustomDataDto {
+  payment?: number;
+  amount?: number;
+  intersolveVoucherId?: number;
+  replyMessage?: boolean;
+  pendingMessageId?: number;
+  existingMessageSid?: string;
 }

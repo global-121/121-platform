@@ -4,31 +4,27 @@ import { MessageService } from './message.service';
 import { SmsModule } from './sms/sms.module';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from './whatsapp/whatsapp.module';
-import { BullModule } from '@nestjs/bull';
 import { MessageProcessor } from './processors/message.processor';
 import { AzureLogService } from '../shared/services/azure-log.service';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
+import { QueueMessageModule } from './queue-message/queue-message.module';
+import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TryWhatsappEntity]),
+    TypeOrmModule.forFeature([
+      TryWhatsappEntity,
+      RegistrationEntity,
+      WhatsappPendingMessageEntity,
+    ]),
     WhatsappModule,
     SmsModule,
-    BullModule.registerQueue({
-      name: 'message',
-      processors: [
-        {
-          path: 'src/notifications/processors/message.processor.ts',
-          concurrency: 16,
-        },
-      ],
-      limiter: {
-        max: 50, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
+    QueueMessageModule,
+    IntersolveVoucherModule,
   ],
   providers: [MessageService, MessageProcessor, AzureLogService],
   controllers: [],
-  exports: [MessageService, BullModule],
+  exports: [MessageService],
 })
 export class MessageModule {}

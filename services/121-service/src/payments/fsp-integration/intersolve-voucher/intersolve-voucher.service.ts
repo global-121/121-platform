@@ -30,6 +30,7 @@ import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -57,7 +58,7 @@ export class IntersolveVoucherService
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly dataSource: DataSource,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async sendPayment(
@@ -315,42 +316,16 @@ export class IntersolveVoucherService
       .split('{{1}}')
       .join(String(calculatedAmount));
 
-    await this.whatsappService
-      .sendWhatsapp(
-        whatsappPayment,
-        paymentInfo.paymentAddress,
-        IntersolveVoucherPayoutStatus.InitialMessage,
-        null,
-        registration.id,
-        MessageContentType.paymentTemplated,
-      )
-      .then(
-        async (response) => {
-          const messageSid = response;
-          await this.storeTransactionResult(
-            payment,
-            calculatedAmount,
-            registration.id,
-            1,
-            StatusEnum.waiting,
-            null,
-            registration.programId,
-            messageSid,
-          );
-
-          result.status = StatusEnum.waiting;
-          result.customData = {
-            messageSid: messageSid,
-            IntersolvePayoutStatus:
-              IntersolveVoucherPayoutStatus.InitialMessage,
-          };
-          return;
-        },
-        (error) => {
-          result.message = error;
-          result.status = StatusEnum.error;
-        },
-      );
+    await this.queueMessageService.addMessageToQueue(
+      registration,
+      whatsappPayment,
+      null,
+      false,
+      MessageContentType.paymentTemplated,
+      null,
+      { payment: payment, amount: calculatedAmount },
+    );
+    result.status = StatusEnum.waiting;
     return result;
   }
 
@@ -654,7 +629,7 @@ export class IntersolveVoucherService
   }
 
   public async storeTransactionResult(
-    paymentNr: number,
+    payment: number,
     amount: number,
     registrationId: number,
     transactionStep: number,
@@ -662,7 +637,15 @@ export class IntersolveVoucherService
     errorMessage: string,
     programId: number,
     messageSid?: string,
+    intersolveVoucherId?: number,
   ): Promise<void> {
+    if (intersolveVoucherId) {
+      const intersolveVoucher = await this.intersolveVoucherRepository.findOne({
+        where: { id: intersolveVoucherId },
+      });
+      intersolveVoucher.send = true;
+      await this.intersolveVoucherRepository.save(intersolveVoucher);
+    }
     const transactionResultDto = await this.createTransactionResult(
       amount,
       registrationId,
@@ -674,7 +657,7 @@ export class IntersolveVoucherService
     await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
       programId,
-      paymentNr,
+      payment,
       transactionStep,
     );
   }
