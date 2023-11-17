@@ -27,7 +27,6 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
-import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { ProcessName } from '../enum/processor.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
 
