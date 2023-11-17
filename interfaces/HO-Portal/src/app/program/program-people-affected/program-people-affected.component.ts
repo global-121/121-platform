@@ -803,7 +803,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     if (messageTemplate) {
       action.confirmConditions.isTemplated = true;
-      action.confirmConditions.explanation = messageTemplate.message;
+      action.confirmConditions.explanation = this.translate.instant(
+        'page.program.program-people-affected.action-inputs.templated-explanation',
+      );
+      action.confirmConditions.templatedMessage = messageTemplate.message;
+      action.confirmConditions.supportMessage = this.translate.instant(
+        'page.program.program-people-affected.action-inputs.templated-support',
+      );
       action.confirmConditions.inputRequired = false;
     }
     return action;

@@ -25,6 +25,8 @@ export interface InputProps {
     type: 'min' | 'max';
   };
   isTemplated?: boolean;
+  templatedMessage?: string;
+  supportMessage?: string;
 }
 
 @Component({
