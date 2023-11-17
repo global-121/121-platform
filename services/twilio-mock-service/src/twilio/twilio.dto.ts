@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { MessageContentType } from './enum/message-type.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -15,34 +14,34 @@ export enum TwilioStatus {
 export class TwilioMessagesCreateDto {
   @ApiProperty()
   @IsString()
-  public readonly body: string;
+  public readonly Body: string;
 
   @ApiProperty()
   @IsString()
-  public readonly messagingServiceSid: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly from: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly statusCallback: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly to: string;
+  public readonly MessagingServiceSid: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly mediaUrl: string;
+  public readonly From: string;
 
-  @ApiProperty({ example: MessageContentType.genericTemplated })
+  @ApiProperty()
+  @IsString()
+  public readonly StatusCallback: string;
+
+  @ApiProperty()
+  @IsString()
+  public readonly To: string;
+
+  @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly messageContentType: string;
+  public readonly MediaUrl: string;
+
+  @ApiProperty({ example: 'generic-templated' })
+  @IsString()
+  @IsOptional()
+  public readonly MessageContentType: string;
 }
 
 class AccountSidObject {
@@ -93,9 +92,6 @@ export class TwilioStatusCallbackDto {
 
   @IsOptional()
   public SmsSid: string;
-
-  @IsOptional()
-  public SmsStatus: string;
 
   @IsOptional()
   public To: string;

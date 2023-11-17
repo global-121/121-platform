@@ -15,6 +15,7 @@ import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service'
 import { IntersolveIssueVoucherRequestEntity } from '../intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '../intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../intersolve-voucher.service';
+import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -34,6 +35,7 @@ export class IntersolveVoucherCronService {
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly whatsappService: WhatsappService,
+    private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
@@ -174,12 +176,12 @@ export class IntersolveVoucherCronService {
           .split('{{1}}')
           .join(unsentIntersolveVoucher.amount);
 
-        await this.whatsappService.sendWhatsapp(
+        // TODO: check this
+        await this.queueMessageService.addMessageToQueue(
+          registration,
           whatsappPayment,
-          fromNumber,
-          IntersolveVoucherPayoutStatus.InitialMessage,
           null,
-          registration.id,
+          false,
           MessageContentType.paymentReminder,
         );
         const reminderVoucher = await intersolveVoucherRepository.findOne({

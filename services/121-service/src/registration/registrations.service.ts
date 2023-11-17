@@ -14,7 +14,6 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -59,6 +58,7 @@ import {
   RegistrationsImportService,
 } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -90,7 +90,7 @@ export class RegistrationsService {
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -639,9 +639,8 @@ export class RegistrationsService {
 
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    await this.messageService.addMessageToQueue(
+    await this.queueMessageService.addMessageToQueue(
       registration,
-      registration.program.id,
       null,
       RegistrationStatusEnum.registered,
       null,

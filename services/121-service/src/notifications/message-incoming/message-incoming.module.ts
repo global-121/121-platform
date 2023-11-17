@@ -26,6 +26,7 @@ import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-messa
 import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
 import { AzureLogService } from '../../shared/services/azure-log.service';
+import { QueueMessageModule } from '../queue-message/queue-message.module';
 import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
@@ -47,6 +48,7 @@ import { LatestMessageEntity } from '../latest-message.entity';
     UserModule,
     IntersolveVoucherModule,
     WhatsappModule,
+    QueueMessageModule,
     BullModule.registerQueue({
       name: 'messageStatusCallback',
       processors: [

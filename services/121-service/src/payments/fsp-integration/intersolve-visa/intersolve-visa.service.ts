@@ -63,7 +63,7 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { MessageService } from '../../../notifications/message.service';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 
 @Injectable()
 export class IntersolveVisaService
@@ -80,7 +80,7 @@ export class IntersolveVisaService
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async getTransactionInfo(
@@ -761,9 +761,8 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    await this.messageService.addMessageToQueue(
+    await this.queueMessageService.addMessageToQueue(
       wallet.intersolveVisaCustomer.registration,
-      programId,
       null,
       notificationKey,
       false,
@@ -1117,9 +1116,8 @@ export class IntersolveVisaService
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
-    await this.messageService.addMessageToQueue(
+    await this.queueMessageService.addMessageToQueue(
       registration,
-      programId,
       null,
       ProgramNotificationEnum.reissueVisaCard,
       false,

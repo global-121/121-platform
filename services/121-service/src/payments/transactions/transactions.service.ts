@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
-import { MessageService } from '../../notifications/message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
@@ -21,6 +20,7 @@ import {
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 
 @Injectable()
 export class TransactionsService {
@@ -39,7 +39,9 @@ export class TransactionsService {
 
   private readonly fallbackLanguage = 'en';
 
-  public constructor(private readonly messageService: MessageService) {}
+  public constructor(
+    private readonly queueMessageService: QueueMessageService,
+  ) {}
 
   public async getLastTransactions(
     programId: number,
@@ -186,6 +188,7 @@ export class TransactionsService {
 
     const resultTransaction =
       await this.transactionRepository.save(transaction);
+
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },
@@ -214,9 +217,8 @@ export class TransactionsService {
           program.notifications,
           transactionNotifcation,
         );
-        await this.messageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue(
           registration,
-          programId,
           message,
           null,
           false,

@@ -5,29 +5,23 @@ import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import { MessageContentType } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
-  private readonly fallbackLanguage = 'en';
+
   private readonly whatsappTemplatedMessageKeys = [
     String(ProgramNotificationEnum.whatsappPayment),
     String(ProgramNotificationEnum.whatsappGenericMessage),
@@ -50,14 +44,16 @@ export class WhatsappService {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-      statusCallback: EXTERNAL_API.whatsAppStatus,
+      statusCallback: !!process.env.MOCK_TWILIO // This is needed to send reply messages when using MOCK_TWILIO
+        ? `${EXTERNAL_API.whatsAppStatus}?messageContentType=${messageContentType}`
+        : EXTERNAL_API.whatsAppStatus,
       to: `whatsapp:${hasPlus ? '' : '+'}${recipientPhoneNr}`,
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
     if (!!process.env.MOCK_TWILIO) {
-      payload['messageType'] = messageType;
+      payload['messageContentType'] = messageContentType;
     }
     let errorOccurred = false;
     let messageToStore;
@@ -87,59 +83,6 @@ export class WhatsappService {
         errorOccurred ? null : existingSidToUpdate,
       );
     }
-  }
-
-  public async queueMessageSendTemplate(
-    message: string,
-    recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
-    mediaUrl: null | string,
-    registrationId: number,
-    messageContentType: MessageContentType,
-  ): Promise<any> {
-    const pendingMesssage = new WhatsappPendingMessageEntity();
-    pendingMesssage.body = message;
-    pendingMesssage.to = recipientPhoneNr;
-    pendingMesssage.mediaUrl = mediaUrl;
-    pendingMesssage.messageType = messageType;
-    pendingMesssage.registrationId = registrationId;
-    pendingMesssage.contentType = messageContentType;
-    await this.whatsappPendingMessageRepo.save(pendingMesssage);
-
-    const registration = await this.registrationRepository.findOne({
-      where: { id: registrationId },
-      relations: ['program'],
-    });
-    const language = registration.preferredLanguage || this.fallbackLanguage;
-    const whatsappGenericMessage = this.getGenericNotificationText(
-      language,
-      registration.program,
-    );
-    return await this.sendWhatsapp(
-      whatsappGenericMessage,
-      recipientPhoneNr,
-      messageType,
-      mediaUrl,
-      registrationId,
-      MessageContentType.genericTemplated,
-    );
-  }
-
-  public getGenericNotificationText(
-    language: string,
-    program: ProgramEntity,
-  ): string {
-    const key = ProgramNotificationEnum.whatsappGenericMessage;
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
-
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
-    }
-    if (notifications[key]) {
-      return notifications[key];
-    }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
   public async storeSendWhatsapp(
