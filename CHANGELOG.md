@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.8...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.9...master)
 
 ---
+## [1.105.9](https://github.com/global-121/121-platform/compare/v1.105.8...v1.105.9) - 2023-11-15
+
+### Fixed
+
+- Filter for phonenumber of imported/invited PA
+
 
 ## [1.105.8](https://github.com/global-121/121-platform/compare/v1.105.7...v1.105.8) - 2023-11-15
 
@@ -66,9 +72,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded Node.js to v18 for PA-App + HO-Portal.  
+- Upgraded Node.js to v18 for PA-App + HO-Portal.
   Make sure to use your Node version manager to install+run the newest version.
-- Upgraded Node.js to v18 for 121-service.  
+- Upgraded Node.js to v18 for 121-service.
   Make sure to recreate the Docker image using `npm run start:services`.
 - Improved performance of 'last payment summary' in payment page
 - Refactored API-paths
