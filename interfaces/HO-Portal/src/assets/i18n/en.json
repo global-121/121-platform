@@ -368,7 +368,7 @@
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
           "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
-          "message-explanation": "Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "message-explanation": "There is no templated message available for this action. Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "templated-explanation": "The following message will be sent to PAs in their own language.",
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
           "reject": {
