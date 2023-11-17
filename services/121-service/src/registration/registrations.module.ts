@@ -38,6 +38,7 @@ import { RegistrationsBulkService } from './services/registrations-bulk.service'
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { QueueMessageModule } from '../notifications/queue-message/queue-message
       SafaricomRequestEntity,
       RegistrationViewEntity,
       LatestTransactionEntity,
+      LatestMessageEntity,
     ]),
     UserModule,
     HttpModule,

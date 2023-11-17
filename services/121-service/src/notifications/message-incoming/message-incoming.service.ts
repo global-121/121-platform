@@ -15,7 +15,6 @@ import {
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -63,7 +62,6 @@ export class MessageIncomingService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly whatsappService: WhatsappService,
     private readonly dataSource: DataSource,
-    private readonly lastMessageService: LastMessageStatusService,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
@@ -103,9 +101,6 @@ export class MessageIncomingService {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus || callbackData.MessageStatus },
-    );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
     );
   }
 
@@ -167,9 +162,6 @@ export class MessageIncomingService {
         errorCode: callbackData.ErrorCode,
         errorMessage: callbackData.ErrorMessage,
       },
-    );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
     );
 
     // Update intersolve voucher transaction status if applicable

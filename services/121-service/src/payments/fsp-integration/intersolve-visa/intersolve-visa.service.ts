@@ -1077,15 +1077,17 @@ export class IntersolveVisaService
     newWallet.debitCardCreated = true;
     await this.intersolveVisaWalletRepository.save(newWallet);
 
-    // 7. unload balance from old wallet
-    const unloadResult = await this.unloadBalanceVisaCard(
-      oldWallet.tokenCode,
-      currentBalance,
-    );
-    if (unloadResult.status !== 200) {
-      const errors =
-        'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    // 7. unload balance from old wallet (don't do this if the balance is < 1 because Intersolve doesn't allow this)
+    if (currentBalance >= 1) {
+      const unloadResult = await this.unloadBalanceVisaCard(
+        oldWallet.tokenCode,
+        currentBalance,
+      );
+      if (unloadResult.status !== 200) {
+        const errors =
+          'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
+        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
 
     // 8. block old wallet

@@ -297,21 +297,20 @@ export class TransactionsService {
       })
       .getRawOne();
     // Match that against registration.maxPayments
-
+    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
+    if (
+      enableMaxPayments &&
+      registration.maxPayments &&
+      currentPaymentCount >= registration.maxPayments &&
+      registration.registrationStatus === RegistrationStatusEnum.included
+    ) {
+      registration.registrationStatus = RegistrationStatusEnum.completed;
+      await this.registrationRepository.save(registration);
+    }
+    // After .save() because it otherwise overwrites with old paymentCount
     await this.registrationRepository.update(registration.id, {
       paymentCount: currentPaymentCount,
     });
-
-    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
-    if (enableMaxPayments && registration.maxPayments) {
-      if (
-        currentPaymentCount >= registration.maxPayments &&
-        registration.registrationStatus === RegistrationStatusEnum.included
-      ) {
-        registration.registrationStatus = RegistrationStatusEnum.completed;
-        await this.registrationRepository.save(registration);
-      }
-    }
   }
 
   public async storeAllTransactions(

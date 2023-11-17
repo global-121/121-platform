@@ -26,8 +26,8 @@ import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-messa
 import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
 import { AzureLogService } from '../../shared/services/azure-log.service';
-import { MessageModule } from '../message.module';
 import { QueueMessageModule } from '../queue-message/queue-message.module';
+import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
@@ -42,6 +42,7 @@ import { QueueMessageModule } from '../queue-message/queue-message.module';
       TryWhatsappEntity,
       WhatsappPendingMessageEntity,
       WhatsappTemplateTestEntity,
+      LatestMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
@@ -57,7 +58,7 @@ import { QueueMessageModule } from '../queue-message/queue-message.module';
         },
       ],
       limiter: {
-        max: 10, // Max number of jobs processed
+        max: 50, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),
@@ -65,9 +66,9 @@ import { QueueMessageModule } from '../queue-message/queue-message.module';
   providers: [
     MessageIncomingService,
     SmsService,
-    LastMessageStatusService,
     MessageStatusCallbackProcessor,
     AzureLogService,
+    LastMessageStatusService,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],

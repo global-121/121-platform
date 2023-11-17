@@ -283,32 +283,9 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  // TODO: REFACTOR: the Controller should throw the HTTP Status Code
-  public async findUserProgramAssignmentsOrThrow(
-    userId: number,
-  ): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: [
-        'programAssignments',
-        'programAssignments.program',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
-    });
-    if (
-      !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
-    ) {
-      const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return user;
-  }
-
   public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
-    const user = await this.findUserProgramAssignmentsOrThrow(userId);
+    const user =
+      await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
     const programs = await this.programRepository.find({
       where: { id: In(programIds) },
