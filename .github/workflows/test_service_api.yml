@@ -47,15 +47,11 @@ jobs:
           /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+          /bin/sed -i '/^TWILIO_AUTHTOKEN=/s/=.*/=abc/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_TWILIO_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
-          /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
-          /bin/sed -i '/^MOCK_TWILIO_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
-          /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
-          /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
-          /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
-          /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
           /bin/sed -i '/^REDIS_HOST=/s/=.*/=services-121-redis-1/' ./services/.env.example
           /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
           /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
