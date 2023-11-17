@@ -23,7 +23,7 @@ export class MessageService {
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  public readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
 
@@ -38,13 +38,6 @@ export class MessageService {
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
-    // TODO: this was not being followed e.g. for payment-instructions. Can we just remove it?
-    // if (!messageJobDto.message && !messageJobDto.key) {
-    //   throw new HttpException(
-    //     'A message or a key should be supplied.',
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
     try {
       const messageText = messageJobDto.message
         ? messageJobDto.message

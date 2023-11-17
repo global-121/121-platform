@@ -82,6 +82,8 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@automock/adapters.nestjs": "^2.0.0",
+    "@automock/jest": "^2.0.0",
     "@types/cookie-parser": "^1.4.6",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.7",
