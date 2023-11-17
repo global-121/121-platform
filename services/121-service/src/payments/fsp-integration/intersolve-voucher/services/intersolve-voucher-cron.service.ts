@@ -10,7 +10,6 @@ import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../../registration/registration.entity';
 import { TransactionEntity } from '../../../transactions/transaction.entity';
-import { IntersolveVoucherPayoutStatus } from '../enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '../intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '../intersolve-voucher.entity';

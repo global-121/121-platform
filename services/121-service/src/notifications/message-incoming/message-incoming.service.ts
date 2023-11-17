@@ -9,20 +9,17 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
-import { StatusEnum } from '../../shared/enum/status.enum';
 import {
   MessageContentType,
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { waitFor } from '../../utils/waitFor.helper';
@@ -32,7 +29,6 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { ProcessName } from '../enum/processor.names.enum';
-import { MessageService } from '../message.service';
 import { QueueMessageService } from '../queue-message/queue-message.service';
 
 @Injectable()
@@ -60,7 +56,6 @@ export class MessageIncomingService {
   public constructor(
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly whatsappService: WhatsappService,
     private readonly dataSource: DataSource,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
