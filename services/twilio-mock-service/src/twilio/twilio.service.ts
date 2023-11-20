@@ -13,7 +13,7 @@ import { setTimeout } from 'node:timers/promises';
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {
   FailGeneric = '15005550001',
-  FailIncoming = '15005550002', // TODO: unclear what this is supposed to do
+  NoIncomingYesMessage = '15005550002',
   FailFaultyTemplateError = '15005550003',
   FailNoWhatsAppNumber = '15005550004',
 }
@@ -149,7 +149,9 @@ export class TwilioService {
     }
     if (
       isYesMessage &&
-      !twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailIncoming)
+      !twilioMessagesCreateDto.To.includes(
+        MockPhoneNumbers.NoIncomingYesMessage,
+      )
     ) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
         (e) => {

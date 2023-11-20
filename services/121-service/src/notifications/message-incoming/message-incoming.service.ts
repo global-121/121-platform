@@ -207,7 +207,7 @@ export class MessageIncomingService {
       message.mediaUrl,
       {
         replyMessage: true,
-        pendingMessageId: message.id, // This will also get filled incorrctly for payment reply message, but it will simply not be handled on the processor-side
+        pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
     );
