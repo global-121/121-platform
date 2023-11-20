@@ -13,9 +13,10 @@ import { setTimeout } from 'node:timers/promises';
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {
   FailGeneric = '15005550001',
-  NoIncomingYesMessage = '15005550002',
-  FailFaultyTemplateError = '15005550003',
-  FailNoWhatsAppNumber = '15005550004',
+  // below numbers start with '16..' to avoid confusion with real Twilio test numbers (https://www.twilio.com/docs/iam/test-credentials#test-sms-messages-parameters-From)
+  NoIncomingYesMessage = '16005550002',
+  FailFaultyTemplateError = '16005550003',
+  FailNoWhatsAppNumber = '16005550004',
 }
 
 @Injectable()
