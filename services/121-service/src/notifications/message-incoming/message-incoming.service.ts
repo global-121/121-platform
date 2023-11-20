@@ -235,7 +235,7 @@ export class MessageIncomingService {
           w.body,
           null,
           false,
-          null,
+          w.contentType,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
