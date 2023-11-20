@@ -81,7 +81,8 @@ export class TwilioService {
       twilioMessagesCreateDto.To.includes(
         MockPhoneNumbers.FailFaultyTemplateError,
       ) &&
-      twilioMessagesCreateDto.To.includes('whatsapp') // only return this error on whatsapp
+      twilioMessagesCreateDto.To.includes('whatsapp') && // only return this error on whatsapp
+      !twilioMessagesCreateDto.StatusCallback.includes('templated') // only return this error on non-templated messages
     ) {
       response.status = TwilioStatus.undelivered;
       response.error_code = '63016';
