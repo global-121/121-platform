@@ -66,6 +66,18 @@ export class TwilioService {
       ).catch((e) => {
         console.log('TWILIO MOCK: Error sending status response: ', e);
       });
+    } else if (twilioMessagesCreateDto.To.includes('15005550003')) {
+      response.status = TwilioStatus.undelivered;
+      response.error_code = '63016';
+      response.error_message =
+        'Failed to send freeform message because you are outside the allowed window. If you are using WhatsApp, please use a Message Template.';
+      this.sendStatusResponse121(
+        twilioMessagesCreateDto,
+        messageSid,
+        TwilioStatus.undelivered,
+      ).catch((e) => {
+        console.log('TWILIO MOCK: Error sending status response: ', e);
+      });
     } else {
       let statuses = [];
       if (twilioMessagesCreateDto.To.includes('whatsapp')) {
@@ -104,6 +116,7 @@ export class TwilioService {
     }
 
     // await waitFor(30); // no longer needed when this is a separate service?
+    console.log('response: ', response);
     return response;
   }
 
@@ -131,6 +144,11 @@ export class TwilioService {
     if (twilioMessagesCreateDto.To.includes('15005550001')) {
       request.ErrorCode = '1';
       request.ErrorMessage = 'Magic fail';
+    }
+    if (twilioMessagesCreateDto.To.includes('15005550003')) {
+      request.ErrorCode = '63016';
+      request.ErrorMessage =
+        'Failed to send freeform message because you are outside the allowed window. If you are using WhatsApp, please use a Message Template.';
     }
     const httpService = new HttpService();
     const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
