@@ -127,17 +127,12 @@ export class TwilioService {
       } else {
         statuses = [TwilioStatus.queued, TwilioStatus.sent];
       }
-      const modifiedResponse = { ...response };
-      for (const status of statuses) {
-        modifiedResponse.status = status;
-        this.sendStatusResponse121(
-          twilioMessagesCreateDto,
-          messageSid,
-          modifiedResponse,
-        ).catch((e) => {
-          console.log('TWILIO MOCK: Error sending status response: ', e);
-        });
-      }
+      this.sendMultipleSuccessStatusResponses(
+        twilioMessagesCreateDto,
+        messageSid,
+        response,
+        statuses,
+      );
     }
 
     // 3. and if applicable, send incoming whatsapp reply
@@ -162,6 +157,26 @@ export class TwilioService {
 
     // await waitFor(30); // TODO: no longer needed when this is a separate service?
     return response;
+  }
+
+  private async sendMultipleSuccessStatusResponses(
+    twilioMessagesCreateDto: TwilioMessagesCreateDto,
+    messageSid: string,
+    response,
+    statuses: TwilioStatus[],
+  ) {
+    for (const status of statuses) {
+      const modifiedResponse = { ...response };
+      modifiedResponse.status = status;
+      await setTimeout(30); // ensure order and some delay so that initial api-response is stored in 121-db
+      this.sendStatusResponse121(
+        twilioMessagesCreateDto,
+        messageSid,
+        modifiedResponse,
+      ).catch((e) => {
+        console.log('TWILIO MOCK: Error sending status response: ', e);
+      });
+    }
   }
 
   private async sendStatusResponse121(
@@ -199,6 +214,7 @@ export class TwilioService {
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     messageSid: string,
   ): Promise<void> {
+    await setTimeout(300);
     if (
       twilioMessagesCreateDto.From &&
       twilioMessagesCreateDto.From.includes('whatsapp')
