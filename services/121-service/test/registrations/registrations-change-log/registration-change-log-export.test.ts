@@ -27,9 +27,6 @@ const dataUpdatePa2 = {
   paymentAmountMultiplier: 2,
 };
 
-// This test takes a lot of time because there are my statusses to check
-jest.setTimeout(15_000);
-
 describe('Export registration change log', () => {
   let accessToken: string;
 
@@ -72,6 +69,7 @@ describe('Export registration change log', () => {
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);
     const data = body.data;
+    console.log(data, 'data');
     expect(data.length).toBe(3);
     const admin = 'admin@example.org';
     const checkingMap1 = {
@@ -102,6 +100,8 @@ describe('Export registration change log', () => {
       reason: reason2,
     };
     for (const [key, value] of Object.entries(checkingMap1)) {
+      console.log(data[0][key], 'key');
+      console.log(value, 'value');
       expect(data[0][key]).toBe(value);
     }
     for (const [key, value] of Object.entries(checkingMap2)) {
