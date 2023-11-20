@@ -27,6 +27,9 @@ const dataUpdatePa2 = {
   paymentAmountMultiplier: 2,
 };
 
+// This test takes a lot of time because there are my statusses to check
+jest.setTimeout(15_000);
+
 describe('Export registration change log', () => {
   let accessToken: string;
 
