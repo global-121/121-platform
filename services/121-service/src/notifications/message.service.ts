@@ -47,10 +47,10 @@ export class MessageService {
             messageJobDto.programId,
           );
 
-      const whatsappNumber = messageJobDto.customData?.tryWhatsapp
+      const whatsappPhoneNumber = messageJobDto.customData?.tryWhatsapp
         ? messageJobDto.phoneNumber
         : messageJobDto.whatsappPhoneNumber;
-      if (whatsappNumber) {
+      if (whatsappPhoneNumber) {
         if (
           ReplacedByGenericTemplateMessageTypes.includes(
             messageJobDto.messageContentType,
@@ -59,7 +59,7 @@ export class MessageService {
         ) {
           await this.storePendingMessageAndSendTemplate(
             messageText,
-            whatsappNumber,
+            whatsappPhoneNumber,
             null,
             null,
             messageJobDto.id,
@@ -72,8 +72,7 @@ export class MessageService {
           await this.whatsappService
             .sendWhatsapp(
               messageJobDto.message,
-              messageJobDto.phoneNumber,
-              null,
+              whatsappPhoneNumber,
               messageJobDto.mediaUrl,
               messageJobDto.id,
               messageJobDto.messageContentType,

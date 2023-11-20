@@ -32,7 +32,6 @@ export class WhatsappService {
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
