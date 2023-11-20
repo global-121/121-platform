@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { MessageContentType } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
