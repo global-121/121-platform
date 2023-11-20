@@ -110,6 +110,7 @@ export class MessageIncomingService {
   public async processWhatsappStatusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
+    console.log('callbackData: ', callbackData);
     if (
       callbackData.MessageStatus === TwilioStatus.delivered ||
       callbackData.MessageStatus === TwilioStatus.failed
@@ -130,6 +131,7 @@ export class MessageIncomingService {
         callbackData.MessageStatus,
       )
     ) {
+      console.log('63016');
       const message = await this.twilioMessageRepository.findOne({
         where: { sid: callbackData.MessageSid },
       });
