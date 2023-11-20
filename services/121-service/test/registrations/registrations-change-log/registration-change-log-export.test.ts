@@ -73,7 +73,6 @@ describe('Export registration change log', () => {
     const data = fieldOrder.map((fieldName) =>
       body.data.find((item) => item.fieldName === fieldName),
     );
-    console.log(data, 'data');
     expect(data.length).toBe(3);
     const admin = 'admin@example.org';
     const checkingMap1 = {
