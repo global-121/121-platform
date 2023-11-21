@@ -126,18 +126,6 @@ export class CreateProgramDto {
   })
   public readonly meetingDocuments: JSON;
 
-  @ApiProperty({
-    example: {
-      en: {
-        registered: 'You have been successfully registered for the program.',
-      },
-      nl: {
-        included: 'Je bent succesvol geregistreerd voor het programma.',
-      },
-    },
-  })
-  public readonly notifications: JSON;
-
   @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   public readonly phoneNumberPlaceholder: string;
