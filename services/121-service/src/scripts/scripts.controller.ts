@@ -46,6 +46,11 @@ export class ScriptsController {
     required: false,
     description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x, e.g. 4=16 messages per PA)`,
   })
+  @ApiQuery({
+    name: 'isApiTests',
+    required: false,
+    description: `Only for API tests`,
+  })
   @ApiOperation({ summary: 'Reset instance database' })
   @Post('/reset')
   public async resetDb(
@@ -55,6 +60,7 @@ export class ScriptsController {
     mockPowerNumberRegistrations: number,
     @Query('mockNumberPayments') mockNumberPayments: number,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: number,
+    @Query('isApiTests') isApiTests: boolean,
     @Res() res,
   ): Promise<string> {
     if (body.secret !== process.env.RESET_SECRET) {
@@ -94,6 +100,7 @@ export class ScriptsController {
         .send('Not a known program (seed dummy only works in development)');
     }
     await seed.run(
+      isApiTests,
       mockPowerNumberRegistrations,
       mockNumberPayments,
       mockPowerNumberMessages,
