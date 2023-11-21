@@ -119,7 +119,6 @@ export class MessageIncomingService {
         where: { sid: callbackData.SmsSid },
         relations: ['registration'],
       });
-      console.log('tryWhatsapp: ', tryWhatsapp);
       if (tryWhatsapp) {
         await this.handleTryWhatsappResult(callbackData, tryWhatsapp);
       }

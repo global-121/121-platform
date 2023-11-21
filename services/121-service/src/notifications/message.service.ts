@@ -36,7 +36,6 @@ export class MessageService {
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
-    console.log('PROCESSOR messageJobDto: ', messageJobDto);
     try {
       const messageText = messageJobDto.message
         ? messageJobDto.message
