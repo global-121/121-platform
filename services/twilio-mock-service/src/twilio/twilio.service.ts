@@ -10,6 +10,15 @@ import { API_PATHS, EXTERNAL_API } from '../config';
 import { lastValueFrom } from 'rxjs';
 import { setTimeout } from 'node:timers/promises';
 
+// Use any other phone-number to trigger a successful response
+enum MockPhoneNumbers {
+  FailGeneric = '15005550001',
+  // below numbers start with '16..' to avoid confusion with real Twilio test numbers (https://www.twilio.com/docs/iam/test-credentials#test-sms-messages-parameters-From)
+  NoIncomingYesMessage = '16005550002',
+  FailFaultyTemplateError = '16005550003',
+  FailNoWhatsAppNumber = '16005550004',
+}
+
 @Injectable()
 export class TwilioService {
   public fetchPhoneNumber(phoneNumber: string): {
@@ -55,18 +64,59 @@ export class TwilioService {
         media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
       },
     };
-    if (twilioMessagesCreateDto.To.includes('15005550001')) {
+
+    // 1. First loop through different error rseponses and return early
+    if (twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailGeneric)) {
       response.status = TwilioStatus.failed;
       response.error_code = '1';
       response.error_message = 'Magic fail';
       this.sendStatusResponse121(
         twilioMessagesCreateDto,
         messageSid,
-        TwilioStatus.failed,
+        response,
       ).catch((e) => {
         console.log('TWILIO MOCK: Error sending status response: ', e);
       });
+      return response;
+    } else if (
+      twilioMessagesCreateDto.To.includes(
+        MockPhoneNumbers.FailFaultyTemplateError,
+      ) &&
+      twilioMessagesCreateDto.To.includes('whatsapp') && // only return this error on whatsapp
+      !twilioMessagesCreateDto.StatusCallback.includes('templated') // only return this error on non-templated messages
+    ) {
+      response.status = TwilioStatus.undelivered;
+      response.error_code = '63016';
+      response.error_message =
+        'Failed to send freeform message because you are outside the allowed window. If you are using WhatsApp, please use a Message Template.';
+      this.sendStatusResponse121(
+        twilioMessagesCreateDto,
+        messageSid,
+        response,
+      ).catch((e) => {
+        console.log('TWILIO MOCK: Error sending status response: ', e);
+      });
+      return response;
+    } else if (
+      twilioMessagesCreateDto.To.includes(
+        MockPhoneNumbers.FailNoWhatsAppNumber,
+      ) &&
+      twilioMessagesCreateDto.To.includes('whatsapp') // only return this error on whatsapp
+    ) {
+      response.status = TwilioStatus.failed;
+      response.error_code = '63003';
+      response.error_message =
+        'Channel could not find To address. You have tried to send a message to a To address that is inactive or invalid.';
+      this.sendStatusResponse121(
+        twilioMessagesCreateDto,
+        messageSid,
+        response,
+      ).catch((e) => {
+        console.log('TWILIO MOCK: Error sending status response: ', e);
+      });
+      return response;
     } else {
+      // 2. else, send (multiple) success status reponses
       let statuses = [];
       if (twilioMessagesCreateDto.To.includes('whatsapp')) {
         statuses = [
@@ -78,24 +128,27 @@ export class TwilioService {
       } else {
         statuses = [TwilioStatus.queued, TwilioStatus.sent];
       }
-      for (const status of statuses) {
-        this.sendStatusResponse121(
-          twilioMessagesCreateDto,
-          messageSid,
-          status,
-        ).catch((e) => {
-          console.log('TWILIO MOCK: Error sending status response: ', e);
-        });
-      }
+      this.sendMultipleSuccessStatusResponses(
+        twilioMessagesCreateDto,
+        messageSid,
+        response,
+        statuses,
+      );
     }
+
+    // 3. and if applicable, send incoming whatsapp reply
     let isYesMessage = false;
     for (const messageType of ['payment-voucher-templated', 'generic-templated']) {
       if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
         isYesMessage = true;
       }
     }
-
-    if (isYesMessage && !twilioMessagesCreateDto.To.includes('15005550002')) {
+    if (
+      isYesMessage &&
+      !twilioMessagesCreateDto.To.includes(
+        MockPhoneNumbers.NoIncomingYesMessage,
+      )
+    ) {
       this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
         (e) => {
           console.log('TWILIO MOCK: Error sending incoming whatsapp ', e);
@@ -103,35 +156,41 @@ export class TwilioService {
       );
     }
 
-    // await waitFor(30); // no longer needed when this is a separate service?
+    // await waitFor(30); // TODO: no longer needed when this is a separate service?
     return response;
   }
 
-  private createRandomHexaDecimalString(length: number): string {
-    let result = '';
-    const characters = 'abcdef0123456789';
-    const charactersLength = characters.length;
-
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  private async sendMultipleSuccessStatusResponses(
+    twilioMessagesCreateDto: TwilioMessagesCreateDto,
+    messageSid: string,
+    response,
+    statuses: TwilioStatus[],
+  ) {
+    for (const status of statuses) {
+      const modifiedResponse = { ...response };
+      modifiedResponse.status = status;
+      await setTimeout(30); // ensure order and some delay so that initial api-response is stored in 121-db
+      this.sendStatusResponse121(
+        twilioMessagesCreateDto,
+        messageSid,
+        modifiedResponse,
+      ).catch((e) => {
+        console.log('TWILIO MOCK: Error sending status response: ', e);
+      });
     }
-
-    return result;
   }
 
   private async sendStatusResponse121(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     messageSid: string,
-    status: TwilioStatus,
+    response,
   ): Promise<void> {
     const request = new TwilioStatusCallbackDto();
     request.MessageSid = messageSid;
-    request.MessageStatus = status;
+    request.MessageStatus = response.status;
+    request.ErrorCode = response.error_code;
+    request.ErrorMessage = response.error_message;
 
-    if (twilioMessagesCreateDto.To.includes('15005550001')) {
-      request.ErrorCode = '1';
-      request.ErrorMessage = 'Magic fail';
-    }
     const httpService = new HttpService();
     const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
       ? EXTERNAL_API.whatsAppStatus
@@ -156,6 +215,7 @@ export class TwilioService {
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     messageSid: string,
   ): Promise<void> {
+    await setTimeout(300);
     if (
       twilioMessagesCreateDto.From &&
       twilioMessagesCreateDto.From.includes('whatsapp')
@@ -179,5 +239,17 @@ export class TwilioService {
         );
       }
     }
+  }
+
+  private createRandomHexaDecimalString(length: number): string {
+    let result = '';
+    const characters = 'abcdef0123456789';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
   }
 }
