@@ -41,3 +41,14 @@ export enum MessageStatusMapping {
   sent = MessageStatus.sent,
   undelivered = MessageStatus.failed,
 }
+
+export class MessageTemplate {
+  id: number;
+  created: string;
+  updated: string;
+  type: string;
+  language: string;
+  message: string;
+  isWhatsappTemplate: true;
+  programId: number;
+}

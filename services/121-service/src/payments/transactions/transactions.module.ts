@@ -13,6 +13,7 @@ import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
+import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TransactionsService } from './transactions.service';
     HttpModule,
     ActionModule,
     MessageModule,
+    MessageTemplateModule,
   ],
   providers: [TransactionsService],
   controllers: [TransactionsController],
