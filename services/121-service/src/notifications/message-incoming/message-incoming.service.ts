@@ -29,6 +29,7 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { ProcessName } from '../enum/processor.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
+import { MessageProccessType } from '../message-job.dto';
 
 @Injectable()
 export class MessageIncomingService {
@@ -198,18 +199,33 @@ export class MessageIncomingService {
     const registration = await this.registrationRepository.findOne({
       where: { id: message.registrationId },
     });
+
+    // Since we do not know what message was failed we need to determine process type based on content type
+    let messageProcessType: MessageProccessType;
+    if (message.contentType === MessageContentType.custom) {
+      messageProcessType = MessageProccessType.whatsappPendingInformation;
+    } else if (message.contentType === MessageContentType.paymentVoucher) {
+      messageProcessType = MessageProccessType.whatsappPendingVoucher;
+    } else if (message.contentType === MessageContentType.paymentInstructions) {
+      messageProcessType = MessageProccessType.whatsappPendingInformation;
+    } else if (message.contentType === MessageContentType.defaultReply) {
+      messageProcessType = MessageProccessType.whatsappNoPendingMessages;
+    }
+
     await this.queueMessageService.addMessageToQueue(
       registration,
       message.body,
       null,
       false,
       message.contentType,
+      messageProcessType,
       message.mediaUrl,
       {
         replyMessage: true,
         pendingMessageId: message.id, // This will also get filled incorrctly for payment reply message, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
+      1,
     );
   }
 
@@ -235,7 +251,8 @@ export class MessageIncomingService {
           w.body,
           null,
           false,
-          null,
+          MessageContentType.invited,
+          MessageProccessType.sms,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -409,6 +426,7 @@ export class MessageIncomingService {
           null,
           false,
           MessageContentType.defaultReply,
+          MessageProccessType.whatsappNoPendingMessages,
         );
         return;
       } else {
@@ -419,6 +437,7 @@ export class MessageIncomingService {
           null,
           false,
           MessageContentType.defaultReply,
+          MessageProccessType.whatsappNoPendingMessages,
         );
         return;
       }
@@ -454,7 +473,8 @@ export class MessageIncomingService {
           message,
           null,
           false,
-          MessageContentType.payment,
+          MessageContentType.paymentVoucher,
+          MessageProccessType.whatsappPendingVoucher,
           mediaUrl,
           {
             payment: intersolveVoucher.payment,
@@ -476,6 +496,7 @@ export class MessageIncomingService {
           null,
           false,
           MessageContentType.paymentInstructions,
+          MessageProccessType.whatsappPendingInformation,
           `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
         );
       }
@@ -500,6 +521,7 @@ export class MessageIncomingService {
             null,
             false,
             message.contentType,
+            MessageProccessType.whatsappPendingInformation,
             message.mediaUrl,
             { replyMessage: true, pendingMessageId: message.id },
           );

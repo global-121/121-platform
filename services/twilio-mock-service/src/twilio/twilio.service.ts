@@ -89,7 +89,7 @@ export class TwilioService {
       }
     }
     let isYesMessage = false;
-    for (const messageType of ['payment-templated', 'generic-templated']) {
+    for (const messageType of ['payment-voucher-templated', 'generic-templated']) {
       if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
         isYesMessage = true;
       }

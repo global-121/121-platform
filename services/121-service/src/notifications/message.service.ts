@@ -9,7 +9,7 @@ import {
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
-import { MessageJobDto } from './message-job.dto';
+import { MessageJobDto, MessageProccessType } from './message-job.dto';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
@@ -46,7 +46,86 @@ export class MessageService {
             messageJobDto.key,
             messageJobDto.programId,
           );
+      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
+      const processtype = messageJobDto.messageProcessType;
 
+      if (processtype === MessageProccessType.sms) {
+        await this.smsService.sendSms(
+          messageText,
+          messageJobDto.phoneNumber,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+        );
+      } else if (processtype === MessageProccessType.whatsappTemplateGeneric) {
+        await this.storePendingMessageAndSendTemplate(
+          messageText,
+          whatsappNumber,
+          null,
+          null,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+        );
+      } else if (processtype === MessageProccessType.whatappTemplateVoucher) {
+        await this.processWhatappTemplateVoucher(messageJobDto);
+      } else if (
+        processtype === MessageProccessType.whatsappTemplateVoucherReminder
+      ) {
+        await this.whatsappService.sendWhatsapp(
+          messageJobDto.message,
+          messageJobDto.phoneNumber,
+          null,
+          messageJobDto.mediaUrl,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+        );
+      } else if (
+        processtype === MessageProccessType.whatsappPendingInformation
+      ) {
+        await this.whatsappService.sendWhatsapp(
+          messageJobDto.message,
+          messageJobDto.phoneNumber,
+          null,
+          messageJobDto.mediaUrl,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+          messageJobDto.customData?.existingMessageSid,
+        );
+      } else if (processtype === MessageProccessType.whatsappPendingVoucher) {
+        await this.processWhatappPendingVoucher(messageJobDto);
+      } else if (
+        processtype === MessageProccessType.whatsappNoPendingMessages
+      ) {
+        await this.whatsappService.sendWhatsapp(
+          messageJobDto.message,
+          messageJobDto.phoneNumber,
+          null,
+          messageJobDto.mediaUrl,
+          messageJobDto.id,
+          messageJobDto.messageContentType,
+          messageJobDto.customData?.existingMessageSid,
+        );
+      } else if (processtype === MessageProccessType.tryWhatsapp) {
+        await this.tryWhatsapp(
+          messageJobDto,
+          messageText,
+          messageJobDto.messageContentType,
+        );
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      throw error;
+    }
+  }
+
+  private async old(messageJobDto: MessageJobDto): Promise<void> {
+    try {
+      const messageText = messageJobDto.message
+        ? messageJobDto.message
+        : await this.getNotificationText(
+            messageJobDto.preferredLanguage,
+            messageJobDto.key,
+            messageJobDto.programId,
+          );
       const whatsappNumber = messageJobDto.whatsappPhoneNumber;
       if (whatsappNumber) {
         if (
@@ -95,7 +174,7 @@ export class MessageService {
           if (
             [
               MessageContentType.paymentTemplated,
-              MessageContentType.payment,
+              MessageContentType.paymentVoucher,
             ].includes(messageJobDto.messageContentType)
           ) {
             // If this is either the initial or the follow-up intersolve-voucher message, then store transaction result
@@ -152,6 +231,86 @@ export class MessageService {
       console.log('error: ', error);
       throw error;
     }
+  }
+
+  private async processWhatappTemplateVoucher(
+    messageJobDto: MessageJobDto,
+  ): Promise<void> {
+    let messageSid: string;
+    let errorMessage: any;
+    await this.whatsappService
+      .sendWhatsapp(
+        messageJobDto.message,
+        messageJobDto.phoneNumber,
+        null,
+        messageJobDto.mediaUrl,
+        messageJobDto.id,
+        messageJobDto.messageContentType,
+        messageJobDto.customData?.existingMessageSid,
+      )
+      .then(
+        (response) => {
+          messageSid = response;
+          return;
+        },
+        (error) => {
+          errorMessage = error;
+        },
+      );
+    const transactionStep = 1;
+    const status = messageSid ? StatusEnum.waiting : StatusEnum.error;
+
+    await this.intersolveVoucherService.storeTransactionResult(
+      messageJobDto.customData.payment,
+      messageJobDto.customData.amount,
+      messageJobDto.id,
+      transactionStep,
+      status,
+      errorMessage,
+      messageJobDto.programId,
+      messageSid,
+      messageJobDto.customData.intersolveVoucherId,
+    );
+  }
+
+  private async processWhatappPendingVoucher(
+    messageJobDto: MessageJobDto,
+  ): Promise<void> {
+    let messageSid: string;
+    let errorMessage: any;
+    await this.whatsappService
+      .sendWhatsapp(
+        messageJobDto.message,
+        messageJobDto.phoneNumber,
+        null,
+        messageJobDto.mediaUrl,
+        messageJobDto.id,
+        messageJobDto.messageContentType,
+        messageJobDto.customData?.existingMessageSid,
+      )
+      .then(
+        (response) => {
+          messageSid = response;
+          return;
+        },
+        (error) => {
+          errorMessage = error;
+        },
+      );
+    const transactionStep = 2;
+    const status = StatusEnum.success;
+
+    await this.intersolveVoucherService.storeTransactionResult(
+      messageJobDto.customData.payment,
+      messageJobDto.customData.amount,
+      messageJobDto.id,
+      transactionStep,
+      status,
+      errorMessage,
+      messageJobDto.programId,
+      messageSid,
+      messageJobDto.customData.intersolveVoucherId,
+    );
   }
 
   private async storePendingMessageAndSendTemplate(

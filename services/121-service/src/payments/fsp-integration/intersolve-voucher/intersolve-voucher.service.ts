@@ -31,6 +31,7 @@ import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { MessageProccessType } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -322,6 +323,7 @@ export class IntersolveVoucherService
       null,
       false,
       MessageContentType.paymentTemplated,
+      MessageProccessType.whatappTemplateVoucher,
       null,
       { payment: payment, amount: calculatedAmount },
     );
