@@ -48,7 +48,7 @@ export class MessageService {
         await this.smsService.sendSms(
           messageText,
           messageJobDto.phoneNumber,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
         );
       } else if (processtype === MessageProccessType.whatsappTemplateGeneric) {
@@ -57,7 +57,7 @@ export class MessageService {
           whatsappPhoneNumber,
           null,
           null,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
           false,
         );
@@ -70,7 +70,7 @@ export class MessageService {
           messageJobDto.message,
           whatsappPhoneNumber,
           messageJobDto.mediaUrl,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
         );
       } else if (
@@ -80,7 +80,7 @@ export class MessageService {
           messageJobDto.message,
           whatsappPhoneNumber,
           messageJobDto.mediaUrl,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
           messageJobDto.customData?.existingMessageSid,
         );
@@ -97,7 +97,7 @@ export class MessageService {
           messageJobDto.message,
           whatsappPhoneNumber,
           messageJobDto.mediaUrl,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
           messageJobDto.customData?.existingMessageSid,
         );
@@ -124,7 +124,7 @@ export class MessageService {
         messageJobDto.message,
         messageJobDto.whatsappPhoneNumber,
         messageJobDto.mediaUrl,
-        messageJobDto.id,
+        messageJobDto.registrationId,
         messageJobDto.messageContentType,
         messageJobDto.customData?.existingMessageSid,
       )
@@ -143,7 +143,7 @@ export class MessageService {
     await this.intersolveVoucherService.storeTransactionResult(
       messageJobDto.customData.payment,
       messageJobDto.customData.amount,
-      messageJobDto.id,
+      messageJobDto.registrationId,
       transactionStep,
       status,
       errorMessage,
@@ -163,7 +163,7 @@ export class MessageService {
         messageJobDto.message,
         messageJobDto.whatsappPhoneNumber,
         messageJobDto.mediaUrl,
-        messageJobDto.id,
+        messageJobDto.registrationId,
         messageJobDto.messageContentType,
         messageJobDto.customData?.existingMessageSid,
       )
@@ -182,7 +182,7 @@ export class MessageService {
     await this.intersolveVoucherService.storeTransactionResult(
       messageJobDto.customData.payment,
       messageJobDto.customData.amount,
-      messageJobDto.id,
+      messageJobDto.registrationId,
       transactionStep,
       status,
       errorMessage,
@@ -268,7 +268,7 @@ export class MessageService {
       messageJobDto.phoneNumber,
       null,
       null,
-      messageJobDto.id,
+      messageJobDto.registrationId,
       messageContentType,
       true,
     );

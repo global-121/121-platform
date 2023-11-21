@@ -56,7 +56,7 @@ export class QueueMessageService {
 
     const messageJob: MessageJobDto = {
       messageProcessType: messageProcessType,
-      id: registration.id,
+      registrationId: registration.id,
       referenceId: registration.referenceId,
       preferredLanguage: registration.preferredLanguage,
       whatsappPhoneNumber: whatsappPhoneNumber,
@@ -68,7 +68,6 @@ export class QueueMessageService {
       mediaUrl,
       customData,
     };
-    console.log('messageJob: ', messageJob);
     // const priority = this.getPriority(
     //   messageContentType,
     //   whatsappPhoneNumber,

@@ -239,14 +239,12 @@ export class MessageIncomingService {
     ) {
       // PA does not have whatsapp
       // Send pending message via sms
-      const whatsapPendingMessages = await this.whatsappPendingMessageRepo.find(
-        {
+      const whatsappPendingMessages =
+        await this.whatsappPendingMessageRepo.find({
           where: { to: tryWhatsapp.registration.phoneNumber },
           relations: ['registration'],
-        },
-      );
-      console.log('whatsapPendingMessages: ', whatsapPendingMessages);
-      for (const w of whatsapPendingMessages) {
+        });
+      for (const w of whatsappPendingMessages) {
         await this.queueMessageService.addMessageToQueue(
           w.registration,
           w.body,

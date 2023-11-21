@@ -8,7 +8,7 @@ import { LanguageEnum } from '../../registration/enum/language.enum';
 import { Job } from 'bull';
 
 const messageJob: MessageJobDto = {
-  id: 1,
+  registrationId: 1,
   referenceId: 'test-ref',
   preferredLanguage: LanguageEnum.en,
   whatsappPhoneNumber: '1234567890', // Update with actual value

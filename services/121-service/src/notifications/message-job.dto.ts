@@ -3,7 +3,7 @@ import { MessageContentType } from './enum/message-type.enum';
 
 export class MessageJobDto {
   messageProcessType: MessageProccessType;
-  id: number;
+  registrationId: number;
   referenceId: string;
   preferredLanguage: LanguageEnum;
   whatsappPhoneNumber: string;
