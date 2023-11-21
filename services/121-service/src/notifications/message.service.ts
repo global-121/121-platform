@@ -13,8 +13,6 @@ import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-messag
 import { ProgramNotificationEnum } from './enum/program-notification.enum';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { QueueMessageService } from './queue-message/queue-message.service';
-import { Message } from 'twilio/lib/twiml/MessagingResponse';
 
 @Injectable()
 export class MessageService {
@@ -32,7 +30,6 @@ export class MessageService {
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
@@ -90,6 +87,10 @@ export class MessageService {
           messageJobDto.id,
           messageJobDto.messageContentType,
           messageJobDto.customData?.existingMessageSid,
+        );
+        // TODO can this be done without custom data?
+        await this.whatsappPendingMessageRepo.delete(
+          messageJobDto.customData.pendingMessageId,
         );
       } else if (processtype === MessageProccessType.whatsappPendingVoucher) {
         await this.processWhatappPendingVoucher(messageJobDto);
@@ -237,13 +238,6 @@ export class MessageService {
       };
       await this.tryWhatsappRepository.save(tryWhatsapp);
     }
-    // await this.queueMessageService.addMessageToQueue(
-    //   registration,
-    //   whatsappGenericMessage,
-    //   null,
-    //   MessageContentType.genericTemplated,
-    //   MessageProccessType.whatsappTemplateGeneric,
-    // );
   }
 
   private async getNotificationText(
@@ -270,7 +264,7 @@ export class MessageService {
 
   private async tryWhatsapp(
     messageJobDto: MessageJobDto,
-    messageText,
+    messageText: string,
     messageContentType?: MessageContentType,
   ): Promise<void> {
     await this.storePendingMessageAndSendTemplate(
