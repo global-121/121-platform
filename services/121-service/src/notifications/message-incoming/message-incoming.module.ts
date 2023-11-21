@@ -50,6 +50,7 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
     IntersolveVoucherModule,
     WhatsappModule,
     QueueMessageModule,
+    MessageTemplateModule,
     BullModule.registerQueue({
       name: 'messageStatusCallback',
       processors: [
@@ -66,11 +67,8 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
   ],
   providers: [
     MessageIncomingService,
-    SmsService,
     MessageStatusCallbackProcessor,
     AzureLogService,
-    LastMessageStatusService,
-    MessageTemplateModule,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],

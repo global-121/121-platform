@@ -20,7 +20,6 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { waitFor } from '../../utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -33,8 +32,6 @@ import { MessageTemplateService } from '../message-template/message-template.ser
 
 @Injectable()
 export class MessageIncomingService {
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
@@ -60,7 +57,6 @@ export class MessageIncomingService {
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
-    private readonly lastMessageService: LastMessageStatusService,
     private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
