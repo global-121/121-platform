@@ -41,12 +41,8 @@ export class MessageService {
             messageJobDto.key,
             messageJobDto.programId,
           );
-
       const processtype = messageJobDto.messageProcessType;
-      const whatsappPhoneNumber =
-        processtype === MessageProccessType.tryWhatsapp
-          ? messageJobDto.phoneNumber
-          : messageJobDto.whatsappPhoneNumber;
+      const whatsappPhoneNumber = messageJobDto.whatsappPhoneNumber;
 
       if (processtype === MessageProccessType.sms) {
         await this.smsService.sendSms(
