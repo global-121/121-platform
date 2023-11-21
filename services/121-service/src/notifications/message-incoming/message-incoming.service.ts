@@ -207,7 +207,6 @@ export class MessageIncomingService {
       message.processType,
       message.mediaUrl,
       {
-        replyMessage: true,
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
@@ -500,7 +499,7 @@ export class MessageIncomingService {
             message.contentType,
             MessageProcessType.whatsappPendingMessage,
             message.mediaUrl,
-            { replyMessage: true, pendingMessageId: message.id },
+            { pendingMessageId: message.id },
           );
           await waitFor(2_000);
         }

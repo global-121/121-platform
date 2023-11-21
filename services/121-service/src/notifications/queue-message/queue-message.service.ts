@@ -71,7 +71,6 @@ export class QueueMessageService {
     // const priority = this.getPriority(
     //   messageContentType,
     //   whatsappPhoneNumber,
-    //   customData?.replyMessage,
     //   bulksize,
     // );
     try {
@@ -90,7 +89,6 @@ export class QueueMessageService {
   private getPriority(
     messageContentType: MessageContentType,
     whatsappPhoneNumber: string,
-    replyMessage: boolean,
     bulkSize?: number,
   ): number {
     let mappings: MessagePriorityMap[];
@@ -100,18 +98,12 @@ export class QueueMessageService {
       mappings = SEND_MESSAGE_PRIORITY_SMS;
     }
 
-    return this.getPriorityFromMapping(
-      messageContentType,
-      mappings,
-      replyMessage,
-      bulkSize,
-    );
+    return this.getPriorityFromMapping(messageContentType, mappings, bulkSize);
   }
 
   private getPriorityFromMapping(
     messageContentType: MessageContentType,
     mappings: MessagePriorityMap[],
-    replyMessage: boolean,
     bulkSize?: number,
   ): number {
     const relevantMapping = mappings.find((map: MessagePriorityMap) => {

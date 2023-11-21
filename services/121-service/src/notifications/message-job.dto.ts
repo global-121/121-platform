@@ -20,7 +20,6 @@ export class MessageJobCustomDataDto {
   payment?: number;
   amount?: number;
   intersolveVoucherId?: number;
-  replyMessage?: boolean;
   pendingMessageId?: number;
   existingMessageSid?: string;
 }

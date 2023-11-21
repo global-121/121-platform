@@ -48,7 +48,6 @@ describe('MessageService', () => {
       const messageJobWhatsappCustom = { ...messageJob };
       messageJobWhatsappCustom.whatsappPhoneNumber = '1234567890';
       messageJobWhatsappCustom.messageContentType = MessageContentType.custom;
-      messageJobWhatsappCustom.customData.replyMessage = false;
 
       jest
         .spyOn(messageService.registrationRepository, 'findOne')
@@ -71,7 +70,6 @@ describe('MessageService', () => {
       messageJobWhatsappTemplated.whatsappPhoneNumber = '1234567890';
       messageJobWhatsappTemplated.messageContentType =
         MessageContentType.paymentTemplated;
-      messageJobWhatsappTemplated.customData.replyMessage = true; // These 2 lines could be split in 2 separate tests, but that's a bit overkill
 
       jest
         .spyOn(whatsappService, 'sendWhatsapp')
