@@ -52,6 +52,7 @@ import { AnswerType } from '../../models/fsp.model';
 import {
   MessageStatus,
   MessageStatusMapping,
+  MessageTemplate,
 } from '../../models/message.model';
 import { PaginationMetadata } from '../../models/pagination-metadata.model';
 import { EnumService } from '../../services/enum.service';
@@ -154,6 +155,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
+  public messageTemplates: MessageTemplate[];
 
   constructor(
     private authService: AuthService,
@@ -261,6 +263,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.setupFilterSubscriptions();
+
+    this.messageTemplates =
+      await this.programsService.getMessageTemplatesByProgram(this.programId);
 
     await this.updateBulkActions();
 
@@ -788,7 +793,27 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public getCurrentBulkAction(): BulkAction {
-    return this.bulkActions.find((i: BulkAction) => i.id === this.action);
+    const action = this.bulkActions.find(
+      (i: BulkAction) => i.id === this.action,
+    );
+
+    const messageTemplate = this.messageTemplates?.find(
+      (template) => template.type === this.action && template.language == 'en',
+    );
+
+    if (messageTemplate) {
+      action.confirmConditions.isTemplated = true;
+      action.confirmConditions.explanation = this.translate.instant(
+        'page.program.program-people-affected.action-inputs.templated-explanation',
+      );
+      action.confirmConditions.templatedMessage = messageTemplate.message;
+      action.confirmConditions.supportMessage = this.translate.instant(
+        'page.program.program-people-affected.action-inputs.templated-support',
+      );
+      action.confirmConditions.inputRequired = false;
+      action.confirmConditions.checkboxChecked = true;
+    }
+    return action;
   }
 
   private updateSubmitWarning(

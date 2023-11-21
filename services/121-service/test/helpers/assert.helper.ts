@@ -6,15 +6,34 @@ export const assertArraysAreEqual = (
   expectedArray: any[],
   keyToIgnore: string[],
 ): void => {
-  expect(actualArray.length).toBe(expectedArray.length);
-  for (let i = 0; i < actualArray.length; i++) {
-    for (const subKey in expectedArray[i]) {
+  // Sort both actualArray and expectedArray
+  const sortedActualArray = sortByFspName(actualArray);
+  const sortedExpectedArray = sortByFspName(expectedArray);
+  expect(sortedActualArray.length).toBe(sortedExpectedArray.length);
+  for (let i = 0; i < sortedActualArray.length; i++) {
+    for (const subKey in sortedExpectedArray[i]) {
       if (!keyToIgnore.includes(subKey)) {
-        expect(actualArray[i][subKey]).toStrictEqual(expectedArray[i][subKey]);
+        expect(sortedActualArray[i][subKey]).toStrictEqual(
+          sortedExpectedArray[i][subKey],
+        );
       }
     }
   }
 };
+
+export function sortByFspName(array): any[] {
+  return array.slice().sort((a, b) => {
+    const nameA = a.fsp;
+    const nameB = b.fsp;
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}
 
 export const assertObjectsAreEqual = (
   actualObject: any,

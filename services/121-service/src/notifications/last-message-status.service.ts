@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { MessageStatusMapping } from '../registration/enum/last-message-status';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { TwilioMessageEntity } from './twilio.entity';
@@ -12,7 +12,41 @@ export class LastMessageStatusService {
     private readonly registrationRepository: Repository<RegistrationEntity>,
     @InjectRepository(TwilioMessageEntity)
     private readonly twilioMessageRepository: Repository<TwilioMessageEntity>,
+    private readonly dataSource: DataSource,
   ) {}
+
+  public async updateLastMessageStatusBulk(): Promise<void> {
+    await this.dataSource.query(`UPDATE
+              "121-service"."registration"
+            SET
+              "lastMessageStatus" = ("updateData"."lastMessageType" || ': ' || "updateData"."lastMessageStatus")
+            FROM
+              (
+              SELECT
+                *
+              FROM
+                (
+                SELECT
+                  DISTINCT ON
+                  (registration.id) registration.id AS id,
+                  twilio_message."status" AS "lastMessageStatus",
+                  twilio_message."type" AS "lastMessageType"
+                FROM
+                "121-service".registration
+                LEFT JOIN "121-service".twilio_message
+            ON
+                  twilio_message."registrationId" = registration.id
+                ORDER BY
+                  registration.id,
+                  twilio_message.created DESC
+              ) latestmessage
+              WHERE
+                latestmessage."lastMessageStatus" IS NOT NULL
+            ) "updateData"
+            WHERE
+              "registration"."id" = "updateData"."id";
+            `);
+  }
 
   public async updateLastMessageStatus(messageSid: string): Promise<void> {
     const getRegistrationByMessageSidQuery = this.twilioMessageRepository

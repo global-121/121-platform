@@ -30,9 +30,13 @@ export class SeedInit implements InterfaceScript {
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
-  public async run(): Promise<void> {
-    await this.dropAll();
-    await this.runAllMigrations();
+  public async run(isApiTests?: boolean): Promise<void> {
+    if (isApiTests !== undefined && isApiTests.toString() === 'true') {
+      await this.truncateAll();
+    } else {
+      await this.dropAll();
+      await this.runAllMigrations();
+    }
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
@@ -206,6 +210,48 @@ export class SeedInit implements InterfaceScript {
         await this.dataSource.manager.query(q[key]);
       }
     }
+  }
+
+  public async truncateAll(): Promise<void> {
+    const tablesToTruncate = await this.dataSource.manager.query(`
+    SELECT tablename
+    FROM pg_tables
+    WHERE schemaname = '121-service'
+      AND tablename NOT IN ('custom_migration_table');
+  `);
+
+    for (const table of tablesToTruncate) {
+      const tableName = table.tablename;
+      try {
+        await this.dataSource.manager.query(`
+        TRUNCATE TABLE "121-service"."${tableName}" CASCADE;
+      `);
+
+        const sequenceName = `${tableName}_id_seq`;
+        const sequenceExists = await this.sequenceExists(sequenceName);
+
+        if (sequenceExists) {
+          await this.dataSource.manager.query(`
+          ALTER SEQUENCE "121-service"."${sequenceName}" RESTART WITH 1;
+        `);
+        }
+      } catch (error) {
+        console.error(`Error truncating table "${tableName}":`, error);
+      }
+    }
+  }
+
+  private async sequenceExists(sequenceName: string): Promise<boolean> {
+    const result = await this.dataSource.manager.query(`
+    SELECT EXISTS (
+      SELECT 1
+      FROM pg_sequences
+      WHERE schemaname = '121-service'
+        AND sequencename = '${sequenceName}'
+    );
+  `);
+
+    return result[0].exists;
   }
 
   private async runAllMigrations(): Promise<void> {
