@@ -5,9 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.9...master)
+
+## Removed
+
+- CORS configuration should be hanndled via the Azure Portal for each App Service instance.  
+  See: A step in the "How to set up a new instance"-guide in the wiki.
 
 ---
+## [1.105.9](https://github.com/global-121/121-platform/compare/v1.105.8...v1.105.9) - 2023-11-15
+
+### Fixed
+
+- Filter for phonenumber of imported/invited PA
+
+
+## [1.105.8](https://github.com/global-121/121-platform/compare/v1.105.7...v1.105.8) - 2023-11-15
+
+### Added
+
+- Temporarily added twice-a-day cronjob to bulk update last message status
+
+## [1.105.7](https://github.com/global-121/121-platform/compare/v1.105.6...v1.105.7) - 2023-11-15
+
+### Fixed
+
+- Cannot include completed PA with 0 remaining payments (additional fix)
+
+## [1.105.6](https://github.com/global-121/121-platform/compare/v1.105.5...v1.105.6) - 2023-11-15
+
+### Fixed
+
+- Cannot include completed PA with 0 remaining payments
+
+## [1.105.5](https://github.com/global-121/121-platform/compare/v1.105.4...v1.105.5) - 2023-11-15
+
+### Fixed
+
+- paymentCount in PA popup
+- Setting of completed status & paymentCount
+
+## [1.105.4](https://github.com/global-121/121-platform/compare/v1.105.3...v1.105.4) - 2023-11-13
+
+### Fixed
+
+- Don't update last message status (performance issue) (additional places)
+
+## [1.105.3](https://github.com/global-121/121-platform/compare/v1.105.2...v1.105.3) - 2023-11-13
+
+### Fixed
+
+- Don't update last message status (performance issue)
+
 ## [1.105.2](https://github.com/global-121/121-platform/compare/v1.105.1...v1.105.2) - 2023-11-07
 
 ### Fixed
@@ -28,9 +77,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded Node.js to v18 for PA-App + HO-Portal.  
+- Upgraded Node.js to v18 for PA-App + HO-Portal.
   Make sure to use your Node version manager to install+run the newest version.
-- Upgraded Node.js to v18 for 121-service.  
+- Upgraded Node.js to v18 for 121-service.
   Make sure to recreate the Docker image using `npm run start:services`.
 - Improved performance of 'last payment summary' in payment page
 - Refactored API-paths

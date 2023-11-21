@@ -76,7 +76,8 @@ export class SmsService {
       twilioMessage.errorMessage = message.errorMessage;
     }
     await this.twilioMessageRepository.save(twilioMessage);
-    await this.lastMessageService.updateLastMessageStatus(message.sid);
+    // This is commented out because we think this is causing performance issues
+    // await this.lastMessageService.updateLastMessageStatus(message.sid);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
@@ -91,8 +92,9 @@ export class SmsService {
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },
     );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
+    // This is commented out because we think this is causing performance issues
+    // await this.lastMessageService.updateLastMessageStatus(
+    //   callbackData.MessageSid,
+    // );
   }
 }

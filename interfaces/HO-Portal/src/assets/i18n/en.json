@@ -356,20 +356,22 @@
         },
         "actions": {
           "invite": "Invite for registration",
-          "no-longer-eligible": "Mark as no longer eligible",
-          "select-for-validation": "Select for validation",
+          "markNoLongerEligible": "Mark as no longer eligible",
+          "selectForValidation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
-          "end-inclusion": "End inclusion in program",
-          "send-message": "Send Message to PAs",
-          "delete-pa": "Delete PA",
-          "do-payment": "Do payment",
+          "endInclusion": "End inclusion in program",
+          "sendMessage": "Send Message to PAs",
+          "deletePa": "Delete PA",
+          "doPayment": "Do payment",
           "pause": "Pause PAs"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
           "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
-          "message-explanation": "Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "message-explanation": "There is no templated message available for this action. Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "templated-explanation": "The following message will be sent to PAs in their own language.",
+          "templated-support": "Please contact the 121 support team if you want to change this templated message.",
           "reject": {
             "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."
           }
@@ -534,15 +536,15 @@
         },
         "bulk-action-conditions": {
           "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
-          "select-for-validation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "selectForValidation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
-          "end-inclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
+          "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
-          "mark-no-longer-eligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
+          "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
-          "delete-pa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
-          "send-message": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
-          "do-payment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
+          "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
+          "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
+          "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
         },
         "payment-history-popup": {
           "title": "Payment history"
