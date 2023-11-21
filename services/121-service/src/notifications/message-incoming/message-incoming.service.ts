@@ -201,6 +201,7 @@ export class MessageIncomingService {
     });
 
     // Since we do not know what message was failed we need to determine process type based on content type
+    // TODO: check if this logic works
     let messageProcessType: MessageProccessType;
     if (message.contentType === MessageContentType.custom) {
       messageProcessType = MessageProccessType.whatsappPendingInformation;
