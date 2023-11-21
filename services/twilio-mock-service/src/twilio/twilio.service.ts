@@ -138,7 +138,7 @@ export class TwilioService {
 
     // 3. and if applicable, send incoming whatsapp reply
     let isYesMessage = false;
-    for (const messageType of ['payment-voucher-templated', 'generic-templated']) {
+    for (const messageType of ['payment-templated', 'generic-templated']) {
       if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
         isYesMessage = true;
       }

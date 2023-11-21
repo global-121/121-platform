@@ -4,8 +4,8 @@ import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
   MessageJobDto,
-  MessageProccessType,
-  MessageProcessTypeExtenstion,
+  MessageProcessType,
+  MessageProcessTypeExtension,
 } from '../message-job.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
@@ -47,11 +47,11 @@ export class QueueMessageService {
     // If messageProcessType is smsOrWhatsappTemplateGeneric, check if registration has whatsappPhoneNumber
     if (
       messageProcessType ===
-      MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric
     ) {
       messageProcessType = whatsappPhoneNumber
-        ? MessageProccessType.whatsappTemplateGeneric
-        : MessageProccessType.sms;
+        ? MessageProcessType.whatsappTemplateGeneric
+        : MessageProcessType.sms;
     }
 
     const messageJob: MessageJobDto = {

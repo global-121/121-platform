@@ -5,7 +5,7 @@ import { MessageContentType } from '../enum/message-type.enum';
 import { ProcessName } from '../enum/processor.names.enum';
 import { Queue } from 'bull';
 import { TestBed } from '@automock/jest';
-import { MessageJobDto, MessageProccessType } from '../message-job.dto';
+import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { RegistrationEntity } from '../../registration/registration.entity';
 
 const messageJob = {
@@ -58,7 +58,7 @@ describe('QueueMessageService', () => {
       'test message',
       'key',
       MessageContentType.custom,
-      MessageProccessType.whatsappTemplateGeneric,
+      MessageProcessType.whatsappTemplateGeneric,
     );
 
     expect(messageQueue.add).toHaveBeenCalledWith(
@@ -97,7 +97,7 @@ describe('QueueMessageService', () => {
       'test message',
       'key',
       MessageContentType.custom,
-      MessageProccessType.whatsappTemplateGeneric,
+      MessageProcessType.whatsappTemplateGeneric,
     );
 
     expect(messageQueue.add).toHaveBeenCalledWith(

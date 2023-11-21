@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { AzureLogService } from '../../shared/services/azure-log.service';
 import { MessageContentType } from '../enum/message-type.enum';
-import { MessageJobDto, MessageProccessType } from '../message-job.dto';
+import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageService } from '../message.service';
 import { MessageProcessor } from './message.processor';
 import { LanguageEnum } from '../../registration/enum/language.enum';
@@ -17,7 +17,7 @@ const messageJob: MessageJobDto = {
   message: 'test message',
   key: 'key',
   messageContentType: MessageContentType.custom,
-  messageProcessType: MessageProccessType.whatsappTemplateGeneric,
+  messageProcessType: MessageProcessType.whatsappTemplateGeneric,
 };
 const job = { data: messageJob } as Job;
 

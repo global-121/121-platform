@@ -21,7 +21,7 @@ import {
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { MessageProcessTypeExtenstion } from '../../notifications/message-job.dto';
+import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -223,7 +223,7 @@ export class TransactionsService {
           message,
           null,
           MessageContentType.payment,
-          MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
+          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
           null,
           null,
           transactionNotifcation.bulkSize,
