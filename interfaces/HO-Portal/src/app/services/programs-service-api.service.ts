@@ -8,7 +8,7 @@ import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
-import { Message } from '../models/message.model';
+import { Message, MessageTemplate } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
@@ -951,6 +951,13 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status-changes/${referenceId}`,
+    );
+  }
+
+  getMessageTemplatesByProgram(programId: number): Promise<MessageTemplate[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/notifications/${programId}/message-template`,
     );
   }
 }

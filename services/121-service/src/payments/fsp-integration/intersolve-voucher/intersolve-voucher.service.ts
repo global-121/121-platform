@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
@@ -30,6 +30,7 @@ import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
+import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -57,7 +58,7 @@ export class IntersolveVoucherService
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
   public async sendPayment(
@@ -306,7 +307,7 @@ export class IntersolveVoucherService
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
-    let whatsappPayment = this.getNotificationText(
+    let whatsappPayment = await this.getNotificationText(
       program,
       ProgramNotificationEnum.whatsappPayment,
       language,
@@ -354,18 +355,32 @@ export class IntersolveVoucherService
     return result;
   }
 
-  public getNotificationText(
+  public async getNotificationText(
     program: ProgramEntity,
     type: string,
     language?: string,
-  ): string {
-    if (
-      program.notifications[language] &&
-      program.notifications[language][type]
-    ) {
-      return program.notifications[language][type];
+  ): Promise<string> {
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        program.id,
+      );
+
+    const notification = messageTemplates.find(
+      (template) => template.type === type && template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    return program.notifications[this.fallbackLanguage][type];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) =>
+        template.type === type && template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
+    }
+
+    return '';
   }
 
   private async storeVoucherData(
