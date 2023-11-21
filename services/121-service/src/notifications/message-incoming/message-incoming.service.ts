@@ -29,6 +29,8 @@ import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-messa
 import { ProcessName } from '../enum/processor.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
 import { MessageTemplateService } from '../message-template/message-template.service';
+import { MessageProcessType } from '../message-job.dto';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 @Injectable()
 export class MessageIncomingService {
@@ -47,7 +49,7 @@ export class MessageIncomingService {
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
-    en: 'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
+    en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
 
   public constructor(
@@ -58,6 +60,7 @@ export class MessageIncomingService {
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   public async getGenericNotificationText(
@@ -208,18 +211,19 @@ export class MessageIncomingService {
     const registration = await this.registrationRepository.findOne({
       where: { id: message.registrationId },
     });
+
     await this.queueMessageService.addMessageToQueue(
       registration,
       message.body,
       null,
-      false,
       message.contentType,
+      message.processType,
       message.mediaUrl,
       {
-        replyMessage: true,
-        pendingMessageId: message.id, // This will also get filled incorrctly for payment reply message, but it will simply not be handled on the processor-side
+        pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
+      1,
     );
   }
 
@@ -233,19 +237,18 @@ export class MessageIncomingService {
     ) {
       // PA does not have whatsapp
       // Send pending message via sms
-      const whatsapPendingMessages = await this.whatsappPendingMessageRepo.find(
-        {
+      const whatsappPendingMessages =
+        await this.whatsappPendingMessageRepo.find({
           where: { to: tryWhatsapp.registration.phoneNumber },
           relations: ['registration'],
-        },
-      );
-      for (const w of whatsapPendingMessages) {
+        });
+      for (const w of whatsappPendingMessages) {
         await this.queueMessageService.addMessageToQueue(
           w.registration,
           w.body,
           null,
-          false,
-          null,
+          MessageContentType.invited,
+          MessageProcessType.sms,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -291,10 +294,7 @@ export class MessageIncomingService {
       )
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where('registration.phoneNumber = :phoneNumber', {
-        phoneNumber: phoneNumber,
-      })
-      .orWhere(
+      .where(
         new Brackets((qb) => {
           qb.where('registration_data.value = :whatsappPhoneNumber', {
             whatsappPhoneNumber: phoneNumber,
@@ -426,18 +426,19 @@ export class MessageIncomingService {
           registrationsWithPhoneNumber[0],
           whatsappDefaultReply,
           null,
-          false,
           MessageContentType.defaultReply,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       } else {
-        // If multiple or 0 programs and phonenumber not found: use generic reply in code
-        await this.queueMessageService.addMessageToQueue(
-          registrationsWithPhoneNumber[0],
+        // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
+        await this.whatsappService.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
+          fromNumber,
           null,
-          false,
+          null,
           MessageContentType.defaultReply,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       }
@@ -483,8 +484,8 @@ export class MessageIncomingService {
           registration,
           message,
           null,
-          false,
-          MessageContentType.payment,
+          MessageContentType.paymentVoucher,
+          MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           {
             payment: intersolveVoucher.payment,
@@ -504,8 +505,8 @@ export class MessageIncomingService {
           registration,
           '',
           null,
-          false,
           MessageContentType.paymentInstructions,
+          MessageProcessType.whatsappVoucherInstructions,
           `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
         );
       }
@@ -528,10 +529,10 @@ export class MessageIncomingService {
             registration,
             message.body,
             null,
-            false,
             message.contentType,
+            MessageProcessType.whatsappPendingMessage,
             message.mediaUrl,
-            { replyMessage: true, pendingMessageId: message.id },
+            { pendingMessageId: message.id },
           );
           await waitFor(2_000);
         }

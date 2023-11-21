@@ -9,7 +9,6 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
-import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -32,6 +31,7 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
+import { MessageProcessType } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -321,8 +321,8 @@ export class IntersolveVoucherService
       registration,
       whatsappPayment,
       null,
-      false,
       MessageContentType.paymentTemplated,
+      MessageProcessType.whatsappTemplateVoucher,
       null,
       { payment: payment, amount: calculatedAmount },
     );

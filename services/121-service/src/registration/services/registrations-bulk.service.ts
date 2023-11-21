@@ -20,6 +20,11 @@ import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
+import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
+import {
+  MessageProcessType,
+  MessageProcessTypeExtension,
+} from '../../notifications/message-job.dto';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -152,6 +157,7 @@ export class RegistrationsBulkService {
         programId,
         message,
         chunkSize,
+        resultDto.applicableCount,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -164,6 +170,7 @@ export class RegistrationsBulkService {
     programId: number,
     message: string,
     chunkSize: number,
+    bulkSize: number,
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -187,11 +194,13 @@ export class RegistrationsBulkService {
           false,
           this.getCustomMessageBaseQuery(),
         );
-      this.sendCustomTextMessage(registrationsForUpdate.data, message).catch(
-        (error) => {
-          this.azureLogService.logError(error, true);
-        },
-      );
+      this.sendCustomTextMessage(
+        registrationsForUpdate.data,
+        message,
+        bulkSize,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
     }
   }
 
@@ -292,19 +301,17 @@ export class RegistrationsBulkService {
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
     );
-    await this.updateRegistrationStatusBatch(
-      referenceIds,
-      registrationStatus,
+    await this.updateRegistrationStatusBatch(referenceIds, registrationStatus, {
       message,
       messageContentType,
-    );
+      bulkSize: registrationForUpdate.meta.totalItems,
+    });
   }
 
   private async updateRegistrationStatusBatch(
     referenceIds: string[],
     registrationStatus: RegistrationStatusEnum,
-    message?: string,
-    messageContentType?: MessageContentType,
+    messageSizeType?: MessageSizeTypeDto,
   ): Promise<void> {
     let programId;
     let program;
@@ -314,7 +321,7 @@ export class RegistrationsBulkService {
           referenceId,
           registrationStatus,
         );
-      if (message && updatedRegistration) {
+      if (messageSizeType.message && updatedRegistration) {
         if (updatedRegistration.programId !== programId) {
           programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
@@ -322,17 +329,21 @@ export class RegistrationsBulkService {
             where: { id: programId },
           });
         }
-        const tryWhatsappFirst =
-          registrationStatus === RegistrationStatusEnum.invited
-            ? program.tryWhatsAppFirst
-            : false;
+        const messageProcessType =
+          registrationStatus === RegistrationStatusEnum.invited &&
+          program.tryWhatsAppFirst
+            ? MessageProcessType.tryWhatsapp
+            : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
-            message,
+            messageSizeType.message,
             null,
-            tryWhatsappFirst,
-            messageContentType,
+            messageSizeType.messageContentType,
+            messageProcessType,
+            null,
+            null,
+            messageSizeType.bulkSize,
           );
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
@@ -431,14 +442,18 @@ export class RegistrationsBulkService {
   private async sendCustomTextMessage(
     registrations: RegistrationViewEntity[],
     message: string,
+    bulkSize: number,
   ): Promise<void> {
     for (const registration of registrations) {
       await this.queueMessageService.addMessageToQueue(
         registration,
         message,
         null,
-        false,
         MessageContentType.custom,
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+        null,
+        null,
+        bulkSize,
       );
     }
   }

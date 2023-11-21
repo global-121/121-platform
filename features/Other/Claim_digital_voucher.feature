@@ -39,4 +39,8 @@ Feature: Claim digital vouchers
     Given the PA is only ever included into the one program
     When the PA replies 'yes' to initial WhatsApp-message
     Then the PA receives all vouchers for their program that were not already sent up to 3 payments back irrespective of how many payments any other programs have
-    And this basically means that the counting of 'sending maximum 3 latest vouchers' is done per program, not overall
+    And this basically means that the counting of 'sending maximum 3 latest vouchers' is done per program, not overallF
+
+TODO: Follow-up message goes wrong because of 63016 faulty template error
+// NOTE: use 16005550003 as test number to get a '63016: faulty template' error from twilio-mock-service
+// Also extend this test scenario to 'claim message' (in new file)

@@ -3,10 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
@@ -14,6 +12,7 @@ import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { MessageTemplateService } from '../message-template/message-template.service';
 import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class WhatsappService {
@@ -24,11 +23,6 @@ export class WhatsappService {
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 
-  private readonly whatsappTemplatedMessageKeys = [
-    String(ProgramNotificationEnum.whatsappPayment),
-    String(ProgramNotificationEnum.whatsappGenericMessage),
-  ];
-
   constructor(
     private readonly lastMessageService: LastMessageStatusService,
     private readonly messageTemplateServices: MessageTemplateService,
@@ -37,10 +31,10 @@ export class WhatsappService {
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<string> {
     const hasPlus = recipientPhoneNr.startsWith('+');
@@ -86,6 +80,7 @@ export class WhatsappService {
         registrationId,
         mediaUrl,
         messageContentType,
+        messageProcessType,
         errorOccurred ? null : existingSidToUpdate,
       );
     }
@@ -96,6 +91,7 @@ export class WhatsappService {
     registrationId: number,
     mediaUrl: string,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<void> {
     // If the message failed due to a faulty template error
@@ -123,6 +119,7 @@ export class WhatsappService {
       twilioMessage.dateCreated = message.dateCreated;
       twilioMessage.registrationId = registrationId;
       twilioMessage.contentType = messageContentType;
+      twilioMessage.processType = messageProcessType;
       if (message.errorCode) {
         twilioMessage.errorCode = message.errorCode;
       }

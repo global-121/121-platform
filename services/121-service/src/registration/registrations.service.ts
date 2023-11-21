@@ -60,6 +60,7 @@ import {
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { UserService } from '../user/user.service';
+import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -643,8 +644,8 @@ export class RegistrationsService {
       registration,
       null,
       RegistrationStatusEnum.registered,
-      null,
       MessageContentType.registered,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
 
     if (

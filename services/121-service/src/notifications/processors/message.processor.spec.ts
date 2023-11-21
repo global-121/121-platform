@@ -1,14 +1,14 @@
 import { TestBed } from '@automock/jest';
 import { AzureLogService } from '../../shared/services/azure-log.service';
 import { MessageContentType } from '../enum/message-type.enum';
-import { MessageJobDto } from '../message-job.dto';
+import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageService } from '../message.service';
 import { MessageProcessor } from './message.processor';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 import { Job } from 'bull';
 
 const messageJob: MessageJobDto = {
-  id: 1,
+  registrationId: 1,
   referenceId: 'test-ref',
   preferredLanguage: LanguageEnum.en,
   whatsappPhoneNumber: '1234567890', // Update with actual value
@@ -16,8 +16,8 @@ const messageJob: MessageJobDto = {
   programId: 1,
   message: 'test message',
   key: 'key',
-  tryWhatsApp: true,
   messageContentType: MessageContentType.custom,
+  messageProcessType: MessageProcessType.whatsappTemplateGeneric,
 };
 const job = { data: messageJob } as Job;
 

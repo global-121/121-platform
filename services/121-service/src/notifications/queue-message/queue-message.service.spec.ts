@@ -5,7 +5,7 @@ import { MessageContentType } from '../enum/message-type.enum';
 import { ProcessName } from '../enum/processor.names.enum';
 import { Queue } from 'bull';
 import { TestBed } from '@automock/jest';
-import { MessageJobDto } from '../message-job.dto';
+import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { RegistrationEntity } from '../../registration/registration.entity';
 
 const messageJob = {
@@ -15,7 +15,6 @@ const messageJob = {
   referenceId: 'ref-test',
   message: 'test message',
   key: 'key',
-  tryWhatsApp: true,
   messageContentType: MessageContentType.custom,
 } as MessageJobDto;
 
@@ -48,18 +47,20 @@ describe('QueueMessageService', () => {
     messageJobView.whatsappPhoneNumber = registration['whatsappPhoneNumber'];
     messageJobView.phoneNumber = registration.phoneNumber;
     messageJobView.preferredLanguage = registration.preferredLanguage;
-    messageJobView.id = registration.id;
+    messageJobView.registrationId = registration.id;
     messageJobView.programId = registration.programId;
     messageJobView.referenceId = registration.referenceId;
     messageJobView.customData = undefined;
     messageJobView.mediaUrl = undefined;
+    messageJobView.messageProcessType =
+      MessageProcessType.whatsappTemplateGeneric;
 
     await queueMessageService.addMessageToQueue(
       registration,
       'test message',
       'key',
-      true,
       MessageContentType.custom,
+      MessageProcessType.whatsappTemplateGeneric,
     );
 
     expect(messageQueue.add).toHaveBeenCalledWith(
@@ -83,11 +84,13 @@ describe('QueueMessageService', () => {
     expectedMessageJobView.whatsappPhoneNumber = whatsappNumber;
     expectedMessageJobView.phoneNumber = registration.phoneNumber;
     expectedMessageJobView.preferredLanguage = registration.preferredLanguage;
-    expectedMessageJobView.id = registration.id;
+    expectedMessageJobView.registrationId = registration.id;
     expectedMessageJobView.referenceId = registration.referenceId;
     expectedMessageJobView.programId = registration.programId;
     expectedMessageJobView.customData = undefined;
     expectedMessageJobView.mediaUrl = undefined;
+    expectedMessageJobView.messageProcessType =
+      MessageProcessType.whatsappTemplateGeneric;
 
     const mockGetRegistrationDataValueByName = jest
       .spyOn(registration, 'getRegistrationDataValueByName')
@@ -97,8 +100,8 @@ describe('QueueMessageService', () => {
       registration,
       'test message',
       'key',
-      true,
       MessageContentType.custom,
+      MessageProcessType.whatsappTemplateGeneric,
     );
 
     expect(messageQueue.add).toHaveBeenCalledWith(
