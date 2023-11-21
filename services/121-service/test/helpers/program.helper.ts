@@ -8,6 +8,7 @@ import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
 import { getServer } from './utility.helper';
 import { waitFor } from '../../src/utils/waitFor.helper';
+import { MessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
 
 export async function postProgram(
   program: CreateProgramDto,
@@ -92,11 +93,11 @@ export async function doPayment(
   return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
       payment: paymentNr,
       amount: amount,
-    })
-    .query(queryParams);
+    });
 }
 
 export async function retryPayment(
@@ -311,5 +312,37 @@ export async function getNotes(
 ): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/notes/${referenceId}`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function postMessageTemplate(
+  programId: number,
+  body: MessageTemplateDto,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/notifications/${programId}/message-template`)
+    .set('Cookie', [accessToken])
+    .send(body);
+}
+
+export async function updateMessageTemplate(
+  programId: number,
+  messageId: number,
+  body: { type?: string },
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .patch(`/notifications/${programId}/message-template/${messageId}`)
+    .set('Cookie', [accessToken])
+    .send(body);
+}
+
+export async function getMessageTemplate(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/notifications/${programId}/message-template`)
     .set('Cookie', [accessToken]);
 }

@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommercialBankEthiopiaService } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherCronService } from '../payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
+import { LastMessageStatusService } from '../notifications/last-message-status.service';
 
 @Injectable()
 export class CronjobService {
@@ -10,6 +11,7 @@ export class CronjobService {
     private readonly intersolveVoucherCronService: IntersolveVoucherCronService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
+    private readonly lastMessageStatusService: LastMessageStatusService,
   ) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -62,5 +64,21 @@ export class CronjobService {
     await this.intersolveVoucherCronService.sendWhatsappReminders();
 
     console.info('CronjobService - Complete: cronSendWhatsappReminders');
+  }
+
+  // UTC time 7:30
+  @Cron('30 6 * * *')
+  public async cronUpdateLastMessageStatusBulkMorning(): Promise<void> {
+    console.info('CronjobService - Started: updateLastMessageStatusBulk');
+    await this.lastMessageStatusService.updateLastMessageStatusBulk();
+    console.info('CronjobService - Complete: updateLastMessageStatusBulk');
+  }
+
+  // UTC time 12:15
+  @Cron('15 11 * * *')
+  public async cronUpdateLastMessageStatusBulkAfternoon(): Promise<void> {
+    console.info('CronjobService - Started: updateLastMessageStatusBulk');
+    await this.lastMessageStatusService.updateLastMessageStatusBulk();
+    console.info('CronjobService - Complete: updateLastMessageStatusBulk');
   }
 }

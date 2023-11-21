@@ -5,15 +5,15 @@ import { ProgramPhase } from './program.model';
 export enum BulkActionId {
   chooseAction = '',
   invite = 'invite',
-  selectForValidation = 'select-for-validation',
+  selectForValidation = 'selectForValidation',
   include = 'include',
-  endInclusion = 'end-inclusion',
+  endInclusion = 'endInclusion',
   reject = 'reject',
-  markNoLongerEligible = 'mark-no-longer-eligible',
-  sendMessage = 'send-message',
-  deletePa = 'delete-pa',
+  markNoLongerEligible = 'markNoLongerEligible',
+  sendMessage = 'sendMessage',
+  deletePa = 'deletePa',
   divider = 'divider',
-  doPayment = 'do-payment',
+  doPayment = 'doPayment',
   pause = 'pause',
 }
 
