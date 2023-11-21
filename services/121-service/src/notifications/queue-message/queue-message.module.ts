@@ -13,7 +13,7 @@ import { BullModule } from '@nestjs/bull';
         },
       ],
       limiter: {
-        max: 10, // Max number of jobs processed
+        max: 4, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),

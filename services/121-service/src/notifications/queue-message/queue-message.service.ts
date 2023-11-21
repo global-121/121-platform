@@ -14,9 +14,9 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { ProcessName } from '../enum/processor.names.enum';
 import {
+  DEFAULT_PRIORITY,
   MessagePriorityMap,
-  SEND_MESSAGE_PRIORITY_SMS,
-  SEND_MESSAGE_PRIORITY_WHATSAPP,
+  SEND_MESSAGE_PRIORITY,
 } from '../enum/send-message-priority.const';
 
 @Injectable()
@@ -68,64 +68,33 @@ export class QueueMessageService {
       mediaUrl,
       customData,
     };
-    console.log('messageJob: ', messageJob);
-    // const priority = this.getPriority(
-    //   messageContentType,
-    //   whatsappPhoneNumber,
-    //   customData?.replyMessage,
-    //   bulksize,
-    // );
+    const priority = this.getPriority(messageProcessType, bulksize);
     try {
-      await this.messageQueue.add(
-        ProcessName.send,
-        messageJob,
-        //   {
-        //   priority: priority,
-        // }
-      );
+      await this.messageQueue.add(ProcessName.send, messageJob, {
+        priority: priority,
+      });
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }
   }
 
   private getPriority(
-    messageContentType: MessageContentType,
-    whatsappPhoneNumber: string,
-    replyMessage: boolean,
+    messageProccessType: MessageProccessType,
     bulkSize?: number,
   ): number {
-    let mappings: MessagePriorityMap[];
-    if (whatsappPhoneNumber) {
-      mappings = SEND_MESSAGE_PRIORITY_WHATSAPP;
-    } else {
-      mappings = SEND_MESSAGE_PRIORITY_SMS;
-    }
+    const mappingArray = SEND_MESSAGE_PRIORITY;
 
-    return this.getPriorityFromMapping(
-      messageContentType,
-      mappings,
-      replyMessage,
-      bulkSize,
-    );
-  }
-
-  private getPriorityFromMapping(
-    messageContentType: MessageContentType,
-    mappings: MessagePriorityMap[],
-    replyMessage: boolean,
-    bulkSize?: number,
-  ): number {
-    const relevantMapping = mappings.find((map: MessagePriorityMap) => {
-      return map.types.includes(messageContentType);
+    const relevantMapping = mappingArray.find((map: MessagePriorityMap) => {
+      return map.types.includes(messageProccessType);
     });
 
     // No mapping is found use default priority
     if (!relevantMapping) {
       console.warn(
         'No priority mapping found for message type: ',
-        messageContentType,
+        messageProccessType,
       );
-      return 150; // default priority
+      return DEFAULT_PRIORITY; // default priority
     }
 
     // If no bulkSize is provided, use default priority of mapping
@@ -136,16 +105,16 @@ export class QueueMessageService {
     // If bulkSize is provided, and bulkSizePriority is not set, use default priority of mapping and give warning
     if (!relevantMapping.bulkSizePriority) {
       console.warn(
-        `No bulkSizePriority found for message type: ${messageContentType} while bulk size is set to: ${bulkSize}. Using default priority of mapping.`,
+        `No bulkSizePriority found for message type: ${messageProccessType} while bulk size is set to: ${bulkSize}. Using default priority of mapping.`,
       );
       return relevantMapping.priority; // default priority of mapping
     }
 
     // If bulkSize is provided, and bulkSizePriority set on the mapping use the bulk size priority mapping
-    const bulkSizePriority = relevantMapping.bulkSizePriority;
-    for (const [i, bulkSizePriorityItem] of bulkSizePriority.entries()) {
-      if (bulkSize >= bulkSizePriorityItem.bulkSize) {
-        return bulkSizePriority[i - 1].priority;
+    const bulkSizePriorities = relevantMapping.bulkSizePriority;
+    for (const bulkSizePriorityItem of bulkSizePriorities) {
+      if (bulkSize < bulkSizePriorityItem.bulkSize) {
+        return bulkSizePriorityItem.priority;
       }
     }
   }
