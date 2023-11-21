@@ -11,6 +11,7 @@ import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
+import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class WhatsappService {
@@ -34,6 +35,7 @@ export class WhatsappService {
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<string> {
     const hasPlus = recipientPhoneNr.startsWith('+');
@@ -78,6 +80,7 @@ export class WhatsappService {
         registrationId,
         mediaUrl,
         messageContentType,
+        messageProcessType,
         errorOccurred ? null : existingSidToUpdate,
       );
     }
@@ -88,6 +91,7 @@ export class WhatsappService {
     registrationId: number,
     mediaUrl: string,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<void> {
     // If the message failed due to a faulty template error
@@ -115,6 +119,7 @@ export class WhatsappService {
       twilioMessage.dateCreated = message.dateCreated;
       twilioMessage.registrationId = registrationId;
       twilioMessage.contentType = messageContentType;
+      twilioMessage.processType = messageProcessType;
       if (message.errorCode) {
         twilioMessage.errorCode = message.errorCode;
       }

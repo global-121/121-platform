@@ -6,7 +6,7 @@ import { MessageContentType } from './enum/message-type.enum';
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
-import { MessageJobDto, MessageProccessType } from './message-job.dto';
+import { MessageJobDto, MessageProcessType } from './message-job.dto';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
@@ -41,75 +41,55 @@ export class MessageService {
             messageJobDto.key,
             messageJobDto.programId,
           );
-
       const processtype = messageJobDto.messageProcessType;
-      const whatsappPhoneNumber =
-        processtype === MessageProccessType.tryWhatsapp
-          ? messageJobDto.phoneNumber
-          : messageJobDto.whatsappPhoneNumber;
 
-      if (processtype === MessageProccessType.sms) {
+      if (processtype === MessageProcessType.sms) {
         await this.smsService.sendSms(
           messageText,
           messageJobDto.phoneNumber,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
+          messageJobDto.messageProcessType,
         );
-      } else if (processtype === MessageProccessType.whatsappTemplateGeneric) {
-        await this.storePendingMessageAndSendTemplate(
+      } else if (processtype === MessageProcessType.tryWhatsapp) {
+        await this.storePendingMessageAndSendWhatsappTemplate(
           messageText,
-          whatsappPhoneNumber,
+          messageJobDto.phoneNumber, // use phoneNumber as whatsappPhoneNumber
           null,
           null,
-          messageJobDto.id,
+          messageJobDto.registrationId,
+          messageJobDto.messageContentType,
+          true, // tryWhatsapp = true
+        );
+      } else if (processtype === MessageProcessType.whatsappTemplateGeneric) {
+        await this.storePendingMessageAndSendWhatsappTemplate(
+          messageText,
+          messageJobDto.whatsappPhoneNumber,
+          null,
+          null,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
           false,
         );
-      } else if (processtype === MessageProccessType.whatappTemplateVoucher) {
-        await this.processWhatappTemplateVoucher(messageJobDto);
+      } else if (processtype === MessageProcessType.whatsappPendingMessage) {
+        await this.processWhatsappPendingMessage(messageJobDto);
+      } else if (processtype === MessageProcessType.whatsappTemplateVoucher) {
+        await this.processWhatsappTemplateVoucher(messageJobDto);
+      } else if (processtype === MessageProcessType.whatsappPendingVoucher) {
+        await this.processWhatsappPendingVoucher(messageJobDto);
       } else if (
-        processtype === MessageProccessType.whatsappTemplateVoucherReminder
+        processtype === MessageProcessType.whatsappTemplateVoucherReminder ||
+        processtype === MessageProcessType.whatsappVoucherInstructions ||
+        processtype === MessageProcessType.whatsappDefaultReply
       ) {
         await this.whatsappService.sendWhatsapp(
           messageJobDto.message,
-          whatsappPhoneNumber,
+          messageJobDto.whatsappPhoneNumber,
           messageJobDto.mediaUrl,
-          messageJobDto.id,
+          messageJobDto.registrationId,
           messageJobDto.messageContentType,
-        );
-      } else if (
-        processtype === MessageProccessType.whatsappPendingInformation
-      ) {
-        await this.whatsappService.sendWhatsapp(
-          messageJobDto.message,
-          whatsappPhoneNumber,
-          messageJobDto.mediaUrl,
-          messageJobDto.id,
-          messageJobDto.messageContentType,
+          messageJobDto.messageProcessType,
           messageJobDto.customData?.existingMessageSid,
-        );
-        // TODO can this be done without custom data?
-        await this.whatsappPendingMessageRepo.delete(
-          messageJobDto.customData.pendingMessageId,
-        );
-      } else if (processtype === MessageProccessType.whatsappPendingVoucher) {
-        await this.processWhatappPendingVoucher(messageJobDto);
-      } else if (
-        processtype === MessageProccessType.whatsappNoPendingMessages
-      ) {
-        await this.whatsappService.sendWhatsapp(
-          messageJobDto.message,
-          whatsappPhoneNumber,
-          messageJobDto.mediaUrl,
-          messageJobDto.id,
-          messageJobDto.messageContentType,
-          messageJobDto.customData?.existingMessageSid,
-        );
-      } else if (processtype === MessageProccessType.tryWhatsapp) {
-        await this.tryWhatsapp(
-          messageJobDto,
-          messageText,
-          messageJobDto.messageContentType,
         );
       }
     } catch (error) {
@@ -118,7 +98,27 @@ export class MessageService {
     }
   }
 
-  private async processWhatappTemplateVoucher(
+  private async processWhatsappPendingMessage(
+    messageJobDto: MessageJobDto,
+  ): Promise<void> {
+    await this.whatsappService
+      .sendWhatsapp(
+        messageJobDto.message,
+        messageJobDto.whatsappPhoneNumber,
+        messageJobDto.mediaUrl,
+        messageJobDto.registrationId,
+        messageJobDto.messageContentType,
+        messageJobDto.messageProcessType,
+        messageJobDto.customData?.existingMessageSid,
+      )
+      .then(async () => {
+        return await this.whatsappPendingMessageRepo.delete(
+          messageJobDto.customData.pendingMessageId,
+        );
+      });
+  }
+
+  private async processWhatsappTemplateVoucher(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string;
@@ -128,9 +128,9 @@ export class MessageService {
         messageJobDto.message,
         messageJobDto.whatsappPhoneNumber,
         messageJobDto.mediaUrl,
-        messageJobDto.id,
+        messageJobDto.registrationId,
         messageJobDto.messageContentType,
-        messageJobDto.customData?.existingMessageSid,
+        messageJobDto.messageProcessType,
       )
       .then(
         (response) => {
@@ -147,7 +147,7 @@ export class MessageService {
     await this.intersolveVoucherService.storeTransactionResult(
       messageJobDto.customData.payment,
       messageJobDto.customData.amount,
-      messageJobDto.id,
+      messageJobDto.registrationId,
       transactionStep,
       status,
       errorMessage,
@@ -157,7 +157,7 @@ export class MessageService {
     );
   }
 
-  private async processWhatappPendingVoucher(
+  private async processWhatsappPendingVoucher(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string;
@@ -167,8 +167,9 @@ export class MessageService {
         messageJobDto.message,
         messageJobDto.whatsappPhoneNumber,
         messageJobDto.mediaUrl,
-        messageJobDto.id,
+        messageJobDto.registrationId,
         messageJobDto.messageContentType,
+        messageJobDto.messageProcessType,
         messageJobDto.customData?.existingMessageSid,
       )
       .then(
@@ -186,7 +187,7 @@ export class MessageService {
     await this.intersolveVoucherService.storeTransactionResult(
       messageJobDto.customData.payment,
       messageJobDto.customData.amount,
-      messageJobDto.id,
+      messageJobDto.registrationId,
       transactionStep,
       status,
       errorMessage,
@@ -196,7 +197,7 @@ export class MessageService {
     );
   }
 
-  private async storePendingMessageAndSendTemplate(
+  private async storePendingMessageAndSendWhatsappTemplate(
     message: string,
     recipientPhoneNr: string,
     messageType: null | IntersolveVoucherPayoutStatus,
@@ -230,6 +231,7 @@ export class MessageService {
       null,
       registrationId,
       MessageContentType.genericTemplated,
+      MessageProcessType.whatsappTemplateGeneric,
     );
     if (tryWhatsapp) {
       const tryWhatsapp = {
@@ -260,21 +262,5 @@ export class MessageService {
       return notifications[key];
     }
     return fallbackNotifications[key] ? fallbackNotifications[key] : '';
-  }
-
-  private async tryWhatsapp(
-    messageJobDto: MessageJobDto,
-    messageText: string,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    await this.storePendingMessageAndSendTemplate(
-      messageText,
-      messageJobDto.phoneNumber,
-      null,
-      null,
-      messageJobDto.id,
-      messageContentType,
-      true,
-    );
   }
 }

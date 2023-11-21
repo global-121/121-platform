@@ -22,8 +22,8 @@ import { RegistrationsPaginationService } from './registrations-pagination.servi
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { MessageSizeType as MessageSizeTypeDto } from '../dto/messag-size-type.dto';
 import {
-  MessageProccessType,
-  MessageProcessTypeExtenstion,
+  MessageProcessType,
+  MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
 
 @Injectable()
@@ -332,8 +332,8 @@ export class RegistrationsBulkService {
         const messageProcessType =
           registrationStatus === RegistrationStatusEnum.invited &&
           program.tryWhatsAppFirst
-            ? MessageProccessType.tryWhatsapp
-            : MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric;
+            ? MessageProcessType.tryWhatsapp
+            : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
@@ -450,7 +450,7 @@ export class RegistrationsBulkService {
         message,
         null,
         MessageContentType.custom,
-        MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         null,
         null,
         bulkSize,

@@ -7,6 +7,7 @@ import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { EXTERNAL_API } from './../../config';
+import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class SmsService {
@@ -20,6 +21,7 @@ export class SmsService {
     recipientPhoneNr: string,
     registrationId: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
   ): Promise<void> {
     const hasPlus = recipientPhoneNr.startsWith('+');
     const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
@@ -50,6 +52,7 @@ export class SmsService {
         messageToStore,
         registrationId,
         messageContentType,
+        messageProcessType,
       );
     }
   }
@@ -58,6 +61,7 @@ export class SmsService {
     message,
     registrationId: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
   ): Promise<void> {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
@@ -70,6 +74,7 @@ export class SmsService {
     twilioMessage.dateCreated = message.dateCreated;
     twilioMessage.registrationId = registrationId;
     twilioMessage.contentType = messageContentType;
+    twilioMessage.processType = messageProcessType;
     if (message.errorCode) {
       twilioMessage.errorCode = message.errorCode;
     }

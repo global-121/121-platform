@@ -4,11 +4,7 @@ import { MessageContentType } from './enum/message-type.enum';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { SmsService } from './sms/sms.service';
 import { TestBed } from '@automock/jest';
-import {
-  MessageJobDto,
-  MessageProccessType,
-  MessageProcessTypeExtenstion,
-} from './message-job.dto';
+import { MessageJobDto, MessageProcessType } from './message-job.dto';
 import { HttpStatus } from '@nestjs/common';
 import { QueueMessageService } from './queue-message/queue-message.service';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -92,8 +88,7 @@ describe('MessageService', () => {
 
     it('if no whatsapp, but tryWhatsapp=true and phone-number supplied, it should call queueMessageService', async () => {
       const messageJobTryWhatsapp = { ...messageJob };
-      messageJobTryWhatsapp.messageProcessType =
-        MessageProccessType.tryWhatsapp;
+      messageJobTryWhatsapp.messageProcessType = MessageProcessType.tryWhatsapp;
       messageJobTryWhatsapp.phoneNumber = '1234567890';
       messageJobTryWhatsapp.whatsappPhoneNumber = null;
 
@@ -106,7 +101,7 @@ describe('MessageService', () => {
 
     it('if processType = sms it should call smsService', async () => {
       const messageJobSms = { ...messageJob };
-      messageJobSms.messageProcessType = MessageProccessType.sms; // TODO: is this still relevant this way?
+      messageJobSms.messageProcessType = MessageProcessType.sms; // TODO: is this still relevant this way?
       messageJobSms.phoneNumber = '1234567890';
 
       await messageService.sendTextMessage(messageJobSms);

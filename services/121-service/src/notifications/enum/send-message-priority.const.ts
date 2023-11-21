@@ -1,7 +1,7 @@
-import { MessageProccessType } from '../message-job.dto';
+import { MessageProcessType } from '../message-job.dto';
 
 export class MessagePriorityMap {
-  types: MessageProccessType[];
+  types: MessageProcessType[];
   priority: number;
   bulkSizePriority?: BulkSizePriority[];
 }
@@ -29,19 +29,20 @@ export const SEND_MESSAGE_PRIORITY: MessagePriorityMap[] = [
   // These are all replies to a message from the user that so they should be sent as soon as possible
   {
     types: [
-      MessageProccessType.whatsappPendingVoucher,
-      MessageProccessType.whatsappPendingInformation,
-      MessageProccessType.whatsappNoPendingMessages,
+      MessageProcessType.whatsappPendingVoucher,
+      MessageProcessType.whatsappVoucherInstructions,
+      MessageProcessType.whatsappPendingMessage,
+      MessageProcessType.whatsappDefaultReply,
     ],
     priority: 100,
   },
   // These are messages of which we know they are not a reply to a message from the user, so they can be sent later
   {
     types: [
-      MessageProccessType.sms,
-      MessageProccessType.whatappTemplateVoucher,
-      MessageProccessType.whatsappTemplateGeneric,
-      MessageProccessType.tryWhatsapp, // Try whatsapp is similair prio as whatsappTemplateGeneric but we don't know if the user has whatsapp the reply and this send the the same message
+      MessageProcessType.sms,
+      MessageProcessType.whatsappTemplateVoucher,
+      MessageProcessType.whatsappTemplateGeneric,
+      MessageProcessType.tryWhatsapp, // Try whatsapp is similair prio as whatsappTemplateGeneric but we don't know if the user has whatsapp the reply and this send the the same message
     ],
     priority: 200,
     bulkSizePriority: [
@@ -60,7 +61,7 @@ export const SEND_MESSAGE_PRIORITY: MessagePriorityMap[] = [
     ],
   },
   {
-    types: [MessageProccessType.whatsappTemplateVoucherReminder],
+    types: [MessageProcessType.whatsappTemplateVoucherReminder],
     priority: 500,
   },
 ];

@@ -64,10 +64,7 @@ import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import {
-  MessageProccessType,
-  MessageProcessTypeExtenstion,
-} from '../../../notifications/message-job.dto';
+import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -782,7 +779,7 @@ export class IntersolveVisaService
       null,
       notificationKey,
       MessageContentType.custom,
-      MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
     return result;
   }
@@ -1137,7 +1134,7 @@ export class IntersolveVisaService
       null,
       ProgramNotificationEnum.reissueVisaCard,
       MessageContentType.custom,
-      MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
   }
 

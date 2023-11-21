@@ -2,8 +2,8 @@ import { LanguageEnum } from '../registration/enum/language.enum';
 import { MessageContentType } from './enum/message-type.enum';
 
 export class MessageJobDto {
-  messageProcessType: MessageProccessType;
-  id: number;
+  messageProcessType: MessageProcessType;
+  registrationId: number;
   referenceId: string;
   preferredLanguage: LanguageEnum;
   whatsappPhoneNumber: string;
@@ -25,23 +25,24 @@ export class MessageJobCustomDataDto {
   existingMessageSid?: string;
 }
 
-export enum MessageProccessType {
+export enum MessageProcessType {
   sms = 'sms',
-  whatsappTemplateGeneric = 'whatsapp-template-generic',
-  whatappTemplateVoucher = 'whatsapp-template-voucher',
-  whatsappTemplateVoucherReminder = 'whatsapp-template-voucher-reminder',
-  whatsappPendingInformation = 'whatsapp-pending-information',
-  whatsappPendingVoucher = 'whatsapp-pending-voucher',
-  whatsappNoPendingMessages = 'whatsapp-no-pending-messages',
   tryWhatsapp = 'try-whatsapp',
+  whatsappTemplateGeneric = 'whatsapp-template-generic',
+  whatsappPendingMessage = 'whatsapp-pending-information',
+  whatsappTemplateVoucher = 'whatsapp-template-voucher',
+  whatsappTemplateVoucherReminder = 'whatsapp-template-voucher-reminder',
+  whatsappPendingVoucher = 'whatsapp-pending-voucher',
+  whatsappVoucherInstructions = 'whatsapp-voucher-instructions',
+  whatsappDefaultReply = 'whatsapp-no-pending-messages',
 }
 
 // Used in places where custom message are send and it is not clear if registration has whatsapp
 // This decision is made in the queue-message.service.ts
-export enum MessageProcessTypeExtenstion {
+export enum MessageProcessTypeExtension {
   smsOrWhatsappTemplateGeneric = 'sms-or-whatsapp-template-generic',
 }
 
 export type ExtendedMessageProccessType =
-  | MessageProccessType
-  | MessageProcessTypeExtenstion;
+  | MessageProcessType
+  | MessageProcessTypeExtension;

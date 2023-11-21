@@ -20,7 +20,6 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { waitFor } from '../../utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -29,12 +28,11 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { ProcessName } from '../enum/processor.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
-import { MessageProccessType } from '../message-job.dto';
+import { MessageProcessType } from '../message-job.dto';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 @Injectable()
 export class MessageIncomingService {
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
@@ -50,7 +48,7 @@ export class MessageIncomingService {
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
-    en: 'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
+    en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
 
   public constructor(
@@ -60,6 +58,7 @@ export class MessageIncomingService {
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   public getGenericNotificationText(
@@ -200,25 +199,12 @@ export class MessageIncomingService {
       where: { id: message.registrationId },
     });
 
-    // Since we do not know what message was failed we need to determine process type based on content type
-    // TODO: check if this logic works
-    let messageProcessType: MessageProccessType;
-    if (message.contentType === MessageContentType.custom) {
-      messageProcessType = MessageProccessType.whatsappPendingInformation;
-    } else if (message.contentType === MessageContentType.paymentVoucher) {
-      messageProcessType = MessageProccessType.whatsappPendingVoucher;
-    } else if (message.contentType === MessageContentType.paymentInstructions) {
-      messageProcessType = MessageProccessType.whatsappPendingInformation;
-    } else if (message.contentType === MessageContentType.defaultReply) {
-      messageProcessType = MessageProccessType.whatsappNoPendingMessages;
-    }
-
     await this.queueMessageService.addMessageToQueue(
       registration,
       message.body,
       null,
       message.contentType,
-      messageProcessType,
+      message.processType,
       message.mediaUrl,
       {
         replyMessage: true,
@@ -239,20 +225,18 @@ export class MessageIncomingService {
     ) {
       // PA does not have whatsapp
       // Send pending message via sms
-      const whatsapPendingMessages = await this.whatsappPendingMessageRepo.find(
-        {
+      const whatsappPendingMessages =
+        await this.whatsappPendingMessageRepo.find({
           where: { to: tryWhatsapp.registration.phoneNumber },
           relations: ['registration'],
-        },
-      );
-      console.log('whatsapPendingMessages: ', whatsapPendingMessages);
-      for (const w of whatsapPendingMessages) {
+        });
+      for (const w of whatsappPendingMessages) {
         await this.queueMessageService.addMessageToQueue(
           w.registration,
           w.body,
           null,
           MessageContentType.invited,
-          MessageProccessType.sms,
+          MessageProcessType.sms,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -298,10 +282,7 @@ export class MessageIncomingService {
       )
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where('registration.phoneNumber = :phoneNumber', {
-        phoneNumber: phoneNumber,
-      })
-      .orWhere(
+      .where(
         new Brackets((qb) => {
           qb.where('registration_data.value = :whatsappPhoneNumber', {
             whatsappPhoneNumber: phoneNumber,
@@ -425,17 +406,18 @@ export class MessageIncomingService {
           whatsappDefaultReply,
           null,
           MessageContentType.defaultReply,
-          MessageProccessType.whatsappNoPendingMessages,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       } else {
-        // If multiple or 0 programs and phonenumber not found: use generic reply in code
-        await this.queueMessageService.addMessageToQueue(
-          registrationsWithPhoneNumber[0],
+        // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
+        await this.whatsappService.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
+          fromNumber,
+          null,
           null,
           MessageContentType.defaultReply,
-          MessageProccessType.whatsappNoPendingMessages,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       }
@@ -471,7 +453,7 @@ export class MessageIncomingService {
           message,
           null,
           MessageContentType.paymentVoucher,
-          MessageProccessType.whatsappPendingVoucher,
+          MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           {
             payment: intersolveVoucher.payment,
@@ -492,7 +474,7 @@ export class MessageIncomingService {
           '',
           null,
           MessageContentType.paymentInstructions,
-          MessageProccessType.whatsappPendingInformation,
+          MessageProcessType.whatsappVoucherInstructions,
           `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
         );
       }
@@ -516,7 +498,7 @@ export class MessageIncomingService {
             message.body,
             null,
             message.contentType,
-            MessageProccessType.whatsappPendingInformation,
+            MessageProcessType.whatsappPendingMessage,
             message.mediaUrl,
             { replyMessage: true, pendingMessageId: message.id },
           );
