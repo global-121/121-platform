@@ -91,9 +91,9 @@ export class RegistrationsPaginationService {
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
-    const registrationDataNamesProgram = registrationDataRelations.map(
-      (r) => r.name,
-    );
+    const registrationDataNamesProgram = registrationDataRelations
+      .map((r) => r.name)
+      .filter((r) => r !== CustomDataAttributes.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (

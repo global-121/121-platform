@@ -33,8 +33,8 @@ export function deleteRegistrations(
   return getServer()
     .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .send()
-    .query(queryParams);
+    .query(queryParams)
+    .send();
 }
 
 export function searchRegistrationByReferenceId(
@@ -175,10 +175,10 @@ export function sendMessage(
   return getServer()
     .post(`/programs/${programId}/registrations/message`)
     .set('Cookie', [accessToken])
+    .query(filter)
     .send({
       message: message,
-    })
-    .query(filter);
+    });
 }
 
 export function updateRegistration(

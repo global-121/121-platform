@@ -21,6 +21,11 @@ function checkSourceExists(path) {
     return process.exit(1);
   }
 
+  if (path.includes('message-template')) {
+    console.warn(`This script should not be used to convert message-template!`);
+    return process.exit(1);
+  }
+
   return path;
 }
 

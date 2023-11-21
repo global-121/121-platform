@@ -1,0 +1,60 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [demo] Interface: Portal'
+
+env:
+  workingDirectory: interfaces/HO-Portal
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_WATER_00DCCC603:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Job
+    runs-on: ubuntu-latest
+    environment: 'client-demo'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
+        with:
+          interfacePath: ${{ env.workingDirectory }}
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFCPkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAABERAAAAABEREREREQAAERERERERAAAREREREREAABEREREREQAAAAAREQAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAPw/AAD8PwAA/D8AAPw/AADAAwAAwAMAAMADAADAAwAA/D8AAPw/AAD8PwAA/D8AAP//AAD//wAA'
+        env:
+          NG_ENV_NAME: 'Demo'
+          NG_URL_121_SERVICE_API: 'https://demo.121.global/api'
+          NG_AI_IKEY: '2aad0652-5b2a-4c01-8533-e1416879c7ac'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=2aad0652-5b2a-4c01-8533-e1416879c7ac;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
+      - name: Deploy to Azure Static Web App
+        id: deploy_to_aswa
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          skip_deploy_on_missing_secrets: true
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_WATER_00DCCC603 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          config_file_location: '${{ env.workingDirectory }}/'
+          app_location: '${{ env.workingDirectory }}/www'
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY

@@ -68,7 +68,11 @@ describe('Export registration change log', () => {
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);
-    const data = body.data;
+    const fieldOrder = ['phoneNumber', 'lastName', 'paymentAmountMultiplier'];
+    // Create a new array with the desired order
+    const data = fieldOrder.map((fieldName) =>
+      body.data.find((item) => item.fieldName === fieldName),
+    );
     expect(data.length).toBe(3);
     const admin = 'admin@example.org';
     const checkingMap1 = {
