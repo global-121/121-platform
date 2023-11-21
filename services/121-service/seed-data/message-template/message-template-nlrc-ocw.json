@@ -11,7 +11,7 @@
     "isWhatsappTemplate": true,
     "message": {
       "en": "There is a message waiting for you. Please reply “yes” to this message to receive it.\n\nKind regards, NL Red Cross / School Meals Programme",
-      "nl": "Er is een een bericht voor jou. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "nl": "Er is een bericht voor u. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
       "ar": "لديك رسالة تنتظر. الرجاء الرد بـ \"نعم\" على هذه الرسالة لتلقيها\n\n أطيب التحيات،\nبرنامج الوجبات المدرسية / الصليب الأحمر الهولندي",
       "tr": "Sizi bekleyen bir mesaj var. Bu mesajı almak için lütfen bu mesajı “evet” olarak yanıtlayın.\n\nSaygılarımızla, \nNL Kızılhaç / Okul Yemekleri Programı"
     }
