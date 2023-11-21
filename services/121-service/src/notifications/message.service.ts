@@ -47,8 +47,10 @@ export class MessageService {
             messageJobDto.programId,
           );
 
-      const whatsappNumber = messageJobDto.whatsappPhoneNumber;
-      if (whatsappNumber) {
+      const whatsappPhoneNumber = messageJobDto.customData?.tryWhatsapp
+        ? messageJobDto.phoneNumber
+        : messageJobDto.whatsappPhoneNumber;
+      if (whatsappPhoneNumber) {
         if (
           ReplacedByGenericTemplateMessageTypes.includes(
             messageJobDto.messageContentType,
@@ -57,11 +59,12 @@ export class MessageService {
         ) {
           await this.storePendingMessageAndSendTemplate(
             messageText,
-            whatsappNumber,
+            whatsappPhoneNumber,
             null,
             null,
             messageJobDto.id,
             messageJobDto.messageContentType,
+            false,
           );
         } else {
           let messageSid: string;
@@ -69,8 +72,7 @@ export class MessageService {
           await this.whatsappService
             .sendWhatsapp(
               messageJobDto.message,
-              messageJobDto.phoneNumber,
-              null,
+              whatsappPhoneNumber,
               messageJobDto.mediaUrl,
               messageJobDto.id,
               messageJobDto.messageContentType,
@@ -127,6 +129,13 @@ export class MessageService {
             await this.whatsappPendingMessageRepo.delete({
               id: messageJobDto.customData.pendingMessageId,
             });
+          } else if (messageJobDto.customData.tryWhatsapp) {
+            // If this is a tryWhatsapp message, save it for later handling the status callback
+            const tryWhatsapp = {
+              sid: messageSid,
+              registrationId: messageJobDto.id,
+            };
+            await this.tryWhatsappRepository.save(tryWhatsapp);
           }
         }
       } else if (messageJobDto.tryWhatsApp && messageJobDto.phoneNumber) {
@@ -161,6 +170,7 @@ export class MessageService {
     mediaUrl: null | string,
     registrationId: number,
     messageContentType: MessageContentType,
+    tryWhatsapp: boolean,
   ): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
@@ -188,6 +198,7 @@ export class MessageService {
       false,
       MessageContentType.genericTemplated,
       null,
+      { tryWhatsapp },
     );
   }
 
@@ -225,11 +236,7 @@ export class MessageService {
       null,
       messageJobDto.id,
       messageContentType,
+      true,
     );
-    const tryWhatsapp = {
-      sid: 'SM1234567890', //  TODO: make dynamic + move result handling to processor
-      registrationId: messageJobDto.id,
-    };
-    await this.tryWhatsappRepository.save(tryWhatsapp);
   }
 }

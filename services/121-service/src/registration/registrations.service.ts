@@ -643,7 +643,7 @@ export class RegistrationsService {
       registration,
       null,
       RegistrationStatusEnum.registered,
-      null,
+      false,
       MessageContentType.registered,
     );
 

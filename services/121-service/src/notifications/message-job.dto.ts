@@ -23,4 +23,5 @@ export class MessageJobCustomDataDto {
   replyMessage?: boolean;
   pendingMessageId?: number;
   existingMessageSid?: string;
+  tryWhatsapp?: boolean;
 }

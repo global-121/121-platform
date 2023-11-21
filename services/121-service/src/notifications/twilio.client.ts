@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 let mockClient = null as any;
-const twilio = require('twilio');
+export const twilio = require('twilio');
 if (!!process.env.MOCK_TWILIO) {
   class PrismClient {
     public prismUrl: string;
