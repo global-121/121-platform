@@ -29,6 +29,7 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { ProcessName } from '../enum/processor.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
+import { MessageTemplateService } from '../message-template/message-template.service';
 
 @Injectable()
 export class MessageIncomingService {
@@ -59,23 +60,36 @@ export class MessageIncomingService {
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
+    private readonly lastMessageService: LastMessageStatusService,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
-  public getGenericNotificationText(
+  public async getGenericNotificationText(
     language: string,
     program: ProgramEntity,
-  ): string {
+  ): Promise<string> {
     const key = ProgramNotificationEnum.whatsappGenericMessage;
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        program.id,
+        key,
+      );
 
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
+    const notification = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    if (notifications[key]) {
-      return notifications[key];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
     }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
+
+    return '';
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
@@ -399,10 +413,19 @@ export class MessageIncomingService {
         const language =
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
+
+        await this.messageTemplateService.getMessageTemplatesByProgramId(
+          program.id,
+          ProgramNotificationEnum.whatsappReply,
+          language,
+        );
+
         const whatsappDefaultReply =
-          program.notifications[language][
-            ProgramNotificationEnum.whatsappReply
-          ];
+          await this.messageTemplateService.getMessageTemplatesByProgramId(
+            program.id,
+            ProgramNotificationEnum.whatsappReply,
+            language,
+          )[0];
         await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
           whatsappDefaultReply,
@@ -443,12 +466,23 @@ export class MessageIncomingService {
           await this.imageCodeService.createVoucherUrl(intersolveVoucher);
 
         // Only include text with first voucher (across PAs and payments)
-        let message = firstVoucherSent
-          ? ''
-          : program.notifications[language][
-              ProgramNotificationEnum.whatsappVoucher
-            ];
-        message = message.split('{{1}}').join(intersolveVoucher.amount);
+        let message = null;
+
+        if (firstVoucherSent) {
+          message = '';
+        } else {
+          message =
+            await this.messageTemplateService.getMessageTemplatesByProgramId(
+              program.id,
+              ProgramNotificationEnum.whatsappVoucher,
+              language,
+            );
+        }
+
+        message =
+          message.length > 0
+            ? message[0].message.split('{{1}}').join(intersolveVoucher.amount)
+            : message.split('{{1}}').join(intersolveVoucher.amount);
         await this.queueMessageService.addMessageToQueue(
           registration,
           message,

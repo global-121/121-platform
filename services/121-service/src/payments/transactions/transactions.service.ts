@@ -21,6 +21,7 @@ import {
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
+import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
 
 @Injectable()
 export class TransactionsService {
@@ -41,6 +42,7 @@ export class TransactionsService {
 
   public constructor(
     private readonly queueMessageService: QueueMessageService,
+    private messageTemplateService: MessageTemplateService,
   ) {}
 
   public async getLastTransactions(
@@ -212,9 +214,9 @@ export class TransactionsService {
       // loop over notification objects and send a message for each
 
       for (const transactionNotifcation of transactionResponse.notificationObjects) {
-        const message = this.getMessageText(
+        const message = await this.getMessageText(
           registration.preferredLanguage,
-          program.notifications,
+          program.id,
           transactionNotifcation,
         );
         await this.queueMessageService.addMessageToQueue(
@@ -229,15 +231,28 @@ export class TransactionsService {
     return resultTransaction;
   }
 
-  private getMessageText(
+  private async getMessageText(
     language: LanguageEnum,
-    programNotifications: object,
+    programId: number,
     transactionNotification: TransactionNotificationObject,
-  ): string {
+  ): Promise<string> {
     const key = transactionNotification.notificationKey;
-    let message =
-      programNotifications[language]?.[key] ||
-      programNotifications[this.fallbackLanguage][key];
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        programId,
+        key,
+      );
+
+    const notification = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    const fallbackNotification = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    let message = notification
+      ? notification.message
+      : fallbackNotification.message;
+
     if (transactionNotification.dynamicContent.length > 0) {
       for (const [
         i,

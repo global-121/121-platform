@@ -31,6 +31,7 @@ import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -55,10 +56,10 @@ export class IntersolveVoucherService
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
   public async sendPayment(
@@ -307,7 +308,7 @@ export class IntersolveVoucherService
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
-    let whatsappPayment = this.getNotificationText(
+    let whatsappPayment = await this.getNotificationText(
       program,
       ProgramNotificationEnum.whatsappPayment,
       language,
@@ -329,18 +330,32 @@ export class IntersolveVoucherService
     return result;
   }
 
-  public getNotificationText(
+  public async getNotificationText(
     program: ProgramEntity,
     type: string,
     language?: string,
-  ): string {
-    if (
-      program.notifications[language] &&
-      program.notifications[language][type]
-    ) {
-      return program.notifications[language][type];
+  ): Promise<string> {
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        program.id,
+      );
+
+    const notification = messageTemplates.find(
+      (template) => template.type === type && template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    return program.notifications[this.fallbackLanguage][type];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) =>
+        template.type === type && template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
+    }
+
+    return '';
   }
 
   private async storeVoucherData(

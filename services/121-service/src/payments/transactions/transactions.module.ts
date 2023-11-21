@@ -13,6 +13,7 @@ import { TransactionEntity } from './transaction.entity';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
+import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { QueueMessageModule } from '../../notifications/queue-message/queue-mess
     HttpModule,
     ActionModule,
     QueueMessageModule,
+    MessageTemplateModule,
   ],
   providers: [TransactionsService],
   controllers: [TransactionsController],

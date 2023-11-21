@@ -16,18 +16,19 @@ import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherModule } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { MessageIncomingController } from './message-incoming.controller';
 import { MessageIncomingService } from './message-incoming.service';
 import { BullModule } from '@nestjs/bull';
 import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
+import { AzureLogService } from '../../shared/services/azure-log.service';
+import { QueueMessageModule } from '../queue-message/queue-message.module';
+import { LatestMessageEntity } from '../latest-message.entity';
+import { IntersolveVoucherModule } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
-import { AzureLogService } from '../../shared/services/azure-log.service';
-import { QueueMessageModule } from '../queue-message/queue-message.module';
-import { LatestMessageEntity } from '../latest-message.entity';
+import { MessageTemplateModule } from '../message-template/message-template.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { LatestMessageEntity } from '../latest-message.entity';
     MessageStatusCallbackProcessor,
     AzureLogService,
     LastMessageStatusService,
+    MessageTemplateModule,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],

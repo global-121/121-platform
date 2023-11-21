@@ -10,6 +10,7 @@ import { RegistrationEntity } from '../registration/registration.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
 import { QueueMessageModule } from './queue-message/queue-message.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { MessageTemplateModule } from './message-template/message-template.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-
     SmsModule,
     QueueMessageModule,
     IntersolveVoucherModule,
+    MessageTemplateModule,
   ],
   providers: [MessageService, MessageProcessor, AzureLogService],
   controllers: [],
