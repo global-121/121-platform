@@ -11,7 +11,6 @@ export class MessageJobDto {
   programId: number;
   message?: string;
   key?: string;
-  tryWhatsApp? = false;
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;
@@ -24,7 +23,6 @@ export class MessageJobCustomDataDto {
   replyMessage?: boolean;
   pendingMessageId?: number;
   existingMessageSid?: string;
-  tryWhatsapp?: boolean;
 }
 
 export enum MessageProccessType {

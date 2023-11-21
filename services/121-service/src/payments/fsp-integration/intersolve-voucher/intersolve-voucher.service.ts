@@ -321,7 +321,6 @@ export class IntersolveVoucherService
       registration,
       whatsappPayment,
       null,
-      false,
       MessageContentType.paymentTemplated,
       MessageProccessType.whatappTemplateVoucher,
       null,

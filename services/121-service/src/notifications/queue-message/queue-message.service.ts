@@ -29,7 +29,6 @@ export class QueueMessageService {
     registration: RegistrationEntity | RegistrationViewEntity,
     message: string,
     key: string,
-    tryWhatsApp: boolean,
     messageContentType: MessageContentType,
     messageProcessType: ExtendedMessageProccessType,
     mediaUrl?: string,
@@ -65,21 +64,25 @@ export class QueueMessageService {
       programId: registration.programId,
       message,
       key,
-      tryWhatsApp,
       messageContentType,
       mediaUrl,
       customData,
     };
-    const priority = this.getPriority(
-      messageContentType,
-      whatsappPhoneNumber,
-      customData?.replyMessage,
-      bulksize,
-    );
+    console.log('messageJob: ', messageJob);
+    // const priority = this.getPriority(
+    //   messageContentType,
+    //   whatsappPhoneNumber,
+    //   customData?.replyMessage,
+    //   bulksize,
+    // );
     try {
-      await this.messageQueue.add(ProcessName.send, messageJob, {
-        priority: priority,
-      });
+      await this.messageQueue.add(
+        ProcessName.send,
+        messageJob,
+        //   {
+        //   priority: priority,
+        // }
+      );
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }

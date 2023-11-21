@@ -16,7 +16,6 @@ const messageJob: MessageJobDto = {
   programId: 1,
   message: 'test message',
   key: 'key',
-  tryWhatsApp: true,
   messageContentType: MessageContentType.custom,
   messageProcessType: MessageProccessType.whatsappTemplateGeneric,
 };

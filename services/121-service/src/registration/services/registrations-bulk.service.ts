@@ -329,20 +329,16 @@ export class RegistrationsBulkService {
             where: { id: programId },
           });
         }
-        const tryWhatsappFirst =
-          registrationStatus === RegistrationStatusEnum.invited
-            ? program.tryWhatsAppFirst
-            : false;
-
-        const messageProcessType = tryWhatsappFirst
-          ? MessageProccessType.tryWhatsapp
-          : MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric;
+        const messageProcessType =
+          registrationStatus === RegistrationStatusEnum.invited &&
+          program.tryWhatsAppFirst
+            ? MessageProccessType.tryWhatsapp
+            : MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric;
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
             messageSizeType.message,
             null,
-            tryWhatsappFirst,
             messageSizeType.messageContentType,
             messageProcessType,
             null,
@@ -453,7 +449,6 @@ export class RegistrationsBulkService {
         registration,
         message,
         null,
-        false,
         MessageContentType.custom,
         MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
         null,

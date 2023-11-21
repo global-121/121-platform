@@ -222,7 +222,6 @@ export class TransactionsService {
           registration,
           message,
           null,
-          false,
           MessageContentType.payment,
           MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
           null,

@@ -15,16 +15,6 @@ export enum MessageContentType {
   defaultReply = 'default-reply',
 }
 
-export const ReplacedByGenericTemplateMessageTypes = [
-  MessageContentType.registered,
-  MessageContentType.included,
-  MessageContentType.inclusionEnded,
-  MessageContentType.rejected,
-  MessageContentType.invited,
-  MessageContentType.paused,
-  MessageContentType.custom,
-];
-
 export const TemplatedMessages = [
   MessageContentType.genericTemplated,
   MessageContentType.paymentTemplated,

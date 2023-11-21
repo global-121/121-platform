@@ -15,7 +15,6 @@ const messageJob = {
   referenceId: 'ref-test',
   message: 'test message',
   key: 'key',
-  tryWhatsApp: true,
   messageContentType: MessageContentType.custom,
 } as MessageJobDto;
 
@@ -58,7 +57,6 @@ describe('QueueMessageService', () => {
       registration,
       'test message',
       'key',
-      true,
       MessageContentType.custom,
       MessageProccessType.whatsappTemplateGeneric,
     );
@@ -98,7 +96,6 @@ describe('QueueMessageService', () => {
       registration,
       'test message',
       'key',
-      true,
       MessageContentType.custom,
       MessageProccessType.whatsappTemplateGeneric,
     );

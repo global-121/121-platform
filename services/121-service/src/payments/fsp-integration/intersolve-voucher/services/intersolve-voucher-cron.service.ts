@@ -181,7 +181,6 @@ export class IntersolveVoucherCronService {
           registration,
           whatsappPayment,
           null,
-          false,
           MessageContentType.paymentReminder,
           MessageProccessType.whatsappTemplateVoucherReminder,
         );

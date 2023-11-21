@@ -4,7 +4,11 @@ import { MessageContentType } from './enum/message-type.enum';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { SmsService } from './sms/sms.service';
 import { TestBed } from '@automock/jest';
-import { MessageJobDto } from './message-job.dto';
+import {
+  MessageJobDto,
+  MessageProccessType,
+  MessageProcessTypeExtenstion,
+} from './message-job.dto';
 import { HttpStatus } from '@nestjs/common';
 import { QueueMessageService } from './queue-message/queue-message.service';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -18,7 +22,6 @@ const messageJob = {
   programId: 1,
   message: 'test message',
   key: 'key',
-  tryWhatsApp: false,
   customData: {},
 } as MessageJobDto;
 
@@ -43,6 +46,7 @@ describe('MessageService', () => {
     expect(messageService).toBeDefined();
   });
 
+  // TODO: re-evaluate/update these tests based on latest code
   describe('Send a message', () => {
     it('if whatsapp-number and non-templated message type and no reply message, then it should call queueMessageService', async () => {
       const messageJobWhatsappCustom = { ...messageJob };
@@ -88,7 +92,8 @@ describe('MessageService', () => {
 
     it('if no whatsapp, but tryWhatsapp=true and phone-number supplied, it should call queueMessageService', async () => {
       const messageJobTryWhatsapp = { ...messageJob };
-      messageJobTryWhatsapp.tryWhatsApp = true;
+      messageJobTryWhatsapp.messageProcessType =
+        MessageProccessType.tryWhatsapp;
       messageJobTryWhatsapp.phoneNumber = '1234567890';
       messageJobTryWhatsapp.whatsappPhoneNumber = null;
 
@@ -99,10 +104,9 @@ describe('MessageService', () => {
       expect(smsService.sendSms).not.toHaveBeenCalled();
     });
 
-    it('if no whatsapp and no tryWhatsapp and phoneNumber is supplied, it should call smsService', async () => {
+    it('if processType = sms it should call smsService', async () => {
       const messageJobSms = { ...messageJob };
-      messageJobSms.whatsappPhoneNumber = null;
-      messageJobSms.tryWhatsApp = false;
+      messageJobSms.messageProcessType = MessageProccessType.sms; // TODO: is this still relevant this way?
       messageJobSms.phoneNumber = '1234567890';
 
       await messageService.sendTextMessage(messageJobSms);

@@ -119,6 +119,7 @@ export class MessageIncomingService {
         where: { sid: callbackData.SmsSid },
         relations: ['registration'],
       });
+      console.log('tryWhatsapp: ', tryWhatsapp);
       if (tryWhatsapp) {
         await this.handleTryWhatsappResult(callbackData, tryWhatsapp);
       }
@@ -217,7 +218,6 @@ export class MessageIncomingService {
       registration,
       message.body,
       null,
-      false,
       message.contentType,
       messageProcessType,
       message.mediaUrl,
@@ -246,12 +246,12 @@ export class MessageIncomingService {
           relations: ['registration'],
         },
       );
+      console.log('whatsapPendingMessages: ', whatsapPendingMessages);
       for (const w of whatsapPendingMessages) {
         await this.queueMessageService.addMessageToQueue(
           w.registration,
           w.body,
           null,
-          false,
           MessageContentType.invited,
           MessageProccessType.sms,
         );
@@ -425,7 +425,6 @@ export class MessageIncomingService {
           registrationsWithPhoneNumber[0],
           whatsappDefaultReply,
           null,
-          false,
           MessageContentType.defaultReply,
           MessageProccessType.whatsappNoPendingMessages,
         );
@@ -436,7 +435,6 @@ export class MessageIncomingService {
           registrationsWithPhoneNumber[0],
           this.genericDefaultReplies[this.fallbackLanguage],
           null,
-          false,
           MessageContentType.defaultReply,
           MessageProccessType.whatsappNoPendingMessages,
         );
@@ -473,7 +471,6 @@ export class MessageIncomingService {
           registration,
           message,
           null,
-          false,
           MessageContentType.paymentVoucher,
           MessageProccessType.whatsappPendingVoucher,
           mediaUrl,
@@ -495,7 +492,6 @@ export class MessageIncomingService {
           registration,
           '',
           null,
-          false,
           MessageContentType.paymentInstructions,
           MessageProccessType.whatsappPendingInformation,
           `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
@@ -520,7 +516,6 @@ export class MessageIncomingService {
             registration,
             message.body,
             null,
-            false,
             message.contentType,
             MessageProccessType.whatsappPendingInformation,
             message.mediaUrl,

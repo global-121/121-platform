@@ -647,7 +647,6 @@ export class RegistrationsService {
       registration,
       null,
       RegistrationStatusEnum.registered,
-      false,
       MessageContentType.registered,
       MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
     );

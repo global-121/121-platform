@@ -781,7 +781,6 @@ export class IntersolveVisaService
       wallet.intersolveVisaCustomer.registration,
       null,
       notificationKey,
-      false,
       MessageContentType.custom,
       MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
     );
@@ -1137,7 +1136,6 @@ export class IntersolveVisaService
       registration,
       null,
       ProgramNotificationEnum.reissueVisaCard,
-      false,
       MessageContentType.custom,
       MessageProcessTypeExtenstion.smsOrWhatsappTemplateGeneric,
     );
