@@ -149,9 +149,10 @@ export class WhatsappIncomingService {
         errorMessage: callbackData.ErrorMessage,
       },
     );
-    await this.lastMessageService.updateLastMessageStatus(
-      callbackData.MessageSid,
-    );
+    // This is commented out because we think this is causing performance issues
+    // await this.lastMessageService.updateLastMessageStatus(
+    //   callbackData.MessageSid,
+    // );
 
     // Update intersolve voucher transaction status if applicable
     const relevantStatuses = [

@@ -13,9 +13,9 @@ export class SeedProgramValidation implements InterfaceScript {
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
-  public async run(): Promise<void> {
+  public async run(isApiTests?: boolean): Promise<void> {
     const seedInit = await new SeedInit(this.dataSource);
-    await seedInit.run();
+    await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programValidation);

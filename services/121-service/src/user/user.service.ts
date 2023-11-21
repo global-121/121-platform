@@ -20,11 +20,13 @@ import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 import { PermissionEntity } from './permissions.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
+import { PermissionEnum } from './permission.enum';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -96,15 +98,76 @@ export class UserService {
     );
   }
 
-  public async getUserRoles(): Promise<UserRoleEntity[]> {
-    return await this.userRoleRepository.find({
+  public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
+    // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
+    await this.getProgramIdsUserHasPermission(
+      userId,
+      PermissionEnum.AidWorkerProgramREAD,
+    );
+    const userRoles = await this.userRoleRepository.find({
       relations: ['permissions'],
     });
+
+    return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
+  }
+
+  public async getProgramIdsUserHasPermission(
+    userId: number,
+    permission: PermissionEnum,
+  ): Promise<number[]> {
+    const user = await this.findUserProgramAssignmentsOrThrow(userId);
+    const programIds = [];
+    for (const assignment of user.programAssignments) {
+      for (const role of assignment.roles) {
+        if (role.permissions.map((p) => p.name).includes(permission)) {
+          programIds.push(assignment.programId);
+        }
+      }
+    }
+    return programIds;
+  }
+
+  // TODO: REFACTOR: the Controller should throw the HTTP Status Code
+  public async findUserProgramAssignmentsOrThrow(
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    return user;
+  }
+
+  private getUserRoleResponse(userRole: UserRoleEntity): UserRoleResponseDTO {
+    const userRoleResponse: UserRoleResponseDTO = {
+      id: userRole.id,
+      role: userRole.role,
+      label: userRole.label,
+    };
+    if (userRole.permissions) {
+      userRoleResponse.permissions = userRole.permissions.map(
+        (permission) => permission.name,
+      );
+    }
+    return userRoleResponse;
   }
 
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.userRoleRepository.findOne({
       where: { role: userRoleData.role },
     });
@@ -123,13 +186,14 @@ export class UserService {
     }
     userRoleEntity.permissions = permissionEntities;
 
-    return await this.userRoleRepository.save(userRoleEntity);
+    const createdUserRole = await this.userRoleRepository.save(userRoleEntity);
+    return this.getUserRoleResponse(createdUserRole);
   }
 
   public async updateUserRole(
     userRoleId: number,
     userRoleData: UpdateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
     existingRole.label = userRoleData.label;
     const permissionEntities = [];
@@ -140,12 +204,16 @@ export class UserService {
     }
     existingRole.permissions = permissionEntities;
 
-    return await this.userRoleRepository.save(existingRole);
+    const savedUserRole = await this.userRoleRepository.save(existingRole);
+    return this.getUserRoleResponse(savedUserRole);
   }
 
-  public async deleteUserRole(userRoleId: number): Promise<UserRoleEntity> {
+  public async deleteUserRole(
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
-    return await this.userRoleRepository.remove(existingRole);
+    const deletedUserRole = await this.userRoleRepository.remove(existingRole);
+    return this.getUserRoleResponse(deletedUserRole);
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {
@@ -215,7 +283,7 @@ export class UserService {
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -251,7 +319,9 @@ export class UserService {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
         await this.assignmentRepository.save(programAssignment);
-        return programAssignment.roles;
+        return programAssignment.roles.map((role) =>
+          this.getUserRoleResponse(role),
+        );
       }
     }
 
@@ -261,14 +331,14 @@ export class UserService {
       program: { id: program.id },
       roles: newRoles,
     });
-    return newRoles;
+    return newRoles.map((role) => this.getUserRoleResponse(role));
   }
 
-  public async deleteRoles(
+  public async deleteAidworkerRolesOrAssignment(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -312,7 +382,7 @@ export class UserService {
         let resultRoles: UserRoleEntity[] = [];
 
         if (rolesToDelete.length === 0 || rolesToKeep.length === 0) {
-          // If no roles are left, delete the assignment
+          // If no roles to delete are passed OR no roles are left, delete the assignment
           await this.assignmentRepository.remove(programAssignment);
         } else if (rolesToKeep.length > 0) {
           // Keep only the roles that are not in the newRoles array
@@ -322,7 +392,7 @@ export class UserService {
           await this.assignmentRepository.save(programAssignment);
           resultRoles = rolesToKeep;
         }
-        return resultRoles;
+        return resultRoles.map((role) => this.getUserRoleResponse(role));
       }
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
@@ -582,7 +652,7 @@ export class UserService {
   public async getProgramRoles(
     programId: number,
     userId: number,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     const roles = await this.userRoleRepository
       .createQueryBuilder('roles')
       .leftJoin('roles.assignments', 'assignments')
@@ -590,19 +660,19 @@ export class UserService {
       .andWhere('assignments.userId = :userId', { userId })
       .getMany();
 
-    if (!roles) {
-      const errors = { User: ' not found' };
+    if (!roles || !roles.length) {
+      const errors = `User assignment for user id ${userId} to program ${programId} not found`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    return roles;
+    return roles.map((role) => this.getUserRoleResponse(role));
   }
 
   public async assigAidworkerRolesToProgram(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -653,8 +723,12 @@ export class UserService {
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
 
-        return programAssignment.roles;
+        return programAssignment.roles.map((role) =>
+          this.getUserRoleResponse(role),
+        );
       }
     }
+    const errors = `User assignment for user id ${userId} to program ${programId} not found`;
+    throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
   }
 }

@@ -371,23 +371,30 @@ export class RegistrationsController {
       case RegistrationStatusEnum.included:
         permission = PermissionEnum.RegistrationStatusIncludedUPDATE;
         messageContentType = MessageContentType.included;
+        break;
       case RegistrationStatusEnum.rejected:
         permission = PermissionEnum.RegistrationStatusRejectedUPDATE;
         messageContentType = MessageContentType.rejected;
+        break;
       case RegistrationStatusEnum.inclusionEnded:
         permission = PermissionEnum.RegistrationStatusInclusionEndedUPDATE;
         messageContentType = MessageContentType.inclusionEnded;
+        break;
       case RegistrationStatusEnum.paused:
         permission = PermissionEnum.RegistrationStatusPausedUPDATE;
         messageContentType = MessageContentType.paused;
+        break;
       case RegistrationStatusEnum.invited:
         permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
         messageContentType = MessageContentType.invited;
+        break;
       case RegistrationStatusEnum.selectedForValidation:
         permission =
           PermissionEnum.RegistrationStatusSelectedForValidationUPDATE;
+        break;
       case RegistrationStatusEnum.noLongerEligible:
         permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
+        break;
     }
     if (!permission) {
       const errors = `The status ${registrationStatus} is unknown or cannot be changed to via API`;

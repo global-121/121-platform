@@ -25,6 +25,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
 
   public async run(
+    isApiTests?: boolean,
     powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
     powerNrMessagesString?: string,
@@ -71,7 +72,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     // Set up instance and program
     const seedMultiple = new SeedMultipleNLRC(this.dataSource);
-    await seedMultiple.run();
+    await seedMultiple.run(isApiTests);
 
     let getAccessToken,
       changePhase,

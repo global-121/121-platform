@@ -38,6 +38,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       referenceId: AllowedFilterOperatorsString,
       status: AllowedFilterOperatorsString,
       id: AllowedFilterOperatorsNumber,
+      registrationCreatedDate: AllowedFilterOperatorsString,
       phoneNumber: AllowedFilterOperatorsString,
       preferredLanguage: AllowedFilterOperatorsString,
       inclusionScore: AllowedFilterOperatorsNumber,

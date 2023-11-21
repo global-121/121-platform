@@ -36,11 +36,11 @@ import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEnum } from './permission.enum';
-import { UserRoleEntity } from './user-role.entity';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
+import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @Controller()
@@ -50,17 +50,19 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Admin()
+  //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    description: 'Returns a list of roles and their permissions',
+    type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(): Promise<UserRoleEntity[]> {
-    return await this.userService.getUserRoles();
+  public async getUserRoles(
+    @User('id') userId: number,
+  ): Promise<UserRoleResponseDTO[]> {
+    return await this.userService.getUserRoles(userId);
   }
 
   @Admin()
@@ -69,12 +71,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the created role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     return await this.userService.addUserRole(userRoleData);
   }
 
@@ -85,7 +87,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the updated user role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @ApiResponse({
     status: 400,
@@ -95,7 +97,7 @@ export class UserController {
   public async updateUserRole(
     @Param() params,
     @Body() userRoleData: UpdateUserRoleDto,
-  ): Promise<UserRoleEntity> {
+  ): Promise<UserRoleResponseDTO> {
     return await this.userService.updateUserRole(
       params.userRoleId,
       userRoleData,
@@ -110,14 +112,14 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Returns the deleted role',
-    type: UserRoleEntity,
+    type: UserRoleResponseDTO,
   })
   @ApiResponse({
     status: 404,
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleEntity> {
+  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
@@ -205,58 +207,6 @@ export class UserController {
   })
   @Post('users/login')
   public async login(
-    @Body() loginUserDto: LoginUserDto,
-    @Res() res,
-    @Req() req,
-  ): Promise<UserRO> {
-    try {
-      const loginResponse = await this.userService.login(loginUserDto);
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
-
-      res.cookie(
-        loginResponse.cookieSettings.tokenKey,
-        loginResponse.cookieSettings.tokenValue,
-        {
-          sameSite: serviceWorkerDebug
-            ? 'None'
-            : loginResponse.cookieSettings.sameSite,
-          secure: serviceWorkerDebug
-            ? true
-            : loginResponse.cookieSettings.secure,
-          expires: loginResponse.cookieSettings.expires,
-          httpOnly: loginResponse.cookieSettings.httpOnly,
-        },
-      );
-      return res.send({
-        username: loginResponse.userRo.user.username,
-        permissions: loginResponse.userRo.user.permissions,
-        access_token_general: loginResponse.token,
-        expires: loginResponse.cookieSettings.expires,
-        isAdmin: loginResponse.userRo.user.isAdmin,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // TODO: remove this endpoint when all external systems have updated their login endpoint to /users/login
-  @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 30,
-    +process.env.HIGH_THROTTLING_TTL || 60,
-  )
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Log in existing user' })
-  @ApiResponse({
-    status: 201,
-    description: 'Logged in successfully',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Wrong username and/or password',
-  })
-  @Post('user/login')
-  public async loginOld(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
     @Req() req,
@@ -381,20 +331,22 @@ export class UserController {
 
   @Admin()
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Get user roles' })
+  @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    type: [UserRoleResponseDTO],
   })
   @ApiResponse({
     status: 404,
     description: 'No roles found for user',
   })
   @Get('programs/:programId/users/:userId/roles')
-  public async getProgramRoles(@Param() params): Promise<UserRoleEntity[]> {
+  public async getProgramRoles(
+    @Param() params,
+  ): Promise<UserRoleResponseDTO[]> {
     return await this.userService.getProgramRoles(
       Number(params.programId),
       Number(params.userId),
@@ -403,23 +355,27 @@ export class UserController {
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Assign Roles and Assignment Aidworker to program' })
+  @ApiOperation({
+    summary:
+      'Create program assignment including roles or OVERWRITE roles of existing program assignment',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    description:
+      'Returns the created or updated program assignment including a list of roles',
+    type: [UserRoleResponseDTO],
   })
   @ApiResponse({
     status: 404,
     description: 'User, program or role(s) not found',
   })
   @Put('programs/:programId/users/:userId/roles')
-  public async assignRolesAndAssignmentFieldValidationAidworkerToProgram(
+  public async assignAidworkerRolesAndAssignmentToProgram(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     return await this.userService.assignAidworkerRolesAndAssignmentToProgram(
       Number(params.programId),
       Number(params.userId),
@@ -429,23 +385,26 @@ export class UserController {
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Assign Roles Aidworker to program' })
+  @ApiOperation({
+    summary:
+      'Add roles to existing program assignment (UNION of existing and new roles)',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    description: 'Returns new list of roles of the program assignment',
+    type: [UserRoleResponseDTO],
   })
   @ApiResponse({
     status: 404,
     description: 'User, program or role(s) not found',
   })
   @Patch('programs/:programId/users/:userId/roles')
-  public async assignRolesFieldValidationAidworkerToProgram(
+  public async assigAidworkerRolesToProgram(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
+  ): Promise<UserRoleResponseDTO[]> {
     return await this.userService.assigAidworkerRolesToProgram(
       Number(params.programId),
       Number(params.userId),
@@ -455,25 +414,29 @@ export class UserController {
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Remove aidworker from program' })
+  @ApiOperation({
+    summary:
+      'Remove roles from program-assignment (pass roles to delete in body) or remove aidworker from program (no body)',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: AssignAidworkerToProgramDto, required: false })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleEntity],
+    description:
+      'Returns the remaining roles of the program assignment (empty array if program assignment removed)',
+    type: [UserRoleResponseDTO],
   })
   @ApiResponse({
     status: 404,
     description: 'User, program, role(s) or assignment not found',
   })
   @Delete('programs/:programId/users/:userId/roles')
-  public async deleteAidWorkerAssignment(
+  public async deleteAidworkerRolesOrAssignment(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleEntity[]> {
-    return await this.userService.deleteRoles(
+  ): Promise<UserRoleResponseDTO[]> {
+    return await this.userService.deleteAidworkerRolesOrAssignment(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,

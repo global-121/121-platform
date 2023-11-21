@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { In, Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
@@ -43,6 +43,7 @@ import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service'
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
+import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -71,6 +72,7 @@ export class PaymentsService {
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private registrationsPaginationService: RegistrationsPaginationService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async getPayments(programId: number): Promise<
@@ -90,6 +92,42 @@ export class PaymentsService {
       .groupBy('payment')
       .getRawMany();
     return payments;
+  }
+
+  public async getPaymentAggregation(
+    programId: number,
+    payment: number,
+  ): Promise<PaymentReturnDto> {
+    const aggregateResults = await this.dataSource
+      .createQueryBuilder()
+      .select(['status', 'COUNT(*) as count'])
+      .from(
+        '(' +
+          this.transactionService
+            .getLastTransactionsQuery(programId, payment)
+            .getQuery() +
+          ')',
+        'transactions',
+      )
+      .setParameters(
+        this.transactionService
+          .getLastTransactionsQuery(programId, payment)
+          .getParameters(),
+      )
+      .groupBy('status')
+      .getRawMany();
+
+    return {
+      nrSuccess:
+        aggregateResults.find((row) => row.status === StatusEnum.success)
+          ?.count || 0,
+      nrWaiting:
+        aggregateResults.find((row) => row.status === StatusEnum.waiting)
+          ?.count || 0,
+      nrError:
+        aggregateResults.find((row) => row.status === StatusEnum.error)
+          ?.count || 0,
+    };
   }
 
   public async postPayment(
@@ -485,7 +523,6 @@ export class PaymentsService {
     const waitingReferenceIds = (
       await this.transactionService.getLastTransactions(
         programId,
-        null,
         payment,
         null,
         StatusEnum.waiting,
@@ -587,7 +624,6 @@ export class PaymentsService {
       const failedReferenceIds = (
         await this.transactionService.getLastTransactions(
           programId,
-          null,
           payment,
           null,
           StatusEnum.error,
@@ -638,7 +674,6 @@ export class PaymentsService {
     const paymentTransactions =
       await this.transactionService.getLastTransactions(
         programId,
-        null,
         payment,
         null,
         null,

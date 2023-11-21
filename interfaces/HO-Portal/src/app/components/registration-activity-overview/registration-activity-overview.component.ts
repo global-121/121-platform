@@ -123,8 +123,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       );
       this.pastTransactions = await this.programsService.getTransactions(
         this.program.id,
-        null,
-        null,
         this.person?.referenceId,
       );
       this.pastPayments = await this.programsService.getPastPayments(

@@ -70,3 +70,9 @@ export class TransactionReturnDto {
   @ApiProperty({ example: 'Intersolve-visa', type: 'string' })
   public fsp: string;
 }
+
+export class PaymentReturnDto {
+  nrSuccess: number;
+  nrWaiting: number;
+  nrError: number;
+}

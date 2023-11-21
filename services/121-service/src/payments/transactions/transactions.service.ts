@@ -47,15 +47,13 @@ export class TransactionsService {
 
   public async getLastTransactions(
     programId: number,
-    minPayment?: number,
-    specificPayment?: number,
+    payment?: number,
     referenceId?: string,
     status?: StatusEnum,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
-      minPayment,
-      specificPayment,
+      payment,
       referenceId,
       status,
     ).getRawMany();
@@ -63,8 +61,7 @@ export class TransactionsService {
 
   public getLastTransactionsQuery(
     programId: number,
-    minPayment?: number,
-    specificPayment?: number,
+    payment?: number,
     referenceId?: string,
     status?: StatusEnum,
   ): SelectQueryBuilder<TransactionEntity> {
@@ -86,17 +83,13 @@ export class TransactionsService {
       .innerJoin('transaction.latestTransaction', 'lt')
       .where('transaction."programId" = :programId', {
         programId: programId,
-      })
-      .andWhere('transaction.payment >= :minPayment', {
-        minPayment: minPayment || 0,
       });
-    if (specificPayment) {
+    if (payment) {
       transactionQuery = transactionQuery.andWhere(
-        'transaction.payment = :specificpayment',
-        { specificpayment: specificPayment },
+        'transaction.payment = :payment',
+        { payment: payment },
       );
     }
-
     if (referenceId) {
       transactionQuery = transactionQuery.andWhere(
         '"referenceId" = :referenceId',
@@ -109,50 +102,6 @@ export class TransactionsService {
         { status: status },
       );
     }
-    return transactionQuery;
-  }
-
-  public getLastTransactionsSplitByPaymentQuery(
-    programId: number,
-  ): SelectQueryBuilder<any> {
-    const maxAttemptPerPaAndPayment = this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select(['payment', '"registrationId"'])
-      .addSelect(
-        `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
-      )
-      .where('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .groupBy('payment')
-      .addGroupBy('"registrationId"')
-      .addSelect('"transactionStep"')
-      .addGroupBy('"transactionStep"');
-
-    const transactionQuery = this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select([
-        'transaction.created AS "paymentDate"',
-        'transaction.payment AS payment',
-        '"referenceId"',
-        'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-        'fsp.fspDisplayNamePortal as "fspName"',
-        'fsp.fsp as "fsp"',
-      ])
-      .leftJoin('transaction.financialServiceProvider', 'fsp')
-      .leftJoin(
-        '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
-        'subquery',
-        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(transaction.created as varchar) = subquery.max_attempt`,
-      )
-      .leftJoin('transaction.registration', 'r')
-      .where('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .andWhere('subquery.max_attempt IS NOT NULL');
     return transactionQuery;
   }
 
@@ -363,21 +312,20 @@ export class TransactionsService {
       })
       .getRawOne();
     // Match that against registration.maxPayments
-
+    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
+    if (
+      enableMaxPayments &&
+      registration.maxPayments &&
+      currentPaymentCount >= registration.maxPayments &&
+      registration.registrationStatus === RegistrationStatusEnum.included
+    ) {
+      registration.registrationStatus = RegistrationStatusEnum.completed;
+      await this.registrationRepository.save(registration);
+    }
+    // After .save() because it otherwise overwrites with old paymentCount
     await this.registrationRepository.update(registration.id, {
       paymentCount: currentPaymentCount,
     });
-
-    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
-    if (enableMaxPayments && registration.maxPayments) {
-      if (
-        currentPaymentCount >= registration.maxPayments &&
-        registration.registrationStatus === RegistrationStatusEnum.included
-      ) {
-        registration.registrationStatus = RegistrationStatusEnum.completed;
-        await this.registrationRepository.save(registration);
-      }
-    }
   }
 
   public async storeAllTransactions(

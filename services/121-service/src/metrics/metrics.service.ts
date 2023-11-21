@@ -1311,7 +1311,6 @@ export class MetricsService {
       programId,
       null,
       null,
-      null,
       StatusEnum.success,
     );
 

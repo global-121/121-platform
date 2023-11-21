@@ -93,11 +93,11 @@ export async function doPayment(
   return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send({
       payment: paymentNr,
       amount: amount,
-    })
-    .query(queryParams);
+    });
 }
 
 export async function retryPayment(
@@ -120,9 +120,9 @@ export async function getTransactions(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/payments/transactions`)
+    .get(`/programs/${programId}/transactions`)
     .set('Cookie', [accessToken])
-    .query({ minPayment: paymentNr, referenceId: referenceId });
+    .query({ payment: paymentNr, referenceId: referenceId });
 }
 
 export async function exportList(
