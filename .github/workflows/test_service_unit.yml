@@ -9,7 +9,7 @@ on:
       - 'master'
       - 'feat.*'
     paths:
-      - '.github/workflows/test_service_api.yml'
+      - '.github/workflows/test_service_unit.yml'
       - '.github/actions/build-service/action.yml'
       - 'services/.env.example'
       - 'services/121-service/**'
@@ -18,7 +18,7 @@ on:
     branches:
       - 'release/*'
     paths:
-      - '.github/workflows/test_service_api.yml'
+      - '.github/workflows/test_service_unit.yml'
       - '.github/actions/build-service/action.yml'
       - 'services/.env.example'
       - 'services/121-service/**'
@@ -39,11 +39,11 @@ jobs:
 
       - name: Build containers
         working-directory: ./services
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
+        run: docker compose -f docker-compose.yml build
 
       - name: Run 121-service
         working-directory: ./services
-        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
+        run: docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --no-recreate --no-build
 
       - name: Run unit tests with Jest
         working-directory: ./services
