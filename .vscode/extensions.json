@@ -15,6 +15,7 @@
     "ms-azuretools.vscode-cosmosdb",
     "ms-azuretools.vscode-azureresourcegroups",
     "ms-azuretools.vscode-azurestaticwebapps",
-    "github.vscode-github-actions"
+    "github.vscode-github-actions",
+    "arahata.linter-actionlint"
   ]
 }

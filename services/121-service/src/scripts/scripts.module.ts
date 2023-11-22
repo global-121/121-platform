@@ -33,6 +33,7 @@ export class ScriptsModule {}
 
 export interface InterfaceScript {
   run(
+    isApiTests?: boolean,
     squareString?: string,
     nrPaymentsString?: string,
     squareNumberBulkMessageString?: string,

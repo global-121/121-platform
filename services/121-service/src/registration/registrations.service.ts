@@ -19,7 +19,6 @@ import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { ProgramService } from '../programs/programs.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -60,6 +59,7 @@ import {
   RegistrationsImportService,
 } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -93,11 +93,11 @@ export class RegistrationsService {
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
-    private readonly programService: ProgramService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
+    private readonly userService: UserService,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -989,7 +989,7 @@ export class RegistrationsService {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
 
-    const programIds = await this.getProgramIdsUserHasPermission(
+    const programIds = await this.userService.getProgramIdsUserHasPermission(
       userId,
       PermissionEnum.RegistrationPersonalREAD,
     );
@@ -1053,29 +1053,12 @@ export class RegistrationsService {
     return registrations;
   }
 
-  private async getProgramIdsUserHasPermission(
-    userId: number,
-    permission: PermissionEnum,
-  ): Promise<number[]> {
-    const user =
-      await this.programService.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = [];
-    for (const assignment of user.programAssignments) {
-      for (const role of assignment.roles) {
-        if (role.permissions.map((p) => p.name).includes(permission)) {
-          programIds.push(assignment.programId);
-        }
-      }
-    }
-    return programIds;
-  }
-
   public async checkPermissionAndThrow(
     userId: number,
     permission: PermissionEnum,
     programId: number,
   ): Promise<void> {
-    const programIds = await this.getProgramIdsUserHasPermission(
+    const programIds = await this.userService.getProgramIdsUserHasPermission(
       userId,
       permission,
     );
@@ -1090,7 +1073,7 @@ export class RegistrationsService {
     referenceId: string,
     userId: number,
   ): Promise<RegistrationEntity> {
-    await this.programService.findUserProgramAssignmentsOrThrow(userId);
+    await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
       [
@@ -1201,7 +1184,7 @@ export class RegistrationsService {
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user =
-      await this.programService.findUserProgramAssignmentsOrThrow(userId);
+      await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),

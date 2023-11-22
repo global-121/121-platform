@@ -50,7 +50,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Admin()
+  //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
@@ -59,8 +59,10 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
-    return await this.userService.getUserRoles();
+  public async getUserRoles(
+    @User('id') userId: number,
+  ): Promise<UserRoleResponseDTO[]> {
+    return await this.userService.getUserRoles(userId);
   }
 
   @Admin()
@@ -240,58 +242,6 @@ export class UserController {
     }
   }
 
-  // TODO: remove this endpoint when all external systems have updated their login endpoint to /users/login
-  @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 30,
-    +process.env.HIGH_THROTTLING_TTL || 60,
-  )
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Log in existing user' })
-  @ApiResponse({
-    status: 201,
-    description: 'Logged in successfully',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Wrong username and/or password',
-  })
-  @Post('user/login')
-  public async loginOld(
-    @Body() loginUserDto: LoginUserDto,
-    @Res() res,
-    @Req() req,
-  ): Promise<UserRO> {
-    try {
-      const loginResponse = await this.userService.login(loginUserDto);
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
-
-      res.cookie(
-        loginResponse.cookieSettings.tokenKey,
-        loginResponse.cookieSettings.tokenValue,
-        {
-          sameSite: serviceWorkerDebug
-            ? 'None'
-            : loginResponse.cookieSettings.sameSite,
-          secure: serviceWorkerDebug
-            ? true
-            : loginResponse.cookieSettings.secure,
-          expires: loginResponse.cookieSettings.expires,
-          httpOnly: loginResponse.cookieSettings.httpOnly,
-        },
-      );
-      return res.send({
-        username: loginResponse.userRo.user.username,
-        permissions: loginResponse.userRo.user.permissions,
-        access_token_general: loginResponse.token,
-        expires: loginResponse.cookieSettings.expires,
-        isAdmin: loginResponse.userRo.user.isAdmin,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
-
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
@@ -381,7 +331,7 @@ export class UserController {
 
   @Admin()
   @ApiTags('users/roles')
-  @ApiOperation({ summary: 'Get user roles' })
+  @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
