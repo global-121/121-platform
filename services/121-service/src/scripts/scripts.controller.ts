@@ -7,8 +7,8 @@ import { SeedMultipleKRCS } from './seed-multiple-krcs';
 import { SeedMultipleNLRC } from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
-import { SeedPilotNLProgram } from './seed-program-pilot-nl';
-import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
+import { SeedNLProgramLVV } from './seed-program-nlrc-lvv';
+import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedProgramValidation } from './seed-program-validation';
@@ -76,9 +76,9 @@ export class ScriptsController {
     } else if (script == SeedScript.nlrcMultiple) {
       seed = new SeedMultipleNLRC(this.dataSource);
     } else if (script == SeedScript.pilotNL) {
-      seed = new SeedPilotNLProgram(this.dataSource);
+      seed = new SeedNLProgramLVV(this.dataSource);
     } else if (script == SeedScript.pilotNLPV) {
-      seed = new SeedPilotNL2Program(this.dataSource);
+      seed = new SeedNLProgramPV(this.dataSource);
     } else if (script == SeedScript.DRC) {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
