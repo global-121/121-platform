@@ -59,6 +59,7 @@ export class RegistrationsBulkService {
     registrationStatus: RegistrationStatusEnum,
     dryRun: boolean,
     message?: string,
+    messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
@@ -78,6 +79,7 @@ export class RegistrationsBulkService {
         programId,
         registrationStatus,
         message,
+        messageTemplateKey,
         messageContentType,
         this.getStatusUpdateBaseQuery(
           allowedCurrentStatuses,
@@ -237,6 +239,7 @@ export class RegistrationsBulkService {
     programId: number,
     registrationStatus: RegistrationStatusEnum,
     message?: string,
+    messageTemplateKey?: string,
     messageContentType?: MessageContentType,
     queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<void> {
@@ -255,6 +258,7 @@ export class RegistrationsBulkService {
       referenceIds,
       registrationStatus,
       message,
+      messageTemplateKey,
       messageContentType,
     );
   }
@@ -263,6 +267,7 @@ export class RegistrationsBulkService {
     referenceIds: string[],
     registrationStatus: RegistrationStatusEnum,
     message?: string,
+    messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<void> {
     let programId;
@@ -273,7 +278,7 @@ export class RegistrationsBulkService {
           referenceId,
           registrationStatus,
         );
-      if (message && updatedRegistration) {
+      if ((message || messageTemplateKey) && updatedRegistration) {
         if (updatedRegistration.programId !== programId) {
           programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
@@ -290,7 +295,7 @@ export class RegistrationsBulkService {
             updatedRegistration,
             programId,
             message,
-            null,
+            messageTemplateKey,
             tryWhatsappFirst,
             messageContentType,
           );

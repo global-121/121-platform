@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import Permission from '../auth/permission.enum';
 import { InputProps } from '../shared/input-prompt/input-prompt.component';
 import { ProgramPhase } from './program.model';
@@ -16,6 +17,14 @@ export enum BulkActionId {
   doPayment = 'doPayment',
   pause = 'pause',
 }
+
+export const BulkActionRegistrationStatusMap = {
+  [BulkActionId.invite]: RegistrationStatusEnum.invited,
+  [BulkActionId.include]: RegistrationStatusEnum.included,
+  [BulkActionId.endInclusion]: RegistrationStatusEnum.inclusionEnded,
+  [BulkActionId.reject]: RegistrationStatusEnum.rejected,
+  [BulkActionId.pause]: RegistrationStatusEnum.paused,
+};
 
 export class BulkAction {
   id: BulkActionId;
