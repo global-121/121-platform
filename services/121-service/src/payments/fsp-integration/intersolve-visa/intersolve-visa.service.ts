@@ -64,6 +64,7 @@ import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -157,6 +158,7 @@ export class IntersolveVisaService
         paymentDetails,
         paymentNr,
         paymentDetails.transactionAmount,
+        paymentList[0].bulkSize, // bulkSize is the same for all payments in the bulk
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       await this.transactionsService.storeTransactionUpdateStatus(
@@ -210,6 +212,7 @@ export class IntersolveVisaService
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
+    bulkSizeCompletePayment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = paymentDetails.referenceId;
@@ -355,7 +358,10 @@ export class IntersolveVisaService
 
         // .. and add 'debit card created' notification
         transactionNotifications.push(
-          this.buildNotificationObjectIssueDebitCard(calculatedAmount),
+          this.buildNotificationObjectIssueDebitCard(
+            calculatedAmount,
+            bulkSizeCompletePayment,
+          ),
         );
       }
     } else {
@@ -382,7 +388,10 @@ export class IntersolveVisaService
       };
 
       transactionNotifications.push(
-        this.buildNotificationObjectLoadBalance(calculatedAmount),
+        this.buildNotificationObjectLoadBalance(
+          calculatedAmount,
+          bulkSizeCompletePayment,
+        ),
       );
     }
 
@@ -502,19 +511,23 @@ export class IntersolveVisaService
 
   private buildNotificationObjectIssueDebitCard(
     amount: number,
+    bulkSizeCompletePayment: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: ProgramNotificationEnum.visaDebitCardCreated,
       dynamicContent: [String(amount)],
+      bulkSize: bulkSizeCompletePayment,
     };
   }
 
   private buildNotificationObjectLoadBalance(
     amount: number,
+    bulkSizeCompletePayment: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: ProgramNotificationEnum.visaLoad,
       dynamicContent: [String(amount)],
+      bulkSize: bulkSizeCompletePayment,
     };
   }
 
@@ -765,8 +778,8 @@ export class IntersolveVisaService
       wallet.intersolveVisaCustomer.registration,
       null,
       notificationKey,
-      false,
       MessageContentType.custom,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
     return result;
   }
@@ -1120,8 +1133,8 @@ export class IntersolveVisaService
       registration,
       null,
       ProgramNotificationEnum.reissueVisaCard,
-      false,
       MessageContentType.custom,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
   }
 

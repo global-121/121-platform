@@ -7,22 +7,13 @@ export enum MessageContentType {
   paused = 'paused',
   custom = 'custom',
   genericTemplated = 'generic-templated',
-  paymentTemplated = 'payment-templated',
+  paymentTemplated = 'payment-templated', // This is only used for AH vouchers
   payment = 'payment',
-  paymentInstructions = 'payment-instructions',
+  paymentInstructions = 'payment-instructions', // This is only used for AH vouchers
+  paymentVoucher = 'payment-voucher',
   paymentReminder = 'payment-reminder',
   defaultReply = 'default-reply',
 }
-
-export const ReplacedByGenericTemplateMessageTypes = [
-  MessageContentType.registered,
-  MessageContentType.included,
-  MessageContentType.inclusionEnded,
-  MessageContentType.rejected,
-  MessageContentType.invited,
-  MessageContentType.paused,
-  MessageContentType.custom,
-];
 
 export const TemplatedMessages = [
   MessageContentType.genericTemplated,
