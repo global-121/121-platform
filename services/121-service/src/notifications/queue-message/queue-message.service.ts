@@ -12,17 +12,26 @@ import { Queue } from 'bull';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { ProcessName } from '../enum/processor.names.enum';
+import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
 import {
   DEFAULT_PRIORITY,
-  MessagePriorityMap,
-  SEND_MESSAGE_PRIORITY,
-} from '../enum/send-message-priority.const';
+  MessageQueueMap,
+  MESSAGE_QUEUE_MAP,
+} from '../enum/message-queue-mapping.const';
 
 @Injectable()
 export class QueueMessageService {
   public constructor(
-    @InjectQueue('message') private readonly messageQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
+    private readonly messageQueue100: Queue,
+    @InjectQueue(QueueNameCreateMessage.smallBulk)
+    private readonly messageQueue200: Queue,
+    @InjectQueue(QueueNameCreateMessage.mediumBulk)
+    private readonly messageQueue300: Queue,
+    @InjectQueue(QueueNameCreateMessage.largeBulk)
+    private readonly messageQueue400: Queue,
+    @InjectQueue(QueueNameCreateMessage.voucherReminder)
+    private readonly messageQueue500: Queue,
   ) {}
 
   public async addMessageToQueue(
@@ -54,6 +63,7 @@ export class QueueMessageService {
         : MessageProcessType.sms;
     }
 
+    const queueName = this.getQueueName(messageProcessType, bulksize);
     const messageJob: MessageJobDto = {
       messageProcessType: messageProcessType,
       registrationId: registration.id,
@@ -68,23 +78,30 @@ export class QueueMessageService {
       mediaUrl,
       customData,
     };
-    const priority = this.getPriority(messageProcessType, bulksize);
     try {
-      await this.messageQueue.add(ProcessName.send, messageJob, {
-        priority: priority,
-      });
+      if (queueName === QueueNameCreateMessage.replyOnIncoming) {
+        await this.messageQueue100.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.smallBulk) {
+        await this.messageQueue200.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.mediumBulk) {
+        await this.messageQueue300.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.largeBulk) {
+        await this.messageQueue400.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.voucherReminder) {
+        await this.messageQueue500.add(ProcessName.send, messageJob);
+      }
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }
   }
 
-  private getPriority(
+  private getQueueName(
     messageProccessType: MessageProcessType,
     bulkSize?: number,
-  ): number {
-    const mappingArray = SEND_MESSAGE_PRIORITY;
+  ): QueueNameCreateMessage {
+    const mappingArray = MESSAGE_QUEUE_MAP;
 
-    const relevantMapping = mappingArray.find((map: MessagePriorityMap) => {
+    const relevantMapping = mappingArray.find((map: MessageQueueMap) => {
       return map.types.includes(messageProccessType);
     });
 
@@ -99,22 +116,22 @@ export class QueueMessageService {
 
     // If no bulkSize is provided, use default priority of mapping
     if (bulkSize == null) {
-      return relevantMapping.priority;
+      return relevantMapping.queueName;
     }
 
     // If bulkSize is provided, and bulkSizePriority is not set, use default priority of mapping and give warning
-    if (!relevantMapping.bulkSizePriority) {
+    if (!relevantMapping.bulkSizeQueueName) {
       console.warn(
         `No bulkSizePriority found for message type: ${messageProccessType} while bulk size is set to: ${bulkSize}. Using default priority of mapping.`,
       );
-      return relevantMapping.priority; // default priority of mapping
+      return relevantMapping.queueName; // default priority of mapping
     }
 
     // If bulkSize is provided, and bulkSizePriority set on the mapping use the bulk size priority mapping
-    const bulkSizePriorities = relevantMapping.bulkSizePriority;
+    const bulkSizePriorities = relevantMapping.bulkSizeQueueName;
     for (const bulkSizePriorityItem of bulkSizePriorities) {
       if (bulkSize < bulkSizePriorityItem.bulkSize) {
-        return bulkSizePriorityItem.priority;
+        return bulkSizePriorityItem.queueName;
       }
     }
   }

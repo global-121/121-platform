@@ -1,9 +1,10 @@
 import { MessageProcessType } from '../message-job.dto';
+import { QueueNameCreateMessage } from './queue.names.enum';
 
-export class MessagePriorityMap {
+export class MessageQueueMap {
   types: MessageProcessType[];
-  priority: number;
-  bulkSizePriority?: BulkSizePriority[];
+  queueName: QueueNameCreateMessage;
+  bulkSizeQueueName?: BulkSizePriority[];
 }
 
 // The bulk size is the amount of messages that will be sent at once
@@ -12,20 +13,20 @@ enum BulkSize {
   MEDIUM = 500,
   LARGE = 1000000000, // Large number so it will always be the last one
 }
-// This is an optional priority if it is missing the default priority is used
+
 class BulkSizePriority {
   bulkSize: BulkSize;
-  priority: number;
+  queueName: QueueNameCreateMessage;
 }
 
 // Fallback priority if no mapping is found
-export const DEFAULT_PRIORITY = 150;
+export const DEFAULT_PRIORITY = QueueNameCreateMessage.smallBulk;
 
 // Priority steps of 100 so we can add more in between if needed
 // The lower the prio the sooner the message will be sent
 // We expect pending process types to not come in with as many at once as the templated messages
 // Also because more replies push down the prio of templated messages we naturally get get less replies if many of the pending messages are prioritized
-export const SEND_MESSAGE_PRIORITY: MessagePriorityMap[] = [
+export const MESSAGE_QUEUE_MAP: MessageQueueMap[] = [
   // These are all replies to a message from the user that so they should be sent as soon as possible
   {
     types: [
@@ -34,7 +35,7 @@ export const SEND_MESSAGE_PRIORITY: MessagePriorityMap[] = [
       MessageProcessType.whatsappPendingMessage,
       MessageProcessType.whatsappDefaultReply,
     ],
-    priority: 100,
+    queueName: QueueNameCreateMessage.replyOnIncoming,
   },
   // These are messages of which we know they are not a reply to a message from the user, so they can be sent later
   {
@@ -44,24 +45,24 @@ export const SEND_MESSAGE_PRIORITY: MessagePriorityMap[] = [
       MessageProcessType.whatsappTemplateGeneric,
       MessageProcessType.tryWhatsapp, // Try whatsapp is similair prio as whatsappTemplateGeneric but we don't know if the user has whatsapp the reply and this send the the same message
     ],
-    priority: 200,
-    bulkSizePriority: [
+    queueName: QueueNameCreateMessage.smallBulk,
+    bulkSizeQueueName: [
       {
         bulkSize: BulkSize.SMALL,
-        priority: 200,
+        queueName: QueueNameCreateMessage.smallBulk,
       },
       {
         bulkSize: BulkSize.MEDIUM,
-        priority: 300,
+        queueName: QueueNameCreateMessage.mediumBulk,
       },
       {
         bulkSize: BulkSize.LARGE,
-        priority: 400,
+        queueName: QueueNameCreateMessage.largeBulk,
       },
     ],
   },
   {
     types: [MessageProcessType.whatsappTemplateVoucherReminder],
-    priority: 500,
+    queueName: QueueNameCreateMessage.voucherReminder,
   },
 ];

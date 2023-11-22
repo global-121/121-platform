@@ -2,7 +2,7 @@ import { QueueMessageService } from './queue-message.service';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProcessName } from '../enum/processor.names.enum';
+import { ProcessName } from '../enum/queue.names.enum';
 import { Queue } from 'bull';
 import { TestBed } from '@automock/jest';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
