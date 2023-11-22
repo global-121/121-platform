@@ -12,17 +12,26 @@ import { Queue } from 'bull';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { ProcessName } from '../enum/processor.names.enum';
+import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
 import {
-  MessagePriorityMap,
-  SEND_MESSAGE_PRIORITY_SMS,
-  SEND_MESSAGE_PRIORITY_WHATSAPP,
-} from '../enum/send-message-priority.const';
+  DEFAULT_QUEUE_CREATE_MESSAGE,
+  MessageQueueMap,
+  MESSAGE_QUEUE_MAP,
+} from '../enum/message-queue-mapping.const';
 
 @Injectable()
 export class QueueMessageService {
   public constructor(
-    @InjectQueue('message') private readonly messageQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
+    private readonly messageProcessorReplyOnIncoming: Queue,
+    @InjectQueue(QueueNameCreateMessage.smallBulk)
+    private readonly messageProcessorSmallBulk: Queue,
+    @InjectQueue(QueueNameCreateMessage.mediumBulk)
+    private readonly messageProcessorMediumBulk: Queue,
+    @InjectQueue(QueueNameCreateMessage.largeBulk)
+    private readonly messageProcessorLargeBulk: Queue,
+    @InjectQueue(QueueNameCreateMessage.lowPriority)
+    private readonly messageProcessorLowPriority: Queue,
   ) {}
 
   public async addMessageToQueue(
@@ -54,6 +63,7 @@ export class QueueMessageService {
         : MessageProcessType.sms;
     }
 
+    const queueName = this.getQueueName(messageProcessType, bulksize);
     const messageJob: MessageJobDto = {
       messageProcessType: messageProcessType,
       registrationId: registration.id,
@@ -68,75 +78,66 @@ export class QueueMessageService {
       mediaUrl,
       customData,
     };
-    // const priority = this.getPriority(
-    //   messageContentType,
-    //   whatsappPhoneNumber,
-    //   bulksize,
-    // );
     try {
-      await this.messageQueue.add(
-        ProcessName.send,
-        messageJob,
-        //   {
-        //   priority: priority,
-        // }
-      );
+      if (queueName === QueueNameCreateMessage.replyOnIncoming) {
+        await this.messageProcessorReplyOnIncoming.add(
+          ProcessName.send,
+          messageJob,
+        );
+      } else if (queueName === QueueNameCreateMessage.smallBulk) {
+        await this.messageProcessorSmallBulk.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.mediumBulk) {
+        await this.messageProcessorMediumBulk.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.largeBulk) {
+        await this.messageProcessorLargeBulk.add(ProcessName.send, messageJob);
+      } else if (queueName === QueueNameCreateMessage.lowPriority) {
+        await this.messageProcessorLowPriority.add(
+          ProcessName.send,
+          messageJob,
+        );
+      }
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }
   }
 
-  private getPriority(
-    messageContentType: MessageContentType,
-    whatsappPhoneNumber: string,
+  private getQueueName(
+    messageProccessType: MessageProcessType,
     bulkSize?: number,
-  ): number {
-    let mappings: MessagePriorityMap[];
-    if (whatsappPhoneNumber) {
-      mappings = SEND_MESSAGE_PRIORITY_WHATSAPP;
-    } else {
-      mappings = SEND_MESSAGE_PRIORITY_SMS;
-    }
+  ): QueueNameCreateMessage {
+    const mappingArray = MESSAGE_QUEUE_MAP;
 
-    return this.getPriorityFromMapping(messageContentType, mappings, bulkSize);
-  }
-
-  private getPriorityFromMapping(
-    messageContentType: MessageContentType,
-    mappings: MessagePriorityMap[],
-    bulkSize?: number,
-  ): number {
-    const relevantMapping = mappings.find((map: MessagePriorityMap) => {
-      return map.types.includes(messageContentType);
+    const relevantMapping = mappingArray.find((map: MessageQueueMap) => {
+      return map.types.includes(messageProccessType);
     });
 
     // No mapping is found use default priority
     if (!relevantMapping) {
       console.warn(
         'No priority mapping found for message type: ',
-        messageContentType,
+        messageProccessType,
       );
-      return 150; // default priority
+      return DEFAULT_QUEUE_CREATE_MESSAGE; // default priority
     }
 
     // If no bulkSize is provided, use default priority of mapping
     if (bulkSize == null) {
-      return relevantMapping.priority;
+      return relevantMapping.queueName;
     }
 
     // If bulkSize is provided, and bulkSizePriority is not set, use default priority of mapping and give warning
-    if (!relevantMapping.bulkSizePriority) {
+    if (!relevantMapping.bulkSizeQueueName) {
       console.warn(
-        `No bulkSizePriority found for message type: ${messageContentType} while bulk size is set to: ${bulkSize}. Using default priority of mapping.`,
+        `No bulkSizePriority found for message type: ${messageProccessType} while bulk size is set to: ${bulkSize}. Using default priority of mapping.`,
       );
-      return relevantMapping.priority; // default priority of mapping
+      return relevantMapping.queueName; // default priority of mapping
     }
 
     // If bulkSize is provided, and bulkSizePriority set on the mapping use the bulk size priority mapping
-    const bulkSizePriority = relevantMapping.bulkSizePriority;
-    for (const [i, bulkSizePriorityItem] of bulkSizePriority.entries()) {
-      if (bulkSize >= bulkSizePriorityItem.bulkSize) {
-        return bulkSizePriority[i - 1].priority;
+    const bulkSizePriorities = relevantMapping.bulkSizeQueueName;
+    for (const bulkSizePriorityItem of bulkSizePriorities) {
+      if (bulkSize < bulkSizePriorityItem.bulkSize) {
+        return bulkSizePriorityItem.queueName;
       }
     }
   }

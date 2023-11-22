@@ -1,22 +1,55 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MessageService } from '../message.service';
-import { AzureLogService } from '../../shared/services/azure-log.service';
-import { ProcessName, ProcessorName } from '../enum/processor.names.enum';
 
-@Processor(ProcessorName.message)
-export class MessageProcessor {
-  constructor(
-    private readonly messageService: MessageService,
-    private readonly azureLogService: AzureLogService,
-  ) {}
+import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
+
+@Processor(QueueNameCreateMessage.replyOnIncoming)
+export class MessageProcessorReplyOnIncoming {
+  constructor(private readonly messageService: MessageService) {}
 
   @Process(ProcessName.send)
-  async handleSend(job: Job): Promise<any> {
-    const messageJobData = job.data;
-    await this.messageService.sendTextMessage(messageJobData).catch((err) => {
-      this.azureLogService.logError(err, false);
-      throw err;
-    });
+  async handleSend(job: Job): Promise<void> {
+    await this.messageService.sendTextMessage(job.data);
+  }
+}
+
+@Processor(QueueNameCreateMessage.smallBulk)
+export class MessageProcessorSmallBulk {
+  constructor(private readonly messageService: MessageService) {}
+
+  @Process(ProcessName.send)
+  public async handleSend(job: Job): Promise<void> {
+    await this.messageService.sendTextMessage(job.data);
+  }
+}
+
+@Processor(QueueNameCreateMessage.mediumBulk)
+export class MessageProcessorMediumBulk {
+  constructor(private readonly messageService: MessageService) {}
+
+  @Process(ProcessName.send)
+  public async handleSend(job: Job): Promise<void> {
+    await this.messageService.sendTextMessage(job.data);
+  }
+}
+
+@Processor(QueueNameCreateMessage.largeBulk)
+export class MessageProcessorLargeBulk {
+  constructor(private readonly messageService: MessageService) {}
+
+  @Process(ProcessName.send)
+  public async handleSend(job: Job): Promise<void> {
+    await this.messageService.sendTextMessage(job.data);
+  }
+}
+
+@Processor(QueueNameCreateMessage.lowPriority)
+export class MessageProcessorLowPriority {
+  constructor(private readonly messageService: MessageService) {}
+
+  @Process(ProcessName.send)
+  public async handleSend(job: Job): Promise<void> {
+    await this.messageService.sendTextMessage(job.data);
   }
 }

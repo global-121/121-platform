@@ -2,7 +2,7 @@ import { Queue } from 'bull';
 import { MessageIncomingService } from './message-incoming.service';
 // Assuming the entities are in the same directory
 import { TestBed } from '@automock/jest';
-import { ProcessName } from '../enum/processor.names.enum';
+import { ProcessName } from '../enum/queue.names.enum';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 
 describe('MessageIncomingService', () => {

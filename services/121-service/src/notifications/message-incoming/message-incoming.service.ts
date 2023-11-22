@@ -26,7 +26,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
-import { ProcessName } from '../enum/processor.names.enum';
+import { ProcessName } from '../enum/queue.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
 import { MessageProcessType } from '../message-job.dto';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
@@ -210,7 +210,6 @@ export class MessageIncomingService {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
-      1,
     );
   }
 
