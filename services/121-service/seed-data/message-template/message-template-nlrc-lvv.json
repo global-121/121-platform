@@ -2,12 +2,12 @@
   "registered": {
     "isWhatsappTemplate": false,
     "message": {
-      "ar": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع.",
-      "en": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 1 week.",
-      "nl": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
-      "fr": "Ceci est un message de Croix Rouge.\n\nNous avons bien reçu votre application pour assistance.\n\nVous recevrez un autre SMS or de message WhatsApp avec plus d'informations dans un délai d' 1 semaine.",
-      "es": "Este es un mensaje de la Cruz Roja.\n\nHemos recibido su solicitud de ayuda.\n\nRecibirá otro SMS o mensaje de WhatsApp con más información en el plazo de una semana.",
-      "pt_BR": "Esta é uma mensagem da Cruz Vermelha.\n\nRecebemos seu pedido para receber ajuda.\n\nVocê receberá outra mensagem SMS/WhatsApp com mais informações no prazo de 1 semana."
+      "ar": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات إضافية في غضون 48 ساعة.",
+      "en": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 48 hours.",
+      "nl": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 48 uur een volgende SMS of WhatsApp bericht met meer informatie.",
+      "fr": "Ceci est un message de Croix Rouge.\n\nNous avons bien reçu votre application pour assistance.\n\nVous recevrez un autre SMS or de message WhatsApp avec plus d'informations dans un délai d' 48 heures.",
+      "es": "Este es un mensaje de la Cruz Roja.\n\nHemos recibido su solicitud de ayuda.\n\nRecibirá otro SMS o mensaje de WhatsApp con más información en el plazo de 48 horas.",
+      "pt_BR": "Esta é uma mensagem da Cruz Vermelha.\n\nRecebemos seu pedido para receber ajuda.\n\nVocê receberá outra mensagem SMS/WhatsApp com mais informações no prazo de 48 horas."
     }
   },
   "whatsappGenericMessage": {

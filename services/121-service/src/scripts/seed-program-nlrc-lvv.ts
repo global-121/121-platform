@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
-import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
-import messageTemplatePilotNL from '../../seed-data/message-template/message-template-pilot-nl.json';
+import instanceNLRC from '../../seed-data/instance/instance-pilot-nl.json';
+import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
+import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
 @Injectable()
-export class SeedPilotNLProgram implements InterfaceScript {
+export class SeedNLProgramLVV implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
@@ -18,17 +18,17 @@ export class SeedPilotNLProgram implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programPilotNL);
+    const program = await this.seedHelper.addProgram(programLVV);
 
     // ***** CREATE MESSAGE TEMPLATES *****
-    await this.seedHelper.addMessageTemplates(messageTemplatePilotNL, program);
+    await this.seedHelper.addMessageTemplates(messageTemplateLVV, program);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(program, false);
 
     // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instancePilotNL);
+    await this.seedHelper.addInstance(instanceNLRC);
   }
 }
 
-export default SeedPilotNLProgram;
+export default SeedNLProgramLVV;
