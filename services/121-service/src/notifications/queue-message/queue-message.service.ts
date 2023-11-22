@@ -23,15 +23,15 @@ import {
 export class QueueMessageService {
   public constructor(
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
-    private readonly messageQueue100: Queue,
+    private readonly messageProcessorReplyOnIncoming: Queue,
     @InjectQueue(QueueNameCreateMessage.smallBulk)
-    private readonly messageQueue200: Queue,
+    private readonly messageProcessorSmallBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.mediumBulk)
-    private readonly messageQueue300: Queue,
+    private readonly messageProcessorMediumBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.largeBulk)
-    private readonly messageQueue400: Queue,
+    private readonly messageProcessorLargeBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.voucherReminder)
-    private readonly messageQueue500: Queue,
+    private readonly messageProcessorVoucherReminder: Queue,
   ) {}
 
   public async addMessageToQueue(
@@ -80,15 +80,21 @@ export class QueueMessageService {
     };
     try {
       if (queueName === QueueNameCreateMessage.replyOnIncoming) {
-        await this.messageQueue100.add(ProcessName.send, messageJob);
+        await this.messageProcessorReplyOnIncoming.add(
+          ProcessName.send,
+          messageJob,
+        );
       } else if (queueName === QueueNameCreateMessage.smallBulk) {
-        await this.messageQueue200.add(ProcessName.send, messageJob);
+        await this.messageProcessorSmallBulk.add(ProcessName.send, messageJob);
       } else if (queueName === QueueNameCreateMessage.mediumBulk) {
-        await this.messageQueue300.add(ProcessName.send, messageJob);
+        await this.messageProcessorMediumBulk.add(ProcessName.send, messageJob);
       } else if (queueName === QueueNameCreateMessage.largeBulk) {
-        await this.messageQueue400.add(ProcessName.send, messageJob);
+        await this.messageProcessorLargeBulk.add(ProcessName.send, messageJob);
       } else if (queueName === QueueNameCreateMessage.voucherReminder) {
-        await this.messageQueue500.add(ProcessName.send, messageJob);
+        await this.messageProcessorVoucherReminder.add(
+          ProcessName.send,
+          messageJob,
+        );
       }
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
