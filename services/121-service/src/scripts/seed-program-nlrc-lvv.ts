@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import instanceLVV from '../../seed-data/instance/instance-pilot-nl.json';
+import instanceNLRC from '../../seed-data/instance/instance-pilot-nl.json';
 import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
 import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
 import { InterfaceScript } from './scripts.module';
@@ -27,7 +27,7 @@ export class SeedNLProgramLVV implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(program, false);
 
     // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instanceLVV);
+    await this.seedHelper.addInstance(instanceNLRC);
   }
 }
 

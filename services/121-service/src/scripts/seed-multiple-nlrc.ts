@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import instanceLVV from '../../seed-data/instance/instance-pilot-nl.json';
+import instanceNLRC from '../../seed-data/instance/instance-pilot-nl.json';
 import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
 import messageTemplateOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
@@ -38,7 +38,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
-    await this.seedHelper.addInstance(instanceLVV);
+    await this.seedHelper.addInstance(instanceNLRC);
 
     // ************************
     // ***** Program PV *****
