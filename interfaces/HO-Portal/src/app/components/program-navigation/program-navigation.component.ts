@@ -25,6 +25,7 @@ export class ProgramNavigationComponent implements OnInit {
 
   public canViewMetrics: boolean;
   public canManageAidworkers: boolean;
+  public canReadAidWorkers: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +38,10 @@ export class ProgramNavigationComponent implements OnInit {
     this.canManageAidworkers = this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramUPDATE,
+    );
+    this.canReadAidWorkers = this.authService.hasPermission(
+      this.programId,
+      Permission.AidWorkerProgramREAD,
     );
     this.canViewMetrics = this.authService.hasPermission(
       this.programId,
