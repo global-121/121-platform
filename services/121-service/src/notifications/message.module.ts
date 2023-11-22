@@ -14,7 +14,7 @@ import {
   MessageProcessorSmallBulk,
   MessageProcessorMediumBulk,
   MessageProcessorLargeBulk,
-  MessageProcessorVoucherReminder,
+  MessageProcessorLowPriority,
 } from './processors/message.processor';
 
 @Module({
@@ -35,7 +35,7 @@ import {
     MessageProcessorSmallBulk,
     MessageProcessorMediumBulk,
     MessageProcessorLargeBulk,
-    MessageProcessorVoucherReminder,
+    MessageProcessorLowPriority,
     AzureLogService,
   ],
   controllers: [],

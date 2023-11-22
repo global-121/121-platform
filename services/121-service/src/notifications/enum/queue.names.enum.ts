@@ -4,14 +4,14 @@ export enum ProcessName {
   whatsapp = 'whatsapp',
 }
 
-export enum QueueNameMessageBallBack {
+export enum QueueNameMessageCallBack {
   messageStatusCallback = 'messageStatusCallback',
 }
 
 export enum QueueNameCreateMessage {
-  replyOnIncoming = 'messagePriority100',
-  smallBulk = 'messagePriority200',
-  mediumBulk = 'messagePriority300',
-  largeBulk = 'messagePriority400',
-  voucherReminder = 'messagePriority500',
+  replyOnIncoming = 'replyOnIncoming',
+  smallBulk = 'smallBulk',
+  mediumBulk = 'mediumBulk',
+  largeBulk = 'largeBulk',
+  lowPriority = 'lowPriority',
 }

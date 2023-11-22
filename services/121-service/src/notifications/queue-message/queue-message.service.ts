@@ -14,7 +14,7 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
 import {
-  DEFAULT_PRIORITY,
+  DEFAULT_QUEUE_CREATE_MESSAGE,
   MessageQueueMap,
   MESSAGE_QUEUE_MAP,
 } from '../enum/message-queue-mapping.const';
@@ -30,8 +30,8 @@ export class QueueMessageService {
     private readonly messageProcessorMediumBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.largeBulk)
     private readonly messageProcessorLargeBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.voucherReminder)
-    private readonly messageProcessorVoucherReminder: Queue,
+    @InjectQueue(QueueNameCreateMessage.lowPriority)
+    private readonly messageProcessorLowPriority: Queue,
   ) {}
 
   public async addMessageToQueue(
@@ -90,8 +90,8 @@ export class QueueMessageService {
         await this.messageProcessorMediumBulk.add(ProcessName.send, messageJob);
       } else if (queueName === QueueNameCreateMessage.largeBulk) {
         await this.messageProcessorLargeBulk.add(ProcessName.send, messageJob);
-      } else if (queueName === QueueNameCreateMessage.voucherReminder) {
-        await this.messageProcessorVoucherReminder.add(
+      } else if (queueName === QueueNameCreateMessage.lowPriority) {
+        await this.messageProcessorLowPriority.add(
           ProcessName.send,
           messageJob,
         );
@@ -117,7 +117,7 @@ export class QueueMessageService {
         'No priority mapping found for message type: ',
         messageProccessType,
       );
-      return DEFAULT_PRIORITY; // default priority
+      return DEFAULT_QUEUE_CREATE_MESSAGE; // default priority
     }
 
     // If no bulkSize is provided, use default priority of mapping

@@ -44,8 +44,8 @@ export class MessageProcessorLargeBulk {
   }
 }
 
-@Processor(QueueNameCreateMessage.voucherReminder)
-export class MessageProcessorVoucherReminder {
+@Processor(QueueNameCreateMessage.lowPriority)
+export class MessageProcessorLowPriority {
   constructor(private readonly messageService: MessageService) {}
 
   @Process(ProcessName.send)

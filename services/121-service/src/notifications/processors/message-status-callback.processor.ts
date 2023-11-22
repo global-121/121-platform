@@ -2,11 +2,11 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MessageIncomingService } from '../message-incoming/message-incoming.service';
 import {
-  QueueNameMessageBallBack,
+  QueueNameMessageCallBack,
   ProcessName,
 } from '../enum/queue.names.enum';
 import { AzureLogService } from '../../shared/services/azure-log.service';
-@Processor(QueueNameMessageBallBack.messageStatusCallback)
+@Processor(QueueNameMessageCallBack.messageStatusCallback)
 export class MessageStatusCallbackProcessor {
   constructor(
     private readonly messageIncomingService: MessageIncomingService,

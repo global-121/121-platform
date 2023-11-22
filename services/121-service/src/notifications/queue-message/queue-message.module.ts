@@ -58,7 +58,7 @@ import { QueueNameCreateMessage } from '../enum/queue.names.enum';
       },
     }),
     BullModule.registerQueue({
-      name: QueueNameCreateMessage.voucherReminder,
+      name: QueueNameCreateMessage.lowPriority,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',

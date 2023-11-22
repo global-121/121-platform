@@ -210,7 +210,6 @@ export class MessageIncomingService {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
-      1,
     );
   }
 

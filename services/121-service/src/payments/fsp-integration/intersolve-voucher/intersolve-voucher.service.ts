@@ -9,7 +9,6 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
-import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -56,7 +55,6 @@ export class IntersolveVoucherService
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: QueueMessageService,
@@ -325,6 +323,7 @@ export class IntersolveVoucherService
       MessageProcessType.whatsappTemplateVoucher,
       null,
       { payment: payment, amount: calculatedAmount },
+      paymentInfo.bulkSize,
     );
     result.status = StatusEnum.waiting;
     return result;

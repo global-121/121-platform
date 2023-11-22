@@ -20,7 +20,7 @@ class BulkSizePriority {
 }
 
 // Fallback priority if no mapping is found
-export const DEFAULT_PRIORITY = QueueNameCreateMessage.smallBulk;
+export const DEFAULT_QUEUE_CREATE_MESSAGE = QueueNameCreateMessage.smallBulk;
 
 // Priority steps of 100 so we can add more in between if needed
 // The lower the prio the sooner the message will be sent
@@ -63,6 +63,6 @@ export const MESSAGE_QUEUE_MAP: MessageQueueMap[] = [
   },
   {
     types: [MessageProcessType.whatsappTemplateVoucherReminder],
-    queueName: QueueNameCreateMessage.voucherReminder,
+    queueName: QueueNameCreateMessage.lowPriority,
   },
 ];
