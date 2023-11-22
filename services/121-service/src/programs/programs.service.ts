@@ -127,7 +127,12 @@ export class ProgramService {
     let filterableAttributeNames = [
       {
         group: 'payments',
-        filters: ['failedPayment', 'waitingPayment', 'successPayment'],
+        filters: [
+          'failedPayment',
+          'waitingPayment',
+          'successPayment',
+          'notYetSentPayment',
+        ],
       },
       {
         group: 'messages',
