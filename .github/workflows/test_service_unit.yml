@@ -1,0 +1,55 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test Service: Unit tests'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'master'
+      - 'feat.*'
+    paths:
+      - '.github/workflows/test_service_api.yml'
+      - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
+      - 'services/121-service/**'
+      - '!**.md'
+  push:
+    branches:
+      - 'release/*'
+    paths:
+      - '.github/workflows/test_service_api.yml'
+      - '.github/actions/build-service/action.yml'
+      - 'services/.env.example'
+      - 'services/121-service/**'
+      - '!**.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Force set database schema to a clean state
+        working-directory: ./services
+        run: |
+          /bin/sed -i '/synchronize/s/false/true/' ./121-service/ormconfig.ts
+
+      - name: Build containers
+        working-directory: ./services
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
+
+      - name: Run 121-service
+        working-directory: ./services
+        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
+
+      - name: Run unit tests with Jest
+        working-directory: ./services
+        run: |
+          echo 'Wait for 121-service to be up...'
+          docker compose exec 121-service npm run test:unit:all
+
+      - name: Docker logs
+        uses: jwalton/gh-docker-logs@v2
