@@ -214,11 +214,11 @@ export class TransactionsService {
     ) {
       // loop over notification objects and send a message for each
 
-      for (const transactionNotifcation of transactionResponse.notificationObjects) {
+      for (const transactionNotification of transactionResponse.notificationObjects) {
         const message = await this.getMessageText(
           registration.preferredLanguage,
           program.id,
-          transactionNotifcation,
+          transactionNotification,
         );
         await this.queueMessageService.addMessageToQueue(
           registration,
@@ -228,7 +228,7 @@ export class TransactionsService {
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
           null,
           null,
-          transactionNotifcation.bulkSize,
+          transactionNotification.bulkSize,
         );
       }
     }

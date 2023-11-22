@@ -4,13 +4,19 @@ import { MessageService } from './message.service';
 import { SmsModule } from './sms/sms.module';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from './whatsapp/whatsapp.module';
-import { MessageProcessor } from './processors/message.processor';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
 import { QueueMessageModule } from './queue-message/queue-message.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { MessageTemplateModule } from './message-template/message-template.module';
+import {
+  MessageProcessorReplyOnIncoming,
+  MessageProcessorSmallBulk,
+  MessageProcessorMediumBulk,
+  MessageProcessorLargeBulk,
+  MessageProcessorLowPriority,
+} from './processors/message.processor';
 
 @Module({
   imports: [
@@ -25,7 +31,15 @@ import { MessageTemplateModule } from './message-template/message-template.modul
     IntersolveVoucherModule,
     MessageTemplateModule,
   ],
-  providers: [MessageService, MessageProcessor, AzureLogService],
+  providers: [
+    MessageService,
+    MessageProcessorReplyOnIncoming,
+    MessageProcessorSmallBulk,
+    MessageProcessorMediumBulk,
+    MessageProcessorLargeBulk,
+    MessageProcessorLowPriority,
+    AzureLogService,
+  ],
   controllers: [],
   exports: [MessageService],
 })

@@ -13,6 +13,7 @@ import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageTemplateEntity } from './message-template/message-template.entity';
+import { AzureLogService } from '../shared/services/azure-log.service';
 
 @Injectable()
 export class MessageService {
@@ -30,6 +31,7 @@ export class MessageService {
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
@@ -93,6 +95,7 @@ export class MessageService {
         );
       }
     } catch (error) {
+      this.azureLogService.logError(error, false);
       console.log('error: ', error);
       throw error;
     }

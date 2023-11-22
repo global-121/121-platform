@@ -325,6 +325,7 @@ export class IntersolveVoucherService
       MessageProcessType.whatsappTemplateVoucher,
       null,
       { payment: payment, amount: calculatedAmount },
+      paymentInfo.bulkSize,
     );
     result.status = StatusEnum.waiting;
     return result;

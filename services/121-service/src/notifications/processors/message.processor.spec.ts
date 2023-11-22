@@ -3,7 +3,7 @@ import { AzureLogService } from '../../shared/services/azure-log.service';
 import { MessageContentType } from '../enum/message-type.enum';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageService } from '../message.service';
-import { MessageProcessor } from './message.processor';
+import { MessageProcessorReplyOnIncoming } from './message.processor';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 import { Job } from 'bull';
 
@@ -22,12 +22,15 @@ const messageJob: MessageJobDto = {
 const job = { data: messageJob } as Job;
 
 describe('Message processor unit test', () => {
-  let messageProcessor: MessageProcessor;
+  // All message processors are the same, so we only test one
+  let messageProcessor: MessageProcessorReplyOnIncoming;
   let messageService: jest.Mocked<MessageService>;
   let azureLogService: jest.Mocked<AzureLogService>;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(MessageProcessor).compile();
+    const { unit, unitRef } = TestBed.create(
+      MessageProcessorReplyOnIncoming,
+    ).compile();
 
     messageProcessor = unit;
     messageService = unitRef.get(MessageService);
