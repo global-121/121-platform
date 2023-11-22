@@ -327,7 +327,7 @@
           "failedPayment": "Failed for payment #",
           "waitingPayment": "Waiting for payment #",
           "successPayment": "Successful for payment #",
-          "notYetSentPayment": "Not yet sent for payment #"
+          "notYetSentPayment": "Not yet sent payment #"
         },
         "language": {
           "en": "English",
