@@ -20,7 +20,6 @@ export class MessageJobCustomDataDto {
   payment?: number;
   amount?: number;
   intersolveVoucherId?: number;
-  replyMessage?: boolean;
   pendingMessageId?: number;
   existingMessageSid?: string;
 }
@@ -29,12 +28,12 @@ export enum MessageProcessType {
   sms = 'sms',
   tryWhatsapp = 'try-whatsapp',
   whatsappTemplateGeneric = 'whatsapp-template-generic',
-  whatsappPendingMessage = 'whatsapp-pending-information',
+  whatsappPendingMessage = 'whatsapp-pending-message',
   whatsappTemplateVoucher = 'whatsapp-template-voucher',
   whatsappTemplateVoucherReminder = 'whatsapp-template-voucher-reminder',
   whatsappPendingVoucher = 'whatsapp-pending-voucher',
   whatsappVoucherInstructions = 'whatsapp-voucher-instructions',
-  whatsappDefaultReply = 'whatsapp-no-pending-messages',
+  whatsappDefaultReply = 'whatsapp-default-reply',
 }
 
 // Used in places where custom message are send and it is not clear if registration has whatsapp

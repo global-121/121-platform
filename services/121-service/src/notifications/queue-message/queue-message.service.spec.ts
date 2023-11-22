@@ -52,6 +52,8 @@ describe('QueueMessageService', () => {
     messageJobView.referenceId = registration.referenceId;
     messageJobView.customData = undefined;
     messageJobView.mediaUrl = undefined;
+    messageJobView.messageProcessType =
+      MessageProcessType.whatsappTemplateGeneric;
 
     await queueMessageService.addMessageToQueue(
       registration,
@@ -87,6 +89,8 @@ describe('QueueMessageService', () => {
     expectedMessageJobView.programId = registration.programId;
     expectedMessageJobView.customData = undefined;
     expectedMessageJobView.mediaUrl = undefined;
+    expectedMessageJobView.messageProcessType =
+      MessageProcessType.whatsappTemplateGeneric;
 
     const mockGetRegistrationDataValueByName = jest
       .spyOn(registration, 'getRegistrationDataValueByName')

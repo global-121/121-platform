@@ -5,8 +5,6 @@ import { WhatsappService } from './whatsapp/whatsapp.service';
 import { SmsService } from './sms/sms.service';
 import { TestBed } from '@automock/jest';
 import { MessageJobDto, MessageProcessType } from './message-job.dto';
-import { HttpStatus } from '@nestjs/common';
-import { QueueMessageService } from './queue-message/queue-message.service';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 
@@ -23,7 +21,6 @@ const messageJob = {
 
 describe('MessageService', () => {
   let messageService: MessageService;
-  let queueMessageService: jest.Mocked<QueueMessageService>;
   let whatsappService: jest.Mocked<WhatsappService>;
   let smsService: jest.Mocked<SmsService>;
   let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
@@ -32,46 +29,66 @@ describe('MessageService', () => {
     const { unit, unitRef } = TestBed.create(MessageService).compile();
 
     messageService = unit;
-    queueMessageService = unitRef.get(QueueMessageService);
     whatsappService = unitRef.get(WhatsappService);
     smsService = unitRef.get(SmsService);
     intersolveVoucherService = unitRef.get(IntersolveVoucherService);
+
+    jest
+      .spyOn(messageService.registrationRepository, 'findOne')
+      .mockImplementation(() =>
+        Promise.resolve({ program: { id: 1 } } as RegistrationEntity),
+      );
+    jest
+      .spyOn(messageService as any, 'getNotificationText')
+      .mockImplementation(() => Promise.resolve('notificationText'));
   });
 
   it('should be defined', () => {
     expect(messageService).toBeDefined();
   });
 
-  // TODO: re-evaluate/update these tests based on latest code
   describe('Send a message', () => {
-    it('if whatsapp-number and non-templated message type and no reply message, then it should call queueMessageService', async () => {
+    it('if processType = sms it should call smsService', async () => {
+      const messageJobSms = { ...messageJob };
+      messageJobSms.messageProcessType = MessageProcessType.sms;
+      messageJobSms.phoneNumber = '1234567890';
+
+      await messageService.sendTextMessage(messageJobSms);
+
+      expect(smsService.sendSms).toHaveBeenCalled();
+    });
+    it('if processType=tryWhatsapp it should call whatsappService', async () => {
+      const messageJobTryWhatsapp = { ...messageJob };
+      messageJobTryWhatsapp.messageProcessType = MessageProcessType.tryWhatsapp;
+      messageJobTryWhatsapp.phoneNumber = '1234567890';
+      messageJobTryWhatsapp.whatsappPhoneNumber = null;
+
+      await messageService.sendTextMessage(messageJobTryWhatsapp);
+
+      // storePendingMessageAndSendTemplate itself is private, so instead test underlying public method
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalled();
+    });
+
+    it('if processType=whatsappTemplateGeneric it should call whatsappService', async () => {
       const messageJobWhatsappCustom = { ...messageJob };
       messageJobWhatsappCustom.whatsappPhoneNumber = '1234567890';
       messageJobWhatsappCustom.messageContentType = MessageContentType.custom;
-      messageJobWhatsappCustom.customData.replyMessage = false;
-
-      jest
-        .spyOn(messageService.registrationRepository, 'findOne')
-        .mockImplementation(() =>
-          Promise.resolve({ program: { id: 1 } } as RegistrationEntity),
-        );
-      jest
-        .spyOn(messageService as any, 'getNotificationText')
-        .mockImplementation(() => Promise.resolve('notificationText'));
+      messageJobWhatsappCustom.messageProcessType =
+        MessageProcessType.whatsappTemplateGeneric;
 
       await messageService.sendTextMessage(messageJobWhatsappCustom);
 
       // storePendingMessageAndSendTemplate itself is private, so instead test underlying public method
-      expect(queueMessageService.addMessageToQueue).toHaveBeenCalled();
-      expect(smsService.sendSms).not.toHaveBeenCalled();
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalled();
     });
 
-    it('if whatsapp-number and templated or reply message, then it should call whatsappService', async () => {
+    it('if processType=whatsappTemplateVoucher then it should call whatsappService and intersolveVoucherService', async () => {
       const messageJobWhatsappTemplated = { ...messageJob };
       messageJobWhatsappTemplated.whatsappPhoneNumber = '1234567890';
       messageJobWhatsappTemplated.messageContentType =
         MessageContentType.paymentTemplated;
-      messageJobWhatsappTemplated.customData.replyMessage = true; // These 2 lines could be split in 2 separate tests, but that's a bit overkill
+      messageJobWhatsappTemplated.messageProcessType =
+        MessageProcessType.whatsappTemplateVoucher;
 
       jest
         .spyOn(whatsappService, 'sendWhatsapp')
@@ -83,41 +100,6 @@ describe('MessageService', () => {
       expect(
         intersolveVoucherService.storeTransactionResult,
       ).toHaveBeenCalled();
-      expect(smsService.sendSms).not.toHaveBeenCalled();
-    });
-
-    it('if no whatsapp, but tryWhatsapp=true and phone-number supplied, it should call queueMessageService', async () => {
-      const messageJobTryWhatsapp = { ...messageJob };
-      messageJobTryWhatsapp.messageProcessType = MessageProcessType.tryWhatsapp;
-      messageJobTryWhatsapp.phoneNumber = '1234567890';
-      messageJobTryWhatsapp.whatsappPhoneNumber = null;
-
-      await messageService.sendTextMessage(messageJobTryWhatsapp);
-
-      // trywhapp() and storePendingMessageAndSendTemplate() are private, so instead test underlying public method
-      expect(queueMessageService.addMessageToQueue).toHaveBeenCalled();
-      expect(smsService.sendSms).not.toHaveBeenCalled();
-    });
-
-    it('if processType = sms it should call smsService', async () => {
-      const messageJobSms = { ...messageJob };
-      messageJobSms.messageProcessType = MessageProcessType.sms; // TODO: is this still relevant this way?
-      messageJobSms.phoneNumber = '1234567890';
-
-      await messageService.sendTextMessage(messageJobSms);
-
-      expect(smsService.sendSms).toHaveBeenCalled();
-    });
-
-    it('should throw an error if no phonenumber or whatsappnumber is provided', async () => {
-      const messageJobNoNumber = { ...messageJob };
-
-      messageJobNoNumber.phoneNumber = null;
-      messageJobNoNumber.whatsappPhoneNumber = null;
-
-      await expect(
-        messageService.sendTextMessage(messageJobNoNumber),
-      ).rejects.toHaveProperty('status', HttpStatus.BAD_REQUEST);
     });
   });
 });
