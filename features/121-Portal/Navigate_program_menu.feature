@@ -1,8 +1,24 @@
 @portal
-Feature: Navigate program phases
+Feature: Navigate program menu
 
   Background:
     Given a logged-in user
+
+  Scenario: See dashboard page
+    Given the user views a "program" page that is not the "Dashboard" page
+    When the user clicks the "Dashboard" menu option
+    Then the user sees the "Dashboard" page
+
+  Scenario: See team page
+    Given the user views a "program" page that is not the "Team" page
+    Given the user has the "AidWorkerProgramREAD" permission
+    When the user clicks the "Team" menu option
+    Then the user sees the "Team" page
+
+  Scenario: No permission to see team page
+    Given the user does not have the "AidWorkerProgramREAD" permission
+    When the user views a "program" page that is not the "Team" page
+    Then the user sees a disabled "Team" menu option they cannot click
 
   Scenario: See current phase of the program
     When the user views a "program" page
@@ -21,15 +37,15 @@ Feature: Navigate program phases
   Scenario: Option to advance to next phase
     Given the user has the "ProgramPhaseUPDATE" permission
     Given the "current program phase" is the "selected phase"
-    When the user views a "program" page    
+    When the user views a "program" page
     Then the "move-to-next-phase" button is shown
     And the "move-to-next-phase" button is enabled
 
   Scenario: Option to advance to next phase not available
     Given the user does not have the "ProgramPhaseUPDATE" permission
-    When the user views a "program" page    
+    When the user views a "program" page
     Then the "move-to-next-phase" button is not shown
-    
+
   Scenario: Advancing to next phase
     Given the user has the "ProgramPhaseUPDATE" permission
     Given user views a "program" page
