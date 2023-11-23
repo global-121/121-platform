@@ -83,7 +83,7 @@ export class ScriptsController {
       seed = new SeedMultipleKRCS(this.dataSource);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
-      process.env.NODE_ENV == 'development'
+      ['development', 'test'].includes(process.env.NODE_ENV)
     ) {
       const module = await import('./seed-multiple-nlrc-mock');
       const SeedMultipleNLRCMockData = module.SeedMultipleNLRCMockData;
@@ -91,7 +91,9 @@ export class ScriptsController {
     } else {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .send('Not a known program (seed dummy only works in development)');
+        .send(
+          'Not a known program (seed dummy only works in development and test)',
+        );
     }
     await seed.run(
       mockPowerNumberRegistrations,

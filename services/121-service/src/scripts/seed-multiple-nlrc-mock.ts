@@ -12,6 +12,7 @@ import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
+import { SeedMockHelper } from './seed-mock-helpers';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -23,6 +24,8 @@ const readSqlFile = (filepath: string): string => {
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
+
+  private readonly seedMockHelper = new SeedMockHelper();
 
   public async run(
     powerNrRegistrationsString?: string,
@@ -73,42 +76,37 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     const seedMultiple = new SeedMultipleNLRC(this.dataSource);
     await seedMultiple.run();
 
-    let getAccessToken,
-      changePhase,
-      doPayment,
-      awaitChangePaStatus,
-      importRegistrations;
-    if (process.env.NODE_ENV == 'development') {
-      const utilityModule = await import('../../test/helpers/utility.helper');
-      getAccessToken = utilityModule.getAccessToken;
-      const programModule = await import('../../test/helpers/program.helper');
-      changePhase = programModule.changePhase;
-      doPayment = programModule.doPayment;
-      const registrationModule = await import(
-        '../../test/helpers/registration.helper'
-      );
-      awaitChangePaStatus = registrationModule.awaitChangePaStatus;
-      importRegistrations = registrationModule.importRegistrations;
-    }
     // Set up 1 registration with 1 payment and 1 message
     // TODO: this uses helper functions from the API-test folder, move this to a shared location
     const programIdVisa = 3;
-    const accessToken = await getAccessToken();
-    await changePhase(
+    const accessToken = await this.seedMockHelper.getAccessToken();
+    await this.seedMockHelper.changePhase(
       programIdVisa,
       ProgramPhase.registrationValidation,
       accessToken,
     );
-    await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-    await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    await this.seedMockHelper.changePhase(
+      programIdVisa,
+      ProgramPhase.inclusion,
+      accessToken,
+    );
+    await this.seedMockHelper.changePhase(
+      programIdVisa,
+      ProgramPhase.payment,
+      accessToken,
+    );
+    await this.seedMockHelper.importRegistrations(
+      programIdVisa,
+      [registrationVisa],
+      accessToken,
+    );
+    await this.seedMockHelper.awaitChangePaStatus(
       programIdVisa,
       [referenceIdVisa],
       RegistrationStatusEnum.included,
       accessToken,
     );
-    await doPayment(
+    await this.seedMockHelper.doPayment(
       programIdVisa,
       1,
       amountVisa,
