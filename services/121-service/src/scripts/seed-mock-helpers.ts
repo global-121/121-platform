@@ -22,7 +22,6 @@ export class SeedMockHelper {
 
   private async loginAsAdmin(): Promise<any> {
     const url = `${this.getBaseUrl()}/users/login`;
-    console.log('url: ', url);
     return this.httpService.post(url, {
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
@@ -40,7 +39,6 @@ export class SeedMockHelper {
 
   public async getAccessToken(): Promise<string> {
     const login = await this.loginAsAdmin();
-    console.log('login: ', login.headers['set-cookie']);
     const cookies = login.headers['set-cookie'];
     const accessToken = cookies
       .find((cookie: string) => cookie.startsWith(CookieNames.general))

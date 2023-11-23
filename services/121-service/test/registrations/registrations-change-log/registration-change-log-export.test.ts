@@ -9,7 +9,7 @@ import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
   referenceIdVisa,
   registrationVisa,
-} from '../../visa-card/visa-card.data';
+} from '../../../seed-data/mock/visa-card.data';
 
 const reason1 = 'automated test 1';
 const reason2 = 'automated test 2';

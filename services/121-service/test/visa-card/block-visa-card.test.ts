@@ -20,7 +20,7 @@ import {
   programIdVisa,
   referenceIdVisa,
   registrationVisa,
-} from './visa-card.data';
+} from '../../seed-data/mock/visa-card.data';
 
 describe('Block visa debit card', () => {
   let accessToken: string;

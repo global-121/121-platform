@@ -6,7 +6,7 @@ import {
   amountVisa,
   referenceIdVisa,
   registrationVisa,
-} from '../../test/visa-card/visa-card.data';
+} from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { waitFor } from '../utils/waitFor.helper';

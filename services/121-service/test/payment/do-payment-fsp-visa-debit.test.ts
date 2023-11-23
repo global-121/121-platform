@@ -21,7 +21,7 @@ import {
   programIdVisa,
   referenceIdVisa,
   registrationVisa,
-} from '../visa-card/visa-card.data';
+} from '../../seed-data/mock/visa-card.data';
 
 describe('Do payment to 1 PA', () => {
   registrationVisa.whatsappPhoneNumber = '14155238887';

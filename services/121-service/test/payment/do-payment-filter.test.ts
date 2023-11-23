@@ -24,7 +24,7 @@ import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-} from '../visa-card/visa-card.data';
+} from '../../seed-data/mock/visa-card.data';
 
 describe('Do payment with filter', () => {
   let accessToken: string;

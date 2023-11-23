@@ -6,7 +6,10 @@ import {
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
+import {
+  referenceIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
 
 describe('Import a registration', () => {
   const programId = 3;
