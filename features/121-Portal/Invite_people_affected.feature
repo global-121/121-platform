@@ -19,10 +19,7 @@ Feature: Invite people affected (extension of View_and_Manage_people_affected.fe
     When the "bulk action" is "Invite for registration"
     Then the "changed data" is that the "Invited" timestamp is filled for the selected rows
     And the "status" is updated to "Invited"
-    And if the custom message option is used, a WhatsApp message is sent to the "phoneNumber" (see View_and_Manage_people_affected.feature)
+    And if a templated message is present or the custom SMS option is used, a WhatsApp message is sent to the "phoneNumber" (see View_and_Manage_people_affected.feature)
     And if the "phoneNumber" has a WhatsApp account, then the message arrives
     And the "phoneNumber" is now also stored as "whatsappPhoneNumber" in the PA's registration
     And if the "phoneNumber" does not have a WhatsApp account, then instead an SMS is sent
-
-TODO: Invite with trying WhatsApp first: success flow + failure flow
-// NOTE: use 16005550004 as test number to get a '63003: no whatsapp account' error from twilio-mock-service

@@ -32,6 +32,7 @@ describe('Load PA table', () => {
     let accessToken: string;
     const payment1 = 1;
     const payment2 = 2;
+    const payment3 = 3;
     const amount = 10;
     const registrations = [
       registration1,
@@ -151,7 +152,7 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
 
-    it('should filter based on succes payments', async () => {
+    it('should filter based on success payments', async () => {
       const filter = {};
       filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
       // Act
@@ -190,7 +191,7 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(2);
     });
 
-    it('should filter based on succes payments in combination with select and other filters', async () => {
+    it('should filter based on success payments in combination with select and other filters', async () => {
       const filter = {};
       filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
       filter['filter.lastName'] = registration1.lastName;
@@ -222,6 +223,45 @@ describe('Load PA table', () => {
         expect(data[0]).toHaveProperty(attribute);
       }
       expect(meta.totalItems).toBe(1);
+    });
+
+    it('should filter based on not yet sent payments', async () => {
+      // do payment 3 for only 1 PA
+      await doPayment(
+        programId,
+        payment3,
+        amount,
+        [paymentReferenceIds[0]],
+        accessToken,
+      );
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        [paymentReferenceIds[0]],
+        accessToken,
+        50000,
+        ['success', 'waiting', 'error'],
+        payment3,
+      );
+
+      // define filter as 'not yet sent payment #3'
+      const filter = {};
+      filter[
+        `filter.${PaymentFilterEnum.notYetSentPayment}`
+      ] = `$eq:${payment3}`;
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations(
+        programId,
+        null,
+        accessToken,
+        null,
+        null,
+        filter,
+      );
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Test if filtered set is all - 1
+      expect(meta.totalItems).toBe(paymentReferenceIds.length - 1);
     });
   });
 });

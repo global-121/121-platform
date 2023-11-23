@@ -39,6 +39,7 @@ import {
     MessageProcessorLargeBulk,
     MessageProcessorLowPriority,
     AzureLogService,
+    MessageTemplateModule,
   ],
   controllers: [],
   exports: [MessageService],

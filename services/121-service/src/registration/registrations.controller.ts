@@ -423,6 +423,7 @@ export class RegistrationsController {
       registrationStatus as RegistrationStatusEnum,
       dryRun,
       statusUpdateDto.message,
+      statusUpdateDto.messageTemplateKey,
       messageContentType,
     );
     if (dryRun) {

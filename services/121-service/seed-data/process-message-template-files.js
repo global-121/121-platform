@@ -3,7 +3,7 @@
 // EXAMPLES
 
 // Prepare file for transifex
-// node services/121-service/seed-data/process-message-template-files.js prepare-to-update-transifex --in services/121-service/seed-data/program/program-pilot-nl-2.json --out ./program-pilot-nl-2.json
+// node services/121-service/seed-data/process-message-template-files.js prepare-to-update-transifex --in services/121-service/seed-data/message-template/message-template-nlrc-pv.json --out ./message-template-nlrc-pv.json
 const fs = require('fs');
 // const _ = require('lodash');
 

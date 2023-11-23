@@ -69,6 +69,7 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
     MessageIncomingService,
     MessageStatusCallbackProcessor,
     AzureLogService,
+    MessageTemplateModule,
   ],
   controllers: [MessageIncomingController],
   exports: [MessageIncomingService, BullModule],

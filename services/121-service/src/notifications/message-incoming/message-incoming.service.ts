@@ -28,9 +28,9 @@ import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
 import { ProcessName } from '../enum/queue.names.enum';
 import { QueueMessageService } from '../queue-message/queue-message.service';
-import { MessageTemplateService } from '../message-template/message-template.service';
 import { MessageProcessType } from '../message-job.dto';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
+import { MessageTemplateService } from '../message-template/message-template.service';
 
 @Injectable()
 export class MessageIncomingService {

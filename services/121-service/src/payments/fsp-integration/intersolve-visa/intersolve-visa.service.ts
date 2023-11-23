@@ -94,14 +94,21 @@ export class IntersolveVisaService
     // Filter out all transactions that are not reservations
     // reservation is the type that is used for payments in a shop
     let walletReserveTransactions = [];
+    let expiredReserveTransactions = [];
     if (walletTransactions && walletTransactions.length > 0) {
       walletReserveTransactions = walletTransactions.filter(
         (t) => t.type === 'RESERVATION',
       );
+      expiredReserveTransactions = walletTransactions.filter(
+        (t) => t.type === 'RESERVATION_EXPIRED',
+      );
     }
     return {
       lastUsedDate: this.getLastTransactionDate(walletReserveTransactions),
-      spentThisMonth: this.calculateSpentThisMonth(walletReserveTransactions),
+      spentThisMonth: this.calculateSpentThisMonth(
+        walletReserveTransactions,
+        expiredReserveTransactions,
+      ),
     };
   }
 
@@ -122,16 +129,20 @@ export class IntersolveVisaService
 
   private calculateSpentThisMonth(
     walletTransactions: IntersolveGetTransactionsResponseDataDto[],
+    expiredReserveTransactions: IntersolveGetTransactionsResponseDataDto[],
   ): number {
     const now = new Date();
     const thisMonth = now.getMonth();
     const thisYear = now.getFullYear();
     let total = 0;
+    const originalTransactionIdsOfExpiredReservations =
+      expiredReserveTransactions.map((r) => r.originalTransactionId);
     for (const transaction of walletTransactions) {
       const transactionDate = new Date(transaction.createdAt);
       if (
         transactionDate.getMonth() === thisMonth &&
-        transactionDate.getFullYear() === thisYear
+        transactionDate.getFullYear() === thisYear &&
+        !originalTransactionIdsOfExpiredReservations.includes(transaction.id) // check that this reservation did not later expire
       ) {
         total += transaction.quantity.value;
       }
