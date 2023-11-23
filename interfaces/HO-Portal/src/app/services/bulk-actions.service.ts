@@ -227,7 +227,7 @@ export class BulkActionsService {
     action: BulkActionId,
     programId: number,
     customBulkActionInput?: CustomBulkActionInput,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<BulkActionResult | void> {
     switch (action) {

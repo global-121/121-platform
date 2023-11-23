@@ -105,7 +105,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public paymentHistoryColumn: PersonTableColumn;
 
   public selectedPeople: PersonRow[] = [];
-  public selectedCount: number = 0;
+  public selectedCount = 0;
   public visiblePeopleAffected: PersonRow[] = [];
 
   public isInProgress = false;
@@ -882,7 +882,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public async applyAction(
     customBulkActionInput?: CustomBulkActionInput,
-    dryRun: boolean = false,
+    dryRun = false,
   ) {
     this.isInProgress = true;
 

@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import Permission from 'src/app/auth/permission.enum';
 import { ProgramTeamPopupOperationEnum } from '../../models/program-team-popup-operation.enum';
 import { ProgramTeamPopupComponent } from './program-team-popup/program-team-popup.component';
 import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
-import { AuthService } from 'src/app/auth/auth.service';
-import Permission from 'src/app/auth/permission.enum';
 
 @Component({
   selector: 'app-program-team',
