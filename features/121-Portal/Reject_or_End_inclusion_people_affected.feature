@@ -21,7 +21,7 @@ Feature: Reject or end inclusion of people affected (extension of View_and_Manag
     And "rejected" timestamp is filled for the selected rows
     And the "included" column remains filled
     And the "status" is updated to "Rejected"
-    And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
+    And if a templated message is present or if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
 
   ------------------------------------------
 
@@ -45,7 +45,7 @@ Feature: Reject or end inclusion of people affected (extension of View_and_Manag
     And the "end inclusion" timestamp is filled for the selected rows
     And the "included" column remains filled
     And the "status" is updated to "Inclusion ended"
-    And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
+    And if a templated message is present or if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
 
   ------------------------------------------
 
