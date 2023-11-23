@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { MessageContentType } from './enum/message-type.enum';
-import { SmsService } from './sms/sms.service';
-import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
-import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageJobDto, MessageProcessType } from './message-job.dto';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
 import { ProgramNotificationEnum } from './enum/program-notification.enum';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { MessageContentType } from './enum/message-type.enum';
+import { SmsService } from './sms/sms.service';
+import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
+import { WhatsappService } from './whatsapp/whatsapp.service';
+import { MessageTemplateEntity } from './message-template/message-template.entity';
 import { AzureLogService } from '../shared/services/azure-log.service';
 
 @Injectable()
@@ -250,20 +250,27 @@ export class MessageService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const program = await this.dataSource
-      .getRepository(ProgramEntity)
-      .findOneBy({
-        id: programId,
+    const messageTemplates = await this.dataSource
+      .getRepository(MessageTemplateEntity)
+      .findBy({
+        program: { id: programId },
+        type: key,
       });
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
 
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
+    const notification = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    if (notification) {
+      return notification.message;
     }
-    if (notifications[key]) {
-      return notifications[key];
+
+    const fallbackNotification = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    if (fallbackNotification) {
+      return fallbackNotification.message;
     }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
+
+    return '';
   }
 }

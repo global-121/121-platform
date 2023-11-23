@@ -62,7 +62,7 @@
             updatePaAttribute(
               'paymentAmountMultiplier',
               $event.value,
-              $event.reason,
+              $event?.reason?.message,
               false
             )
           "
@@ -100,7 +100,7 @@
               updatePaAttribute(
                 'maxPayments',
                 $event.value,
-                $event.reason,
+                $event?.reason?.message,
                 false
               )
             "
@@ -129,7 +129,7 @@
               updatePaAttribute(
                 'phoneNumber',
                 $event.value,
-                $event.reason,
+                $event?.reason?.message,
                 false
               )
             "
@@ -153,7 +153,7 @@
               updatePaAttribute(
                 'preferredLanguage',
                 $event.value,
-                $event.reason,
+                $event?.reason?.message,
                 false
               )
             "
@@ -213,7 +213,7 @@
               updatePaAttribute(
                 paTableAttribute.name,
                 $event.value,
-                $event.reason,
+                $event?.reason?.message,
                 true
               )
             "

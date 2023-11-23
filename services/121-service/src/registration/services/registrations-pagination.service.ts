@@ -91,9 +91,9 @@ export class RegistrationsPaginationService {
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
-    const registrationDataNamesProgram = registrationDataRelations.map(
-      (r) => r.name,
-    );
+    const registrationDataNamesProgram = registrationDataRelations
+      .map((r) => r.name)
+      .filter((r) => r !== CustomDataAttributes.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (
@@ -552,6 +552,11 @@ export class RegistrationsPaginationService {
         alias: 'latestTransactionsWaiting',
         status: StatusEnum.waiting,
       },
+      {
+        key: PaymentFilterEnum.notYetSentPayment,
+        alias: 'latestTransactionsNull',
+        status: null,
+      },
     ];
 
     for (const option of filterOptions) {
@@ -582,15 +587,19 @@ export class RegistrationsPaginationService {
     status: StatusEnum,
     paymentNumber: string,
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    queryBuilder.innerJoin('registration.latestTransactions', alias);
-    queryBuilder.innerJoin(
-      `${alias}.transaction`,
-      `transaction${alias}`,
-      `"transaction${alias}"."status" = '${status}' AND "transaction${alias}"."payment" = :paymentNumber`,
-      {
-        paymentNumber: paymentNumber,
-      },
+    queryBuilder.leftJoin(
+      'registration.latestTransactions',
+      alias,
+      `"${alias}"."payment" = :paymentNumber`,
+      { paymentNumber: paymentNumber },
     );
+    if (status) {
+      queryBuilder
+        .innerJoin(`${alias}.transaction`, `transaction${alias}`)
+        .where(`"transaction${alias}"."status" = :status`, { status: status });
+    } else {
+      queryBuilder.where(`"${alias}"."id" IS NULL`);
+    }
     return queryBuilder;
   }
 }

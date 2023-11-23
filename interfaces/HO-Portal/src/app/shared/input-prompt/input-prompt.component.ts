@@ -24,6 +24,10 @@ export interface InputProps {
     length: number;
     type: 'min' | 'max';
   };
+  isTemplated?: boolean;
+  templatedMessage?: string;
+  supportMessage?: string;
+  messageTemplateKey?: string;
 }
 
 @Component({
@@ -110,8 +114,15 @@ export class InputPromptComponent implements AfterViewInit {
       this.input.value &&
       this.input.valid
     ) {
-      this.modalController.dismiss(this.input.value, null);
+      this.modalController.dismiss({ message: this.input.value }, null);
       return;
+    }
+
+    if (this.inputProps.isTemplated && this.inputProps.checkboxChecked) {
+      this.modalController.dismiss(
+        { messageTemplateKey: this.inputProps.messageTemplateKey },
+        null,
+      );
     }
 
     this.modalController.dismiss(null, null);

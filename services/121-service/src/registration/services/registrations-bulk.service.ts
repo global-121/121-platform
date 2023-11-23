@@ -20,7 +20,7 @@ import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { MessageSizeType as MessageSizeTypeDto } from '../dto/messag-size-type.dto';
+import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
 import {
   MessageProcessType,
   MessageProcessTypeExtension,
@@ -64,6 +64,7 @@ export class RegistrationsBulkService {
     registrationStatus: RegistrationStatusEnum,
     dryRun: boolean,
     message?: string,
+    messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
@@ -83,6 +84,7 @@ export class RegistrationsBulkService {
         programId,
         registrationStatus,
         message,
+        messageTemplateKey,
         messageContentType,
         this.getStatusUpdateBaseQuery(
           allowedCurrentStatuses,
@@ -287,6 +289,7 @@ export class RegistrationsBulkService {
     programId: number,
     registrationStatus: RegistrationStatusEnum,
     message?: string,
+    messageTemplateKey?: string,
     messageContentType?: MessageContentType,
     queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
   ): Promise<void> {
@@ -303,6 +306,7 @@ export class RegistrationsBulkService {
     );
     await this.updateRegistrationStatusBatch(referenceIds, registrationStatus, {
       message,
+      messageTemplateKey,
       messageContentType,
       bulkSize: registrationForUpdate.meta.totalItems,
     });
@@ -321,7 +325,10 @@ export class RegistrationsBulkService {
           referenceId,
           registrationStatus,
         );
-      if (messageSizeType.message && updatedRegistration) {
+      if (
+        (messageSizeType.message || messageSizeType.messageTemplateKey) &&
+        updatedRegistration
+      ) {
         if (updatedRegistration.programId !== programId) {
           programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
@@ -338,7 +345,7 @@ export class RegistrationsBulkService {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
             messageSizeType.message,
-            null,
+            messageSizeType.messageTemplateKey,
             messageSizeType.messageContentType,
             messageProcessType,
             null,

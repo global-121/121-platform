@@ -7,12 +7,15 @@ graph LR
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->QueueMessageModule
+  TransactionsModule-->MessageTemplateModule
   IntersolveVoucherModule-->WhatsappModule
   IntersolveVoucherModule-->QueueMessageModule
+  IntersolveVoucherModule-->MessageTemplateModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
   IntersolveVisaModule-->QueueMessageModule
@@ -28,6 +31,7 @@ graph LR
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule
+  MessageModule-->MessageTemplateModule
   MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule
@@ -60,5 +64,6 @@ graph LR
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
   MessageIncomingModule-->QueueMessageModule
+  MessageIncomingModule-->MessageTemplateModule
   NoteModule-->RegistrationsModule
 ```

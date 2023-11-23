@@ -15,6 +15,7 @@ export function resetDB(seedScript: SeedScript): Promise<request.Response> {
     .post('/scripts/reset')
     .query({
       script: seedScript,
+      isApiTests: true,
     })
     .send({
       secret: process.env.RESET_SECRET,

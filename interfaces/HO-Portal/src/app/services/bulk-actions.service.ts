@@ -15,6 +15,7 @@ export class CustomBulkActionInput {
   payment?: number;
   paymentAmount?: number;
   referenceId?: string;
+  messageTemplateKey?: string;
 }
 
 @Injectable({
@@ -31,7 +32,7 @@ export class BulkActionsService {
       id: BulkActionId.invite,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.invite',
+        `page.program.program-people-affected.actions.${BulkActionId.invite}`,
       ),
       permissions: [Permission.RegistrationStatusInvitedUPDATE],
       phases: [ProgramPhase.registrationValidation],
@@ -55,7 +56,7 @@ export class BulkActionsService {
       id: BulkActionId.markNoLongerEligible,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.no-longer-eligible',
+        `page.program.program-people-affected.actions.${BulkActionId.markNoLongerEligible}`,
       ),
       permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
       phases: [ProgramPhase.registrationValidation],
@@ -65,7 +66,7 @@ export class BulkActionsService {
       id: BulkActionId.selectForValidation,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.select-for-validation',
+        `page.program.program-people-affected.actions.${BulkActionId.selectForValidation}`,
       ),
       permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
@@ -75,7 +76,7 @@ export class BulkActionsService {
       id: BulkActionId.include,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.include',
+        `page.program.program-people-affected.actions.${BulkActionId.include}`,
       ),
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
@@ -99,7 +100,7 @@ export class BulkActionsService {
       id: BulkActionId.reject,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.reject',
+        `page.program.program-people-affected.actions.${BulkActionId.reject}`,
       ),
       permissions: [Permission.RegistrationStatusRejectedUPDATE],
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
@@ -125,7 +126,7 @@ export class BulkActionsService {
       id: BulkActionId.endInclusion,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.end-inclusion',
+        `page.program.program-people-affected.actions.${BulkActionId.endInclusion}`,
       ),
       permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
       phases: [ProgramPhase.payment],
@@ -149,7 +150,7 @@ export class BulkActionsService {
       id: BulkActionId.pause,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.pause',
+        `page.program.program-people-affected.actions.${BulkActionId.pause}`,
       ),
       permissions: [Permission.RegistrationStatusPausedUPDATE],
       phases: [ProgramPhase.payment],
@@ -173,7 +174,7 @@ export class BulkActionsService {
       id: BulkActionId.sendMessage,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.send-message',
+        `page.program.program-people-affected.actions.${BulkActionId.sendMessage}`,
       ),
       permissions: [Permission.RegistrationNotificationCREATE],
       phases: [
@@ -201,7 +202,7 @@ export class BulkActionsService {
       id: BulkActionId.deletePa,
       enabled: false,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.delete-pa',
+        `page.program.program-people-affected.actions.${BulkActionId.deletePa}`,
       ),
       permissions: [Permission.RegistrationDELETE],
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
@@ -237,6 +238,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
@@ -256,6 +258,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
@@ -263,6 +266,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
@@ -270,6 +274,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.pause:
         return await this.programsService.pause(
@@ -277,6 +282,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.doPayment:
         return await this.programsService.doPayment(
@@ -316,7 +322,7 @@ export class BulkActionsService {
         id: BulkActionId.doPayment,
         enabled: true,
         label: `${this.translate.instant(
-          'page.program.program-people-affected.actions.do-payment',
+          `page.program.program-people-affected.actions.${BulkActionId.doPayment}`,
         )} #${paymentId}`,
         permissions: [Permission.PaymentCREATE],
         phases: [ProgramPhase.payment],

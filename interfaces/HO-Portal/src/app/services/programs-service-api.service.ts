@@ -8,7 +8,7 @@ import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
-import { Message } from '../models/message.model';
+import { Message, MessageTemplate } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
@@ -600,6 +600,7 @@ export class ProgramsServiceApiService {
     dryRun: boolean = false,
     filters?: PaginationFilter[],
     message?: string,
+    messageTemplateKey?: string,
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);
     return this.apiService.patch(
@@ -608,6 +609,7 @@ export class ProgramsServiceApiService {
       {
         status: action,
         message,
+        messageTemplateKey,
       },
       false,
       false,
@@ -647,6 +649,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.invited,
@@ -654,6 +657,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -662,6 +666,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.included,
@@ -669,6 +674,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -677,6 +683,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.inclusionEnded,
@@ -684,6 +691,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -692,6 +700,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.rejected,
@@ -699,6 +708,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -707,6 +717,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun: boolean = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.paused,
@@ -714,6 +725,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -951,6 +963,13 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status-changes/${referenceId}`,
+    );
+  }
+
+  getMessageTemplatesByProgram(programId: number): Promise<MessageTemplate[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/notifications/${programId}/message-template`,
     );
   }
 }

@@ -22,6 +22,7 @@ import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     TransactionsModule,
     WhatsappModule,
     QueueMessageModule,
+    MessageTemplateModule,
   ],
   providers: [
     IntersolveVoucherService,

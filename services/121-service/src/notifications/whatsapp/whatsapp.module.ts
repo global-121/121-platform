@@ -21,6 +21,7 @@ import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { WhatsappController } from './whatsapp.controller';
 import { WhatsappService } from './whatsapp.service';
 import { LatestMessageEntity } from '../latest-message.entity';
+import { MessageTemplateModule } from '../message-template/message-template.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { LatestMessageEntity } from '../latest-message.entity';
     ]),
     ImageCodeModule,
     UserModule,
+    MessageTemplateModule,
   ],
   providers: [WhatsappService, SmsService, LastMessageStatusService],
   controllers: [WhatsappController],
