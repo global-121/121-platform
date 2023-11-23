@@ -552,6 +552,11 @@ export class RegistrationsPaginationService {
         alias: 'latestTransactionsWaiting',
         status: StatusEnum.waiting,
       },
+      {
+        key: PaymentFilterEnum.notYetSentPayment,
+        alias: 'latestTransactionsNull',
+        status: null,
+      },
     ];
 
     for (const option of filterOptions) {
@@ -582,15 +587,19 @@ export class RegistrationsPaginationService {
     status: StatusEnum,
     paymentNumber: string,
   ): SelectQueryBuilder<RegistrationViewEntity> {
-    queryBuilder.innerJoin('registration.latestTransactions', alias);
-    queryBuilder.innerJoin(
-      `${alias}.transaction`,
-      `transaction${alias}`,
-      `"transaction${alias}"."status" = '${status}' AND "transaction${alias}"."payment" = :paymentNumber`,
-      {
-        paymentNumber: paymentNumber,
-      },
+    queryBuilder.leftJoin(
+      'registration.latestTransactions',
+      alias,
+      `"${alias}"."payment" = :paymentNumber`,
+      { paymentNumber: paymentNumber },
     );
+    if (status) {
+      queryBuilder
+        .innerJoin(`${alias}.transaction`, `transaction${alias}`)
+        .where(`"transaction${alias}"."status" = :status`, { status: status });
+    } else {
+      queryBuilder.where(`"${alias}"."id" IS NULL`);
+    }
     return queryBuilder;
   }
 }

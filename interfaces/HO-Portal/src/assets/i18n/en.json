@@ -326,7 +326,8 @@
           "paymentCountRemaining": "Remaining payments",
           "failedPayment": "Failed for payment #",
           "waitingPayment": "Waiting for payment #",
-          "successPayment": "Successful for payment #"
+          "successPayment": "Successful for payment #",
+          "notYetSentPayment": "Not yet sent payment #"
         },
         "language": {
           "en": "English",
