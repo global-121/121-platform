@@ -23,6 +23,7 @@
 
       <!--add team member button-->
       <ion-button
+        [disabled]="!canManageAidworkers"
         (click)="programTeamPopup()"
         shape="round"
         fill="outline"

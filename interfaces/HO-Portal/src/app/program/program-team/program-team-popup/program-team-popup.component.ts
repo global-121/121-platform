@@ -40,7 +40,7 @@ export class ProgramTeamPopupComponent {
 
   public programId: number;
 
-  public searchQuery: string = '';
+  public searchQuery = '';
   public searchResults: TeamMember[][] = [];
   public showSearchResults: boolean;
 

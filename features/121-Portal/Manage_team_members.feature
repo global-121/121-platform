@@ -13,6 +13,7 @@
     And on the right side on top of user table "Add/change team member" button is displayed
 
   Scenario: Add New Team member
+    Given the user has the "AidWorkerProgramUPDATE" permission
     When User clicks on "Add new user" button
     And pop-up is displayed
     Then user enter team members email
@@ -22,8 +23,14 @@
     And user clicks on "X" on popup
     And Popup is closed
 
+  Scenario: No permission to add New Team member
+    Given the user does not have the "AidWorkerProgramUPDATE" permission
+    When user is on Team Members page
+    Then the user sees a disabled "Add new user" menu option they cannot click
+
   Scenario: Edit Team members Role
     Given There is a team member on the list
+    Given the user has the "AidWorkerProgramUPDATE" permission
     When User clicks on Three dot icon on the right side of row where team member is displayed
     And Meatball menu is displayed
     And User clicks on "Edit user"
@@ -37,6 +44,7 @@
 
   Scenario: Remove team member
     Given There is a team member on the list
+    Given the user has the "AidWorkerProgramUPDATE" permission
     When User clicks on Three dot icon on the right side of row where team member is displayed
     And Meatball menu is displayed
     And User clicks on "Remove user"
@@ -45,6 +53,11 @@
     Then "You've succsessfully removed this team member" message is displayed
     And user clicks on "X" on popup
     And Popup is closed
+
+  Scenario: No permission to edit and remove team member
+    Given the user does not have the "AidWorkerProgramUPDATE" permission
+    When There is a team member in the list
+    Then the user sees a disabled 3 dot icon on the right side of the row they cannot click
 
   Scenario: View error messages
     Given user clicks on Add user button

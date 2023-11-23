@@ -16,9 +16,9 @@ export class StatusTableFilterComponent {
   @Input()
   public thisPhase: ProgramPhase;
 
-  public isStatusPopoverOpen: boolean = false;
+  public isStatusPopoverOpen = false;
 
-  public totalCount: number = 0;
+  public totalCount = 0;
 
   public options: {
     [key: string]: {
