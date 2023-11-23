@@ -13,8 +13,6 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserModule } from '../../user/user.module';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
-import { LastMessageStatusService } from '../last-message-status.service';
-import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { MessageIncomingController } from './message-incoming.controller';
 import { MessageIncomingService } from './message-incoming.service';
