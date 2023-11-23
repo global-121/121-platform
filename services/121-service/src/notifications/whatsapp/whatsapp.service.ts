@@ -5,12 +5,13 @@ import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { ProgramEntity } from '../../programs/program.entity';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
+import { MessageTemplateService } from '../message-template/message-template.service';
+import { MessageTemplateEntity } from '../message-template/message-template.entity';
 import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
@@ -22,12 +23,10 @@ export class WhatsappService {
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 
-  private readonly whatsappTemplatedMessageKeys = [
-    String(ProgramNotificationEnum.whatsappPayment),
-    String(ProgramNotificationEnum.whatsappGenericMessage),
-  ];
-
-  constructor(private readonly lastMessageService: LastMessageStatusService) {}
+  constructor(
+    private readonly lastMessageService: LastMessageStatusService,
+    private readonly messageTemplateServices: MessageTemplateService,
+  ) {}
 
   public async sendWhatsapp(
     message: string,
@@ -55,6 +54,7 @@ export class WhatsappService {
     if (!!process.env.MOCK_TWILIO) {
       payload['messageContentType'] = messageContentType;
     }
+
     let errorOccurred = false;
     let messageToStore;
     try {
@@ -154,44 +154,39 @@ export class WhatsappService {
     program: ProgramEntity,
     sessionId: string,
   ): Promise<void> {
-    for (const [languageKey, notifications] of Object.entries(
-      program.notifications,
-    )) {
-      await this.testLanguageTemplates(
-        notifications,
-        languageKey,
+    const messageTemplates = (
+      await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
-        sessionId,
-      );
-    }
+      )
+    ).filter((template) => template.isWhatsappTemplate);
+
+    await this.testLanguageTemplates(messageTemplates, sessionId);
   }
 
   private async testLanguageTemplates(
-    messages: object,
-    language: string,
-    programId: number,
+    messageTemplates: MessageTemplateEntity[],
     sessionId: string,
   ): Promise<void> {
-    for (const [messageKey, messageText] of Object.entries(messages)) {
-      if (this.whatsappTemplatedMessageKeys.includes(messageKey)) {
-        const payload = {
-          body: messageText,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-          statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
-          to: 'whatsapp:' + TWILIO_SANDBOX_WHATSAPP_NUMBER,
-        };
-        await twilioClient.messages.create(payload).then(async (message) => {
-          await this.whatsappTemplateTestRepository.save({
-            sid: message.sid,
-            language: language,
-            programId: programId,
-            messageKey: messageKey,
-            sessionId: sessionId,
-          });
-          return 'Succes';
+    for (const messageTemplate of messageTemplates) {
+      const payload = {
+        body: messageTemplate.message,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+        statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
+        to: 'whatsapp:' + TWILIO_SANDBOX_WHATSAPP_NUMBER,
+      };
+      await twilioClient.messages.create(payload).then(async (message) => {
+        await this.whatsappTemplateTestRepository.save({
+          sid: message.sid,
+          language: messageTemplate.language,
+          programId: messageTemplate.programId,
+          messageKey: messageTemplate.type,
+          sessionId: sessionId,
         });
-      }
+        return 'Succes';
+      });
+      // Wait 2 seconds to prevent Twilio from exceeded Rate limit for Channel
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 
@@ -243,57 +238,55 @@ export class WhatsappService {
     program: ProgramEntity,
     sessionId: string,
   ): Promise<object> {
-    const resultOfProgram = {};
-    for (const [languageKey, notifications] of Object.entries(
-      program.notifications,
-    )) {
-      resultOfProgram[languageKey] = await this.getLanguageTemplateResults(
-        notifications,
-        languageKey,
+    const messageTemplates = (
+      await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
-        sessionId,
-      );
-    }
-    return resultOfProgram;
+      )
+    ).filter((template) => template.isWhatsappTemplate);
+
+    return await this.getLanguageTemplateResults(messageTemplates, sessionId);
   }
 
   private async getLanguageTemplateResults(
-    messages: object,
-    language: string,
-    programId: number,
+    messagesTemplates: MessageTemplateEntity[],
     sessionId: string,
   ): Promise<object> {
     const resultsLanguage = {};
-    for (const messageKey in messages) {
-      if (this.whatsappTemplatedMessageKeys.includes(messageKey)) {
-        const whatsappTemplateTestEntity =
-          await this.whatsappTemplateTestRepository.findOne({
-            where: {
-              language: language,
-              messageKey: messageKey,
-              programId: programId,
-              sessionId: sessionId,
-            },
-            order: { created: 'ASC' },
-          });
-        if (whatsappTemplateTestEntity && whatsappTemplateTestEntity.succes) {
-          resultsLanguage[messageKey] = {
-            status: 'Succes',
-            created: whatsappTemplateTestEntity.created,
-          };
-        } else if (whatsappTemplateTestEntity) {
-          resultsLanguage[messageKey] = {
-            status: 'Failed',
-            created: whatsappTemplateTestEntity.created,
-            callback: JSON.parse(whatsappTemplateTestEntity.callback),
-          };
-        } else {
-          resultsLanguage[messageKey] = {
-            status: 'No tests found for this notification',
-          };
-        }
+
+    for (const messageTemplate of messagesTemplates) {
+      // Initialize the language property if it doesn't exist
+      if (!resultsLanguage[messageTemplate.language]) {
+        resultsLanguage[messageTemplate.language] = {};
+      }
+
+      const whatsappTemplateTestEntity =
+        await this.whatsappTemplateTestRepository.findOne({
+          where: {
+            language: messageTemplate.language,
+            messageKey: messageTemplate.type,
+            programId: messageTemplate.programId,
+            sessionId: sessionId,
+          },
+          order: { created: 'ASC' },
+        });
+      if (whatsappTemplateTestEntity && whatsappTemplateTestEntity.succes) {
+        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+          status: 'Succes',
+          created: whatsappTemplateTestEntity.created,
+        };
+      } else if (whatsappTemplateTestEntity) {
+        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+          status: 'Failed',
+          created: whatsappTemplateTestEntity.created,
+          callback: JSON.parse(whatsappTemplateTestEntity.callback),
+        };
+      } else {
+        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+          status: 'No tests found for this notification',
+        };
       }
     }
+
     return resultsLanguage;
   }
 }

@@ -28,6 +28,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
   private readonly seedMockHelper = new SeedMockHelper();
 
   public async run(
+    isApiTests?: boolean,
     powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
     powerNrMessagesString?: string,
@@ -74,7 +75,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     // Set up instance and program
     const seedMultiple = new SeedMultipleNLRC(this.dataSource);
-    await seedMultiple.run();
+    await seedMultiple.run(isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message
     // TODO: this uses helper functions from the API-test folder, move this to a shared location

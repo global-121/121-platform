@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import programTest from '../../seed-data/program/program-test.json';
+import messageTemplateTest from '../../seed-data/message-template/message-template-test.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -12,12 +13,15 @@ export class SeedTestProgram implements InterfaceScript {
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
-  public async run(): Promise<void> {
+  public async run(isApiTests?: boolean): Promise<void> {
     const seedInit = await new SeedInit(this.dataSource);
-    await seedInit.run();
+    await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programTest);
+
+    // ***** CREATE MESSAGE TEMPLATES *****
+    await this.seedHelper.addMessageTemplates(messageTemplateTest, program);
 
     await this.seedHelper.addDefaultUsers(program, true);
 

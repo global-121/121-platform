@@ -4,6 +4,9 @@ import instanceKRCS from '../../seed-data/instance/instance-krcs.json';
 import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
 import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
 import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
+import messageTemplateBaringo from '../../seed-data/message-template/message-template-krcs-baringo.json';
+import messageTemplateTurkana from '../../seed-data/message-template/message-template-krcs-turkana.json';
+import messageTemplateWestPokot from '../../seed-data/message-template/message-template-krcs-westpokot.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -14,9 +17,9 @@ export class SeedMultipleKRCS implements InterfaceScript {
 
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
-  public async run(): Promise<void> {
+  public async run(isApiTests?: boolean): Promise<void> {
     const seedInit = await new SeedInit(this.dataSource);
-    await seedInit.run();
+    await seedInit.run(isApiTests);
 
     // ************************
     // ***** Program Baringo *****
@@ -25,6 +28,12 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const programEntityBaringo =
       await this.seedHelper.addProgram(programBaringo);
+
+    // ***** CREATE MESSAGE TEMPLATES *****
+    await this.seedHelper.addMessageTemplates(
+      messageTemplateBaringo,
+      programEntityBaringo,
+    );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityBaringo, false);
@@ -41,6 +50,12 @@ export class SeedMultipleKRCS implements InterfaceScript {
     const programEntityTurkana =
       await this.seedHelper.addProgram(programTurkana);
 
+    // ***** CREATE MESSAGE TEMPLATES *****
+    await this.seedHelper.addMessageTemplates(
+      messageTemplateTurkana,
+      programEntityTurkana,
+    );
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityTurkana, false);
 
@@ -51,6 +66,12 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const programEntityWestPokot =
       await this.seedHelper.addProgram(programWestPokot);
+
+    // ***** CREATE MESSAGE TEMPLATES *****
+    await this.seedHelper.addMessageTemplates(
+      messageTemplateWestPokot,
+      programEntityWestPokot,
+    );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityWestPokot, false);

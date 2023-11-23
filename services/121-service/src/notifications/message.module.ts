@@ -9,6 +9,7 @@ import { RegistrationEntity } from '../registration/registration.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
 import { QueueMessageModule } from './queue-message/queue-message.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { MessageTemplateModule } from './message-template/message-template.module';
 import {
   MessageProcessorReplyOnIncoming,
   MessageProcessorSmallBulk,
@@ -28,6 +29,7 @@ import {
     SmsModule,
     QueueMessageModule,
     IntersolveVoucherModule,
+    MessageTemplateModule,
   ],
   providers: [
     MessageService,
@@ -37,6 +39,7 @@ import {
     MessageProcessorLargeBulk,
     MessageProcessorLowPriority,
     AzureLogService,
+    MessageTemplateModule,
   ],
   controllers: [],
   exports: [MessageService],

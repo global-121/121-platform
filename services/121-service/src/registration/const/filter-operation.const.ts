@@ -65,6 +65,7 @@ const PaginateConfigRegistrationViewWithPayments: PaginateConfig<RegistrationVie
       failedPayment: AllowedFilterOperatorsNumber,
       waitingPayment: AllowedFilterOperatorsNumber,
       successPayment: AllowedFilterOperatorsNumber,
+      notYetSentPayment: AllowedFilterOperatorsNumber,
     },
   };
 

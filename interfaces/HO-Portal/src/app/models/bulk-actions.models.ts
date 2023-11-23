@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import Permission from '../auth/permission.enum';
 import { InputProps } from '../shared/input-prompt/input-prompt.component';
 import { ProgramPhase } from './program.model';
@@ -5,17 +6,25 @@ import { ProgramPhase } from './program.model';
 export enum BulkActionId {
   chooseAction = '',
   invite = 'invite',
-  selectForValidation = 'select-for-validation',
+  selectForValidation = 'selectForValidation',
   include = 'include',
-  endInclusion = 'end-inclusion',
+  endInclusion = 'endInclusion',
   reject = 'reject',
-  markNoLongerEligible = 'mark-no-longer-eligible',
-  sendMessage = 'send-message',
-  deletePa = 'delete-pa',
+  markNoLongerEligible = 'markNoLongerEligible',
+  sendMessage = 'sendMessage',
+  deletePa = 'deletePa',
   divider = 'divider',
-  doPayment = 'do-payment',
+  doPayment = 'doPayment',
   pause = 'pause',
 }
+
+export const BulkActionRegistrationStatusMap = {
+  [BulkActionId.invite]: RegistrationStatusEnum.invited,
+  [BulkActionId.include]: RegistrationStatusEnum.included,
+  [BulkActionId.endInclusion]: RegistrationStatusEnum.inclusionEnded,
+  [BulkActionId.reject]: RegistrationStatusEnum.rejected,
+  [BulkActionId.pause]: RegistrationStatusEnum.paused,
+};
 
 export class BulkAction {
   id: BulkActionId;

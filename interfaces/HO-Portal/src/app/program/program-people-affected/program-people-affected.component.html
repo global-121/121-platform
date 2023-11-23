@@ -33,7 +33,12 @@
       </select>
       <app-confirm-prompt
         [disabled]="applyBtnDisabled || isInProgress"
-        (confirm)="applyAction({ message: $event })"
+        (confirm)="
+          applyAction({
+            message: $event?.message,
+            messageTemplateKey: $event?.messageTemplateKey
+          })
+        "
         [subHeader]="
           'page.program.program-people-affected.submit-warning' | translate
         "

@@ -22,7 +22,7 @@ Feature: Include people affected
     And the "rejected" date+time remains visible, if the PA was "rejected" before
     And the "inclusion ended" date+time remains visible, if the PA had status "inclusion ended" before
     And the "status" is updated to "Included"
-    And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
+    And if a templated message is present or the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
 
   Scenario: Include 10000 PAs
     Given there are 10000 "registered" PAs in the system
