@@ -37,7 +37,7 @@
         [subHeader]="
           'page.program.program-people-affected.submit-warning' | translate
         "
-        [message]="submitWarning"
+        [message]="submitWarning | async"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
         [submitPaymentProps]="submitPaymentProps"
         [action]="action"
