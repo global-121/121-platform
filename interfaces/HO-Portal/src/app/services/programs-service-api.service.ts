@@ -92,7 +92,7 @@ export class ProgramsServiceApiService {
 
   deleteRegistrations(
     programId: number,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);
@@ -302,7 +302,7 @@ export class ProgramsServiceApiService {
     programId: number,
     payment: number,
     amount: number,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);
@@ -597,7 +597,7 @@ export class ProgramsServiceApiService {
   private updatePaStatus(
     action: string,
     programId: number | string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     message?: string,
     messageTemplateKey?: string,
@@ -620,7 +620,7 @@ export class ProgramsServiceApiService {
 
   selectForValidation(
     programId: number | string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
@@ -633,7 +633,7 @@ export class ProgramsServiceApiService {
 
   markNoLongerEligible(
     programId: number | string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
     return this.updatePaStatus(
@@ -647,7 +647,7 @@ export class ProgramsServiceApiService {
   invite(
     programId: number | string,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
@@ -664,7 +664,7 @@ export class ProgramsServiceApiService {
   include(
     programId: number | string,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
@@ -681,7 +681,7 @@ export class ProgramsServiceApiService {
   end(
     programId: number | string,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
@@ -698,7 +698,7 @@ export class ProgramsServiceApiService {
   reject(
     programId: number | string,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
@@ -715,7 +715,7 @@ export class ProgramsServiceApiService {
   pause(
     programId: number | string,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
@@ -732,7 +732,7 @@ export class ProgramsServiceApiService {
   sendMessage(
     programId: number,
     message: string,
-    dryRun: boolean = false,
+    dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);

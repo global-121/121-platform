@@ -391,6 +391,7 @@ export class MessageIncomingService {
             ProgramPhase.registrationValidation,
             ProgramPhase.inclusion,
             ProgramPhase.payment,
+            ProgramPhase.evaluation,
           ].includes(registration.program.phase),
         );
       if (registrationsWithPhoneNumberInActivePrograms.length > 0) {

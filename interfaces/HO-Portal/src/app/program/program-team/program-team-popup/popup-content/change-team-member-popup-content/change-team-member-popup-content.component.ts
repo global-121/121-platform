@@ -32,7 +32,7 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
 
   private userId: number;
 
-  public searchQuery: string = '';
+  public searchQuery = '';
 
   public rolesList: Role[] = [];
   public selectedRoleNames: string[] = [];

@@ -31,7 +31,7 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
   private userId: number;
   public isUserAlreadyTeamMember = false;
 
-  public searchQuery: string = '';
+  public searchQuery = '';
   public searchResults: UserSearchResult[] = [];
   public showSearchResults: boolean;
 
