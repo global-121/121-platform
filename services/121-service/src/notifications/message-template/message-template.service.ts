@@ -3,6 +3,7 @@ import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { MessageTemplateDto } from './dto/message-template.dto';
+import { LanguageEnum } from '../../registration/enum/language.enum';
 
 @Injectable()
 export class MessageTemplateService {
@@ -67,11 +68,20 @@ export class MessageTemplateService {
 
   public async deleteMessageTemplate(
     programId: number,
-    messageId: number,
+    messageType: string,
+    language: LanguageEnum,
   ): Promise<DeleteResult> {
-    return await this.messageTemplateRepository.delete({
-      programId: programId,
-      id: messageId,
-    });
+    if (language) {
+      return await this.messageTemplateRepository.delete({
+        programId: programId,
+        type: messageType,
+        language: language,
+      });
+    } else {
+      return await this.messageTemplateRepository.delete({
+        programId: programId,
+        type: messageType,
+      });
+    }
   }
 }
