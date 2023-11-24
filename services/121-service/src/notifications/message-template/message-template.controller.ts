@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Query,
   Param,
   Patch,
   Post,
@@ -12,12 +13,17 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { MessageTemplateService } from './message-template.service';
 import { MessageTemplateEntity } from './message-template.entity';
-import { MessageTemplateDto } from './dto/message-template.dto';
+import {
+  DeleteTemplateParamDto,
+  DeleteTemplateQueryDto,
+  MessageTemplateDto,
+} from './dto/message-template.dto';
 import { PermissionsGuard } from '../../guards/permissions.guard';
 import { Permissions } from '../../guards/permissions.decorator';
 import { PermissionEnum } from '../../user/permission.enum';
@@ -97,22 +103,32 @@ export class MessageTemplateController {
   }
 
   @Permissions(PermissionEnum.ProgramUPDATE)
-  @ApiOperation({ summary: 'Delete message template' })
+  @ApiOperation({
+    summary: 'Delete message template(s) by type and optionally language',
+  })
   @ApiResponse({
     status: 200,
     description: 'Message template deleted',
     type: DeleteResult,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'messageId', required: true, type: 'integer' })
-  @Delete(':programId/message-template/:messageId')
+  @ApiParam({ name: 'messageType', required: true, type: 'string' })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: 'string',
+    description:
+      'Optional. If not supplied, all languages for given messageType are removed.',
+  })
+  @Delete(':programId/message-template/:messageType')
   public async deleteMessageTemplate(
-    @Param('programId') programId: number,
-    @Param('messageId') messageId: number,
+    @Param() params: DeleteTemplateParamDto,
+    @Query() query: DeleteTemplateQueryDto,
   ): Promise<DeleteResult> {
     return await this.messageTemplateService.deleteMessageTemplate(
-      Number(programId),
-      Number(messageId),
+      params.programId,
+      params.messageType,
+      query.language,
     );
   }
 }
