@@ -1,4 +1,4 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 import { MessageTemplateEntity } from '../src/notifications/message-template/message-template.entity';
 
@@ -19,12 +19,10 @@ export class NotificationsToTemplatedMessages1700738012749
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {
     const manager = queryRunner.manager;
-    const whatsAppMessageTemplateNames =[
-      "whatsappGenericMessage",
-      "whatsappPayment",
-      "whatsappVoucher",
-      "whatsappReply",
-    ]
+    const whatsAppMessageTemplateNames = [
+      'whatsappGenericMessage',
+      'whatsappPayment',
+    ];
     const programsRepository = manager.getRepository(ProgramEntity);
     const messageTemplateRepository = manager.getRepository(
       MessageTemplateEntity,
@@ -46,7 +44,8 @@ export class NotificationsToTemplatedMessages1700738012749
             messageTemplate.language = language;
             messageTemplate.type = key;
             messageTemplate.message = text;
-            messageTemplate.isWhatsappTemplate = whatsAppMessageTemplateNames.includes(key);
+            messageTemplate.isWhatsappTemplate =
+              whatsAppMessageTemplateNames.includes(key);
             await messageTemplateRepository.save(messageTemplate);
           }
         }
@@ -54,6 +53,8 @@ export class NotificationsToTemplatedMessages1700738012749
     }
 
     // Remove notifications column because it is not needed anymore
-    await queryRunner.query(`ALTER TABLE "121-service"."program" DROP COLUMN "notifications"`);
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program" DROP COLUMN "notifications"`,
+    );
   }
 }
