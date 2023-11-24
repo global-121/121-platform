@@ -111,10 +111,23 @@ export class BulkImportComponent implements OnInit {
     event: { file: File },
     destination: RegistrationStatus,
   ) {
+    const inProgressMessage = this.translate.instant(
+      'page.program.bulk-import.import-result.progress',
+    );
+    actionResult(
+      this.alertController,
+      this.translate,
+      inProgressMessage,
+      false,
+    );
     this.isInProgress = true;
 
     this.programsService
       .import(this.programId, event.file, destination)
+      .then((response) => {
+        this.alertController.dismiss();
+        return response;
+      })
       .then((response) => {
         const aggregateResult = response.aggregateImportResult;
         this.isInProgress = false;

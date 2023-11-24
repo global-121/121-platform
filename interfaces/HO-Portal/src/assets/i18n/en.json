@@ -565,7 +565,8 @@
           "csv": "A CSV is automatically downloaded, which shows the import-status and the registration-status per row.",
           "new": "There are {{countImported}} new records imported.",
           "existing": "There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped.",
-          "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again."
+          "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again.",
+          "progress": "Import is in progress. This will continue in the background. Please wait..."
         },
         "timestamp": "Latest import has been done on: {{dateTime}}",
         "imported": {
