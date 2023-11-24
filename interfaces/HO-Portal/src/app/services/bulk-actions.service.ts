@@ -15,6 +15,7 @@ export class CustomBulkActionInput {
   payment?: number;
   paymentAmount?: number;
   referenceId?: string;
+  messageTemplateKey?: string;
 }
 
 @Injectable({
@@ -237,6 +238,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
@@ -256,6 +258,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
@@ -263,6 +266,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
@@ -270,6 +274,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.pause:
         return await this.programsService.pause(
@@ -277,6 +282,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.doPayment:
         return await this.programsService.doPayment(

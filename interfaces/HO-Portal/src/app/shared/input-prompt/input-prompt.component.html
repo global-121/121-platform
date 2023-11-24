@@ -70,6 +70,71 @@
                   }
           }}
         </ion-label>
+        <ion-textarea
+          name="message"
+          #input="ngModel"
+          [(ngModel)]="inputModel"
+          [ngModelOptions]="{ standalone: true }"
+          ngDefaultControl
+          [required]="inputProps.inputRequired"
+          rows="3"
+          autoGrow="true"
+          [minlength]="inputProps.inputConstraint?.length"
+          [value]="inputProps.defaultValue"
+          [placeholder]="inputProps.placeholder"
+          fill="outline"
+          style="
+            font-family: monospace;
+            min-height: 66px;
+            --border: 1px solid var(--ion-color-medium);
+            --padding-start: 8px;
+            --padding-end: 8px;
+          "
+        ></ion-textarea>
+        <ion-note *ngIf="!inputProps.isTemplated">
+          {{ input?.value ? input?.value?.length : 0 }} (≥
+          {{ inputProps.inputConstraint?.length }})
+        </ion-note>
+      </div>
+      <div
+        *ngIf="
+          !inputProps.isTemplated && inputProps.inputConstraint?.type === 'max'
+        "
+      >
+        <ion-label>
+          {{
+            'page.program.program-people-affected.edit-person-affected-popup.reason-popup.max-length'
+              | translate
+                : {
+                    maxLength: inputProps.inputConstraint?.length
+                  }
+          }}
+        </ion-label>
+        <ion-textarea
+          name="message"
+          #input="ngModel"
+          [(ngModel)]="inputModel"
+          [ngModelOptions]="{ standalone: true }"
+          ngDefaultControl
+          [required]="inputProps.inputRequired"
+          rows="3"
+          autoGrow="true"
+          [attr.maxLength]="inputProps.inputConstraint?.length"
+          [value]="inputProps.defaultValue"
+          [placeholder]="inputProps.placeholder"
+          fill="outline"
+          style="
+            font-family: monospace;
+            min-height: 66px;
+            --border: 1px solid currentColor;
+            --padding-start: 8px;
+            --padding-end: 8px;
+          "
+        ></ion-textarea>
+        <ion-note>
+          {{ input?.value ? input?.value?.length : 0 }} (≤
+          {{ inputProps.inputConstraint?.length }})
+        </ion-note>
       </div>
       <div
         *ngIf="inputProps.isTemplated"
@@ -92,79 +157,12 @@
           >{{ inputProps.templatedMessage }}</pre
         >
       </div>
-      <ion-textarea
-        *ngIf="!inputProps.isTemplated"
-        name="message"
-        #input="ngModel"
-        [(ngModel)]="inputModel"
-        [ngModelOptions]="{ standalone: true }"
-        ngDefaultControl
-        [required]="inputProps.inputRequired"
-        rows="3"
-        autoGrow="true"
-        [minlength]="inputProps.inputConstraint?.length"
-        [value]="inputProps.defaultValue"
-        [placeholder]="inputProps.placeholder"
-        fill="outline"
-        style="
-          font-family: monospace;
-          min-height: 66px;
-          --border: 1px solid var(--ion-color-medium);
-          --padding-start: 8px;
-          --padding-end: 8px;
-        "
-      ></ion-textarea>
-      <ion-note *ngIf="!inputProps.isTemplated">
-        {{ input?.value ? input?.value?.length : 0 }} (≥
-        {{ inputProps.inputConstraint?.length }})
-      </ion-note>
       <div
         *ngIf="inputProps.supportMessage"
         [innerHTML]="inputProps.supportMessage"
         class="ion-margin-vertical"
       ></div>
     </div>
-    <div
-      *ngIf="
-        !inputProps.isTemplated && inputProps.inputConstraint?.type === 'max'
-      "
-    >
-      <ion-label>
-        {{
-          'page.program.program-people-affected.edit-person-affected-popup.reason-popup.max-length'
-            | translate
-              : {
-                  maxLength: inputProps.inputConstraint?.length
-                }
-        }}
-      </ion-label>
-      <ion-textarea
-        name="message"
-        #input="ngModel"
-        [(ngModel)]="inputModel"
-        [ngModelOptions]="{ standalone: true }"
-        ngDefaultControl
-        [required]="inputProps.inputRequired"
-        rows="3"
-        autoGrow="true"
-        [attr.maxLength]="inputProps.inputConstraint?.length"
-        [value]="inputProps.defaultValue"
-        [placeholder]="inputProps.placeholder"
-        fill="outline"
-        style="
-          font-family: monospace;
-          min-height: 66px;
-          --border: 1px solid currentColor;
-          --padding-start: 8px;
-          --padding-end: 8px;
-        "
-      ></ion-textarea>
-      <ion-note>
-        {{ input?.value ? input?.value?.length : 0 }} (≤
-        {{ inputProps.inputConstraint?.length }})
-      </ion-note>
-    </div>
-    <!-- </ng-template> -->
   </div>
 </ion-content>
 

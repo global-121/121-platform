@@ -33,7 +33,7 @@
     }
   },
   "whatsappVoucher": {
-    "isWhatsappTemplate": true,
+    "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه رسالة من الصليب الأحمر.\n\nتحتوي هذه الرسالة على صورتين:\n1 الأولى لقسيمة الشراء من البرت هاين (cadeaukaart) - مع رمز مرئي.\n2 و تتضمن الأخرى شرحاً لكيفية استخدام قسيمة الشراء  من البرت هاين.\n\nإذا تلقيت أكثر من إيصال، فذلك لأن هناك قسائم من الأسابيع السابقة لم استلم حتى الآن .\n\n المبلغ الذي تتلقاه مكتوب في أعلى القسيمة. \\ nيمكنك استخدام هذه القسيمة لدى أي سوبر ماركت ألبرت هاين في هولندا.\n\nلست مضطراً لاستخدام كامل المبلغ مرة واحدة. لذى الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\n\nسوف سيتم ارسال قسيمة اسبوعية في كل ثلاثاء.\n\nعند إيقاف الدعم, ستتلقى رسالة من الصليب الأحمر توضح لك متى ولماذا ننهي هذا الدعم.\n\nهل لديك اسئلة؟ قم بمراسلتنا عبر تطبيق واتسآب https://wa.me/31614458781",
       "en": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\n The amount that you receive is written on the top of the voucher.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the complete amount is finished.\n\nYou will receive your Albert Heijn voucher every week on Tuesday. When we end the support you will receive a message from us, explaining you when and why we end the support.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
@@ -44,7 +44,7 @@
     }
   },
   "whatsappReply": {
-    "isWhatsappTemplate": true,
+    "isWhatsappTemplate": false,
     "message": {
       "ar": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +31614458781",
       "en": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",

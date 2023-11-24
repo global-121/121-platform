@@ -1,15 +1,35 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Query,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { MessageTemplateService } from './message-template.service';
 import { MessageTemplateEntity } from './message-template.entity';
-import { MessageTemplateDto } from './dto/message-template.dto';
+import {
+  DeleteTemplateParamDto,
+  DeleteTemplateQueryDto,
+  MessageTemplateDto,
+} from './dto/message-template.dto';
+import { PermissionsGuard } from '../../guards/permissions.guard';
+import { Permissions } from '../../guards/permissions.decorator';
+import { PermissionEnum } from '../../user/permission.enum';
+import { DeleteResult } from 'typeorm';
 
+@UseGuards(PermissionsGuard)
 @ApiTags('notifications')
 @Controller('notifications')
 export class MessageTemplateController {
@@ -38,6 +58,7 @@ export class MessageTemplateController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
     status: 201,
@@ -55,6 +76,7 @@ export class MessageTemplateController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update message template' })
   @ApiResponse({
     status: 200,
@@ -77,6 +99,36 @@ export class MessageTemplateController {
       Number(programId),
       Number(messageId),
       updateMessageTemplateDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramUPDATE)
+  @ApiOperation({
+    summary: 'Delete message template(s) by type and optionally language',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Message template deleted',
+    type: DeleteResult,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'messageType', required: true, type: 'string' })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: 'string',
+    description:
+      'Optional. If not supplied, all languages for given messageType are removed.',
+  })
+  @Delete(':programId/message-template/:messageType')
+  public async deleteMessageTemplate(
+    @Param() params: DeleteTemplateParamDto,
+    @Query() query: DeleteTemplateQueryDto,
+  ): Promise<DeleteResult> {
+    return await this.messageTemplateService.deleteMessageTemplate(
+      params.programId,
+      params.messageType,
+      query.language,
     );
   }
 }

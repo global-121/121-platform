@@ -600,6 +600,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
     message?: string,
+    messageTemplateKey?: string,
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);
     return this.apiService.patch(
@@ -608,6 +609,7 @@ export class ProgramsServiceApiService {
       {
         status: action,
         message,
+        messageTemplateKey,
       },
       false,
       false,
@@ -647,6 +649,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.invited,
@@ -654,6 +657,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -662,6 +666,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.included,
@@ -669,6 +674,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -677,6 +683,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.inclusionEnded,
@@ -684,6 +691,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -692,6 +700,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.rejected,
@@ -699,6 +708,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
@@ -707,6 +717,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.paused,
@@ -714,6 +725,7 @@ export class ProgramsServiceApiService {
       dryRun,
       filters,
       message,
+      messageTemplateKey,
     );
   }
 
