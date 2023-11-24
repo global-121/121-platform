@@ -356,6 +356,7 @@ export class WhatsappIncomingService {
             ProgramPhase.registrationValidation,
             ProgramPhase.inclusion,
             ProgramPhase.payment,
+            ProgramPhase.evaluation,
           ].includes(registration.program.phase),
         );
       if (registrationsWithPhoneNumberInActivePrograms.length > 0) {
