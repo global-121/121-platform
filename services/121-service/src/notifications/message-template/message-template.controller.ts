@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   UseGuards,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiConsumes,
