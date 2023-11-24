@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Edit information on Person Affected
 
   Background:

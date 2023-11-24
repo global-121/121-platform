@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Manage payment via import and export
 
   Background:
@@ -37,7 +37,7 @@ Feature: Manage payment via import and export
     And an popup appears which confirms the total number of updated 'waiting' transactions
     And splits them out in 'to success' and 'to waiting'
     And it mentions 'not found' records, if any.
-  
+
   Scenario: Unsuccessfully import payment reconciliation data
     Given an incorrect XML-file
     When an XML-file is chosen and confirmed

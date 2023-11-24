@@ -149,7 +149,7 @@ All individual Angular applications, when started will be available via:
 
 - PA-App: <http://localhost:8008>
 - AW-App: <http://localhost:8080>
-- HO-Portal: <http://localhost:8888>
+- Portal: <http://localhost:8888>
 
 ---
 

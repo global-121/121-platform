@@ -1,4 +1,4 @@
-  @ho-portal
+  @portal
 
   Background:
     Given user is on Users page

@@ -77,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded Node.js to v18 for PA-App + HO-Portal.
+- Upgraded Node.js to v18 for PA-App + Portal.
   Make sure to use your Node version manager to install+run the newest version.
 - Upgraded Node.js to v18 for 121-service.
   Make sure to recreate the Docker image using `npm run start:services`.
@@ -483,7 +483,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Deployment workflow for HO-Portal to Azure Static Web App (test-environment)
+- Deployment workflow for Portal to Azure Static Web App (test-environment)
 - Deployment workflow for PA-App to Azure Static Web App (test-environment)
 - Deployment workflow for AW-App to Azure Static Web App (test-environment)
 
@@ -536,7 +536,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade AW-App to Angular v15
 - Upgrade PA-App to Angular v15
-- Upgrade HO-Portal to Angular v15
+- Upgrade Portal to Angular v15
 - Upgrade interfaces to use Node.js v16 LTS
   Make sure to run these commands from the root-folder of the repository:
 
@@ -544,7 +544,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Verify that:
     `node --version` shows `v16.*`
     `npm --version` shows `v8.*`
-  - Run: `npm ci --prefix=interfaces/PA-app && npm ci --prefix=interfaces/AW-app && npm ci --prefix=interfaces/HO-Portal`
+  - Run: `npm ci --prefix=interfaces/PA-app && npm ci --prefix=interfaces/AW-app && npm ci --prefix=interfaces/Portal`
 
 ## [1.82.0](https://github.com/global-121/121-platform/compare/v1.81.1...v1.82.0) - 2023-03-08
 
@@ -1192,7 +1192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- 2021-11-09: Renamed "HO-Portal" to "121 Portal" or "Portal"
+- 2021-11-09: Renamed "Portal" to "121 Portal" or "Portal"
 
 ## [1.18.0](https://github.com/global-121/121-platform/compare/v1.17.0...v1.18.0) - 2021-11-09
 
@@ -1207,7 +1207,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - 2021-10-20: Upgrade PA-App to Angular v9 + Ionic v5
-- 2021-10-20: Upgrade HO-Portal to Angular v9 + Ionic v5
+- 2021-10-20: Upgrade Portal to Angular v9 + Ionic v5
 - 2021-10-20: Upgrade AW-App to Angular v9 + Ionic v5
 
 ## [1.16.0](https://github.com/global-121/121-platform/compare/v1.15.0...v1.16.0) - 2021-10-13
@@ -1231,7 +1231,7 @@ Nothing. Dummy release upgrade to test automatic deploy through webhook on minor
 ### Changed
 
 - 2021-09-15: Upgrade PA-App to Angular v8
-- 2021-09-15: Upgrade HO-Portal to Angular v8
+- 2021-09-15: Upgrade Portal to Angular v8
 - 2021-09-15: Upgrade AW-App to Angular v8
 
 ## [1.13.0](https://github.com/global-121/121-platform/compare/v1.12.2...v1.13.0) - 2021-09-15
@@ -1320,7 +1320,7 @@ Nothing. Dummy release upgrade to test automatic deploy through webhook on minor
 
 ### Added
 
-- 2021-05-12: Add custom note per PA in HO-Portal
+- 2021-05-12: Add custom note per PA in Portal
 
 ## [1.3.0](https://github.com/global-121/121-platform/compare/v1.2.3...v1.3.0) - 2021-05-05
 
@@ -1550,7 +1550,7 @@ Hotfix to fix Intersolve integration for NL-pilot.
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of PA-App
 - 2020-10-07: Added `PA_API_KEY` to `services/.env`
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of AW-App
-- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of HO-Portal
+- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of Portal
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of Referral-App
 - 2020-10-13: Added `APPLICATION_INSIGHT_IKEY` and `APPLICATION_INSIGHT_ENDPOINT` to `services/.env`-file
 

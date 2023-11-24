@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Export selected for validation list
 
   Background:

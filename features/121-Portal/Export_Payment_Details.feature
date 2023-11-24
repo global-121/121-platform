@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Export payment data
 
   Scenario: Viewing the export options

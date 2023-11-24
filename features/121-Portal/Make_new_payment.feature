@@ -54,7 +54,7 @@ Feature: Make a new payment
 
   Scenario: Send payment instructions for 10000 PAs
     Given there are 10000 PAs in the system
-    And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    And they are included (see e.g. Portal/Include_people_affected_Run_Program_role.feature)
     Then the user selects the "Do payment" action
     And the user selects all 10000 PAs
     And the user clicks the "Apply action" button and the "Do payment" popup shows up

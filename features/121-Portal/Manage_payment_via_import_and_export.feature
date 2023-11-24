@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Manage payment via import and export
 
   Background:

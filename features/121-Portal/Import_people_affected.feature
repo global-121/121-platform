@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Import people affected
 
   Background:
@@ -61,7 +61,7 @@ Feature: Import people affected
     And the PA was either invited or not (including a stored message or not therefore)
     And a note was created
     When a new Person Affected starts registrations with this "phoneNumber" (see PA-app/New_registration.feature)
-    Then a new row with status "Created" is shown in the PA-table in HO-portal
+    Then a new row with status "Created" is shown in the PA-table in Portal
     And the row with status "Imported"/"Invited" is also still shown, because without the phone-number the system cannot know yet they belong together
     When the Person Affected finishes registrations with using the known "phoneNumber"
     Then the two rows are merged into one row with status "Registered"
