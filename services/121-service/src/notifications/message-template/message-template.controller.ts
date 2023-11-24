@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiConsumes,
   ApiOperation,
@@ -9,7 +18,12 @@ import {
 import { MessageTemplateService } from './message-template.service';
 import { MessageTemplateEntity } from './message-template.entity';
 import { MessageTemplateDto } from './dto/message-template.dto';
+import { PermissionsGuard } from '../../guards/permissions.guard';
+import { Permissions } from '../../guards/permissions.decorator';
+import { PermissionEnum } from '../../user/permission.enum';
+import { DeleteResult } from 'typeorm';
 
+@UseGuards(PermissionsGuard)
 @ApiTags('notifications')
 @Controller('notifications')
 export class MessageTemplateController {
@@ -38,6 +52,7 @@ export class MessageTemplateController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
     status: 201,
@@ -55,6 +70,7 @@ export class MessageTemplateController {
     );
   }
 
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update message template' })
   @ApiResponse({
     status: 200,
@@ -77,6 +93,26 @@ export class MessageTemplateController {
       Number(programId),
       Number(messageId),
       updateMessageTemplateDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramUPDATE)
+  @ApiOperation({ summary: 'Delete message template' })
+  @ApiResponse({
+    status: 200,
+    description: 'Message template deleted',
+    type: DeleteResult,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'messageId', required: true, type: 'integer' })
+  @Delete(':programId/message-template/:messageId')
+  public async deleteMessageTemplate(
+    @Param('programId') programId: number,
+    @Param('messageId') messageId: number,
+  ): Promise<DeleteResult> {
+    return await this.messageTemplateService.deleteMessageTemplate(
+      Number(programId),
+      Number(messageId),
     );
   }
 }

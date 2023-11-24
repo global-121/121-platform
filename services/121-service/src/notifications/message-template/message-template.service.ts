@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { MessageTemplateDto } from './dto/message-template.dto';
 
 @Injectable()
@@ -63,5 +63,15 @@ export class MessageTemplateService {
     }
 
     return await this.messageTemplateRepository.save(template);
+  }
+
+  public async deleteMessageTemplate(
+    programId: number,
+    messageId: number,
+  ): Promise<DeleteResult> {
+    return await this.messageTemplateRepository.delete({
+      programId: programId,
+      id: messageId,
+    });
   }
 }
