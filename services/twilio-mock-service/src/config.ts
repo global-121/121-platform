@@ -46,7 +46,6 @@ export const API_PATHS = {
   whatsAppStatus: 'notifications/whatsapp/status',
   whatsAppIncoming: 'notifications/whatsapp/incoming',
 };
-const externalApi121Service = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 const rootApi121Service =
   process.env.NODE_ENV === 'development'
     ? `http://121-service:${process.env.PORT_121_SERVICE}/`
@@ -54,7 +53,4 @@ const rootApi121Service =
 
 export const EXTERNAL_API = {
   rootApi: `${rootApi121Service}api`,
-  smsStatus: externalApi121Service + API_PATHS.smsStatus,
-  whatsAppStatus: externalApi121Service + API_PATHS.whatsAppStatus,
-  whatsAppIncoming: externalApi121Service + API_PATHS.whatsAppIncoming,
 };

@@ -7,7 +7,7 @@ import {
   searchRegistrationByPhoneNumber,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { registrationVisa } from '../visa-card/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 
 describe('Load PA table', () => {
   describe('using the "attributes" query-parameter', () => {
