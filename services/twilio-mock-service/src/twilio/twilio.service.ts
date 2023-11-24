@@ -192,9 +192,8 @@ export class TwilioService {
     request.ErrorMessage = response.error_message;
 
     const httpService = new HttpService();
-    const urlExternal = twilioMessagesCreateDto.To.includes('whatsapp')
-      ? EXTERNAL_API.whatsAppStatus
-      : EXTERNAL_API.smsStatus;
+    const urlExternal = twilioMessagesCreateDto.StatusCallback
+
 
     try {
       // Try to reach 121-service through external API url
@@ -224,12 +223,18 @@ export class TwilioService {
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;
+
+
+      const url = twilioMessagesCreateDto.StatusCallback.replace(
+        'status',
+        'incoming',
+      );
       request.To = process.env.TWILIO_WHATSAPP_NUMBER;
       const httpService = new HttpService();
       try {
         // Try to reach 121-service through external API url
         await lastValueFrom(
-          httpService.post(EXTERNAL_API.whatsAppIncoming, request),
+          httpService.post(url, request),
         );
       } catch (error) {
         // In case external API is not reachable try internal network
