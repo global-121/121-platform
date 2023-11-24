@@ -23,3 +23,6 @@ Feature: Invite people affected (extension of View_and_Manage_people_affected.fe
     And if the "phoneNumber" has a WhatsApp account, then the message arrives
     And the "phoneNumber" is now also stored as "whatsappPhoneNumber" in the PA's registration
     And if the "phoneNumber" does not have a WhatsApp account, then instead an SMS is sent
+
+TODO: Invite with tryWhatsapp = true and failing WhatsApp & with successfull WhatsApp
+// NOTE: use 16005550004 as test number to get a '63003: no whatsap account' error from twilio-mock-service
