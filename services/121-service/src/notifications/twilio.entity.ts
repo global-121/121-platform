@@ -6,10 +6,11 @@ import {
   ManyToOne,
   OneToOne,
 } from 'typeorm';
+import { Base121Entity } from '../base.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Base121Entity } from './../base.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
 import { MessageContentType } from './enum/message-type.enum';
+import { MessageProcessType } from './message-job.dto';
 
 export enum NotificationType {
   Sms = 'sms',
@@ -50,6 +51,9 @@ export class TwilioMessageEntity extends Base121Entity {
 
   @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;
+
+  @Column({ nullable: true })
+  public processType: MessageProcessType;
 
   @Column({ nullable: true })
   public errorCode?: string;

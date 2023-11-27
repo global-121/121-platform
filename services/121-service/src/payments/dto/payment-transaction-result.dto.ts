@@ -20,5 +20,6 @@ export class PaTransactionResultDto {
 
 export class TransactionNotificationObject {
   public notificationKey: string;
+  public bulkSize: number;
   public dynamicContent?: string[] = [];
 }

@@ -485,7 +485,8 @@
             "custom": "Custom message",
             "generic-templated": "Message notification",
             "payment-templated": "Payment notification",
-            "payment": "Payment voucher",
+            "payment-voucher": "Payment voucher",
+            "payment": "Payment",
             "payment-instructions": "Payment instructions",
             "payment-reminder": "Payment reminder",
             "default-reply": "Default reply"

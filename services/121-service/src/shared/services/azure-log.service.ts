@@ -15,13 +15,15 @@ export class AzureLogService {
   }
 
   public logError(error: Error, alert: boolean): void {
-    console.log('Logging error to Azure - :', error);
     try {
-      this.defaultClient.trackException({
-        exception: error,
-        severity: alert ? SeverityLevel.Critical : SeverityLevel.Error,
-      });
-      this.defaultClient.flush();
+      if (this.defaultClient) {
+        console.log('Logging error to Azure - :', error);
+        this.defaultClient.trackException({
+          exception: error,
+          severity: alert ? SeverityLevel.Critical : SeverityLevel.Error,
+        });
+        this.defaultClient.flush();
+      }
     } catch (error) {
       console.log('An error occured in logError: ', error);
     }

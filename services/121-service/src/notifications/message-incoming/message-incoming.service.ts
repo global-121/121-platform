@@ -9,33 +9,31 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
-import { StatusEnum } from '../../shared/enum/status.enum';
 import {
   MessageContentType,
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import { LastMessageStatusService } from '../last-message-status.service';
-import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { IntersolveVoucherPayoutStatus } from './../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
-import { IntersolveVoucherEntity } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { IntersolveVoucherService } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
-import { WhatsappService } from './whatsapp.service';
+import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { waitFor } from '../../utils/waitFor.helper';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
+import { ProcessName } from '../enum/queue.names.enum';
+import { QueueMessageService } from '../queue-message/queue-message.service';
+import { MessageProcessType } from '../message-job.dto';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { MessageTemplateService } from '../message-template/message-template.service';
 
 @Injectable()
-export class WhatsappIncomingService {
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
+export class MessageIncomingService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
@@ -51,17 +49,18 @@ export class WhatsappIncomingService {
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
-    en: 'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
+    en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly whatsappService: WhatsappService,
-    private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
-    private readonly lastMessageService: LastMessageStatusService,
+    @InjectQueue('messageStatusCallback')
+    private readonly messageStatusCallbackQueue: Queue,
+    private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   public async getGenericNotificationText(
@@ -99,7 +98,29 @@ export class WhatsappIncomingService {
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
-  public async statusCallback(
+  public async addSmsStatusCallbackToQueue(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
+    await this.messageStatusCallbackQueue.add(ProcessName.sms, callbackData);
+  }
+
+  public async processSmsStatusCallback(callbackData): Promise<void> {
+    await this.twilioMessageRepository.update(
+      { sid: callbackData.MessageSid },
+      { status: callbackData.SmsStatus || callbackData.MessageStatus },
+    );
+  }
+
+  public async addWhatsappStatusCallbackToQueue(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
+    await this.messageStatusCallbackQueue.add(
+      ProcessName.whatsapp,
+      callbackData,
+    );
+  }
+
+  public async processWhatsappStatusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     if (
@@ -111,7 +132,7 @@ export class WhatsappIncomingService {
         relations: ['registration'],
       });
       if (tryWhatsapp) {
-        await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
+        await this.handleTryWhatsappResult(callbackData, tryWhatsapp);
       }
     }
 
@@ -149,10 +170,6 @@ export class WhatsappIncomingService {
         errorMessage: callbackData.ErrorMessage,
       },
     );
-    // This is commented out because we think this is causing performance issues
-    // await this.lastMessageService.updateLastMessageStatus(
-    //   callbackData.MessageSid,
-    // );
 
     // Update intersolve voucher transaction status if applicable
     const relevantStatuses = [
@@ -191,18 +208,25 @@ export class WhatsappIncomingService {
     );
     // Wait before retrying
     await waitFor(30_000);
-    await this.whatsappService.sendWhatsapp(
+    const registration = await this.registrationRepository.findOne({
+      where: { id: message.registrationId },
+    });
+
+    await this.queueMessageService.addMessageToQueue(
+      registration,
       message.body,
-      callbackData.To.replace(/\D/g, ''),
       null,
-      message.mediaUrl,
-      message.registrationId,
       message.contentType,
-      callbackData.MessageSid,
+      message.processType,
+      message.mediaUrl,
+      {
+        pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
+        existingMessageSid: callbackData.MessageSid,
+      },
     );
   }
 
-  private async handleWhatsappTestResult(
+  private async handleTryWhatsappResult(
     callbackData: TwilioStatusCallbackDto,
     tryWhatsapp: TryWhatsappEntity,
   ): Promise<void> {
@@ -212,17 +236,18 @@ export class WhatsappIncomingService {
     ) {
       // PA does not have whatsapp
       // Send pending message via sms
-      const whatsapPendingMessages = await this.whatsappPendingMessageRepo.find(
-        {
+      const whatsappPendingMessages =
+        await this.whatsappPendingMessageRepo.find({
           where: { to: tryWhatsapp.registration.phoneNumber },
           relations: ['registration'],
-        },
-      );
-      for (const w of whatsapPendingMessages) {
-        await this.smsService.sendSms(
+        });
+      for (const w of whatsappPendingMessages) {
+        await this.queueMessageService.addMessageToQueue(
+          w.registration,
           w.body,
-          w.registration.phoneNumber,
-          w.registration.id,
+          null,
+          MessageContentType.invited,
+          MessageProcessType.sms,
         );
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -268,10 +293,7 @@ export class WhatsappIncomingService {
       )
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where('registration.phoneNumber = :phoneNumber', {
-        phoneNumber: phoneNumber,
-      })
-      .orWhere(
+      .where(
         new Brackets((qb) => {
           qb.where('registration_data.value = :whatsappPhoneNumber', {
             whatsappPhoneNumber: phoneNumber,
@@ -332,7 +354,7 @@ export class WhatsappIncomingService {
     return value.replace('whatsapp:+', '');
   }
 
-  public async handleIncoming(
+  public async handleIncomingWhatsapp(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
     if (!callbackData.From) {
@@ -394,24 +416,23 @@ export class WhatsappIncomingService {
             ProgramNotificationEnum.whatsappReply,
             language,
           )[0];
-        await this.whatsappService.sendWhatsapp(
+        await this.queueMessageService.addMessageToQueue(
+          registrationsWithPhoneNumber[0],
           whatsappDefaultReply,
-          fromNumber,
-          null,
-          null,
           null,
           MessageContentType.defaultReply,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       } else {
-        // If multiple or 0 programs and phonenumber not found: use generic reply in code
+        // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
         await this.whatsappService.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,
           null,
           null,
-          null,
           MessageContentType.defaultReply,
+          MessageProcessType.whatsappDefaultReply,
         );
         return;
       }
@@ -453,29 +474,20 @@ export class WhatsappIncomingService {
           message.length > 0
             ? message[0].message.split('{{1}}').join(intersolveVoucher.amount)
             : message.split('{{1}}').join(intersolveVoucher.amount);
-        const messageSid = await this.whatsappService.sendWhatsapp(
+        await this.queueMessageService.addMessageToQueue(
+          registration,
           message,
-          fromNumber,
-          IntersolveVoucherPayoutStatus.VoucherSent,
+          null,
+          MessageContentType.paymentVoucher,
+          MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
-          registration.id,
-          MessageContentType.payment,
+          {
+            payment: intersolveVoucher.payment,
+            amount: intersolveVoucher.amount,
+            intersolveVoucherId: intersolveVoucher.id,
+          },
         );
         firstVoucherSent = true;
-
-        // Save results
-        intersolveVoucher.send = true;
-        await this.intersolveVoucherRepository.save(intersolveVoucher);
-        await this.intersolveVoucherService.storeTransactionResult(
-          intersolveVoucher.payment,
-          intersolveVoucher.amount,
-          registration.id,
-          2,
-          StatusEnum.success,
-          null,
-          registration.programId,
-          messageSid,
-        );
 
         // Add small delay to ensure the order in which messages are received
         await waitFor(2_000);
@@ -483,13 +495,13 @@ export class WhatsappIncomingService {
 
       // Send instruction message only once (outside of loops)
       if (registrationsWithOpenVouchers.length > 0) {
-        await this.whatsappService.sendWhatsapp(
+        await this.queueMessageService.addMessageToQueue(
+          registration,
           '',
-          fromNumber,
           null,
-          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
-          registration.id,
           MessageContentType.paymentInstructions,
+          MessageProcessType.whatsappVoucherInstructions,
+          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
         );
       }
     }
@@ -507,21 +519,15 @@ export class WhatsappIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.whatsappService
-            .sendWhatsapp(
-              message.body,
-              message.to,
-              message.messageType
-                ? (message.messageType as IntersolveVoucherPayoutStatus)
-                : null,
-              message.mediaUrl,
-              message.registrationId,
-              message.contentType,
-            )
-            .then(async () => {
-              await this.whatsappPendingMessageRepo.remove(message);
-              return;
-            });
+          await this.queueMessageService.addMessageToQueue(
+            registration,
+            message.body,
+            null,
+            message.contentType,
+            MessageProcessType.whatsappPendingMessage,
+            message.mediaUrl,
+            { pendingMessageId: message.id },
+          );
           await waitFor(2_000);
         }
       }

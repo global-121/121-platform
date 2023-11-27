@@ -7,6 +7,7 @@ import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { EXTERNAL_API } from './../../config';
+import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class SmsService {
@@ -20,43 +21,47 @@ export class SmsService {
     recipientPhoneNr: string,
     registrationId: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
   ): Promise<void> {
     const hasPlus = recipientPhoneNr.startsWith('+');
+    const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
 
-    twilioClient.messages
-      .create({
+    let messageToStore;
+    try {
+      messageToStore = await twilioClient.messages.create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
-      })
-      .then((message) =>
-        this.storeSendSms(message, registrationId, messageContentType),
-      )
-      .catch(async (err) => {
-        console.log('Error from Twilio:', err);
-        const failedMessage = {
-          accountSid: process.env.TWILIO_SID,
-          body: message,
-          to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          dateCreated: new Date().toISOString(),
-          sid: `failed-${uuid()}`,
-          status: 'failed',
-          errorCode: err.code,
-        };
-        await this.storeSendSms(
-          failedMessage,
-          registrationId,
-          messageContentType,
-        );
+        to: to,
       });
+    } catch (error) {
+      console.log('Error from Twilio:', error);
+      messageToStore = {
+        accountSid: process.env.TWILIO_SID,
+        body: message,
+        to: to,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        dateCreated: new Date().toISOString(),
+        sid: `failed-${uuid()}`,
+        status: 'failed',
+        errorCode: error.code,
+      };
+      throw error;
+    } finally {
+      await this.storeSendSms(
+        messageToStore,
+        registrationId,
+        messageContentType,
+        messageProcessType,
+      );
+    }
   }
 
   public async storeSendSms(
     message,
     registrationId: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
   ): Promise<void> {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
@@ -69,15 +74,16 @@ export class SmsService {
     twilioMessage.dateCreated = message.dateCreated;
     twilioMessage.registrationId = registrationId;
     twilioMessage.contentType = messageContentType;
+    twilioMessage.processType = messageProcessType;
     if (message.errorCode) {
       twilioMessage.errorCode = message.errorCode;
     }
     if (message.errorMessage) {
       twilioMessage.errorMessage = message.errorMessage;
     }
-    await this.twilioMessageRepository.save(twilioMessage);
-    // This is commented out because we think this is causing performance issues
-    // await this.lastMessageService.updateLastMessageStatus(message.sid);
+    const twilioMessageSave =
+      await this.twilioMessageRepository.save(twilioMessage);
+    await this.lastMessageService.updateLatestMessage(twilioMessageSave);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {
@@ -85,16 +91,5 @@ export class SmsService {
       sid: sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
-  }
-
-  public async statusCallback(callbackData): Promise<void> {
-    await this.twilioMessageRepository.update(
-      { sid: callbackData.MessageSid },
-      { status: callbackData.SmsStatus },
-    );
-    // This is commented out because we think this is causing performance issues
-    // await this.lastMessageService.updateLastMessageStatus(
-    //   callbackData.MessageSid,
-    // );
   }
 }
