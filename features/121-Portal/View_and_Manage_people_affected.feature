@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: View and manage people affected (generic features)
 
   Background:

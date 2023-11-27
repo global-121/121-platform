@@ -34,7 +34,7 @@ updates:
       - dependency-name: 'typescript'
 
   - package-ecosystem: npm
-    directory: '/interfaces/HO-Portal'
+    directory: '/interfaces/Portal'
     schedule:
       interval: weekly
       day: tuesday

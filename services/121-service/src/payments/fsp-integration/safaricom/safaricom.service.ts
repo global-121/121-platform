@@ -62,7 +62,7 @@ export class SafaricomService {
         payment.referenceId,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
+      // Storing the per payment so you can continiously seed updates of transactions in Portal
       const transaction =
         await this.transactionsService.storeTransactionUpdateStatus(
           paymentRequestResultPerPa,

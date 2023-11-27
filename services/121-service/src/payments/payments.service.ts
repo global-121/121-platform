@@ -188,6 +188,7 @@ export class PaymentsService {
         payment,
         amount,
         referenceIds,
+        registrationsForPayment.meta.totalItems,
       ).catch((e) => {
         this.azureLogService.logError(e, true);
       });
@@ -220,6 +221,7 @@ export class PaymentsService {
     payment: number,
     amount: number,
     referenceIds: string[],
+    bulkSize: number,
   ): Promise<number> {
     await this.actionService.saveAction(
       userId,
@@ -239,6 +241,7 @@ export class PaymentsService {
         chunk,
         amount,
         programId,
+        bulkSize,
       );
 
       const result = await this.payout(
@@ -646,6 +649,7 @@ export class PaymentsService {
     referenceIds: string[],
     amount: number,
     programId: number,
+    bulkSize: number,
   ): Promise<PaPaymentDataDto[]> {
     const q = this.getPaymentRegistrationsQuery(programId);
     q.addSelect('registration."paymentAmountMultiplier"');
@@ -660,6 +664,7 @@ export class PaymentsService {
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
         fspName: row.fspName,
+        bulkSize,
       };
       paPaymentDataList.push(paPaymentData);
     }

@@ -19,7 +19,7 @@ function check_shared_code() {
   # Variables
   local repo_interfaces=$repo/interfaces
   local repo_pa=$repo_interfaces/PA-App
-  local repo_ho=$repo_interfaces/HO-Portal
+  local repo_ho=$repo_interfaces/Portal
   local repo_aw=$repo_interfaces/AW-App
 
   function log() {

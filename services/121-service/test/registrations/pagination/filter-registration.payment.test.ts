@@ -26,7 +26,8 @@ import {
 describe('Load PA table', () => {
   describe('getting registration using paginate and filtering on payment', () => {
     registration3.lastName = 'mock-fail-create-customer';
-    registration5.whatsappPhoneNumber = '15005550002';
+    // This number implies that in mock-service no incoming 'yes' is triggered, so that the transaction stays on 'waiting'
+    registration5.whatsappPhoneNumber = '16005550002';
 
     let accessToken: string;
     const payment1 = 1;
