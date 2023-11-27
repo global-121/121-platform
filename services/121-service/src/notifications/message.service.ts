@@ -292,17 +292,18 @@ export class MessageService {
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
     });
-    // TODO: update to use Peter's updated method
-    const placeholders =
-      await this.programService.getPaTableAttributes(programId);
+    const placeholders = await this.programService.getAttributes(
+      programId,
+      true,
+      true,
+      false,
+    );
 
-    for (const placeholder of placeholders
-      .filter((p) => p.questionType !== QuestionType.fspQuestion)
-      .map((p) => p.name)) {
-      const regex = new RegExp(`{{${placeholder}}}`, 'g');
+    for (const placeholder of placeholders) {
+      const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
       if (messageText.match(regex)) {
         const placeHolderValue =
-          await registration.getRegistrationDataValueByName(placeholder);
+          await registration.getRegistrationDataValueByName(placeholder.name);
         messageText = messageText.replace(
           regex,
           placeHolderValue === null || placeHolderValue === undefined
