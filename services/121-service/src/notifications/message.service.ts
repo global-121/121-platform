@@ -48,7 +48,6 @@ export class MessageService {
           );
       const messageText = await this.processPlaceholders(
         messageTextWithPlaceholders,
-        messageJobDto.programId,
         messageJobDto.registrationId,
       );
 
@@ -285,7 +284,6 @@ export class MessageService {
 
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
-    programId: number,
     registrationId: number,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;
@@ -293,7 +291,7 @@ export class MessageService {
       where: { id: registrationId },
     });
     const placeholders = await this.programService.getAttributes(
-      programId,
+      registration.programId,
       true,
       true,
       false,
