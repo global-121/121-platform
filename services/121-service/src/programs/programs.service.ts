@@ -91,7 +91,12 @@ export class ProgramService {
       program.editableAttributes = await this.getPaEditableAttributes(
         program.id,
       );
-      program['paTableAttributes'] = await this.getAttributes(program.id);
+      program['paTableAttributes'] = await this.getAttributes(
+        program.id,
+        true,
+        true,
+        true,
+      );
 
       // TODO: Get these attributes from some enum or something
       program['filterableAttributes'] = this.getFilterableAttributes(program);
@@ -502,7 +507,12 @@ export class ProgramService {
     programId: number,
     name: string,
   ): Promise<void> {
-    const existingAttributes = await this.getAttributes(programId);
+    const existingAttributes = await this.getAttributes(
+      programId,
+      true,
+      true,
+      true,
+    );
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;
     });
@@ -690,14 +700,12 @@ export class ProgramService {
 
   public async getAttributes(
     programId: number,
-    queryParams?: any,
+    includeCustomAttributes: boolean,
+    includeProgramQuestions: boolean,
+    includeFspQuestions: boolean,
+    phase?: string,
     userId?: number,
   ): Promise<Attribute[]> {
-    const phase = queryParams?.phase;
-    const showCustomAttributes = queryParams?.customAttributes;
-    const showProgramQuestions = queryParams?.programQuestions;
-    const showFspQuestions = queryParams?.fspQuestions;
-
     if (userId) {
       const hasPersonalRead = await this.userService.canActivate(
         [PermissionEnum.RegistrationPersonalREAD],
@@ -712,20 +720,18 @@ export class ProgramService {
     }
 
     let customAttributes = [];
-    if (phase || (!phase && showCustomAttributes === 'true')) {
+    if (includeCustomAttributes) {
       customAttributes = await this.getAndMapProgramCustomAttributes(
         programId,
         phase,
       );
     }
-
     let programQuestions = [];
-    if (phase || (!phase && showProgramQuestions === 'true')) {
+    if (includeProgramQuestions) {
       programQuestions = await this.getAndMapProgramQuestions(programId, phase);
     }
-
     let fspQuestions = [];
-    if (phase || (!phase && showFspQuestions === 'true')) {
+    if (includeFspQuestions) {
       fspQuestions = await this.getAndMapProgramFspQuestions(programId, phase);
     }
 

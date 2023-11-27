@@ -265,17 +265,17 @@ export class ProgramController {
     type: 'string',
   })
   @ApiQuery({
-    name: 'programQuestions',
+    name: 'includeProgramQuestions',
     required: false,
     type: 'boolean',
   })
   @ApiQuery({
-    name: 'customAttributes',
+    name: 'includeCustomAttributes',
     required: false,
     type: 'boolean',
   })
   @ApiQuery({
-    name: 'fspQuestions',
+    name: 'includeFspQuestions',
     required: false,
     type: 'boolean',
   })
@@ -288,7 +288,10 @@ export class ProgramController {
   ): Promise<Attribute[]> {
     return await this.programService.getAttributes(
       Number(params.programId),
-      queryParams,
+      queryParams.includeCustomAttributes === 'true',
+      queryParams.includeProgramQuestions === 'true',
+      queryParams.includeFspQuestions === 'true',
+      queryParams.phase,
       userId,
     );
   }

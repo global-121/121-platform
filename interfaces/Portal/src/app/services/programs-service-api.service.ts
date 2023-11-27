@@ -142,10 +142,19 @@ export class ProgramsServiceApiService {
     programId: number | string,
     phase: ProgramPhase,
   ): Promise<PaTableAttribute[]> {
-    const phaseString = phase ? `?phase=${phase}` : '';
+    let params = new HttpParams();
+    params = params.append('includeCustomAttributes', 'true');
+    params = params.append('includeProgramQuestions', 'true');
+    params = params.append('includeFspQustions', 'true');
+    if (phase) {
+      params = params.append('phase', phase);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/attributes${phaseString}`,
+      `/programs/${programId}/attributes`,
+      null,
+      null,
+      params,
     );
   }
 
