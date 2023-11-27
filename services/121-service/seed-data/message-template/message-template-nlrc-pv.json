@@ -11,6 +11,30 @@
       "fr": "Ceci est un message de Croix Rouge.\n\nNous avons bien reçu votre application pour assistance.\n\nVous recevrez un autre SMS or de message WhatsApp avec plus d'informations dans un délai d' 48 heures."
     }
   },
+  "invited": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "en": "This is a message from the Red Cross. {{namePartnerOrganization}} has passed on your telephone number to us.\n\nWe can help you with weekly Albert Heijn vouchers. Click on the link and complete the application:\n\nhttps://register.nlrc.121.global/?programs=2\n\nYou need an internet connection to open the link.\n\nDo you have questions? Send us a message via WhatsApp:\n\nhttps://wa.me/31614458781\n\nor contact {{namePartnerOrganization}}."
+    }
+  },
+  "included": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "en": "This is a message from the Red Cross.\n\nThanks for registering. From now on you will receive an Albert Heijn voucher via WhatsApp every Tuesday. You will receive the vouchers as long as you are on the list of {{namePartnerOrganization}}.\n\nThe Red Cross can also provide you with information about, for example, medical assistance, food or safety. Check out our website:\n\nhttps://helpfulinformation.redcross.nl/\n\nor ask your question via WhatsApp:\n\nhttps://wa.me/31614458781"
+    }
+  },
+  "inclusionEnded": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "en": "This is a message from the Red Cross.\n\nThis week you received your last voucher because you are no longer on list of {{namePartnerOrganization}}.\n\nDo you have questions about this? Send us a message via WhatsApp:\n\nhttps://wa.me/31614458781\n\nor contact {{namePartnerOrganization}}.\n\nWe wish you all the best."
+    }
+  },
+  "rejected": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "en": "This is a message from the Red Cross.\n\nUnfortunately, we have to reject your request for Albert Heijn vouchers. You have not been signed up for this help by one of our partner organizations.\n\nDo you have questions about this? Please contact us via WhatsApp:\n\nhttps://wa.me/31614458781"
+    }
+  },
   "whatsappGenericMessage": {
     "isWhatsappTemplate": true,
     "message": {
