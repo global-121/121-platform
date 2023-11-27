@@ -173,6 +173,7 @@ export class BulkImportComponent implements OnInit {
         }
       })
       .catch((err) => {
+        this.alertController.dismiss();
         this.isInProgress = false;
         console.log('err: ', err);
         actionResult(
