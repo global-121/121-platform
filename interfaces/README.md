@@ -10,7 +10,7 @@
 
   Primary target(s): Mobile/Smartphone
 
-- [HO-Portal](./HO-Portal/)  
+- [Portal](./Portal/)  
   Web-app used by the _Humanitarian Organization_ to manage their programs, aid-workers, communication, etc.
 
   Primary target(s): Laptop/desktop

@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: View dashboard page
 
   Background:

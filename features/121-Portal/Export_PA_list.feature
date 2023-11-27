@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Export People Affected list
 
   Background:

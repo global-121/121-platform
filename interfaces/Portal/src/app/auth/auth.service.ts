@@ -12,7 +12,7 @@ import Permission from './permission.enum';
 export class AuthService {
   public redirectUrl: string;
   public isIframe: boolean;
-  private userKey = 'logged-in-user-HO';
+  private userKey = 'logged-in-user-portal';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();

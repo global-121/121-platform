@@ -1,12 +1,12 @@
 {
-  "name": "ho-portal",
+  "name": "portal",
   "author": "121.global",
   "homepage": "https://www.121.global/",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/global-121/121-platform.git",
-    "directory": "interfaces/HO-Portal"
+    "directory": "interfaces/Portal"
   },
   "scripts": {
     "build:prod": "npm run build -- --configuration production",
