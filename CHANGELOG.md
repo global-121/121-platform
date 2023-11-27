@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.9...master)
 
+## Changed
+
+- Renamed HO-portal to Portal in code
+
 ## Removed
 
 - CORS configuration should be hanndled via the Azure Portal for each App Service instance.  
