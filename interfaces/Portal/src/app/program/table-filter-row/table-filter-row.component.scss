@@ -43,10 +43,6 @@
 .tfr--active-filters {
   padding: 0.5rem;
 
-  ion-chip {
-    cursor: default; // Make appear as unclickable
-  }
-
   ion-chip ion-button {
     cursor: pointer; // Re-enable cursor to appear interactive normally
     position: relative;
