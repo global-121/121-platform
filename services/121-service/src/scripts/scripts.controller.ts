@@ -75,9 +75,9 @@ export class ScriptsController {
       seed = new SeedTestMultipleProgram(this.dataSource);
     } else if (script == SeedScript.nlrcMultiple) {
       seed = new SeedMultipleNLRC(this.dataSource);
-    } else if (script == SeedScript.pilotNL) {
+    } else if (script == SeedScript.nlrcLVV) {
       seed = new SeedNLProgramLVV(this.dataSource);
-    } else if (script == SeedScript.pilotNLPV) {
+    } else if (script == SeedScript.nlrcPV) {
       seed = new SeedNLProgramPV(this.dataSource);
     } else if (script == SeedScript.DRC) {
       seed = new SeedProgramDrc(this.dataSource);

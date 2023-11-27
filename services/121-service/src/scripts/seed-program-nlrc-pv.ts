@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import instanceNLRC from '../../seed-data/instance/instance-pilot-nl.json';
+import instanceNLRC from '../../seed-data/instance/instance-nlrc.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
 import { InterfaceScript } from './scripts.module';
