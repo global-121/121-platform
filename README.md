@@ -139,7 +139,7 @@ To start all interfaces at once, from the root of this repository, run:
 
 To start an individual interface in development mode:
 
-- Run: (where `<interface-name>` is one of `pa`, `aw`, `ho`)
+- Run: (where `<interface-name>` is one of `pa`, `aw`, `portal`)
 
       npm run start:<interface-name>
 
@@ -161,7 +161,7 @@ When you use [VS Code](https://code.visualstudio.com/), you can start multiple e
 
 To start an individual interface/service in VS Code:
 
-- Run: (where `<package>` is one of `pa`, `aw`, `ho`, `121-service`)
+- Run: (where `<package>` is one of `pa`, `aw`, `portal`, `121-service`)
 
       npm run code:<package>
 
