@@ -104,4 +104,17 @@ export class TableFilterRowComponent {
       return 'text';
     }
   }
+
+  public handleFilterLabelClick(filter: PaginationFilter): void {
+    this.textFilterOption = [
+      {
+        name: filter.name,
+        value: filter.value,
+        allowedOperators: filter.allowedOperators || [],
+        label: filter.label,
+      } as PaginationFilter,
+    ];
+
+    this.filterRowsVisibleQuery = filter.value;
+  }
 }

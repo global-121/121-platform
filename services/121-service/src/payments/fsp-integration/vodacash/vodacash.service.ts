@@ -42,7 +42,7 @@ export class VodacashService
         message: null,
       };
 
-      // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
+      // Storing the per payment so you can continiously seed updates of transactions in Portal
       await this.transactionsService.storeTransactionUpdateStatus(
         paTransactionResult,
         programId,

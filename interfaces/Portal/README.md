@@ -1,4 +1,4 @@
-# HO-Portal
+# Portal
 
 The front-end for the _Humanitarian Organization_ web portal, where 121-programs can be created and monitored, etc.
 
@@ -10,7 +10,7 @@ Some specific information need to be configured before use:
 
 ## Dependencies in use
 
-Next to the 'generic' dependencies/libraries/components used by all interfaces, the HO-portal also uses:
+Next to the 'generic' dependencies/libraries/components used by all interfaces, the Portal also uses:
 
 - [`@swimlane/ngx-datatable` v20](https://www.npmjs.com/package/@swimlane/ngx-datatable/v/20.1.0)  
   A component to render rows and columns of generic data and add basic functionalities like sorting, selecting, filtering, etc.

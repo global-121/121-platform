@@ -10,10 +10,10 @@ on:
       - 'feat.*'
     paths:
       - '.github/workflows/test_interface_portal.yml'
-      - 'interfaces/HO-Portal/**'
+      - 'interfaces/Portal/**'
 
 env:
-  interfacePath: 'interfaces/HO-Portal/'
+  interfacePath: 'interfaces/Portal/'
 
 jobs:
   test:

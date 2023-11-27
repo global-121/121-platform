@@ -16,7 +16,7 @@ import { User } from '../models/user.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private userKey = 'logged-in-user-HO';
+  private userKey = 'logged-in-user-portal';
   private isRateLimitErrorShown = false;
 
   constructor(private http: HttpClient) {}

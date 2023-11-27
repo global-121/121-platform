@@ -82,7 +82,7 @@ export class CommercialBankEthiopiaService
         credentials,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
+      // Storing the per payment so you can continiously seed updates of transactions in Portal
       await this.transactionsService.storeTransactionUpdateStatus(
         paymentRequestResultPerPa,
         programId,
