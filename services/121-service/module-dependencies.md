@@ -44,6 +44,8 @@ graph LR
   PaymentsModule-->TransactionsModule
   PaymentsModule-->BobFinanceModule
   BobFinanceModule-->TransactionsModule
+  PaymentsModule-->GenericFspModule
+  GenericFspModule-->TransactionsModule
   PaymentsModule-->UkrPoshtaModule
   UkrPoshtaModule-->TransactionsModule
   PaymentsModule-->VodacashModule

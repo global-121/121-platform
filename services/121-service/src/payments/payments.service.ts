@@ -34,6 +34,7 @@ import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
+import { GenericFspService } from './fsp-integration/generic-fsp/generic-fsp.service';
 import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -65,6 +66,7 @@ export class PaymentsService {
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
+    private readonly genericFspService: GenericFspService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
@@ -374,6 +376,7 @@ export class PaymentsService {
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
+    const genericFspPaPayment = [];
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
     const safaricomPaPayment = [];
@@ -393,6 +396,8 @@ export class PaymentsService {
         belcashPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.bobFinance) {
         bobFinancePaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.genericFsp) {
+        genericFspPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.ukrPoshta) {
         ukrPoshtaPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.vodacash) {
@@ -414,6 +419,7 @@ export class PaymentsService {
       africasTalkingPaPayment,
       belcashPaPayment,
       bobFinancePaPayment,
+      genericFspPaPayment,
       ukrPoshtaPaPayment,
       vodacashPaPayment,
       safaricomPaPayment,
@@ -486,6 +492,14 @@ export class PaymentsService {
     if (paLists.bobFinancePaPayment.length) {
       await this.bobFinanceService.sendPayment(
         paLists.bobFinancePaPayment,
+        programId,
+        payment,
+      );
+    }
+
+    if (paLists.genericFspPaPayment.length) {
+      await this.genericFspService.sendPayment(
+        paLists.genericFspPaPayment,
         programId,
         payment,
       );
@@ -700,6 +714,16 @@ export class PaymentsService {
 
       if (registration.fsp.fsp === FspName.bobFinance) {
         const instruction = await this.bobFinanceService.getFspInstructions(
+          registration,
+          transaction,
+        );
+        csvInstructions.push(instruction);
+        if (!fileType) {
+          fileType = ExportFileType.csv;
+        }
+      }
+      if (registration.fsp.fsp === FspName.genericFsp) {
+        const instruction = await this.genericFspService.getFspInstructions(
           registration,
           transaction,
         );

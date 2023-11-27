@@ -7,6 +7,7 @@ export enum FspName {
   belcash = 'BelCash',
   vodacash = 'VodaCash',
   bobFinance = 'BoB-finance',
+  genericFsp = 'Generic-fsp',
   ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',

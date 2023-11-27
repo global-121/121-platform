@@ -5,6 +5,7 @@ export class SplitPaymentListDto {
   public intersolveJumboPhysicalPaPayment?: object[];
   public africasTalkingPaPayment?: object[];
   public bobFinancePaPayment?: object[];
+  public genericFspPaPayment?: object[];
   public ukrPoshtaPaPayment?: object[];
   public vodacashPaPayment?: object[];
   public belcashPaPayment?: object[];

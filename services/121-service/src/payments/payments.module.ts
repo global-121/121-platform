@@ -22,6 +22,7 @@ import { UserEntity } from './../user/user.entity';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
 import { BelcashModule } from './fsp-integration/belcash/belcash.module';
 import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.module';
+import { GenericFspModule } from './fsp-integration/generic-fsp/generic-fsp.module';
 import { CommercialBankEthiopiaModule } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { IntersolveJumboModule } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.module';
 import { IntersolveVisaModule } from './fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -59,6 +60,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     BelcashModule,
     TransactionsModule,
     BobFinanceModule,
+    GenericFspModule,
     UkrPoshtaModule,
     VodacashModule,
     SafaricomModule,
