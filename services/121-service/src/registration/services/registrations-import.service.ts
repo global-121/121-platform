@@ -444,6 +444,14 @@ export class RegistrationsImportService {
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
     }
+
+    const maxRecords = 1000;
+    if (importRecords.length > maxRecords) {
+      const errors = [
+        `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
+      ];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
     return importRecords;
   }
 
