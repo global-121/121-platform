@@ -253,22 +253,42 @@ export class ProgramController {
     );
   }
 
-  @ApiOperation({ summary: 'Get PA-table attributes for given program' })
+  @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'phase', required: false, type: 'string' })
   @ApiResponse({
     status: 200,
-    description: 'Return PA-table attributes by program-id.',
+    description: 'Return attributes by program-id.',
+  })
+  @ApiQuery({
+    name: 'phase',
+    required: false,
+    type: 'string',
+  })
+  @ApiQuery({
+    name: 'programQuestions',
+    required: false,
+    type: 'boolean',
+  })
+  @ApiQuery({
+    name: 'customAttributes',
+    required: false,
+    type: 'boolean',
+  })
+  @ApiQuery({
+    name: 'fspQuestions',
+    required: false,
+    type: 'boolean',
   })
   @Permissions(PermissionEnum.RegistrationREAD)
-  @Get(':programId/pa-table-attributes/:phase')
-  public async getPaTableAttributes(
+  @Get(':programId/attributes')
+  public async getAttributes(
     @Param() params,
+    @Query() queryParams,
     @User('id') userId: number,
   ): Promise<Attribute[]> {
-    return await this.programService.getPaTableAttributes(
+    return await this.programService.getAttributes(
       Number(params.programId),
-      params.phase,
+      queryParams,
       userId,
     );
   }

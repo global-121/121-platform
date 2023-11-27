@@ -91,9 +91,7 @@ export class ProgramService {
       program.editableAttributes = await this.getPaEditableAttributes(
         program.id,
       );
-      program['paTableAttributes'] = await this.getPaTableAttributes(
-        program.id,
-      );
+      program['paTableAttributes'] = await this.getAttributes(program.id);
 
       // TODO: Get these attributes from some enum or something
       program['filterableAttributes'] = this.getFilterableAttributes(program);
@@ -504,7 +502,7 @@ export class ProgramService {
     programId: number,
     name: string,
   ): Promise<void> {
-    const existingAttributes = await this.getPaTableAttributes(programId);
+    const existingAttributes = await this.getAttributes(programId);
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;
     });
@@ -690,11 +688,16 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
-  public async getPaTableAttributes(
+  public async getAttributes(
     programId: number,
-    phase?: ProgramPhase,
+    queryParams?: any,
     userId?: number,
   ): Promise<Attribute[]> {
+    const phase = queryParams?.phase;
+    const showCustomAttributes = queryParams?.customAttributes;
+    const showProgramQuestions = queryParams?.programQuestions;
+    const showFspQuestions = queryParams?.fspQuestions;
+
     if (userId) {
       const hasPersonalRead = await this.userService.canActivate(
         [PermissionEnum.RegistrationPersonalREAD],
@@ -708,79 +711,25 @@ export class ProgramService {
       }
     }
 
-    let queryCustomAttr = this.dataSource
-      .getRepository(ProgramCustomAttributeEntity)
-      .createQueryBuilder('programCustomAttribute')
-      .where({ program: { id: programId } });
-
-    if (phase) {
-      queryCustomAttr = queryCustomAttr.andWhere(
-        'programCustomAttribute.phases ::jsonb ?| :phases',
-        { phases: [phase] },
+    let customAttributes = [];
+    if (phase || (!phase && showCustomAttributes === 'true')) {
+      customAttributes = await this.getAndMapProgramCustomAttributes(
+        programId,
+        phase,
       );
     }
-    const rawCustomAttributes = await queryCustomAttr.getMany();
-    const customAttributes = rawCustomAttributes.map((c) => {
-      return {
-        name: c.name,
-        type: c.type,
-        label: c.label,
-        shortLabel: c.label,
-        questionType: QuestionType.programCustomAttribute,
-      };
-    });
 
-    let queryProgramQuestions = this.dataSource
-      .getRepository(ProgramQuestionEntity)
-      .createQueryBuilder('programQuestion')
-      .where({ program: { id: programId } });
-
-    if (phase) {
-      queryProgramQuestions = queryProgramQuestions.andWhere(
-        'programQuestion.phases ::jsonb ?| :phases',
-        { phases: [phase] },
-      );
+    let programQuestions = [];
+    if (phase || (!phase && showProgramQuestions === 'true')) {
+      programQuestions = await this.getAndMapProgramQuestions(programId, phase);
     }
-    const rawProgramQuestions = await queryProgramQuestions.getMany();
-    const programQuestions = rawProgramQuestions.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        shortLabel: c.shortLabel,
-        questionType: QuestionType.programQuestion,
-      };
-    });
 
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['financialServiceProviders'],
-    });
-    const fspIds = program.financialServiceProviders.map((f) => f.id);
-
-    let queryFspAttributes = this.dataSource
-      .getRepository(FspQuestionEntity)
-      .createQueryBuilder('fspAttribute')
-      .where({ fspId: In(fspIds) });
-
-    if (phase) {
-      queryFspAttributes = queryFspAttributes.andWhere(
-        'fspAttribute.phases ::jsonb ?| :phases',
-        { phases: [phase] },
-      );
+    let fspQuestions = [];
+    if (phase || (!phase && showFspQuestions === 'true')) {
+      fspQuestions = await this.getAndMapProgramFspQuestions(programId, phase);
     }
-    const rawFspAttributes = await queryFspAttributes.getMany();
-    const fspAttributes = rawFspAttributes.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        shortLabel: c.shortLabel,
-        questionType: QuestionType.fspQuestion,
-      };
-    });
 
-    return [...customAttributes, ...programQuestions, ...fspAttributes];
+    return [...customAttributes, ...programQuestions, ...fspQuestions];
   }
 
   private async getPaEditableAttributes(
@@ -865,5 +814,95 @@ export class ProgramService {
     }
 
     return relations;
+  }
+
+  private async getAndMapProgramQuestions(
+    programId: number,
+    phase?: string,
+  ): Promise<Attribute[]> {
+    let queryProgramQuestions = this.dataSource
+      .getRepository(ProgramQuestionEntity)
+      .createQueryBuilder('programQuestion')
+      .where({ program: { id: programId } });
+
+    if (phase) {
+      queryProgramQuestions = queryProgramQuestions.andWhere(
+        'programQuestion.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawProgramQuestions = await queryProgramQuestions.getMany();
+    const programQuestions = rawProgramQuestions.map((c) => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+        shortLabel: c.shortLabel,
+        questionType: QuestionType.programQuestion,
+      };
+    });
+
+    return programQuestions;
+  }
+  private async getAndMapProgramCustomAttributes(
+    programId: number,
+    phase?: string,
+  ): Promise<Attribute[]> {
+    let queryCustomAttr = this.dataSource
+      .getRepository(ProgramCustomAttributeEntity)
+      .createQueryBuilder('programCustomAttribute')
+      .where({ program: { id: programId } });
+
+    if (phase) {
+      queryCustomAttr = queryCustomAttr.andWhere(
+        'programCustomAttribute.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawCustomAttributes = await queryCustomAttr.getMany();
+    const customAttributes = rawCustomAttributes.map((c) => {
+      return {
+        name: c.name,
+        type: c.type,
+        label: c.label,
+        shortLabel: c.label,
+        questionType: QuestionType.programCustomAttribute,
+      };
+    });
+
+    return customAttributes;
+  }
+  private async getAndMapProgramFspQuestions(
+    programId: number,
+    phase?: string,
+  ): Promise<Attribute[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders'],
+    });
+    const fspIds = program.financialServiceProviders.map((f) => f.id);
+
+    let queryFspAttributes = this.dataSource
+      .getRepository(FspQuestionEntity)
+      .createQueryBuilder('fspAttribute')
+      .where({ fspId: In(fspIds) });
+
+    if (phase) {
+      queryFspAttributes = queryFspAttributes.andWhere(
+        'fspAttribute.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawFspAttributes = await queryFspAttributes.getMany();
+    const fspAttributes = rawFspAttributes.map((c) => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+        shortLabel: c.shortLabel,
+        questionType: QuestionType.fspQuestion,
+      };
+    });
+    return fspAttributes;
   }
 }
