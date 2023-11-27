@@ -32,6 +32,7 @@ graph LR
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule
   MessageModule-->MessageTemplateModule
+  MessageModule-->ProgramModule
   MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule

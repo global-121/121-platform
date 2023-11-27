@@ -14,6 +14,8 @@ import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageTemplateEntity } from './message-template/message-template.entity';
 import { AzureLogService } from '../shared/services/azure-log.service';
+import { ProgramService } from '../programs/programs.service';
+import { QuestionType } from '../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class MessageService {
@@ -32,17 +34,24 @@ export class MessageService {
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly azureLogService: AzureLogService,
+    private readonly programService: ProgramService,
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
     try {
-      const messageText = messageJobDto.message
+      const messageTextWithPlaceholders = messageJobDto.message
         ? messageJobDto.message
         : await this.getNotificationText(
             messageJobDto.preferredLanguage,
             messageJobDto.key,
             messageJobDto.programId,
           );
+      const messageText = await this.processPlaceholders(
+        messageTextWithPlaceholders,
+        messageJobDto.programId,
+        messageJobDto.registrationId,
+      );
+
       const processtype = messageJobDto.messageProcessType;
 
       if (processtype === MessageProcessType.sms) {
@@ -272,5 +281,31 @@ export class MessageService {
     }
 
     return '';
+  }
+
+  private async processPlaceholders(
+    messageTextWithPlaceholders: string,
+    programId: number,
+    registrationId: number,
+  ): Promise<string> {
+    let messageText = messageTextWithPlaceholders;
+    const registration = await this.registrationRepository.findOne({
+      where: { id: registrationId },
+    });
+    // TODO: update to use Peter's updated method
+    const placeholders =
+      await this.programService.getPaTableAttributes(programId);
+
+    for (const placeholder of placeholders
+      .filter((p) => p.questionType !== QuestionType.fspQuestion)
+      .map((p) => p.name)) {
+      const regex = new RegExp(`{{${placeholder}}}`, 'g');
+      if (messageText.match(regex)) {
+        const placeHolderValue =
+          await registration.getRegistrationDataValueByName(placeholder);
+        messageText = messageText.replace(regex, placeHolderValue);
+      }
+    }
+    return messageText;
   }
 }
