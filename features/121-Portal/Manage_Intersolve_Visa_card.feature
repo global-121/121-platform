@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Manage Intersolve Visa card
 
   Background:

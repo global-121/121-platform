@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: View and manage people affected (generic features)
 
   Background:
@@ -139,6 +139,8 @@ Feature: View and manage people affected (generic features)
   Scenario: Select "bulk action" while no rows eligible
     Given no people are eligible for the "bulk action"
     When the user selects a "bulk action" from the dropdown
+    And there are no visible checkboxes in the table
+    And the user selects the "selet-all" checkbox
     Then a popup with the message "no people are eligible" is shown
     And the dropdown is reset to the default "choose action" option
 
@@ -189,7 +191,7 @@ Feature: View and manage people affected (generic features)
     - default yes for: invite, reject, end inclusion, send message
     - default no for: include
     - SMS not an option for: select for validation, mark as no longer eligible, delete PA
-    And - if checked by default or manually - it shows a free text field to enter the message
+    And - if checked by default or manually - it shows a templated message if one is present otherwise it shows a free text field to enter the message
     And it shows a character counter
     And it has a "confirm" button, which is disabled if checkbox is checked AND the entered text is below 20 characters
     And it has a "cancel" button

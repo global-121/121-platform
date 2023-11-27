@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Export unused vouchers
 
   Background:

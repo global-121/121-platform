@@ -36,7 +36,7 @@
     }
   },
   "whatsappVoucher": {
-    "isWhatsappTemplate": true,
+    "isWhatsappTemplate": false,
     "message": {
       "en": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\n The amount that you receive is written on the top of the voucher.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the complete amount is finished.\n\nYou will receive your Albert Heijn voucher every week on Tuesday. When we end the support you will receive a message from us, explaining you when and why we end the support.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "es": "Éste es un mensaje de la Cruz Roja.\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que aún no había recibido los cupones de las semanas anteriores.\n\nLa cantidad que recibe está escrita en la esquina superior del cupón.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Así que quédese con los vales y reutilícelos hasta agotar el importe total.\n\nRecibirá su bono de Albert Heijn cada semana los martes. Cuando finalicemos la ayuda, recibirá un mensaje nuestro que le explicará cuándo y por qué finalizamos la ayuda.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
@@ -48,7 +48,7 @@
     }
   },
   "whatsappReply": {
-    "isWhatsappTemplate": true,
+    "isWhatsappTemplate": false,
     "message": {
       "en": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",
       "es": "Éste es un mensaje automático, cualquier duda o pregunta por favor contacte al Buro de Asistencia de la Cruz Roja en WhatsApp: +31614458781",

@@ -388,12 +388,6 @@ export class WhatsappIncomingService {
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
 
-        await this.messageTemplateService.getMessageTemplatesByProgramId(
-          program.id,
-          ProgramNotificationEnum.whatsappReply,
-          language,
-        );
-
         const whatsappDefaultReply =
           await this.messageTemplateService.getMessageTemplatesByProgramId(
             program.id,

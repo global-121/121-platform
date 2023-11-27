@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Export all People Affected data changes
 
   Background:

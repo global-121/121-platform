@@ -116,13 +116,10 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanViewPayment(): boolean {
-    return (
-      this.program.phase === ProgramPhase.payment &&
-      this.authService.hasAllPermissions(this.program.id, [
-        Permission.PaymentREAD,
-        Permission.PaymentTransactionREAD,
-      ])
-    );
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+    ]);
   }
 
   private checkCanMakePayment(): boolean {

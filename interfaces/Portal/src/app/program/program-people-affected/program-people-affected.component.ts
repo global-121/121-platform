@@ -24,6 +24,7 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   BulkAction,
   BulkActionId,
+  BulkActionRegistrationStatusMap,
   BulkActionResult,
 } from 'src/app/models/bulk-actions.models';
 import {
@@ -803,22 +804,27 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const action = this.bulkActions.find(
       (i: BulkAction) => i.id === this.action,
     );
-
-    const messageTemplate = this.messageTemplates?.find(
-      (template) => template.type === this.action && template.language == 'en',
-    );
-
-    if (messageTemplate) {
-      action.confirmConditions.isTemplated = true;
-      action.confirmConditions.explanation = this.translate.instant(
-        'page.program.program-people-affected.action-inputs.templated-explanation',
+    let messageTemplate = null;
+    if (action) {
+      const mappedAction = BulkActionRegistrationStatusMap[action.id];
+      messageTemplate = this.messageTemplates?.find(
+        (template) =>
+          template.type === mappedAction && template.language == 'en',
       );
-      action.confirmConditions.templatedMessage = messageTemplate.message;
-      action.confirmConditions.supportMessage = this.translate.instant(
-        'page.program.program-people-affected.action-inputs.templated-support',
-      );
-      action.confirmConditions.inputRequired = false;
-      action.confirmConditions.checkboxChecked = true;
+
+      if (messageTemplate) {
+        action.confirmConditions.isTemplated = true;
+        action.confirmConditions.explanation = this.translate.instant(
+          'page.program.program-people-affected.action-inputs.templated-explanation',
+        );
+        action.confirmConditions.templatedMessage = messageTemplate.message;
+        action.confirmConditions.messageTemplateKey = messageTemplate.type;
+        action.confirmConditions.supportMessage = this.translate.instant(
+          'page.program.program-people-affected.action-inputs.templated-support',
+        );
+        action.confirmConditions.inputRequired = false;
+        action.confirmConditions.checkboxChecked = true;
+      }
     }
     return action;
   }
