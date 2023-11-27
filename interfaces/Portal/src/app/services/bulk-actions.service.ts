@@ -1,5 +1,8 @@
+import { formatNumber } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import Permission from '../auth/permission.enum';
 import {
   BulkAction,
@@ -22,10 +25,28 @@ export class CustomBulkActionInput {
   providedIn: 'root',
 })
 export class BulkActionsService {
+  private locale: string;
+
+  private submitBulkActionWarningData: {
+    applicableCount: number;
+    nonApplicableCount: number;
+    action: BulkAction;
+  } = {
+    applicableCount: 0,
+    nonApplicableCount: 0,
+    action: null,
+  };
+  private submitBulkActionWarning: string;
+  private submitBulkActionWarningSubject = new BehaviorSubject<string>('');
+  public submitBulkActionWarning$: Observable<string> =
+    this.submitBulkActionWarningSubject.asObservable();
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
-  ) {}
+  ) {
+    this.locale = environment.defaultLocale;
+  }
 
   private bulkActions: BulkAction[] = [
     {
@@ -228,7 +249,7 @@ export class BulkActionsService {
     action: BulkActionId,
     programId: number,
     customBulkActionInput?: CustomBulkActionInput,
-    dryRun = false,
+    dryRun: boolean = false,
     filters?: PaginationFilter[],
   ): Promise<BulkActionResult | void> {
     switch (action) {
@@ -332,5 +353,46 @@ export class BulkActionsService {
       paymentId--;
     }
     return paymentBulkActions;
+  }
+
+  public updateSubmitBulkActionWarningCount(
+    applicableCount: number,
+    nonApplicableCount: number,
+  ) {
+    this.submitBulkActionWarningData.applicableCount = applicableCount;
+    this.submitBulkActionWarningData.nonApplicableCount = nonApplicableCount;
+    this.updateSubmitBulkAction();
+  }
+
+  public updateSubmitBulkActionWarningAction(action: BulkAction) {
+    this.submitBulkActionWarningData.action = action;
+    this.updateSubmitBulkAction();
+  }
+
+  private updateSubmitBulkAction() {
+    const { applicableCount, nonApplicableCount, action } =
+      this.submitBulkActionWarningData;
+    if (!action) {
+      return;
+    }
+
+    const actionLabel = action.label;
+    const numberOfPeopleWarning = this.translate.instant(
+      'page.program.program-people-affected.submit-warning-people-affected',
+      {
+        actionLabel,
+        applicableCount: formatNumber(applicableCount, this.locale),
+      },
+    );
+    const conditionsToSelectText = this.translate.instant(
+      `page.program.program-people-affected.bulk-action-conditions.${action.id}`,
+      { action: action.label },
+    );
+    this.submitBulkActionWarning = `<p>${numberOfPeopleWarning}</p>`;
+    if (nonApplicableCount > 0) {
+      this.submitBulkActionWarning += `<p>${conditionsToSelectText}</p>`;
+    }
+
+    this.submitBulkActionWarningSubject.next(this.submitBulkActionWarning);
   }
 }

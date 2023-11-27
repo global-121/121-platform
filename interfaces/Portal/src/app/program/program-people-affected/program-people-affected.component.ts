@@ -1,4 +1,4 @@
-import { formatDate, formatNumber } from '@angular/common';
+import { formatDate } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SortDirection } from '@swimlane/ngx-datatable';
-import { mergeWith, Subscription, throttleTime } from 'rxjs';
+import { mergeWith, Observable, Subscription, throttleTime } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -118,7 +118,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public BulkActionEnum = BulkActionId;
   public bulkActions: BulkAction[] = [];
   public applyBtnDisabled = true;
-  public submitWarning: string;
+  public submitWarning: Observable<string>;
   public selectAllCheckboxVisible = false;
   public selectAllChecked = false;
 
@@ -295,6 +295,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         },
       );
     }
+
+    this.submitWarning = this.bulkActionService.submitBulkActionWarning$;
 
     this.updateProxyScrollbarSize();
 
@@ -681,6 +683,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public async selectAction($event) {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
+      this.bulkActionService.updateSubmitBulkActionWarningAction(null);
       return;
     }
 
@@ -702,6 +705,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.updatePeopleForAction(this.visiblePeopleAffected);
       this.applyAction(null, true);
     }
+
+    this.bulkActionService.updateSubmitBulkActionWarningAction(
+      this.bulkActions.find((a) => a.id === this.action),
+    );
 
     this.selectAllCheckboxVisible = true;
   }
@@ -826,25 +833,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     applicableCount: number,
     nonApplicableCount: number,
   ) {
-    if (!this.getCurrentBulkAction()) {
-      return;
-    }
-    const actionLabel = this.getCurrentBulkAction().label;
-    const numberOfPeopleWarning = this.translate.instant(
-      'page.program.program-people-affected.submit-warning-people-affected',
-      {
-        actionLabel,
-        applicableCount: formatNumber(applicableCount, this.locale),
-      },
+    this.bulkActionService.updateSubmitBulkActionWarningCount(
+      applicableCount,
+      nonApplicableCount,
     );
-    const conditionsToSelectText = this.translate.instant(
-      `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
-      { action: this.getCurrentBulkAction().label },
-    );
-    this.submitWarning = `<p>${numberOfPeopleWarning}</p>`;
-    if (nonApplicableCount > 0) {
-      this.submitWarning += `<p>${conditionsToSelectText}</p>`;
-    }
   }
 
   private setBulkActionFilters(referenceId?: string): PaginationFilter[] {
