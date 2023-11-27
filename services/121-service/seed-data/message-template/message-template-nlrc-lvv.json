@@ -25,7 +25,7 @@
   "inclusionEnded": {
     "isWhatsappTemplate": false,
     "message": {
-      "en": "This is a message from the Red Cross.\n\nThis week you received your last voucher because you are no longer on list of {{namePartnerOrganization}}.\n\nDo you have questions about this? Send us a message via WhatsApp:\n\nhttps://wa.me/31614458781\n\nor contact {{namePartnerOrganization}}.\n\nWe wish you all the best."
+      "en": "This is a message from the Red Cross.\n\nThis week you received your last voucher because you are no longer on the list of {{namePartnerOrganization}}.\n\nDo you have questions about this? Send us a message via WhatsApp:\n\nhttps://wa.me/31614458781\n\nor contact {{namePartnerOrganization}}.\n\nWe wish you all the best."
     }
   },
   "rejected": {

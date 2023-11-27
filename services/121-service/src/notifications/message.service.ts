@@ -303,7 +303,12 @@ export class MessageService {
       if (messageText.match(regex)) {
         const placeHolderValue =
           await registration.getRegistrationDataValueByName(placeholder);
-        messageText = messageText.replace(regex, placeHolderValue);
+        messageText = messageText.replace(
+          regex,
+          placeHolderValue === null || placeHolderValue === undefined
+            ? ''
+            : placeHolderValue,
+        );
       }
     }
     return messageText;
