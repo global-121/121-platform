@@ -10,11 +10,12 @@ import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../../registration/registration.entity';
 import { TransactionEntity } from '../../../transactions/transaction.entity';
-import { IntersolveVoucherPayoutStatus } from '../enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '../intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '../intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../intersolve-voucher.service';
+import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
+import { MessageProcessType } from '../../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -34,6 +35,7 @@ export class IntersolveVoucherCronService {
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly whatsappService: WhatsappService,
+    private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
@@ -175,13 +177,12 @@ export class IntersolveVoucherCronService {
           .split('{{1}}')
           .join(unsentIntersolveVoucher.amount);
 
-        await this.whatsappService.sendWhatsapp(
+        await this.queueMessageService.addMessageToQueue(
+          registration,
           whatsappPayment,
-          fromNumber,
-          IntersolveVoucherPayoutStatus.InitialMessage,
           null,
-          registration.id,
           MessageContentType.paymentReminder,
+          MessageProcessType.whatsappTemplateVoucherReminder,
         );
         const reminderVoucher = await intersolveVoucherRepository.findOne({
           where: { id: unsentIntersolveVoucher.id },

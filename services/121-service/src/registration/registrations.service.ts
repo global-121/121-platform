@@ -14,7 +14,6 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -59,7 +58,9 @@ import {
   RegistrationsImportService,
 } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { UserService } from '../user/user.service';
+import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -90,7 +91,7 @@ export class RegistrationsService {
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -555,6 +556,7 @@ export class RegistrationsService {
     // .. and update the twilio messages (to keep history of the invite message etc.)
     const twilioMessages = await this.twilioMessageRepository.find({
       where: { registrationId: importedRegistration.id },
+      order: { created: 'DESC' },
     });
     if (twilioMessages && twilioMessages.length > 0) {
       for (const message of twilioMessages) {
@@ -562,8 +564,8 @@ export class RegistrationsService {
       }
       await this.twilioMessageRepository.save(twilioMessages);
       // Update the last message status of the new registration
-      await this.lastMessageStatusService.updateLastMessageStatus(
-        twilioMessages[0].sid,
+      await this.lastMessageStatusService.updateLatestMessage(
+        twilioMessages[0],
       );
     }
 
@@ -638,13 +640,12 @@ export class RegistrationsService {
 
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    await this.messageService.sendTextMessage(
+    await this.queueMessageService.addMessageToQueue(
       registration,
-      registration.program.id,
       null,
       RegistrationStatusEnum.registered,
-      null,
       MessageContentType.registered,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
 
     if (

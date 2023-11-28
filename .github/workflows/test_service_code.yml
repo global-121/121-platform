@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+      - 'feat.*'
     paths:
       - '.github/workflows/test_service_code.yml'
       - 'services/121-service/**'
@@ -40,10 +41,10 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         continue-on-error: true
         env:
-            NODE_ENV: development
-            TWILIO_SID: AC
-            MOCK_TWILIO: TRUE
-            MOCK_INTERSOLVE: TRUE
-            MOCK_VODACASH: TRUE
-            MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
+          NODE_ENV: development
+          TWILIO_SID: AC
+          MOCK_TWILIO: TRUE
+          MOCK_INTERSOLVE: TRUE
+          MOCK_VODACASH: TRUE
+          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
         run: 'npm run test:unit:all'

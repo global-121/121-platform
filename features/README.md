@@ -153,4 +153,4 @@ Features can be added to this folder by:
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@pa-app`, `@aw-app`, `@ho-Portal`, etc. (all lowercase)
+  i.e: `@pa-app`, `@aw-app`, `@portal`, etc. (all lowercase)

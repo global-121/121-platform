@@ -50,11 +50,11 @@ Feature: Make a new payment
     And it shows 'Failed' for failed transactions
     And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
-    And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, date
+    And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, timestamp
 
   Scenario: Send payment instructions for 10000 PAs
     Given there are 10000 PAs in the system
-    And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    And they are included (see e.g. Portal/Include_people_affected_Run_Program_role.feature)
     Then the user selects the "Do payment" action
     And the user selects all 10000 PAs
     And the user clicks the "Apply action" button and the "Do payment" popup shows up

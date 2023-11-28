@@ -1,0 +1,65 @@
+// Utility: Create a flexbox parent-container
+// TODO: Move to global.scss (in a structured/clean way)
+.layout-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+//
+// ----------------------------------------------------------------------------
+//
+
+.tfr--create-filters {
+  border: 1px solid var(--fiveten-neutral-200);
+  min-height: 3rem;
+
+  padding-top: 6px;
+  padding-bottom: 6px;
+
+  &.is-loading {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.tfr--text-filter--input,
+.tfr--text-filter--select {
+  --highlight-color-invalid: none;
+  --highlight-color-valid: none;
+
+  flex-basis: 40%;
+}
+
+.tfr--text-filter--select {
+  &::part(container) {
+    width: 100%;
+  }
+}
+
+.tfr--text-filter--input {
+  min-height: 2.75rem;
+}
+
+.tfr--active-filters {
+  padding: 0.5rem;
+
+  ion-chip ion-button {
+    cursor: pointer; // Re-enable cursor to appear interactive normally
+    position: relative;
+    inset-inline-end: -0.5em;
+  }
+
+  .tfr--clear-filters-btn {
+    --background: var(--fiveten-purple-100);
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--fiveten-purple-200);
+    --color: var(--fiveten-neutral-900);
+    font-size: 12px;
+  }
+  .tfr--active-filters-chip {
+    --background: var(--fiveten-purple-100);
+    border: 1px solid var(--fiveten-purple-200);
+    --min-height: 2.2em;
+  }
+}

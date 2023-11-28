@@ -19,7 +19,7 @@ import {
   paymentNrVisa,
   programIdVisa,
   registrationVisa,
-} from './visa-card.data';
+} from '../../seed-data/mock/visa-card.data';
 
 // This test takes a lot of time because there are my statusses to check
 jest.setTimeout(40_000);

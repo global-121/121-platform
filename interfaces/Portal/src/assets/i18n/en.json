@@ -1,0 +1,842 @@
+{
+  "header": {
+    "home": "Home",
+    "menu": "Menu",
+    "help": "Help",
+    "users": "Users",
+    "dashboard": "Dashboard",
+    "team": "Team",
+    "phases": "Phases",
+    "design": "Design",
+    "registration-validation": "Registration & Validation",
+    "inclusion": "Inclusion",
+    "payment": "Payment",
+    "evaluation": "Evaluation"
+  },
+  "user-state": {
+    "logged-in-as": "Logged in as",
+    "log-out": "Log out"
+  },
+  "page": {
+    "dashboard": {
+      "pageTitle": "Dashboard",
+      "introduction": "The information on this screen comes from data in the 121 Platform only.",
+      "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
+      "help-explanation-tooltip": "Like this!"
+    },
+    "team": {
+      "pageTitle": "Program team"
+    },
+    "program-team": {
+      "pageTitle": "Program team",
+      "page-description": "In this page you can create a team for your program",
+      "add-team-member": "Add team member",
+      "edit-team-member-role": "Edit role",
+      "remove-team-member": "Remove from Team",
+      "table-headers": {
+        "name": "Name",
+        "role": "Role",
+        "status": "Status",
+        "last-activity": "Last login"
+      },
+      "status": {
+        "true": "Active",
+        "false": "Inactive"
+      },
+      "team-members": "Team members",
+      "popup": {
+        "add-users-button": "Add user",
+        "team-member": "Team member",
+        "team-member-placeholder": "Select a team member",
+        "roles-placeholder": "Assign a role(s)",
+        "roles-required": "Please select at least one role",
+        "role": "Role",
+        "remove": {
+          "title": "Remove team member",
+          "introduction": "Removing the team member will result in them not having any access to program or its data.",
+          "attention": "Attention: ",
+          "explanation": "Removing team member does not mean deleting their account from the 121 portal. If you wish to delete their account, please contact the admin.",
+          "confirmation-question": "Are you sure to remove this user from the program team?",
+          "confirm": "Remove user",
+          "succes-message": "You’ve successfully removed a team member"
+        },
+        "add": {
+          "title": "Add team member",
+          "succes-message": "You’ve successfully added a team member",
+          "confirm": "Add user",
+          "already-member": "This user is already a team member"
+        },
+        "change": {
+          "title": "Edit team member roles",
+          "succes-message": "You’ve successfully edited the role(s) of this user",
+          "confirm": "Save"
+        }
+      }
+    },
+    "login": {
+      "pageTitle": "Log in",
+      "portalTitle": "Portal",
+      "form": {
+        "email": {
+          "label": "Email Address"
+        },
+        "password": {
+          "label": "Password",
+          "forgot": "Forgot password?"
+        },
+        "submit": {
+          "label": "Log in"
+        },
+        "error-messages": {
+          "invalid-email": "Please enter a valid email address.",
+          "empty-password": "Please enter a password.",
+          "401": "This combination of email address and password is unknown.",
+          "500": "Internal server error"
+        }
+      }
+    },
+    "home": {
+      "pageTitle": "Home"
+    },
+    "programs-list": {
+      "pageTitle": "Programs",
+      "pageSubtitle": "You are running {{nrPrograms}} program(s) actively",
+      "not-available": "No programs available.",
+      "card": {
+        "updated": "Last updated: ",
+        "targeted": "Targeted People Affected",
+        "included": "Included People Affected",
+        "budget": "Total project budget ",
+        "spent": "Spent money",
+        "status": "Program status: "
+      }
+    },
+    "program": {
+      "phases": {
+        "design": {
+          "label": "Design",
+          "btnText": "Open for registration"
+        },
+        "registrationValidation": {
+          "label": "Registration & validation",
+          "btnText": "Move to: Inclusion",
+          "label-no-validation": "Registration",
+          "btnText-no-validation": "Move to: Inclusion",
+          "toggleText-enable-registrations": "Allow new registrations",
+          "actionText-enabled-registrations": "Registrations are now enabled for this program",
+          "actionText-disabled-registrations": "Registrations are now disabled for this program"
+        },
+        "inclusion": {
+          "label": "Inclusion",
+          "btnText": "Move to: Payment"
+        },
+        "payment": {
+          "label": "Payment",
+          "btnText": "Move to: Evaluation"
+        },
+        "evaluation": {
+          "label": "Evaluation",
+          "btnText": "Terminate program"
+        }
+      },
+      "metrics": {
+        "pa": {
+          "targeted": "PA Targeted",
+          "imported": "Imported",
+          "invited": "Invited",
+          "noLongerEligible": "No longer eligible",
+          "startedRegistration": "Started Registration",
+          "registered": "Registered",
+          "selectedForValidation": "Selected for validation",
+          "validated": "Validated",
+          "included": "Included",
+          "inclusionEnded": "Inclusion Ended",
+          "rejected": "Rejected",
+          "deleted": "Deleted"
+        },
+        "state-explanation": {
+          "imported": "PAs that were imported, based on phone-number.",
+          "invited": "PAs that were invited (after import).",
+          "startedRegistration": "PAs that started registration in the PA-app.",
+          "registered": "PAs that finished registration in the PA-app.",
+          "selectedForValidation": "PAs that were selected for validation.",
+          "validated": "PAs that were validated.",
+          "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
+          "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
+          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
+          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
+          "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time."
+        },
+        "header": {
+          "metric": "Metric",
+          "latest-value": "Latest value"
+        },
+        "units": {
+          "frequency": {
+            "month": "monthly",
+            "weeks2": "2 weekly",
+            "week": "weekly"
+          },
+          "duration": {
+            "month": "month(s)",
+            "week": "week(s)"
+          }
+        },
+        "timeframe": {
+          "payment": {
+            "label": "Payment #:",
+            "select-hint": "Choose payment...",
+            "option": "Payment #{{number}} - {{date}}",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA that were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period."
+          },
+          "payment-from-start": {
+            "label": "Up to selected payment #:",
+            "explanation": "This row shows all data up to and including the selected payment, instead of only the data specific to this payment period (the period between the previous payment and the selected payment)."
+          },
+          "calendar-month": {
+            "label": "Calendar month:",
+            "select-hint": "Choose month...",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA that were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month."
+          },
+          "month-from-start": {
+            "label": "Up to selected month:",
+            "explanation": "This row shows all data up to and including this month, instead of only the data specific to this month."
+          },
+          "to-date": {
+            "label": "To date:",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA that were included at some point."
+          }
+        },
+        "export-button": {
+          "label": "Export as CSV"
+        },
+        "totals": {
+          "total-helped-to-date": "Total number of individual PA helped to date",
+          "tooltip": "PAs that received one or more payments"
+        },
+        "over-time": {
+          "pa": {
+            "pre-existing": "Pre-existing",
+            "new": "New"
+          },
+          "payment-label": "Payment",
+          "tooltip": "This chart shows the number of People Affected that were successfully paid out per payment.<br><br>This number is split by 'pre-existing' and 'new' PAs, based on whether the PA was also present in the previous payment or not.<br><br>'Successfully paid out' means that the payment (e.g. voucher) was successfully issued and the PA is informed about it, but does not imply the payment is collected and/or spent."
+        }
+      },
+      "program-details": {
+        "section-title": "Program Details",
+        "location": "Location",
+        "titlePortal": "Title portal",
+        "titlePaApp": "Title PA-app",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "distributionFrequency": "Distribution frequency",
+        "distributionDuration": "Distribution duration",
+        "fixedTransferValue": "Transfer Value",
+        "aidworkerAssignments": "Assigned aidworkers",
+        "financialServiceProviders": "Financial Service-providers"
+      },
+      "program-payout": {
+        "payment-nr": "Payment #{{number}}",
+        "choose-payment": "Choose payment...",
+        "all-closed-payments": "All closed payments",
+        "closed": "Closed",
+        "open": "Open",
+        "start-payout": "Start payout now",
+        "total-included": "Payout to: {{totalIncluded}} PA(s)",
+        "total-amount": "Maximum amount that will be spend this payment: {{totalCost}}",
+        "result": {
+          "api": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
+          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XLSX-file in the format required by the Financial Service Provider</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>",
+          "xml": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XML-file</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>"
+        },
+        "in-progress": "Payment in progress",
+        "calculating-transfer-amount": "Calculating total transfer amount",
+        "make-export": "Export payment data",
+        "last-payment": {
+          "last-payment": "Last payment: {{nr}}",
+          "error": "Failed",
+          "success": "Successful",
+          "waiting": "Waiting",
+          "retry-all": "Retry all {{number}} failed",
+          "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
+        },
+        "cbe": {
+          "btn": "CBE verification report",
+          "subHeader": "Download CBE Verification Report",
+          "message": "The data in this report is based on data that is imported every night from CBE. <br /> If you changed data today this will not be reflected in the report."
+        },
+        "make-payment": {
+          "error": {
+            "generic": "Something went wrong with the payment. Please contact 121 technical support."
+          },
+          "make-payment": "Do payment: {{nr}}",
+          "number-included": "PA included: {{number}}"
+        }
+      },
+      "program-people-affected": {
+        "choose-action": "Choose action...",
+        "no-actions": "No actions available",
+        "apply-action": "Apply action",
+        "filter-placeholder": "Type value...",
+        "filter-toggle": "Show all",
+        "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
+        "filter-btn": {
+          "common": {
+            "filter-by": "Filter by:",
+            "all-options": "All",
+            "cancel-btn": "Cancel",
+            "apply-btn": "Apply"
+          },
+          "btn-label": {
+            "paStatus": "Status"
+          },
+          "empty-selection-alert-message": "Please select at least one option",
+          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
+        },
+        "last-message": {
+          "no-message": "No messages yet"
+        },
+        "max-payments": {
+          "left": "remaining"
+        },
+        "column": {
+          "select": "Select",
+          "personAffectedSequence": "Person Affected",
+          "status": "Status",
+          "registrationCreated": "Registration created",
+          "registrationCreatedDate": "Registration created date",
+          "inclusionScore": "Inclusion score",
+          "name": "Name",
+          "dob": "Date of birth",
+          "phoneNumber": "Phonenumber",
+          "whatsappPhoneNumber": "WhatsApp nr.",
+          "preferredLanguage": "Preferred language",
+          "paymentAmountMultiplier": "Transfer value(s)",
+          "maxPayments": "Max. payments",
+          "fspDisplayNamePortal": "Financial Service Provider",
+          "custom-attribute-true": "Yes",
+          "custom-attribute-false": "No",
+          "payment-history": "Payment history",
+          "lastMessageStatus": "Last message",
+          "hasNote": "Has Note",
+          "referenceId": "Reference ID",
+          "note": "Note",
+          "paymentCount": "Payments so far",
+          "paymentCountRemaining": "Remaining payments",
+          "failedPayment": "Failed for payment #",
+          "waitingPayment": "Waiting for payment #",
+          "successPayment": "Successful for payment #",
+          "notYetSentPayment": "Not yet sent payment #"
+        },
+        "language": {
+          "en": "English",
+          "ar": "Arabic",
+          "tl": "Filipino",
+          "pt_BR": "Portuguese",
+          "in": "Indonesian",
+          "nl": "Dutch",
+          "es": "Spanish",
+          "fr": "French",
+          "tr": "Turkish"
+        },
+        "status": {
+          "imported": "Imported",
+          "invited": "Invited",
+          "noLongerEligible": "No longer eligible",
+          "startedRegistration": "Created",
+          "registered": "Registered",
+          "registeredWhileNoLongerEligible": "Registered while no longer eligible",
+          "selectedForValidation": "Selected for Validation",
+          "validated": "Validated",
+          "included": "Included",
+          "inclusionEnded": "Inclusion ended",
+          "rejected": "Rejected",
+          "completed": "Completed",
+          "paused": "Paused"
+        },
+        "actions": {
+          "invite": "Invite for registration",
+          "markNoLongerEligible": "Mark as no longer eligible",
+          "selectForValidation": "Select for validation",
+          "include": "Include in program",
+          "reject": "Reject from program",
+          "endInclusion": "End inclusion in program",
+          "sendMessage": "Send Message to PAs",
+          "deletePa": "Delete PA",
+          "doPayment": "Do payment",
+          "pause": "Pause PAs"
+        },
+        "action-inputs": {
+          "message-checkbox": "Send a message to these People Affected",
+          "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
+          "message-explanation": "There is no templated message available for this action. Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "templated-explanation": "The following message will be sent to PAs in their own language.",
+          "templated-support": "Please contact the 121 support team if you want to change this templated message.",
+          "reject": {
+            "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."
+          }
+        },
+        "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
+        "submit-warning": "You are about to:",
+        "submit-warning-people-affected": "Perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected.",
+        "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
+        "transaction": {
+          "error": "Failed",
+          "waiting": "Waiting",
+          "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
+          "success": "Success",
+          "payments-popup": "Payments",
+          "show-status": "Show status",
+          "do-single-payment": "Do single payment",
+          "payment-number": "Payment #{{number}}",
+          "planned": "Planned",
+          "above": "Above limit",
+          "not-yet-sent": "Not yet sent",
+          "open-voucher": "Open voucher",
+          "send-payment": "Send payment",
+          "sent": "Sent",
+          "amount": "Amount",
+          "received": "Received",
+          "fsp": "FSP",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "Visa card ID"
+          },
+          "retry": "Details",
+          "nosupport": "No FSP supported for this transfer"
+        },
+        "edit-person-affected-popup": {
+          "edit-icon-title": "Edit information of Person Affected",
+          "has-notes-title": "Notes available",
+          "popup-title": "{{pa}} detailed info",
+          "properties": {
+            "paymentAmountMultiplier": {
+              "label": "Transfer value multiplier",
+              "explanation": "The transfer value will be multiplied by this number for this Person Affected"
+            },
+            "phoneNumber": {
+              "label": "Phone number",
+              "explanation": "The required format is: ONLY numbers, including country-code."
+            },
+            "whatsappPhoneNumber": {
+              "label": "WhatsApp number",
+              "explanation": "The required format is: ONLY numbers, including country-code."
+            },
+            "accountId": {
+              "label": "Account ID"
+            },
+            "date": {
+              "label": "Date"
+            },
+            "openAnswer": {
+              "label": "Open answer"
+            },
+            "fixedChoice": {
+              "label": "Fixed choice"
+            },
+            "personalId": {
+              "label": "Personal ID"
+            },
+            "preferredLanguage": {
+              "label": "Preferred language"
+            },
+            "maxPayments": {
+              "label-payments": "Max payments ({{alreadyReceivedPayments}} already sent)",
+              "label-no-payments": "Max payments",
+              "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving."
+            },
+            "error": {
+              "not-an-integer": "Input should be an integer",
+              "too-low": "Input should be higher than the number of payments that have already been sent",
+              "not-empty": "Input cannot be empty"
+            }
+          },
+          "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
+          "fspNewAttributesExplanation": "For this FSP the following attributes are required:",
+          "note": {
+            "section-title": "Notes about Person Affected",
+            "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
+            "placeholder": "Start a note about this Person Affected by typing here...",
+            "save": "Save note",
+            "latest-update": "Latest update on: {{timestamp}}"
+          },
+          "error-alert": {
+            "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
+          },
+          "reason-popup": {
+            "subheader": "Reason for update",
+            "explanation": "Please provide a reason why this change was made.",
+            "max-length": "Do not use more than {{maxLength}} characters.",
+            "unsaved-changes-explanation": "Your changes have not been saved."
+          }
+        },
+        "message-history-popup": {
+          "message-title": "Message History",
+          "type": {
+            "whatsapp": "WhatsApp",
+            "sms": "SMS"
+          },
+          "content-type": {
+            "registered": "Registration",
+            "included": "Inclusion",
+            "inclusion-ended": "Inclusion ended",
+            "rejected": "Rejection",
+            "invited": "Invitation for registration",
+            "custom": "Custom message",
+            "generic-templated": "Message notification",
+            "payment-templated": "Payment notification",
+            "payment-voucher": "Payment voucher",
+            "payment": "Payment",
+            "payment-instructions": "Payment instructions",
+            "payment-reminder": "Payment reminder",
+            "default-reply": "Default reply"
+          },
+          "twilio-status": {
+            "accepted": "Accepted",
+            "scheduled": "Scheduled",
+            "queued": "Queued",
+            "sending": "Sending",
+            "sent": "Sent",
+            "delivery-unknown": "Delivery unknown",
+            "delivered": "Delivered",
+            "undelivered": "Undelivered",
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "chip-status": {
+            "sent": "Sent",
+            "delivered": "Delivered",
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "status-line": {
+            "code": "Twilio error code: "
+          },
+          "accordion-header": "Message text",
+          "image-string": "(image)"
+        },
+        "payment-status-popup": {
+          "message-title": "Message sent payment #{{payment}}: {{timestamp}}",
+          "money-title": "Voucher sent payment #{{payment}}: {{timestamp}}",
+          "error-message": "Error message",
+          "fix-error": "Please take the necessary action to fix this error. Then use the button below to retry payment for this Person Affected.",
+          "retry": "Retry payment for this PA",
+          "get-balance": "Get current balance of voucher",
+          "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
+          "print-voucher": "Print voucher",
+          "download-voucher": "Download voucher",
+          "single-payment": {
+            "intro": "Do payment for 1 PA only",
+            "start-payout": "Start payout now for {{paNr}}",
+            "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
+          }
+        },
+        "bulk-action-response": {
+          "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>The operation can take some time to process. Inspect the PA-table below for the up-to-date status.",
+          "pa-moved-phase": "People Affected might be visible in another phase after this status change.",
+          "close-popup": "You can close this popup."
+        },
+        "bulk-action-conditions": {
+          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
+          "selectForValidation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
+          "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
+          "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
+          "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
+          "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
+          "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
+          "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
+          "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
+        },
+        "payment-history-popup": {
+          "title": "Payment history"
+        }
+      },
+      "table-filter-row": {
+        "select-column-to-filter": "Type or select column to filter",
+        "apply-filter": "Apply Filter",
+        "remove-filter": "Remove filter",
+        "clear-all": "Clear all filters",
+        "filtered-results": "Filtered recipients"
+      },
+      "bulk-import": {
+        "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
+        "import-result": {
+          "ready": "Import ready.",
+          "csv": "A CSV is automatically downloaded, which shows the import-status and the registration-status per row.",
+          "new": "There are {{countImported}} new records imported.",
+          "existing": "There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped.",
+          "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again."
+        },
+        "timestamp": "Latest import has been done on: {{dateTime}}",
+        "imported": {
+          "btn-text": "Import People Affected",
+          "explanation": "Make sure to match the required format of the template CSV-file.",
+          "confirm-message": "The system will detect only new phone-numbers and import them as People Affected."
+        },
+        "registered": {
+          "btn-text": "Import registrations",
+          "explanation": "Make sure to match the required format of the template CSV-file.",
+          "confirm-message": "The system will create 'registered' People Affected."
+        }
+      },
+      "export-list": {
+        "timestamp": "Latest export has been done on: {{dateTime}}",
+        "no-data": "There is currently no data to download",
+        "all-people-affected": {
+          "btn-text": "Export People Affected",
+          "confirm-message": "This will download an Excel file with all People Affected."
+        },
+        "included": {
+          "btn-text": "Export included People Affected",
+          "confirm-message": "This will download an Excel file with all included People Affected."
+        },
+        "selected-for-validation": {
+          "btn-text": "Export list: selected for validation",
+          "confirm-message": "This will download an Excel file with all People Affected selected for validation, to be used for Validation visits."
+        },
+        "payment": {
+          "btn-text": "Export Report",
+          "confirm-message": "This will download an Excel file with all People Affected included in this payment."
+        },
+        "unused-vouchers": {
+          "btn-text": "Export list of unused vouchers",
+          "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher's last external update."
+        },
+        "duplicates": {
+          "btn-text": "Export duplicate People Affected",
+          "confirm-message": "This will download an Excel file with all People Affected that are duplicate.",
+          "basedOn": "Checking duplicates is based on: {{duplicateAttributes}}",
+          "canTakeFewMinutes": "This can take up to a few minutes."
+        },
+        "card-balances": {
+          "btn-text": "Export debit card usage",
+          "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
+        },
+        "pa-data-changes": {
+          "btn-text": "Export data changes",
+          "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program.",
+          "confirm-prompt": {
+            "choose-dates": "Optionally pass a Start date and/or an End date to filter the data changes.",
+            "date-from": "Start date {{ date }}",
+            "date-to": "End date {{ date }}",
+            "wrong-dates": "The end date must be greater than the start date",
+            "confirm-btn": "Export"
+          }
+        }
+      },
+      "export-fsp-intructions": {
+        "btn-text": "Export Payment Instructions",
+        "confirm-message": "This will download a file with payment instructions for the Financial Service Provider.",
+        "sub-message": {
+          "reconciliation": "This export will only include People Affected for which the current transaction status is <strong>waiting</strong>.",
+          "no-reconciliation": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        },
+        "timestamp": "Latest export has been done on: {{dateTime}}"
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "Import Payment Reconciliation Data",
+        "confirm-message": "Import Payment Reconciliation Data",
+        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "timestamp": "Latest import has been done on: {{dateTime}}",
+        "import-result": {
+          "ready": "Reconciliation data imported for payment <strong>#{{payment}}</strong>.",
+          "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
+          "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
+          "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again."
+        }
+      },
+      "manage-aidworkers": {
+        "section-title": "Manage aidworkers",
+        "column-email": "Email-adress",
+        "column-created": "Creation date",
+        "column-delete": "Delete aidworker",
+        "view-aidworkers": "Current aidworkers",
+        "create-aidworker": "Add new aidworker",
+        "email": "Enter email",
+        "confirm": "Add aidworker",
+        "create-password": "Enter a password of at least {{minimalLength}} characters:",
+        "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
+      }
+    },
+    "help": {
+      "pageTitle": "Help",
+      "user-manual": "User manual",
+      "user-manual-content": "Needs to be added."
+    },
+    "users": {
+      "pageTitle": "Users and roles",
+      "page-description": "In this page you can add and manage users, and see roles and permissions.",
+      "title": "USERS PAGE",
+      "users-tab": "Users",
+      "add-new-user": "Add new user",
+      "roles-tab": "Roles",
+      "total-users": "Users",
+      "search": "Search...",
+      "table-headers": {
+        "username": "Username",
+        "user-type": "User type",
+        "status": "Status",
+        "last-login": "Last login"
+      },
+      "user-type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      },
+      "status": {
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "user": {
+      "pageTitle": "User",
+      "change-password": {
+        "title": "Change password",
+        "current-password": "Current password",
+        "new-password": "New password",
+        "confirm-password": "Confirm password",
+        "success": "Password changed",
+        "failed": "Failed attempt: current password incorrect"
+      },
+      "notification-messages": {
+        "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
+        "different-passwords": "Passwords do not match."
+      }
+    },
+    "iframe": {
+      "recipient": {
+        "no-recipients-found": "No information linked to this person's phone number was found in any active programs in the 121 Platform.",
+        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here.",
+        "single-recipient-found": "Found <b> 1 Person Affected </b> registered with this number",
+        "multiple-recipients-found": "Found <b> {{paCount}} People Affected </b> registered with this number"
+      }
+    }
+  },
+  "common": {
+    "update": "Update",
+    "save": "Save",
+    "confirm": "Are you sure?",
+    "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "export-error": "Something went wrong with the export.",
+    "import-error": "Something went wrong with the import.",
+    "unknown-error": "Something went wrong. Error is unknown.",
+    "update-success": "Update successful",
+    "update-error": "Something went wrong: {{error}}",
+    "save-success": "Saved successfully",
+    "timestamp": {
+      "done": "Done on:"
+    },
+    "show-more": "Show More",
+    "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
+    "answer-is-required": "An answer is required for this question."
+  },
+  "registration-details": {
+    "pageTitle": "Registration details",
+    "show-all": "Show All",
+    "personal-information-table": {
+      "subtitle": "PA #{{ paNumber }}",
+      "status": "Status: <b>{{status}}</b>",
+      "registeredDate": "Registered date",
+      "lastUpdateDate": "Last update",
+      "namePartnerOrganization": "Partner organization",
+      "paymentsDone": "Payments done",
+      "primaryLanguage": "Primary language",
+      "phone": "Phone number",
+      "whatsappPhoneNumber": "WhatsApp number",
+      "fsp": "Financial Service Provider"
+    },
+    "physical-cards-overview": {
+      "title": "Debit cards",
+      "subtitle": "...",
+      "status": "Status",
+      "date-issued": "Issued",
+      "date-last-used": "Last used",
+      "current-balance": "Current balance",
+      "spent-this-month": "Spent this month (maximum {{maxAmount}} {{currency}})",
+      "pause-card": "Pause card",
+      "unpause-card": "Unpause card",
+      "issue-new-card": "Issue new card",
+      "popup-title": "Debit card",
+      "not-used-yet": "Not used yet",
+      "confirm-prompt": {
+        "prefix": "Are you sure you want to ",
+        "pause": "pause this card?",
+        "unpause": "unpause this card?",
+        "new-card": "permanently block this card and issue a new card?",
+        "suffix": "<br><br>This will automatically send a message to the person affected."
+      },
+      "action-result": {
+        "new-card-success": "Successfully issued new debit card",
+        "new-card-error": "<span class=\"status-failed-text\">Something went wrong</span><br><br>{{error}}",
+        "pause-success": "Successfully paused debit card",
+        "unpause-success": "Successfully unpaused debit card"
+      },
+      "explanation": "Explanation"
+    },
+    "activity-overview": {
+      "title": "Activity overview",
+      "filters": {
+        "null": "All",
+        "dataChanges": "Data changes",
+        "message": "Messages",
+        "status": "Status history",
+        "payment": "Payments",
+        "notes": "Notes"
+      },
+      "actions": "Actions",
+      "action": {
+        "add-note": "Add note"
+      },
+      "activities": {
+        "status": {
+          "label": "Status update",
+          "description": "Person affected status changed to: {{status}}."
+        },
+        "message": {
+          "label": "Message"
+        },
+        "payment": {
+          "label": "Payment #{{number}}",
+          "description": "Payment #{{number}} is {{status}}."
+        },
+        "data-changes": {
+          "label": "Data change",
+          "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}",
+          "reason": "<br><b>Reason:</b> {{reason}}"
+        },
+        "note": {
+          "label": "Note"
+        }
+      },
+      "add-note-popup": {
+        "add-note-profile": "You are about to add a note to {{ name }}'s profile.",
+        "note-visible": "The note will be visible to other 121 users who are permitted to view personal profiles.",
+        "type-note": "Type note:",
+        "note-textarea-placeholder": "Click here to type a short note"
+      }
+    },
+    "payment-history": {
+      "transfer": "Payment #{{paymentNr}}"
+    },
+    "error": "Person not found"
+  },
+  "refresh-data": {
+    "last-updated": "Last updated: {{date}}"
+  },
+  "file-picker": {
+    "label": "Select a file",
+    "download-template-button": "Download template CSV-file"
+  },
+  "select-typeahead": {
+    "placeholder": "Select..."
+  },
+  "password-toggle": {
+    "show": "Show password",
+    "hide": "Hide password"
+  },
+  "system-notifications": {
+    "compatible-browsers": "The 121 Portal works best in Chrome, Firefox, Safari and Microsoft Edge. The 121 Portal does not work in Internet Explorer."
+  }
+}

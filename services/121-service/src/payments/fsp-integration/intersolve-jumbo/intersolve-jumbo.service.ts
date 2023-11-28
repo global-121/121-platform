@@ -50,7 +50,11 @@ export class IntersolveJumboService
     }
     for (const batch of batches) {
       let batchResult: PaTransactionResultDto[] = [];
-      batchResult = await this.sendBatchPayment(batch, payment);
+      batchResult = await this.sendBatchPayment(
+        batch,
+        payment,
+        batch[0].bulkSize,
+      );
       for (const paResult of batchResult) {
         await this.storeTransactionResult(paResult, payment, 1, programId);
       }
@@ -100,6 +104,7 @@ export class IntersolveJumboService
   private async sendBatchPayment(
     paPaymentArray: PaPaymentDataDto[],
     payment: number,
+    bulkSizeCompletePayment: number,
   ): Promise<PaTransactionResultDto[]> {
     const batchResult: PaTransactionResultDto[] = [];
     const paymentDetailsArray = await this.getPaPaymentDetails(paPaymentArray);
@@ -190,6 +195,7 @@ export class IntersolveJumboService
       preOrderResult,
       paymentDetailsArray,
       batchResult,
+      bulkSizeCompletePayment,
     );
     return approvePreorderResult;
   }
@@ -198,6 +204,7 @@ export class IntersolveJumboService
     batchPreOrderResult: any,
     preOrderInfoArray: PreOrderInfoDto[],
     batchResult: PaTransactionResultDto[],
+    bulkSizeCompletePayment: number,
   ): Promise<PaTransactionResultDto[]> {
     const approvePreOrderResult =
       await this.intersolveJumboApiService.approvePreOrder(batchPreOrderResult);
@@ -210,6 +217,7 @@ export class IntersolveJumboService
         const transactionNotification = {
           notificationKey: ProgramNotificationEnum.jumboCardSent,
           dynamicContent: [String(calculatedAmount)],
+          bulkSize: bulkSizeCompletePayment,
         };
         const transactionResult = this.createTransactionResult(
           calculatedAmount,

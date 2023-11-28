@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Send message to people affected (extension of View_and_Manage_people_affected.feature)
 
   Background:
@@ -10,52 +10,25 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     When user selects the "Send message to PAs" action
     Then the eligible rows are only those with a phone number
 
-  Scenario: Confirm "Send message to PAs" action with tryWhatsapp disabled
+  Scenario: Confirm "Send message to PAs" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
-    And tryWhatsapp is off in the program configuration
     When the "bulk action" is "Send message to PAs"
-    Then the "changed data" is that "Messages" is filled with the text "SMS: SENT" for the selected rows
-    And the message arrives via SMS
+    Then a message is sent to the selected rows
+    And if "whatsappPhoneNumber" is known then the generic Whatsapp template is sent and otherwise dirctly the actual message via SMS
+    And the latest message columm shows this message type and also the latest status (In twilio-mock: READ for whatsapp and SENT for SMS)
+    And if the WhatsApp is being replied to (in twilio-mock automatic) then also the follow-up WhatsApp message is sent
 
-  # You can use 15005550001 in combination with Twilio Mock to test a failed SMS
-  Scenario: Confirm "Send message to PAs" action with tryWhatsapp disabled and SMS fails
+  # You can use 15005550001 in combination with Twilio Mock to test a failed message
+  Scenario: Unsuccessful "Send message to PAs"
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
-    And tryWhatsapp is off in the program configuration
-    And the phone number cannot receive SMS messages
+    And the message somehow cannot arrive successfully
     When the "bulk action" is "Send message to PAs"
-    Then the "changed data" is that "Messages" is filled with the text "SMS: UNDELIVERED" or "SMS: FAILED" for the selected rows
-    And the message doesn't arrive
+    Then no message is sent (WhatsApp or SMS)
+    And the "Messages" column shows "UNDELIVERED or FAILED" as status
 
-  Scenario: Confirm "Invite for registration" action with tryWhatsapp enabled
-    Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
-    And "Send a message to these People Affected" is enabled
-    And tryWhatsapp is on in the program configuration
-    And the phone number is able to receive WhatsApp messages
-    When the "bulk action" is "Send message to PAs"
-    Then the "changed data" is that "Messages" is filled with the text "WHATSAPP: sent" or "WHATSAPP: READ" for the selected rows
-    And the message arrives via WhatsApp
-
-  Scenario: Confirm "Invite for registration" action with tryWhatsapp enabled and whatsapp fails
-    Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
-    And "Send a message to these People Affected" is enabled
-    And tryWhatsapp is on in the program configuration
-    And the phone number is NOT able to receive WhatsApp messages
-    When the "bulk action" is "Send message to PAs"
-    Then the "changed data" is that "Messages" is filled with the text "WHATSAPP: FAILED" for the selected rows
-    And the message arrives via SMS
-
-  Scenario: Confirm "Invite for registration"  action with tryWhatsapp enabled and whatsapp and SMS fails
-    Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
-    And "Send a message to these People Affected" is enabled
-    And tryWhatsapp is on in the program configuration
-    And the phone number cannot receive WhatsApp and SMS messages
-    When the "bulk action" is "Send message to PAs"
-    Then the "changed data" is that "Messages" is filled with the text "WHATSAPP: FAILED" for the selected rows
-    And the message doesn't arrive
-
-  Scenario: Confirm "Send message to PAs" action for PA with last message 'failed'
+  Scenario: Send message only to PAs with last message 'failed'
     Given the "Send message to PAs" bulk action has been used
-    And this action has failed for one or more PA
-    When the text filter has "Last message" attrubute selected and the value used is "failed"
-    Then only the PA for which the last message failed appear in the PA table
+    And this action has failed for one or more PAs
+    When the filter "Last message" is used with the value "failed"
+    Then only the PAs for which the last message failed, appear in the PA table
     And they can be selected for another "Send message to PAs" bulk action

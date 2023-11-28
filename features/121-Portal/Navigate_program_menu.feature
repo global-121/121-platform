@@ -68,4 +68,4 @@ Feature: Navigate program menu
     Given "selected phase" is "Registration"
     When user clicks the "Allow new registrations"-toggle button
     Then the program will update to the "published/unpublished" state
-    And the program will now appear as selectable / will not be available for registration in PA-App based on its published or unpublished status in HO-Portal.
+    And the program will now appear as selectable / will not be available for registration in PA-App based on its published or unpublished status in Portal.

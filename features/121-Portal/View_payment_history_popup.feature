@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: View payment history column and popup
 
   Background:
