@@ -410,15 +410,16 @@ export class MessageIncomingService {
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
 
-        const whatsappDefaultReply =
+        const whatsappDefaultReply = (
           await this.messageTemplateService.getMessageTemplatesByProgramId(
             program.id,
             ProgramNotificationEnum.whatsappReply,
             language,
-          )[0];
+          )
+        )[0];
         await this.queueMessageService.addMessageToQueue(
           registrationsWithPhoneNumber[0],
-          whatsappDefaultReply,
+          whatsappDefaultReply.message,
           null,
           MessageContentType.defaultReply,
           MessageProcessType.whatsappDefaultReply,
