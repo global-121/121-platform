@@ -268,7 +268,7 @@
         },
         "make-payment": {
           "error": {
-            "generic": "Something went wrong with the payment. Please contact the 121 development team."
+            "generic": "Something went wrong with the payment. Please contact 121 technical support."
           },
           "make-payment": "Do payment: {{nr}}",
           "number-included": "PA included: {{number}}"
@@ -519,7 +519,7 @@
           "message-title": "Message sent payment #{{payment}}: {{timestamp}}",
           "money-title": "Voucher sent payment #{{payment}}: {{timestamp}}",
           "error-message": "Error message",
-          "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
+          "fix-error": "Please take the necessary action to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment for this PA",
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
