@@ -13,11 +13,11 @@ export class TwilioController {
     type: 'string',
   })
   @Get('v1/PhoneNumbers/:phoneNumber')
-  public fetchPhoneNumber(@Param('phoneNumber') phoneNumber: string): {
+  public async fetchPhoneNumber(@Param('phoneNumber') phoneNumber: string): Promise<{
     phone_number: string;
     national_format: string;
-  } {
-    return this.twilioService.fetchPhoneNumber(phoneNumber);
+  }> {
+    return await this.twilioService.fetchPhoneNumber(phoneNumber);
   }
 
   @ApiOperation({ summary: 'Create message ' })
