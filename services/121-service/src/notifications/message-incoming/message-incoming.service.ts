@@ -463,18 +463,16 @@ export class MessageIncomingService {
         if (firstVoucherSent) {
           message = '';
         } else {
-          message =
+          message = (
             await this.messageTemplateService.getMessageTemplatesByProgramId(
               program.id,
               ProgramNotificationEnum.whatsappVoucher,
               language,
-            );
+            )
+          )[0].message;
+          message = message.split('{{1}}').join(intersolveVoucher.amount);
         }
 
-        message =
-          message.length > 0
-            ? message[0].message.split('{{1}}').join(intersolveVoucher.amount)
-            : message.split('{{1}}').join(intersolveVoucher.amount);
         await this.queueMessageService.addMessageToQueue(
           registration,
           message,
