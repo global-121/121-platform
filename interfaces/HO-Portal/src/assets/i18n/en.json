@@ -268,7 +268,7 @@
         },
         "make-payment": {
           "error": {
-            "generic": "Something went wrong with the payment. Please contact the 121 development team."
+            "generic": "Something went wrong with the payment. Please contact 121 technical support."
           },
           "make-payment": "Do payment: {{nr}}",
           "number-included": "PA included: {{number}}"
