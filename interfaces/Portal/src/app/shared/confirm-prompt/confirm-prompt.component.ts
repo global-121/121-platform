@@ -12,10 +12,8 @@ import {
   FilePickerPromptComponent,
   FilePickerProps,
 } from '../file-picker-prompt/file-picker-prompt.component';
-import {
-  InputPromptComponent,
-  InputProps,
-} from '../input-prompt/input-prompt.component';
+import { InputPromptComponent } from '../input-prompt/input-prompt.component';
+import { MessageEditorComponent } from '../message-editor/message-editor.component';
 
 export interface SubmitPaymentProps {
   programId: number;
@@ -28,6 +26,28 @@ export interface SubmitPaymentProps {
 export interface DuplicateAttributesProps {
   attributes: string[];
   timestamp: string;
+}
+
+export interface InputProps {
+  promptType: 'message' | 'reason';
+  checkbox?: string;
+  checkboxChecked?: boolean;
+  inputRequired?: boolean;
+  explanation?: string;
+  placeholder?: string | undefined;
+  defaultValue?: string;
+  titleTranslationKey?: string;
+  okTranslationKey?: string;
+  cancelAlertTranslationKey?: string;
+  inputConstraint?: {
+    length: number;
+    type: 'min' | 'max';
+  };
+  isTemplated?: boolean;
+  templatedMessage?: string;
+  supportMessage?: string;
+  messageTemplateKey?: string;
+  programId?: number;
 }
 
 @Component({
@@ -140,7 +160,10 @@ export class ConfirmPromptComponent {
       });
     } else {
       modal = await this.modalController.create({
-        component: InputPromptComponent,
+        component:
+          this.inputProps.promptType === 'message'
+            ? MessageEditorComponent
+            : InputPromptComponent,
         componentProps: {
           subHeader: this.subHeader,
           message: this.message,

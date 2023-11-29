@@ -8,27 +8,10 @@ import {
 import { NgModel } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { PaTableAttribute } from '../../models/program.model';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../action-result';
-
-export interface InputProps {
-  checkbox?: string;
-  checkboxChecked?: boolean;
-  inputRequired?: boolean;
-  explanation?: string;
-  placeholder?: string | undefined;
-  defaultValue?: string;
-  titleTranslationKey?: string;
-  okTranslationKey?: string;
-  cancelAlertTranslationKey?: string;
-  inputConstraint?: {
-    length: number;
-    type: 'min' | 'max';
-  };
-  isTemplated?: boolean;
-  templatedMessage?: string;
-  supportMessage?: string;
-  messageTemplateKey?: string;
-}
+import { InputProps } from '../confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-input-prompt',
@@ -49,32 +32,30 @@ export class InputPromptComponent implements AfterViewInit {
   @ViewChild('input')
   public input: any;
 
-  public checked: boolean;
+  public attributes: PaTableAttribute[];
 
   constructor(
     public translate: TranslateService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
     private alertController: AlertController,
+    private programsService: ProgramsServiceApiService,
   ) {}
 
-  ngAfterViewInit() {
-    this.checked = this.inputProps ? this.inputProps.checkboxChecked : true;
-
+  async ngAfterViewInit() {
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
-  }
 
-  public checkboxChange(checked) {
-    this.checked = checked;
+    if (this.inputProps.promptType === 'message') {
+      this.attributes = await this.programsService.getPaTableAttributes(
+        this.inputProps.programId,
+        { includeFspQuestions: false },
+      );
+    }
   }
 
   public checkOkDisabled() {
     if (!this.inputProps) {
-      return false;
-    }
-
-    if (this.inputProps.checkbox && !this.checked) {
       return false;
     }
 
@@ -103,11 +84,6 @@ export class InputPromptComponent implements AfterViewInit {
       return;
     }
 
-    if (this.inputProps.checkbox && !this.checked) {
-      this.modalController.dismiss(null, null);
-      return;
-    }
-
     if (
       this.inputProps.inputRequired &&
       this.input &&
@@ -116,13 +92,6 @@ export class InputPromptComponent implements AfterViewInit {
     ) {
       this.modalController.dismiss({ message: this.input.value }, null);
       return;
-    }
-
-    if (this.inputProps.isTemplated && this.inputProps.checkboxChecked) {
-      this.modalController.dismiss(
-        { messageTemplateKey: this.inputProps.messageTemplateKey },
-        null,
-      );
     }
 
     this.modalController.dismiss(null, null);
