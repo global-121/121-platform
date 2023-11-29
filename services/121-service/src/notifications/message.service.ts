@@ -15,7 +15,6 @@ import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageTemplateEntity } from './message-template/message-template.entity';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { ProgramService } from '../programs/programs.service';
-import { QuestionType } from '../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class MessageService {
