@@ -34,6 +34,7 @@ import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 import { RefreshDataComponent } from './refresh-data/refresh-data.component';
 import { TooltipComponent } from './tooltip/tooltip.component';
+import { MessageEditorComponent } from './message-editor/message-editor.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     MessageHistoryPopupComponent,
     DatetimePickerComponent,
     TableFilterRowComponent,
+    MessageEditorComponent,
   ],
   imports: [
     CommonModule,
