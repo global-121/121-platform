@@ -22,6 +22,9 @@ export class LastMessageStatusService {
       latestMessage,
     );
     if (updateResult.affected === 0) {
+      await this.latestMessageRepository.delete({
+        messageId: latestMessage.messageId,
+      });
       await this.latestMessageRepository.insert(latestMessage);
     }
   }
