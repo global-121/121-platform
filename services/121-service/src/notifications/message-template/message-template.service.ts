@@ -4,11 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { MessageTemplateDto } from './dto/message-template.dto';
 import { LanguageEnum } from '../../registration/enum/language.enum';
+import { ProgramService } from '../../programs/programs.service';
 
 @Injectable()
 export class MessageTemplateService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+
+  constructor(private readonly programService: ProgramService) {}
 
   public async getMessageTemplatesByProgramId(
     programId: number,
@@ -41,6 +44,8 @@ export class MessageTemplateService {
     template.message = postData.message;
     template.isWhatsappTemplate = postData.isWhatsappTemplate;
 
+    await this.validatePlaceholders(programId, template.message);
+
     await this.messageTemplateRepository.save(template);
   }
 
@@ -56,6 +61,11 @@ export class MessageTemplateService {
       const errors = `No message template found with id ${messageId} in program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    await this.validatePlaceholders(
+      programId,
+      updateMessageTemplateDto.message,
+    );
 
     for (const key in updateMessageTemplateDto) {
       if (key !== 'template') {
@@ -82,6 +92,34 @@ export class MessageTemplateService {
         programId: programId,
         type: messageType,
       });
+    }
+  }
+
+  public async validatePlaceholders(
+    programId: number,
+    message: string,
+  ): Promise<void> {
+    const availableAttributes = await this.programService.getAttributes(
+      programId,
+      true,
+      true,
+      false,
+    );
+    const availablePlaceholders = availableAttributes.map(
+      (a) => `{{${a.name}}}`,
+    );
+    const regex = /{{[^}]+}}/g;
+    const matches = message.match(regex);
+
+    // This 'if' is needed because matches can be null if no placeholders are found
+    if (matches) {
+      for (const match of matches) {
+        const isPlaceholderAllowed = availablePlaceholders.includes(match);
+        if (!isPlaceholderAllowed) {
+          const errors = `Placeholder ${match} not found in program ${programId}`;
+          throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+        }
+      }
     }
   }
 }

@@ -5,9 +5,14 @@ import { GuardsService } from '../../guards/guards.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageTemplateEntity } from './message-template.entity';
 import { UserModule } from '../../user/user.module';
+import { ProgramModule } from '../../programs/programs.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MessageTemplateEntity]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([MessageTemplateEntity]),
+    UserModule,
+    ProgramModule,
+  ],
   providers: [MessageTemplateService, GuardsService],
   controllers: [MessageTemplateController],
   exports: [MessageTemplateService, GuardsService],
