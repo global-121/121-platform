@@ -38,7 +38,7 @@ describe('Send templated message on status change of PA', () => {
     messageTemplates = (await getMessageTemplates(programId, accessToken)).body;
   });
 
-  it('should send the templated inclusion message with placeholders processed, when including with sending message', async () => {
+  it('include', async () => {
     // Arrange
     const statusChange = RegistrationStatusEnum.included;
 
@@ -81,7 +81,7 @@ describe('Send templated message on status change of PA', () => {
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
 
-  it('inclusion ended', async () => {
+  it('end inclusion', async () => {
     // Arrange > include first to be able to end inclusion
     const statusChange = RegistrationStatusEnum.inclusionEnded;
     await awaitChangePaStatus(
@@ -130,7 +130,7 @@ describe('Send templated message on status change of PA', () => {
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
 
-  it('rejected', async () => {
+  it('reject', async () => {
     // Arrange > include first to be able to reject
     const statusChange = RegistrationStatusEnum.rejected;
     await awaitChangePaStatus(
@@ -179,7 +179,7 @@ describe('Send templated message on status change of PA', () => {
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
 
-  it.skip('invited', async () => {
+  it.skip('invite', async () => {
     // TODO: this requires being able to pass a CSV to the /import-bulk endpoint or write a json version of that endpoint
   });
 });
