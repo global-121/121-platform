@@ -247,7 +247,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
-      this.thisPhase,
+      { phase: this.thisPhase },
     );
 
     this.activePhase = this.program.phase;
@@ -825,6 +825,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action.confirmConditions.inputRequired = false;
         action.confirmConditions.checkboxChecked = true;
       }
+      action.confirmConditions.programId = this.programId;
     }
     return action;
   }

@@ -59,6 +59,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -103,6 +104,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -127,6 +129,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -153,6 +156,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -177,6 +181,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -205,6 +210,7 @@ export class BulkActionsService {
       ],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -229,6 +235,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: 'message',
         inputRequired: false,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.delete-warning',

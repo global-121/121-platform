@@ -140,15 +140,21 @@ export class ProgramsServiceApiService {
 
   getPaTableAttributes(
     programId: number | string,
-    phase: ProgramPhase,
+    options?: {
+      includeCustomAttributes?: boolean;
+      includeProgramQuestions?: boolean;
+      includeFspQuestions?: boolean;
+      phase?: ProgramPhase;
+    },
   ): Promise<PaTableAttribute[]> {
     let params = new HttpParams();
-    params = params.append('includeCustomAttributes', 'true');
-    params = params.append('includeProgramQuestions', 'true');
-    params = params.append('includeFspQustions', 'true');
-    if (phase) {
-      params = params.append('phase', phase);
-    }
+    const defaultOptions = {
+      includeCustomAttributes: true,
+      includeProgramQuestions: true,
+      includeFspQuestions: true,
+    };
+    params = params.appendAll(Object.assign(defaultOptions, options));
+
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/attributes`,
