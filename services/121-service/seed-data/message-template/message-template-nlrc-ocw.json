@@ -1,12 +1,4 @@
 {
-  "registered": {
-    "isWhatsappTemplate": false,
-    "message": {
-      "en": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 1 week.",
-      "nl": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
-      "ar": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع."
-    }
-  },
   "whatsappGenericMessage": {
     "isWhatsappTemplate": true,
     "message": {

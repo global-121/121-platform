@@ -661,13 +661,13 @@ export class RegistrationsService {
     return { referenceId: registerResult.referenceId };
   }
 
-  public async importBulk(
+  public async importBulkAsImported(
     csvFile,
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importBulk(
+    return await this.registrationsImportService.importBulkAsImported(
       csvFile,
       program,
       userId,
