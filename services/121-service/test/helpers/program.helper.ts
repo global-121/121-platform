@@ -254,9 +254,11 @@ export async function waitForMessagesToComplete(
               MessageStatus.read,
               MessageStatus.delivered,
               MessageStatus.failed,
+              MessageStatus.sent, // sent is also a final status for SMS, how does this change the below comment for WhatsApp?
             ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
         ).length > 0,
     ).length;
+
     allMessageUpdatesSuccessful =
       amountOfRegistrationWithMessages === referenceIds.length;
 
@@ -338,7 +340,7 @@ export async function updateMessageTemplate(
     .send(body);
 }
 
-export async function getMessageTemplate(
+export async function getMessageTemplates(
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {
