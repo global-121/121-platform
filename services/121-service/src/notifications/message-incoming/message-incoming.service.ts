@@ -458,23 +458,29 @@ export class MessageIncomingService {
           await this.imageCodeService.createVoucherUrl(intersolveVoucher);
 
         // Only include text with first voucher (across PAs and payments)
-        let message = null;
+        let message: string;
 
         if (firstVoucherSent) {
           message = '';
         } else {
-          message =
+          const templates =
             await this.messageTemplateService.getMessageTemplatesByProgramId(
               program.id,
               ProgramNotificationEnum.whatsappVoucher,
               language,
             );
+          if (templates.length > 0) {
+            message = templates[0].message;
+            message = message
+              .split('{{1}}')
+              .join(String(intersolveVoucher.amount));
+          } else {
+            throw new Error(
+              `WhatsApp Voucher template not found for language: ${language}`,
+            );
+          }
         }
 
-        message =
-          message.length > 0
-            ? message[0].message.split('{{1}}').join(intersolveVoucher.amount)
-            : message.split('{{1}}').join(intersolveVoucher.amount);
         await this.queueMessageService.addMessageToQueue(
           registration,
           message,
