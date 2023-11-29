@@ -8,6 +8,7 @@ graph LR
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
+  MessageTemplateModule-->ProgramModule
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule

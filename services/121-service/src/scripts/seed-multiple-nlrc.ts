@@ -10,15 +10,25 @@ import programPV from '../../seed-data/program/program-nlrc-pv.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedMultipleNLRC implements InterfaceScript {
-  public constructor(private dataSource: DataSource) {}
+  public constructor(
+    private dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
+  ) {}
 
-  private readonly seedHelper = new SeedHelper(this.dataSource);
+  private readonly seedHelper = new SeedHelper(
+    this.dataSource,
+    this.messageTemplateService,
+  );
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = await new SeedInit(this.dataSource);
+    const seedInit = await new SeedInit(
+      this.dataSource,
+      this.messageTemplateService,
+    );
     await seedInit.run(isApiTests);
     // ************************
     // ***** Program LVV *****
