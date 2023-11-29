@@ -21,14 +21,14 @@ enum MockPhoneNumbers {
 
 @Injectable()
 export class TwilioService {
-  public fetchPhoneNumber(phoneNumber: string): {
+  public async fetchPhoneNumber(phoneNumber: string): Promise<{
     phone_number: string;
     national_format: string;
-  } {
+  }> {
     if (!phoneNumber) {
       phoneNumber = '+31600000000';
     }
-
+    await setTimeout(400); // This is the average time of an actual twilio lookup
     return {
       phone_number: phoneNumber,
       national_format: phoneNumber,
