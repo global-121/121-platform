@@ -2,7 +2,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
-  getMessageTemplate,
+  getMessageTemplates,
   postMessageTemplate,
   updateMessageTemplate,
 } from '../helpers/program.helper';
@@ -40,7 +40,7 @@ describe('Message template', () => {
     await postMessageTemplate(programId, messageTemplate, accessToken);
 
     // Act
-    const getMessageTemplateResult = await getMessageTemplate(
+    const getMessageTemplateResult = await getMessageTemplates(
       programId,
       accessToken,
     );
