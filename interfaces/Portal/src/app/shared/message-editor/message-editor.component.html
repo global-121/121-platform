@@ -74,7 +74,6 @@
           rows="3"
           autoGrow="true"
           [minlength]="inputProps.inputConstraint?.length"
-          [value]="inputProps.defaultValue"
           [placeholder]="inputProps.placeholder"
           fill="outline"
           style="
@@ -96,22 +95,39 @@
           padding-right: 8px;
         "
       >
-        <pre
-          style="
-            white-space: pre-wrap; /* Since CSS 2.1 */
-            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-            white-space: -pre-wrap; /* Opera 4-6 */
-            white-space: -o-pre-wrap; /* Opera 7 */
-            word-wrap: break-word; /* Internet Explorer 5.5+ */
-          "
-          >{{ inputProps.templatedMessage }}</pre
-        >
+        <pre style="white-space: pre-wrap">{{
+          inputProps.templatedMessage
+        }}</pre>
       </div>
       <div
         *ngIf="inputProps.supportMessage"
         [innerHTML]="inputProps.supportMessage"
         class="ion-margin-vertical"
       ></div>
+
+      <ng-container *ngIf="!inputProps.isTemplated && attributeItems">
+        <ion-row>
+          <app-select-typeahead
+            [items]="attributeItems"
+            [(selection)]="selectedAttribute"
+            [placeholder]="
+              'page.program.program-people-affected.action-inputs.placeholder-typeahead-placeholder'
+                | translate
+            "
+            [multiple]="false"
+            [disabled]="isLoading"
+            class="tfr--text-filter--select ion-margin-end"
+          ></app-select-typeahead>
+          <ion-button
+            fill="outline"
+            color="primary"
+            shape="round"
+            [disabled]="!selectedAttribute"
+            (click)="addPlaceholder()"
+            >Add</ion-button
+          >
+        </ion-row>
+      </ng-container>
 
       <div class="ion-margin-vertical">
         {{

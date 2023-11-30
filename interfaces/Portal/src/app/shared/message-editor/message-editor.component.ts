@@ -7,8 +7,10 @@ import {
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Item } from '../../components/select-typeahead/select-typeahead.component';
 import { PaTableAttribute } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 import { actionResult } from '../action-result';
 import { InputProps } from '../confirm-prompt/confirm-prompt.component';
 
@@ -29,13 +31,17 @@ export class MessageEditorComponent implements AfterViewInit {
 
   @ViewChild('input')
   public input: any;
+  public inputModel: string = '';
 
   public checked: boolean;
 
   public attributes: PaTableAttribute[];
+  public attributeItems: Item[];
+  public selectedAttribute: Item[];
 
   public constructor(
     public translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
     private alertController: AlertController,
@@ -52,6 +58,15 @@ export class MessageEditorComponent implements AfterViewInit {
       this.inputProps.programId,
       { includeFspQuestions: false },
     );
+
+    if (this.attributes) {
+      this.attributeItems = this.attributes.map((att) => ({
+        name: att.name,
+        label: att.shortLabel
+          ? this.translatableString.get(att.shortLabel)
+          : this.translatableString.get(att.label),
+      }));
+    }
   }
 
   public async closeModal() {
@@ -127,5 +142,9 @@ export class MessageEditorComponent implements AfterViewInit {
 
   public checkboxChange(checked) {
     this.checked = checked;
+  }
+
+  public addPlaceholder() {
+    this.inputModel += `{${this.selectedAttribute[0].name}}`;
   }
 }
