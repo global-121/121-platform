@@ -31,12 +31,13 @@ export class MessageEditorComponent implements AfterViewInit {
 
   @ViewChild('input')
   public input: any;
+  public inputModel: string = '';
 
   public checked: boolean;
 
   public attributes: PaTableAttribute[];
   public attributeItems: Item[];
-  public selectedAttribute: Item;
+  public selectedAttribute: Item[];
 
   public constructor(
     public translate: TranslateService,
@@ -141,5 +142,9 @@ export class MessageEditorComponent implements AfterViewInit {
 
   public checkboxChange(checked) {
     this.checked = checked;
+  }
+
+  public addPlaceholder() {
+    this.inputModel += `{${this.selectedAttribute[0].name}}`;
   }
 }
