@@ -18,6 +18,7 @@ import {
   MessageProcessorLowPriority,
 } from './processors/message.processor';
 import { ProgramModule } from '../programs/programs.module';
+import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ProgramModule } from '../programs/programs.module';
     IntersolveVoucherModule,
     MessageTemplateModule,
     ProgramModule,
+    ProgramAttributesModule,
   ],
   providers: [
     MessageService,
@@ -41,7 +43,6 @@ import { ProgramModule } from '../programs/programs.module';
     MessageProcessorLargeBulk,
     MessageProcessorLowPriority,
     AzureLogService,
-    MessageTemplateModule,
   ],
   controllers: [],
   exports: [MessageService],

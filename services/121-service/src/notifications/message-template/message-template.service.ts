@@ -4,14 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { MessageTemplateDto } from './dto/message-template.dto';
 import { LanguageEnum } from '../../registration/enum/language.enum';
-import { ProgramService } from '../../programs/programs.service';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 
 @Injectable()
 export class MessageTemplateService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
-  constructor(private readonly programService: ProgramService) {}
+  constructor(
+    private readonly programAttributesService: ProgramAttributesService,
+  ) {}
 
   public async getMessageTemplatesByProgramId(
     programId: number,
@@ -99,12 +101,13 @@ export class MessageTemplateService {
     programId: number,
     message: string,
   ): Promise<void> {
-    const availableAttributes = await this.programService.getAttributes(
-      programId,
-      true,
-      true,
-      false,
-    );
+    const availableAttributes =
+      await this.programAttributesService.getAttributes(
+        programId,
+        true,
+        true,
+        false,
+      );
     const availablePlaceholders = availableAttributes.map(
       (a) => `{{${a.name}}}`,
     );

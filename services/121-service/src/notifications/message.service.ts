@@ -14,7 +14,7 @@ import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageTemplateEntity } from './message-template/message-template.entity';
 import { AzureLogService } from '../shared/services/azure-log.service';
-import { ProgramService } from '../programs/programs.service';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 
 @Injectable()
 export class MessageService {
@@ -33,7 +33,7 @@ export class MessageService {
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly azureLogService: AzureLogService,
-    private readonly programService: ProgramService,
+    private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
@@ -289,7 +289,7 @@ export class MessageService {
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
     });
-    const placeholders = await this.programService.getAttributes(
+    const placeholders = await this.programAttributesService.getAttributes(
       registration.programId,
       true,
       true,

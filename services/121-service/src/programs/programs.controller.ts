@@ -39,15 +39,16 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
-  private readonly programService: ProgramService;
-  public constructor(programService: ProgramService) {
-    this.programService = programService;
-  }
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly programAttributesService: ProgramAttributesService,
+  ) {}
 
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -286,13 +287,25 @@ export class ProgramController {
     @Query() queryParams,
     @User('id') userId: number,
   ): Promise<Attribute[]> {
-    return await this.programService.getAttributes(
+    if (userId) {
+      const hasPersonalReadAccess =
+        await this.programService.hasPersonalReadAccess(
+          Number(userId),
+          Number(params.programId),
+        );
+      if (!hasPersonalReadAccess) {
+        // If a person does not have personal read permission we should
+        // not show registration data columns in the portal
+        return [];
+      }
+    }
+
+    return await this.programAttributesService.getAttributes(
       Number(params.programId),
       queryParams.includeCustomAttributes === 'true',
       queryParams.includeProgramQuestions === 'true',
       queryParams.includeFspQuestions === 'true',
       queryParams.phase,
-      userId,
     );
   }
 }
