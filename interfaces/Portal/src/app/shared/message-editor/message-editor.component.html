@@ -113,6 +113,19 @@
         class="ion-margin-vertical"
       ></div>
 
+      <app-select-typeahead
+        *ngIf="attributeItems"
+        [items]="attributeItems"
+        [(selection)]="selectedAttribute"
+        [placeholder]="
+          'page.program.program-people-affected.action-inputs.placeholder-typeahead-placeholder'
+            | translate
+        "
+        [multiple]="false"
+        [disabled]="isLoading"
+        class="tfr--text-filter--select ion-margin-end"
+      ></app-select-typeahead>
+
       <div class="ion-margin-vertical">
         {{
           'page.program.program-people-affected.action-inputs.placeholder-pa-data'
