@@ -85,10 +85,6 @@
             --padding-end: 8px;
           "
         ></ion-textarea>
-        <ion-note>
-          {{ input?.value ? input?.value?.length : 0 }} (≥
-          {{ inputProps.inputConstraint?.length }})
-        </ion-note>
       </div>
       <div
         *ngIf="inputProps.isTemplated"

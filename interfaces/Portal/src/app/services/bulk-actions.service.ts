@@ -69,7 +69,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -114,7 +114,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -141,7 +141,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.reject.explanation',
         )}`,
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -166,7 +166,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -191,7 +191,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -220,7 +220,7 @@ export class BulkActionsService {
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },

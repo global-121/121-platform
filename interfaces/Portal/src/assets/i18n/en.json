@@ -717,7 +717,7 @@
     "update": "Update",
     "save": "Save",
     "confirm": "Are you sure?",
-    "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
+    "confirm-message-label": "The message needs to be longer than {{minLength}} character(s).",
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
