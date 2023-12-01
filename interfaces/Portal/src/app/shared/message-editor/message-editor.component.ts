@@ -39,6 +39,8 @@ export class MessageEditorComponent implements AfterViewInit {
   public attributeItems: Item[];
   public selectedAttribute: Item[];
 
+  public preview: string;
+
   public constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
@@ -146,11 +148,12 @@ export class MessageEditorComponent implements AfterViewInit {
 
   public addPlaceholder() {
     this.inputModel += `{{${this.selectedAttribute[0].name}}}`;
+    this.generatePreview(this.inputModel);
   }
 
-  public getPreview(input: string) {
+  public generatePreview(input: string): void {
     if (!this.attributes) {
-      return input;
+      this.preview = input;
     }
 
     let preview = input;
@@ -162,6 +165,6 @@ export class MessageEditorComponent implements AfterViewInit {
       );
     });
 
-    return preview;
+    this.preview = preview;
   }
 }

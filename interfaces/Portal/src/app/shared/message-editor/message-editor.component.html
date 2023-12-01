@@ -83,6 +83,7 @@
             --padding-start: 8px;
             --padding-end: 8px;
           "
+          (ngModelChange)="generatePreview($event)"
         ></ion-textarea>
       </div>
       <div
@@ -136,8 +137,13 @@
             | translate
         }}
       </div>
-      <!-- TODO: replace with actual HTML -->
-      <p>{{getPreview(inputModel)}}</p>
+      <b
+        >{{
+          'page.program.program-people-affected.action-inputs.message-preview'
+            | translate
+        }}:</b
+      >
+      <p>{{ preview }}</p>
     </div>
   </div>
 </ion-content>

@@ -212,9 +212,6 @@ export class BulkActionsService {
       confirmConditions: {
         promptType: 'message',
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
           length: 1,
           type: 'min',
