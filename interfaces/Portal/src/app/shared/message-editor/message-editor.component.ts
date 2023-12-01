@@ -147,4 +147,21 @@ export class MessageEditorComponent implements AfterViewInit {
   public addPlaceholder() {
     this.inputModel += `{{${this.selectedAttribute[0].name}}}`;
   }
+
+  public getPreview(input: string) {
+    if (!this.attributes) {
+      return input;
+    }
+
+    let preview = input;
+
+    this.attributes.forEach((att) => {
+      preview = preview.replace(
+        new RegExp(`{{${att.name}}}`, 'g'),
+        this.inputProps.firstRegistration[att.name],
+      );
+    });
+
+    return preview;
+  }
 }
