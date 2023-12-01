@@ -145,6 +145,6 @@ export class MessageEditorComponent implements AfterViewInit {
   }
 
   public addPlaceholder() {
-    this.inputModel += `{${this.selectedAttribute[0].name}}`;
+    this.inputModel += `{{${this.selectedAttribute[0].name}}}`;
   }
 }
