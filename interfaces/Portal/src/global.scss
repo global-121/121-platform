@@ -344,3 +344,15 @@ ion-input.custom-border {
     --border-width: 1px;
   }
 }
+
+.tooltip--popover {
+  .popover-viewport {
+    padding: 8px;
+    overflow: hidden;
+
+    ion-label {
+      padding-inline-start: 0;
+    }
+  }
+}
+
