@@ -64,10 +64,12 @@ export class MessageTemplateService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    await this.validatePlaceholders(
-      programId,
-      updateMessageTemplateDto.message,
-    );
+    if (updateMessageTemplateDto.message) {
+      await this.validatePlaceholders(
+        programId,
+        updateMessageTemplateDto.message,
+      );
+    }
 
     for (const key in updateMessageTemplateDto) {
       if (key !== 'template') {
