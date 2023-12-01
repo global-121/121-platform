@@ -2,9 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { MessageTemplateDto } from './dto/message-template.dto';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
+import {
+  CreateMessageTemplateDto,
+  UpdateTemplateBodyDto,
+} from './dto/message-template.dto';
 
 @Injectable()
 export class MessageTemplateService {
@@ -37,7 +40,7 @@ export class MessageTemplateService {
 
   public async createMessageTemplate(
     programId: number,
-    postData: MessageTemplateDto,
+    postData: CreateMessageTemplateDto,
   ): Promise<void> {
     const template = new MessageTemplateEntity();
     template.programId = programId;
@@ -53,14 +56,15 @@ export class MessageTemplateService {
 
   public async updateMessageTemplate(
     programId: number,
-    messageId: number,
-    updateMessageTemplateDto: MessageTemplateDto,
+    type: string,
+    language: LanguageEnum,
+    updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
-      where: { programId: programId, id: messageId },
+      where: { programId: programId, type: type, language: language },
     });
     if (!template) {
-      const errors = `No message template found with id ${messageId} in program ${programId}`;
+      const errors = `No message template found with type '${type}' and language '${language}' in program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -72,9 +76,7 @@ export class MessageTemplateService {
     }
 
     for (const key in updateMessageTemplateDto) {
-      if (key !== 'template') {
-        template[key] = updateMessageTemplateDto[key];
-      }
+      template[key] = updateMessageTemplateDto[key];
     }
 
     return await this.messageTemplateRepository.save(template);

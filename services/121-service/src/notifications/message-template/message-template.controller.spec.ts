@@ -3,6 +3,7 @@ import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { MessageTemplateController } from './message-template.controller';
 import { MessageTemplateService } from './message-template.service';
 import { MessageTemplateEntity } from './message-template.entity';
+import { LanguageEnum } from '../../registration/enum/language.enum';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -47,8 +48,8 @@ describe('MessageTemplatesService', () => {
       const programId = 1;
       const messageTemplate = {
         type: 'dsadsaasd12123dsa',
-        language: 'test1',
-        message: 'en',
+        language: LanguageEnum.en,
+        message: 'test1',
         isWhatsappTemplate: true,
       };
 
@@ -74,8 +75,8 @@ describe('MessageTemplatesService', () => {
           created: new Date(),
           updated: new Date(),
           type: 'dsadsaasd12123dsa',
-          language: 'test1',
-          message: 'en',
+          language: LanguageEnum.en,
+          message: 'test1',
           isWhatsappTemplate: true,
           programId: 1,
         },
@@ -99,13 +100,13 @@ describe('MessageTemplatesService', () => {
       expect(createMessageTemplateMock).toHaveBeenCalledWith(params);
     });
 
-    it('should update message template by id', async () => {
+    it('should update message template by type and language', async () => {
       const result: MessageTemplateEntity = {
         id: 1,
         created: new Date(),
         updated: new Date(),
         type: 'test1',
-        language: 'en',
+        language: LanguageEnum.en,
         message: 'testing message',
         isWhatsappTemplate: false,
         programId: 1,
@@ -118,16 +119,15 @@ describe('MessageTemplatesService', () => {
 
       const programId = 1;
       const messageId = 1;
+      const type = 'test1';
+      const language = LanguageEnum.en;
       const body = {
-        type: 'test1',
-        language: 'en',
         message: 'testing message',
         isWhatsappTemplate: false,
       };
 
       const response = await controller.updateMessageTemplate(
-        programId,
-        messageId,
+        { programId, type, language },
         body,
       );
 
@@ -136,8 +136,7 @@ describe('MessageTemplatesService', () => {
 
       // Ensure that the createMessageTemplate method was called with the correct arguments
       expect(createMessageTemplateMock).toHaveBeenCalledWith(
-        programId,
-        messageId,
+        { programId, type, language },
         body,
       );
     });

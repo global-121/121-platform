@@ -8,7 +8,11 @@ import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
 import { getServer } from './utility.helper';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { MessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
+import {
+  CreateMessageTemplateDto,
+  UpdateTemplateBodyDto,
+} from '../../src/notifications/message-template/dto/message-template.dto';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
 export async function postProgram(
   program: CreateProgramDto,
@@ -319,7 +323,7 @@ export async function getNotes(
 
 export async function postMessageTemplate(
   programId: number,
-  body: MessageTemplateDto,
+  body: CreateMessageTemplateDto,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
@@ -330,12 +334,13 @@ export async function postMessageTemplate(
 
 export async function updateMessageTemplate(
   programId: number,
-  messageId: number,
-  body: { type?: string },
+  type: string,
+  language: LanguageEnum,
+  body: UpdateTemplateBodyDto,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .patch(`/notifications/${programId}/message-template/${messageId}`)
+    .patch(`/notifications/${programId}/message-template/${type}/${language}`)
     .set('Cookie', [accessToken])
     .send(body);
 }
