@@ -211,10 +211,6 @@ export class BulkActionsService {
       showIfNoValidation: true,
       confirmConditions: {
         promptType: 'message',
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
