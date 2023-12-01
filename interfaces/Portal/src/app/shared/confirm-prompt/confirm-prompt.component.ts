@@ -30,7 +30,7 @@ export interface DuplicateAttributesProps {
 }
 
 export interface InputProps {
-  promptType: 'message' | 'reason';
+  promptType?: 'message' | 'reason';
   checkbox?: string;
   checkboxChecked?: boolean;
   inputRequired?: boolean;
