@@ -355,6 +355,7 @@ export class BulkActionsService {
         permissions: [Permission.PaymentCREATE],
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
+        confirmConditions: {},
       };
       paymentBulkActions.push(paymentBulkAction);
       paymentId--;
