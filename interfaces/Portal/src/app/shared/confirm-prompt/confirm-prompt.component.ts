@@ -161,7 +161,7 @@ export class ConfirmPromptComponent {
     } else {
       modal = await this.modalController.create({
         component:
-          this.inputProps.promptType === 'message'
+          this.inputProps?.promptType === 'message'
             ? MessageEditorComponent
             : InputPromptComponent,
         componentProps: {
