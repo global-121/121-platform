@@ -375,6 +375,7 @@
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
           "placeholder-pa-data": "Please make sure that all People Affected data is filled for the placeholders used.",
           "placeholder-typeahead-placeholder": "Select field",
+          "message-preview": "Message preview",
           "reject": {
             "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."
           }
