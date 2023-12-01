@@ -31,10 +31,10 @@ import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.componen
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
+import { MessageEditorComponent } from './message-editor/message-editor.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 import { RefreshDataComponent } from './refresh-data/refresh-data.component';
 import { TooltipComponent } from './tooltip/tooltip.component';
-import { MessageEditorComponent } from './message-editor/message-editor.component';
 
 @NgModule({
   declarations: [

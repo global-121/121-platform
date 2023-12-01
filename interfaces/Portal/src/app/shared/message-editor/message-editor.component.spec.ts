@@ -8,7 +8,7 @@ describe('MessageEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MessageEditorComponent]
+      declarations: [MessageEditorComponent],
     });
     fixture = TestBed.createComponent(MessageEditorComponent);
     component = fixture.componentInstance;
