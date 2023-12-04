@@ -11,7 +11,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { PaTableAttribute } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../action-result';
-import { InputProps } from '../confirm-prompt/confirm-prompt.component';
+import {
+  InputProps,
+  PromptType,
+} from '../confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-input-prompt',
@@ -46,7 +49,7 @@ export class InputPromptComponent implements AfterViewInit {
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
 
-    if (this.inputProps?.promptType === 'message') {
+    if (this.inputProps?.promptType === PromptType.actionWithMessage) {
       this.attributes = await this.programsService.getPaTableAttributes(
         this.inputProps.programId,
         { includeFspQuestions: false },

@@ -48,18 +48,25 @@
         <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
       </ion-checkbox>
     </ion-item>
-    <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">
+    <div
+      *ngIf="
+        inputProps.explanation &&
+        inputProps.promptType === promptTypeEnum.actionWithoutMessage
+      "
+      [innerHTML]="inputProps.explanation"
+      class="ion-margin-vertical"
+    ></div>
+    <div
+      *ngIf="
+        inputProps.promptType === promptTypeEnum.actionWithMessage &&
+        ((inputProps.checkbox && checked) || !inputProps.checkbox)
+      "
+    >
       <div
         *ngIf="inputProps.explanation"
         [innerHTML]="inputProps.explanation"
         class="ion-margin-vertical"
       ></div>
-      <p class="ion-margin-vertical">
-        {{
-          'page.program.program-people-affected.action-inputs.placeholder-pa-data'
-            | translate
-        }}
-      </p>
       <div *ngIf="!inputProps.isTemplated">
         <b
           >{{
@@ -69,7 +76,7 @@
         >
         <app-tooltip
           [value]="
-            'common.confirm-message-label'
+            'page.program.program-people-affected.action-inputs.type-message-tooltip'
               | translate
                 : {
                     minLength: inputProps.inputConstraint?.length
@@ -143,6 +150,12 @@
                 | translate
             }}</ion-button
           >
+          <p class="ion-margin-vertical">
+            {{
+              'page.program.program-people-affected.action-inputs.placeholder-pa-data'
+                | translate
+            }}
+          </p>
         </ion-row>
         <b
           >{{
