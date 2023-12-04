@@ -18,10 +18,18 @@ import {
   MessageQueueMap,
   MESSAGE_QUEUE_MAP,
 } from '../enum/message-queue-mapping.const';
+import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 
 @Injectable()
 export class QueueMessageService {
+  @InjectRepository(MessageTemplateEntity)
+  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+
   public constructor(
+    private readonly programAttributesService: ProgramAttributesService,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
     private readonly messageProcessorReplyOnIncoming: Queue,
     @InjectQueue(QueueNameCreateMessage.smallBulk)
@@ -99,6 +107,40 @@ export class QueueMessageService {
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }
+  }
+
+  public async getPlaceholdersInMessageText(
+    programId: number,
+    messageText?: string,
+    messageTemplateKey?: string,
+  ): Promise<string[]> {
+    if (!messageText && !messageTemplateKey) {
+      return [];
+    }
+    if (messageTemplateKey) {
+      const messageTemplate = await this.messageTemplateRepository.findOne({
+        where: {
+          type: messageTemplateKey,
+          programId: programId,
+          language: 'en', // use english to determine which placeholders are used
+        },
+      });
+      messageText = messageTemplate.message;
+    }
+    const placeholders = await this.programAttributesService.getAttributes(
+      programId,
+      true,
+      true,
+      false,
+    );
+    const usedPlaceholders = [];
+    for (const placeholder of placeholders) {
+      const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
+      if (messageText.match(regex)) {
+        usedPlaceholders.push(placeholder.name);
+      }
+    }
+    return usedPlaceholders;
   }
 
   private getQueueName(

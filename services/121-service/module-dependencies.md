@@ -14,6 +14,7 @@ graph LR
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->QueueMessageModule
+  QueueMessageModule-->ProgramAttributesModule
   TransactionsModule-->MessageTemplateModule
   IntersolveVoucherModule-->WhatsappModule
   IntersolveVoucherModule-->QueueMessageModule
@@ -29,7 +30,6 @@ graph LR
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
-  RegistrationsModule-->ProgramAttributesModule
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule

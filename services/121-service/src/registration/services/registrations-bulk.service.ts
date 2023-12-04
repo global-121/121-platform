@@ -25,8 +25,7 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
-import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
-import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
+import { LatestMessageEntity } from '../../notifications/latest-message.entity';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -42,6 +41,8 @@ export class RegistrationsBulkService {
   private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  @InjectRepository(LatestMessageEntity)
+  private readonly latestMessageRepository: Repository<LatestMessageEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(ImageCodeExportVouchersEntity)
@@ -52,15 +53,12 @@ export class RegistrationsBulkService {
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationViewEntity)
   private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
-  @InjectRepository(MessageTemplateEntity)
-  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: QueueMessageService,
-    private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -73,11 +71,12 @@ export class RegistrationsBulkService {
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
-    const usedPlaceholders = await this.checkIfMessageTextHasTemplateVariables(
-      programId,
-      message,
-      messageTemplateKey,
-    );
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        message,
+        messageTemplateKey,
+      );
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
@@ -131,17 +130,16 @@ export class RegistrationsBulkService {
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
-
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        false,
-        true,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
-      );
     if (!dryRun) {
-      this.deleteBatch(registrationForUpdate.data).catch((error) => {
+      const registrationForDelete =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          false,
+          true,
+          this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
+        );
+      this.deleteBatch(registrationForDelete.data).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -154,10 +152,11 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    const usedPlaceholders = await this.checkIfMessageTextHasTemplateVariables(
-      programId,
-      message,
-    );
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        message,
+      );
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
@@ -287,40 +286,6 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private async checkIfMessageTextHasTemplateVariables(
-    programId: number,
-    messageText?: string,
-    messageTemplateKey?: string,
-  ): Promise<string[]> {
-    if (!messageText && !messageTemplateKey) {
-      return [];
-    }
-    if (messageTemplateKey) {
-      const messageTemplate = await this.messageTemplateRepository.findOne({
-        where: {
-          type: messageTemplateKey,
-          programId: programId,
-          language: 'en', // use english to determine which placeholders are used
-        },
-      });
-      messageText = messageTemplate.message;
-    }
-    const placeholders = await this.programAttributesService.getAttributes(
-      programId,
-      true,
-      true,
-      false,
-    );
-    const usedPlaceholders = [];
-    for (const placeholder of placeholders) {
-      const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
-      if (messageText.match(regex)) {
-        usedPlaceholders.push(placeholder.name);
-      }
-    }
-    return usedPlaceholders;
-  }
-
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,
@@ -390,7 +355,7 @@ export class RegistrationsBulkService {
           registrationStatus,
         );
       if (
-        (messageSizeType.message || messageSizeType.messageTemplateKey) &&
+        (messageSizeType?.message || messageSizeType?.messageTemplateKey) &&
         updatedRegistration
       ) {
         if (updatedRegistration.programId !== programId) {
@@ -406,8 +371,10 @@ export class RegistrationsBulkService {
             ? MessageProcessType.tryWhatsapp
             : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         const placeholderData = {};
-        for (const placeholder of usedPlaceholders) {
-          placeholderData[placeholder] = registration[placeholder];
+        if (usedPlaceholders.length) {
+          for (const placeholder of usedPlaceholders) {
+            placeholderData[placeholder] = registration[placeholder];
+          }
         }
         try {
           await this.queueMessageService.addMessageToQueue(

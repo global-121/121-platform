@@ -39,8 +39,6 @@ import { RegistrationsImportService } from './services/registrations-import.serv
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
-import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 @Module({
   imports: [
@@ -67,7 +65,6 @@ import { MessageTemplateEntity } from '../notifications/message-template/message
       RegistrationViewEntity,
       LatestTransactionEntity,
       LatestMessageEntity,
-      MessageTemplateEntity,
     ]),
     UserModule,
     HttpModule,
@@ -78,7 +75,6 @@ import { MessageTemplateEntity } from '../notifications/message-template/message
     QueueMessageModule,
     IntersolveVisaModule,
     RegistrationChangeLogModule,
-    ProgramAttributesModule,
   ],
   providers: [
     RegistrationsService,
