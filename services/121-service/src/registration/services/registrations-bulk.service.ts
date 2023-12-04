@@ -25,6 +25,8 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
+import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -50,12 +52,15 @@ export class RegistrationsBulkService {
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationViewEntity)
   private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
+  @InjectRepository(MessageTemplateEntity)
+  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -68,7 +73,17 @@ export class RegistrationsBulkService {
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+    const usedPlaceholders = await this.checkIfMessageTextHasTemplateVariables(
+      programId,
+      message,
+      messageTemplateKey,
+    );
+    paginateQuery = this.setQueryPropertiesBulkAction(
+      paginateQuery,
+      false,
+      false,
+      usedPlaceholders,
+    );
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
@@ -83,6 +98,7 @@ export class RegistrationsBulkService {
         paginateQuery,
         programId,
         registrationStatus,
+        usedPlaceholders,
         message,
         messageTemplateKey,
         messageContentType,
@@ -124,11 +140,8 @@ export class RegistrationsBulkService {
         true,
         this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
       );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
     if (!dryRun) {
-      this.deleteBatch(referenceIds).catch((error) => {
+      this.deleteBatch(registrationForUpdate.data).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -141,11 +154,15 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    const chunkSize = 10000;
+    const usedPlaceholders = await this.checkIfMessageTextHasTemplateVariables(
+      programId,
+      message,
+    );
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
       true,
+      usedPlaceholders,
     );
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
@@ -154,12 +171,14 @@ export class RegistrationsBulkService {
     );
 
     if (!dryRun) {
+      const chunkSize = 10000;
       this.sendMessagesChunked(
         paginateQuery,
         programId,
         message,
         chunkSize,
         resultDto.applicableCount,
+        usedPlaceholders,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -173,6 +192,7 @@ export class RegistrationsBulkService {
     message: string,
     chunkSize: number,
     bulkSize: number,
+    usedPlaceholders: string[],
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -200,6 +220,7 @@ export class RegistrationsBulkService {
         registrationsForUpdate.data,
         message,
         bulkSize,
+        usedPlaceholders,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -247,6 +268,7 @@ export class RegistrationsBulkService {
     query: PaginateQuery,
     includePaymentMultiplier = false,
     includeSendMessageProperties = false,
+    usedPlaceholders?: string[],
   ): PaginateQuery {
     query.select = ['referenceId'];
     if (includePaymentMultiplier) {
@@ -258,8 +280,45 @@ export class RegistrationsBulkService {
       query.select.push('whatsappPhoneNumber');
       query.select.push('phoneNumber');
     }
+    if (usedPlaceholders?.length > 0) {
+      query.select = [...query.select, ...usedPlaceholders];
+    }
     query.page = null;
     return query;
+  }
+
+  private async checkIfMessageTextHasTemplateVariables(
+    programId: number,
+    messageText?: string,
+    messageTemplateKey?: string,
+  ): Promise<string[]> {
+    if (!messageText && !messageTemplateKey) {
+      return [];
+    }
+    if (messageTemplateKey) {
+      const messageTemplate = await this.messageTemplateRepository.findOne({
+        where: {
+          type: messageTemplateKey,
+          programId: programId,
+          language: 'en', // use english to determine which placeholders are used
+        },
+      });
+      messageText = messageTemplate.message;
+    }
+    const placeholders = await this.programAttributesService.getAttributes(
+      programId,
+      true,
+      true,
+      false,
+    );
+    const usedPlaceholders = [];
+    for (const placeholder of placeholders) {
+      const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
+      if (messageText.match(regex)) {
+        usedPlaceholders.push(placeholder.name);
+      }
+    }
+    return usedPlaceholders;
   }
 
   private getStatusUpdateBaseQuery(
@@ -288,6 +347,7 @@ export class RegistrationsBulkService {
     query: PaginateQuery,
     programId: number,
     registrationStatus: RegistrationStatusEnum,
+    usedPlaceholders: string[],
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
@@ -297,32 +357,36 @@ export class RegistrationsBulkService {
       await this.registrationsPaginationService.getPaginate(
         query,
         programId,
-        false,
+        true,
         true,
         queryBuilder,
       );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
+
+    await this.updateRegistrationStatusBatch(
+      registrationForUpdate.data,
+      registrationStatus,
+      {
+        message,
+        messageTemplateKey,
+        messageContentType,
+        bulkSize: registrationForUpdate.meta.totalItems,
+      },
+      usedPlaceholders,
     );
-    await this.updateRegistrationStatusBatch(referenceIds, registrationStatus, {
-      message,
-      messageTemplateKey,
-      messageContentType,
-      bulkSize: registrationForUpdate.meta.totalItems,
-    });
   }
 
   private async updateRegistrationStatusBatch(
-    referenceIds: string[],
+    registrations: RegistrationViewEntity[],
     registrationStatus: RegistrationStatusEnum,
     messageSizeType?: MessageSizeTypeDto,
+    usedPlaceholders?: string[],
   ): Promise<void> {
     let programId;
     let program;
-    for (const referenceId of referenceIds) {
+    for (const registration of registrations) {
       const updatedRegistration =
         await this.registrationsService.setRegistrationStatus(
-          referenceId,
+          registration.referenceId,
           registrationStatus,
         );
       if (
@@ -330,8 +394,8 @@ export class RegistrationsBulkService {
         updatedRegistration
       ) {
         if (updatedRegistration.programId !== programId) {
-          programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
+          programId = updatedRegistration.programId;
           program = await this.programRepository.findOne({
             where: { id: programId },
           });
@@ -341,6 +405,10 @@ export class RegistrationsBulkService {
           program.tryWhatsAppFirst
             ? MessageProcessType.tryWhatsapp
             : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
+        const placeholderData = {};
+        for (const placeholder of usedPlaceholders) {
+          placeholderData[placeholder] = registration[placeholder];
+        }
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
@@ -349,7 +417,7 @@ export class RegistrationsBulkService {
             messageSizeType.messageContentType,
             messageProcessType,
             null,
-            null,
+            { placeholderData },
             messageSizeType.bulkSize,
           );
         } catch (error) {
@@ -363,21 +431,23 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async deleteBatch(referenceIds: string[]): Promise<void> {
+  private async deleteBatch(
+    registrations: RegistrationViewEntity[],
+  ): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
     await this.checkAllowedStatusChangeOrThrow(
-      referenceIds,
+      registrations.map((r) => r.referenceId),
       RegistrationStatusEnum.deleted,
     );
     await this.updateRegistrationStatusBatch(
-      referenceIds,
+      registrations,
       RegistrationStatusEnum.deleted,
     );
 
-    for await (const referenceId of referenceIds) {
+    for await (const registrationViewEntity of registrations) {
       const registration =
         await this.registrationsService.getRegistrationFromReferenceId(
-          referenceId,
+          registrationViewEntity.referenceId,
           ['user'],
         );
 
@@ -450,8 +520,13 @@ export class RegistrationsBulkService {
     registrations: RegistrationViewEntity[],
     message: string,
     bulkSize: number,
+    usedPlaceholders: string[],
   ): Promise<void> {
     for (const registration of registrations) {
+      const placeholderData = {};
+      for (const placeholder of usedPlaceholders) {
+        placeholderData[placeholder] = registration[placeholder];
+      }
       await this.queueMessageService.addMessageToQueue(
         registration,
         message,
@@ -459,7 +534,7 @@ export class RegistrationsBulkService {
         MessageContentType.custom,
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         null,
-        null,
+        { placeholderData },
         bulkSize,
       );
     }

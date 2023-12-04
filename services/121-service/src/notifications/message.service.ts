@@ -14,7 +14,6 @@ import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';
 import { MessageTemplateEntity } from './message-template/message-template.entity';
 import { AzureLogService } from '../shared/services/azure-log.service';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 
 @Injectable()
 export class MessageService {
@@ -33,22 +32,23 @@ export class MessageService {
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly azureLogService: AzureLogService,
-    private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
     try {
-      const messageTextWithPlaceholders = messageJobDto.message
+      let messageText = messageJobDto.message
         ? messageJobDto.message
         : await this.getNotificationText(
             messageJobDto.preferredLanguage,
             messageJobDto.key,
             messageJobDto.programId,
           );
-      const messageText = await this.processPlaceholders(
-        messageTextWithPlaceholders,
-        messageJobDto.registrationId,
-      );
+      if (messageJobDto.customData?.placeholderData) {
+        messageText = await this.processPlaceholders(
+          messageText,
+          messageJobDto.customData.placeholderData,
+        );
+      }
 
       const processtype = messageJobDto.messageProcessType;
 
@@ -283,24 +283,13 @@ export class MessageService {
 
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
-    registrationId: number,
+    placeholderData: object,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;
-    const registration = await this.registrationRepository.findOne({
-      where: { id: registrationId },
-    });
-    const placeholders = await this.programAttributesService.getAttributes(
-      registration.programId,
-      true,
-      true,
-      false,
-    );
-
-    for (const placeholder of placeholders) {
-      const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
+    for (const placeholder of Object.keys(placeholderData)) {
+      const regex = new RegExp(`{{${placeholder}}}`, 'g');
       if (messageText.match(regex)) {
-        const placeHolderValue =
-          await registration.getRegistrationDataValueByName(placeholder.name);
+        const placeHolderValue = placeholderData[placeholder];
         messageText = messageText.replace(
           regex,
           placeHolderValue === null || placeHolderValue === undefined

@@ -29,13 +29,13 @@ graph LR
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
+  RegistrationsModule-->ProgramAttributesModule
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
-  MessageModule-->ProgramAttributesModule
   MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule

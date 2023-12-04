@@ -18,7 +18,6 @@ import {
   MessageProcessorLowPriority,
 } from './processors/message.processor';
 import { ProgramModule } from '../programs/programs.module';
-import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 
 @Module({
   imports: [
@@ -33,7 +32,6 @@ import { ProgramAttributesModule } from '../program-attributes/program-attribute
     IntersolveVoucherModule,
     MessageTemplateModule,
     ProgramModule,
-    ProgramAttributesModule,
   ],
   providers: [
     MessageService,
