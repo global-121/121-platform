@@ -53,8 +53,8 @@ export interface InputProps {
 }
 
 export enum PromptType {
-  message = 'message',
   reason = 'reason',
+  actionWithMessage = 'actionWithMessage',
   actionWithoutMessage = 'actionWithoutMessage',
 }
 
@@ -169,7 +169,7 @@ export class ConfirmPromptComponent {
     } else {
       modal = await this.modalController.create({
         component: [
-          PromptType.message,
+          PromptType.actionWithMessage,
           PromptType.actionWithoutMessage,
         ].includes(this.inputProps?.promptType)
           ? MessageEditorComponent

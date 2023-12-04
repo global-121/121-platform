@@ -60,7 +60,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -105,7 +105,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -130,7 +130,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -157,7 +157,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -182,7 +182,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -211,7 +211,7 @@ export class BulkActionsService {
       ],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.message,
+        promptType: PromptType.actionWithMessage,
         inputRequired: true,
         inputConstraint: {
           length: 1,

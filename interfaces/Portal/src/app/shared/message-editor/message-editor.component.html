@@ -49,17 +49,24 @@
       </ion-checkbox>
     </ion-item>
     <div
-      *ngIf="inputProps.explanation"
+      *ngIf="
+        inputProps.explanation &&
+        inputProps.promptType === promptTypeEnum.actionWithoutMessage
+      "
       [innerHTML]="inputProps.explanation"
       class="ion-margin-vertical"
     ></div>
-    <div *ngIf="inputProps.promptType === promptTypeEnum.message || (inputProps.checkbox && checked)">
-      <p class="ion-margin-vertical">
-        {{
-          'page.program.program-people-affected.action-inputs.placeholder-pa-data'
-            | translate
-        }}
-      </p>
+    <div
+      *ngIf="
+        inputProps.promptType === promptTypeEnum.actionWithMessage &&
+        ((inputProps.checkbox && checked) || !inputProps.checkbox)
+      "
+    >
+      <div
+        *ngIf="inputProps.explanation"
+        [innerHTML]="inputProps.explanation"
+        class="ion-margin-vertical"
+      ></div>
       <div *ngIf="!inputProps.isTemplated">
         <b
           >{{
@@ -143,6 +150,12 @@
                 | translate
             }}</ion-button
           >
+          <p class="ion-margin-vertical">
+            {{
+              'page.program.program-people-affected.action-inputs.placeholder-pa-data'
+                | translate
+            }}
+          </p>
         </ion-row>
         <b
           >{{

@@ -49,7 +49,7 @@ export class InputPromptComponent implements AfterViewInit {
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
 
-    if (this.inputProps?.promptType === PromptType.message) {
+    if (this.inputProps?.promptType === PromptType.actionWithMessage) {
       this.attributes = await this.programsService.getPaTableAttributes(
         this.inputProps.programId,
         { includeFspQuestions: false },
