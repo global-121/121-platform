@@ -18,6 +18,12 @@ export class SeedMultipleNLRC implements InterfaceScript {
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
   public async run(isApiTests?: boolean): Promise<void> {
+    const debugScopes = [
+      'utrecht',
+      'zeeland',
+      'zeeland.middelburg',
+      'zeeland.goes',
+    ];
     const seedInit = await new SeedInit(this.dataSource);
     await seedInit.run(isApiTests);
     // ************************
@@ -34,7 +40,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityLVV, true);
+    await this.seedHelper.addDefaultUsers(programEntityLVV, true, debugScopes);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -54,7 +60,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityPV, true);
+    await this.seedHelper.addDefaultUsers(programEntityPV, true, debugScopes);
 
     // ************************
     // ***** Program OCW *****
@@ -70,7 +76,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityOCW, true);
+    await this.seedHelper.addDefaultUsers(programEntityOCW, true, debugScopes);
   }
 }
 

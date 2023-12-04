@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
@@ -23,6 +23,8 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
+import { ScopeMiddleware } from '../../../shared/middleware/scope.middelware';
+import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { MessageTemplateModule } from '../../../notifications/message-template/m
       ProgramFspConfigurationEntity,
       UserEntity,
       TwilioMessageEntity,
+      ProgramAidworkerAssignmentEntity,
     ]),
     ImageCodeModule,
     UserModule,
@@ -61,4 +64,8 @@ import { MessageTemplateModule } from '../../../notifications/message-template/m
     IntersolveVoucherCronService,
   ],
 })
-export class IntersolveVoucherModule {}
+export class IntersolveVoucherModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(ScopeMiddleware).forRoutes(IntersolveVoucherController);
+  }
+}

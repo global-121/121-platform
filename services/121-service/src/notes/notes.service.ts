@@ -1,17 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
-import { NoteEntity } from './note.entity';
+import { NoteScopedRepository } from './note.scoped.repository';
 
 @Injectable()
 export class NoteService {
-  @InjectRepository(NoteEntity)
-  private noteRepository: Repository<NoteEntity>;
-
   public constructor(
     private readonly registrationsService: RegistrationsService,
+    private readonly noteRepository: NoteScopedRepository,
   ) {}
 
   public async createNote(
@@ -36,6 +32,7 @@ export class NoteService {
       registrationId: registration.id,
       userId,
       text,
+      scope: registration.scope,
     };
 
     await this.noteRepository.save(note);
@@ -45,11 +42,11 @@ export class NoteService {
     referenceId: string,
     programId: number,
   ): Promise<ResponseNoteDto[]> {
-    const notes = await this.noteRepository
+    const qb = await this.noteRepository
       .createQueryBuilder('note')
       .innerJoin('note.registration', 'registration')
       .innerJoinAndSelect('note.user', 'user')
-      .where('registration.referenceId = :referenceId', { referenceId })
+      .andWhere('registration.referenceId = :referenceId', { referenceId })
       .andWhere('registration.programId = :programId', { programId })
       .select([
         'note.id as id',
@@ -59,9 +56,8 @@ export class NoteService {
         'note.created as created',
         'user.username AS username',
       ])
-      .orderBy('note.created', 'DESC')
-      .getRawMany();
-
+      .orderBy('note.created', 'DESC');
+    const notes = await qb.getRawMany();
     return notes;
   }
 }

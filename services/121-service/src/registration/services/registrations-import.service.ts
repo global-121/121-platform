@@ -294,6 +294,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
       registration.inclusionScore = 0;
+      registration.scope = record.scope;
       registration.registrationStatus = RegistrationStatusEnum.registered;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
@@ -744,7 +745,7 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
-
+      importRecord.scope = row.scope;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {

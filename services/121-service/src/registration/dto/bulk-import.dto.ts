@@ -91,4 +91,7 @@ export class ImportRegistrationsDto extends BulkImportDto {
   @IsString()
   @Length(5, 200)
   public referenceId: string;
+
+  @ApiProperty()
+  public scope: string;
 }

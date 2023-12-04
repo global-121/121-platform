@@ -11,4 +11,7 @@ export class AssignAidworkerToProgramDto {
   @ArrayMinSize(0)
   @IsOptional()
   public readonly roles: DefaultUserRole[];
+
+  @ApiProperty()
+  public readonly scope: string;
 }

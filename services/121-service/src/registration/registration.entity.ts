@@ -21,6 +21,7 @@ import {
   Unique,
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
+import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -32,7 +33,6 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ReferenceIdConstraints } from '../shared/const';
 import { UserEntity } from '../user/user.entity';
-import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
@@ -166,6 +166,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
   public notes: NoteEntity[];
+
+  // TODO: add some database constraints to make sure that scope is always lowercase
+  // TODO: DO not make this nullable but set everything to empty string in migration
+  // Also not use the setting {default: ''} because than we will forget to set it later just one time '' in the migration
+  @Index()
+  @Column({ nullable: true })
+  public scope: string;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

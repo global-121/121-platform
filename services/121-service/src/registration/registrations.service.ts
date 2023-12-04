@@ -52,6 +52,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
+import { RegistrationScopedRepository } from './registration-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
@@ -99,6 +100,7 @@ export class RegistrationsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
+    private readonly registrationRepository2: RegistrationScopedRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId

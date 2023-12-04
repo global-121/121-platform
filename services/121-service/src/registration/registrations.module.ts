@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { ActionModule } from '../actions/action.module';
@@ -17,10 +17,12 @@ import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
+import { ScopeMiddleware } from '../shared/middleware/scope.middelware';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
@@ -31,6 +33,10 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from './registration-scoped.repository';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
@@ -65,6 +71,7 @@ import { LatestMessageEntity } from '../notifications/latest-message.entity';
       RegistrationViewEntity,
       LatestTransactionEntity,
       LatestMessageEntity,
+      ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,
     HttpModule,
@@ -84,6 +91,8 @@ import { LatestMessageEntity } from '../notifications/latest-message.entity';
     RegistrationsPaginationService,
     LastMessageStatusService,
     RegistrationsBulkService,
+    RegistrationScopedRepository,
+    RegistrationViewScopedRepository,
   ],
   controllers: [RegistrationsController],
   exports: [
@@ -92,4 +101,8 @@ import { LatestMessageEntity } from '../notifications/latest-message.entity';
     RegistrationsPaginationService,
   ],
 })
-export class RegistrationsModule {}
+export class RegistrationsModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(ScopeMiddleware).forRoutes(RegistrationsController);
+  }
+}

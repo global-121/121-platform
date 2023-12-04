@@ -16,6 +16,7 @@ import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
+import { DEBUG } from '../config';
 
 export class SeedHelper {
   public constructor(private dataSource: DataSource) {}
@@ -23,6 +24,7 @@ export class SeedHelper {
   public async addDefaultUsers(
     program: ProgramEntity,
     addFieldValidation: boolean,
+    debugScopeUsers: string[] = [],
   ): Promise<void> {
     const fullAccessUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
@@ -87,6 +89,22 @@ export class SeedHelper {
       await this.assignAidworker(fieldValidationUser.id, program.id, [
         DefaultUserRole.FieldValidation,
       ]);
+    }
+
+    if (debugScopeUsers && DEBUG) {
+      for (const debugScopeUser of debugScopeUsers) {
+        const scopedUser = await this.getOrSaveUser({
+          username: `${debugScopeUser}@example.org`,
+          password:
+            process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+        });
+        await this.assignAidworker(
+          scopedUser.id,
+          program.id,
+          [DefaultUserRole.ProgramAdmin],
+          debugScopeUser,
+        );
+      }
     }
 
     await this.assignAdminUserToProgram(program.id);
@@ -258,6 +276,7 @@ export class SeedHelper {
     userId: number,
     programId: number,
     roles: DefaultUserRole[] | string[],
+    scope?: string,
   ): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const programRepository = this.dataSource.getRepository(ProgramEntity);
@@ -268,7 +287,9 @@ export class SeedHelper {
     const user = await userRepository.findOneBy({
       id: userId,
     });
+    console.log('scope: ', scope);
     await assignmentRepository.save({
+      scope: scope,
       user: user,
       program: await programRepository.findOne({
         where: {

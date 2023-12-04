@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
@@ -16,6 +16,9 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { IntersolveVisaWalletScopedRepository } from './intersolve-visa-wallet.scoped.repository';
+import { ScopeMiddleware } from '../../../shared/middleware/scope.middelware';
+import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
       UserEntity,
       RegistrationEntity,
       IntersolveVisaCustomerEntity,
+      ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,
     TransactionsModule,
@@ -38,6 +42,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     RegistrationDataQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
+    IntersolveVisaWalletScopedRepository,
   ],
   controllers: [IntersolveVisaController],
   exports: [
@@ -47,4 +52,8 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     IntersolveVisaExportService,
   ],
 })
-export class IntersolveVisaModule {}
+export class IntersolveVisaModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(ScopeMiddleware).forRoutes(IntersolveVisaController);
+  }
+}

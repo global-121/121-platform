@@ -65,6 +65,7 @@ import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
+import { IntersolveVisaWalletScopedRepository } from './intersolve-visa-wallet.scoped.repository';
 
 @Injectable()
 export class IntersolveVisaService
@@ -82,6 +83,7 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly intersolveVisaWalletScopedRepo: IntersolveVisaWalletScopedRepository,
   ) {}
 
   public async getTransactionInfo(
@@ -752,13 +754,15 @@ export class IntersolveVisaService
     block: boolean,
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const wallet = await this.intersolveVisaWalletRepository.findOne({
-      where: { tokenCode: tokenCode },
-      relations: [
+    const qb = this.intersolveVisaWalletScopedRepo
+      .createQueryBuilder('wallet')
+      .leftJoinAndSelect(
+        'wallet.intersolveVisaCustomer',
         'intersolveVisaCustomer',
-        'intersolveVisaCustomer.registration',
-      ],
-    });
+      )
+      .leftJoinAndSelect('intersolveVisaCustomer.registration', 'registration')
+      .andWhere('wallet.tokenCode = :tokenCode', { tokenCode });
+    const wallet = await qb.getOne();
 
     if (
       !wallet ||

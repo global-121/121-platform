@@ -34,6 +34,7 @@ import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
+import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
 
 interface Filter {
   comparator: FilterComparator;
@@ -43,14 +44,15 @@ type ColumnsFilters = Record<string, Filter[]>;
 
 @Injectable()
 export class RegistrationsPaginationService {
-  @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  public constructor(private readonly programService: ProgramService) {}
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+  ) {}
 
   public async getPaginate(
     query: PaginateQuery,
@@ -78,9 +80,9 @@ export class RegistrationsPaginationService {
     }
 
     if (!queryBuilder) {
-      queryBuilder = this.registrationViewRepository
+      queryBuilder = this.registrationViewScopedRepository
         .createQueryBuilder('registration')
-        .where({ status: Not(RegistrationStatusEnum.deleted) });
+        .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
     }
     queryBuilder = queryBuilder.andWhere(
       '"registration"."programId" = :programId',
