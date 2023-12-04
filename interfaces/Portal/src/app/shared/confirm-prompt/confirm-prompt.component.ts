@@ -30,7 +30,7 @@ export interface DuplicateAttributesProps {
 }
 
 export interface InputProps {
-  promptType?: 'message' | 'reason';
+  promptType?: PromptType;
   checkbox?: string;
   checkboxChecked?: boolean;
   inputRequired?: boolean;
@@ -50,6 +50,12 @@ export interface InputProps {
   messageTemplateKey?: string;
   programId?: number;
   firstRegistration?: PersonRow;
+}
+
+export enum PromptType {
+  message = 'message',
+  reason = 'reason',
+  actionWithoutMessage = 'actionWithoutMessage',
 }
 
 @Component({
@@ -162,10 +168,12 @@ export class ConfirmPromptComponent {
       });
     } else {
       modal = await this.modalController.create({
-        component:
-          this.inputProps?.promptType === 'message'
-            ? MessageEditorComponent
-            : InputPromptComponent,
+        component: [
+          PromptType.message,
+          PromptType.actionWithoutMessage,
+        ].includes(this.inputProps?.promptType)
+          ? MessageEditorComponent
+          : InputPromptComponent,
         componentProps: {
           subHeader: this.subHeader,
           message: this.message,

@@ -48,12 +48,12 @@
         <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
       </ion-checkbox>
     </ion-item>
-    <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">
-      <div
-        *ngIf="inputProps.explanation"
-        [innerHTML]="inputProps.explanation"
-        class="ion-margin-vertical"
-      ></div>
+    <div
+      *ngIf="inputProps.explanation"
+      [innerHTML]="inputProps.explanation"
+      class="ion-margin-vertical"
+    ></div>
+    <div *ngIf="inputProps.promptType === promptTypeEnum.message || (inputProps.checkbox && checked)">
       <p class="ion-margin-vertical">
         {{
           'page.program.program-people-affected.action-inputs.placeholder-pa-data'

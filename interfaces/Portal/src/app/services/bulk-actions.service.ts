@@ -10,6 +10,7 @@ import {
   BulkActionResult,
 } from '../models/bulk-actions.models';
 import { ProgramPhase } from '../models/program.model';
+import { PromptType } from '../shared/confirm-prompt/confirm-prompt.component';
 import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -59,7 +60,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -104,7 +105,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -129,7 +130,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -156,7 +157,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -181,7 +182,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
@@ -210,7 +211,7 @@ export class BulkActionsService {
       ],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.message,
         inputRequired: true,
         inputConstraint: {
           length: 1,
@@ -228,7 +229,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: 'message',
+        promptType: PromptType.actionWithoutMessage,
         inputRequired: false,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.delete-warning',

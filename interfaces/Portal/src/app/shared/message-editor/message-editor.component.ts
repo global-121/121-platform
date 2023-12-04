@@ -12,7 +12,10 @@ import { PaTableAttribute } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { actionResult } from '../action-result';
-import { InputProps } from '../confirm-prompt/confirm-prompt.component';
+import {
+  InputProps,
+  PromptType,
+} from '../confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-message-editor',
@@ -40,6 +43,8 @@ export class MessageEditorComponent implements AfterViewInit {
   public selectedAttribute: Item[];
 
   public preview: string;
+
+  public promptTypeEnum = PromptType;
 
   public constructor(
     public translate: TranslateService,
