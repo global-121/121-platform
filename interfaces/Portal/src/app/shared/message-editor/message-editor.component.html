@@ -69,11 +69,11 @@
         >
         <app-tooltip
           [value]="
-          'common.confirm-message-label'
-          | translate
-            : {
-                minLength: inputProps.inputConstraint?.length
-              }
+            'common.confirm-message-label'
+              | translate
+                : {
+                    minLength: inputProps.inputConstraint?.length
+                  }
           "
         ></app-tooltip>
         <ion-textarea
@@ -145,24 +145,22 @@
           >
         </ion-row>
         <b
-        >{{
-          'page.program.program-people-affected.action-inputs.message-preview'
-            | translate
-        }}:</b
-      >
-      <div
-        style="
-          font-family: monospace;
-          border: 1px solid var(--ion-color-medium);
-          border-radius: 4px;
-          padding-left: 8px;
-          padding-right: 8px;
-        "
-      >
-        <pre style="white-space: pre-wrap">{{
-          preview
-        }}</pre>
-      </div>
+          >{{
+            'page.program.program-people-affected.action-inputs.message-preview'
+              | translate
+          }}:</b
+        >
+        <div
+          style="
+            font-family: monospace;
+            border: 1px solid var(--ion-color-medium);
+            border-radius: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
+          "
+        >
+          <pre style="white-space: pre-wrap">{{ preview }}</pre>
+        </div>
       </ng-container>
     </div>
   </div>
