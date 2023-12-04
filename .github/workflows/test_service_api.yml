@@ -64,6 +64,8 @@ jobs:
       - name: Force set database schema to a clean state
         working-directory: ./services
         run: |
+          /bin/sed -i '/migrationsRun/s/true/false/' ./121-service/ormconfig.ts
+          /bin/sed -i '/dropSchema/s/false/true/' ./121-service/ormconfig.ts
           /bin/sed -i '/synchronize/s/false/true/' ./121-service/ormconfig.ts
 
       - name: Build containers
@@ -87,4 +89,5 @@ jobs:
           docker compose exec 121-service npm run test:e2e:all
 
       - name: Docker logs
+        if: always()
         uses: jwalton/gh-docker-logs@v2
