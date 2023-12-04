@@ -41,6 +41,23 @@ describe('Message template', () => {
     expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.CREATED);
   });
 
+  it('should NOT create message template when invalid placeholder is included', async () => {
+    // Arrange
+    messageTemplate['type'] = type;
+    messageTemplate['language'] = language;
+    messageTemplate['message'] = 'testing message {{invalid}}';
+
+    // Act
+    const postMessageTemplateResult = await postMessageTemplate(
+      programId,
+      messageTemplate as CreateMessageTemplateDto,
+      accessToken,
+    );
+
+    // Assert
+    expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
+  });
+
   it('should get all message template by programId', async () => {
     await postMessageTemplate(
       programId,

@@ -4,6 +4,7 @@ import { ProgramAttributesService } from './program-attributes.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
       ProgramEntity,
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
+      FspQuestionEntity,
     ]),
   ],
   providers: [ProgramAttributesService],

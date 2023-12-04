@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import {
   AllowedFilterOperatorsNumber,
@@ -24,8 +24,8 @@ export class ProgramAttributesService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-
-  public constructor(private readonly dataSource: DataSource) {}
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
 
   public getFilterableAttributes(
     program: ProgramEntity,
@@ -173,8 +173,7 @@ export class ProgramAttributesService {
     programId: number,
     phase?: string,
   ): Promise<Attribute[]> {
-    let queryProgramQuestions = this.dataSource
-      .getRepository(ProgramQuestionEntity)
+    let queryProgramQuestions = this.programQuestionRepository
       .createQueryBuilder('programQuestion')
       .where({ program: { id: programId } });
 
@@ -201,8 +200,7 @@ export class ProgramAttributesService {
     programId: number,
     phase?: string,
   ): Promise<Attribute[]> {
-    let queryCustomAttr = this.dataSource
-      .getRepository(ProgramCustomAttributeEntity)
+    let queryCustomAttr = this.programCustomAttributeRepository
       .createQueryBuilder('programCustomAttribute')
       .where({ program: { id: programId } });
 
@@ -235,8 +233,7 @@ export class ProgramAttributesService {
     });
     const fspIds = program.financialServiceProviders.map((f) => f.id);
 
-    let queryFspAttributes = this.dataSource
-      .getRepository(FspQuestionEntity)
+    let queryFspAttributes = this.fspQuestionRepository
       .createQueryBuilder('fspAttribute')
       .where({ fspId: In(fspIds) });
 
