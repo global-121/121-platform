@@ -460,6 +460,9 @@ export class RegistrationsBulkService {
           user: { id: registration.user.id },
         });
       }
+      await this.latestMessageRepository.delete({
+        registrationId: registration.id,
+      });
       await this.twilioMessageRepository.delete({
         registrationId: registration.id,
       });
