@@ -54,21 +54,6 @@
         [innerHTML]="inputProps.explanation"
         class="ion-margin-vertical"
       ></div>
-      <b
-        >{{
-          'page.program.program-people-affected.action-inputs.type-message'
-            | translate
-        }}:</b
-      >
-      <app-tooltip
-        [value]="
-        'common.confirm-message-label'
-        | translate
-          : {
-              minLength: inputProps.inputConstraint?.length
-            }
-        "
-      ></app-tooltip>
       <p class="ion-margin-vertical">
         {{
           'page.program.program-people-affected.action-inputs.placeholder-pa-data'
@@ -76,6 +61,21 @@
         }}
       </p>
       <div *ngIf="!inputProps.isTemplated">
+        <b
+          >{{
+            'page.program.program-people-affected.action-inputs.type-message'
+              | translate
+          }}:</b
+        >
+        <app-tooltip
+          [value]="
+          'common.confirm-message-label'
+          | translate
+            : {
+                minLength: inputProps.inputConstraint?.length
+              }
+          "
+        ></app-tooltip>
         <ion-textarea
           name="message"
           #input="ngModel"
