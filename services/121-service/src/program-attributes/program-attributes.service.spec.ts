@@ -5,6 +5,9 @@ import { Repository } from 'typeorm';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramAttributesService } from './program-attributes.service';
 import { QuestionType } from '../registration/enum/custom-data-attributes';
+import { ProgramEntity } from '../programs/program.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 
 describe('ProgramAttributesService', () => {
   let programAttributesService: ProgramAttributesService;
@@ -12,6 +15,13 @@ describe('ProgramAttributesService', () => {
 
   const programCustomAttributeRepositoryToken: string | Function =
     getRepositoryToken(ProgramCustomAttributeEntity);
+  const programRepositoryToken: string | Function =
+    getRepositoryToken(ProgramEntity);
+  const programQuestionToken: string | Function = getRepositoryToken(
+    ProgramQuestionEntity,
+  );
+  const fspQuestionToken: string | Function =
+    getRepositoryToken(FspQuestionEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,6 +29,18 @@ describe('ProgramAttributesService', () => {
         ProgramAttributesService,
         {
           provide: programCustomAttributeRepositoryToken,
+          useClass: Repository,
+        },
+        {
+          provide: fspQuestionToken,
+          useClass: Repository,
+        },
+        {
+          provide: programQuestionToken,
+          useClass: Repository,
+        },
+        {
+          provide: programRepositoryToken,
           useClass: Repository,
         },
       ],
