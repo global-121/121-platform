@@ -22,9 +22,18 @@ export class CreateAndUpdateMessageTemplates1701426130489
 
     // Update existing templates
     const templates = await messageTemplateRepository.find();
+    const genericTransactionCodeTemplates = [
+      'visaDebitCardCreated',
+      'visaLoad',
+      'jumboCardSent',
+    ];
     for await (const template of templates) {
       if (template.message.includes('{{1}}')) {
-        template.message = template.message.replace('{{1}}', '[[amount]]');
+        if (genericTransactionCodeTemplates.includes(template.type)) {
+          template.message = template.message.replace('{{1}}', '[[1]]');
+        } else {
+          template.message = template.message.replace('{{1}}', '[[amount]]');
+        }
         await messageTemplateRepository.save(template);
       }
     }
