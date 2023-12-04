@@ -12,12 +12,14 @@ import {
   waitForMessagesToComplete,
 } from '../helpers/program.helper';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { processMessagePlaceholders } from '../helpers/assert.helper';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
 describe('Send templated message on status change of PA', () => {
   const programId = 1; // status change templates are only available for LVV/PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
-    preferredLanguage: 'en',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',
@@ -68,15 +70,12 @@ describe('Send templated message on status change of PA', () => {
     ).body;
 
     // Assert
-    const template = messageTemplates.filter(
-      (t) =>
-        t.type === statusChange &&
-        t.language === registrationAh.preferredLanguage,
-    )[0].message;
-    const processedTemplate = template.replace(
-      new RegExp('{{namePartnerOrganization}}', 'g'),
-      registrationAh.namePartnerOrganization,
-    ); //TODO: make this more flexible for other potential placeholders
+    const processedTemplate = processMessagePlaceholders(
+      messageTemplates,
+      registrationAh,
+      statusChange,
+      'namePartnerOrganization',
+    );
 
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
@@ -117,15 +116,12 @@ describe('Send templated message on status change of PA', () => {
     ).body;
 
     // Assert
-    const template = messageTemplates.filter(
-      (t) =>
-        t.type === statusChange &&
-        t.language === registrationAh.preferredLanguage,
-    )[0].message;
-    const processedTemplate = template.replace(
-      new RegExp('{{namePartnerOrganization}}', 'g'),
-      registrationAh.namePartnerOrganization,
-    ); //TODO: make this more flexible for other potential placeholders
+    const processedTemplate = processMessagePlaceholders(
+      messageTemplates,
+      registrationAh,
+      statusChange,
+      'namePartnerOrganization',
+    );
 
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
@@ -166,15 +162,12 @@ describe('Send templated message on status change of PA', () => {
     ).body;
 
     // Assert
-    const template = messageTemplates.filter(
-      (t) =>
-        t.type === statusChange &&
-        t.language === registrationAh.preferredLanguage,
-    )[0].message;
-    const processedTemplate = template.replace(
-      new RegExp('{{namePartnerOrganization}}', 'g'),
-      registrationAh.namePartnerOrganization,
-    ); //TODO: make this more flexible for other potential placeholders
+    const processedTemplate = processMessagePlaceholders(
+      messageTemplates,
+      registrationAh,
+      statusChange,
+      'namePartnerOrganization',
+    );
 
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
