@@ -138,7 +138,7 @@ export class BulkActionsService {
         inputRequired: true,
         explanation: `${this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
-        )} <br> ${this.translate.instant(
+        )} ${this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject.explanation',
         )}`,
         inputConstraint: {
