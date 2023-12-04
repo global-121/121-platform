@@ -1,5 +1,8 @@
 import { getTransactions } from './program.helper';
 import { waitFor } from '../../src/utils/waitFor.helper';
+import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
+import { RegistrationEntity } from '../../src/registration/registration.entity';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 
 export const assertArraysAreEqual = (
   actualArray: any[],
@@ -82,4 +85,21 @@ export async function waitForPaymentTransactionsToComplete(
   if (!allTransactionsSuccessful) {
     throw new Error(`Timeout waiting for payment transactions to complete`);
   }
+}
+
+export function processMessagePlaceholders(
+  messageTemplates: MessageTemplateEntity[],
+  registration: Partial<RegistrationEntity>,
+  statusChange: RegistrationStatusEnum,
+  placeholderKey: string,
+): string {
+  const template = messageTemplates.filter(
+    (t) =>
+      t.type === statusChange && t.language === registration.preferredLanguage,
+  )[0].message;
+  const processedTemplate = template.replace(
+    new RegExp(`{{${placeholderKey}}}`, 'g'),
+    registration[`${placeholderKey}`],
+  );
+  return processedTemplate;
 }
