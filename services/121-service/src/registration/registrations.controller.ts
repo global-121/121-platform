@@ -188,12 +188,12 @@ export class RegistrationsController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
-  public async importBulk(
+  public async importBulkAsImported(
     @UploadedFile() csvFile,
     @Param() params,
     @User('id') userId: number,
   ): Promise<ImportResult> {
-    return await this.registrationsService.importBulk(
+    return await this.registrationsService.importBulkAsImported(
       csvFile,
       Number(params.programId),
       userId,

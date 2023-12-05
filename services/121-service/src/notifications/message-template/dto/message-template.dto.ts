@@ -41,7 +41,7 @@ export class DeleteTemplateParamDto {
 }
 
 export class DeleteTemplateQueryDto {
-  @ApiProperty()
+  @IsOptional()
   @IsEnum(LanguageEnum)
   language: LanguageEnum;
 }

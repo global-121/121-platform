@@ -58,12 +58,12 @@ export class CommercialBankEthiopiaApiService {
           'Failed because the certificate file is not found or not valid.',
         );
         result.resultDescription =
-          'Failed because the certificate file is not found or not valid. Please contact the 121 development team.';
+          'Failed because the certificate file is not found or not valid. Please contact 121 technical support.';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription =
           error.response ||
-          'Failed because of an unknown error. Please contact the 121 development team.';
+          'Failed because of an unknown error. Please contact 121 technical support.';
       }
 
       return result;

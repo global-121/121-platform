@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.105.9...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.106.2...master)
+
+## [1.106.2](https://github.com/global-121/121-platform/compare/v1.106.1...v1.106.2) - 2023-11-29
+
+## Fixed
+
+- Handle no template found scenario in send voucher flow
+- Delete message before inserting in latest message table (to avoid conflicts within then invite flow)
+
+## [1.106.1](https://github.com/global-121/121-platform/compare/v1.106.0...v1.106.1) - 2023-11-28
+
+## Fixed
+
+- Use message property of message template in default reply
+
+## [1.106.0](https://github.com/global-121/121-platform/compare/v1.105.9...v1.106.0) - 2023-11-28
+
+## Added
+
+- Redis for queues. See: a step in the "How to set up a new instance"-guide in the wiki.
+- Seperate tables for message templates
 
 ## Changed
 
@@ -13,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Removed
 
-- CORS configuration should be hanndled via the Azure Portal for each App Service instance.  
+- CORS configuration should be hanndled via the Azure Portal for each App Service instance.
   See: A step in the "How to set up a new instance"-guide in the wiki.
 
 ---
