@@ -984,7 +984,7 @@ export class ProgramsServiceApiService {
   getMessageTemplatesByProgram(programId: number): Promise<MessageTemplate[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/notifications/${programId}/message-template`,
+      `/notifications/${programId}/message-templates`,
     );
   }
 }

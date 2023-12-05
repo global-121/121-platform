@@ -52,7 +52,7 @@ export class MessageTemplateController {
     required: true,
     type: 'integer',
   })
-  @Get(':programId/message-template')
+  @Get(':programId/message-templates')
   public async getMessageTemplatesByProgramId(
     @Param('programId') programId,
   ): Promise<MessageTemplateEntity[]> {
@@ -68,7 +68,7 @@ export class MessageTemplateController {
     description: 'Created new message template',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/message-template')
+  @Post(':programId/message-templates')
   public async createMessageTemplate(
     @Param('programId', ParseIntPipe) programId: number,
     @Body() templateData: CreateMessageTemplateDto,
@@ -93,7 +93,7 @@ export class MessageTemplateController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'type', required: true, type: 'string' })
   @ApiParam({ name: 'language', required: true, type: 'string' })
-  @Patch(':programId/message-template/:type/:language')
+  @Patch(':programId/message-templates/:type/:language')
   public async updateMessageTemplate(
     @Param() params: UpdateTemplateParamDto,
     @Body() updateMessageTemplateDto: UpdateTemplateBodyDto,
@@ -124,7 +124,7 @@ export class MessageTemplateController {
     description:
       'Optional. If not supplied, all languages for given type are removed.',
   })
-  @Delete(':programId/message-template/:type')
+  @Delete(':programId/message-templates/:type')
   public async deleteMessageTemplate(
     @Param() params: DeleteTemplateParamDto,
     @Query() query: DeleteTemplateQueryDto,
