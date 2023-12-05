@@ -290,12 +290,14 @@ export class MessageService {
       const regex = new RegExp(`{{${placeholder}}}`, 'g');
       if (messageText.match(regex)) {
         const placeHolderValue = placeholderData[placeholder];
-        messageText = messageText.replace(
-          regex,
-          placeHolderValue === null || placeHolderValue === undefined
-            ? ''
-            : placeHolderValue,
-        );
+        messageText = messageText
+          .replace(
+            regex,
+            placeHolderValue === null || placeHolderValue === undefined
+              ? ''
+              : ` ${placeHolderValue} `, // add spaces around the placeholder value (in case forgotten by user) ..
+          )
+          .replace(new RegExp(' {2}', 'g'), ' '); // .. but replace 2 spaces with 1 again (if done correctly));
       }
     }
     return messageText;

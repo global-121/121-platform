@@ -164,10 +164,12 @@ export class MessageEditorComponent implements AfterViewInit {
     let preview = input;
 
     this.attributes.forEach((att) => {
-      preview = preview.replace(
-        new RegExp(`{{${att.name}}}`, 'g'),
-        this.inputProps?.firstRegistration?.[att.name] || '',
-      );
+      preview = preview
+        .replace(
+          new RegExp(`{{${att.name}}}`, 'g'),
+          ` ${this.inputProps?.firstRegistration?.[att.name]} ` || '', // add spaces around the placeholder value (in case forgotten by user) ..
+        )
+        .replace(new RegExp(' {2}', 'g'), ' '); // .. but replace 2 spaces with 1 again (if done correctly));
     });
 
     this.preview = preview;
