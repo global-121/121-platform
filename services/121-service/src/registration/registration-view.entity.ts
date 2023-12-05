@@ -56,7 +56,12 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .leftJoin('registration.fsp', 'fsp')
-      .addSelect('registration.lastMessageStatus', 'lastMessageStatus'),
+      .leftJoin('registration.latestMessage', 'latestMessage')
+      .leftJoin('latestMessage.message', 'message')
+      .addSelect(
+        `COALESCE(message.type || ': ' || message.status,'no messages yet')`,
+        'lastMessageStatus',
+      ),
 })
 export class RegistrationViewEntity {
   @ViewColumn()

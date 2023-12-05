@@ -13,16 +13,19 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserModule } from '../../user/user.module';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
-import { LastMessageStatusService } from '../last-message-status.service';
-import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
+import { MessageIncomingController } from './message-incoming.controller';
+import { MessageIncomingService } from './message-incoming.service';
+import { BullModule } from '@nestjs/bull';
+import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
+import { AzureLogService } from '../../shared/services/azure-log.service';
+import { QueueMessageModule } from '../queue-message/queue-message.module';
+import { LatestMessageEntity } from '../latest-message.entity';
 import { IntersolveVoucherModule } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
-import { WhatsappIncomingController } from './whatsapp-incoming.controller';
-import { WhatsappIncomingService } from './whatsapp-incoming.service';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { WhatsappModule } from './whatsapp.module';
+import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
+import { WhatsappTemplateTestEntity } from '../whatsapp/whatsapp-template-test.entity';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 import { MessageTemplateModule } from '../message-template/message-template.module';
 
 @Module({
@@ -38,18 +41,38 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
       TryWhatsappEntity,
       WhatsappPendingMessageEntity,
       WhatsappTemplateTestEntity,
+      LatestMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
     IntersolveVoucherModule,
     WhatsappModule,
+    QueueMessageModule,
+    MessageTemplateModule,
+    BullModule.registerQueue({
+      name: 'messageStatusCallback',
+      processors: [
+        {
+          path: 'src/notifications/processors/message-status-callback.processor.ts',
+          concurrency: 4,
+        },
+      ],
+      limiter: {
+        max: 50, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+  ],
+  providers: [
+    MessageIncomingService,
+    MessageStatusCallbackProcessor,
+    AzureLogService,
     MessageTemplateModule,
   ],
-  providers: [WhatsappIncomingService, SmsService, LastMessageStatusService],
-  controllers: [WhatsappIncomingController],
-  exports: [WhatsappIncomingService],
+  controllers: [MessageIncomingController],
+  exports: [MessageIncomingService, BullModule],
 })
-export class WhatsappIncomingModule implements NestModule {
+export class MessageIncomingModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AuthMiddlewareTwilio).forRoutes(
       {

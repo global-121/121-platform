@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -64,6 +63,8 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -79,8 +80,8 @@ export class IntersolveVisaService
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
-    private readonly messageService: MessageService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async getTransactionInfo(
@@ -167,6 +168,7 @@ export class IntersolveVisaService
         paymentDetails,
         paymentNr,
         paymentDetails.transactionAmount,
+        paymentList[0].bulkSize, // bulkSize is the same for all payments in the bulk
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       await this.transactionsService.storeTransactionUpdateStatus(
@@ -220,6 +222,7 @@ export class IntersolveVisaService
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
+    bulkSizeCompletePayment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = paymentDetails.referenceId;
@@ -365,7 +368,10 @@ export class IntersolveVisaService
 
         // .. and add 'debit card created' notification
         transactionNotifications.push(
-          this.buildNotificationObjectIssueDebitCard(calculatedAmount),
+          this.buildNotificationObjectIssueDebitCard(
+            calculatedAmount,
+            bulkSizeCompletePayment,
+          ),
         );
       }
     } else {
@@ -392,7 +398,10 @@ export class IntersolveVisaService
       };
 
       transactionNotifications.push(
-        this.buildNotificationObjectLoadBalance(calculatedAmount),
+        this.buildNotificationObjectLoadBalance(
+          calculatedAmount,
+          bulkSizeCompletePayment,
+        ),
       );
     }
 
@@ -512,19 +521,23 @@ export class IntersolveVisaService
 
   private buildNotificationObjectIssueDebitCard(
     amount: number,
+    bulkSizeCompletePayment: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: ProgramNotificationEnum.visaDebitCardCreated,
       dynamicContent: [String(amount)],
+      bulkSize: bulkSizeCompletePayment,
     };
   }
 
   private buildNotificationObjectLoadBalance(
     amount: number,
+    bulkSizeCompletePayment: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: ProgramNotificationEnum.visaLoad,
       dynamicContent: [String(amount)],
+      bulkSize: bulkSizeCompletePayment,
     };
   }
 
@@ -764,13 +777,12 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    await this.messageService.sendTextMessage(
+    await this.queueMessageService.addMessageToQueue(
       wallet.intersolveVisaCustomer.registration,
-      programId,
       null,
       notificationKey,
-      false,
       MessageContentType.custom,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
     return result;
   }
@@ -888,7 +900,7 @@ export class IntersolveVisaService
     );
     const oldWallet = oldWallets[0];
 
-    const errorGenericPart = `<br><br>Update data if applicable and retry by using the 'Issue new card' button again. If the problem persists, contact the 121 development team.`;
+    const errorGenericPart = `<br><br>Update data if applicable and retry by using the 'Issue new card' button again. If the problem persists, contact 121 technical support.`;
     // 0. sync customer data with 121 data, as create-customer is skipped in this flow
     try {
       await this.syncIntersolveCustomerWith121(referenceId, programId);
@@ -1089,7 +1101,7 @@ export class IntersolveVisaService
       );
       if (unloadResult.status !== 200) {
         const errors =
-          'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
+          'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
         throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -1098,7 +1110,7 @@ export class IntersolveVisaService
     const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
     if (blockResult.status !== 204) {
       const errors =
-        'The old card could not be permanently blocked. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
+        'The old card could not be permanently blocked. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     // also block older wallets, but don't throw error if it fails to not complicate retry-flow further
@@ -1120,13 +1132,12 @@ export class IntersolveVisaService
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
-    await this.messageService.sendTextMessage(
+    await this.queueMessageService.addMessageToQueue(
       registration,
-      programId,
       null,
       ProgramNotificationEnum.reissueVisaCard,
-      false,
       MessageContentType.custom,
+      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     );
   }
 

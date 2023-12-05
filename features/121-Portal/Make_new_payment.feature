@@ -50,7 +50,7 @@ Feature: Make a new payment
     And it shows 'Failed' for failed transactions
     And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
-    And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, date
+    And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, timestamp
 
   Scenario: Send payment instructions for 10000 PAs
     Given there are 10000 PAs in the system

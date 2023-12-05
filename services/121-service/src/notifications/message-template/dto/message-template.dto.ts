@@ -11,7 +11,9 @@ import { LanguageEnum } from '../../../registration/enum/language.enum';
 import { Transform } from 'class-transformer';
 
 export class MessageTemplateDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: `Some types are use for registration status changes, for example: invite, include, endInclusion, reject and pause. Other values can be used to send custom messages.`,
+  })
   @IsString()
   @IsOptional()
   public readonly type: string;
@@ -23,7 +25,7 @@ export class MessageTemplateDto {
   @IsString()
   @IsOptional()
   public readonly message: string;
-  @ApiProperty()
+  @ApiProperty({ example: false })
   @IsBoolean()
   @IsOptional()
   public readonly isWhatsappTemplate: boolean;
@@ -39,7 +41,7 @@ export class DeleteTemplateParamDto {
 }
 
 export class DeleteTemplateQueryDto {
-  @ApiProperty()
+  @IsOptional()
   @IsEnum(LanguageEnum)
   language: LanguageEnum;
 }

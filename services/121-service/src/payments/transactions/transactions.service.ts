@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
-import { MessageService } from '../../notifications/message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
@@ -21,7 +20,9 @@ import {
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
+import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -41,7 +42,7 @@ export class TransactionsService {
   private readonly fallbackLanguage = 'en';
 
   public constructor(
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
     private messageTemplateService: MessageTemplateService,
   ) {}
 
@@ -190,6 +191,7 @@ export class TransactionsService {
 
     const resultTransaction =
       await this.transactionRepository.save(transaction);
+
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },
@@ -212,19 +214,21 @@ export class TransactionsService {
     ) {
       // loop over notification objects and send a message for each
 
-      for (const transactionNotifcation of transactionResponse.notificationObjects) {
+      for (const transactionNotification of transactionResponse.notificationObjects) {
         const message = await this.getMessageText(
           registration.preferredLanguage,
           program.id,
-          transactionNotifcation,
+          transactionNotification,
         );
-        await this.messageService.sendTextMessage(
+        await this.queueMessageService.addMessageToQueue(
           registration,
-          program.id,
           message,
           null,
-          false,
           MessageContentType.payment,
+          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+          null,
+          null,
+          transactionNotification.bulkSize,
         );
       }
     }
