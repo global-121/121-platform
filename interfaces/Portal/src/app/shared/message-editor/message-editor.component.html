@@ -95,13 +95,8 @@
           [minlength]="inputProps.inputConstraint?.length"
           [placeholder]="inputProps.placeholder"
           fill="outline"
-          style="
-            font-family: monospace;
-            min-height: 66px;
-            --border: 1px solid var(--ion-color-medium);
-            --padding-start: 8px;
-            --padding-end: 8px;
-          "
+          class="input-element-with-border"
+          style="font-family: monospace"
           (ngModelChange)="generatePreview($event)"
         ></ion-textarea>
       </div>
@@ -137,7 +132,7 @@
             [multiple]="false"
             [disabled]="isLoading"
             [size]="'auto'"
-            class="tfr--text-filter--select ion-margin-end"
+            class="ion-margin-end input-element-with-border"
           ></app-select-typeahead>
           <ion-button
             fill="outline"

@@ -65,13 +65,8 @@
         [value]="inputProps.defaultValue"
         [placeholder]="inputProps.placeholder"
         fill="outline"
-        style="
-          font-family: monospace;
-          min-height: 66px;
-          --border: 1px solid currentColor;
-          --padding-start: 8px;
-          --padding-end: 8px;
-        "
+        style="font-family: monospace"
+        class="input-element-with-border"
       ></ion-textarea>
       <ion-note>
         {{ input?.value ? input?.value?.length : 0 }} (≤

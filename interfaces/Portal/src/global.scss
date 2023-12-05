@@ -48,6 +48,11 @@ ion-button {
   --box-shadow: none;
 }
 
+.input-element-with-border {
+  border: 1px solid var(--fiveten-neutral-300);
+  border-radius: 0.25em;
+}
+
 .input-item {
   background-color: white;
 
