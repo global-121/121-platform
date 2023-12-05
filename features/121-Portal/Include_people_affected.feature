@@ -18,9 +18,6 @@ Feature: Include people affected
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
     When the "bulk action" is "include for program"
     Then the "included" PAs are no longer visible in the "inclusion" page the user is on now, as "included" PAs are viewable in the "payment" page only
-    And the "included" timestamp is filled for the selected rows
-    And the "rejected" date+time remains visible, if the PA was "rejected" before
-    And the "inclusion ended" date+time remains visible, if the PA had status "inclusion ended" before
     And the "status" is updated to "Included"
     And if a templated message is present or the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
 

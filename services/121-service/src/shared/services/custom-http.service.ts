@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
-class Header {
+export class Header {
   public name: string;
   public value: string;
 }
@@ -93,6 +93,36 @@ export class CustomHttpService {
     return await lastValueFrom(
       this.httpService
         .put(url, payload, {
+          headers: this.createHeaders(headers),
+        })
+        .pipe(
+          map((response) => {
+            this.logMessageRequest(
+              { headers, url, payload: payload },
+              response,
+            );
+            return response;
+          }),
+          catchError((err) => {
+            const errorResponse = err.response || this.setNoResponseError(err);
+            this.logErrorRequest(
+              { headers, url, payload: payload },
+              errorResponse,
+            );
+            return of(errorResponse);
+          }),
+        ),
+    );
+  }
+
+  public async patch<T>(
+    url: string,
+    payload: any,
+    headers?: Header[],
+  ): Promise<T> {
+    return await lastValueFrom(
+      this.httpService
+        .patch(url, payload, {
           headers: this.createHeaders(headers),
         })
         .pipe(

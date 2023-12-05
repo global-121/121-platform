@@ -39,6 +39,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     // Sorted alphabetically
     'ActionModule',
     'ApplicationModule',
+    'BullModule',
     'HealthModule',
     'HttpModule',
     'MulterModule',
@@ -69,6 +70,13 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
+  if (!process.env.REDIS_PREFIX) {
+    throw new Error('REDIS_PREFIX not set');
+  }
+  const notAllowedRegex = /[\0\n\r :]/;
+  if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
+    throw new Error('REDIS_PREFIX contains one or more not allowed characters');
+  }
 
   app.enableCors({
     origin: DEBUG,

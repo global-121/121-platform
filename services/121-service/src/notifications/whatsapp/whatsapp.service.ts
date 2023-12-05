@@ -3,37 +3,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { MessageTemplateService } from '../message-template/message-template.service';
 import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
-  private readonly fallbackLanguage = 'en';
-  private readonly whatsappTemplatedMessageKeys = [
-    String(ProgramNotificationEnum.whatsappPayment),
-    String(ProgramNotificationEnum.whatsappGenericMessage),
-  ];
 
   constructor(
     private readonly lastMessageService: LastMessageStatusService,
@@ -43,123 +31,59 @@ export class WhatsappService {
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
-  ): Promise<any> {
+  ): Promise<string> {
     const hasPlus = recipientPhoneNr.startsWith('+');
 
     const payload = {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-      statusCallback: EXTERNAL_API.whatsAppStatus,
+      statusCallback: !!process.env.MOCK_TWILIO // This is needed to send reply messages when using MOCK_TWILIO
+        ? `${EXTERNAL_API.whatsAppStatus}?messageContentType=${messageContentType}`
+        : EXTERNAL_API.whatsAppStatus,
       to: `whatsapp:${hasPlus ? '' : '+'}${recipientPhoneNr}`,
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
     if (!!process.env.MOCK_TWILIO) {
-      payload['messageType'] = messageType;
+      payload['messageContentType'] = messageContentType;
     }
-    return twilioClient.messages
-      .create(payload)
-      .then(async (message) => {
-        await this.storeSendWhatsapp(
-          message,
-          registrationId,
-          mediaUrl,
-          messageContentType,
-          existingSidToUpdate,
-        );
-        return message.sid;
-      })
-      .catch(async (err) => {
-        console.log('Error from Twilio:', err);
-        const failedMessage = {
-          accountSid: process.env.TWILIO_SID,
-          body: payload.body,
-          mediaUrl: mediaUrl,
-          to: payload.to,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          dateCreated: new Date().toISOString(),
-          sid: `failed-${uuid()}`,
-          status: 'failed',
-          errorCode: err.code,
-        };
-        await this.storeSendWhatsapp(
-          failedMessage,
-          registrationId,
-          mediaUrl,
-          messageContentType,
-        );
-      });
-  }
 
-  public async queueMessageSendTemplate(
-    message: string,
-    recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
-    mediaUrl: null | string,
-    registrationId: number,
-    messageContentType: MessageContentType,
-  ): Promise<any> {
-    const pendingMesssage = new WhatsappPendingMessageEntity();
-    pendingMesssage.body = message;
-    pendingMesssage.to = recipientPhoneNr;
-    pendingMesssage.mediaUrl = mediaUrl;
-    pendingMesssage.messageType = messageType;
-    pendingMesssage.registrationId = registrationId;
-    pendingMesssage.contentType = messageContentType;
-    await this.whatsappPendingMessageRepo.save(pendingMesssage);
-
-    const registration = await this.registrationRepository.findOne({
-      where: { id: registrationId },
-      relations: ['program'],
-    });
-    const language = registration.preferredLanguage || this.fallbackLanguage;
-    const whatsappGenericMessage = await this.getGenericNotificationText(
-      language,
-      registration.program,
-    );
-    return this.sendWhatsapp(
-      whatsappGenericMessage,
-      recipientPhoneNr,
-      messageType,
-      mediaUrl,
-      registrationId,
-      MessageContentType.genericTemplated,
-    );
-  }
-
-  public async getGenericNotificationText(
-    language: string,
-    program: ProgramEntity,
-  ): Promise<string> {
-    const key = ProgramNotificationEnum.whatsappGenericMessage;
-    const messageTemplates =
-      await this.messageTemplateServices.getMessageTemplatesByProgramId(
-        program.id,
-        key,
+    let errorOccurred = false;
+    let messageToStore;
+    try {
+      messageToStore = await twilioClient.messages.create(payload);
+      return messageToStore.sid;
+    } catch (error) {
+      errorOccurred = true;
+      messageToStore = {
+        accountSid: process.env.TWILIO_SID,
+        body: payload.body,
+        mediaUrl: mediaUrl,
+        to: payload.to,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        dateCreated: new Date().toISOString(),
+        sid: `failed-${uuid()}`,
+        status: 'failed',
+        errorCode: error.code,
+      };
+      throw error;
+    } finally {
+      await this.storeSendWhatsapp(
+        messageToStore,
+        registrationId,
+        mediaUrl,
+        messageContentType,
+        messageProcessType,
+        errorOccurred ? null : existingSidToUpdate,
       );
-
-    const notification = messageTemplates.find(
-      (template) => template.language === language,
-    );
-    if (notification) {
-      return notification.message;
     }
-
-    const fallbackNotification = messageTemplates.find(
-      (template) => template.language === this.fallbackLanguage,
-    );
-    if (fallbackNotification) {
-      return fallbackNotification.message;
-    }
-
-    return '';
   }
 
   public async storeSendWhatsapp(
@@ -167,6 +91,7 @@ export class WhatsappService {
     registrationId: number,
     mediaUrl: string,
     messageContentType?: MessageContentType,
+    messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<void> {
     // If the message failed due to a faulty template error
@@ -194,16 +119,17 @@ export class WhatsappService {
       twilioMessage.dateCreated = message.dateCreated;
       twilioMessage.registrationId = registrationId;
       twilioMessage.contentType = messageContentType;
+      twilioMessage.processType = messageProcessType;
       if (message.errorCode) {
         twilioMessage.errorCode = message.errorCode;
       }
       if (message.errorMessage) {
         twilioMessage.errorMessage = message.errorMessage;
       }
-      await this.twilioMessageRepository.save(twilioMessage);
+      const twilioMessageSave =
+        await this.twilioMessageRepository.save(twilioMessage);
+      await this.lastMessageService.updateLatestMessage(twilioMessageSave);
     }
-    // This is commented out because we think this is causing performance issues
-    // await this.lastMessageService.updateLastMessageStatus(message.sid);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { MessageContentType } from './enum/message-type.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -39,10 +39,10 @@ export class TwilioMessagesCreateDto {
   @IsOptional()
   public readonly mediaUrl: string;
 
-  @ApiProperty({ example: IntersolveVoucherPayoutStatus.InitialMessage })
+  @ApiProperty({ example: MessageContentType.genericTemplated })
   @IsString()
   @IsOptional()
-  public readonly messageType: string;
+  public readonly messageContentType: string;
 }
 
 class AccountSidObject {
@@ -93,6 +93,9 @@ export class TwilioStatusCallbackDto {
 
   @IsOptional()
   public SmsSid: string;
+
+  @IsOptional()
+  public SmsStatus: string;
 
   @IsOptional()
   public To: string;

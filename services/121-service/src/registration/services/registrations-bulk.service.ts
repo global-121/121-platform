@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { And, In, IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
-import { MessageService } from '../../notifications/message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whatsapp-pending-message.entity';
@@ -20,6 +19,12 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
+import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
+import {
+  MessageProcessType,
+  MessageProcessTypeExtension,
+} from '../../notifications/message-job.dto';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -50,7 +55,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    private readonly messageService: MessageService,
+    private readonly queueMessageService: QueueMessageService,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -136,31 +141,69 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
-
+    const chunkSize = 10000;
+    paginateQuery = this.setQueryPropertiesBulkAction(
+      paginateQuery,
+      false,
+      true,
+    );
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
       this.getCustomMessageBaseQuery(),
     );
 
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
+    if (!dryRun) {
+      this.sendMessagesChunked(
         paginateQuery,
         programId,
-        false,
-        true,
-        this.getCustomMessageBaseQuery(),
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
-    if (!dryRun) {
-      this.sendCustomTextMessage(referenceIds, message).catch((error) => {
+        message,
+        chunkSize,
+        resultDto.applicableCount,
+      ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
     return resultDto;
+  }
+
+  private async sendMessagesChunked(
+    paginateQuery: PaginateQuery,
+    programId: number,
+    message: string,
+    chunkSize: number,
+    bulkSize: number,
+  ): Promise<void> {
+    paginateQuery.limit = chunkSize;
+    const registrationsMetadata =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        // TODO: Make this dynamic / a permission check
+        true,
+        false,
+        this.getCustomMessageBaseQuery(),
+      );
+
+    for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
+      paginateQuery.page = i + 1;
+      const registrationsForUpdate =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          // TODO: Make this dynamic / a permission check
+          true,
+          false,
+          this.getCustomMessageBaseQuery(),
+        );
+      this.sendCustomTextMessage(
+        registrationsForUpdate.data,
+        message,
+        bulkSize,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
+    }
   }
 
   public async getBulkActionResult(
@@ -203,10 +246,17 @@ export class RegistrationsBulkService {
   public setQueryPropertiesBulkAction(
     query: PaginateQuery,
     includePaymentMultiplier = false,
+    includeSendMessageProperties = false,
   ): PaginateQuery {
     query.select = ['referenceId'];
     if (includePaymentMultiplier) {
       query.select.push('paymentAmountMultiplier');
+    }
+    if (includeSendMessageProperties) {
+      query.select.push('id');
+      query.select.push('preferredLanguage');
+      query.select.push('whatsappPhoneNumber');
+      query.select.push('phoneNumber');
     }
     query.page = null;
     return query;
@@ -254,21 +304,18 @@ export class RegistrationsBulkService {
     const referenceIds = registrationForUpdate.data.map(
       (registration) => registration.referenceId,
     );
-    await this.updateRegistrationStatusBatch(
-      referenceIds,
-      registrationStatus,
+    await this.updateRegistrationStatusBatch(referenceIds, registrationStatus, {
       message,
       messageTemplateKey,
       messageContentType,
-    );
+      bulkSize: registrationForUpdate.meta.totalItems,
+    });
   }
 
   private async updateRegistrationStatusBatch(
     referenceIds: string[],
     registrationStatus: RegistrationStatusEnum,
-    message?: string,
-    messageTemplateKey?: string,
-    messageContentType?: MessageContentType,
+    messageSizeType?: MessageSizeTypeDto,
   ): Promise<void> {
     let programId;
     let program;
@@ -278,7 +325,10 @@ export class RegistrationsBulkService {
           referenceId,
           registrationStatus,
         );
-      if ((message || messageTemplateKey) && updatedRegistration) {
+      if (
+        (messageSizeType.message || messageSizeType.messageTemplateKey) &&
+        updatedRegistration
+      ) {
         if (updatedRegistration.programId !== programId) {
           programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
@@ -286,18 +336,21 @@ export class RegistrationsBulkService {
             where: { id: programId },
           });
         }
-        const tryWhatsappFirst =
-          registrationStatus === RegistrationStatusEnum.invited
-            ? program.tryWhatsAppFirst
-            : false;
+        const messageProcessType =
+          registrationStatus === RegistrationStatusEnum.invited &&
+          program.tryWhatsAppFirst
+            ? MessageProcessType.tryWhatsapp
+            : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         try {
-          await this.messageService.sendTextMessage(
+          await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
-            programId,
-            message,
-            messageTemplateKey,
-            tryWhatsappFirst,
-            messageContentType,
+            messageSizeType.message,
+            messageSizeType.messageTemplateKey,
+            messageSizeType.messageContentType,
+            messageProcessType,
+            null,
+            null,
+            messageSizeType.bulkSize,
           );
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
@@ -394,26 +447,20 @@ export class RegistrationsBulkService {
   }
 
   private async sendCustomTextMessage(
-    referenceIds: string[],
+    registrations: RegistrationViewEntity[],
     message: string,
+    bulkSize: number,
   ): Promise<void> {
-    const validRegistrations: RegistrationEntity[] = [];
-    for (const referenceId of referenceIds) {
-      const registration =
-        await this.registrationsService.getRegistrationFromReferenceId(
-          referenceId,
-          ['program'],
-        );
-      validRegistrations.push(registration);
-    }
-    for (const validRegistration of validRegistrations) {
-      await this.messageService.sendTextMessage(
-        validRegistration,
-        validRegistration.program.id,
+    for (const registration of registrations) {
+      await this.queueMessageService.addMessageToQueue(
+        registration,
         message,
         null,
-        null,
         MessageContentType.custom,
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+        null,
+        null,
+        bulkSize,
       );
     }
   }

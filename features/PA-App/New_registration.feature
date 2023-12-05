@@ -100,3 +100,17 @@ Feature: New registration
     Then a registrations batch tab opens on the left
     And it mentions your are offline if you are offline
     And it explains that registrations are stored inside your browser and automatically uploaded when online
+
+  Scenario: Online self registration with phone number that received invitation message
+    Given a PA was imported in the 121-portal with a phone number as status "Imported"
+    Given the PA was "invited" and was sent an invitation message either by SMS or WhatsApp
+    Given the PA is registering via the PA-app using this same phone number
+    When the PA passes the "I agree" step
+    Then a 2nd registration appears in the portal with status "Created" alongside the old one with status "Invited"
+    When the PA completes the registration
+    Then the 2nd registration is updated to status "Registered"
+    And all prior data related to the "Invited" registration is transfered to the "Registered" one
+    And this includes "registration data", "messages", "notes"
+    And then the "Invited" registration is removed
+    And - if the initial registration was earlier moved to "No longer eligible" - then this status is also transfered to the new registration
+

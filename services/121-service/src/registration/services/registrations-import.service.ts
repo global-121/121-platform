@@ -70,7 +70,7 @@ export class RegistrationsImportService {
     private readonly programService: ProgramService,
   ) {}
 
-  public async importBulk(
+  public async importBulkAsImported(
     csvFile,
     program: ProgramEntity,
     userId: number,
@@ -84,6 +84,8 @@ export class RegistrationsImportService {
     let countInvalidPhoneNr = 0;
 
     const programCustomAttributes = program.programCustomAttributes;
+    const dataArray = [];
+    const savedRegistrations = [];
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
@@ -135,8 +137,11 @@ export class RegistrationsImportService {
         newRegistration.maxPayments = record.maxPayments;
       }
       newRegistration.program = program;
+      newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
       const savedRegistration = await newRegistration.save();
+      savedRegistrations.push(savedRegistration);
+
       for (const att of programCustomAttributes) {
         if (!att.name || !record[att.name]) {
           continue;
@@ -150,14 +155,18 @@ export class RegistrationsImportService {
             : record[att.name];
         data.programCustomAttribute = att;
         data.registrationId = savedRegistration.id;
-
-        await this.registrationDataRepository.save(data);
+        dataArray.push(data);
       }
-
-      // Save already before status change, otherwise 'registration.subscriber' does not work
-      savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
-      await this.registrationRepository.save(savedRegistration);
     }
+    // Save registration status changes seperately without the registration.subscriber for better performance
+    await this.saveBulkRegistrationStatusChanges(
+      savedRegistrations,
+      RegistrationStatusEnum.imported,
+    );
+    // Save registration data in bulk for performance
+    await this.registrationDataRepository.save(dataArray, {
+      chunk: 5000,
+    });
     await this.actionService.saveAction(
       userId,
       program.id,
@@ -316,17 +325,10 @@ export class RegistrationsImportService {
     }
 
     // Save registration status changes seperately without the registration.subscriber for better performance
-    const registrationStatusChanges: RegistrationStatusChangeEntity[] = [];
-    for await (const registration of savedRegistrations) {
-      const registrationStatusChange = new RegistrationStatusChangeEntity();
-      registrationStatusChange.registration = registration;
-      registrationStatusChange.registrationStatus =
-        RegistrationStatusEnum.registered;
-      registrationStatusChanges.push(registrationStatusChange);
-    }
-    await this.registrationStatusRepository.save(registrationStatusChanges, {
-      chunk: 5000,
-    });
+    await this.saveBulkRegistrationStatusChanges(
+      savedRegistrations,
+      RegistrationStatusEnum.registered,
+    );
 
     // Save registration data in bulk for performance
     const dynamicAttributeRelations =
@@ -363,6 +365,23 @@ export class RegistrationsImportService {
       }
     }
     return { aggregateImportResult: { countImported } };
+  }
+
+  private async saveBulkRegistrationStatusChanges(
+    savedRegistrations: RegistrationEntity[],
+    registrationStatus: RegistrationStatusEnum,
+  ): Promise<void> {
+    const registrationStatusChanges: RegistrationStatusChangeEntity[] = [];
+    for await (const registration of savedRegistrations) {
+      const registrationStatusChange = new RegistrationStatusChangeEntity();
+      registrationStatusChange.registration = registration;
+      registrationStatusChange.registrationStatus = registrationStatus;
+      registrationStatusChanges.push(registrationStatusChange);
+    }
+
+    await this.registrationStatusRepository.save(registrationStatusChanges, {
+      chunk: 5000,
+    });
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {
@@ -443,6 +462,14 @@ export class RegistrationsImportService {
     let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
+    }
+
+    const maxRecords = 1000;
+    if (importRecords.length > maxRecords) {
+      const errors = [
+        `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
+      ];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
     return importRecords;
   }

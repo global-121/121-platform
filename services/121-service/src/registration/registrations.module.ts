@@ -8,7 +8,6 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupModule } from '../notifications/lookup/lookup.module';
-import { MessageModule } from '../notifications/message.module';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -38,6 +37,8 @@ import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       SafaricomRequestEntity,
       RegistrationViewEntity,
       LatestTransactionEntity,
+      LatestMessageEntity,
     ]),
     UserModule,
     HttpModule,
@@ -70,7 +72,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     ActionModule,
     ProgramModule,
     FspModule,
-    MessageModule,
+    QueueMessageModule,
     IntersolveVisaModule,
     RegistrationChangeLogModule,
   ],

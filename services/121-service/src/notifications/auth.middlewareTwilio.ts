@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NextFunction, Request, Response } from 'express';
-import { DEBUG, EXTERNAL_API } from '../config';
+import { EXTERNAL_API } from '../config';
 import { twilio } from './twilio.client';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
   ): Promise<any> {
     const twilioSignature = req.headers['x-twilio-signature'];
 
-    if (DEBUG) {
+    if (process.env.MOCK_TWILIO) {
       return next();
     }
 

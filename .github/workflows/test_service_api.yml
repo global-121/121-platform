@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - 'master'
+      - 'feat.*'
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'
@@ -47,9 +48,14 @@ jobs:
           /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+          /bin/sed -i '/^TWILIO_AUTHTOKEN=/s/=.*/=abc/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_TWILIO_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
+          /bin/sed -i '/^REDIS_HOST=/s/=.*/=services-121-redis-1/' ./services/.env.example
+          /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
+          /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env.example
@@ -64,12 +70,15 @@ jobs:
         working-directory: ./services
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
 
-      - name: Run 121-service
+      - name: Run 121-service and twilio-mock-service
         working-directory: ./services
         run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
 
-      - name: Wait for healthchecks
-        run: timeout 120s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+      - name: Wait for healthcheck 121-service
+        run: timeout 180s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+
+      - name: Wait for healthcheck twilio-mock-service
+        run: timeout 30s sh -c 'until docker ps | grep twilio-mock-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
 
       - name: Run API tests with Jest
         working-directory: ./services
