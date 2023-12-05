@@ -23,7 +23,7 @@ import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
-import { ScopeMiddleware } from './shared/middleware/scope.middelware';
+import { ScopeMiddleware } from './shared/middleware/scope.middleware';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 
@@ -83,6 +83,6 @@ export class ApplicationModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(ScopeMiddleware)
-      .forRoutes({ path: 'programs/*', method: RequestMethod.ALL });
+      .forRoutes({ path: 'programs/([0-9]+)*', method: RequestMethod.ALL });
   }
 }
