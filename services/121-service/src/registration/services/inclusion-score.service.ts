@@ -5,13 +5,16 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration.entity';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
+import { RegistrationScopedRepository } from '../registration-scoped.repository';
 
 @Injectable()
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+
+  public constructor(
+    private readonly registrationRepository: RegistrationScopedRepository,
+  ) {}
 
   public async calculatePaymentAmountMultiplier(
     program: ProgramEntity,

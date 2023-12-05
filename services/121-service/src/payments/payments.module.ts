@@ -33,6 +33,7 @@ import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     RegistrationsImportService,
     LookupService,
     InclusionScoreService,
+    RegistrationScopedRepository,
     AzureLogService,
   ],
   controllers: [PaymentsController],

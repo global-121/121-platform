@@ -65,8 +65,6 @@ import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 
 @Injectable()
 export class RegistrationsService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationStatusChangeEntity)
   private readonly registrationStatusChangeRepository: Repository<RegistrationStatusChangeEntity>;
   @InjectRepository(UserEntity)
@@ -100,7 +98,7 @@ export class RegistrationsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
-    private readonly registrationRepository2: RegistrationScopedRepository,
+    private readonly registrationRepository: RegistrationScopedRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -275,7 +273,7 @@ export class RegistrationsService {
       relations: relations,
     });
     if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known.`;
+      const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     } else if (programId && registration.programId !== Number(programId)) {
       const errors = `ReferenceId ${referenceId} is not known for program ${programId}.`;
@@ -1149,14 +1147,10 @@ export class RegistrationsService {
     }
 
     // Get registration by referenceId
-    const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
-      relations: ['fsp', 'fsp.questions'],
-    });
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known.`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['fsp', 'fsp.questions'],
+    );
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);

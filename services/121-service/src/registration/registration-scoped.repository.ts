@@ -67,10 +67,15 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }
   public async save(
     registration: RegistrationEntity,
-    options: SaveOptions,
+    options?: SaveOptions,
   ): Promise<RegistrationEntity> {
     // Checking of scoped for save should happen with the DTO
     return this.repository.save(registration, options);
+  }
+  public async remove(
+    registration: RegistrationEntity,
+  ): Promise<RegistrationEntity> {
+    return this.repository.remove(registration);
   }
 }
 
