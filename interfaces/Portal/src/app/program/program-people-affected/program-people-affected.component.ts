@@ -804,7 +804,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const action = this.bulkActions.find(
       (i: BulkAction) => i.id === this.action,
     );
-    let messageTemplate = null;
+    let messageTemplate: MessageTemplate = null;
+
     if (action) {
       const mappedAction = BulkActionRegistrationStatusMap[action.id];
       messageTemplate = this.messageTemplates?.find(

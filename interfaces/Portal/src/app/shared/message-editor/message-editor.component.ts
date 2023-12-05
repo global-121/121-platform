@@ -58,6 +58,7 @@ export class MessageEditorComponent implements AfterViewInit {
 
   async ngAfterViewInit(): Promise<void> {
     this.checked = this.inputProps ? this.inputProps.checkboxChecked : true;
+    this.preview = this.inputProps ? this.inputProps.templatedMessage : '';
 
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
