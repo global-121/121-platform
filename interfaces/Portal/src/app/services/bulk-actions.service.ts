@@ -66,9 +66,6 @@ export class BulkActionsService {
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
           length: 1,
           type: 'min',
@@ -111,9 +108,6 @@ export class BulkActionsService {
         ),
         checkboxChecked: false,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
           length: 1,
           type: 'min',
@@ -136,11 +130,6 @@ export class BulkActionsService {
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: `${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        )} ${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.reject.explanation',
-        )}`,
         inputConstraint: {
           length: 1,
           type: 'min',
@@ -163,9 +152,6 @@ export class BulkActionsService {
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
           length: 1,
           type: 'min',
@@ -188,9 +174,6 @@ export class BulkActionsService {
         ),
         checkboxChecked: false,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
           length: 1,
           type: 'min',
