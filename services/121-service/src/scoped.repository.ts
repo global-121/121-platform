@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { RegistrationEntity } from './registration/registration.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -37,9 +38,10 @@ export class ScopedRepository<T> {
 
   constructor(
     target: EntityTarget<T>,
-    dataSource: DataSource,
+    @InjectDataSource() dataSource: DataSource,
     relationToRegistration?: string[],
   ) {
+    this.repository = dataSource.createEntityManager().getRepository(target);
     if (!relationToRegistration || relationToRegistration.length === 0) {
       this.relationArrayToRegistration = [
         this.findDirectRelationToRegistration(this.repository.metadata),
@@ -47,7 +49,6 @@ export class ScopedRepository<T> {
     } else {
       this.relationArrayToRegistration = relationToRegistration;
     }
-    this.repository = dataSource.createEntityManager().getRepository(target);
   }
 
   private findDirectRelationToRegistration(metadata: EntityMetadata): string {
@@ -81,11 +82,10 @@ export class ScopedRepository<T> {
   }
 
   public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
-    console.log('this.request.scope}: ', this.request.scope);
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
     // If the scope is empty, return the normal query builder
-    if (this.request.scope === '') {
+    if (!this.request?.scope || this.request.scope === '') {
       return new ScopedQueryBuilder(qb);
     }
 

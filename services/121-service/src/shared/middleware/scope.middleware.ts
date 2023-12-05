@@ -31,7 +31,9 @@ export class ScopeMiddleware implements NestMiddleware {
     const assignment = await this.assignmentRepo.findOne({
       where: { userId: userId, programId: programId },
     });
-    req.scope = assignment.scope ? assignment.scope : '';
+    const scope = assignment.scope ? assignment.scope : '';
+    req.scope = scope
+    console.log("🚀 ~ file: scope.middleware.ts:39 ~ ScopeMiddleware ~ use ~ scope:", scope)
     next();
   }
 }

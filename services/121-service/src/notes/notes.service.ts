@@ -1,13 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
-import { NoteScopedRepository } from './note.scoped.repository';
+import { ScopedRepository } from '../scoped.repository';
+import { NoteEntity } from './note.entity';
+import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class NoteService {
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    private readonly noteRepository: NoteScopedRepository,
+    @Inject(
+      getScopedRepositoryProvideName(NoteEntity)) private noteRepository: ScopedRepository<NoteEntity>,
   ) {}
 
   public async createNote(

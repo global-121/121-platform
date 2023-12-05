@@ -8,8 +8,9 @@ import { RegistrationsModule } from '../registration/registrations.module';
 import { UserModule } from '../user/user.module';
 import { NoteEntity } from './note.entity';
 import { NoteController } from './notes.controller';
-import { NoteScopedRepository } from './note.scoped.repository';
 import { NoteService } from './notes.service';
+import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
+
 
 @Module({
   imports: [
@@ -24,8 +25,8 @@ import { NoteService } from './notes.service';
   providers: [
     NoteService,
     GuardsService,
-    NoteScopedRepository,
     RegistrationScopedRepository,
+    createScopedRepositoryProvider(NoteEntity)
   ],
   controllers: [NoteController],
   exports: [NoteService, GuardsService],
