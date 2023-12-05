@@ -825,7 +825,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action.confirmConditions.inputRequired = false;
         action.confirmConditions.checkboxChecked = true;
       } else {
-        action.confirmConditions.firstRegistration = this.selectAllChecked
+        action.confirmConditions.previewRegistration = this.selectAllChecked
           ? this.visiblePeopleAffected[0]
           : this.selectedPeople[0];
       }

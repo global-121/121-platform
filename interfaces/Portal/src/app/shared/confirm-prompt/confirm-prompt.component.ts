@@ -49,7 +49,7 @@ export interface InputProps {
   supportMessage?: string;
   messageTemplateKey?: string;
   programId?: number;
-  firstRegistration?: PersonRow;
+  previewRegistration?: PersonRow;
 }
 
 export enum PromptType {
