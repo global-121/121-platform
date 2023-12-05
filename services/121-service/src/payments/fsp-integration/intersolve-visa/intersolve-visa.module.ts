@@ -1,5 +1,4 @@
 import { HttpModule } from '@nestjs/axios';
-import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
@@ -17,8 +16,8 @@ import { IntersolveVisaExportService } from './services/intersolve-visa-export.s
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { IntersolveVisaWalletScopedRepository } from './intersolve-visa-wallet.scoped.repository';
-import { ScopeMiddleware } from '../../../shared/middleware/scope.middelware';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -52,8 +51,4 @@ import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidw
     IntersolveVisaExportService,
   ],
 })
-export class IntersolveVisaModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ScopeMiddleware).forRoutes(IntersolveVisaController);
-  }
-}
+export class IntersolveVisaModule {}

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -23,10 +23,16 @@ import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
+import { ScopeMiddleware } from './shared/middleware/scope.middelware';
+import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
+import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     TypeOrmModule,
+    TypeORMNestJS.forFeature([
+      ProgramAidworkerAssignmentEntity,
+    ]),
     ProgramModule,
     UserModule,
     HealthModule,
@@ -75,4 +81,9 @@ import { MessageIncomingModule } from './notifications/message-incoming/message-
     },
   ],
 })
-export class ApplicationModule {}
+export class ApplicationModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(ScopeMiddleware).
+    forRoutes({ path: 'programs/*', method: RequestMethod.ALL });
+  }
+}

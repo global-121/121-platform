@@ -22,7 +22,6 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
-import { ScopeMiddleware } from '../shared/middleware/scope.middelware';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
@@ -101,8 +100,4 @@ import { LatestMessageEntity } from '../notifications/latest-message.entity';
     RegistrationsPaginationService,
   ],
 })
-export class RegistrationsModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ScopeMiddleware).forRoutes(RegistrationsController);
-  }
-}
+export class RegistrationsModule {}

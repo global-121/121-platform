@@ -5,7 +5,6 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationsModule } from '../registration/registrations.module';
-import { ScopeMiddleware } from '../shared/middleware/scope.middelware';
 import { UserModule } from '../user/user.module';
 import { NoteEntity } from './note.entity';
 import { NoteController } from './notes.controller';
@@ -31,8 +30,4 @@ import { NoteService } from './notes.service';
   controllers: [NoteController],
   exports: [NoteService, GuardsService],
 })
-export class NoteModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ScopeMiddleware).forRoutes(NoteController);
-  }
-}
+export class NoteModule {}

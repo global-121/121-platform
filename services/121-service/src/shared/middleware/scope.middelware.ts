@@ -1,6 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramAidworkerAssignmentEntity } from '../../programs/program-aidworker.entity';
@@ -20,18 +19,18 @@ export class ScopeMiddleware implements NestMiddleware {
     private assignmentRepo: Repository<ProgramAidworkerAssignmentEntity>, // Inject your repository
   ) {}
   async use(req: Request, res: Response, next: any): Promise<void> {
-    const programId = Number(req.params.programId);
-
-    if (!programId) {
+    const match = req.path.match(/\/programs\/(\d+)/);
+    let programId: number
+    if (match) {
+      programId = Number(match[1]);
+    } else {
       throw new Error('Endpoint is missing programId parameter');
     }
-
+    // Extract scope from assignment and store in request.scope
     const userId = getUserIdFromRequest('id', req);
     const assignment = await this.assignmentRepo.findOne({
-      where: { userId: userId, programId: Number(req.params.programId) },
+      where: { userId: userId, programId: programId },
     });
-
-    // Extract scope from request and store in request.scope
     req.scope = assignment.scope ? assignment.scope : '';
     next();
   }
