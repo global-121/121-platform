@@ -34,6 +34,7 @@ export class MessageEditorComponent implements AfterViewInit {
 
   @ViewChild('input')
   public input: any;
+
   public inputModel: string = '';
 
   public checked: boolean;
@@ -151,8 +152,11 @@ export class MessageEditorComponent implements AfterViewInit {
     this.checked = checked;
   }
 
-  public addPlaceholder() {
-    this.inputModel += `{{${this.selectedAttribute[0].name}}}`;
+  public async addPlaceholder() {
+    const textArea = await this.input.getInputElement();
+    textArea.setRangeText(`{{${this.selectedAttribute[0].name}}}`);
+    this.inputModel = textArea.value;
+
     this.generatePreview(this.inputModel);
   }
 
