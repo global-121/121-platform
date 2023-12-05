@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { ActionModule } from '../actions/action.module';

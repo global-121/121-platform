@@ -30,9 +30,7 @@ import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 @Module({
   imports: [
     TypeOrmModule,
-    TypeORMNestJS.forFeature([
-      ProgramAidworkerAssignmentEntity,
-    ]),
+    TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     ProgramModule,
     UserModule,
     HealthModule,
@@ -83,7 +81,8 @@ import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 })
 export class ApplicationModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ScopeMiddleware).
-    forRoutes({ path: 'programs/*', method: RequestMethod.ALL });
+    consumer
+      .apply(ScopeMiddleware)
+      .forRoutes({ path: 'programs/*', method: RequestMethod.ALL });
   }
 }

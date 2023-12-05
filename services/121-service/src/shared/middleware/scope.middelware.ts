@@ -20,7 +20,7 @@ export class ScopeMiddleware implements NestMiddleware {
   ) {}
   async use(req: Request, res: Response, next: any): Promise<void> {
     const match = req.path.match(/\/programs\/(\d+)/);
-    let programId: number
+    let programId: number;
     if (match) {
       programId = Number(match[1]);
     } else {

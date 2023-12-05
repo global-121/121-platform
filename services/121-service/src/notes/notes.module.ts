@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GuardsService } from '../guards/guards.service';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
