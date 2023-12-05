@@ -69,6 +69,7 @@ export class UpdatePropertyItemComponent implements OnInit {
 
     this.reasonInputProps = {
       promptType: PromptType.reason,
+      provideInput: true,
       inputRequired: true,
       explanation: this.translateService.instant(
         'page.program.program-people-affected.edit-person-affected-popup.reason-popup.explanation',

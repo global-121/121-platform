@@ -212,8 +212,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.actionWithoutMessage,
-        inputRequired: false,
+        provideInput: false,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.delete-warning',
         ),

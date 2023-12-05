@@ -33,11 +33,17 @@
   ></div>
 
   <div
-    *ngIf="inputProps"
+    *ngIf="inputProps?.explanation"
+    [innerHTML]="inputProps?.explanation"
+    class="ion-margin-vertical"
+  ></div>
+
+  <div
+    *ngIf="inputProps?.provideInput"
     class="ion-margin-vertical"
   >
     <div>
-      <ion-label>
+      <ion-label *ngIf="inputProps.inputConstraint?.length">
         {{
           'page.program.program-people-affected.edit-person-affected-popup.reason-popup.max-length'
             | translate
@@ -53,9 +59,9 @@
         [ngModelOptions]="{ standalone: true }"
         ngDefaultControl
         [required]="inputProps.inputRequired"
-        rows="3"
-        autoGrow="true"
-        [attr.maxLength]="inputProps.inputConstraint?.length"
+        [rows]="3"
+        [autoGrow]="true"
+        [maxLength]="inputProps.inputConstraint?.length"
         [value]="inputProps.defaultValue"
         [placeholder]="inputProps.placeholder"
         fill="outline"

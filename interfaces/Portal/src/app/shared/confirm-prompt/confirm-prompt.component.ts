@@ -33,6 +33,7 @@ export interface InputProps {
   promptType?: PromptType;
   checkbox?: string;
   checkboxChecked?: boolean;
+  provideInput?: boolean;
   inputRequired?: boolean;
   explanation?: string;
   placeholder?: string | undefined;
@@ -55,7 +56,6 @@ export interface InputProps {
 export enum PromptType {
   reason = 'reason',
   actionWithMessage = 'actionWithMessage',
-  actionWithoutMessage = 'actionWithoutMessage',
 }
 
 @Component({
@@ -167,11 +167,11 @@ export class ConfirmPromptComponent {
         },
       });
     } else {
+      const useMessageEditor =
+        PromptType.actionWithMessage === this.inputProps?.promptType;
+
       modal = await this.modalController.create({
-        component: [
-          PromptType.actionWithMessage,
-          PromptType.actionWithoutMessage,
-        ].includes(this.inputProps?.promptType)
+        component: useMessageEditor
           ? MessageEditorComponent
           : InputPromptComponent,
         componentProps: {

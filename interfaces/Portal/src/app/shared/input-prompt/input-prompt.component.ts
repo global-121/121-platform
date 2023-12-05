@@ -8,13 +8,8 @@ import {
 import { NgModel } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { PaTableAttribute } from '../../models/program.model';
-import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../action-result';
-import {
-  InputProps,
-  PromptType,
-} from '../confirm-prompt/confirm-prompt.component';
+import { InputProps } from '../confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-input-prompt',
@@ -35,26 +30,16 @@ export class InputPromptComponent implements AfterViewInit {
   @ViewChild('input')
   public input: any;
 
-  public attributes: PaTableAttribute[];
-
   constructor(
     public translate: TranslateService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
     private alertController: AlertController,
-    private programsService: ProgramsServiceApiService,
   ) {}
 
   async ngAfterViewInit() {
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
-
-    if (this.inputProps?.promptType === PromptType.actionWithMessage) {
-      this.attributes = await this.programsService.getPaTableAttributes(
-        this.inputProps.programId,
-        { includeFspQuestions: false },
-      );
-    }
   }
 
   public checkOkDisabled() {
