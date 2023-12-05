@@ -38,6 +38,7 @@ import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
+import { UserService } from '../../user/user.service';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -68,6 +69,7 @@ export class RegistrationsImportService {
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
+    private readonly userService: UserService,
   ) {}
 
   public async importBulkAsImported(
@@ -78,6 +80,7 @@ export class RegistrationsImportService {
     const validatedImportRecords = await this.csvToValidatedBulkImport(
       csvFile,
       program.id,
+      userId,
     );
     let countImported = 0;
     let countExistingPhoneNr = 0;
@@ -104,6 +107,7 @@ export class RegistrationsImportService {
         continue;
       }
 
+      // TODO: keep this on non-scoped repo as you do not want duplicates outside scope?
       const existingRegistrations = await this.registrationRepository.findOne({
         where: {
           phoneNumber: phoneNumberResult,
@@ -137,6 +141,7 @@ export class RegistrationsImportService {
         newRegistration.maxPayments = record.maxPayments;
       }
       newRegistration.program = program;
+      newRegistration.scope = record.scope;
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
       const savedRegistration = await newRegistration.save();
@@ -188,7 +193,7 @@ export class RegistrationsImportService {
       return string;
     }
     if (string === undefined) {
-      return this.isValueUdefinedOrNull(defaultValue)
+      return this.isValueUndefinedOrNull(defaultValue)
         ? undefined
         : defaultValue;
     }
@@ -204,13 +209,13 @@ export class RegistrationsImportService {
       case null:
         return false;
       default:
-        return this.isValueUdefinedOrNull(defaultValue)
+        return this.isValueUndefinedOrNull(defaultValue)
           ? undefined
           : defaultValue;
     }
   }
 
-  private isValueUdefinedOrNull(value: any): boolean {
+  private isValueUndefinedOrNull(value: any): boolean {
     return value === undefined || value === null;
   }
 
@@ -234,6 +239,7 @@ export class RegistrationsImportService {
         GenericAttributes.paymentAmountMultiplier,
         GenericAttributes.maxPayments,
         GenericAttributes.preferredLanguage,
+        GenericAttributes.scope,
       ].map((item) => String(item));
       dynamicAttributes = (
         await this.getProgramCustomAttributes(programId)
@@ -267,10 +273,12 @@ export class RegistrationsImportService {
   public async importRegistrations(
     csvFile,
     program: ProgramEntity,
+    userId: number,
   ): Promise<ImportResult> {
     const validatedImportRecords = await this.csvToValidatedRegistrations(
       csvFile,
       program.id,
+      userId,
     );
     return await this.importValidatedRegistrations(
       validatedImportRecords,
@@ -436,17 +444,29 @@ export class RegistrationsImportService {
   private async csvToValidatedBulkImport(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateBulkImportCsvInput(importRecords, programId);
+    const scopedRecords = await this.filterScopedRecords(
+      importRecords,
+      userId,
+      programId,
+    );
+    return await this.validateBulkImportCsvInput(scopedRecords, programId);
   }
 
   private async csvToValidatedRegistrations(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateRegistrationsInput(importRecords, programId);
+    const scopedRecords = await this.filterScopedRecords(
+      importRecords,
+      userId,
+      programId,
+    );
+    return await this.validateRegistrationsInput(scopedRecords, programId);
   }
 
   public async validateCsv(csvFile): Promise<object[]> {
@@ -514,6 +534,26 @@ export class RegistrationsImportService {
     const xml = convert.xml2js(buffer.toString());
     return xml.elements[0].elements.find((el) => el.name === 'Records')
       .elements;
+  }
+
+  private async filterScopedRecords(
+    importRecords: object[],
+    userId: number,
+    programId: number,
+  ): Promise<object[]> {
+    const user = await this.userService.findById(userId);
+    const userScope = user.programAssignments[programId].scope;
+    const scopedRecords = [];
+    for (const record of importRecords) {
+      if ((userScope && record['scope']?.includes(userScope)) || !userScope) {
+        scopedRecords.push(record);
+      }
+    }
+    if (scopedRecords.length === 0) {
+      const errors = [`No records in the file are in your scope`];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return scopedRecords;
   }
 
   public checkForCompletelyEmptyRow(row): boolean {
@@ -730,6 +770,7 @@ export class RegistrationsImportService {
       }
 
       if (row.referenceId) {
+        // TODO: keep this on non-scoped repo as you do not want duplicates outside scope?
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: row.referenceId },
         });

@@ -521,6 +521,7 @@ export class RegistrationsService {
       importedRegistration.paymentAmountMultiplier;
     currentRegistration.maxPayments = importedRegistration.maxPayments;
     currentRegistration.notes = importedRegistration.notes;
+    currentRegistration.scope = importedRegistration.scope;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -690,11 +691,13 @@ export class RegistrationsService {
   public async importRegistrations(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
     return await this.registrationsImportService.importRegistrations(
       csvFile,
       program,
+      userId,
     );
   }
 

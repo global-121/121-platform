@@ -52,6 +52,11 @@ export class BulkImportDto {
   @IsEnum(LanguageEnum)
   @IsOptional()
   public preferredLanguage: LanguageEnum;
+
+  @ApiProperty({ example: 'utrecht.houten' })
+  @IsString()
+  @IsOptional()
+  public scope: string;
 }
 
 export class BulkImportResult extends BulkImportDto {

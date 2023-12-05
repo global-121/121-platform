@@ -230,10 +230,12 @@ export class RegistrationsController {
   public async importRegistrations(
     @UploadedFile() csvFile,
     @Param() params,
+    @User('id') userId: number,
   ): Promise<ImportResult> {
     return await this.registrationsService.importRegistrations(
       csvFile,
       Number(params.programId),
+      userId,
     );
   }
 
