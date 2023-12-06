@@ -9,7 +9,6 @@ import {
   FindOneOptions,
   Like,
   Repository,
-  SaveOptions,
 } from 'typeorm';
 import { ScopedQueryBuilder } from '../scoped.repository';
 import { REQUEST } from '@nestjs/core';
@@ -64,18 +63,6 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     @Inject(REQUEST) public request: Request,
   ) {
     super(RegistrationEntity, dataSource);
-  }
-  public async save(
-    registration: RegistrationEntity,
-    options?: SaveOptions,
-  ): Promise<RegistrationEntity> {
-    // Checking of scoped for save should happen with the DTO
-    return this.repository.save(registration, options);
-  }
-  public async remove(
-    registration: RegistrationEntity,
-  ): Promise<RegistrationEntity> {
-    return this.repository.remove(registration);
   }
 }
 
