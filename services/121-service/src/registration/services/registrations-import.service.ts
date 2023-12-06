@@ -447,12 +447,11 @@ export class RegistrationsImportService {
     userId: number,
   ): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    const scopedRecords = await this.filterScopedRecords(
+    return await this.validateBulkImportCsvInput(
       importRecords,
-      userId,
       programId,
+      userId,
     );
-    return await this.validateBulkImportCsvInput(scopedRecords, programId);
   }
 
   private async csvToValidatedRegistrations(
@@ -461,12 +460,11 @@ export class RegistrationsImportService {
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    const scopedRecords = await this.filterScopedRecords(
+    return await this.validateRegistrationsInput(
       importRecords,
-      userId,
       programId,
+      userId,
     );
-    return await this.validateRegistrationsInput(scopedRecords, programId);
   }
 
   public async validateCsv(csvFile): Promise<object[]> {
@@ -536,26 +534,12 @@ export class RegistrationsImportService {
       .elements;
   }
 
-  private async filterScopedRecords(
-    importRecords: object[],
-    userId: number,
-    programId: number,
-  ): Promise<object[]> {
-    const user = await this.userService.findById(userId);
-    const userScope = user.programAssignments.find(
-      (a) => a.programId === programId,
-    ).scope;
-    const scopedRecords = [];
-    for (const record of importRecords) {
-      if ((userScope && record['scope']?.startsWith(userScope)) || !userScope) {
-        scopedRecords.push(record);
-      }
-    }
-    if (scopedRecords.length === 0) {
-      const errors = [`No records in the file are in your scope`];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-    return scopedRecords;
+  private recordHasAllowedScope(record: any, userScope: string): boolean {
+    return (
+      (userScope &&
+        record[AdditionalAttributes.scope]?.startsWith(userScope)) ||
+      !userScope
+    );
   }
 
   public checkForCompletelyEmptyRow(row): boolean {
@@ -568,6 +552,7 @@ export class RegistrationsImportService {
   private async validateBulkImportCsvInput(
     csvArray,
     programId: number,
+    userId: number,
   ): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
@@ -579,12 +564,33 @@ export class RegistrationsImportService {
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
+    const userScope = await this.userService.getUserScopeForProgram(
+      userId,
+      programId,
+    );
+
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
+
+      const correctScope = this.recordHasAllowedScope(row, userScope);
+      if (correctScope) {
+        importRecord.scope = row[AdditionalAttributes.scope];
+      } else {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.scope,
+          value: row[AdditionalAttributes.scope],
+          error: `User has program scope ${userScope} and does not have access to registration scope ${
+            row[AdditionalAttributes.scope]
+          }`,
+        };
+        errors.push(errorObj);
+      }
+
       const langResult = this.checkAndUpdateLanguage(
         row.preferredLanguage,
         languageMapping,
@@ -726,9 +732,15 @@ export class RegistrationsImportService {
   public async validateRegistrationsInput(
     csvArray,
     programId: number,
+    userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const errors = [];
     const validatatedArray = [];
+
+    const userScope = await this.userService.getUserScopeForProgram(
+      userId,
+      programId,
+    );
 
     const allReferenceIds = csvArray
       .filter((row) => row.referenceId)
@@ -755,6 +767,21 @@ export class RegistrationsImportService {
         continue;
       }
       const importRecord = new ImportRegistrationsDto();
+      const correctScope = this.recordHasAllowedScope(row, userScope);
+      if (correctScope) {
+        importRecord.scope = row[AdditionalAttributes.scope];
+      } else {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.scope,
+          value: row[AdditionalAttributes.scope],
+          error: `User has program scope ${userScope} and does not have access to registration scope ${
+            row[AdditionalAttributes.scope]
+          }`,
+        };
+        errors.push(errorObj);
+      }
+
       const langResult = this.checkAndUpdateLanguage(
         row.preferredLanguage,
         languageMapping,

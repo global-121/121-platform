@@ -733,4 +733,15 @@ export class UserService {
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
   }
+
+  public async getUserScopeForProgram(
+    userId: number,
+    programId: number,
+  ): Promise<string> {
+    const user = await this.findById(userId);
+    const assignment = user.programAssignments.find(
+      (a) => a.programId === programId,
+    );
+    return assignment.scope;
+  }
 }
