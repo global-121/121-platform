@@ -144,10 +144,12 @@ export class MessageEditorComponent implements AfterViewInit {
   }
 
   public async addPlaceholder() {
-    const textArea = await this.input.getInputElement();
-    textArea.setRangeText(`{{${this.selectedAttribute[0].name}}}`);
+    const placeholder = `{{${this.selectedAttribute[0].name}}}`;
+    const textArea: HTMLTextAreaElement = await this.input.getInputElement();
+    textArea.setRangeText(placeholder);
     this.inputModel = textArea.value;
-    textArea.setSelectionRange(this.inputModel.length, this.inputModel.length);
+    const cursorPosition = textArea.selectionEnd + placeholder.length;
+    textArea.setSelectionRange(cursorPosition, cursorPosition);
 
     this.generatePreview(this.inputModel);
   }
