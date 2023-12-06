@@ -265,6 +265,7 @@ export class ProgramService {
       fullnameNamingConvention: programEntity.fullnameNamingConvention,
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
+      enableScope: programEntity.enableScope,
     };
     if (programEntity.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
@@ -376,6 +377,7 @@ export class ProgramService {
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
+    program.enableScope = programData.enableScope;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
     program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 

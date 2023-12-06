@@ -745,7 +745,8 @@
       "primaryLanguage": "Primary language",
       "phone": "Phone number",
       "whatsappPhoneNumber": "WhatsApp number",
-      "fsp": "Financial Service Provider"
+      "fsp": "Financial Service Provider",
+      "scope": "Scope"
     },
     "physical-cards-overview": {
       "title": "Debit cards",

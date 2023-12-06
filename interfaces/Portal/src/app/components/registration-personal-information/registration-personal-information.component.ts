@@ -7,7 +7,11 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
-import { PaTableAttribute, ProgramPhase } from '../../models/program.model';
+import {
+  PaTableAttribute,
+  Program,
+  ProgramPhase,
+} from '../../models/program.model';
 import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { EnumService } from '../../services/enum.service';
@@ -37,7 +41,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   public person: Person;
 
   @Input()
-  private programId: number;
+  private program: Program;
 
   @Input()
   public currentStatus: RegistrationStatusChange;
@@ -70,14 +74,14 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (!this.person || !this.programId) {
+    if (!this.person || !this.program.id) {
       return;
     }
 
     this.loadPermissions();
 
     this.tableAttributes = await this.programsService.getPaTableAttributes(
-      this.programId,
+      this.program.id,
       ProgramPhase.registrationValidation,
     );
 
@@ -167,13 +171,20 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       label: this.getLabel('fsp'),
       value: this.person.fspDisplayNamePortal,
     });
+
+    if (this.program.enableScope) {
+      this.personalInfoTable.push({
+        label: this.getLabel('scope'),
+        value: this.person.scope,
+      });
+    }
   }
 
   public async editPersonAffectedPopup() {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        programId: this.programId,
+        programId: this.program.id,
         referenceId: this.person?.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
@@ -188,26 +199,26 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   }
 
   private loadPermissions() {
-    this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
+    this.canUpdatePaData = this.authService.hasAllPermissions(this.program.id, [
       Permission.RegistrationAttributeUPDATE,
     ]);
-    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.programId, [
+    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.program.id, [
       Permission.RegistrationFspUPDATE,
     ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.RegistrationPersonalREAD],
     );
     this.canUpdatePersonalData = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.RegistrationPersonalUPDATE],
     );
     this.canViewMessageHistory = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.RegistrationNotificationREAD],
     );
     this.canViewPaymentData = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
   }

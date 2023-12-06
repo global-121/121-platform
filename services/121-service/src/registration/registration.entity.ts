@@ -171,7 +171,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   // TODO: DO not make this nullable but set everything to empty string in migration
   // Also not use the setting {default: ''} because than we will forget to set it later just one time '' in the migration
   @Index()
-  @Column({ nullable: true })
+  @Column({ nullable: false, default: '' })
   public scope: string;
 
   @BeforeRemove()

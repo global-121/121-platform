@@ -84,10 +84,9 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
-    @Inject(
-      getScopedRepositoryProvideName(IntersolveVisaWalletEntity)) private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
-  )
-   {}
+    @Inject(getScopedRepositoryProvideName(IntersolveVisaWalletEntity))
+    private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
+  ) {}
 
   public async getTransactionInfo(
     tokenCode: string,

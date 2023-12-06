@@ -26,9 +26,7 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   }
 }
 
-type EntityRelations = {
-  [key: string]: string[];
-};
+type EntityRelations = Record<string, string[]>;
 
 // TODO: Is there a way to make these arrays strongly typed?
 const relationConfig: EntityRelations = {
@@ -104,10 +102,14 @@ export class ScopedRepository<T> {
         qb = qb.leftJoin(`${joinProperty}.${relation}`, joinAlias);
         joinProperty = joinAlias;
       }
+      qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
       console.log('joinAlias: ', joinProperty);
-      qb = qb.andWhere(`${joinProperty}.scope LIKE :scope`, {
-        scope: `${this.request.scope}%`,
-      });
+      qb = qb.andWhere(
+        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
+        {
+          scope: `${this.request.scope}%`,
+        },
+      );
     }
     return new ScopedQueryBuilder(qb);
   }
