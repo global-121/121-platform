@@ -133,6 +133,7 @@ export class RegistrationsImportService {
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage =
         importResponseRecord.preferredLanguage;
+      newRegistration.program = program;
       if (!program.paymentAmountMultiplierFormula) {
         newRegistration.paymentAmountMultiplier =
           record.paymentAmountMultiplier || 1;
@@ -140,8 +141,9 @@ export class RegistrationsImportService {
       if (program.enableMaxPayments) {
         newRegistration.maxPayments = record.maxPayments;
       }
-      newRegistration.program = program;
-      newRegistration.scope = record.scope;
+      if (program.enableScope) {
+        newRegistration.scope = record.scope;
+      }
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
       const savedRegistration = await newRegistration.save();
@@ -227,19 +229,19 @@ export class RegistrationsImportService {
     let dynamicAttributes: string[];
 
     if (type === ImportType.registered) {
-      genericAttributes = Object.values(GenericAttributes).map((item) =>
-        String(item),
-      );
+      genericAttributes = [
+        GenericAttributes.referenceId,
+        GenericAttributes.fspName,
+        GenericAttributes.phoneNumber,
+        GenericAttributes.preferredLanguage,
+      ].map((item) => String(item));
       dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
         (d) => d.name,
       );
     } else if (type === ImportType.imported) {
       genericAttributes = [
         GenericAttributes.phoneNumber,
-        GenericAttributes.paymentAmountMultiplier,
-        GenericAttributes.maxPayments,
         GenericAttributes.preferredLanguage,
-        GenericAttributes.scope,
       ].map((item) => String(item));
       dynamicAttributes = (
         await this.getProgramCustomAttributes(programId)
@@ -251,19 +253,13 @@ export class RegistrationsImportService {
     });
     // If paymentAmountMultiplier automatic, then drop from template
     if (!!program.paymentAmountMultiplierFormula) {
-      const index = genericAttributes.indexOf(
-        GenericAttributes.paymentAmountMultiplier,
-      );
-      if (index > -1) {
-        genericAttributes.splice(index, 1);
-      }
+      genericAttributes.push(String(GenericAttributes.paymentAmountMultiplier));
     }
-    // If maxPayments not enabled, then drop from template
-    if (!program.enableMaxPayments) {
-      const index = genericAttributes.indexOf(GenericAttributes.maxPayments);
-      if (index > -1) {
-        genericAttributes.splice(index, 1);
-      }
+    if (program.enableMaxPayments) {
+      genericAttributes.push(String(GenericAttributes.maxPayments));
+    }
+    if (program.enableScope) {
+      genericAttributes.push(String(GenericAttributes.scope));
     }
 
     const attributes = genericAttributes.concat(dynamicAttributes);
@@ -302,7 +298,6 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.scope = record.scope;
       registration.registrationStatus = RegistrationStatusEnum.registered;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
@@ -311,6 +306,9 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         registration.maxPayments = record.maxPayments;
+      }
+      if (program.enableScope) {
+        registration.scope = record.scope;
       }
       for await (const att of dynamicAttributes) {
         if (att.type === CustomAttributeType.boolean) {
@@ -608,6 +606,9 @@ export class RegistrationsImportService {
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
+      if (program.enableScope) {
+        importRecord.scope = row.scope;
+      }
       for await (const att of programCustomAttributes) {
         if (
           (att.type === AnswerTypes.numeric && isNaN(Number(row[att.name]))) ||
@@ -788,7 +789,6 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
-      importRecord.scope = row.scope;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
@@ -798,6 +798,9 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
+      }
+      if (program.enableScope) {
+        importRecord.scope = row.scope;
       }
       const earlierCheckedPhoneNr = {
         original: null,
