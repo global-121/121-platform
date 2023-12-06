@@ -1403,7 +1403,6 @@ export class RegistrationsService {
     paId: number,
   ): Promise<RegistrationEntity> {
     return await this.registrationScopedRepository.findOne({
-      select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
   }
