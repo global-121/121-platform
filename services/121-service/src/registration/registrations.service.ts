@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import {
@@ -52,7 +52,10 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
-import { RegistrationScopedRepository } from './registration-scoped.repository';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from './registration-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
@@ -62,6 +65,8 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
 import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { UserService } from '../user/user.service';
 import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
+import { ScopedRepository } from '../scoped.repository';
+import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -86,7 +91,7 @@ export class RegistrationsService {
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
   @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -98,7 +103,10 @@ export class RegistrationsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
-    private readonly registrationRepository: RegistrationScopedRepository,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    @Inject(getScopedRepositoryProvideName(RegistrationStatusChangeEntity))
+    private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -106,7 +114,7 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<RegistrationViewEntity> {
-    const queryBuilder = this.registrationViewRepository
+    const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ referenceId: referenceId });
 
@@ -267,8 +275,7 @@ export class RegistrationsService {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: relations,
     });
@@ -594,7 +601,7 @@ export class RegistrationsService {
       RegistrationStatusEnum.invited,
       RegistrationStatusEnum.noLongerEligible,
     ];
-    return await this.registrationRepository.findOne({
+    return await this.registrationScopedRepository.findOne({
       where: {
         phoneNumber: phoneNumber,
         registrationStatus: In(importStatuses),
@@ -737,10 +744,9 @@ export class RegistrationsService {
   public async getRegistrationsForDashboard(
     programId: number,
   ): Promise<RegistrationResponse[]> {
-    let q = this.registrationRepository
+    let q = this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .select('registration.id', 'id')
-      .where('1 = 1');
+      .select('registration.id', 'id');
 
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
@@ -787,21 +793,6 @@ export class RegistrationsService {
           `registration.id = ${registrationStatus}.registrationId AND ${registrationStatus}.registrationStatus = '${registrationStatus}'`,
         );
     }
-  }
-
-  public async getLatestDateForRegistrationStatus(
-    registrationId: number,
-    status: RegistrationStatusEnum,
-  ): Promise<Date> {
-    const registrationStatusChange =
-      await this.registrationStatusChangeRepository.findOne({
-        where: {
-          registration: { id: registrationId },
-          registrationStatus: status,
-        },
-        order: { created: 'DESC' },
-      });
-    return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
   public getName(registrationRow: object, program: ProgramEntity): string {
@@ -1013,7 +1004,7 @@ export class RegistrationsService {
       }
 
       const matchingRegistrations = (
-        await this.registrationRepository.find({
+        await this.registrationScopedRepository.find({
           where: { phoneNumber: phoneNumber },
         })
       ).map((r) => {
@@ -1200,8 +1191,7 @@ export class RegistrationsService {
     user: UserEntity,
   ): Promise<RegistrationDataEntity[]> {
     const programIds = user.programAssignments.map((p) => p.program.id);
-    const registrationsToValidate = await this.dataSource
-      .getRepository(RegistrationEntity)
+    const registrationsToValidate = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .addSelect('"referenceId"')
       .leftJoinAndSelect('registration.program', 'program')
@@ -1249,8 +1239,7 @@ export class RegistrationsService {
   public async getAllFspAnswers(
     programIds: number[],
   ): Promise<FspAnswersAttrInterface[]> {
-    const registrations = await this.dataSource
-      .getRepository(RegistrationEntity)
+    const registrations = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
@@ -1322,8 +1311,7 @@ export class RegistrationsService {
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
-    const qb = await this.dataSource
-      .getRepository(RegistrationEntity)
+    const qb = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
@@ -1374,7 +1362,7 @@ export class RegistrationsService {
   public async getMessageHistoryRegistration(
     referenceId: string,
   ): Promise<MessageHistoryDto[]> {
-    const messageHistoryArray = await this.registrationRepository
+    const messageHistoryArray = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select([
         'twilioMessage.dateCreated as created',
@@ -1388,7 +1376,7 @@ export class RegistrationsService {
         'twilioMessage.errorCode as "errorCode"',
       ])
       .leftJoin('registration.twilioMessages', 'twilioMessage')
-      .where('registration.referenceId = :referenceId', {
+      .andWhere('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
       .orderBy('twilioMessage.dateCreated', 'DESC')
@@ -1414,7 +1402,7 @@ export class RegistrationsService {
     programId: number,
     paId: number,
   ): Promise<RegistrationEntity> {
-    return await this.registrationRepository.findOne({
+    return await this.registrationScopedRepository.findOne({
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
     });
@@ -1432,8 +1420,21 @@ export class RegistrationsService {
       order: { created: 'DESC' },
     };
 
-    const statusChanges =
-      await this.registrationStatusChangeRepository.find(options);
+    const qb = await this.registrationStatusChangeScopedRepository
+      .createQueryBuilder('registrationStatusChange')
+      .andWhere('registration.referenceId = :referenceId', {
+        referenceId,
+      })
+      .andWhere('registration.programId = :programId', {
+        programId,
+      })
+      .leftJoinAndSelect(
+        'registrationStatusChange.registration',
+        'registration',
+      )
+      .orderBy('registrationStatusChange.created', 'DESC');
+    qb.getQueryAndParameters();
+    const statusChanges = await qb.getMany();
 
     return await Promise.all(
       statusChanges.map((statusChange) => {

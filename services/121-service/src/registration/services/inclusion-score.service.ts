@@ -11,9 +11,11 @@ import { RegistrationScopedRepository } from '../registration-scoped.repository'
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
-    private readonly registrationRepository: RegistrationScopedRepository,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
   public async calculatePaymentAmountMultiplier(
@@ -24,7 +26,7 @@ export class InclusionScoreService {
       return;
     }
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['data'],
     });
@@ -47,7 +49,7 @@ export class InclusionScoreService {
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['program'],
     });
@@ -71,7 +73,7 @@ export class InclusionScoreService {
   private async createQuestionAnswerListPrefilled(
     referenceId: string,
   ): Promise<object> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['data', 'data.programQuestion'],
     });

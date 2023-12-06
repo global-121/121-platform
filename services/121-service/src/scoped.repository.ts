@@ -2,7 +2,6 @@ import { Request } from 'express';
 import {
   DataSource,
   EntityMetadata,
-  FindManyOptions,
   Repository,
   SaveOptions,
   SelectQueryBuilder,
@@ -31,9 +30,11 @@ type EntityRelations = {
   [key: string]: string[];
 };
 
+// TODO: Is there a way to make these arrays strongly typed?
 const relationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
-  // add the rest of the entities with an indirect relation to registration here
+  SafaricomRequestEntity: ['transaction', 'registration'],
+  IntersolveVoucherEntity: ['image', 'registration'],
 };
 
 // TODO use this for any entity that needs to be scoped that related to registration
@@ -79,22 +80,6 @@ export class ScopedRepository<T> {
         return relation;
       }
     }
-  }
-
-  public async find(options: FindManyOptions<T>): Promise<T[]> {
-    console.log('options: ', options);
-    console.log('this.request.scope: ', this.request.scope);
-    // replace this for a query builder option else the related registration entities are always selected
-    // Or first select them and then filter them out
-    // Or remove this function in general and always use the query builder
-    return this.repository.find(options as any);
-  }
-
-  // I dont think .save needs scope checks for the question: am I allowed to update registrationData of this registration?
-  // Because we normally get the registration first and then save the related entity
-  // Maybe there are some edge cases where this is not true?
-  public async save(entity: any, options?: SaveOptions): Promise<T | T[]> {
-    return this.repository.save(entity, options);
   }
 
   public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {

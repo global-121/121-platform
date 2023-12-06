@@ -4,13 +4,18 @@ import { ResponseNoteDto } from './dto/response-note.dto';
 import { ScopedRepository } from '../scoped.repository';
 import { NoteEntity } from './note.entity';
 import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NoteService {
+  @InjectRepository(NoteEntity)
+  private readonly noteRepository: Repository<NoteEntity>;
+
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    @Inject(
-      getScopedRepositoryProvideName(NoteEntity)) private noteRepository: ScopedRepository<NoteEntity>,
+    @Inject(getScopedRepositoryProvideName(NoteEntity))
+    private noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
   public async createNote(
@@ -45,7 +50,7 @@ export class NoteService {
     referenceId: string,
     programId: number,
   ): Promise<ResponseNoteDto[]> {
-    const qb = await this.noteRepository
+    const qb = this.noteScopedRepository
       .createQueryBuilder('note')
       .innerJoin('note.registration', 'registration')
       .innerJoinAndSelect('note.user', 'user')
