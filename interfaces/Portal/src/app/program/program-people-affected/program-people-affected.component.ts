@@ -704,6 +704,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.toggleDisableAllCheckboxes();
       this.updatePeopleForAction(this.visiblePeopleAffected);
       this.applyAction(null, true);
+    } else {
+      this.selectedPeople = [];
+      this.selectedCount = 0;
     }
 
     this.bulkActionService.updateSubmitBulkActionWarningAction(
