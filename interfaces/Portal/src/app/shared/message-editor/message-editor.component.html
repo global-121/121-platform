@@ -35,24 +35,19 @@
     *ngIf="inputProps"
     class="ion-margin-vertical"
   >
-    <ion-item
+    <p
       *ngIf="inputProps.checkbox"
-      lines="none"
-      style="--background: none"
+      class="ion-margin-vertical ion-padding-vertical"
     >
       <ion-checkbox
-        slot="start"
+        labelPlacement="end"
         [checked]="checked"
         (ionChange)="checkboxChange($event.detail.checked)"
-      >
-        <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
+        >{{ inputProps.checkbox }}
       </ion-checkbox>
-    </ion-item>
+    </p>
     <div
-      *ngIf="
-        inputProps.explanation &&
-        inputProps.promptType === promptTypeEnum.actionWithoutMessage
-      "
+      *ngIf="inputProps.explanation"
       [innerHTML]="inputProps.explanation"
       class="ion-margin-vertical"
     ></div>
@@ -62,12 +57,6 @@
         ((inputProps.checkbox && checked) || !inputProps.checkbox)
       "
     >
-      <div
-        *ngIf="inputProps.explanation"
-        [innerHTML]="inputProps.explanation"
-        class="ion-margin-vertical"
-      ></div>
-
       <ng-container *ngIf="!inputProps.isTemplated">
         <div>
           <strong>
@@ -102,12 +91,6 @@
             (ngModelChange)="generatePreview($event)"
           ></ion-textarea>
         </div>
-
-        <div
-          *ngIf="inputProps.supportMessage"
-          [innerHTML]="inputProps.supportMessage"
-          class="ion-margin-vertical"
-        ></div>
 
         <ng-container *ngIf="attributeItems">
           <ion-row
@@ -164,6 +147,12 @@
           >{{ preview }}</pre
         >
       </div>
+
+      <div
+        *ngIf="inputProps.supportMessage"
+        [innerHTML]="inputProps.supportMessage"
+        class="ion-margin-vertical"
+      ></div>
     </div>
   </div>
 </ion-content>
