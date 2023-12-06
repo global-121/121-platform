@@ -14,5 +14,6 @@ export class AssignAidworkerToProgramDto {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   public readonly scope: string;
 }
