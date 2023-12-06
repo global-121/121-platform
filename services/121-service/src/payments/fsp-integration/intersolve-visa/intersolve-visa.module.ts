@@ -15,9 +15,9 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
-import { IntersolveVisaWalletScopedRepository } from './intersolve-visa-wallet.scoped.repository';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { Module } from '@nestjs/common';
+import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -41,7 +41,7 @@ import { Module } from '@nestjs/common';
     RegistrationDataQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
-    IntersolveVisaWalletScopedRepository,
+    createScopedRepositoryProvider(IntersolveVisaWalletEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [

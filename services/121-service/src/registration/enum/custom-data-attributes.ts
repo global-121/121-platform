@@ -34,6 +34,7 @@ export enum GenericAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   fspName = 'fspName',
   maxPayments = 'maxPayments',
+  scope = 'scope', // TODO: make it a program-attribute if scope is included in e.g. import-templates??
 }
 
 export class Attribute {

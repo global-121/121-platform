@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -65,7 +65,8 @@ import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
-import { IntersolveVisaWalletScopedRepository } from './intersolve-visa-wallet.scoped.repository';
+import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { ScopedRepository } from '../../../scoped.repository';
 
 @Injectable()
 export class IntersolveVisaService
@@ -83,8 +84,10 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
-    private readonly intersolveVisaWalletScopedRepo: IntersolveVisaWalletScopedRepository,
-  ) {}
+    @Inject(
+      getScopedRepositoryProvideName(IntersolveVisaWalletEntity)) private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
+  )
+   {}
 
   public async getTransactionInfo(
     tokenCode: string,
@@ -754,7 +757,7 @@ export class IntersolveVisaService
     block: boolean,
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const qb = this.intersolveVisaWalletScopedRepo
+    const qb = this.intersolveVisaWalletScopedRepository
       .createQueryBuilder('wallet')
       .leftJoinAndSelect(
         'wallet.intersolveVisaCustomer',
