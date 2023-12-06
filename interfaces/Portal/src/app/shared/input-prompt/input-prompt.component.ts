@@ -47,6 +47,10 @@ export class InputPromptComponent implements AfterViewInit {
       return false;
     }
 
+    if (this.inputProps.provideInput === false) {
+      return false;
+    }
+
     if (
       this.inputProps.inputRequired &&
       this.input &&

@@ -82,16 +82,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
-        inputRequired: true,
-        inputConstraint: {
-          length: 1,
-          type: 'min',
-        },
+        provideInput: false,
       },
     },
     {
