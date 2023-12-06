@@ -102,10 +102,14 @@ export class ScopedRepository<T> {
         qb = qb.leftJoin(`${joinProperty}.${relation}`, joinAlias);
         joinProperty = joinAlias;
       }
+      qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
       console.log('joinAlias: ', joinProperty);
-      qb = qb.andWhere(`${joinProperty}.scope LIKE :scope`, {
-        scope: `${this.request.scope}%`,
-      });
+      qb = qb.andWhere(
+        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
+        {
+          scope: `${this.request.scope}%`,
+        },
+      );
     }
     return new ScopedQueryBuilder(qb);
   }

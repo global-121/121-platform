@@ -26,10 +26,16 @@ export class RegistrationScopedBaseRepository<T> {
     console.log('this.request.scope: ', this.request.scope);
     const scopedOptions = {
       ...options,
-      where: {
-        ...(options?.where || {}),
-        scope: Like(`${this.request.scope}%`),
-      },
+      where: [
+        {
+          ...(options?.where || {}),
+          scope: Like(`${this.request.scope}%`),
+        },
+        {
+          ...(options?.where || {}),
+          program: { enableScope: false },
+        },
+      ],
     };
     return this.repository.find(scopedOptions as FindManyOptions);
   }
@@ -37,10 +43,16 @@ export class RegistrationScopedBaseRepository<T> {
   public async findOne(options: FindOneOptions<T>): Promise<T> {
     const scopedOptions = {
       ...options,
-      where: {
-        ...(options?.where || {}),
-        scope: Like(`${this.request.scope}%`),
-      },
+      where: [
+        {
+          ...(options?.where || {}),
+          scope: Like(`${this.request.scope}%`),
+        },
+        {
+          ...(options?.where || {}),
+          program: { enableScope: false },
+        },
+      ],
     };
     return this.repository.findOne(scopedOptions as FindOneOptions);
   }
@@ -48,9 +60,13 @@ export class RegistrationScopedBaseRepository<T> {
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
     const qb = this.repository
       .createQueryBuilder(alias)
-      .andWhere(`${alias}.scope LIKE :scope`, {
-        scope: `${this.request.scope}%`,
-      });
+      .leftJoin(`${alias}.program`, 'program')
+      .andWhere(
+        `(program."enableScope" = false OR ${alias}.scope LIKE :scope)`,
+        {
+          scope: `${this.request.scope}%`,
+        },
+      );
     return new ScopedQueryBuilder(qb);
   }
 }
