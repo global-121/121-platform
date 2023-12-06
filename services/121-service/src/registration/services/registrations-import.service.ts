@@ -542,10 +542,12 @@ export class RegistrationsImportService {
     programId: number,
   ): Promise<object[]> {
     const user = await this.userService.findById(userId);
-    const userScope = user.programAssignments[programId].scope;
+    const userScope = user.programAssignments.find(
+      (a) => a.programId === programId,
+    ).scope;
     const scopedRecords = [];
     for (const record of importRecords) {
-      if ((userScope && record['scope']?.includes(userScope)) || !userScope) {
+      if ((userScope && record['scope']?.startsWith(userScope)) || !userScope) {
         scopedRecords.push(record);
       }
     }
