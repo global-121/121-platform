@@ -27,9 +27,7 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   }
 }
 
-type EntityRelations = {
-  [key: string]: string[];
-};
+type EntityRelations = Record<string, string[]>;
 
 const relationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],

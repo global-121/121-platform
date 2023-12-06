@@ -407,5 +407,6 @@
   },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "et_AM"],
-  "enableMaxPayments": true
+  "enableMaxPayments": true,
+  "enableScope": false
 }

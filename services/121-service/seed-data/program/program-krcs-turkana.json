@@ -2866,5 +2866,6 @@
   },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en"],
-  "enableMaxPayments": true
+  "enableMaxPayments": true,
+  "enableScope": false
 }
