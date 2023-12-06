@@ -722,10 +722,12 @@ export class RegistrationsService {
   public async importJsonValidateRegistrations(
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
+    userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     return await this.registrationsImportService.validateRegistrationsInput(
       validatedJsonData,
       programId,
+      userId,
     );
   }
 

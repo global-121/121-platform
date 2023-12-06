@@ -318,7 +318,7 @@ export class UserService {
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
-        programAssignment.scope = assignAidworkerToProgram.scope.toLowerCase();
+        programAssignment.scope = assignAidworkerToProgram.scope ? assignAidworkerToProgram.scope.toLowerCase(): '';
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
@@ -720,7 +720,7 @@ export class UserService {
 
         // If there are roles to add, update the roles in the programAssignment
         programAssignment.roles = existingRoles.concat(rolesToAdd);
-        programAssignment.scope = assignAidworkerToProgram.scope.toLowerCase();
+        programAssignment.scope = assignAidworkerToProgram.scope ? assignAidworkerToProgram.scope.toLowerCase() : '';
 
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
@@ -732,5 +732,16 @@ export class UserService {
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+  }
+
+  public async getUserScopeForProgram(
+    userId: number,
+    programId: number,
+  ): Promise<string> {
+    const user = await this.findById(userId);
+    const assignment = user.programAssignments.find(
+      (a) => a.programId === programId,
+    );
+    return assignment.scope;
   }
 }

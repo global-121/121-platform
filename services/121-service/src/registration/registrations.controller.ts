@@ -254,6 +254,7 @@ export class RegistrationsController {
     data: ImportRegistrationsDto[],
     @Param() params,
     @Query() queryParams,
+    @User('id') userId: number,
   ): Promise<ImportResult> {
     const validation = !queryParams.validation ?? true;
     if (validation) {
@@ -261,6 +262,7 @@ export class RegistrationsController {
         await this.registrationsService.importJsonValidateRegistrations(
           data,
           Number(params.programId),
+          userId,
         );
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
