@@ -157,6 +157,7 @@ export class MessageEditorComponent implements AfterViewInit {
     const textArea = await this.input.getInputElement();
     textArea.setRangeText(`{{${this.selectedAttribute[0].name}}}`);
     this.inputModel = textArea.value;
+    textArea.setSelectionRange(this.inputModel.length, this.inputModel.length);
 
     this.generatePreview(this.inputModel);
   }
