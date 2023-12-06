@@ -13,7 +13,7 @@ export class RegistrationScope1701698970019 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_aidworker_assignment" ADD "scope" character varying`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD "scope" character varying`,
+      `ALTER TABLE "121-service"."registration" ADD "scope" character varying NOT NULL DEFAULT ''`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_76fa214e0c0cbd5eb2d8f3b8a9" ON "121-service"."registration" ("scope") `,
