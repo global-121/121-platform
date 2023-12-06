@@ -51,12 +51,7 @@ export class InputPromptComponent implements AfterViewInit {
       return false;
     }
 
-    if (
-      this.inputProps.inputRequired &&
-      this.input &&
-      this.input.value &&
-      this.input.valid
-    ) {
+    if (this.inputProps.inputRequired && this.input && this.input.value) {
       return false;
     }
 
@@ -76,12 +71,7 @@ export class InputPromptComponent implements AfterViewInit {
       return;
     }
 
-    if (
-      this.inputProps.inputRequired &&
-      this.input &&
-      this.input.value &&
-      this.input.valid
-    ) {
+    if (this.inputProps.inputRequired && this.input && this.input.value) {
       this.modalController.dismiss({ message: this.input.value }, null);
       return;
     }
