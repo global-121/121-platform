@@ -186,6 +186,14 @@ export class ProgramEntity extends CascadeDeleteEntity {
         entityClass: RegistrationEntity,
         columnName: 'program',
       },
+      {
+        entityClass: MessageTemplateEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ProgramFspConfigurationEntity,
+        columnName: 'programId',
+      },
     ]);
   }
 
