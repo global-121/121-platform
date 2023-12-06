@@ -21,12 +21,12 @@ import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { UserRoleResponseDTO } from './dto/userrole-response.dto';
+import { PermissionEnum } from './permission.enum';
 import { PermissionEntity } from './permissions.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { PermissionEnum } from './permission.enum';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -318,7 +318,7 @@ export class UserService {
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
-        programAssignment.scope = assignAidworkerToProgram.scope;
+        programAssignment.scope = assignAidworkerToProgram.scope.toLowerCase();
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
@@ -720,6 +720,7 @@ export class UserService {
 
         // If there are roles to add, update the roles in the programAssignment
         programAssignment.roles = existingRoles.concat(rolesToAdd);
+        programAssignment.scope = assignAidworkerToProgram.scope.toLowerCase();
 
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
