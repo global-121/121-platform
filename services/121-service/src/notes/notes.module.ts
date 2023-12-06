@@ -11,7 +11,6 @@ import { NoteController } from './notes.controller';
 import { NoteService } from './notes.service';
 import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -26,7 +25,7 @@ import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryP
     NoteService,
     GuardsService,
     RegistrationScopedRepository,
-    createScopedRepositoryProvider(NoteEntity)
+    createScopedRepositoryProvider(NoteEntity),
   ],
   controllers: [NoteController],
   exports: [NoteService, GuardsService],

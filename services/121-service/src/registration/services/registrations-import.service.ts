@@ -142,7 +142,7 @@ export class RegistrationsImportService {
         newRegistration.maxPayments = record.maxPayments;
       }
       if (program.enableScope) {
-        newRegistration.scope = record.scope;
+        newRegistration.scope = record.scope || '';
       }
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
@@ -308,7 +308,7 @@ export class RegistrationsImportService {
         registration.maxPayments = record.maxPayments;
       }
       if (program.enableScope) {
-        registration.scope = record.scope;
+        registration.scope = record.scope || '';
       }
       for await (const att of dynamicAttributes) {
         if (att.type === CustomAttributeType.boolean) {
@@ -607,7 +607,7 @@ export class RegistrationsImportService {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
       if (program.enableScope) {
-        importRecord.scope = row.scope;
+        importRecord.scope = row.scope || '';
       }
       for await (const att of programCustomAttributes) {
         if (

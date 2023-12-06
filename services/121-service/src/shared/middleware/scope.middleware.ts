@@ -32,8 +32,11 @@ export class ScopeMiddleware implements NestMiddleware {
       where: { userId: userId, programId: programId },
     });
     const scope = assignment.scope ? assignment.scope : '';
-    req.scope = scope
-    console.log("🚀 ~ file: scope.middleware.ts:39 ~ ScopeMiddleware ~ use ~ scope:", scope)
+    req.scope = scope;
+    console.log(
+      '🚀 ~ file: scope.middleware.ts:39 ~ ScopeMiddleware ~ use ~ scope:',
+      scope,
+    );
     next();
   }
 }

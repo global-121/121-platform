@@ -9,8 +9,8 @@ import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryP
 export class NoteService {
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    @Inject(
-      getScopedRepositoryProvideName(NoteEntity)) private noteRepository: ScopedRepository<NoteEntity>,
+    @Inject(getScopedRepositoryProvideName(NoteEntity))
+    private noteRepository: ScopedRepository<NoteEntity>,
   ) {}
 
   public async createNote(
