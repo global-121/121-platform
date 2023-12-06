@@ -1,6 +1,8 @@
-import { Scope } from "@nestjs/common";
-import { ScopedRepository } from "../scoped.repository";
-import { DataSource } from "typeorm";
+import { Scope } from '@nestjs/common';
+import { ScopedRepository } from '../scoped.repository';
+import { DataSource } from 'typeorm';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 // Todo make this strongly typed
 export function getScopedRepositoryProvideName(entity: any): string {
@@ -12,9 +14,10 @@ export function createScopedRepositoryProvider(entity: any) {
   return {
     provide: getScopedRepositoryProvideName(entity),
     scope: Scope.REQUEST,
-    useFactory: (dataSource: DataSource) => {
-      return new ScopedRepository(entity, dataSource);
+    useFactory: (dataSource: DataSource, request: Request) => {
+      return new ScopedRepository(entity, dataSource, request);
     },
-    inject: [DataSource],
+    durable: true,
+    inject: [DataSource, REQUEST],
   };
 }

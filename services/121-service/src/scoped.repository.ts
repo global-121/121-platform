@@ -10,6 +10,8 @@ import {
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { RegistrationEntity } from './registration/registration.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -25,29 +27,43 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   }
 }
 
+type EntityRelations = {
+  [key: string]: string[];
+};
+
+const relationConfig: EntityRelations = {
+  IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
+  // add the rest of the entities with an indirect relation to registration here
+};
+
 // TODO use this for any entity that needs to be scoped that related to registration
+@Injectable({ scope: Scope.REQUEST, durable: true })
 export class ScopedRepository<T> {
   private repository: Repository<T>;
-  public request: Request;
+  // public request: Request;
 
-  // Use for entities that have an INDIRECT relation to registration
+  // Use  for entities that have an INDIRECT relation to registration
   // Else the relation is found automatically in the constructor
   // DECIDE: Is it more confusing than not use this automatic detection? Is it better to always set it manually?
+  // Another option is to try to set it automatically for all entities also those with an indrect relation
   // An example of this for IntersolveVisaWalletEntity is ['intersolveVisaCustomer',  'registration']
   public relationArrayToRegistration: string[];
 
   constructor(
     target: EntityTarget<T>,
     @InjectDataSource() dataSource: DataSource,
-    relationToRegistration?: string[],
+    @Inject(REQUEST) private request: Request,
   ) {
+    // this.request
     this.repository = dataSource.createEntityManager().getRepository(target);
-    if (!relationToRegistration || relationToRegistration.length === 0) {
+
+    if (relationConfig[this.repository.metadata.name]) {
+      this.relationArrayToRegistration =
+        relationConfig[this.repository.metadata.name];
+    } else {
       this.relationArrayToRegistration = [
         this.findDirectRelationToRegistration(this.repository.metadata),
       ];
-    } else {
-      this.relationArrayToRegistration = relationToRegistration;
     }
   }
 
@@ -85,6 +101,10 @@ export class ScopedRepository<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
     // If the scope is empty, return the normal query builder
+    console.log(
+      '🚀 ~ file: scoped.repository.ts:89 ~ ScopedRepository<T> ~ createQueryBuilder ~ this.request:',
+      this.request.scope,
+    );
     if (!this.request?.scope || this.request.scope === '') {
       return new ScopedQueryBuilder(qb);
     }
