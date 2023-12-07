@@ -12,7 +12,7 @@ describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
   let messageStatusCallbackQueue: jest.Mocked<Queue>;
 
-  beforeAll(() => {
+  beforeEach(() => {
     const { unit, unitRef } = TestBed.create(MessageIncomingService).compile();
 
     messageIncomingService = unit;
