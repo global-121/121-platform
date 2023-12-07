@@ -7,6 +7,8 @@ import { Queue } from 'bull';
 import { TestBed } from '@automock/jest';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.const';
+import { getQueueName } from '../../utils/unit-test.helpers';
 
 const messageJob = {
   whatsappPhoneNumber: '1234567890',
@@ -26,7 +28,7 @@ describe('QueueMessageService', () => {
     const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
 
     queueMessageService = unit;
-    messageQueue = unitRef.get('BullQueue_message');
+    messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
   });
 
   it('should be defined', () => {

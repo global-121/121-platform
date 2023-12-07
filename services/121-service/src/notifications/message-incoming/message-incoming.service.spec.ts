@@ -1,9 +1,12 @@
 import { Queue } from 'bull';
 import { MessageIncomingService } from './message-incoming.service';
-// Assuming the entities are in the same directory
 import { TestBed } from '@automock/jest';
-import { ProcessName } from '../enum/queue.names.enum';
+import {
+  ProcessName,
+  QueueNameMessageCallBack,
+} from '../enum/queue.names.enum';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
+import { getQueueName } from '../../utils/unit-test.helpers';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
@@ -13,7 +16,9 @@ describe('MessageIncomingService', () => {
     const { unit, unitRef } = TestBed.create(MessageIncomingService).compile();
 
     messageIncomingService = unit;
-    messageStatusCallbackQueue = unitRef.get('BullQueue_messageStatusCallback');
+    messageStatusCallbackQueue = unitRef.get(
+      getQueueName(QueueNameMessageCallBack.status),
+    );
   });
 
   it('should be defined', () => {
