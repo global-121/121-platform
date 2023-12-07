@@ -5,6 +5,10 @@ export enum DefaultUserRole {
   RunProgram = 'run-program',
   View = 'view',
   KoboUser = 'kobo-user',
+  CvaManager = 'cva-manager',
+  CvaOfficer = 'cva-officer',
+  FinanceManager = 'finance-manager',
+  FinanceOfficer = 'finance-officer',
 }
 
 export enum PersonAffectedRole {

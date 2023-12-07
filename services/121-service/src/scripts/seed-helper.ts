@@ -5,6 +5,7 @@ import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
@@ -15,7 +16,6 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 export class SeedHelper {
   public constructor(private dataSource: DataSource) {}
@@ -49,6 +49,28 @@ export class SeedHelper {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
     });
 
+    const cvaManager = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_CVA_MANAGER,
+    });
+
+    const cvaOfficer = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_CVA_OFFICER,
+    });
+
+    const financeManager = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      password:
+        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FINANCE_MANAGER,
+    });
+
+    const financeOfficer = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FINANCE_OFFICER,
+      password:
+        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FINANCE_OFFICER,
+    });
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     if (fullAccessUser) {
       await this.assignAidworker(fullAccessUser.id, program.id, [
@@ -74,6 +96,26 @@ export class SeedHelper {
     if (koboUser) {
       await this.assignAidworker(koboUser.id, program.id, [
         DefaultUserRole.KoboUser,
+      ]);
+    }
+    if (cvaManager) {
+      await this.assignAidworker(cvaManager.id, program.id, [
+        DefaultUserRole.CvaManager,
+      ]);
+    }
+    if (cvaOfficer) {
+      await this.assignAidworker(cvaOfficer.id, program.id, [
+        DefaultUserRole.CvaOfficer,
+      ]);
+    }
+    if (financeManager) {
+      await this.assignAidworker(financeManager.id, program.id, [
+        DefaultUserRole.FinanceManager,
+      ]);
+    }
+    if (financeOfficer) {
+      await this.assignAidworker(financeOfficer.id, program.id, [
+        DefaultUserRole.FinanceManager,
       ]);
     }
 
