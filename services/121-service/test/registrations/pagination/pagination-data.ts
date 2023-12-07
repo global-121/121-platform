@@ -11,7 +11,8 @@ export function createExpectedValueObject(registration, id): any {
   return expectedValueObject;
 }
 
-export const programId = 3;
+export const programIdOCW = 3;
+export const programIdPV = 2;
 export const referenceId = '63e62864557597e0d';
 export const registration1 = {
   referenceId: referenceId,
@@ -96,6 +97,18 @@ export const registration5 = {
   phoneNumber: '14155235556',
   fspName: FspName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
+};
+
+export const referenceId6 = 'asdf234f4gg4ag64545';
+export const registration6 = {
+  referenceId: referenceId6,
+  preferredLanguage: 'nl',
+  paymentAmountMultiplier: 1,
+  firstName: 'Jan',
+  lastName: 'Janssen',
+  phoneNumber: '14155235551',
+  fspName: FspName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235551',
 };
 
 export const expectedAttributes = [

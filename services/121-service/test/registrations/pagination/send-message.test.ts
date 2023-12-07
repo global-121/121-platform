@@ -10,7 +10,7 @@ import {
   sendMessage,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
-import { programId, registration1, registration2 } from './pagination-data';
+import { programIdOCW, registration1, registration2 } from './pagination-data';
 
 describe('send arbitrary messages to set of registrations', () => {
   let accessToken: string;
@@ -25,11 +25,11 @@ describe('send arbitrary messages to set of registrations', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      programId,
+      programIdOCW,
       ProgramPhase.registrationValidation,
       accessToken,
     );
-    await importRegistrations(programId, registrations, accessToken);
+    await importRegistrations(programIdOCW, registrations, accessToken);
   });
 
   it('should send messages to selected PAs only', async () => {
@@ -38,14 +38,14 @@ describe('send arbitrary messages to set of registrations', () => {
 
     // Act
     const sendMessageResponse = await sendMessage(
-      programId,
+      programIdOCW,
       [referenceIds[0]],
       message,
       accessToken,
     );
 
     await waitForMessagesToComplete(
-      programId,
+      programIdOCW,
       [referenceIds[0]],
       accessToken,
       8000,
@@ -54,7 +54,7 @@ describe('send arbitrary messages to set of registrations', () => {
     const messageHistories = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
-        programId,
+        programIdOCW,
         referenceId,
         accessToken,
       );

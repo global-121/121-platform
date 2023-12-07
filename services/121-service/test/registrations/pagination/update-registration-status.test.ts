@@ -12,7 +12,7 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
-  programId,
+  programIdOCW,
   registration1,
   registration3,
   registration4,
@@ -37,11 +37,11 @@ describe('change the status of a set of registrations', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      programId,
+      programIdOCW,
       ProgramPhase.registrationValidation,
       accessToken,
     );
-    await importRegistrations(programId, registrations, accessToken);
+    await importRegistrations(programIdOCW, registrations, accessToken);
   });
 
   it('should update statuses if possible', async () => {
@@ -51,20 +51,20 @@ describe('change the status of a set of registrations', () => {
 
     // Act
     const updateStatusResponse = await awaitChangePaStatus(
-      programId,
+      programIdOCW,
       referenceIds,
       newStatus,
       accessToken,
     );
     await waitForStatusUpdateToComplete(
-      programId,
+      programIdOCW,
       referenceIds,
       accessToken,
       50000,
       newStatus,
     );
     const getRegistrationsResponse = await getRegistrations(
-      programId,
+      programIdOCW,
       null,
       accessToken,
       null,
@@ -90,13 +90,13 @@ describe('change the status of a set of registrations', () => {
 
     // Act
     const updateStatusResponse = await awaitChangePaStatus(
-      programId,
+      programIdOCW,
       referenceIds,
       newStatus,
       accessToken,
     );
     const getRegistrationsResponse = await getRegistrations(
-      programId,
+      programIdOCW,
       null,
       accessToken,
     );
@@ -121,14 +121,14 @@ describe('change the status of a set of registrations', () => {
 
     // Act
     const updateStatusResponse = await awaitChangePaStatus(
-      programId,
+      programIdOCW,
       referenceIds,
       newStatus,
       accessToken,
       filter,
     );
     const getRegistrationsResponse = await getRegistrations(
-      programId,
+      programIdOCW,
       null,
       accessToken,
       null,
