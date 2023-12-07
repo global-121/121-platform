@@ -31,6 +31,6 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
   @JoinTable()
   public roles: UserRoleEntity[];
 
-  @Column({ nullable: true })
-  public scope: string; ////
+  @Column({ nullable: false, default: '' })
+  public scope: string;
 }

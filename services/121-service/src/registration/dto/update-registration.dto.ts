@@ -8,6 +8,7 @@ export enum AdditionalAttributes {
   preferredLanguage = 'preferredLanguage',
   maxPayments = 'maxPayments',
   referenceId = 'referenceId',
+  scope = 'scope',
 }
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
 export type Attributes = AdditionalAttributes | CustomDataAttributes;

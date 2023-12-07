@@ -10,7 +10,7 @@ export class RegistrationScope1701698970019 implements MigrationInterface {
     );
     await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD "scope" character varying`,
+      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD "scope" character varying NOT NULL DEFAULT ''`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" ADD "scope" character varying NOT NULL DEFAULT ''`,
