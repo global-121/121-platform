@@ -94,6 +94,9 @@ export class BulkActionsService {
       permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
+      },
     },
     {
       id: BulkActionId.include,
