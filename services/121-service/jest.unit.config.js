@@ -6,7 +6,6 @@ module.exports = {
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   reporters: [
-    'default',
     'jest-ci-spec-reporter',
     ['github-actions', { silent: false }],
     'summary',
