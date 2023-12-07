@@ -5,5 +5,10 @@ module.exports = {
   testMatch: ['<rootDir>/**/*.spec.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
-  reporters: ['default', ['github-actions', { silent: false }], 'summary'],
+  reporters: [
+    'default',
+    'jest-ci-spec-reporter',
+    ['github-actions', { silent: false }],
+    'summary',
+  ],
 };
