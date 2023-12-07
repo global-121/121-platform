@@ -39,12 +39,11 @@ describe('MessageTemplatesService', () => {
 
   describe('createMessageTemplate', () => {
     it('should create message template', async () => {
-      // Mock the createMessageTemplate method to return the array of messageTemplates
+      // Arrange
+      const programId = 1;
       const createMessageTemplateMock = jest
         .spyOn(controller, 'createMessageTemplate')
         .mockResolvedValue();
-
-      const programId = 1;
       const messageTemplate = {
         type: 'dsadsaasd12123dsa',
         language: 'test1',
@@ -52,15 +51,14 @@ describe('MessageTemplatesService', () => {
         isWhatsappTemplate: true,
       };
 
+      // Act
       const response = await controller.createMessageTemplate(
         programId,
         messageTemplate,
       );
 
-      // Ensure that the response matches the expected result
+      // Assert
       expect(response).toEqual(undefined);
-
-      // Ensure that the createMessageTemplate method was called with the correct arguments
       expect(createMessageTemplateMock).toHaveBeenCalledWith(
         programId,
         messageTemplate,
@@ -68,6 +66,8 @@ describe('MessageTemplatesService', () => {
     });
 
     it('should get all message template by programId', async () => {
+      // Arrange
+      const testProgramId = 1;
       const result: MessageTemplateEntity[] = [
         {
           id: 1,
@@ -77,47 +77,43 @@ describe('MessageTemplatesService', () => {
           language: 'test1',
           message: 'en',
           isWhatsappTemplate: true,
-          programId: 1,
+          programId: testProgramId,
         },
       ];
-
-      // Mock the createMessageTemplate method to return the array of messageTemplates
       const createMessageTemplateMock = jest
         .spyOn(controller, 'getMessageTemplatesByProgramId')
         .mockResolvedValue(result);
 
       const params = {
-        programId: 1,
+        programId: testProgramId,
       };
 
+      // Act
       const response = await controller.getMessageTemplatesByProgramId(params);
 
-      // Ensure that the response matches the expected result
+      // Assert
       expect(response).toEqual(result);
-
-      // Ensure that the createMessageTemplate method was called with the correct arguments
       expect(createMessageTemplateMock).toHaveBeenCalledWith(params);
     });
 
     it('should update message template by id', async () => {
+      // Arrange
+      const testProgramId = 1;
+      const testMessageId = 1;
       const result: MessageTemplateEntity = {
-        id: 1,
+        id: testMessageId,
         created: new Date(),
         updated: new Date(),
         type: 'test1',
         language: 'en',
         message: 'testing message',
         isWhatsappTemplate: false,
-        programId: 1,
+        programId: testProgramId,
       };
-
-      // Mock the createMessageTemplate method to return the array of messageTemplates
       const createMessageTemplateMock = jest
         .spyOn(controller, 'updateMessageTemplate')
         .mockResolvedValue(result);
 
-      const programId = 1;
-      const messageId = 1;
       const body = {
         type: 'test1',
         language: 'en',
@@ -125,19 +121,18 @@ describe('MessageTemplatesService', () => {
         isWhatsappTemplate: false,
       };
 
+      // Act
       const response = await controller.updateMessageTemplate(
-        programId,
-        messageId,
+        testProgramId,
+        testMessageId,
         body,
       );
 
-      // Ensure that the response matches the expected result
+      // Assert
       expect(response).toEqual(result);
-
-      // Ensure that the createMessageTemplate method was called with the correct arguments
       expect(createMessageTemplateMock).toHaveBeenCalledWith(
-        programId,
-        messageId,
+        testProgramId,
+        testMessageId,
         body,
       );
     });

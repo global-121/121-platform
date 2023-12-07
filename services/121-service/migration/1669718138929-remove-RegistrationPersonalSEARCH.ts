@@ -4,19 +4,23 @@ import { PermissionEntity } from '../src/user/permissions.entity';
 import { UserRoleEntity } from './../src/user/user-role.entity';
 
 export class removeRegistrationPersonalSEARCH1669718138929
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
     await this.migrateData(queryRunner.manager);
     await queryRunner.startTransaction();
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateData(manager: EntityManager): Promise<void> {
     const userRoleRepo = manager.getRepository(UserRoleEntity);
     const permRepo = manager.getRepository(PermissionEntity);
-    const searchPerm = await permRepo
+
+    await permRepo
       .createQueryBuilder('permission')
       .select([`permission."id"`])
       .where(`permission.name = :permission`, {
@@ -36,7 +40,7 @@ export class removeRegistrationPersonalSEARCH1669718138929
       .getMany();
 
     for (const userRole of userRoles) {
-      const permissionNameArray = userRole.permissions.map(p => p.name);
+      const permissionNameArray = userRole.permissions.map((p) => p.name);
       const includesSearch = permissionNameArray.includes(
         'registration:personal.search' as PermissionEnum,
       );

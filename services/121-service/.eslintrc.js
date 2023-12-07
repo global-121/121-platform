@@ -14,7 +14,7 @@ module.exports = {
       rules: {},
     },
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts'],
       parser: '@typescript-eslint/parser',
       extends: [
         'plugin:jest/recommended',

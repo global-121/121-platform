@@ -1,15 +1,12 @@
 import { ProgramCustomAttributeEntity } from './../src/programs/program-custom-attribute.entity';
-import {
-  EntityManager,
-  MigrationInterface,
-  QueryRunner,
-} from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { RegistrationEntity } from '../src/registration/registration.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
 import { CustomAttributeType } from '../src/programs/dto/create-program-custom-attribute.dto';
 
 export class removeMigrateNamePartnerOrg1643720490970
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'removeMigrateNamePartnerOrg1643720490970';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -39,7 +36,8 @@ export class removeMigrateNamePartnerOrg1643720490970
     const programCustomAttributeRepository = manager.getRepository(
       ProgramCustomAttributeEntity,
     );
-    const regsWithPartnerOrg = await manager.getRepository(RegistrationEntity)
+    const regsWithPartnerOrg = await manager
+      .getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration.*')
       .where('"namePartnerOrganization" is not null')
@@ -49,7 +47,8 @@ export class removeMigrateNamePartnerOrg1643720490970
       await registrationRepository.save(r);
     }
 
-    const programs = await manager.getRepository(ProgramEntity)
+    const programs = await manager
+      .getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect(
         'program.programCustomAttributes',

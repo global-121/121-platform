@@ -37,12 +37,12 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
 
-      - name: Unit-Test (optional)
+      - name: Unit-Test
         working-directory: ${{ env.workingDirectory }}
-        continue-on-error: true
         env:
           NODE_ENV: development
           TWILIO_SID: AC
+          TWILIO_AUTHTOKEN: test
           MOCK_TWILIO: TRUE
           MOCK_INTERSOLVE: TRUE
           MOCK_VODACASH: TRUE

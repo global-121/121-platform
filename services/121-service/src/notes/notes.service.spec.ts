@@ -33,27 +33,27 @@ describe('NotesService', () => {
 
   describe('createNote', () => {
     it('should create note', async () => {
-      // Mock the createNote method to return the array of notes
+      // Arrange
+      const programId = 1;
       const createNoteMock = jest
         .spyOn(controller, 'createNote')
         .mockResolvedValue();
-
-      const programId = 1;
       const note = {
         referenceId: 'dsadsaasd12123dsa',
         text: 'test1',
       };
 
+      // Act
       const response = await controller.createNote(1, programId, note);
 
-      // Ensure that the response matches the expected result
+      // Assert
       expect(response).toEqual(undefined);
-
-      // Ensure that the createNote method was called with the correct arguments
       expect(createNoteMock).toHaveBeenCalledWith(1, programId, note);
     });
 
     it('should get notes', async () => {
+      // Arrange
+      const programId = 1;
       const result: ResponseNoteDto[] = [
         {
           registrationId: 1,
@@ -72,15 +72,14 @@ describe('NotesService', () => {
 
       const params = {
         referenceId: 'dsadsaasd12123dsa',
-        programId: 1,
+        programId,
       };
 
+      // Act
       const response = await controller.retrieveNotes(params);
 
-      // Ensure that the response matches the expected result
+      // Assert
       expect(response).toEqual(result);
-
-      // Ensure that the createNote method was called with the correct arguments
       expect(createNoteMock).toHaveBeenCalledWith(params);
     });
   });

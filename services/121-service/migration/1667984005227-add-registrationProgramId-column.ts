@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class addRegistrationProgramIdColumn1667984005227
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'addRegistrationProgramIdColumn1667984005227';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

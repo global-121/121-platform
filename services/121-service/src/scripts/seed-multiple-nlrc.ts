@@ -18,8 +18,13 @@ export class SeedMultipleNLRC implements InterfaceScript {
   private readonly seedHelper = new SeedHelper(this.dataSource);
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = await new SeedInit(this.dataSource);
+    const seedInit = new SeedInit(this.dataSource);
     await seedInit.run(isApiTests);
+
+    // ***** CREATE INSTANCE *****
+    // Technically multiple instances could be loaded, but that should not be done
+    await this.seedHelper.addInstance(instanceNLRC);
+
     // ************************
     // ***** Program LVV *****
     // ************************
@@ -35,10 +40,6 @@ export class SeedMultipleNLRC implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityLVV, true);
-
-    // ***** CREATE INSTANCE *****
-    // Technically multiple instances could be loaded, but that should not be done
-    await this.seedHelper.addInstance(instanceNLRC);
 
     // ************************
     // ***** Program PV *****

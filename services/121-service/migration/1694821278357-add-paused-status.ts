@@ -13,7 +13,9 @@ export class addPausedStatus1694821278357 implements MigrationInterface {
     await queryRunner.startTransaction();
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateData(manager: EntityManager): Promise<void> {
     // Add the new permission

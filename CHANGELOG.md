@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use andWhere in 'Not yet sent payment' query
 
+## Changed
+
+- Included code of migration-scripts in scope of CI/test-pipeline. See [`.eslintrc.js`](services/121-service/.eslintrc.js)
+
+---
+
 ## [1.106.2](https://github.com/global-121/121-platform/compare/v1.106.1...v1.106.2) - 2023-11-29
 
 ## Fixed
@@ -30,8 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
-- Redis for queues. See: a step in the "How to set up a new instance"-guide in the wiki.
-- Seperate tables for message templates
+- Using Redis for queues. See: a step in the "How to set up a new instance"-guide in the wiki.
+- Separate tables for message templates
 
 ## Changed
 
@@ -39,16 +45,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Removed
 
-- CORS configuration should be hanndled via the Azure Portal for each App Service instance.
+- CORS configuration should be handled via the Azure Portal for each App Service instance.
   See: A step in the "How to set up a new instance"-guide in the wiki.
 
 ---
+
 ## [1.105.9](https://github.com/global-121/121-platform/compare/v1.105.8...v1.105.9) - 2023-11-15
 
 ### Fixed
 
 - Filter for phonenumber of imported/invited PA
-
 
 ## [1.105.8](https://github.com/global-121/121-platform/compare/v1.105.7...v1.105.8) - 2023-11-15
 
@@ -136,26 +142,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Load registrations using back-end pagination including filtering & sorting (using [nestjs-paginate](https://github.com/ppetzold/nestjs-paginate))
+- Load registrations using back-end pagination including filtering & sorting (using [`nestjs-paginate`](https://github.com/ppetzold/nestjs-paginate))
 - Write and see multiple notes per registration
 - Improved functionality for configuring roles of users
 
 ### Deprecated
 
-- AW-App will no longer receive updates/fixes/changes (untill decided otherwise)
+- AW-App will no longer receive updates/fixes/changes (until decided otherwise)
 
 ## [1.103.3](https://github.com/global-121/121-platform/compare/v1.103.2...v1.103.3) - 2023-10-25
 
 ### Fixed
 
-- Prohibit starting a payment in both front-end and back-nd, while another is still in progress
+- Prohibit starting a payment in both front-end and back-end, while another is still in progress
 - Store CBE full request and response in Azure logs
 
 ## [1.103.2](https://github.com/global-121/121-platform/compare/v1.103.1...v1.103.2) - 2023-10-23
 
 ### Fixed
 
-- Payment name to fullName ethopia
+- Payment name to fullName for Ethiopia
 
 ## [1.103.1](https://github.com/global-121/121-platform/compare/v1.103.0...v1.103.1) - 2023-10-19
 
@@ -182,7 +188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Export People Affected: removed payment data & optimised removal of empty columns
+- Export People Affected: removed payment data & optimized removal of empty columns
 
 ### Added
 
@@ -192,7 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed CBE account-enquiries cannot access ns4:gEACCOUNTCBEREMITANCEDetailType
+- Fixed CBE account-enquiries cannot access `ns4:gEACCOUNTCBEREMITANCEDetailType`
 
 ## [1.102.0](https://github.com/global-121/121-platform/compare/v1.101.0...v1.102.0) - 2023-10-05
 
@@ -263,7 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Commercial bank of ethiopia integration
+- Commercial Bank of Ethiopia integration
 - Store and show PA data changes
 - Export PA data changes
 - See timestamp of transaction in export payment data report
@@ -271,12 +277,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Nestjs upgrade to v10
+- Nest.js upgrade to v10
 - Use 'reserved' transactions in lastUsedDate Visa debit card
 
 ### Fixed
 
-- Export list of unsused voucher button
+- Export list of unused voucher button
 
 ## [1.96.0](https://github.com/global-121/121-platform/compare/v1.95.1...v1.96.0) - 2023-08-16
 
@@ -312,7 +318,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Payment history details also in PA profile page
-- Enable updating and deleting PAs from Espo differently
+- Enable updating and deleting PAs from EspoCRM differently
 
 ## [1.94.1](https://github.com/global-121/121-platform/compare/v1.94.0...v1.94.1) - 2023-08-07
 
@@ -500,7 +506,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Delay on incoming Whatsapp messages
+- Delay on incoming WhatsApp messages
 
 ## [1.85.1](https://github.com/global-121/121-platform/compare/v1.85.0...v1.85.1) - 2023-04-26
 

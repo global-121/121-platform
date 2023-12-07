@@ -378,7 +378,7 @@ This follows the same process as a regular release + deployment. With some small
 
 ### Database
 
-If you deploy the 121-platform to a server for the first time it is recommended to setup a seperate Posgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
+If you deploy the 121-platform to a server for the first time it is recommended to setup a separate Postgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
 
 ### Interfaces
 

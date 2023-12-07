@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class DropUniqueCustomAttributeNameConstraint1664886745025
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'DropUniqueCustomAttributeNameConstraint1664886745025';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
