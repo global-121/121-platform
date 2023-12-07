@@ -609,6 +609,7 @@ export class UserService {
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
+        'MAX(assignment.scope) AS scope',
       ])
       .groupBy('user.id')
       .getRawMany();
@@ -627,6 +628,7 @@ export class UserService {
         active: user.active,
         lastLogin: user.lastLogin,
         roles,
+        scope: user.scope,
       };
     });
 
