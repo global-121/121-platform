@@ -1,21 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { RegistrationEntity } from '../../registration.entity';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
+import { ScopedRepository } from '../../../scoped.repository';
+import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationChangeLogService {
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLogRepository: Repository<RegistrationChangeLogEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+
+  public constructor(
+    @Inject(getScopedRepositoryProvideName(RegistrationChangeLogEntity))
+    private registrationChangeScopedRepository: ScopedRepository<RegistrationChangeLogEntity>,
+  ) {}
 
   public async getChangeLogByReferenceId(
     referenceId: string,
     programId: number,
   ): Promise<RegistrationChangeLogEntity[]> {
-    return await this.registrationChangeLogRepository.find({
+    return await this.registrationChangeScopedRepository.find({
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },

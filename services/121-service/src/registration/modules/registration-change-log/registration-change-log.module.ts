@@ -6,6 +6,7 @@ import { RegistrationEntity } from '../../registration.entity';
 import { RegistrationChangeLogController } from './registration-change-log.controller';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationChangeLogService } from './registration-change-log.service';
+import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -16,7 +17,10 @@ import { RegistrationChangeLogService } from './registration-change-log.service'
     ]),
     UserModule,
   ],
-  providers: [RegistrationChangeLogService],
+  providers: [
+    RegistrationChangeLogService,
+    createScopedRepositoryProvider(RegistrationChangeLogEntity),
+  ],
   controllers: [RegistrationChangeLogController],
   exports: [RegistrationChangeLogService],
 })
