@@ -63,7 +63,7 @@ import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
-import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { ScopedRepository } from '../../../scoped.repository';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
@@ -78,9 +78,9 @@ export class IntersolveVisaService
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProvideName(IntersolveVisaCustomerEntity))
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
     private intersolveVisaScopedCustomerRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
-    @Inject(getScopedRepositoryProvideName(IntersolveVisaWalletEntity))
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
     private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 

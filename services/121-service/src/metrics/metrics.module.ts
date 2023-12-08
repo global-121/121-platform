@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { PaymentsModule } from '../payments/payments.module';
@@ -15,7 +14,6 @@ import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
@@ -23,7 +21,7 @@ import { RegistrationDataScopedQueryService } from '../utils/registration-data-q
 import { MetricsController } from './metrics.controller';
 import { MetricsService } from './metrics.service';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
-import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [

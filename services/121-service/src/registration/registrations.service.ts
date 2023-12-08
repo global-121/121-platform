@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { DataSource, FindManyOptions, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -60,7 +60,7 @@ import { QueueMessageService } from '../notifications/queue-message/queue-messag
 import { UserService } from '../user/user.service';
 import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -90,13 +90,13 @@ export class RegistrationsService {
     private readonly userService: UserService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProvideName(RegistrationStatusChangeEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
-    @Inject(getScopedRepositoryProvideName(RegistrationChangeLogEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
     private registrationChangeLogScopedRepo: ScopedRepository<RegistrationChangeLogEntity>,
-    @Inject(getScopedRepositoryProvideName(TwilioMessageEntity))
+    @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProvideName(RegistrationDataEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 
@@ -1407,14 +1407,6 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
   ): Promise<any[]> {
-    const options: FindManyOptions = {
-      where: {
-        registration: { referenceId: referenceId, programId: programId },
-      },
-      relations: ['registration'],
-      order: { created: 'DESC' },
-    };
-
     const qb = await this.registrationStatusChangeScopedRepository
       .createQueryBuilder('registrationStatusChange')
       .andWhere('registration.referenceId = :referenceId', {

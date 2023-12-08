@@ -34,7 +34,7 @@ import { MessageTemplateService } from '../../../notifications/message-template/
 import { MessageProcessType } from '../../../notifications/message-job.dto';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -54,7 +54,7 @@ export class IntersolveVoucherService
   private readonly fallbackLanguage = 'en';
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProvideName(IntersolveVoucherEntity))
+    @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,

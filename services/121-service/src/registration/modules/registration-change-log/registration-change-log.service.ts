@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Between } from 'typeorm';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationChangeLogService {
   public constructor(
-    @Inject(getScopedRepositoryProvideName(RegistrationChangeLogEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
     private registrationChangeLogScopedRepository: ScopedRepository<RegistrationChangeLogEntity>,
   ) {}
 

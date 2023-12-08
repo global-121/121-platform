@@ -37,7 +37,7 @@ import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class MetricsService {
@@ -52,9 +52,9 @@ export class MetricsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProvideName(RegistrationDataEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
-    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionService,
     private readonly paymentsService: PaymentsService,

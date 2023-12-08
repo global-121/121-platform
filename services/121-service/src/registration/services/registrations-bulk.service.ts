@@ -29,7 +29,7 @@ import {
   RegistrationViewScopedRepository,
 } from '../registration-scoped.repository';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
-import { getScopedRepositoryProvideName as getScopedRepositoryProviderName } from '../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsBulkService {

@@ -24,7 +24,7 @@ import { QueueMessageService } from '../../notifications/queue-message/queue-mes
 import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../utils/createScopedRepositoryProvider.helper';
 import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Injectable()
@@ -40,9 +40,9 @@ export class TransactionsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    @Inject(getScopedRepositoryProvideName(TwilioMessageEntity))
+    @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageRepository: ScopedRepository<TwilioMessageEntity>,
     private readonly queueMessageService: QueueMessageService,
     private messageTemplateService: MessageTemplateService,

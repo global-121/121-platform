@@ -39,9 +39,8 @@ import { RegistrationStatusChangeEntity } from '../registration-status-change.en
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
 import { UserService } from '../../user/user.service';
-import { getScopedRepositoryProvideName } from '../../utils/createScopedRepositoryProvider.helper';
 import { ScopedRepository } from '../../scoped.repository';
-import { RegistrationScopedRepository } from '../registration-scoped.repository';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -69,9 +68,9 @@ export class RegistrationsImportService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly userService: UserService,
-    @Inject(getScopedRepositoryProvideName(RegistrationStatusChangeEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
-    @Inject(getScopedRepositoryProvideName(RegistrationDataEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 

@@ -5,12 +5,12 @@ import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
 import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 import { ScopedRepository } from '../../../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class IntersolveVisaExportService {
   constructor(
-    @Inject(getScopedRepositoryProvideName(IntersolveVisaWalletEntity))
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
     private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}

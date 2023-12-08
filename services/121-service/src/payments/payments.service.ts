@@ -46,7 +46,7 @@ import { TransactionsService } from './transactions/transactions.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class PaymentsService {
@@ -56,7 +56,7 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
-    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,

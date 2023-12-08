@@ -1,6 +1,5 @@
 import { RegistrationEntity } from './registration.entity';
 import { Inject, Injectable, Scope } from '@nestjs/common';
-
 import { Request } from 'express';
 import {
   DataSource,
@@ -10,7 +9,6 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   InsertResult,
-  Like,
   ObjectId,
   RemoveOptions,
   Repository,
@@ -20,6 +18,7 @@ import {
 import { ScopedQueryBuilder } from '../scoped.repository';
 import { REQUEST } from '@nestjs/core';
 import { RegistrationViewEntity } from './registration-view.entity';
+import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class RegistrationScopedBaseRepository<T> {
@@ -34,40 +33,24 @@ export class RegistrationScopedBaseRepository<T> {
     if (!this.request?.scope || this.request.scope === '') {
       return this.repository.find(options);
     }
-    const scopedOptions = {
-      ...options,
-      where: [
-        {
-          ...(options?.where || {}),
-          scope: Like(`${this.request.scope}%`),
-        },
-        {
-          ...(options?.where || {}),
-          program: { enableScope: false },
-        },
-      ],
-    };
-    return this.repository.find(scopedOptions as FindManyOptions);
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      [],
+      this.request.scope,
+    );
+    return this.repository.find(scopedOptions);
   }
 
   public async findOne(options: FindOneOptions<T>): Promise<T> {
     if (!this.request?.scope || this.request.scope === '') {
       return this.repository.findOne(options);
     }
-    const scopedOptions = {
-      ...options,
-      where: [
-        {
-          ...(options?.where || {}),
-          scope: Like(`${this.request.scope}%`),
-        },
-        {
-          ...(options?.where || {}),
-          program: { enableScope: false },
-        },
-      ],
-    };
-    return this.repository.findOne(scopedOptions as FindOneOptions);
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      [],
+      this.request.scope,
+    );
+    return this.repository.findOne(scopedOptions);
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {

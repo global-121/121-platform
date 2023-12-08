@@ -3,7 +3,7 @@ import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
 import { ScopedRepository } from '../scoped.repository';
 import { NoteEntity } from './note.entity';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -14,7 +14,7 @@ export class NoteService {
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    @Inject(getScopedRepositoryProvideName(NoteEntity))
+    @Inject(getScopedRepositoryProviderName(NoteEntity))
     private noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
