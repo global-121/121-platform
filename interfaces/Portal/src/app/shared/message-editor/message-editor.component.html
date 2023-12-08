@@ -1,0 +1,183 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{
+      inputProps?.titleTranslationKey
+        ? (inputProps?.titleTranslationKey | translate)
+        : ('common.confirm' | translate)
+    }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <h2
+    *ngIf="subHeader"
+    [innerHTML]="subHeader"
+  ></h2>
+  <div
+    *ngIf="message"
+    [innerHTML]="message"
+    class="ion-margin-vertical"
+  ></div>
+
+  <div
+    *ngIf="inputProps"
+    class="ion-margin-vertical"
+  >
+    <p
+      *ngIf="inputProps.checkbox"
+      class="ion-margin-vertical ion-padding-vertical"
+    >
+      <ion-checkbox
+        labelPlacement="end"
+        [checked]="checked"
+        (ionChange)="checkboxChange($event.detail.checked)"
+        >{{ inputProps.checkbox }}
+      </ion-checkbox>
+    </p>
+    <div
+      *ngIf="inputProps.explanation"
+      [innerHTML]="inputProps.explanation"
+      class="ion-margin-vertical"
+    ></div>
+    <div
+      *ngIf="
+        inputProps.promptType === promptTypeEnum.actionWithMessage &&
+        ((inputProps.checkbox && checked) || !inputProps.checkbox)
+      "
+    >
+      <ng-container *ngIf="!inputProps.isTemplated">
+        <div>
+          <strong>
+            {{
+              'page.program.program-people-affected.action-inputs.type-message'
+                | translate
+            }}:
+            <app-tooltip
+              [value]="
+                'page.program.program-people-affected.action-inputs.type-message-tooltip'
+                  | translate
+                    : {
+                        minLength: inputProps.inputConstraint?.length
+                      }
+              "
+            ></app-tooltip>
+          </strong>
+          <ion-textarea
+            name="message"
+            #input
+            [(ngModel)]="inputModel"
+            [ngModelOptions]="{ standalone: true }"
+            ngDefaultControl
+            [required]="inputProps.inputRequired"
+            rows="3"
+            autoGrow="true"
+            [minlength]="inputProps.inputConstraint?.length"
+            [placeholder]="inputProps.placeholder"
+            fill="outline"
+            class="input-element-with-border"
+            style="font-family: monospace"
+            (ngModelChange)="generatePreview($event)"
+          ></ion-textarea>
+        </div>
+
+        <ng-container *ngIf="attributeItems">
+          <ion-row
+            class="ion-align-items-center"
+            style="margin-top: 0.5em"
+          >
+            <app-select-typeahead
+              [items]="attributeItems"
+              [(selection)]="selectedAttribute"
+              [placeholder]="
+                'page.program.program-people-affected.action-inputs.placeholder-typeahead-placeholder'
+                  | translate
+              "
+              [multiple]="false"
+              [disabled]="isLoading"
+              [size]="'auto'"
+              class="ion-margin-end input-element-with-border"
+            ></app-select-typeahead>
+
+            <ion-button
+              fill="outline"
+              color="primary"
+              shape="round"
+              [disabled]="!selectedAttribute"
+              (click)="addPlaceholder()"
+            >
+              {{
+                'page.program.program-people-affected.action-inputs.add-placeholder'
+                  | translate
+              }}
+            </ion-button>
+          </ion-row>
+          <ion-row>
+            <p>
+              {{
+                'page.program.program-people-affected.action-inputs.placeholder-pa-data'
+                  | translate
+              }}
+            </p>
+          </ion-row>
+        </ng-container>
+      </ng-container>
+
+      <strong>
+        {{
+          'page.program.program-people-affected.action-inputs.message-preview'
+            | translate
+        }}:
+      </strong>
+      <div>
+        <pre
+          class="input-element-with-border ion-padding"
+          style="white-space: pre-wrap; min-height: 4em"
+          >{{ preview }}</pre
+        >
+      </div>
+
+      <div
+        *ngIf="inputProps.supportMessage"
+        [innerHTML]="inputProps.supportMessage"
+        class="ion-margin-vertical"
+      ></div>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button
+        fill="clear"
+        color="danger"
+        (click)="closeModal()"
+      >
+        {{ 'common.cancel' | translate }}
+      </ion-button>
+      <ion-button
+        fill="solid"
+        color="primary"
+        (click)="submitConfirm()"
+        [disabled]="checkOkDisabled()"
+      >
+        {{
+          inputProps?.okTranslationKey
+            ? (inputProps?.okTranslationKey | translate)
+            : ('common.ok' | translate)
+        }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -25,6 +25,7 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
+import { LatestMessageEntity } from '../../notifications/latest-message.entity';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -40,6 +41,8 @@ export class RegistrationsBulkService {
   private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  @InjectRepository(LatestMessageEntity)
+  private readonly latestMessageRepository: Repository<LatestMessageEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(ImageCodeExportVouchersEntity)
@@ -68,7 +71,18 @@ export class RegistrationsBulkService {
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
     // Overwrite the default select, as we only need the referenceId
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        message,
+        messageTemplateKey,
+      );
+    paginateQuery = this.setQueryPropertiesBulkAction(
+      paginateQuery,
+      false,
+      false,
+      usedPlaceholders,
+    );
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
@@ -83,6 +97,7 @@ export class RegistrationsBulkService {
         paginateQuery,
         programId,
         registrationStatus,
+        usedPlaceholders,
         message,
         messageTemplateKey,
         messageContentType,
@@ -115,20 +130,16 @@ export class RegistrationsBulkService {
       programId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
-
-    const registrationForUpdate =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        false,
-        true,
-        this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
-      );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
-    );
     if (!dryRun) {
-      this.deleteBatch(referenceIds).catch((error) => {
+      const registrationForDelete =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          false,
+          true,
+          this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
+        );
+      this.deleteBatch(registrationForDelete.data).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -141,11 +152,16 @@ export class RegistrationsBulkService {
     message: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    const chunkSize = 10000;
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        message,
+      );
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
       true,
+      usedPlaceholders,
     );
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
@@ -154,12 +170,14 @@ export class RegistrationsBulkService {
     );
 
     if (!dryRun) {
+      const chunkSize = 10000;
       this.sendMessagesChunked(
         paginateQuery,
         programId,
         message,
         chunkSize,
         resultDto.applicableCount,
+        usedPlaceholders,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -173,6 +191,7 @@ export class RegistrationsBulkService {
     message: string,
     chunkSize: number,
     bulkSize: number,
+    usedPlaceholders: string[],
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -200,6 +219,7 @@ export class RegistrationsBulkService {
         registrationsForUpdate.data,
         message,
         bulkSize,
+        usedPlaceholders,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -247,6 +267,7 @@ export class RegistrationsBulkService {
     query: PaginateQuery,
     includePaymentMultiplier = false,
     includeSendMessageProperties = false,
+    usedPlaceholders?: string[],
   ): PaginateQuery {
     query.select = ['referenceId'];
     if (includePaymentMultiplier) {
@@ -257,6 +278,9 @@ export class RegistrationsBulkService {
       query.select.push('preferredLanguage');
       query.select.push('whatsappPhoneNumber');
       query.select.push('phoneNumber');
+    }
+    if (usedPlaceholders?.length > 0) {
+      query.select = [...query.select, ...usedPlaceholders];
     }
     query.page = null;
     return query;
@@ -288,6 +312,7 @@ export class RegistrationsBulkService {
     query: PaginateQuery,
     programId: number,
     registrationStatus: RegistrationStatusEnum,
+    usedPlaceholders: string[],
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
@@ -297,41 +322,45 @@ export class RegistrationsBulkService {
       await this.registrationsPaginationService.getPaginate(
         query,
         programId,
-        false,
+        true,
         true,
         queryBuilder,
       );
-    const referenceIds = registrationForUpdate.data.map(
-      (registration) => registration.referenceId,
+
+    await this.updateRegistrationStatusBatch(
+      registrationForUpdate.data,
+      registrationStatus,
+      {
+        message,
+        messageTemplateKey,
+        messageContentType,
+        bulkSize: registrationForUpdate.meta.totalItems,
+      },
+      usedPlaceholders,
     );
-    await this.updateRegistrationStatusBatch(referenceIds, registrationStatus, {
-      message,
-      messageTemplateKey,
-      messageContentType,
-      bulkSize: registrationForUpdate.meta.totalItems,
-    });
   }
 
   private async updateRegistrationStatusBatch(
-    referenceIds: string[],
+    registrations: RegistrationViewEntity[],
     registrationStatus: RegistrationStatusEnum,
     messageSizeType?: MessageSizeTypeDto,
+    usedPlaceholders?: string[],
   ): Promise<void> {
     let programId;
     let program;
-    for (const referenceId of referenceIds) {
+    for (const registration of registrations) {
       const updatedRegistration =
         await this.registrationsService.setRegistrationStatus(
-          referenceId,
+          registration.referenceId,
           registrationStatus,
         );
       if (
-        (messageSizeType.message || messageSizeType.messageTemplateKey) &&
+        (messageSizeType?.message || messageSizeType?.messageTemplateKey) &&
         updatedRegistration
       ) {
         if (updatedRegistration.programId !== programId) {
-          programId = updatedRegistration.programId;
           // avoid a query per PA if not necessary
+          programId = updatedRegistration.programId;
           program = await this.programRepository.findOne({
             where: { id: programId },
           });
@@ -341,6 +370,12 @@ export class RegistrationsBulkService {
           program.tryWhatsAppFirst
             ? MessageProcessType.tryWhatsapp
             : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
+        const placeholderData = {};
+        if (usedPlaceholders.length) {
+          for (const placeholder of usedPlaceholders) {
+            placeholderData[placeholder] = registration[placeholder];
+          }
+        }
         try {
           await this.queueMessageService.addMessageToQueue(
             updatedRegistration,
@@ -349,7 +384,7 @@ export class RegistrationsBulkService {
             messageSizeType.messageContentType,
             messageProcessType,
             null,
-            null,
+            { placeholderData },
             messageSizeType.bulkSize,
           );
         } catch (error) {
@@ -363,21 +398,23 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async deleteBatch(referenceIds: string[]): Promise<void> {
+  private async deleteBatch(
+    registrations: RegistrationViewEntity[],
+  ): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
     await this.checkAllowedStatusChangeOrThrow(
-      referenceIds,
+      registrations.map((r) => r.referenceId),
       RegistrationStatusEnum.deleted,
     );
     await this.updateRegistrationStatusBatch(
-      referenceIds,
+      registrations,
       RegistrationStatusEnum.deleted,
     );
 
-    for await (const referenceId of referenceIds) {
+    for await (const registrationViewEntity of registrations) {
       const registration =
         await this.registrationsService.getRegistrationFromReferenceId(
-          referenceId,
+          registrationViewEntity.referenceId,
           ['user'],
         );
 
@@ -390,6 +427,9 @@ export class RegistrationsBulkService {
           user: { id: registration.user.id },
         });
       }
+      await this.latestMessageRepository.delete({
+        registrationId: registration.id,
+      });
       await this.twilioMessageRepository.delete({
         registrationId: registration.id,
       });
@@ -450,8 +490,13 @@ export class RegistrationsBulkService {
     registrations: RegistrationViewEntity[],
     message: string,
     bulkSize: number,
+    usedPlaceholders: string[],
   ): Promise<void> {
     for (const registration of registrations) {
+      const placeholderData = {};
+      for (const placeholder of usedPlaceholders) {
+        placeholderData[placeholder] = registration[placeholder];
+      }
       await this.queueMessageService.addMessageToQueue(
         registration,
         message,
@@ -459,7 +504,7 @@ export class RegistrationsBulkService {
         MessageContentType.custom,
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         null,
-        null,
+        { placeholderData },
         bulkSize,
       );
     }

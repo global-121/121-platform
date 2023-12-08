@@ -39,15 +39,16 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
-  private readonly programService: ProgramService;
-  public constructor(programService: ProgramService) {
-    this.programService = programService;
-  }
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly programAttributesService: ProgramAttributesService,
+  ) {}
 
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -253,23 +254,58 @@ export class ProgramController {
     );
   }
 
-  @ApiOperation({ summary: 'Get PA-table attributes for given program' })
+  @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'phase', required: false, type: 'string' })
   @ApiResponse({
     status: 200,
-    description: 'Return PA-table attributes by program-id.',
+    description: 'Return attributes by program-id.',
+  })
+  @ApiQuery({
+    name: 'phase',
+    required: false,
+    type: 'string',
+  })
+  @ApiQuery({
+    name: 'includeProgramQuestions',
+    required: false,
+    type: 'boolean',
+  })
+  @ApiQuery({
+    name: 'includeCustomAttributes',
+    required: false,
+    type: 'boolean',
+  })
+  @ApiQuery({
+    name: 'includeFspQuestions',
+    required: false,
+    type: 'boolean',
   })
   @Permissions(PermissionEnum.RegistrationREAD)
-  @Get(':programId/pa-table-attributes/:phase')
-  public async getPaTableAttributes(
+  @Get(':programId/attributes')
+  public async getAttributes(
     @Param() params,
+    @Query() queryParams,
     @User('id') userId: number,
   ): Promise<Attribute[]> {
-    return await this.programService.getPaTableAttributes(
+    if (userId) {
+      const hasPersonalReadAccess =
+        await this.programService.hasPersonalReadAccess(
+          Number(userId),
+          Number(params.programId),
+        );
+      if (!hasPersonalReadAccess) {
+        // If a person does not have personal read permission we should
+        // not show registration data columns in the portal
+        return [];
+      }
+    }
+
+    return await this.programAttributesService.getAttributes(
       Number(params.programId),
-      params.phase,
-      userId,
+      queryParams.includeCustomAttributes === 'true',
+      queryParams.includeProgramQuestions === 'true',
+      queryParams.includeFspQuestions === 'true',
+      queryParams.phase,
     );
   }
 }

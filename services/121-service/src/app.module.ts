@@ -23,11 +23,15 @@ import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
+import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
+import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 
 @Module({
   imports: [
     TypeOrmModule,
     ProgramModule,
+    ProgramAttributesModule,
+    MessageTemplateModule,
     UserModule,
     HealthModule,
     CronjobModule,

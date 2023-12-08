@@ -36,13 +36,20 @@ export class MessageService {
 
   public async sendTextMessage(messageJobDto: MessageJobDto): Promise<void> {
     try {
-      const messageText = messageJobDto.message
+      let messageText = messageJobDto.message
         ? messageJobDto.message
         : await this.getNotificationText(
             messageJobDto.preferredLanguage,
             messageJobDto.key,
             messageJobDto.programId,
           );
+      if (messageJobDto.customData?.placeholderData) {
+        messageText = await this.processPlaceholders(
+          messageText,
+          messageJobDto.customData.placeholderData,
+        );
+      }
+
       const processtype = messageJobDto.messageProcessType;
 
       if (processtype === MessageProcessType.sms) {
@@ -272,5 +279,25 @@ export class MessageService {
     }
 
     return '';
+  }
+
+  private async processPlaceholders(
+    messageTextWithPlaceholders: string,
+    placeholderData: object,
+  ): Promise<string> {
+    let messageText = messageTextWithPlaceholders;
+    for (const placeholder of Object.keys(placeholderData)) {
+      const regex = new RegExp(`{{${placeholder}}}`, 'g');
+      if (messageText.match(regex)) {
+        const placeHolderValue = placeholderData[placeholder];
+        messageText = messageText.replace(
+          regex,
+          placeHolderValue === null || placeHolderValue === undefined
+            ? ''
+            : placeHolderValue,
+        );
+      }
+    }
+    return messageText;
   }
 }

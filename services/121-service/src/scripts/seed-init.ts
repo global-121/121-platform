@@ -23,12 +23,19 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
-  public constructor(private dataSource: DataSource) {}
+  public constructor(
+    private dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
+  ) {}
 
-  private readonly seedHelper = new SeedHelper(this.dataSource);
+  private readonly seedHelper = new SeedHelper(
+    this.dataSource,
+    this.messageTemplateService,
+  );
 
   public async run(isApiTests?: boolean): Promise<void> {
     if (isApiTests !== undefined && isApiTests.toString() === 'true') {

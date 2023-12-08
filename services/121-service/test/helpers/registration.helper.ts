@@ -103,6 +103,7 @@ export async function awaitChangePaStatus(
   status: RegistrationStatusEnum,
   accessToken: string,
   filter: Record<string, string> = {},
+  includeTemplatedMessage = false,
 ): Promise<request.Response> {
   const queryParams = {};
   if (referenceIds) {
@@ -120,6 +121,7 @@ export async function awaitChangePaStatus(
     .send({
       status: status,
       message: null,
+      messageTemplateKey: includeTemplatedMessage ? status : null,
     });
   await waitForStatusChangeToComplete(
     programId,

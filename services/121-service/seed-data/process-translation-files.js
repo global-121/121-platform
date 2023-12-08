@@ -6,7 +6,7 @@
 // node services/121-service/seed-data/process-translation-files.js convert-to-locale --locale pt_BR --in ~/510/121-import-csv/zoa/for_use_121-platform_fsp-example_pt_BR.json --out services/121-service/seed-data/fsp/fsp-example.json --merge
 
 // Prepare file for transifex
-// node services/121-service/seed-data/process-translation-files.js prepare-to-update-transifex --in services/121-service/seed-data/program/program-pilot-nl-2.json --out ./program-pilot-nl-2.json
+// node services/121-service/seed-data/process-translation-files.js prepare-to-update-transifex --in services/121-service/seed-data/program/program-nlrc-pv.json --out ./program-nlrc-pv.json
 const fs = require('fs');
 const _ = require('lodash');
 
