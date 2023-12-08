@@ -51,12 +51,8 @@ export class ProgramService {
   public fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,

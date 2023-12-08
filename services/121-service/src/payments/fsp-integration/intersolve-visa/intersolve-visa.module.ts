@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { RegistrationEntity } from './../../../registration/registration.entity';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
@@ -18,6 +18,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { Module } from '@nestjs/common';
 import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
 @Module({
   imports: [
@@ -25,8 +26,6 @@ import { createScopedRepositoryProvider } from '../../../utils/createScopedRepos
     TypeOrmModule.forFeature([
       IntersolveVisaWalletEntity,
       UserEntity,
-      RegistrationEntity,
-      IntersolveVisaCustomerEntity,
       ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,
@@ -38,10 +37,12 @@ import { createScopedRepositoryProvider } from '../../../utils/createScopedRepos
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     CustomHttpService,
-    RegistrationDataQueryService,
+    RegistrationDataScopedQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
+    RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVisaWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [

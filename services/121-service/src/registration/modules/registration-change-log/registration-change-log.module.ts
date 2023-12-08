@@ -9,14 +9,7 @@ import { RegistrationChangeLogService } from './registration-change-log.service'
 import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      UserEntity,
-      RegistrationEntity,
-      RegistrationChangeLogEntity,
-    ]),
-    UserModule,
-  ],
+  imports: [TypeOrmModule.forFeature([UserEntity]), UserModule],
   providers: [
     RegistrationChangeLogService,
     createScopedRepositoryProvider(RegistrationChangeLogEntity),

@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   RegistrationDataOptions,
@@ -8,18 +6,21 @@ import {
 } from '../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
+import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
+import { ScopedQueryBuilder } from '../../scoped.repository';
+import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
-export class RegistrationDataQueryService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+export class RegistrationDataScopedQueryService {
+  public constructor(
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+  ) {}
 
   public async getPaDetails(
     referenceIds: string[],
     relationOptions: RegistrationDataOptions[],
   ): Promise<any> {
-    const query = this.registrationRepository
+    const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select([
         `registration.referenceId as "referenceId"`,
@@ -27,7 +28,7 @@ export class RegistrationDataQueryService {
         `registration."${GenericAttributes.preferredLanguage}"`,
         `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
       ])
-      .where(`registration.referenceId IN (:...referenceIds)`, {
+      .andWhere(`registration.referenceId IN (:...referenceIds)`, {
         referenceIds,
       });
     for (const r of relationOptions) {

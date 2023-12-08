@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
@@ -23,25 +23,27 @@ import { TransactionEntity } from './transaction.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
+import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
+import { getScopedRepositoryProvideName } from '../../utils/createScopedRepositoryProvider.helper';
+import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Injectable()
 export class TransactionsService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(LatestTransactionEntity)
   private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
   public constructor(
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    private transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    @Inject(getScopedRepositoryProvideName(TwilioMessageEntity))
+    private twilioMessageRepository: ScopedRepository<TwilioMessageEntity>,
     private readonly queueMessageService: QueueMessageService,
     private messageTemplateService: MessageTemplateService,
   ) {}
@@ -65,13 +67,13 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
-  ): SelectQueryBuilder<TransactionEntity> {
-    let transactionQuery = this.transactionRepository
+  ): ScopedQueryBuilder<TransactionEntity> {
+    let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
         'transaction.payment AS payment',
-        '"referenceId"',
+        'r."referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as "errorMessage"',
@@ -82,7 +84,7 @@ export class TransactionsService {
       .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .where('transaction."programId" = :programId', {
+      .andWhere('transaction."programId" = :programId', {
         programId: programId,
       });
     if (payment) {
@@ -93,7 +95,7 @@ export class TransactionsService {
     }
     if (referenceId) {
       transactionQuery = transactionQuery.andWhere(
-        '"referenceId" = :referenceId',
+        'r."referenceId" = :referenceId',
         { referenceId: referenceId },
       );
     }
@@ -110,11 +112,11 @@ export class TransactionsService {
     programId: number,
     input: GetTransactionDto,
   ): Promise<GetTransactionOutputDto> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: input.referenceId },
     });
 
-    const transactions = await this.transactionRepository
+    const transactions = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
@@ -126,7 +128,7 @@ export class TransactionsService {
         'transaction.customData as "customData"',
       ])
       .leftJoin('transaction.registration', 'c')
-      .where('transaction.program.id = :programId', {
+      .andWhere('transaction.program.id = :programId', {
         programId: programId,
       })
       .andWhere('transaction.payment = :paymentId', {
@@ -173,7 +175,7 @@ export class TransactionsService {
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: transactionResponse.fspName },
     });
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: transactionResponse.referenceId },
     });
 
@@ -190,10 +192,10 @@ export class TransactionsService {
     transaction.transactionStep = transactionStep || 1;
 
     const resultTransaction =
-      await this.transactionRepository.save(transaction);
+      await this.transactionScopedRepository.save(transaction);
 
     if (transactionResponse.messageSid) {
-      await this.twilioMessageRepository.update(
+      await this.twilioMessageRepository.updateUnscoped(
         { sid: transactionResponse.messageSid },
         {
           transactionId: resultTransaction.id,
@@ -304,11 +306,11 @@ export class TransactionsService {
     enableMaxPayments: boolean,
   ): Promise<void> {
     // Get current amount of payments done to PA
-    const { currentPaymentCount } = await this.transactionRepository
+    const { currentPaymentCount } = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
       .leftJoin('transaction.registration', 'r')
-      .where('transaction.program.id = :programId', {
+      .andWhere('transaction.program.id = :programId', {
         programId: registration.programId,
       })
       .andWhere('r.id = :registrationId', {
@@ -324,10 +326,10 @@ export class TransactionsService {
       registration.registrationStatus === RegistrationStatusEnum.included
     ) {
       registration.registrationStatus = RegistrationStatusEnum.completed;
-      await this.registrationRepository.save(registration);
+      await this.registrationScopedRepository.save(registration);
     }
     // After .save() because it otherwise overwrites with old paymentCount
-    await this.registrationRepository.update(registration.id, {
+    await this.registrationScopedRepository.updateUnscoped(registration.id, {
       paymentCount: currentPaymentCount,
     });
   }

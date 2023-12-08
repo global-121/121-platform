@@ -24,12 +24,13 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([
-      IntersolveVoucherEntity,
       IntersolveIssueVoucherRequestEntity,
       IntersolveVoucherInstructionsEntity,
       RegistrationEntity,
@@ -54,6 +55,8 @@ import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidw
     IntersolveVoucherMockService,
     IntersolveVoucherCronService,
     CustomHttpService,
+    RegistrationScopedRepository,
+    createScopedRepositoryProvider(IntersolveVoucherEntity),
   ],
   controllers: [IntersolveVoucherController],
   exports: [

@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { And, In, IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
+import { And, In, IsNull, Not, Repository } from 'typeorm';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.entity';
@@ -16,7 +16,6 @@ import { BulkActionResultDto } from '../dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationViewEntity } from '../registration-view.entity';
-import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
@@ -25,37 +24,42 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from '../registration-scoped.repository';
+import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
+import { getScopedRepositoryProvideName as getScopedRepositoryProviderName } from '../../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsBulkService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(PersonAffectedAppDataEntity)
   private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  //  Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
-  @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
-  @InjectRepository(SafaricomRequestEntity)
-  private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
-  @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    @Inject(getScopedRepositoryProviderName(SafaricomRequestEntity))
+    private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
+    @Inject(getScopedRepositoryProviderName(ImageCodeExportVouchersEntity))
+    private readonly imageCodeExportVouchersScopedRepo: ScopedRepository<ImageCodeExportVouchersEntity>,
+    @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
+    private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
+    @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
+    private readonly twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
+    private readonly registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -209,7 +213,7 @@ export class RegistrationsBulkService {
   public async getBulkActionResult(
     paginateQuery: PaginateQuery,
     programId: number,
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate(
@@ -237,8 +241,8 @@ export class RegistrationsBulkService {
     };
   }
 
-  public getBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
-    return this.registrationViewRepository
+  public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
   }
@@ -265,7 +269,7 @@ export class RegistrationsBulkService {
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     let query = this.getBaseQuery().andWhere({
       status: In(allowedCurrentStatuses),
     });
@@ -278,7 +282,7 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private getCustomMessageBaseQuery(): SelectQueryBuilder<RegistrationViewEntity> {
+  private getCustomMessageBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.getBaseQuery().andWhere({
       phoneNumber: And(Not(IsNull()), Not('')),
     });
@@ -291,7 +295,7 @@ export class RegistrationsBulkService {
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
-    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<void> {
     const registrationForUpdate =
       await this.registrationsPaginationService.getPaginate(
@@ -382,7 +386,7 @@ export class RegistrationsBulkService {
         );
 
       // Delete all data for this registration
-      await this.registrationDataRepository.delete({
+      await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
       if (registration.user) {
@@ -390,7 +394,7 @@ export class RegistrationsBulkService {
           user: { id: registration.user.id },
         });
       }
-      await this.twilioMessageRepository.delete({
+      await this.twilioMessageScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
       await this.whatsappPendingMessageRepository.delete({
@@ -402,28 +406,29 @@ export class RegistrationsBulkService {
 
       // anonymize some data for this registration
       registration.phoneNumber = null;
-      await this.registrationRepository.save(registration);
+      await this.registrationScopedRepository.save(registration);
 
       // FSP-specific
       // intersolve-voucher
-      const voucherImages = await this.imageCodeExportVouchersRepo.find({
+      const voucherImages = await this.imageCodeExportVouchersScopedRepo.find({
         where: { registrationId: registration.id },
         relations: ['voucher'],
       });
       const vouchersToUpdate = [];
       for await (const voucherImage of voucherImages) {
-        const voucher = await this.intersolveVoucherRepo.findOne({
+        const voucher = await this.intersolveVoucherScopedRepo.findOne({
           where: { id: voucherImage.voucher.id },
         });
         voucher.whatsappPhoneNumber = null;
         vouchersToUpdate.push(voucher);
       }
-      await this.intersolveVoucherRepo.save(vouchersToUpdate);
+      await this.intersolveVoucherScopedRepo.save(vouchersToUpdate);
       //safaricom
-      const safaricomRequests = await this.safaricomRequestRepo.find({
-        where: { transaction: { registration: { id: registration.id } } },
-        relations: ['transaction', 'transaction.registration'],
-      });
+      const safaricomRequests =
+        await this.safaricomRequestScopedRepository.find({
+          where: { transaction: { registration: { id: registration.id } } },
+          relations: ['transaction', 'transaction.registration'],
+        });
       const requestsToUpdate = [];
       for (const request of safaricomRequests) {
         request.requestResult = JSON.parse(
@@ -441,7 +446,7 @@ export class RegistrationsBulkService {
         request.partyB = '';
         requestsToUpdate.push(request);
       }
-      await this.safaricomRequestRepo.save(requestsToUpdate);
+      await this.safaricomRequestScopedRepository.save(requestsToUpdate);
       // TODO: at_notification + belcash_request
     }
   }
@@ -480,9 +485,10 @@ export class RegistrationsBulkService {
   ): Promise<void> {
     const errors = [];
     for (const referenceId of referenceIds) {
-      const registrationToUpdate = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-      });
+      const registrationToUpdate =
+        await this.registrationScopedRepository.findOne({
+          where: { referenceId: referenceId },
+        });
       if (!registrationToUpdate) {
         errors.push(`Registration '${referenceId}' is not found`);
       } else if (

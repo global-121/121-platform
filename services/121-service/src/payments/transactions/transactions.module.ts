@@ -14,17 +14,16 @@ import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
 import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
+import { createScopedRepositoryProvider } from '../../utils/createScopedRepositoryProvider.helper';
+import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ProgramEntity,
-      TransactionEntity,
       LatestTransactionEntity,
-      RegistrationEntity,
       FinancialServiceProviderEntity,
       UserEntity,
-      TwilioMessageEntity,
     ]),
     UserModule,
     HttpModule,
@@ -32,7 +31,12 @@ import { MessageTemplateModule } from '../../notifications/message-template/mess
     QueueMessageModule,
     MessageTemplateModule,
   ],
-  providers: [TransactionsService],
+  providers: [
+    TransactionsService,
+    RegistrationScopedRepository,
+    createScopedRepositoryProvider(TransactionEntity),
+    createScopedRepositoryProvider(TwilioMessageEntity),
+  ],
   controllers: [TransactionsController],
   exports: [TransactionsService],
 })

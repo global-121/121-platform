@@ -45,6 +45,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
 import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
+import { create } from 'lodash';
 
 @Module({
   imports: [
@@ -94,6 +95,12 @@ import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryP
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
+    createScopedRepositoryProvider(SafaricomRequestEntity),
+    createScopedRepositoryProvider(ImageCodeExportVouchersEntity),
+    createScopedRepositoryProvider(IntersolveVoucherEntity),
+    createScopedRepositoryProvider(RegistrationChangeLogEntity),
+    createScopedRepositoryProvider(TwilioMessageEntity),
+    createScopedRepositoryProvider(RegistrationDataEntity),
   ],
   controllers: [RegistrationsController],
   exports: [

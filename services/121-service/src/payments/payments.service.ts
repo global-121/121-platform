@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
@@ -44,6 +44,9 @@ import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
+import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class PaymentsService {
@@ -51,10 +54,11 @@ export class PaymentsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
+    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    private transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,
     private readonly azureLogService: AzureLogService,
     private readonly fspService: FspService,
@@ -71,7 +75,7 @@ export class PaymentsService {
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private registrationsPaginationService: RegistrationsPaginationService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -82,11 +86,13 @@ export class PaymentsService {
       amount: number;
     }[]
   > {
+    // I think it is better here not to use scoped repositorty
+    // Otherwise you will not be able to select the correct payment in the portal
     const payments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
-      .where('transaction.program.id = :programId', {
+      .andWhere('transaction.program.id = :programId', {
         programId: programId,
       })
       .groupBy('payment')
@@ -98,6 +104,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
   ): Promise<PaymentReturnDto> {
+    // This is scoped because this transactionScopedRepository is used in the transaction.service.ts
     const aggregateResults = await this.dataSource
       .createQueryBuilder()
       .select(['status', 'COUNT(*) as count'])
@@ -199,7 +206,7 @@ export class PaymentsService {
 
   private getPaymentBaseQuery(
     payment: number,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     // Do not do payment if a registration has already one transaction for that payment number
     return this.registrationsBulkService
       .getBaseQuery()
@@ -531,23 +538,23 @@ export class PaymentsService {
         StatusEnum.waiting,
       )
     ).map((t) => t.referenceId);
-    return await this.registrationRepository.find({
+    return await this.registrationScopedRepository.find({
       where: { referenceId: In(waitingReferenceIds) },
       relations: ['fsp'],
     });
   }
 
   private failedTransactionForRegistrationAndPayment(
-    q: SelectQueryBuilder<RegistrationEntity>,
+    q: ScopedQueryBuilder<RegistrationEntity>,
     payment: number,
-  ): SelectQueryBuilder<RegistrationEntity> {
+  ): ScopedQueryBuilder<RegistrationEntity> {
     q.leftJoin(
       (qb) =>
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("created")', 'created')
           .addSelect('"payment"', 'payment')
-          .where('"payment" = :payment', { payment })
+          .andWhere('"payment" = :payment', { payment })
           .groupBy('"payment"')
           .addSelect('"transactionStep"', 'transactionStep')
           .addGroupBy('"transactionStep"')
@@ -574,13 +581,13 @@ export class PaymentsService {
 
   private getPaymentRegistrationsQuery(
     programId: number,
-  ): SelectQueryBuilder<RegistrationEntity> {
-    const q = this.registrationRepository
+  ): ScopedQueryBuilder<RegistrationEntity> {
+    const q = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select('"referenceId"')
       .addSelect('registration.id as id')
       .addSelect('fsp.fsp as "fspName"')
-      .where('registration."programId" = :programId', { programId })
+      .andWhere('registration."programId" = :programId', { programId })
       .leftJoin('registration.fsp', 'fsp');
     q.addSelect((subQuery) => {
       return subQuery
@@ -690,7 +697,7 @@ export class PaymentsService {
     let fileType: ExportFileType;
 
     for await (const transaction of paymentTransactions) {
-      const registration = await this.registrationRepository.findOne({
+      const registration = await this.registrationScopedRepository.findOne({
         where: { referenceId: transaction.referenceId },
         relations: ['fsp'],
       });

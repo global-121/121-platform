@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { DataSource, In, Not, Repository } from 'typeorm';
@@ -28,20 +28,19 @@ import { RegistrationDataEntity } from '../registration/registration-data.entity
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsService } from '../registration/registrations.service';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { ExportType } from './dto/export-details.dto';
 import { FileDto } from './dto/file.dto';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import { ScopedRepository } from '../scoped.repository';
+import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class MetricsService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
@@ -50,15 +49,18 @@ export class MetricsService {
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
   @InjectRepository(FspQuestionEntity)
   private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    @Inject(getScopedRepositoryProvideName(RegistrationDataEntity))
+    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    @Inject(getScopedRepositoryProvideName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionService,
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
-    private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
@@ -396,7 +398,7 @@ export class MetricsService {
     status?: RegistrationStatusEnum,
     exportType?: ExportType,
   ): Promise<object[]> {
-    let query = this.registrationRepository
+    let query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
@@ -452,7 +454,7 @@ export class MetricsService {
     relationOptions: RegistrationDataOptions[],
     registrationIds: number[],
   ): Promise<object[]> {
-    const query = this.registrationRepository
+    const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
@@ -650,7 +652,7 @@ export class MetricsService {
       whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
     }
 
-    const query = this.registrationDataRepository
+    const query = this.registrationDataScopedRepository
       .createQueryBuilder('registration_data')
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
@@ -659,7 +661,7 @@ export class MetricsService {
         `array_agg(DISTINCT registration."registrationProgramId") AS "duplicateRegistrationProgramIds"`,
       )
       .innerJoin('registration_data.registration', 'registration')
-      .where(whereOptions)
+      .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
@@ -712,7 +714,7 @@ export class MetricsService {
     fileName: ExportType;
     data: any[];
   }> {
-    const registrationAndFspId = await this.registrationRepository.find({
+    const registrationAndFspId = await this.registrationScopedRepository.find({
       where: {
         registrationProgramId: In([
           ...Array.from(uniqueRegistrationProgramIds),
@@ -809,12 +811,12 @@ export class MetricsService {
     maxPaymentId: number,
     registrationDataOptions: RegistrationDataOptions[],
   ): Promise<any> {
-    const latestTransactionPerPa = await this.transactionRepository
+    const latestTransactionPerPa = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('transaction.registrationId', 'registrationId')
       .addSelect('transaction.payment', 'payment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
-      .where('transaction.program.id = :programId', {
+      .andWhere('transaction.program.id = :programId', {
         programId: programId,
       })
       .andWhere('transaction.payment between :minPaymentId and :maxPaymentId', {
@@ -824,7 +826,7 @@ export class MetricsService {
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
-    const transactionQuery = this.transactionRepository
+    const transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select([
         'registration.referenceId as "referenceId"',
@@ -1102,9 +1104,9 @@ export class MetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<number> {
-    let query = this.registrationRepository
+    let query = this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .where('registration."programId" = :programId', {
+      .andWhere('registration."programId" = :programId', {
         programId: programId,
       })
       .innerJoinAndSelect('registration.transactions', 'transactions');
@@ -1142,10 +1144,10 @@ export class MetricsService {
   public async getPaymentsWithStateSums(
     programId: number,
   ): Promise<PaymentStateSumDto[]> {
-    const totalProcessedPayments = await this.transactionRepository
+    const totalProcessedPayments = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
-      .where('transaction."programId" = :programId', {
+      .andWhere('transaction."programId" = :programId', {
         programId: programId,
       })
       .getRawOne();
@@ -1157,10 +1159,10 @@ export class MetricsService {
     );
     const paymentsWithStats = [];
     let i = 1;
-    const transactionStepMin = await await this.transactionRepository
+    const transactionStepMin = await await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
-      .where('transaction."programId" = :programId', {
+      .andWhere('transaction."programId" = :programId', {
         programId: programId,
       })
       .getRawOne();
@@ -1182,7 +1184,7 @@ export class MetricsService {
     transactionStepOfInterest: number,
   ): Promise<PaymentStateSumDto> {
     const currentPaymentRegistrationsAndCount =
-      await this.transactionRepository.findAndCount({
+      await this.transactionScopedRepository.findAndCount({
         where: {
           program: { id: programId },
           status: StatusEnum.success,
@@ -1198,10 +1200,10 @@ export class MetricsService {
     );
     let preExistingPa: number;
     if (currentPaymentCount > 0) {
-      preExistingPa = await this.transactionRepository
+      preExistingPa = await this.transactionScopedRepository
         .createQueryBuilder('transaction')
         .leftJoin('transaction.registration', 'registration')
-        .where('transaction.registration.id IN (:...registrationIds)', {
+        .andWhere('transaction.registration.id IN (:...registrationIds)', {
           registrationIds: currentPaymentRegistrationsIds,
         })
         .andWhere('transaction.payment = :payment', {
@@ -1249,8 +1251,7 @@ export class MetricsService {
   }
 
   private async queryMonitoringData(programId: number): Promise<any[]> {
-    const q = this.dataSource
-      .getRepository(RegistrationEntity)
+    const q = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .innerJoinAndSelect(
         'registration.program',
@@ -1271,7 +1272,7 @@ export class MetricsService {
         'statusChangeRegistered',
         'registration.id = "statusChangeRegistered"."registrationId"',
       )
-      .where('"statusChangeStarted"."registrationStatus" = :statusstarted', {
+      .andWhere('"statusChangeStarted"."registrationStatus" = :statusstarted', {
         statusstarted: RegistrationStatusEnum.startedRegistration,
       })
       .andWhere(
@@ -1295,7 +1296,7 @@ export class MetricsService {
       })
     ).targetNrRegistrations;
 
-    const registrations = await this.registrationRepository.find({
+    const registrations = await this.registrationScopedRepository.find({
       where: {
         program: { id: programId },
         registrationStatus: RegistrationStatusEnum.included,
@@ -1364,7 +1365,7 @@ export class MetricsService {
   public async getRegistrationStatusStats(
     programId: number,
   ): Promise<RegistrationStatusStats[]> {
-    const query = this.registrationRepository
+    const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
       .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)

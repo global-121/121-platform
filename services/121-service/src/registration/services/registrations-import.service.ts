@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import csv from 'csv-parser';
@@ -39,6 +39,9 @@ import { RegistrationStatusChangeEntity } from '../registration-status-change.en
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
 import { UserService } from '../../user/user.service';
+import { getScopedRepositoryProvideName } from '../../utils/createScopedRepositoryProvider.helper';
+import { ScopedRepository } from '../../scoped.repository';
+import { RegistrationScopedRepository } from '../registration-scoped.repository';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -47,12 +50,6 @@ export enum ImportType {
 
 @Injectable()
 export class RegistrationsImportService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationStatusChangeEntity)
-  private readonly registrationStatusRepository: Repository<RegistrationStatusChangeEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
@@ -63,6 +60,8 @@ export class RegistrationsImportService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -70,6 +69,10 @@ export class RegistrationsImportService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly userService: UserService,
+    @Inject(getScopedRepositoryProvideName(RegistrationStatusChangeEntity))
+    private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
+    @Inject(getScopedRepositoryProvideName(RegistrationDataEntity))
+    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 
   public async importBulkAsImported(
@@ -107,7 +110,7 @@ export class RegistrationsImportService {
         continue;
       }
 
-      // TODO: keep this on non-scoped repo as you do not want duplicates outside scope?
+      // Keep this on non-scoped repo as you do not want duplicates outside scope!
       const existingRegistrations = await this.registrationRepository.findOne({
         where: {
           phoneNumber: phoneNumberResult,
@@ -171,7 +174,7 @@ export class RegistrationsImportService {
       RegistrationStatusEnum.imported,
     );
     // Save registration data in bulk for performance
-    await this.registrationDataRepository.save(dataArray, {
+    await this.registrationDataScopedRepository.save(dataArray, {
       chunk: 5000,
     });
     await this.actionService.saveAction(
@@ -352,9 +355,12 @@ export class RegistrationsImportService {
       );
       countImported += 1;
     }
-    await this.registrationDataRepository.save(registrationDataArrayAllPa, {
-      chunk: 5000,
-    });
+    await this.registrationDataScopedRepository.save(
+      registrationDataArrayAllPa,
+      {
+        chunk: 5000,
+      },
+    );
 
     // Store inclusion score and paymentAmountMultiplierFormula if it's relevant
     const programHasScore = await this.programHasInclusionScore(program.id);
@@ -386,9 +392,12 @@ export class RegistrationsImportService {
       registrationStatusChanges.push(registrationStatusChange);
     }
 
-    await this.registrationStatusRepository.save(registrationStatusChanges, {
-      chunk: 5000,
-    });
+    await this.registrationStatusChangeScopedRepository.save(
+      registrationStatusChanges,
+      {
+        chunk: 5000,
+      },
+    );
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {
@@ -800,7 +809,7 @@ export class RegistrationsImportService {
       }
 
       if (row.referenceId) {
-        // TODO: keep this on non-scoped repo as you do not want duplicates outside scope?
+        // Keep this on non-scoped repo as you do not want duplicates outside scope!
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: row.referenceId },
         });

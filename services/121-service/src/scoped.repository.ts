@@ -7,6 +7,14 @@ import {
   SelectQueryBuilder,
   FindManyOptions,
   FindOneOptions,
+  SaveOptions,
+  InsertResult,
+  UpdateResult,
+  ObjectId,
+  FindOptionsWhere,
+  DeleteResult,
+  RemoveOptions,
+  DeepPartial,
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { RegistrationEntity } from './registration/registration.entity';
@@ -14,6 +22,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { cloneDeep, merge } from 'lodash';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -71,6 +80,153 @@ export class ScopedRepository<T> {
     }
   }
 
+  ////////////////////////////////////////////////////////////////
+  // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
+  //////////////////////////////////////////////////////////////
+
+  public async findOne(options: FindOptionsCombined<T>): Promise<T> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.findOne(options);
+    }
+    const scopedOptions = this.convertToScopedOptions(options);
+    return this.repository.findOne(scopedOptions);
+  }
+
+  public async find(options?: FindOptionsCombined<T>): Promise<T[]> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.find(options);
+    }
+    const scopedOptions = this.convertToScopedOptions(options);
+    return this.repository.find(scopedOptions);
+  }
+
+  public async findAndCount(
+    options?: FindOptionsCombined<T>,
+  ): Promise<[T[], number]> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.findAndCount(options);
+    }
+    const scopedOptions = this.convertToScopedOptions(options);
+    return this.repository.findAndCount(scopedOptions);
+  }
+
+  public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
+    let qb = this.repository.createQueryBuilder(queryBuilderAlias);
+
+    if (!this.request?.scope || this.request.scope === '') {
+      return new ScopedQueryBuilder(qb);
+    }
+    if (
+      this.relationArrayToRegistration &&
+      this.relationArrayToRegistration.length > 0
+    ) {
+      let joinProperty = queryBuilderAlias;
+      for (const relation of this.relationArrayToRegistration) {
+        const joinAlias = `scopedata${relation}`;
+        qb = qb.leftJoin(`${joinProperty}.${relation}`, joinAlias);
+        joinProperty = joinAlias;
+      }
+      qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
+      qb = qb.andWhere(
+        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
+        {
+          scope: `${this.request.scope}%`,
+        },
+      );
+    }
+    return new ScopedQueryBuilder(qb);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
+  //////////////////////////////////////////////////////////////
+  public async save(
+    entity: T,
+    options: SaveOptions & { reload: false },
+  ): Promise<T>;
+  public async save(entity: T, options?: SaveOptions): Promise<T>;
+  public async save(
+    entities: T[],
+    options: SaveOptions & { reload: false },
+  ): Promise<T[]>;
+  public async save(entities: T[], options?: SaveOptions): Promise<T[]>;
+  public async save(
+    entityOrEntities: T | T[],
+    options?: SaveOptions,
+  ): Promise<T | T[]> {
+    return this.repository.save(entityOrEntities as any, options);
+  }
+
+  public async insert(
+    entityOrEntities: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
+  ): Promise<InsertResult> {
+    return this.repository.insert(entityOrEntities as any);
+  }
+
+  public async remove(entity: T, options?: RemoveOptions): Promise<T>;
+  public async remove(entities: T[], options?: RemoveOptions): Promise<T[]>;
+  public async remove(
+    entityOrEntities: T | T[],
+    options?: RemoveOptions,
+  ): Promise<T | T[]> {
+    return this.repository.remove(entityOrEntities as any, options);
+  }
+
+  // I did not apply the scope to this method as it was never needed
+  // To make this clear I added Unscoped to the name so it is alway a conscious decision
+  public async deleteUnscoped(
+    criteria:
+      | FindOptionsWhere<T>
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[],
+  ): Promise<DeleteResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.delete(criteria);
+  }
+
+  // I did not apply the scope to this method as it was never needed
+  // To make this clear I added Unscoped to the name so it is alway a conscious decision
+  public async updateUnscoped(
+    criteria:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[]
+      | FindOptionsWhere<T>,
+    partialEntity: QueryDeepPartialEntity<T>,
+  ): Promise<UpdateResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.update(criteria, partialEntity);
+  }
+
+  public create(entityLike: DeepPartial<T>): T;
+  public create(entityLikeArray: DeepPartial<T>[]): T[];
+  public create(entityLikeOrArray: DeepPartial<T> | DeepPartial<T>[]): T | T[] {
+    if (Array.isArray(entityLikeOrArray)) {
+      return this.repository.create(entityLikeOrArray as DeepPartial<T>[]);
+    } else {
+      return this.repository.create(entityLikeOrArray as DeepPartial<T>);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // PRIVATE METHODS TO ENABLE SCOPED QUERIES ///////////////////
+  //////////////////////////////////////////////////////////////
+
   private findDirectRelationToRegistration(metadata: EntityMetadata): string {
     // Gets the relations of the entity for which this repository is created
     const relations = metadata.relations.map(
@@ -123,50 +279,5 @@ export class ScopedRepository<T> {
       where: [whereQueryScope, whereQueryScopeEnabled],
     };
     return scopedOptions as FindOptionsCombined<T>;
-  }
-
-  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
-    if (!this.request?.scope || this.request.scope === '') {
-      return this.repository.find(options);
-    }
-    const scopedOptions = this.convertToScopedOptions(options);
-    return this.repository.find(scopedOptions);
-  }
-
-  public async findOne(options: FindOptionsCombined<T>): Promise<T> {
-    if (!this.request?.scope || this.request.scope === '') {
-      return this.repository.findOne(options);
-    }
-    const scopedOptions = this.convertToScopedOptions(options);
-    return this.repository.findOne(scopedOptions);
-  }
-
-  public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
-    let qb = this.repository.createQueryBuilder(queryBuilderAlias);
-
-    if (!this.request?.scope || this.request.scope === '') {
-      return new ScopedQueryBuilder(qb);
-    }
-
-    if (
-      this.relationArrayToRegistration &&
-      this.relationArrayToRegistration.length > 0
-    ) {
-      let joinProperty = queryBuilderAlias;
-      for (const relation of this.relationArrayToRegistration) {
-        const joinAlias = `scopedata${relation}`;
-        qb = qb.leftJoin(`${joinProperty}.${relation}`, joinAlias);
-        joinProperty = joinAlias;
-      }
-      qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
-      console.log('joinAlias: ', joinProperty);
-      qb = qb.andWhere(
-        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
-        {
-          scope: `${this.request.scope}%`,
-        },
-      );
-    }
-    return new ScopedQueryBuilder(qb);
   }
 }

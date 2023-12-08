@@ -11,8 +11,6 @@ import { RegistrationScopedRepository } from '../registration-scoped.repository'
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -45,7 +43,7 @@ export class InclusionScoreService {
         Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    return await this.registrationRepository.save(registration);
+    return await this.registrationScopedRepository.save(registration);
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
@@ -67,7 +65,7 @@ export class InclusionScoreService {
 
     registration.inclusionScore = score;
 
-    await this.registrationRepository.save(registration);
+    await this.registrationScopedRepository.save(registration);
   }
 
   private async createQuestionAnswerListPrefilled(

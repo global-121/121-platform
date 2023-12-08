@@ -19,9 +19,11 @@ import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
-import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { MetricsController } from './metrics.controller';
 import { MetricsService } from './metrics.service';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -30,12 +32,9 @@ import { MetricsService } from './metrics.service';
       ProgramCustomAttributeEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,
-      RegistrationEntity,
       TransactionEntity,
       UserEntity,
       ProgramEntity,
-      RegistrationDataEntity,
-      IntersolveVisaWalletEntity,
     ]),
     ProgramModule,
     UserModule,
@@ -47,7 +46,13 @@ import { MetricsService } from './metrics.service';
     IntersolveVoucherModule,
     RegistrationChangeLogModule,
   ],
-  providers: [MetricsService, RegistrationDataQueryService],
+  providers: [
+    MetricsService,
+    RegistrationDataScopedQueryService,
+    RegistrationScopedRepository,
+    createScopedRepositoryProvider(RegistrationDataEntity),
+    createScopedRepositoryProvider(TransactionEntity),
+  ],
   controllers: [MetricsController],
   exports: [],
 })
