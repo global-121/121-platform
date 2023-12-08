@@ -66,7 +66,7 @@ import { QueueMessageService } from '../notifications/queue-message/queue-messag
 import { UserService } from '../user/user.service';
 import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProvideName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {

@@ -65,7 +65,7 @@ import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
-import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProvideName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { ScopedRepository } from '../../../scoped.repository';
 
 @Injectable()

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProvideName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationChangeLogService {

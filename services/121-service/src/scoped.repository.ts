@@ -2,18 +2,18 @@ import { Request } from 'express';
 import {
   DataSource,
   EntityMetadata,
-  Like,
   Repository,
   SelectQueryBuilder,
-  FindManyOptions,
-  FindOneOptions,
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { RegistrationEntity } from './registration/registration.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { cloneDeep, merge } from 'lodash';
+import {
+  FindOptionsCombined,
+  convertToScopedOptions,
+} from './utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -30,8 +30,6 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
 }
 
 type EntityRelations = Record<string, string[]>;
-
-type FindOptionsCombined<T> = FindOneOptions<T> & FindManyOptions<T>;
 
 // TODO: Is there a way to make these arrays strongly typed?
 const relationConfig: EntityRelations = {
@@ -85,51 +83,15 @@ export class ScopedRepository<T> {
     }
   }
 
-  private getWhereQueryScope(
-    options: FindOptionsCombined<T>,
-    whereQueryScopeRelated: Record<string, any>,
-  ): FindOptionsCombined<T> {
-    const optionsCopy = options ? cloneDeep(options) : {};
-    for (const relation of [...this.relationArrayToRegistration.reverse()]) {
-      whereQueryScopeRelated = {
-        [relation]: whereQueryScopeRelated,
-      };
-    }
-    return merge(optionsCopy?.where || {}, whereQueryScopeRelated);
-  }
-
-  private getWhereQueryWithScope(
-    options: FindOptionsCombined<T>,
-  ): FindOptionsCombined<T> {
-    const whereQueryScope = { scope: Like(`${this.request.scope}%`) };
-    return this.getWhereQueryScope(options, whereQueryScope);
-  }
-
-  private getWhereQueryWithScopeEnabled(
-    options: FindOptionsCombined<T>,
-  ): FindOptionsCombined<T> {
-    const whereQueryScopeEnabled = { program: { enableScope: false } };
-    return this.getWhereQueryScope(options, whereQueryScopeEnabled);
-  }
-
-  private convertToScopedOptions(
-    options: FindOptionsCombined<T>,
-  ): FindOptionsCombined<T> {
-    const whereQueryScope = this.getWhereQueryWithScope(options);
-    const whereQueryScopeEnabled = this.getWhereQueryWithScopeEnabled(options);
-
-    const scopedOptions = {
-      ...options,
-      where: [whereQueryScope, whereQueryScopeEnabled],
-    };
-    return scopedOptions as FindOptionsCombined<T>;
-  }
-
   public async find(options: FindOptionsCombined<T>): Promise<T[]> {
     if (!this.request?.scope || this.request.scope === '') {
       return this.repository.find(options);
     }
-    const scopedOptions = this.convertToScopedOptions(options);
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.scope,
+    );
     return this.repository.find(scopedOptions);
   }
 
@@ -137,7 +99,11 @@ export class ScopedRepository<T> {
     if (!this.request?.scope || this.request.scope === '') {
       return this.repository.findOne(options);
     }
-    const scopedOptions = this.convertToScopedOptions(options);
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.scope,
+    );
     return this.repository.findOne(scopedOptions);
   }
 

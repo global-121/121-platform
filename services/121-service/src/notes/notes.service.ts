@@ -3,7 +3,7 @@ import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
 import { ScopedRepository } from '../scoped.repository';
 import { NoteEntity } from './note.entity';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProvideName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 

@@ -9,7 +9,7 @@ import { UserModule } from '../user/user.module';
 import { NoteEntity } from './note.entity';
 import { NoteController } from './notes.controller';
 import { NoteService } from './notes.service';
-import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
