@@ -7,7 +7,6 @@ import {
 import { GenericAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
 import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
-import { ScopedQueryBuilder } from '../../scoped.repository';
 import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -46,7 +45,7 @@ export class RegistrationDataScopedQueryService {
   ): SelectQueryBuilder<any> {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
     subQuery = subQuery
-      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
+      .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
       .from(RegistrationDataEntity, uniqueSubQueryId);
     if (relation.programQuestionId) {
       subQuery = subQuery.andWhere(

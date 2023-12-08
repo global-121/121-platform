@@ -45,6 +45,7 @@ export class RegistrationsBulkService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(LatestMessageEntity)
   private readonly latestMessageRepository: Repository<LatestMessageEntity>;
+  // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
 

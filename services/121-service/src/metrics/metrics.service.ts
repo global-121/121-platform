@@ -25,7 +25,6 @@ import {
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsService } from '../registration/registrations.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
@@ -37,7 +36,7 @@ import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProviderName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class MetricsService {

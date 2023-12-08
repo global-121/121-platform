@@ -39,9 +39,8 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
 }
 
 type EntityRelations = Record<string, string[]>;
-
-// TODO: Is there a way to make these arrays strongly typed?
-const relationConfig: EntityRelations = {
+// Define here any entities that do not have a direct relation to registration
+const indirectRelationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
@@ -51,13 +50,9 @@ const relationConfig: EntityRelations = {
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class ScopedRepository<T> {
   private repository: Repository<T>;
-  // public request: Request;
 
-  // Use  for entities that have an INDIRECT relation to registration
+  // Use for entities that have an INDIRECT relation to registration
   // Else the relation is found automatically in the constructor
-  // DECIDE: Is it more confusing than not use this automatic detection? Is it better to always set it manually?
-  // Another option is to try to set it automatically for all entities also those with an indrect relation
-  // An example of this for IntersolveVisaWalletEntity is ['intersolveVisaCustomer',  'registration']
   public relationArrayToRegistration: string[];
 
   constructor(
@@ -65,12 +60,11 @@ export class ScopedRepository<T> {
     @InjectDataSource() dataSource: DataSource,
     @Inject(REQUEST) private request: Request,
   ) {
-    // this.request
     this.repository = dataSource.createEntityManager().getRepository(target);
 
-    if (relationConfig[this.repository.metadata.name]) {
+    if (indirectRelationConfig[this.repository.metadata.name]) {
       this.relationArrayToRegistration =
-        relationConfig[this.repository.metadata.name];
+        indirectRelationConfig[this.repository.metadata.name];
     } else {
       this.relationArrayToRegistration = [
         this.findDirectRelationToRegistration(this.repository.metadata),

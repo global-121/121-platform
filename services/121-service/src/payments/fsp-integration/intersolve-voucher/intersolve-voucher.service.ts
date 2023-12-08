@@ -11,7 +11,6 @@ import {
 } from '../../../notifications/twilio.dto';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
@@ -34,7 +33,8 @@ import { MessageTemplateService } from '../../../notifications/message-template/
 import { MessageProcessType } from '../../../notifications/message-job.dto';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { LanguageEnum } from '../../../registration/enum/language.enum';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -45,17 +45,18 @@ export class IntersolveVoucherService
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
   private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
+  public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  public readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = LanguageEnum.en;
+
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
-    private intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
+    private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,

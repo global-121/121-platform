@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
-import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -25,7 +24,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
-import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -44,7 +43,6 @@ import { createScopedRepositoryProvider } from '../../../utils/createScopedRepos
     ImageCodeModule,
     UserModule,
     TransactionsModule,
-    WhatsappModule,
     QueueMessageModule,
     MessageTemplateModule,
   ],

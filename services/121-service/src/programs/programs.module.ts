@@ -7,7 +7,6 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
-import { SmsModule } from '../notifications/sms/sms.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { UserEntity } from '../user/user.entity';
@@ -38,7 +37,6 @@ import { ProgramAttributesModule } from '../program-attributes/program-attribute
     ]),
     ActionModule,
     UserModule,
-    SmsModule,
     FspModule,
     HttpModule,
     LookupModule,
