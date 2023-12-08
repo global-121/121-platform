@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class configureCustomAttributeExport1654085339175
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'configureCustomAttributeExport1654085339175';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -12,9 +12,13 @@ import SeedProgramLbn from './seed-program-lbn';
 import { SeedNLProgramLVV } from './seed-program-nlrc-lvv';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedProgramValidation } from './seed-program-validation';
+import { MessageTemplateModule } from '../notifications/message-template/message-template.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions)],
+  imports: [
+    TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions),
+    MessageTemplateModule,
+  ],
   providers: [
     SeedInit,
     SeedProd,

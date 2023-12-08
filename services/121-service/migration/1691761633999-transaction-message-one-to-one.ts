@@ -1,4 +1,4 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class transactionMessageRelation1691761756517
   implements MigrationInterface
@@ -9,7 +9,9 @@ export class transactionMessageRelation1691761756517
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" ADD COLUMN IF NOT EXISTS "transactionId" integer`,
     );
-    await queryRunner.query(`ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT IF EXISTS "UQ_cd56d3267e8553557ec97c6741b"`)
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT IF EXISTS "UQ_cd56d3267e8553557ec97c6741b"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "UQ_cd56d3267e8553557ec97c6741b" UNIQUE ("transactionId")`,
     );

@@ -7,8 +7,10 @@ import { Queue } from 'bull';
 import { TestBed } from '@automock/jest';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.const';
+import { getQueueName } from '../../utils/unit-test.helpers';
 
-const messageJob = {
+const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
   phoneNumber: '1234567890',
   preferredLanguage: LanguageEnum.en,
@@ -26,13 +28,15 @@ describe('QueueMessageService', () => {
     const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
 
     queueMessageService = unit;
-    messageQueue = unitRef.get('BullQueue_message');
+    messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
   });
 
   it('should be defined', () => {
     expect(queueMessageService).toBeDefined();
   });
+
   it('should add message to queue registration view', async () => {
+    // Arrange
     const registration = new RegistrationViewEntity();
     registration.id = 2;
     registration.referenceId = 'refview';
@@ -41,20 +45,7 @@ describe('QueueMessageService', () => {
     registration.programId = 1;
     registration['whatsappPhoneNumber'] = '0987654321';
 
-    const messageJobView = {
-      ...messageJob,
-    };
-    messageJobView.whatsappPhoneNumber = registration['whatsappPhoneNumber'];
-    messageJobView.phoneNumber = registration.phoneNumber;
-    messageJobView.preferredLanguage = registration.preferredLanguage;
-    messageJobView.registrationId = registration.id;
-    messageJobView.programId = registration.programId;
-    messageJobView.referenceId = registration.referenceId;
-    messageJobView.customData = undefined;
-    messageJobView.mediaUrl = undefined;
-    messageJobView.messageProcessType =
-      MessageProcessType.whatsappTemplateGeneric;
-
+    // Act
     await queueMessageService.addMessageToQueue(
       registration,
       'test message',
@@ -63,13 +54,24 @@ describe('QueueMessageService', () => {
       MessageProcessType.whatsappTemplateGeneric,
     );
 
-    expect(messageQueue.add).toHaveBeenCalledWith(
-      ProcessName.send,
-      messageJobView,
-    );
+    // Assert
+    expect(messageQueue.add).toHaveBeenCalledTimes(1);
+    expect(messageQueue.add).toHaveBeenCalledWith(ProcessName.send, {
+      ...defaultMessageJob,
+      whatsappPhoneNumber: registration['whatsappPhoneNumber'],
+      phoneNumber: registration.phoneNumber,
+      preferredLanguage: registration.preferredLanguage,
+      registrationId: registration.id,
+      programId: registration.programId,
+      referenceId: registration.referenceId,
+      customData: undefined,
+      mediaUrl: undefined,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
   });
 
   it('should add message to queue registration entity', async () => {
+    // Arrange
     const whatsappNumber = '0987654321';
     const registration = new RegistrationEntity();
     registration.id = 1;
@@ -78,24 +80,11 @@ describe('QueueMessageService', () => {
     registration.phoneNumber = '1234567890';
     registration.programId = 1;
 
-    const expectedMessageJobView = {
-      ...messageJob,
-    };
-    expectedMessageJobView.whatsappPhoneNumber = whatsappNumber;
-    expectedMessageJobView.phoneNumber = registration.phoneNumber;
-    expectedMessageJobView.preferredLanguage = registration.preferredLanguage;
-    expectedMessageJobView.registrationId = registration.id;
-    expectedMessageJobView.referenceId = registration.referenceId;
-    expectedMessageJobView.programId = registration.programId;
-    expectedMessageJobView.customData = undefined;
-    expectedMessageJobView.mediaUrl = undefined;
-    expectedMessageJobView.messageProcessType =
-      MessageProcessType.whatsappTemplateGeneric;
-
     const mockGetRegistrationDataValueByName = jest
       .spyOn(registration, 'getRegistrationDataValueByName')
-      .mockImplementation(() => Promise.resolve(whatsappNumber));
+      .mockResolvedValue(whatsappNumber);
 
+    // Act
     await queueMessageService.addMessageToQueue(
       registration,
       'test message',
@@ -104,12 +93,19 @@ describe('QueueMessageService', () => {
       MessageProcessType.whatsappTemplateGeneric,
     );
 
-    expect(messageQueue.add).toHaveBeenCalledWith(
-      ProcessName.send,
-      expectedMessageJobView,
-    );
-
-    // Check if the mock was called
-    expect(mockGetRegistrationDataValueByName).toHaveBeenCalled();
+    // Assert
+    expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
+    expect(messageQueue.add).toHaveBeenCalledWith(ProcessName.send, {
+      ...defaultMessageJob,
+      whatsappPhoneNumber: whatsappNumber,
+      phoneNumber: registration.phoneNumber,
+      preferredLanguage: registration.preferredLanguage,
+      registrationId: registration.id,
+      referenceId: registration.referenceId,
+      programId: registration.programId,
+      customData: undefined,
+      mediaUrl: undefined,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
   });
 });

@@ -2,13 +2,21 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { MessageTemplateDto } from './dto/message-template.dto';
 import { LanguageEnum } from '../../registration/enum/language.enum';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
+import {
+  CreateMessageTemplateDto,
+  UpdateTemplateBodyDto,
+} from './dto/message-template.dto';
 
 @Injectable()
 export class MessageTemplateService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+
+  constructor(
+    private readonly programAttributesService: ProgramAttributesService,
+  ) {}
 
   public async getMessageTemplatesByProgramId(
     programId: number,
@@ -32,7 +40,7 @@ export class MessageTemplateService {
 
   public async createMessageTemplate(
     programId: number,
-    postData: MessageTemplateDto,
+    postData: CreateMessageTemplateDto,
   ): Promise<void> {
     const template = new MessageTemplateEntity();
     template.programId = programId;
@@ -41,26 +49,34 @@ export class MessageTemplateService {
     template.message = postData.message;
     template.isWhatsappTemplate = postData.isWhatsappTemplate;
 
+    await this.validatePlaceholders(programId, template.message);
+
     await this.messageTemplateRepository.save(template);
   }
 
   public async updateMessageTemplate(
     programId: number,
-    messageId: number,
-    updateMessageTemplateDto: MessageTemplateDto,
+    type: string,
+    language: LanguageEnum,
+    updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
-      where: { programId: programId, id: messageId },
+      where: { programId: programId, type: type, language: language },
     });
     if (!template) {
-      const errors = `No message template found with id ${messageId} in program ${programId}`;
+      const errors = `No message template found with type '${type}' and language '${language}' in program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    if (updateMessageTemplateDto.message) {
+      await this.validatePlaceholders(
+        programId,
+        updateMessageTemplateDto.message,
+      );
+    }
+
     for (const key in updateMessageTemplateDto) {
-      if (key !== 'template') {
-        template[key] = updateMessageTemplateDto[key];
-      }
+      template[key] = updateMessageTemplateDto[key];
     }
 
     return await this.messageTemplateRepository.save(template);
@@ -82,6 +98,35 @@ export class MessageTemplateService {
         programId: programId,
         type: messageType,
       });
+    }
+  }
+
+  public async validatePlaceholders(
+    programId: number,
+    message: string,
+  ): Promise<void> {
+    const availableAttributes =
+      await this.programAttributesService.getAttributes(
+        programId,
+        true,
+        true,
+        false,
+      );
+    const availablePlaceholders = availableAttributes.map(
+      (a) => `{{${a.name}}}`,
+    );
+    const regex = /{{[^}]+}}/g;
+    const matches = message.match(regex);
+
+    // This 'if' is needed because matches can be null if no placeholders are found
+    if (matches) {
+      for (const match of matches) {
+        const isPlaceholderAllowed = availablePlaceholders.includes(match);
+        if (!isPlaceholderAllowed) {
+          const errors = `Placeholder ${match} not found in program ${programId}`;
+          throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+        }
+      }
     }
   }
 }

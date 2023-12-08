@@ -16,11 +16,13 @@ import { PaymentFilterEnum } from './../../../src/registration/enum/payment-filt
 import {
   createExpectedValueObject,
   expectedAttributes,
-  programId,
+  programIdOCW,
+  programIdPV,
   registration1,
   registration3,
   registration4,
   registration5,
+  registration6,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -49,28 +51,29 @@ describe('Load PA table', () => {
       accessToken = await getAccessToken();
 
       await changePhase(
-        programId,
+        programIdOCW,
         ProgramPhase.registrationValidation,
         accessToken,
       );
-      await importRegistrations(programId, registrations, accessToken);
+      await importRegistrations(programIdOCW, registrations, accessToken);
+      await importRegistrations(programIdPV, [registration6], accessToken);
 
       await awaitChangePaStatus(
-        programId,
+        programIdOCW,
         paymentReferenceIds,
         RegistrationStatusEnum.included,
         accessToken,
       );
 
       await doPayment(
-        programId,
+        programIdOCW,
         payment1,
         amount,
         paymentReferenceIds,
         accessToken,
       );
       await waitForPaymentTransactionsToComplete(
-        programId,
+        programIdOCW,
         paymentReferenceIds,
         accessToken,
         50000,
@@ -78,14 +81,14 @@ describe('Load PA table', () => {
         payment1,
       );
       await doPayment(
-        programId,
+        programIdOCW,
         payment2,
         amount,
         paymentReferenceIds,
         accessToken,
       );
       await waitForPaymentTransactionsToComplete(
-        programId,
+        programIdOCW,
         paymentReferenceIds,
         accessToken,
         50000,
@@ -99,7 +102,7 @@ describe('Load PA table', () => {
       filter[`filter.${PaymentFilterEnum.waitingPayment}`] = payment1;
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -128,7 +131,7 @@ describe('Load PA table', () => {
       filter[`filter.${PaymentFilterEnum.failedPayment}`] = payment1;
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -157,7 +160,7 @@ describe('Load PA table', () => {
       filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -198,7 +201,7 @@ describe('Load PA table', () => {
       filter['filter.phoneNumber'] = registration1.phoneNumber;
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         ['referenceId', 'lastName'],
         accessToken,
         null,
@@ -228,14 +231,14 @@ describe('Load PA table', () => {
     it('should filter based on not yet sent payments', async () => {
       // do payment 3 for only 1 PA
       await doPayment(
-        programId,
+        programIdOCW,
         payment3,
         amount,
         [paymentReferenceIds[0]],
         accessToken,
       );
       await waitForPaymentTransactionsToComplete(
-        programId,
+        programIdOCW,
         [paymentReferenceIds[0]],
         accessToken,
         50000,
@@ -251,7 +254,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,

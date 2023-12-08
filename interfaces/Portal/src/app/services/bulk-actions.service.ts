@@ -10,6 +10,7 @@ import {
   BulkActionResult,
 } from '../models/bulk-actions.models';
 import { ProgramPhase } from '../models/program.model';
+import { PromptType } from '../shared/confirm-prompt/confirm-prompt.component';
 import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -59,16 +60,14 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -82,6 +81,9 @@ export class BulkActionsService {
       permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
+      confirmConditions: {
+        provideInput: false,
+      },
     },
     {
       id: BulkActionId.selectForValidation,
@@ -92,6 +94,9 @@ export class BulkActionsService {
       permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
+      },
     },
     {
       id: BulkActionId.include,
@@ -103,16 +108,14 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: false,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -127,18 +130,14 @@ export class BulkActionsService {
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: `${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        )} <br> ${this.translate.instant(
-          'page.program.program-people-affected.action-inputs.reject.explanation',
-        )}`,
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -153,16 +152,14 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -177,16 +174,14 @@ export class BulkActionsService {
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        promptType: PromptType.actionWithMessage,
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: false,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -205,16 +200,10 @@ export class BulkActionsService {
       ],
       showIfNoValidation: true,
       confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: true,
+        promptType: PromptType.actionWithMessage,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
         inputConstraint: {
-          length: 20,
+          length: 1,
           type: 'min',
         },
       },
@@ -229,7 +218,7 @@ export class BulkActionsService {
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
-        inputRequired: false,
+        provideInput: false,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.delete-warning',
         ),
@@ -348,6 +337,7 @@ export class BulkActionsService {
         permissions: [Permission.PaymentCREATE],
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
+        confirmConditions: {},
       };
       paymentBulkActions.push(paymentBulkAction);
       paymentId--;

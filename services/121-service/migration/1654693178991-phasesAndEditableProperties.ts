@@ -124,10 +124,11 @@ export class PhasesAndEditableProperties1654693178991
         .addSelect('fspAttribute.name')
         .addSelect('fspAttribute.phases')
         .getMany();
+
       for (const fspAttribute of fspAttributes) {
         if (fspAttribute.name === fspIntersolve.attributes[0].name) {
           fspAttribute.phases = fspIntersolve.attributes[0].phases;
-          fspAttributeRepo.save(fspAttribute);
+          await fspAttributeRepo.save(fspAttribute);
         }
       }
     }

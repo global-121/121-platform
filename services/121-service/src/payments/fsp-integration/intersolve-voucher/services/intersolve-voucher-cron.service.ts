@@ -174,7 +174,7 @@ export class IntersolveVoucherCronService {
             language,
           );
         whatsappPayment = whatsappPayment
-          .split('{{1}}')
+          .split('[[amount]]')
           .join(unsentIntersolveVoucher.amount);
 
         await this.queueMessageService.addMessageToQueue(

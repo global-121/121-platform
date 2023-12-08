@@ -13,6 +13,7 @@ import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedMockHelper } from './seed-mock-helpers';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -23,7 +24,10 @@ const readSqlFile = (filepath: string): string => {
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
-  public constructor(private dataSource: DataSource) {}
+  public constructor(
+    private dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
+  ) {}
 
   private readonly seedMockHelper = new SeedMockHelper();
 
@@ -74,7 +78,10 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // ************************
 
     // Set up instance and program
-    const seedMultiple = new SeedMultipleNLRC(this.dataSource);
+    const seedMultiple = new SeedMultipleNLRC(
+      this.dataSource,
+      this.messageTemplateService,
+    );
     await seedMultiple.run(isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message

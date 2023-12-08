@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiConsumes,
@@ -20,9 +21,11 @@ import {
 import { MessageTemplateService } from './message-template.service';
 import { MessageTemplateEntity } from './message-template.entity';
 import {
+  CreateMessageTemplateDto,
   DeleteTemplateParamDto,
   DeleteTemplateQueryDto,
-  MessageTemplateDto,
+  UpdateTemplateBodyDto,
+  UpdateTemplateParamDto,
 } from './dto/message-template.dto';
 import { PermissionsGuard } from '../../guards/permissions.guard';
 import { Permissions } from '../../guards/permissions.decorator';
@@ -49,7 +52,7 @@ export class MessageTemplateController {
     required: true,
     type: 'integer',
   })
-  @Get(':programId/message-template')
+  @Get(':programId/message-templates')
   public async getMessageTemplatesByProgramId(
     @Param('programId') programId,
   ): Promise<MessageTemplateEntity[]> {
@@ -65,13 +68,13 @@ export class MessageTemplateController {
     description: 'Created new message template',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/message-template')
+  @Post(':programId/message-templates')
   public async createMessageTemplate(
-    @Param('programId') programId: number,
-    @Body() templateData: MessageTemplateDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Body() templateData: CreateMessageTemplateDto,
   ): Promise<void> {
     await this.messageTemplateService.createMessageTemplate(
-      Number(programId),
+      programId,
       templateData,
     );
   }
@@ -88,16 +91,17 @@ export class MessageTemplateController {
     description: 'No message template found with given id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'messageId', required: true, type: 'integer' })
-  @Patch(':programId/message-template/:messageId')
+  @ApiParam({ name: 'type', required: true, type: 'string' })
+  @ApiParam({ name: 'language', required: true, type: 'string' })
+  @Patch(':programId/message-templates/:type/:language')
   public async updateMessageTemplate(
-    @Param('programId') programId: number,
-    @Param('messageId') messageId: number,
-    @Body() updateMessageTemplateDto: MessageTemplateDto,
+    @Param() params: UpdateTemplateParamDto,
+    @Body() updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     return await this.messageTemplateService.updateMessageTemplate(
-      Number(programId),
-      Number(messageId),
+      params.programId,
+      params.type,
+      params.language,
       updateMessageTemplateDto,
     );
   }
@@ -112,22 +116,22 @@ export class MessageTemplateController {
     type: DeleteResult,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'messageType', required: true, type: 'string' })
+  @ApiParam({ name: 'type', required: true, type: 'string' })
   @ApiQuery({
     name: 'language',
     required: false,
     type: 'string',
     description:
-      'Optional. If not supplied, all languages for given messageType are removed.',
+      'Optional. If not supplied, all languages for given type are removed.',
   })
-  @Delete(':programId/message-template/:messageType')
+  @Delete(':programId/message-templates/:type')
   public async deleteMessageTemplate(
     @Param() params: DeleteTemplateParamDto,
     @Query() query: DeleteTemplateQueryDto,
   ): Promise<DeleteResult> {
     return await this.messageTemplateService.deleteMessageTemplate(
       params.programId,
-      params.messageType,
+      params.type,
       query.language,
     );
   }

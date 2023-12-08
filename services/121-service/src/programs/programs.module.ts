@@ -20,6 +20,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramController } from './programs.controller';
 import { ProgramService } from './programs.service';
+import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ProgramService } from './programs.service';
     HttpModule,
     LookupModule,
     UserModule,
+    ProgramAttributesModule,
   ],
   providers: [ProgramService, ProgramFspConfigurationService],
   controllers: [ProgramController, ProgramFspConfigurationController],

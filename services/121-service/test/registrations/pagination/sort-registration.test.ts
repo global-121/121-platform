@@ -9,7 +9,7 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
-  programId,
+  programIdOCW,
   registration1,
   registration2,
   registration3,
@@ -25,19 +25,19 @@ describe('Load PA table', () => {
       accessToken = await getAccessToken();
 
       await changePhase(
-        programId,
+        programIdOCW,
         ProgramPhase.registrationValidation,
         accessToken,
       );
 
       await importRegistrations(
-        programId,
+        programIdOCW,
         [registration1, registration2, registration3, registration4],
         accessToken,
       );
 
       await awaitChangePaStatus(
-        programId,
+        programIdOCW,
         [registration1.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
@@ -49,7 +49,7 @@ describe('Load PA table', () => {
       const field = 'paymentAmountMultiplier';
       const direction = 'DESC';
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -78,7 +78,7 @@ describe('Load PA table', () => {
       const field = 'firstName';
       const direction = 'ASC';
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,

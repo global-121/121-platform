@@ -17,6 +17,7 @@ import {
   MessageProcessorLargeBulk,
   MessageProcessorLowPriority,
 } from './processors/message.processor';
+import { ProgramModule } from '../programs/programs.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import {
     QueueMessageModule,
     IntersolveVoucherModule,
     MessageTemplateModule,
+    ProgramModule,
   ],
   providers: [
     MessageService,
@@ -39,7 +41,6 @@ import {
     MessageProcessorLargeBulk,
     MessageProcessorLowPriority,
     AzureLogService,
-    MessageTemplateModule,
   ],
   controllers: [],
   exports: [MessageService],

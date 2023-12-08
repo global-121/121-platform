@@ -472,7 +472,7 @@ export class MessageIncomingService {
           if (templates.length > 0) {
             message = templates[0].message;
             message = message
-              .split('{{1}}')
+              .split('[[amount]]')
               .join(String(intersolveVoucher.amount));
           } else {
             throw new Error(

@@ -13,6 +13,7 @@ import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
@@ -24,7 +25,10 @@ export class SecretDto {
 // TODO: REFACTOR: rename to instance
 @Controller('scripts')
 export class ScriptsController {
-  public constructor(private dataSource: DataSource) {}
+  public constructor(
+    private dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
+  ) {}
 
   @ApiQuery({
     name: 'script',
@@ -68,32 +72,44 @@ export class ScriptsController {
     }
     let seed;
     if (script == SeedScript.demo) {
-      seed = new SeedDemoProgram(this.dataSource);
+      seed = new SeedDemoProgram(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.test) {
-      seed = new SeedTestProgram(this.dataSource);
+      seed = new SeedTestProgram(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.testMultiple) {
-      seed = new SeedTestMultipleProgram(this.dataSource);
+      seed = new SeedTestMultipleProgram(
+        this.dataSource,
+        this.messageTemplateService,
+      );
     } else if (script == SeedScript.nlrcMultiple) {
-      seed = new SeedMultipleNLRC(this.dataSource);
-    } else if (script == SeedScript.pilotNL) {
-      seed = new SeedNLProgramLVV(this.dataSource);
-    } else if (script == SeedScript.pilotNLPV) {
-      seed = new SeedNLProgramPV(this.dataSource);
+      seed = new SeedMultipleNLRC(this.dataSource, this.messageTemplateService);
+    } else if (script == SeedScript.nlrcLVV) {
+      seed = new SeedNLProgramLVV(this.dataSource, this.messageTemplateService);
+    } else if (script == SeedScript.nlrcPV) {
+      seed = new SeedNLProgramPV(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.DRC) {
-      seed = new SeedProgramDrc(this.dataSource);
+      seed = new SeedProgramDrc(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.validation) {
-      seed = new SeedProgramValidation(this.dataSource);
+      seed = new SeedProgramValidation(
+        this.dataSource,
+        this.messageTemplateService,
+      );
     } else if (script == SeedScript.ethJointResponse) {
-      seed = new SeedEthJointResponse(this.dataSource);
+      seed = new SeedEthJointResponse(
+        this.dataSource,
+        this.messageTemplateService,
+      );
     } else if (script == SeedScript.krcsMultiple) {
-      seed = new SeedMultipleKRCS(this.dataSource);
+      seed = new SeedMultipleKRCS(this.dataSource, this.messageTemplateService);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
       ['development', 'test'].includes(process.env.NODE_ENV)
     ) {
       const module = await import('./seed-multiple-nlrc-mock');
       const SeedMultipleNLRCMockData = module.SeedMultipleNLRCMockData;
-      seed = new SeedMultipleNLRCMockData(this.dataSource);
+      seed = new SeedMultipleNLRCMockData(
+        this.dataSource,
+        this.messageTemplateService,
+      );
     } else {
       return res
         .status(HttpStatus.BAD_REQUEST)

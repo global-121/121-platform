@@ -6,7 +6,7 @@ import {
   ProcessName,
 } from '../enum/queue.names.enum';
 import { AzureLogService } from '../../shared/services/azure-log.service';
-@Processor(QueueNameMessageCallBack.messageStatusCallback)
+@Processor(QueueNameMessageCallBack.status)
 export class MessageStatusCallbackProcessor {
   constructor(
     private readonly messageIncomingService: MessageIncomingService,

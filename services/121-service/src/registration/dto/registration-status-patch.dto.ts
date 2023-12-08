@@ -10,14 +10,14 @@ export class RegistrationStatusPatchDto {
   public readonly status: RegistrationStatusEnum;
 
   @ApiProperty({ example: 'Long enough rejection message', required: false })
-  @MinLength(20)
+  @MinLength(1)
   @IsString()
   @IsOptional()
   public readonly message: string;
 
   @ApiProperty({
     enum: RegistrationStatusEnum,
-    example: Object.keys(RegistrationStatusEnum),
+    example: Object.keys(RegistrationStatusEnum).join(' | '),
     required: false,
   })
   @IsEnum(RegistrationStatusEnum)

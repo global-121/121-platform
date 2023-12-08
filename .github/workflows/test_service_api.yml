@@ -47,15 +47,15 @@ jobs:
           /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^REDIS_HOST=/s/=.*/=121queue/' ./services/.env.example
+          /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
+          /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
           /bin/sed -i '/^TWILIO_AUTHTOKEN=/s/=.*/=abc/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO_URL=/s/=.*/=http:\/\/twilio-mock-service:3001\//' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
-          /bin/sed -i '/^REDIS_HOST=/s/=.*/=services-121-redis-1/' ./services/.env.example
-          /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env.example
-          /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env.example
@@ -64,6 +64,8 @@ jobs:
       - name: Force set database schema to a clean state
         working-directory: ./services
         run: |
+          /bin/sed -i '/migrationsRun/s/true/false/' ./121-service/ormconfig.ts
+          /bin/sed -i '/dropSchema/s/false/true/' ./121-service/ormconfig.ts
           /bin/sed -i '/synchronize/s/false/true/' ./121-service/ormconfig.ts
 
       - name: Build containers
@@ -87,4 +89,5 @@ jobs:
           docker compose exec 121-service npm run test:e2e:all
 
       - name: Docker logs
+        if: always()
         uses: jwalton/gh-docker-logs@v2
