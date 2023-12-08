@@ -45,7 +45,7 @@ export class RegistrationDataScopedQueryService {
   ): SelectQueryBuilder<any> {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
     subQuery = subQuery
-      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
+      .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
       .from(RegistrationDataEntity, uniqueSubQueryId);
     if (relation.programQuestionId) {
       subQuery = subQuery.andWhere(
