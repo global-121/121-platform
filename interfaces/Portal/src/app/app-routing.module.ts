@@ -107,6 +107,7 @@ const routes: Routes = [
           import('./pages/registration-details/registration-details.page').then(
             (m) => m.RegistrationDetailsPage,
           ),
+        canActivate: [AuthGuard],
       },
       {
         // Fallback for change in url, from old to new syntax:

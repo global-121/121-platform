@@ -16,7 +16,7 @@ export class SeedProd implements InterfaceScript {
     console.log('----------------Running seed production------------------');
     const userRepository = this.dataSource.getRepository(UserEntity);
     if ((await userRepository.find({ take: 1 })).length === 0) {
-      const seedInit = await new SeedInit(
+      const seedInit = new SeedInit(
         this.dataSource,
         this.messageTemplateService,
       );

@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class UpdateRegistrationDataUniqueConstraints1664371029551
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'UpdateRegistrationDataUniqueConstraints1664371029551';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

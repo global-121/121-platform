@@ -25,10 +25,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
   );
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = await new SeedInit(
-      this.dataSource,
-      this.messageTemplateService,
-    );
+    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
     await seedInit.run(isApiTests);
 
     // ************************
