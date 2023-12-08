@@ -22,11 +22,7 @@ import { RegistrationScopedRepository } from '../../../registration/registration
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      IntersolveVisaWalletEntity,
-      UserEntity,
-      ProgramAidworkerAssignmentEntity,
-    ]),
+    TypeOrmModule.forFeature([UserEntity, ProgramAidworkerAssignmentEntity]),
     UserModule,
     TransactionsModule,
     QueueMessageModule,

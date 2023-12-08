@@ -24,7 +24,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
-import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [

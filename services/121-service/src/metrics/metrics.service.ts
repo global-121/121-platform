@@ -36,7 +36,7 @@ import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProviderName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class MetricsService {

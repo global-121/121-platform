@@ -39,7 +39,7 @@ export class RegistrationsBulkService {
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(PersonAffectedAppDataEntity)
   private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
-  //  Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
+  // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
 

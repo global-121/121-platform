@@ -79,9 +79,9 @@ export class IntersolveVisaService
     private readonly queueMessageService: QueueMessageService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
-    private intersolveVisaScopedCustomerRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
+    private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
-    private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
+    private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 
   public async getTransactionInfo(
@@ -260,7 +260,7 @@ export class IntersolveVisaService
       visaCustomer = new IntersolveVisaCustomerEntity();
       visaCustomer.registration = registration;
       visaCustomer.holderId = createCustomerResult.data.data.id;
-      await this.intersolveVisaScopedCustomerRepo.save(visaCustomer);
+      await this.intersolveVisaCustomerScopedRepo.save(visaCustomer);
     }
 
     // Check if a wallet exists
@@ -296,9 +296,7 @@ export class IntersolveVisaService
             b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
         ).quantity.value;
       intersolveVisaWallet.lastExternalUpdate = new Date();
-      await this.intersolveVisaWalletScopedRepository.save(
-        intersolveVisaWallet,
-      );
+      await this.intersolveVisaWalletScopedRepo.save(intersolveVisaWallet);
 
       visaCustomer.visaWallets = [intersolveVisaWallet];
     }
@@ -331,7 +329,7 @@ export class IntersolveVisaService
 
       // if succes, update wallet: set linkedToVisaCustomer to true
       visaCustomer.visaWallets[0].linkedToVisaCustomer = true;
-      await this.intersolveVisaWalletScopedRepository.save(
+      await this.intersolveVisaWalletScopedRepo.save(
         visaCustomer.visaWallets[0],
       );
     }
@@ -364,7 +362,7 @@ export class IntersolveVisaService
       // if success, update wallet: set debitCardCreated to true ..
       if (paTransactionResult.status === StatusEnum.success) {
         visaCustomer.visaWallets[0].debitCardCreated = true;
-        await this.intersolveVisaWalletScopedRepository.save(
+        await this.intersolveVisaWalletScopedRepo.save(
           visaCustomer.visaWallets[0],
         );
 
@@ -414,7 +412,7 @@ export class IntersolveVisaService
   private async getCustomerEntity(
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
-    return await this.intersolveVisaScopedCustomerRepo.findOne({
+    return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
       where: { registrationId: registrationId },
     });
@@ -630,7 +628,7 @@ export class IntersolveVisaService
     }
     wallet.spentThisMonth = transactionInfo.spentThisMonth;
     wallet.lastExternalUpdate = new Date();
-    return await this.intersolveVisaWalletScopedRepository.save(wallet);
+    return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
 
   private getTwoMonthAgo(): Date {
@@ -740,7 +738,7 @@ export class IntersolveVisaService
           result.data?.code,
         ))
     ) {
-      await this.intersolveVisaWalletScopedRepository.updateUnscoped(
+      await this.intersolveVisaWalletScopedRepo.updateUnscoped(
         { tokenCode: tokenCode },
         { tokenBlocked: block },
       );
@@ -754,7 +752,7 @@ export class IntersolveVisaService
     block: boolean,
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const qb = this.intersolveVisaWalletScopedRepository
+    const qb = this.intersolveVisaWalletScopedRepo
       .createQueryBuilder('wallet')
       .leftJoinAndSelect(
         'wallet.intersolveVisaCustomer',
@@ -1031,7 +1029,7 @@ export class IntersolveVisaService
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
     ).quantity.value;
     newWallet.lastExternalUpdate = new Date();
-    await this.intersolveVisaWalletScopedRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 5. register new wallet to customer
     const registerResult = await this.linkWalletToCustomer(
@@ -1043,7 +1041,7 @@ export class IntersolveVisaService
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
       // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletScopedRepository.remove(newWallet);
+      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
 
       const errors = registerResult.data?.errors?.length
         ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
@@ -1062,7 +1060,7 @@ export class IntersolveVisaService
     }
     // if succes, update wallet: set linkedToVisaCustomer to true
     newWallet.linkedToVisaCustomer = true;
-    await this.intersolveVisaWalletScopedRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 6. create new debit card
     const relationOptions = await this.getRelationOptionsForVisa(referenceId);
@@ -1079,7 +1077,7 @@ export class IntersolveVisaService
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
       // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletScopedRepository.remove(newWallet);
+      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
 
       const errors = createDebitCardResult.data?.errors?.length
         ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
@@ -1095,7 +1093,7 @@ export class IntersolveVisaService
     }
     // if success, update wallet: set debitCardCreated to true ..
     newWallet.debitCardCreated = true;
-    await this.intersolveVisaWalletScopedRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 7. unload balance from old wallet (don't do this if the balance is < 1 because Intersolve doesn't allow this)
     if (currentBalance >= 1) {
@@ -1155,14 +1153,14 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletScopedRepository.find();
+    const wallets = await this.intersolveVisaWalletScopedRepo.find();
     for (const wallet of wallets) {
       await this.getWalletDetails(wallet);
     }
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
-    const count = await this.intersolveVisaScopedCustomerRepo
+    const count = await this.intersolveVisaCustomerScopedRepo
       .createQueryBuilder('customer')
       .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();

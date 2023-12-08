@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Repository } from 'typeorm';
@@ -45,8 +45,7 @@ import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
-import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProviderName } from '../utils/createScopedRepositoryProvider.helper';
+import { ScopedQueryBuilder } from '../scoped.repository';
 
 @Injectable()
 export class PaymentsService {
@@ -56,8 +55,6 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,
     private readonly azureLogService: AzureLogService,
@@ -86,8 +83,7 @@ export class PaymentsService {
       amount: number;
     }[]
   > {
-    // I think it is better here not to use scoped repositorty
-    // Otherwise you will not be able to select the correct payment in the portal
+    // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
     const payments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('payment')
@@ -104,7 +100,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
   ): Promise<PaymentReturnDto> {
-    // This is scoped because this transactionScopedRepository is used in the transaction.service.ts
+    // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
     const aggregateResults = await this.dataSource
       .createQueryBuilder()
       .select(['status', 'COUNT(*) as count'])

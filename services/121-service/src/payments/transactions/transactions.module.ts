@@ -13,7 +13,7 @@ import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
 import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
-import { createScopedRepositoryProvider } from '../../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Module({
@@ -23,6 +23,7 @@ import { RegistrationScopedRepository } from '../../registration/registration-sc
       LatestTransactionEntity,
       FinancialServiceProviderEntity,
       UserEntity,
+      TwilioMessageEntity,
     ]),
     UserModule,
     HttpModule,
@@ -34,7 +35,6 @@ import { RegistrationScopedRepository } from '../../registration/registration-sc
     TransactionsService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(TransactionEntity),
-    createScopedRepositoryProvider(TwilioMessageEntity),
   ],
   controllers: [TransactionsController],
   exports: [TransactionsService],
