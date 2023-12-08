@@ -17,7 +17,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { Module } from '@nestjs/common';
-import { createScopedRepositoryProvider } from '../../../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [

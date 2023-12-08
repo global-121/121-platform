@@ -3,7 +3,6 @@ import {
   DataSource,
   EntityMetadata,
   Repository,
-  SaveOptions,
   SelectQueryBuilder,
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
@@ -11,6 +10,10 @@ import { RegistrationEntity } from './registration/registration.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import {
+  FindOptionsCombined,
+  convertToScopedOptions,
+} from './utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -80,14 +83,33 @@ export class ScopedRepository<T> {
     }
   }
 
+  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.find(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.scope,
+    );
+    return this.repository.find(scopedOptions);
+  }
+
+  public async findOne(options: FindOptionsCombined<T>): Promise<T> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.findOne(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.scope,
+    );
+    return this.repository.findOne(scopedOptions);
+  }
+
   public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
-    // If the scope is empty, return the normal query builder
-    console.log(
-      '🚀 ~ file: scoped.repository.ts:89 ~ ScopedRepository<T> ~ createQueryBuilder ~ this.request:',
-      this.request.scope,
-    );
     if (!this.request?.scope || this.request.scope === '') {
       return new ScopedQueryBuilder(qb);
     }

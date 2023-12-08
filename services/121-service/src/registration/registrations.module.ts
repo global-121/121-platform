@@ -44,7 +44,7 @@ import { RegistrationsImportService } from './services/registrations-import.serv
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
-import { createScopedRepositoryProvider } from '../utils/createScopedRepositoryProvider.helper';
+import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [

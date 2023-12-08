@@ -1,13 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import {
-  DataSource,
-  FindManyOptions,
-  In,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -66,7 +60,7 @@ import { QueueMessageService } from '../notifications/queue-message/queue-messag
 import { UserService } from '../user/user.service';
 import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProvideName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -90,7 +84,7 @@ export class RegistrationsService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
-  @InjectRepository(RegistrationViewEntity)
+  @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
@@ -1413,14 +1407,6 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
   ): Promise<any[]> {
-    const options: FindManyOptions = {
-      where: {
-        registration: { referenceId: referenceId, programId: programId },
-      },
-      relations: ['registration'],
-      order: { created: 'DESC' },
-    };
-
     const qb = await this.registrationStatusChangeScopedRepository
       .createQueryBuilder('registrationStatusChange')
       .andWhere('registration.referenceId = :referenceId', {
