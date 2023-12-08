@@ -316,7 +316,7 @@ export class IntersolveVoucherService
       language,
     );
     whatsappPayment = whatsappPayment
-      .split('{{1}}')
+      .split('[[amount]]')
       .join(String(calculatedAmount));
 
     await this.queueMessageService.addMessageToQueue(

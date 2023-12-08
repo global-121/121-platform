@@ -2,19 +2,20 @@
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
-  getMessageTemplate,
+  getMessageTemplates,
   postMessageTemplate,
   updateMessageTemplate,
 } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
+import { CreateMessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
 
 describe('Message template', () => {
   let accessToken: string;
   const programId = 1;
-  const messageId = 1;
+  const type = 'registered';
+  const language = LanguageEnum.en;
   const messageTemplate = {
-    type: 'test',
-    language: 'en',
     message: 'testing message',
     isWhatsappTemplate: true,
   };
@@ -25,10 +26,14 @@ describe('Message template', () => {
   });
 
   it('should create message template', async () => {
+    // Arrange
+    messageTemplate['type'] = type;
+    messageTemplate['language'] = language;
+
     // Act
     const postMessageTemplateResult = await postMessageTemplate(
       programId,
-      messageTemplate,
+      messageTemplate as CreateMessageTemplateDto,
       accessToken,
     );
 
@@ -36,11 +41,32 @@ describe('Message template', () => {
     expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.CREATED);
   });
 
-  it('should get all message template by programId', async () => {
-    await postMessageTemplate(programId, messageTemplate, accessToken);
+  it('should NOT create message template when invalid placeholder is included', async () => {
+    // Arrange
+    messageTemplate['type'] = type;
+    messageTemplate['language'] = language;
+    messageTemplate['message'] = 'testing message {{invalid}}';
 
     // Act
-    const getMessageTemplateResult = await getMessageTemplate(
+    const postMessageTemplateResult = await postMessageTemplate(
+      programId,
+      messageTemplate as CreateMessageTemplateDto,
+      accessToken,
+    );
+
+    // Assert
+    expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
+  });
+
+  it('should get all message template by programId', async () => {
+    await postMessageTemplate(
+      programId,
+      messageTemplate as CreateMessageTemplateDto,
+      accessToken,
+    );
+
+    // Act
+    const getMessageTemplateResult = await getMessageTemplates(
       programId,
       accessToken,
     );
@@ -50,17 +76,18 @@ describe('Message template', () => {
     expect(getMessageTemplateResult.body.length).toBeGreaterThan(1);
   });
 
-  it('should update message template by id', async () => {
-    const typeMessageTemplate = 'test1';
+  it('should update message template by language and type', async () => {
+    const updatedMessage = 'test1';
     const updatedMessageTemplate = await updateMessageTemplate(
       programId,
-      messageId,
-      { type: typeMessageTemplate },
+      type,
+      language,
+      { message: updatedMessage },
       accessToken,
     );
 
     // Assert
     expect(updatedMessageTemplate.statusCode).toBe(HttpStatus.OK);
-    expect(updatedMessageTemplate.body.type).toBe(typeMessageTemplate);
+    expect(updatedMessageTemplate.body.message).toBe(updatedMessage);
   });
 });

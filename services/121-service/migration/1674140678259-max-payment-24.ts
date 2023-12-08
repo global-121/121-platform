@@ -25,5 +25,7 @@ export class maxPayment241674140678259 implements MigrationInterface {
         `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }

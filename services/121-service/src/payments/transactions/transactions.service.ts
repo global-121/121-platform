@@ -264,7 +264,7 @@ export class TransactionsService {
         i,
         dynamicContent,
       ] of transactionNotification.dynamicContent.entries()) {
-        const replaceString = `{{${i + 1}}}`;
+        const replaceString = `[[${i + 1}]]`;
         if (message.includes(replaceString)) {
           message = message.replace(replaceString, dynamicContent);
         }

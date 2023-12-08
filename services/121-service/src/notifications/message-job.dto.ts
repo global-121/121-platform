@@ -22,6 +22,7 @@ export class MessageJobCustomDataDto {
   intersolveVoucherId?: number;
   pendingMessageId?: number;
   existingMessageSid?: string;
+  placeholderData?: object;
 }
 
 export enum MessageProcessType {

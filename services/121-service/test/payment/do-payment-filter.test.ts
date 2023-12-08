@@ -14,7 +14,7 @@ import {
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import {
-  programId,
+  programIdOCW,
   registration1,
   registration2,
   registration3,
@@ -47,7 +47,7 @@ describe('Do payment with filter', () => {
     await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
     await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
     await importRegistrations(
-      programId,
+      programIdOCW,
       [registration1, registration2, registration3, registration4],
       accessToken,
     );

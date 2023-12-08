@@ -48,6 +48,11 @@ ion-button {
   --box-shadow: none;
 }
 
+.input-element-with-border {
+  border: 1px solid var(--fiveten-neutral-300);
+  border-radius: 0.25em;
+}
+
 .input-item {
   background-color: white;
 
@@ -342,5 +347,16 @@ ion-input.custom-border {
   ion-checkbox {
     font-size: 14px;
     --border-width: 1px;
+  }
+}
+
+.tooltip--popover {
+  .popover-viewport {
+    padding: 8px;
+    overflow: hidden;
+
+    ion-label {
+      padding-inline-start: 0;
+    }
   }
 }

@@ -370,12 +370,14 @@
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
           "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
-          "message-explanation": "There is no templated message available for this action. Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "templated-explanation": "The following message will be sent to PAs in their own language.",
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
-          "reject": {
-            "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."
-          }
+          "placeholder-pa-data": "Please make sure that for all used personalized fields, the data is available for all selected People Affected.",
+          "placeholder-typeahead-placeholder": "Select field",
+          "add-placeholder": "Add personalized field",
+          "type-message": "Type message",
+          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "message-preview": "Message preview"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
@@ -544,7 +546,7 @@
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
           "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
-          "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that are not already deleted.",
+          "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that do not have status <i>Included</i>.",
           "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them.",
           "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment."
         },
@@ -716,7 +718,6 @@
     "update": "Update",
     "save": "Save",
     "confirm": "Are you sure?",
-    "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",

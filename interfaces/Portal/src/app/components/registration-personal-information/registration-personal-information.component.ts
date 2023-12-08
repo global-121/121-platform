@@ -82,7 +82,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     this.tableAttributes = await this.programsService.getPaTableAttributes(
       this.program.id,
-      ProgramPhase.registrationValidation,
+      { phase: ProgramPhase.registrationValidation },
     );
 
     if (!this.tableAttributes) {

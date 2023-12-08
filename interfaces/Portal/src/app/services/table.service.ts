@@ -180,7 +180,7 @@ export class TableService {
 
     const columnsPerPhase = await this.programsService.getPaTableAttributes(
       program.id,
-      thisPhase,
+      { phase: thisPhase },
     );
 
     if (!columnsPerPhase) {

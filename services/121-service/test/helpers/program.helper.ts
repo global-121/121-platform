@@ -8,7 +8,11 @@ import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
 import { getServer } from './utility.helper';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { MessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
+import {
+  CreateMessageTemplateDto,
+  UpdateTemplateBodyDto,
+} from '../../src/notifications/message-template/dto/message-template.dto';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
 export async function postProgram(
   program: CreateProgramDto,
@@ -254,9 +258,11 @@ export async function waitForMessagesToComplete(
               MessageStatus.read,
               MessageStatus.delivered,
               MessageStatus.failed,
+              MessageStatus.sent, // sent is also a final status for SMS, how does this change the below comment for WhatsApp?
             ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
         ).length > 0,
     ).length;
+
     allMessageUpdatesSuccessful =
       amountOfRegistrationWithMessages === referenceIds.length;
 
@@ -317,32 +323,33 @@ export async function getNotes(
 
 export async function postMessageTemplate(
   programId: number,
-  body: MessageTemplateDto,
+  body: CreateMessageTemplateDto,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/notifications/${programId}/message-template`)
+    .post(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken])
     .send(body);
 }
 
 export async function updateMessageTemplate(
   programId: number,
-  messageId: number,
-  body: { type?: string },
+  type: string,
+  language: LanguageEnum,
+  body: UpdateTemplateBodyDto,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .patch(`/notifications/${programId}/message-template/${messageId}`)
+    .patch(`/notifications/${programId}/message-templates/${type}/${language}`)
     .set('Cookie', [accessToken])
     .send(body);
 }
 
-export async function getMessageTemplate(
+export async function getMessageTemplates(
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/notifications/${programId}/message-template`)
+    .get(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken]);
 }

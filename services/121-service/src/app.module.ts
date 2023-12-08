@@ -26,12 +26,16 @@ import { MessageIncomingModule } from './notifications/message-incoming/message-
 import { ScopeMiddleware } from './shared/middleware/scope.middleware';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
+import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
+import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 
 @Module({
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     ProgramModule,
+    ProgramAttributesModule,
+    MessageTemplateModule,
     UserModule,
     HealthModule,
     CronjobModule,

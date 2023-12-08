@@ -4,6 +4,8 @@
 graph LR
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
+  ProgramModule-->ProgramAttributesModule
+  MessageTemplateModule-->ProgramAttributesModule
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
@@ -11,6 +13,7 @@ graph LR
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->QueueMessageModule
+  QueueMessageModule-->ProgramAttributesModule
   TransactionsModule-->MessageTemplateModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
@@ -30,6 +33,7 @@ graph LR
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule
   MessageModule-->MessageTemplateModule
+  MessageModule-->ProgramModule
   MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule

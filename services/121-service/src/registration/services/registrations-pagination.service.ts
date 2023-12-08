@@ -598,9 +598,11 @@ export class RegistrationsPaginationService {
     if (status) {
       queryBuilder
         .innerJoin(`${alias}.transaction`, `transaction${alias}`)
-        .where(`"transaction${alias}"."status" = :status`, { status: status });
+        .andWhere(`"transaction${alias}"."status" = :status`, {
+          status: status,
+        });
     } else {
-      queryBuilder.where(`"${alias}"."id" IS NULL`);
+      queryBuilder.andWhere(`"${alias}"."id" IS NULL`);
     }
     return queryBuilder;
   }

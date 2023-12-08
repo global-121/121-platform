@@ -4,7 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProgramQuestionOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { AnswerType } from '../../models/fsp.model';
-import { InputProps } from '../../shared/input-prompt/input-prompt.component';
+import {
+  InputProps,
+  PromptType,
+} from '../../shared/confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-update-property-item',
@@ -65,6 +68,8 @@ export class UpdatePropertyItemComponent implements OnInit {
     this.propertyModel = this.value;
 
     this.reasonInputProps = {
+      promptType: PromptType.reason,
+      provideInput: true,
       inputRequired: true,
       explanation: this.translateService.instant(
         'page.program.program-people-affected.edit-person-affected-popup.reason-popup.explanation',
