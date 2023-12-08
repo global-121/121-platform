@@ -327,7 +327,7 @@ export async function postMessageTemplate(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/notifications/${programId}/message-template`)
+    .post(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken])
     .send(body);
 }
@@ -340,7 +340,7 @@ export async function updateMessageTemplate(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .patch(`/notifications/${programId}/message-template/${type}/${language}`)
+    .patch(`/notifications/${programId}/message-templates/${type}/${language}`)
     .set('Cookie', [accessToken])
     .send(body);
 }
@@ -350,6 +350,6 @@ export async function getMessageTemplates(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/notifications/${programId}/message-template`)
+    .get(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken]);
 }
