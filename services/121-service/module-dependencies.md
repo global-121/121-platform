@@ -2,7 +2,6 @@
 
 ```mermaid
 graph LR
-  ProgramModule-->SmsModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule
@@ -13,7 +12,6 @@ graph LR
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
-  IntersolveVoucherModule-->WhatsappModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
   CronjobModule-->IntersolveVisaModule

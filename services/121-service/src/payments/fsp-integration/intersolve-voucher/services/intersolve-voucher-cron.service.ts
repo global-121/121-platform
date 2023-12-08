@@ -4,7 +4,6 @@ import { Between, DataSource, Repository } from 'typeorm';
 import { FspName } from '../../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
-import { WhatsappService } from '../../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
@@ -34,7 +33,6 @@ export class IntersolveVoucherCronService {
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly whatsappService: WhatsappService,
     private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
