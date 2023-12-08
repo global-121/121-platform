@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
-import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
 import messageTemplatePilotEth from '../../seed-data/message-template/message-template-pilot-zoa-eth.json';
+import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
 import { ProgramEntity } from '../programs/program.entity';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';

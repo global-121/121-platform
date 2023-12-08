@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceDrc from '../../seed-data/instance/instance-drc.json';
-import programDrc from '../../seed-data/program/program-drc.json';
 import messageTemplateDrc from '../../seed-data/message-template/message-template-drc.json';
+import programDrc from '../../seed-data/program/program-drc.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';

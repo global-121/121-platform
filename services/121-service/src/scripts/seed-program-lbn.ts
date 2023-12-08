@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import intanceLbn from '../../seed-data/instance/instance-pilot-lbn.json';
-import programPilotLbn from '../../seed-data/program/program-pilot-lbn.json';
 import messageTemplatePilotLbn from '../../seed-data/message-template/message-template-pilot-lbn.json';
+import programPilotLbn from '../../seed-data/program/program-pilot-lbn.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';

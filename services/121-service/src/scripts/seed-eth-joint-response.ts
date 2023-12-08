@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceEthJointResponse from '../../seed-data/instance/instance-eth-joint-response.json';
-import programAne from '../../seed-data/program/program-joint-response-ANE.json';
-import programDorcas from '../../seed-data/program/program-joint-response-dorcas.json';
-import programEKHCDC from '../../seed-data/program/program-joint-response-EKHCDC.json';
 import messageTemplateAne from '../../seed-data/message-template/message-template-joint-response-ANE.json';
 import messageTemplateDorcas from '../../seed-data/message-template/message-template-joint-response-dorcas.json';
 import messageTemplateEKHCDC from '../../seed-data/message-template/message-template-joint-response-EKHCDC.json';
+import programAne from '../../seed-data/program/program-joint-response-ANE.json';
+import programDorcas from '../../seed-data/program/program-joint-response-dorcas.json';
+import programEKHCDC from '../../seed-data/program/program-joint-response-EKHCDC.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import programValidation from '../../seed-data/program/program-validation.json';
 import messageTemplateValidation from '../../seed-data/message-template/message-template-validation.json';
+import programValidation from '../../seed-data/program/program-validation.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
