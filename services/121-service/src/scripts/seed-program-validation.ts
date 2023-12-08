@@ -26,7 +26,7 @@ export class SeedProgramValidation implements InterfaceScript {
       program,
     );
 
-    await this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceAnonymous);

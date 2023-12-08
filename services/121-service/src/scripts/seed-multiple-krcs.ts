@@ -26,8 +26,9 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityBaringo =
-      await this.seedHelper.addProgram(programBaringo);
+    const programEntityBaringo = await this.seedHelper.addProgram(
+      programBaringo,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -36,7 +37,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityBaringo, false);
+    await this.seedHelper.addDefaultUsers(programEntityBaringo);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -47,8 +48,9 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTurkana =
-      await this.seedHelper.addProgram(programTurkana);
+    const programEntityTurkana = await this.seedHelper.addProgram(
+      programTurkana,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -57,15 +59,16 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityTurkana, false);
+    await this.seedHelper.addDefaultUsers(programEntityTurkana);
 
     // ************************
     // ***** Program West Pokot *****
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityWestPokot =
-      await this.seedHelper.addProgram(programWestPokot);
+    const programEntityWestPokot = await this.seedHelper.addProgram(
+      programWestPokot,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -74,7 +77,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityWestPokot, false);
+    await this.seedHelper.addDefaultUsers(programEntityWestPokot);
   }
 }
 

@@ -1,8 +1,5 @@
 export enum DefaultUserRole {
   ProgramAdmin = 'program-admin',
-  FieldValidation = 'field-validation',
-  PersonalData = 'personal-data',
-  RunProgram = 'run-program',
   View = 'view',
   KoboUser = 'kobo-user',
   CvaManager = 'cva-manager',

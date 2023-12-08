@@ -5,7 +5,6 @@ import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
@@ -16,27 +15,15 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 export class SeedHelper {
   public constructor(private dataSource: DataSource) {}
 
-  public async addDefaultUsers(
-    program: ProgramEntity,
-    addFieldValidation: boolean,
-  ): Promise<void> {
+  public async addDefaultUsers(program: ProgramEntity): Promise<void> {
     const fullAccessUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
-    });
-
-    const runProgramUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-    });
-
-    const personalDataUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
     const viewOnlyUser = await this.getOrSaveUser({
@@ -74,18 +61,7 @@ export class SeedHelper {
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     if (fullAccessUser) {
       await this.assignAidworker(fullAccessUser.id, program.id, [
-        DefaultUserRole.RunProgram,
-        DefaultUserRole.PersonalData,
-      ]);
-    }
-    if (runProgramUser) {
-      await this.assignAidworker(runProgramUser.id, program.id, [
-        DefaultUserRole.RunProgram,
-      ]);
-    }
-    if (personalDataUser) {
-      await this.assignAidworker(personalDataUser.id, program.id, [
-        DefaultUserRole.PersonalData,
+        DefaultUserRole.ProgramAdmin,
       ]);
     }
     if (viewOnlyUser) {
@@ -116,18 +92,6 @@ export class SeedHelper {
     if (financeOfficer) {
       await this.assignAidworker(financeOfficer.id, program.id, [
         DefaultUserRole.FinanceManager,
-      ]);
-    }
-
-    if (addFieldValidation) {
-      const fieldValidationUser = await this.getOrSaveUser({
-        username:
-          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
-        password:
-          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
-      });
-      await this.assignAidworker(fieldValidationUser.id, program.id, [
-        DefaultUserRole.FieldValidation,
       ]);
     }
 
