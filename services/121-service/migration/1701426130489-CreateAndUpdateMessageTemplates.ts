@@ -110,4 +110,7 @@ export class CreateAndUpdateMessageTemplates1701426130489
       }
     }
   }
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // Nothing to do
+  }
 }
