@@ -87,7 +87,7 @@ export class ScopedRepository<T> {
 
   private getWhereQueryScope(
     options: FindOptionsCombined<T>,
-    whereQueryScopeRelated: { [key: string]: any },
+    whereQueryScopeRelated: Record<string, any>,
   ): FindOptionsCombined<T> {
     const optionsCopy = options ? cloneDeep(options) : {};
     for (const relation of [...this.relationArrayToRegistration.reverse()]) {

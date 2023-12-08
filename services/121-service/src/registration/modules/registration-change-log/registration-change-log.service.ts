@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
-import { RegistrationEntity } from '../../registration.entity';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { ScopedRepository } from '../../../scoped.repository';
 import { getScopedRepositoryProvideName } from '../../../utils/createScopedRepositoryProvider.helper';

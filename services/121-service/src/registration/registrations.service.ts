@@ -1413,14 +1413,6 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
   ): Promise<any[]> {
-    const options: FindManyOptions = {
-      where: {
-        registration: { referenceId: referenceId, programId: programId },
-      },
-      relations: ['registration'],
-      order: { created: 'DESC' },
-    };
-
     const qb = await this.registrationStatusChangeScopedRepository
       .createQueryBuilder('registrationStatusChange')
       .andWhere('registration.referenceId = :referenceId', {
