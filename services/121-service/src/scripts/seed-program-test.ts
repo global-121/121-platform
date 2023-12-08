@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
-import programTest from '../../seed-data/program/program-test.json';
 import messageTemplateTest from '../../seed-data/message-template/message-template-test.json';
+import programTest from '../../seed-data/program/program-test.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -23,7 +23,7 @@ export class SeedTestProgram implements InterfaceScript {
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(messageTemplateTest, program);
 
-    await this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceDemo);

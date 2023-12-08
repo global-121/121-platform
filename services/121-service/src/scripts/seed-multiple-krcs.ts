@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceKRCS from '../../seed-data/instance/instance-krcs.json';
-import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
-import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
-import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
 import messageTemplateBaringo from '../../seed-data/message-template/message-template-krcs-baringo.json';
 import messageTemplateTurkana from '../../seed-data/message-template/message-template-krcs-turkana.json';
 import messageTemplateWestPokot from '../../seed-data/message-template/message-template-krcs-westpokot.json';
+import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
+import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
+import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -26,8 +26,9 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityBaringo =
-      await this.seedHelper.addProgram(programBaringo);
+    const programEntityBaringo = await this.seedHelper.addProgram(
+      programBaringo,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -36,7 +37,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityBaringo, false);
+    await this.seedHelper.addDefaultUsers(programEntityBaringo);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -47,8 +48,9 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTurkana =
-      await this.seedHelper.addProgram(programTurkana);
+    const programEntityTurkana = await this.seedHelper.addProgram(
+      programTurkana,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -57,15 +59,16 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityTurkana, false);
+    await this.seedHelper.addDefaultUsers(programEntityTurkana);
 
     // ************************
     // ***** Program West Pokot *****
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityWestPokot =
-      await this.seedHelper.addProgram(programWestPokot);
+    const programEntityWestPokot = await this.seedHelper.addProgram(
+      programWestPokot,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -74,7 +77,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityWestPokot, false);
+    await this.seedHelper.addDefaultUsers(programEntityWestPokot);
   }
 }
 

@@ -25,67 +25,22 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
     const userRoleRepository = manager.getRepository(UserRoleEntity);
     const defaultRolesToUpdate = [
       {
-        role: DefaultUserRole.RunProgram,
-        label: 'Run Program',
-        permissions: [
-          // Took version from seed-init.ts as latest version, not the one from previous migration-script
-          PermissionEnum.ActionCREATE,
-          PermissionEnum.ActionREAD,
-          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
-          // PermissionEnum.AidWorkerDELETE, Moved to admin
-          PermissionEnum.AidWorkerProgramUPDATE,
-          // PermissionEnum.InstanceUPDATE,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherREAD,
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          // PermissionEnum.ProgramCREATE, Moved to admin
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramPhaseUPDATE,
-          PermissionEnum.ProgramUPDATE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in seed-init / previous migration script
-        ],
+        role: DefaultUserRole.ProgramAdmin,
+        label: 'Program Admin',
+        permissions: Object.values(PermissionEnum),
       },
       {
-        role: DefaultUserRole.PersonalData,
-        label: 'Handle Personally Identifiable Information',
+        role: DefaultUserRole.View,
+        label: 'Only view data, including Personally Identifiable Information',
         permissions: [
-          // Took version from seed-init.ts as latest version, not the one from previous migration-script
-          PermissionEnum.ActionCREATE,
-          PermissionEnum.ActionREAD,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentFspInstructionREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
+          PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusInvitedUPDATE,
-          PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in seed-init / previous migration script
+          PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.ActionREAD,
         ],
       },
     ];
@@ -95,7 +50,7 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
         where: { role: defaultRole.role },
       });
       if (defaultRoleEntity) {
-        defaultRoleEntity.permissions = permissions.filter(permission =>
+        defaultRoleEntity.permissions = permissions.filter((permission) =>
           defaultRole.permissions.includes(permission.name),
         );
         await userRoleRepository.save(defaultRoleEntity);

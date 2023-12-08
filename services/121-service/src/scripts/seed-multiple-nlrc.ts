@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceNLRC from '../../seed-data/instance/instance-pilot-nl.json';
-import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import messageTemplateOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-pilot-nl-2.json';
 import messageTemplateLVV from '../../seed-data/message-template/message-template-pilot-nl.json';
+import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
+import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
@@ -34,7 +34,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityLVV, true);
+    await this.seedHelper.addDefaultUsers(programEntityLVV);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -54,7 +54,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityPV, true);
+    await this.seedHelper.addDefaultUsers(programEntityPV);
 
     // ************************
     // ***** Program OCW *****
@@ -70,7 +70,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityOCW, true);
+    await this.seedHelper.addDefaultUsers(programEntityOCW);
   }
 }
 

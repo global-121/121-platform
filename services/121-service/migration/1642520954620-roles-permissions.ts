@@ -88,37 +88,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         permissions: Object.values(PermissionEnum),
       },
       {
-        role: DefaultUserRole.RunProgram,
-        label: 'Run Program',
-        permissions: [
-          // PermissionEnum.InstanceUPDATE, Moved to admin
-          // PermissionEnum.ProgramCREATE,  Moved to admin
-          PermissionEnum.ProgramUPDATE,
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramPhaseUPDATE,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
-          // PermissionEnum.AidWorkerDELETE, // Moved to admin
-          PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.ActionREAD,
-          PermissionEnum.ActionCREATE,
-        ],
-      },
-      {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [
@@ -130,44 +99,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.ActionREAD,
-        ],
-      },
-      {
-        role: DefaultUserRole.PersonalData,
-        label: 'Handle Personally Identifiable Information',
-        permissions: [
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentFspInstructionREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistrationNotificationREAD,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalUPDATE,
-          PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInvitedUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.ActionREAD,
-          PermissionEnum.ActionCREATE,
-        ],
-      },
-      {
-        role: DefaultUserRole.FieldValidation,
-        label: 'Do Field Validation',
-        permissions: [
-          PermissionEnum.RegistrationFspREAD,
-          PermissionEnum.RegistrationPersonalForValidationREAD,
-          PermissionEnum.RegistrationPersonalUPDATE,
         ],
       },
     ];
@@ -183,7 +114,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
       }
       defaultRoleEntity.role = defaultRole.role;
       defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter(permission =>
+      defaultRoleEntity.permissions = permissions.filter((permission) =>
         defaultRole.permissions.includes(permission.name),
       );
       userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));

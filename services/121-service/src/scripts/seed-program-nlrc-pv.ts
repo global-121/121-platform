@@ -24,7 +24,7 @@ export class SeedNLProgramPV implements InterfaceScript {
     await this.seedHelper.addMessageTemplates(messageTemplatePV, program);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(program, false);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceNLRC);

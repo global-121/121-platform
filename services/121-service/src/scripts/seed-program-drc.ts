@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceDrc from '../../seed-data/instance/instance-drc.json';
-import programDrc from '../../seed-data/program/program-drc.json';
 import messageTemplateDrc from '../../seed-data/message-template/message-template-drc.json';
+import programDrc from '../../seed-data/program/program-drc.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -23,7 +23,7 @@ export class SeedProgramDrc implements InterfaceScript {
     // ***** CREATE MESSAGE TEMPLATE *****
     await this.seedHelper.addMessageTemplates(messageTemplateDrc, program);
 
-    await this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceDrc);
