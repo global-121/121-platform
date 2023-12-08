@@ -1,16 +1,10 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { PermissionEnum } from './../src/user/permission.enum';
-import { PermissionEntity } from './../src/user/permissions.entity';
-import { UserRoleEntity } from './../src/user/user-role.entity';
-import { DefaultUserRole } from './../src/user/user-role.enum';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class rolesPermissions1642520954620 implements MigrationInterface {
-  public constructor(queryRunner: QueryRunner) {}
-
   name = 'rolesPermissions1642520954620';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const resultCreate = await queryRunner.query(
+    await queryRunner.query(
       `CREATE TABLE "121-service"."permission" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying NOT NULL, CONSTRAINT "PK_3b8b97af9d9d8807e41e6f48362" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
@@ -36,9 +30,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     );
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
-    // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
-    // await this.migrateData(queryRunner.manager);
-    // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
 
@@ -65,59 +56,5 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
       `DROP INDEX "121-service"."IDX_2139f3b5ad8f7e095679fb50cf"`,
     );
     await queryRunner.query(`DROP TABLE "121-service"."permission"`);
-  }
-
-  private async migrateData(manager: EntityManager): Promise<void> {
-    const permissionsRepository = manager.getRepository(PermissionEntity);
-    const permissionEntities: PermissionEntity[] = [];
-    for (const permissionName of Object.values(PermissionEnum)) {
-      const permission = {
-        name: permissionName as PermissionEnum,
-      };
-      const permissionEntity = await permissionsRepository.save(permission);
-      permissionEntities.push(permissionEntity);
-    }
-    const permissions = permissionEntities;
-
-    const userRoleRepository = manager.getRepository(UserRoleEntity);
-
-    const defaultRoles = [
-      {
-        role: DefaultUserRole.ProgramAdmin,
-        label: 'Program Admin',
-        permissions: Object.values(PermissionEnum),
-      },
-      {
-        role: DefaultUserRole.View,
-        label: 'Only view data, including Personally Identifiable Information',
-        permissions: [
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.ActionREAD,
-        ],
-      },
-    ];
-
-    const userRoleEntities = [];
-    for (const defaultRole of defaultRoles) {
-      const defaultRoleEntity = await userRoleRepository.findOne({
-        where: { role: defaultRole.role },
-      });
-      if (!defaultRoleEntity) {
-        // Migrations are also run, during seed, so on empty database, in which case there are no users to update
-        continue;
-      }
-      defaultRoleEntity.role = defaultRole.role;
-      defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter((permission) =>
-        defaultRole.permissions.includes(permission.name),
-      );
-      userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
-    }
   }
 }
