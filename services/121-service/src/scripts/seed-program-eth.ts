@@ -35,7 +35,7 @@ export class SeedProgramEth implements InterfaceScript {
     await this.seedHelper.addMessageTemplates(messageTemplatePilotEth, program);
 
     // ***** CREATE DEFAULT USERS *****
-    await this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotEth);
