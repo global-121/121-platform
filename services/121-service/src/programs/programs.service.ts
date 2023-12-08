@@ -7,7 +7,6 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
@@ -23,7 +22,6 @@ import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
-import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import {
   CreateProgramCustomAttributeDto,

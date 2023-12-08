@@ -11,7 +11,6 @@ import {
 } from '../../../notifications/twilio.dto';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';

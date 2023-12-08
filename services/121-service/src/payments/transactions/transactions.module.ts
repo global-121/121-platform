@@ -5,7 +5,6 @@ import { ActionModule } from '../../actions/action.module';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserModule } from '../../user/user.module';
 import { UserEntity } from './../../user/user.entity';
 import { LatestTransactionEntity } from './latest-transaction.entity';
