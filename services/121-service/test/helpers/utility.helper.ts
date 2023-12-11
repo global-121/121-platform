@@ -22,36 +22,32 @@ export function resetDB(seedScript: SeedScript): Promise<request.Response> {
     });
 }
 
-export function loginAsAdmin(): Promise<request.Response> {
+export function loginApi(
+  username: string,
+  password: string,
+): Promise<request.Response> {
   return getServer().post(`/users/login`).send({
-    username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    username,
+    password,
   });
 }
 
-export async function getAccessToken(): Promise<string> {
-  const login = await loginAsAdmin();
+export async function getAccessToken(
+  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+): Promise<string> {
+  const login = await loginApi(username, password);
   const cookies = login.get('Set-Cookie');
   const accessToken = cookies
     .find((cookie: string) => cookie.startsWith(CookieNames.general))
     .split(';')[0];
 
   return accessToken;
-}
-
-export function loginAsProgramManager(): Promise<request.Response> {
-  return getServer().post(`/users/login`).send({
-    username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-  });
 }
 
 export async function getAccessTokenProgramManager(): Promise<string> {
-  const login = await loginAsProgramManager();
-  const cookies = login.get('Set-Cookie');
-  const accessToken = cookies
-    .find((cookie: string) => cookie.startsWith(CookieNames.general))
-    .split(';')[0];
-
-  return accessToken;
+  return await getAccessToken(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+  );
 }
