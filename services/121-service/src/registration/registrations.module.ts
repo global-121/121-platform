@@ -94,6 +94,12 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
+    createScopedRepositoryProvider(SafaricomRequestEntity),
+    createScopedRepositoryProvider(ImageCodeExportVouchersEntity),
+    createScopedRepositoryProvider(IntersolveVoucherEntity),
+    createScopedRepositoryProvider(RegistrationChangeLogEntity),
+    createScopedRepositoryProvider(TwilioMessageEntity),
+    createScopedRepositoryProvider(RegistrationDataEntity),
   ],
   controllers: [RegistrationsController],
   exports: [

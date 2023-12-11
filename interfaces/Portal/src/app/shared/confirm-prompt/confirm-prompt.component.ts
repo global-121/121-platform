@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BulkActionId } from '../../models/bulk-actions.models';
+import { PersonRow } from '../../models/person.model';
 import { ExportDuplicatesPopupComponent } from '../../program/export-duplicates-popup/export-duplicates-popup.component';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import {
@@ -12,10 +13,8 @@ import {
   FilePickerPromptComponent,
   FilePickerProps,
 } from '../file-picker-prompt/file-picker-prompt.component';
-import {
-  InputPromptComponent,
-  InputProps,
-} from '../input-prompt/input-prompt.component';
+import { InputPromptComponent } from '../input-prompt/input-prompt.component';
+import { MessageEditorComponent } from '../message-editor/message-editor.component';
 
 export interface SubmitPaymentProps {
   programId: number;
@@ -28,6 +27,35 @@ export interface SubmitPaymentProps {
 export interface DuplicateAttributesProps {
   attributes: string[];
   timestamp: string;
+}
+
+export interface InputProps {
+  promptType?: PromptType;
+  checkbox?: string;
+  checkboxChecked?: boolean;
+  provideInput?: boolean;
+  inputRequired?: boolean;
+  explanation?: string;
+  placeholder?: string | undefined;
+  defaultValue?: string;
+  titleTranslationKey?: string;
+  okTranslationKey?: string;
+  cancelAlertTranslationKey?: string;
+  inputConstraint?: {
+    length: number;
+    type: 'min' | 'max';
+  };
+  isTemplated?: boolean;
+  templatedMessage?: string;
+  supportMessage?: string;
+  messageTemplateKey?: string;
+  programId?: number;
+  previewRegistration?: PersonRow;
+}
+
+export enum PromptType {
+  reason = 'reason',
+  actionWithMessage = 'actionWithMessage',
 }
 
 @Component({
@@ -139,8 +167,13 @@ export class ConfirmPromptComponent {
         },
       });
     } else {
+      const useMessageEditor =
+        PromptType.actionWithMessage === this.inputProps?.promptType;
+
       modal = await this.modalController.create({
-        component: InputPromptComponent,
+        component: useMessageEditor
+          ? MessageEditorComponent
+          : InputPromptComponent,
         componentProps: {
           subHeader: this.subHeader,
           message: this.message,

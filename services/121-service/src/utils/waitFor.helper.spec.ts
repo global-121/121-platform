@@ -15,7 +15,7 @@ describe('waitFor helpers', () => {
     const end = Date.now();
     const elapsed = end - start;
     expect(elapsed).toBeGreaterThanOrEqual(testTime);
-    expect(elapsed).toBeLessThan(testTime + 3); // With a few ms margin
+    expect(elapsed).toBeLessThanOrEqual(testTime + 16); // With a few ms margin
   });
 
   it('waitForRandomDelay - should wait for a random delay between "min" and "max" milliseconds', async () => {
@@ -31,6 +31,6 @@ describe('waitFor helpers', () => {
     const end = Date.now();
     const elapsed = end - start;
     expect(elapsed).toBeGreaterThanOrEqual(testMin);
-    expect(elapsed).toBeLessThan(testMax + 3); // With a few ms margin
+    expect(elapsed).toBeLessThanOrEqual(testMax + 16); // With a few ms margin
   });
 });

@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddValidationByQrProperty1637752825929
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'AddValidationByQrProperty1637752825929';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

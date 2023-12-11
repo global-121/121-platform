@@ -12,7 +12,7 @@ export class SendCustomTextDto {
     example: 'Your voucher can be picked up at the location',
   })
   @IsString()
-  @MinLength(20)
+  @MinLength(1)
   @ValidateIf((o) => !o.skipMessageValidation)
   public readonly message: string;
 

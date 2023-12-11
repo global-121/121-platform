@@ -11,7 +11,9 @@ export class ExportDebitCardPermission1690977451412
     await queryRunner.startTransaction();
   }
 
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {
     // Add the new permission

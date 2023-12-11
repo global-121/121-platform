@@ -3,15 +3,23 @@ import { Inject, Injectable, Scope } from '@nestjs/common';
 import { Request } from 'express';
 import {
   DataSource,
+  DeleteResult,
   EntityTarget,
   FindManyOptions,
   FindOneOptions,
+  FindOptionsWhere,
+  InsertResult,
+  ObjectId,
+  RemoveOptions,
   Repository,
+  SaveOptions,
+  UpdateResult,
 } from 'typeorm';
 import { ScopedQueryBuilder } from '../scoped.repository';
 import { REQUEST } from '@nestjs/core';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class RegistrationScopedBaseRepository<T> {
   public readonly repository: Repository<T>;
@@ -67,6 +75,92 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     @Inject(REQUEST) public request: Request,
   ) {
     super(RegistrationEntity, dataSource);
+  }
+
+  ///////////////////////////////////////////////////////////////
+  // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
+  //////////////////////////////////////////////////////////////
+  public async save(
+    entity: RegistrationEntity,
+    options: SaveOptions & { reload: false },
+  ): Promise<RegistrationEntity>;
+  public async save(
+    entity: RegistrationEntity,
+    options?: SaveOptions,
+  ): Promise<RegistrationEntity>;
+  public async save(
+    entities: RegistrationEntity[],
+    options: SaveOptions & { reload: false },
+  ): Promise<RegistrationEntity[]>;
+  public async save(
+    entities: RegistrationEntity[],
+    options?: SaveOptions,
+  ): Promise<RegistrationEntity[]>;
+  public async save(
+    entityOrEntities: RegistrationEntity | RegistrationEntity[],
+    options?: SaveOptions,
+  ): Promise<RegistrationEntity | RegistrationEntity[]> {
+    return this.repository.save(entityOrEntities as any, options);
+  }
+
+  public async insert(
+    entityOrEntities:
+      | QueryDeepPartialEntity<RegistrationEntity>
+      | QueryDeepPartialEntity<RegistrationEntity>[],
+  ): Promise<InsertResult> {
+    return this.repository.insert(entityOrEntities as any);
+  }
+
+  public async remove(
+    entity: RegistrationEntity,
+    options?: RemoveOptions,
+  ): Promise<RegistrationEntity>;
+  public async remove(
+    entities: RegistrationEntity[],
+    options?: RemoveOptions,
+  ): Promise<RegistrationEntity[]>;
+  public async remove(
+    entityOrEntities: RegistrationEntity | RegistrationEntity[],
+    options?: RemoveOptions,
+  ): Promise<RegistrationEntity | RegistrationEntity[]> {
+    return this.repository.remove(entityOrEntities as any, options);
+  }
+
+  public async deleteUnscoped(
+    criteria:
+      | FindOptionsWhere<RegistrationEntity>
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[],
+  ): Promise<DeleteResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.delete(criteria);
+  }
+
+  public async updateUnscoped(
+    criteria:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[]
+      | FindOptionsWhere<RegistrationEntity>,
+    partialEntity: QueryDeepPartialEntity<RegistrationEntity>,
+  ): Promise<UpdateResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.update(criteria, partialEntity);
   }
 }
 

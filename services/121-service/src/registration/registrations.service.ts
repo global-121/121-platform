@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -59,33 +59,24 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
 import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { UserService } from '../user/user.service';
 import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
-import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProvideName } from '../utils/scope/createScopedRepositoryProvider.helper';
+import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
-  @InjectRepository(RegistrationStatusChangeEntity)
-  private readonly registrationStatusChangeRepository: Repository<RegistrationStatusChangeEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(RegistrationChangeLogEntity)
-  private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -93,14 +84,19 @@ export class RegistrationsService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly dataSource: DataSource,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProvideName(RegistrationStatusChangeEntity))
+    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
+    private registrationChangeLogScopedRepo: ScopedRepository<RegistrationChangeLogEntity>,
+    @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
+    private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
+    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -161,7 +157,7 @@ export class RegistrationsService {
       await this.getRegistrationFromReferenceId(referenceId);
     if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
       registrationToUpdate.registrationStatus = status;
-      return await this.registrationRepository.save(registrationToUpdate);
+      return await this.registrationScopedRepository.save(registrationToUpdate);
     }
   }
 
@@ -367,7 +363,7 @@ export class RegistrationsService {
     );
     if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
       registration.phoneNumber = phoneAnswer.programAnswer;
-      await this.registrationRepository.save(registration);
+      await this.registrationScopedRepository.save(registration);
     }
   }
 
@@ -381,7 +377,7 @@ export class RegistrationsService {
       relations: ['questions'],
     });
     registration.fsp = fsp;
-    return await this.registrationRepository.save(registration);
+    return await this.registrationScopedRepository.save(registration);
   }
 
   public async addRegistrationDataBulk(
@@ -486,7 +482,7 @@ export class RegistrationsService {
         currentRegistration.phoneNumber = sanitizedPhoneNr;
       }
       currentRegistration.preferredLanguage = preferredLanguage;
-      await this.registrationRepository.save(currentRegistration);
+      await this.registrationScopedRepository.save(currentRegistration);
       return;
     }
 
@@ -497,13 +493,13 @@ export class RegistrationsService {
         const regData = await importedRegistration.getRegistrationDataByName(
           attribute.name,
         );
-        await this.registrationDataRepository.delete({
+        await this.registrationDataScopedRepository.deleteUnscoped({
           id: regData.id,
         });
       }
     }
 
-    const registrationData = await this.registrationDataRepository.find({
+    const registrationData = await this.registrationDataScopedRepository.find({
       where: { registrationId: importedRegistration.id },
     });
 
@@ -516,7 +512,7 @@ export class RegistrationsService {
       relation.monitoringQuestionId = d.monitoringQuestionId;
       relation.programCustomAttributeId = d.programCustomAttributeId;
       await currentRegistration.saveData(d.value, { relation });
-      await this.registrationDataRepository.remove(d);
+      await this.registrationDataScopedRepository.remove(d);
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
@@ -530,7 +526,7 @@ export class RegistrationsService {
 
     // Update the 'imported' registration-changes to the current registration
     const importedRegistrationChanges =
-      await this.registrationStatusChangeRepository.find({
+      await this.registrationStatusChangeScopedRepository.find({
         where: {
           registrationId: importedRegistration.id,
         },
@@ -538,13 +534,13 @@ export class RegistrationsService {
     importedRegistrationChanges.forEach(
       (i) => (i.registration = currentRegistration),
     );
-    await this.registrationStatusChangeRepository.save(
+    await this.registrationStatusChangeScopedRepository.save(
       importedRegistrationChanges,
     );
 
     // .. and save the updated import-registration
     const updatedRegistration =
-      await this.registrationRepository.save(currentRegistration);
+      await this.registrationScopedRepository.save(currentRegistration);
 
     // .. and update the try whatsapp entity
     const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
@@ -556,7 +552,7 @@ export class RegistrationsService {
     }
 
     // .. and update the twilio messages (to keep history of the invite message etc.)
-    const twilioMessages = await this.twilioMessageRepository.find({
+    const twilioMessages = await this.twilioMessageScopedRepository.find({
       where: { registrationId: importedRegistration.id },
       order: { created: 'DESC' },
     });
@@ -564,7 +560,7 @@ export class RegistrationsService {
       for (const message of twilioMessages) {
         message.registration = updatedRegistration;
       }
-      await this.twilioMessageRepository.save(twilioMessages);
+      await this.twilioMessageScopedRepository.save(twilioMessages);
       // Update the last message status of the new registration
       await this.lastMessageStatusService.updateLatestMessage(
         twilioMessages[0],
@@ -572,7 +568,7 @@ export class RegistrationsService {
     }
 
     // .. then delete the imported registration
-    await this.registrationRepository.remove(importedRegistration);
+    await this.registrationScopedRepository.remove(importedRegistration);
 
     // .. if imported registration status was noLongerEligible copy it, as this needs to be remembered
     if (
@@ -774,7 +770,7 @@ export class RegistrationsService {
   }
 
   public addStatusChangeToQuery(
-    q: SelectQueryBuilder<RegistrationEntity>,
+    q: ScopedQueryBuilder<RegistrationEntity>,
   ): void {
     for (const registrationStatus in RegistrationStatusEnum) {
       const timestampField =
@@ -875,14 +871,15 @@ export class RegistrationsService {
       const newValue =
         await registration.getRegistrationValueByName(attributeKey);
       if (String(oldValue) !== String(newValue)) {
-        await this.registrationChangeLog.save({
-          registration,
-          userId,
-          fieldName: attributeKey,
-          oldValue,
-          newValue,
-          reason: updateRegistrationDto.reason,
-        });
+        const registrationChangeLog = new RegistrationChangeLogEntity();
+        registrationChangeLog.registration = registration;
+        registrationChangeLog.userId = userId;
+        registrationChangeLog.fieldName = attributeKey;
+        registrationChangeLog.oldValue = oldValue;
+        registrationChangeLog.newValue = newValue;
+        registrationChangeLog.reason = updateRegistrationDto.reason;
+
+        await this.registrationChangeLogScopedRepo.save(registrationChangeLog);
       }
     }
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
@@ -917,14 +914,14 @@ export class RegistrationsService {
         // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
         if (attribute === Attributes.phoneNumber) {
           registration.phoneNumber = value.toString();
-          await this.registrationRepository.save(registration);
+          await this.registrationScopedRepository.save(registration);
         } else {
           throw error;
         }
       }
     }
     const savedRegistration =
-      await this.registrationRepository.save(registration);
+      await this.registrationScopedRepository.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         registration.program,
@@ -1007,17 +1004,17 @@ export class RegistrationsService {
         return { programId: r.programId, referenceId: r.referenceId };
       });
 
-      const matchingRegistrationData = await this.dataSource
-        .getRepository(RegistrationDataEntity)
-        .createQueryBuilder('registrationData')
-        .leftJoinAndSelect('registrationData.registration', 'registration')
-        .where('registrationData.value = :phoneNumber', {
-          phoneNumber: phoneNumber,
-        })
-        .andWhere('registration.program.id IN (:...programIds)', {
-          programIds: programIds,
-        })
-        .getMany();
+      const matchingRegistrationData =
+        await this.registrationDataScopedRepository
+          .createQueryBuilder('registrationData')
+          .leftJoinAndSelect('registrationData.registration', 'registration')
+          .andWhere('registrationData.value = :phoneNumber', {
+            phoneNumber: phoneNumber,
+          })
+          .andWhere('registration.program.id IN (:...programIds)', {
+            programIds: programIds,
+          })
+          .getMany();
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
@@ -1152,7 +1149,9 @@ export class RegistrationsService {
       const regData = await registration.getRegistrationDataByName(
         attribute.name,
       );
-      await this.registrationDataRepository.delete({ id: regData.id });
+      await this.registrationDataScopedRepository.deleteUnscoped({
+        id: regData.id,
+      });
     }
 
     // Update FSP
@@ -1166,7 +1165,7 @@ export class RegistrationsService {
         newFspAttributes[attribute.name],
       );
     }
-    return await this.registrationRepository.save(updatedRegistration);
+    return await this.registrationScopedRepository.save(updatedRegistration);
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
@@ -1240,7 +1239,7 @@ export class RegistrationsService {
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
       .leftJoin('registration.program', 'program')
-      .where('registration.fsp IS NOT NULL')
+      .andWhere('registration.fsp IS NOT NULL')
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })
@@ -1311,7 +1310,7 @@ export class RegistrationsService {
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
-      .where('registration.referenceId = :referenceId', {
+      .andWhere('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       });
     const registration = await qb.getOne();
@@ -1350,7 +1349,7 @@ export class RegistrationsService {
     );
     for (const data of registration.data) {
       if (data.programQuestion && data.programQuestion.persistence === false) {
-        await this.registrationDataRepository.remove(data);
+        await this.registrationDataScopedRepository.remove(data);
       }
     }
   }

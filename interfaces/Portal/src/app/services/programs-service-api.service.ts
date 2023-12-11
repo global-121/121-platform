@@ -140,12 +140,27 @@ export class ProgramsServiceApiService {
 
   getPaTableAttributes(
     programId: number | string,
-    phase: ProgramPhase,
+    options?: {
+      includeCustomAttributes?: boolean;
+      includeProgramQuestions?: boolean;
+      includeFspQuestions?: boolean;
+      phase?: ProgramPhase;
+    },
   ): Promise<PaTableAttribute[]> {
-    const phaseString = phase ? phase : '';
+    let params = new HttpParams();
+    const defaultOptions = {
+      includeCustomAttributes: true,
+      includeProgramQuestions: true,
+      includeFspQuestions: true,
+    };
+    params = params.appendAll(Object.assign(defaultOptions, options));
+
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/pa-table-attributes/${phaseString}`,
+      `/programs/${programId}/attributes`,
+      null,
+      null,
+      params,
     );
   }
 
@@ -969,7 +984,7 @@ export class ProgramsServiceApiService {
   getMessageTemplatesByProgram(programId: number): Promise<MessageTemplate[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/notifications/${programId}/message-template`,
+      `/notifications/${programId}/message-templates`,
     );
   }
 }

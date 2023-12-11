@@ -11,7 +11,7 @@ import {
   getAccessTokenProgramManager,
   resetDB,
 } from '../../helpers/utility.helper';
-import { programId, referenceId, registration1 } from './pagination-data';
+import { programIdOCW, referenceId, registration1 } from './pagination-data';
 
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {
@@ -23,12 +23,16 @@ describe('Load PA table', () => {
       accessTokenAdmin = await getAccessToken();
 
       await changePhase(
-        programId,
+        programIdOCW,
         ProgramPhase.registrationValidation,
         accessTokenAdmin,
       );
 
-      await importRegistrations(programId, [registration1], accessTokenAdmin);
+      await importRegistrations(
+        programIdOCW,
+        [registration1],
+        accessTokenAdmin,
+      );
       accessTokenProgramManager = await getAccessTokenProgramManager();
     });
 
@@ -38,7 +42,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessTokenProgramManager,
       );
@@ -80,7 +84,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessTokenProgramManager,
       );

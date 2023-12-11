@@ -33,10 +33,6 @@ export class ScopeMiddleware implements NestMiddleware {
     });
     const scope = assignment.scope ? assignment.scope : '';
     req.scope = scope;
-    console.log(
-      '🚀 ~ file: scope.middleware.ts:39 ~ ScopeMiddleware ~ use ~ scope:',
-      scope,
-    );
     next();
   }
 }

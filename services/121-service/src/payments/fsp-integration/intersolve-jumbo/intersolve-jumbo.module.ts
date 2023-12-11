@@ -5,12 +5,13 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserModule } from '../../../user/user.module';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { SoapService } from './../../../utils/soap/soap.service';
 import { IntersolveJumboApiMockService } from './intersolve-jumbo.api-mock.service';
 import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 import { IntersolveJumboService } from './intersolve-jumbo.service';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { IntersolveJumboService } from './intersolve-jumbo.service';
     IntersolveJumboApiMockService,
     SoapService,
     CustomHttpService,
-    RegistrationDataQueryService,
+    RegistrationDataScopedQueryService,
+    RegistrationScopedRepository,
   ],
   exports: [IntersolveJumboService],
 })

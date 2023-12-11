@@ -14,7 +14,6 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      NoteEntity,
       RegistrationEntity,
       ProgramAidworkerAssignmentEntity,
     ]),

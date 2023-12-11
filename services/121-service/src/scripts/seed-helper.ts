@@ -17,9 +17,13 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { DEBUG } from '../config';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 export class SeedHelper {
-  public constructor(private dataSource: DataSource) {}
+  public constructor(
+    private dataSource: DataSource,
+    private readonly messageTemplateService: MessageTemplateService,
+  ) {}
 
   public async addDefaultUsers(
     program: ProgramEntity,
@@ -353,6 +357,11 @@ export class SeedHelper {
     messageTemplateEntity.language = language;
     messageTemplateEntity.message = message;
     messageTemplateEntity.isWhatsappTemplate = isWhatsappTemplate;
+
+    await this.messageTemplateService.validatePlaceholders(
+      program.id,
+      messageTemplateEntity.message,
+    );
 
     return messageTemplateEntity;
   }

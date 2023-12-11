@@ -247,7 +247,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
-      this.thisPhase,
+      { phase: this.thisPhase },
     );
 
     this.activePhase = this.program.phase;
@@ -704,6 +704,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.toggleDisableAllCheckboxes();
       this.updatePeopleForAction(this.visiblePeopleAffected);
       this.applyAction(null, true);
+    } else {
+      this.selectedPeople = [];
+      this.selectedCount = 0;
     }
 
     this.bulkActionService.updateSubmitBulkActionWarningAction(
@@ -804,7 +807,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const action = this.bulkActions.find(
       (i: BulkAction) => i.id === this.action,
     );
-    let messageTemplate = null;
+    let messageTemplate: MessageTemplate = null;
+
     if (action) {
       const mappedAction = BulkActionRegistrationStatusMap[action.id];
       messageTemplate = this.messageTemplates?.find(
@@ -824,7 +828,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         );
         action.confirmConditions.inputRequired = false;
         action.confirmConditions.checkboxChecked = true;
+      } else {
+        action.confirmConditions.previewRegistration = this.selectAllChecked
+          ? this.visiblePeopleAffected[0]
+          : this.selectedPeople[0];
       }
+      action.confirmConditions.programId = this.programId;
     }
     return action;
   }

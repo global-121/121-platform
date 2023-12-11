@@ -15,7 +15,9 @@ export class permissionReadAidworkers1681916727770
     await queryRunner.startTransaction();
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateData(manager: EntityManager): Promise<void> {
     // Add the new permission

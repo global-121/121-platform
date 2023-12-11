@@ -1,6 +1,6 @@
 export enum SeedScript {
-  pilotNL = 'pilot-nl',
-  pilotNLPV = 'pilot-nl-pv',
+  nlrcLVV = 'nlrc-lvv',
+  nlrcPV = 'nlrc-pv',
   DRC = 'drc',
   demo = 'demo',
   test = 'test',

@@ -34,6 +34,7 @@ import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -47,7 +48,6 @@ import { RegistrationScopedRepository } from '../registration/registration-scope
       FinancialServiceProviderEntity,
       FspQuestionEntity,
       ProgramCustomAttributeEntity,
-      RegistrationStatusChangeEntity,
     ]),
     UserModule,
     HttpModule,
@@ -74,6 +74,8 @@ import { RegistrationScopedRepository } from '../registration/registration-scope
     InclusionScoreService,
     RegistrationScopedRepository,
     AzureLogService,
+    createScopedRepositoryProvider(RegistrationStatusChangeEntity),
+    createScopedRepositoryProvider(RegistrationDataEntity),
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService],

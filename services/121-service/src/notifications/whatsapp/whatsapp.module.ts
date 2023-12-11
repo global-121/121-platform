@@ -14,7 +14,6 @@ import { TwilioMessageEntity } from '../twilio.entity';
 import { ProgramEntity } from './../../programs/program.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { UserModule } from './../../user/user.module';
-import { SmsService } from './../sms/sms.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
@@ -41,7 +40,7 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
     UserModule,
     MessageTemplateModule,
   ],
-  providers: [WhatsappService, SmsService, LastMessageStatusService],
+  providers: [WhatsappService, LastMessageStatusService],
   controllers: [WhatsappController],
   exports: [WhatsappService],
 })

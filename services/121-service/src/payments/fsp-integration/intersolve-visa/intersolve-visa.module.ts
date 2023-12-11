@@ -3,9 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { RegistrationEntity } from './../../../registration/registration.entity';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
@@ -18,17 +17,12 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { Module } from '@nestjs/common';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      IntersolveVisaWalletEntity,
-      UserEntity,
-      RegistrationEntity,
-      IntersolveVisaCustomerEntity,
-      ProgramAidworkerAssignmentEntity,
-    ]),
+    TypeOrmModule.forFeature([UserEntity, ProgramAidworkerAssignmentEntity]),
     UserModule,
     TransactionsModule,
     QueueMessageModule,
@@ -38,10 +32,12 @@ import { createScopedRepositoryProvider } from '../../../utils/scope/createScope
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     CustomHttpService,
-    RegistrationDataQueryService,
+    RegistrationDataScopedQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
+    RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVisaWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [

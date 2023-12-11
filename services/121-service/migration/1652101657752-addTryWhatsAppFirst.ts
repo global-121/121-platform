@@ -37,10 +37,11 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
       .select('program.id')
       .addSelect('program.ngo')
       .getMany();
+
     for (const p of programs) {
       if (p.ngo === 'NLRC') {
         p.tryWhatsAppFirst = true;
-        programRepo.save(p);
+        await programRepo.save(p);
       }
     }
   }

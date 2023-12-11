@@ -1,25 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between } from 'typeorm';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProvideName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationChangeLogService {
-  @InjectRepository(RegistrationChangeLogEntity)
-  private readonly registrationChangeLogRepository: Repository<RegistrationChangeLogEntity>;
-
   public constructor(
-    @Inject(getScopedRepositoryProvideName(RegistrationChangeLogEntity))
-    private registrationChangeScopedRepository: ScopedRepository<RegistrationChangeLogEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
+    private registrationChangeLogScopedRepository: ScopedRepository<RegistrationChangeLogEntity>,
   ) {}
 
   public async getChangeLogByReferenceId(
     referenceId: string,
     programId: number,
   ): Promise<RegistrationChangeLogEntity[]> {
-    return await this.registrationChangeScopedRepository.find({
+    return await this.registrationChangeLogScopedRepository.find({
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },
@@ -32,7 +28,7 @@ export class RegistrationChangeLogService {
     fromDate?: any,
     toDate?: any,
   ): Promise<any[]> {
-    const dataChanges = await this.registrationChangeLogRepository.find({
+    const dataChanges = await this.registrationChangeLogScopedRepository.find({
       where: {
         registration: { programId: programId },
         created: Between(

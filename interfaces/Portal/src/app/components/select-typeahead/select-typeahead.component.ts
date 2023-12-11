@@ -36,6 +36,9 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
   public disabled = false;
 
   @Input()
+  public size: 'cover' | 'auto' = 'cover';
+
+  @Input()
   public multiple = false;
 
   @Input()

@@ -13,7 +13,7 @@ import {
   expectedValueObject1,
   expectedValueObject3,
   expectedValueObject4,
-  programId,
+  programIdOCW,
   registration1,
   registration2,
   registration3,
@@ -29,19 +29,19 @@ describe('Load PA table', () => {
       accessToken = await getAccessToken();
 
       await changePhase(
-        programId,
+        programIdOCW,
         ProgramPhase.registrationValidation,
         accessToken,
       );
 
       await importRegistrations(
-        programId,
+        programIdOCW,
         [registration1, registration2, registration3, registration4],
         accessToken,
       );
 
       await awaitChangePaStatus(
-        programId,
+        programIdOCW,
         [registration1.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
@@ -51,7 +51,7 @@ describe('Load PA table', () => {
     it('should filter based on status', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -73,7 +73,7 @@ describe('Load PA table', () => {
     it('should filter based on registration data', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -95,7 +95,7 @@ describe('Load PA table', () => {
     it('should filter based on root attributes & registration data', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,
@@ -121,7 +121,7 @@ describe('Load PA table', () => {
       // Act
       // Each of the filters would seperately return
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         null,
         accessToken,
         null,

@@ -3,18 +3,13 @@ import { RegistrationsService } from '../registration/registrations.service';
 import { ResponseNoteDto } from './dto/response-note.dto';
 import { ScopedRepository } from '../scoped.repository';
 import { NoteEntity } from './note.entity';
-import { getScopedRepositoryProvideName } from '../utils/scope/createScopedRepositoryProvider.helper';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class NoteService {
-  @InjectRepository(NoteEntity)
-  private readonly noteRepository: Repository<NoteEntity>;
-
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    @Inject(getScopedRepositoryProvideName(NoteEntity))
+    @Inject(getScopedRepositoryProviderName(NoteEntity))
     private noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
@@ -36,14 +31,12 @@ export class NoteService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const note = {
-      registrationId: registration.id,
-      userId,
-      text,
-      scope: registration.scope,
-    };
+    const note = new NoteEntity();
+    note.registrationId = registration.id;
+    note.userId = userId;
+    note.text = text;
 
-    await this.noteRepository.save(note);
+    await this.noteScopedRepository.save(note);
   }
 
   public async retrieveNotes(

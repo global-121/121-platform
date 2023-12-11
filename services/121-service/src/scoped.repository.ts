@@ -1,9 +1,17 @@
 import { Request } from 'express';
 import {
   DataSource,
+  DeepPartial,
+  DeleteResult,
   EntityMetadata,
+  FindOptionsWhere,
+  InsertResult,
+  ObjectId,
+  RemoveOptions,
   Repository,
+  SaveOptions,
   SelectQueryBuilder,
+  UpdateResult,
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { RegistrationEntity } from './registration/registration.entity';
@@ -14,6 +22,7 @@ import {
   FindOptionsCombined,
   convertToScopedOptions,
 } from './utils/scope/createFindWhereOptions.helper';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
@@ -30,9 +39,8 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
 }
 
 type EntityRelations = Record<string, string[]>;
-
-// TODO: Is there a way to make these arrays strongly typed?
-const relationConfig: EntityRelations = {
+// Define here any entities that do not have a direct relation to registration
+const indirectRelationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
@@ -42,13 +50,9 @@ const relationConfig: EntityRelations = {
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class ScopedRepository<T> {
   private repository: Repository<T>;
-  // public request: Request;
 
-  // Use  for entities that have an INDIRECT relation to registration
+  // Use for entities that have an INDIRECT relation to registration
   // Else the relation is found automatically in the constructor
-  // DECIDE: Is it more confusing than not use this automatic detection? Is it better to always set it manually?
-  // Another option is to try to set it automatically for all entities also those with an indrect relation
-  // An example of this for IntersolveVisaWalletEntity is ['intersolveVisaCustomer',  'registration']
   public relationArrayToRegistration: string[];
 
   constructor(
@@ -56,12 +60,11 @@ export class ScopedRepository<T> {
     @InjectDataSource() dataSource: DataSource,
     @Inject(REQUEST) private request: Request,
   ) {
-    // this.request
     this.repository = dataSource.createEntityManager().getRepository(target);
 
-    if (relationConfig[this.repository.metadata.name]) {
+    if (indirectRelationConfig[this.repository.metadata.name]) {
       this.relationArrayToRegistration =
-        relationConfig[this.repository.metadata.name];
+        indirectRelationConfig[this.repository.metadata.name];
     } else {
       this.relationArrayToRegistration = [
         this.findDirectRelationToRegistration(this.repository.metadata),
@@ -69,21 +72,11 @@ export class ScopedRepository<T> {
     }
   }
 
-  private findDirectRelationToRegistration(metadata: EntityMetadata): string {
-    // Gets the relations of the entity for which this repository is created
-    const relations = metadata.relations.map(
-      (relation) => relation.propertyName,
-    );
-    for (const relation of relations) {
-      const relationType =
-        metadata.findRelationWithPropertyPath(relation)?.type;
-      if (relationType === RegistrationEntity) {
-        return relation;
-      }
-    }
-  }
+  ////////////////////////////////////////////////////////////////
+  // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
+  //////////////////////////////////////////////////////////////
 
-  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
+  public async find(options?: FindOptionsCombined<T>): Promise<T[]> {
     if (!this.request?.scope || this.request.scope === '') {
       return this.repository.find(options);
     }
@@ -93,6 +86,20 @@ export class ScopedRepository<T> {
       this.request.scope,
     );
     return this.repository.find(scopedOptions);
+  }
+
+  public async findAndCount(
+    options: FindOptionsCombined<T>,
+  ): Promise<[T[], number]> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.findAndCount(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.scope,
+    );
+    return this.repository.findAndCount(scopedOptions);
   }
 
   public async findOne(options: FindOptionsCombined<T>): Promise<T> {
@@ -134,5 +141,109 @@ export class ScopedRepository<T> {
       );
     }
     return new ScopedQueryBuilder(qb);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
+  //////////////////////////////////////////////////////////////
+  public async save(
+    entity: T,
+    options: SaveOptions & { reload: false },
+  ): Promise<T>;
+  public async save(entity: T, options?: SaveOptions): Promise<T>;
+  public async save(
+    entities: T[],
+    options: SaveOptions & { reload: false },
+  ): Promise<T[]>;
+  public async save(entities: T[], options?: SaveOptions): Promise<T[]>;
+  public async save(
+    entityOrEntities: T | T[],
+    options?: SaveOptions,
+  ): Promise<T | T[]> {
+    return this.repository.save(entityOrEntities as any, options);
+  }
+
+  public async insert(
+    entityOrEntities: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
+  ): Promise<InsertResult> {
+    return this.repository.insert(entityOrEntities as any);
+  }
+
+  public async remove(entity: T, options?: RemoveOptions): Promise<T>;
+  public async remove(entities: T[], options?: RemoveOptions): Promise<T[]>;
+  public async remove(
+    entityOrEntities: T | T[],
+    options?: RemoveOptions,
+  ): Promise<T | T[]> {
+    return this.repository.remove(entityOrEntities as any, options);
+  }
+
+  // I did not apply the scope to this method as it was never needed
+  // To make this clear I added Unscoped to the name so it is alway a conscious decision
+  public async deleteUnscoped(
+    criteria:
+      | FindOptionsWhere<T>
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[],
+  ): Promise<DeleteResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.delete(criteria);
+  }
+
+  // I did not apply the scope to this method as it was never needed
+  // To make this clear I added Unscoped to the name so it is alway a conscious decision
+  public async updateUnscoped(
+    criteria:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[]
+      | FindOptionsWhere<T>,
+    partialEntity: QueryDeepPartialEntity<T>,
+  ): Promise<UpdateResult> {
+    // TODO: This is not scoped yet, for now is doesn't matter as
+    // we don't use update anywhere yet in a way where it should be scoped
+    // This is as risk though that someone uses this expecting it to be scoped
+    return this.repository.update(criteria, partialEntity);
+  }
+
+  public create(entityLike: DeepPartial<T>): T;
+  public create(entityLikeArray: DeepPartial<T>[]): T[];
+  public create(entityLikeOrArray: DeepPartial<T> | DeepPartial<T>[]): T | T[] {
+    if (Array.isArray(entityLikeOrArray)) {
+      return this.repository.create(entityLikeOrArray as DeepPartial<T>[]);
+    } else {
+      return this.repository.create(entityLikeOrArray as DeepPartial<T>);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // PRIVATE METHODS TO ENABLE SCOPED QUERIES ///////////////////
+  //////////////////////////////////////////////////////////////
+
+  private findDirectRelationToRegistration(metadata: EntityMetadata): string {
+    // Gets the relations of the entity for which this repository is created
+    const relations = metadata.relations.map(
+      (relation) => relation.propertyName,
+    );
+    for (const relation of relations) {
+      const relationType =
+        metadata.findRelationWithPropertyPath(relation)?.type;
+      if (relationType === RegistrationEntity) {
+        return relation;
+      }
+    }
   }
 }

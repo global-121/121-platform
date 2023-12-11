@@ -10,7 +10,7 @@ import {
   expectedAttributes,
   expectedValueObject1,
   expectedValueObject2,
-  programId,
+  programIdOCW,
   registration1,
   registration2,
 } from './pagination-data';
@@ -30,12 +30,12 @@ describe('Load PA table', () => {
       accessToken = await getAccessToken();
 
       await changePhase(
-        programId,
+        programIdOCW,
         ProgramPhase.registrationValidation,
         accessToken,
       );
 
-      await importRegistrations(programId, [registration1], accessToken);
+      await importRegistrations(programIdOCW, [registration1], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
@@ -44,7 +44,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
       );
@@ -66,7 +66,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
       );
@@ -84,7 +84,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
       );
@@ -102,7 +102,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
       );
@@ -133,11 +133,11 @@ describe('Load PA table', () => {
     it('should be able to specify page attributes', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
-      await importRegistrations(programId, [registration2], accessToken);
+      await importRegistrations(programIdOCW, [registration2], accessToken);
 
       // Act
       const getRegistrationsResponse1 = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
         1,
@@ -146,7 +146,7 @@ describe('Load PA table', () => {
       const data1 = getRegistrationsResponse1.body.data;
       const meta1 = getRegistrationsResponse1.body.meta;
       const getRegistrationsResponse2 = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
         2,
@@ -156,7 +156,7 @@ describe('Load PA table', () => {
       const meta2 = getRegistrationsResponse2.body.meta;
 
       const getRegistrationsResponseAll = await getRegistrations(
-        programId,
+        programIdOCW,
         requestedDynamicAttributes,
         accessToken,
         1,

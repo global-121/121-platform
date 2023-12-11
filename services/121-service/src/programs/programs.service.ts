@@ -1,29 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FilterOperator } from 'nestjs-paginate';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
-import { ActionEntity } from '../actions/action.entity';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import {
-  AllowedFilterOperatorsNumber,
-  AllowedFilterOperatorsString,
-  PaginateConfigRegistrationViewWithPayments,
-} from '../registration/const/filter-operation.const';
-import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
-import {
-  Attribute,
-  QuestionType,
-} from '../registration/enum/custom-data-attributes';
 import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
-import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import {
   CreateProgramCustomAttributeDto,
@@ -39,28 +25,27 @@ import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity'
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
+import { ActionEntity } from '../actions/action.entity';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
-  public programQuestionRepository: Repository<ProgramQuestionEntity>;
+  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
-  public programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
+  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
   @InjectRepository(FspQuestionEntity)
-  public fspAttributeRepository: Repository<FspQuestionEntity>;
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
+    private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
   public async findOne(
@@ -88,15 +73,19 @@ export class ProgramService {
       relations: relations,
     });
     if (program) {
-      program.editableAttributes = await this.getPaEditableAttributes(
-        program.id,
-      );
-      program['paTableAttributes'] = await this.getPaTableAttributes(
-        program.id,
-      );
+      program.editableAttributes =
+        await this.programAttributesService.getPaEditableAttributes(program.id);
+      program['paTableAttributes'] =
+        await this.programAttributesService.getAttributes(
+          program.id,
+          true,
+          true,
+          true,
+        );
 
       // TODO: Get these attributes from some enum or something
-      program['filterableAttributes'] = this.getFilterableAttributes(program);
+      program['filterableAttributes'] =
+        this.programAttributesService.getFilterableAttributes(program);
 
       if (!includeMetricsUrl) {
         delete program.monitoringDashboardUrl;
@@ -105,91 +94,6 @@ export class ProgramService {
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
-  }
-
-  public getFilterableAttributes(
-    program: ProgramEntity,
-  ): { group: string; filters: FilterAttributeDto[] }[] {
-    const genericPaAttributeFilters = [
-      'personAffectedSequence',
-      'referenceId',
-      'registrationCreatedDate',
-      'phoneNumber',
-      'preferredLanguage',
-      'inclusionScore',
-      'paymentAmountMultiplier',
-      'fspDisplayNamePortal',
-    ];
-    const paAttributesNameArray = program['paTableAttributes'].map(
-      (paAttribute: Attribute) => paAttribute.name,
-    );
-
-    let filterableAttributeNames = [
-      {
-        group: 'payments',
-        filters: [
-          'failedPayment',
-          'waitingPayment',
-          'successPayment',
-          'notYetSentPayment',
-        ],
-      },
-      {
-        group: 'messages',
-        filters: ['lastMessageStatus'],
-      },
-      {
-        group: 'paAttributes',
-        filters: [
-          ...new Set([...genericPaAttributeFilters, ...paAttributesNameArray]),
-        ],
-      },
-    ];
-    if (program.enableMaxPayments) {
-      filterableAttributeNames = [
-        ...filterableAttributeNames,
-        ...[
-          {
-            group: 'maxPayments',
-            filters: ['maxPayments', 'paymentCount', 'paymentCountRemaining'],
-          },
-        ],
-      ];
-    }
-
-    const filterableAttributes = [];
-    for (const group of filterableAttributeNames) {
-      const filterableAttributesPerGroup: FilterAttributeDto[] = [];
-      for (const name of group.filters) {
-        if (
-          PaginateConfigRegistrationViewWithPayments.filterableColumns[name]
-        ) {
-          filterableAttributesPerGroup.push({
-            name: name,
-            allowedOperators: PaginateConfigRegistrationViewWithPayments
-              .filterableColumns[name] as FilterOperator[],
-            isInteger:
-              PaginateConfigRegistrationViewWithPayments.filterableColumns[
-                name
-              ] === AllowedFilterOperatorsNumber,
-          });
-        } else {
-          // If no allowed operators are defined than the attribute is
-          // registration data which is stored as a string
-          filterableAttributesPerGroup.push({
-            name: name,
-            allowedOperators: AllowedFilterOperatorsString,
-            isInteger: false,
-          });
-        }
-      }
-      filterableAttributes.push({
-        group: group.group,
-        filters: filterableAttributesPerGroup,
-      });
-    }
-
-    return filterableAttributes;
   }
 
   public async getCreateProgramDto(
@@ -507,7 +411,13 @@ export class ProgramService {
     programId: number,
     name: string,
   ): Promise<void> {
-    const existingAttributes = await this.getPaTableAttributes(programId);
+    const existingAttributes =
+      await this.programAttributesService.getAttributes(
+        programId,
+        true,
+        true,
+        true,
+      );
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;
     });
@@ -693,130 +603,6 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
-  public async getPaTableAttributes(
-    programId: number,
-    phase?: ProgramPhase,
-    userId?: number,
-  ): Promise<Attribute[]> {
-    if (userId) {
-      const hasPersonalRead = await this.userService.canActivate(
-        [PermissionEnum.RegistrationPersonalREAD],
-        programId,
-        userId,
-      );
-      if (!hasPersonalRead) {
-        // If a person does not have personal read permission we should
-        // not show registration data columns in the portal
-        return [];
-      }
-    }
-
-    let queryCustomAttr = this.dataSource
-      .getRepository(ProgramCustomAttributeEntity)
-      .createQueryBuilder('programCustomAttribute')
-      .where({ program: { id: programId } });
-
-    if (phase) {
-      queryCustomAttr = queryCustomAttr.andWhere(
-        'programCustomAttribute.phases ::jsonb ?| :phases',
-        { phases: [phase] },
-      );
-    }
-    const rawCustomAttributes = await queryCustomAttr.getMany();
-    const customAttributes = rawCustomAttributes.map((c) => {
-      return {
-        name: c.name,
-        type: c.type,
-        label: c.label,
-        shortLabel: c.label,
-        questionType: QuestionType.programCustomAttribute,
-      };
-    });
-
-    let queryProgramQuestions = this.dataSource
-      .getRepository(ProgramQuestionEntity)
-      .createQueryBuilder('programQuestion')
-      .where({ program: { id: programId } });
-
-    if (phase) {
-      queryProgramQuestions = queryProgramQuestions.andWhere(
-        'programQuestion.phases ::jsonb ?| :phases',
-        { phases: [phase] },
-      );
-    }
-    const rawProgramQuestions = await queryProgramQuestions.getMany();
-    const programQuestions = rawProgramQuestions.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        shortLabel: c.shortLabel,
-        questionType: QuestionType.programQuestion,
-      };
-    });
-
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['financialServiceProviders'],
-    });
-    const fspIds = program.financialServiceProviders.map((f) => f.id);
-
-    let queryFspAttributes = this.dataSource
-      .getRepository(FspQuestionEntity)
-      .createQueryBuilder('fspAttribute')
-      .where({ fspId: In(fspIds) });
-
-    if (phase) {
-      queryFspAttributes = queryFspAttributes.andWhere(
-        'fspAttribute.phases ::jsonb ?| :phases',
-        { phases: [phase] },
-      );
-    }
-    const rawFspAttributes = await queryFspAttributes.getMany();
-    const fspAttributes = rawFspAttributes.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        shortLabel: c.shortLabel,
-        questionType: QuestionType.fspQuestion,
-      };
-    });
-
-    return [...customAttributes, ...programQuestions, ...fspAttributes];
-  }
-
-  private async getPaEditableAttributes(
-    programId: number,
-  ): Promise<Attribute[]> {
-    const customAttributes = (
-      await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
-      })
-    ).map((c) => {
-      return {
-        name: c.name,
-        type: c.type,
-        label: c.label,
-        shortLabel: c.label,
-      };
-    });
-    const programQuestions = (
-      await this.programQuestionRepository.find({
-        where: { program: { id: programId }, editableInPortal: true },
-      })
-    ).map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        shortLabel: c.shortLabel,
-      };
-    });
-
-    return [...customAttributes, ...programQuestions];
-  }
-
   public async getAllRelationProgram(
     programId: number,
   ): Promise<RegistrationDataInfo[]> {
@@ -868,5 +654,16 @@ export class ProgramService {
     }
 
     return relations;
+  }
+
+  public async hasPersonalReadAccess(
+    userId: number,
+    programId: number,
+  ): Promise<boolean> {
+    return await this.userService.canActivate(
+      [PermissionEnum.RegistrationPersonalREAD],
+      programId,
+      userId,
+    );
   }
 }
