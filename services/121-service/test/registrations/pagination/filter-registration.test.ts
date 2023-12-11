@@ -60,10 +60,9 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject1)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject1);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -82,10 +81,9 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject4)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject4);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -107,10 +105,9 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject3)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject3);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -137,10 +134,9 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject3)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject3);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }

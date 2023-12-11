@@ -291,7 +291,6 @@ export class SeedHelper {
     const user = await userRepository.findOneBy({
       id: userId,
     });
-    console.log('scope: ', scope);
     await assignmentRepository.save({
       scope: scope,
       user: user,

@@ -25,7 +25,7 @@ describe('Load PA table', () => {
     const attributeFirstName = 'firstName';
     const attributeLastName = 'lastName';
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
@@ -50,10 +50,9 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject1)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject1);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -126,6 +125,7 @@ describe('Load PA table', () => {
         accessToken,
       );
       const data = getRegistrationsResponse.body.data;
+
       // Assert
       expect(data.length).toBe(0);
     });
@@ -145,6 +145,7 @@ describe('Load PA table', () => {
       );
       const data1 = getRegistrationsResponse1.body.data;
       const meta1 = getRegistrationsResponse1.body.meta;
+
       const getRegistrationsResponse2 = await getRegistrations(
         programIdOCW,
         requestedDynamicAttributes,
@@ -168,9 +169,7 @@ describe('Load PA table', () => {
       // Assert
 
       // Registration 1
-      for (const [key, value] of Object.entries(expectedValueObject1)) {
-        expect(data1[0][key]).toBe(value);
-      }
+      expect(data1[0]).toMatchObject(expectedValueObject1);
       for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
       }
@@ -180,9 +179,7 @@ describe('Load PA table', () => {
       expect(meta1.totalItems).toBe(2);
 
       // Registration 2
-      for (const [key, value] of Object.entries(expectedValueObject2)) {
-        expect(data2[0][key]).toBe(value);
-      }
+      expect(data2[0]).toMatchObject(expectedValueObject2);
       for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
       }

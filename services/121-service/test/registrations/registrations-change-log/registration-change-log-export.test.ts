@@ -102,15 +102,9 @@ describe('Export registration change log', () => {
       newValue: `${dataUpdatePa2.paymentAmountMultiplier}`,
       reason: reason2,
     };
-    for (const [key, value] of Object.entries(checkingMap1)) {
-      expect(data[0][key]).toBe(value);
-    }
-    for (const [key, value] of Object.entries(checkingMap2)) {
-      expect(data[1][key]).toBe(value);
-    }
-    for (const [key, value] of Object.entries(checkingMap3)) {
-      expect(data[2][key]).toBe(value);
-    }
+    expect(data[0]).toMatchObject(checkingMap1);
+    expect(data[1]).toMatchObject(checkingMap2);
+    expect(data[2]).toMatchObject(checkingMap3);
   });
 
   it('should not return data changes for date range of 2-1 hour ago', async () => {

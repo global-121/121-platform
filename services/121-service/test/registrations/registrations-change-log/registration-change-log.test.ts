@@ -45,6 +45,7 @@ describe('Get and update registration change log', () => {
       referenceIdVisa,
       accessToken,
     );
+
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);
@@ -58,9 +59,7 @@ describe('Get and update registration change log', () => {
       newValue: data.phoneNumber,
       reason: reason,
     };
-    for (const [key, value] of Object.entries(checkingMap1)) {
-      expect(body[0][key]).toBe(value);
-    }
+    expect(data[0]).toMatchObject(checkingMap1);
   });
 
   it('should not log if value did not change', async () => {
@@ -91,13 +90,16 @@ describe('Get and update registration change log', () => {
   });
 
   it('should return empty array for unkown referenceId', async () => {
+    // Arrange
     const wrongReferenceId = referenceIdVisa + '-fail-test';
+
     // Act
     const response = await getRegistrationChangeLog(
       programId,
       wrongReferenceId,
       accessToken,
     );
+
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);

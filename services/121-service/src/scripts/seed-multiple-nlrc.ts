@@ -11,6 +11,7 @@ import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
+import { DebugScope } from './enum/debug-scope.enum';
 
 @Injectable()
 export class SeedMultipleNLRC implements InterfaceScript {
@@ -25,12 +26,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
   );
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const debugScopes = [
-      'utrecht',
-      'zeeland',
-      'zeeland.middelburg',
-      'zeeland.goes',
-    ];
+    const debugScopes = Object.values(DebugScope);
     const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
     await seedInit.run(isApiTests);
 
