@@ -39,6 +39,7 @@ import { createScopedRepositoryProvider } from '../../../utils/scope/createScope
       UserEntity,
       TwilioMessageEntity,
       ProgramAidworkerAssignmentEntity,
+      IntersolveVoucherEntity,
     ]),
     ImageCodeModule,
     UserModule,

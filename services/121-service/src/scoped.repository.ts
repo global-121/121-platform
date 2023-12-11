@@ -32,9 +32,10 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
   // Would be better if there was a way to give an error before compile time
   where(_condition?: string, _parameters?: any): this {
     // The reason for this error is that you else overwrite the .where of the scoped repository
-    throw new Error(
-      'The .where method is not allowed for scope repositories. Use .andWhere instead.',
-    );
+    const errorText =
+      'ERROR: The .where method is not allowed for scope repositories. Use .andWhere instead.';
+    console.log(errorText);
+    throw new Error(errorText);
   }
 }
 

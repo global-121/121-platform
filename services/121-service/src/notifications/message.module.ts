@@ -18,6 +18,7 @@ import {
   MessageProcessorLowPriority,
 } from './processors/message.processor';
 import { ProgramModule } from '../programs/programs.module';
+import { MessageTemplateEntity } from './message-template/message-template.entity';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProgramModule } from '../programs/programs.module';
       TryWhatsappEntity,
       RegistrationEntity,
       WhatsappPendingMessageEntity,
+      MessageTemplateEntity,
     ]),
     WhatsappModule,
     SmsModule,

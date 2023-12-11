@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, In, IsNull, Not, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { API_PATHS, EXTERNAL_API } from '../../config';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
@@ -55,7 +55,6 @@ export class MessageIncomingService {
   public constructor(
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly dataSource: DataSource,
     @InjectQueue('messageStatusCallback')
     private readonly messageStatusCallbackQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
@@ -282,8 +281,7 @@ export class MessageIncomingService {
   private async getRegistrationsWithPhoneNumber(
     phoneNumber,
   ): Promise<RegistrationEntity[]> {
-    const registrationsWithPhoneNumber = await this.dataSource
-      .getRepository(RegistrationEntity)
+    const registrationsWithPhoneNumber = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration')
       .leftJoin('registration.data', 'registration_data')
@@ -293,15 +291,12 @@ export class MessageIncomingService {
       )
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where(
-        new Brackets((qb) => {
-          qb.where('registration_data.value = :whatsappPhoneNumber', {
-            whatsappPhoneNumber: phoneNumber,
-          }).andWhere('fspQuestion.name = :name', {
-            name: CustomDataAttributes.whatsappPhoneNumber,
-          });
-        }),
-      )
+      .where('registration_data.value = :whatsappPhoneNumber', {
+        whatsappPhoneNumber: phoneNumber,
+      })
+      .andWhere('fspQuestion.name = :name', {
+        name: CustomDataAttributes.whatsappPhoneNumber,
+      })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 
@@ -398,9 +393,7 @@ export class MessageIncomingService {
         program = registrationsWithPhoneNumberInActivePrograms[0].program;
       } else {
         // If only 1 program in database: use default reply of that program
-        const programs = await this.dataSource
-          .getRepository(ProgramEntity)
-          .find();
+        const programs = await this.programRepository.find();
         if (programs.length === 1) {
           program = programs[0];
         }
@@ -445,11 +438,9 @@ export class MessageIncomingService {
       const intersolveVouchersPerPa = registration.images.map(
         (image) => image.voucher,
       );
-      const program = await this.dataSource
-        .getRepository(ProgramEntity)
-        .findOneBy({
-          id: registration.programId,
-        });
+      const program = await this.programRepository.findOneBy({
+        id: registration.programId,
+      });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
       // Loop over current and (potentially) old vouchers per PA

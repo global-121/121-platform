@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MessageJobDto, MessageProcessType } from './message-job.dto';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
@@ -23,13 +23,14 @@ export class MessageService {
   public readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  @InjectRepository(MessageTemplateEntity)
+  private readonly messageTemplateRepo: Repository<MessageTemplateEntity>;
 
   private readonly fallbackLanguage = 'en';
 
   public constructor(
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
-    private readonly dataSource: DataSource,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly azureLogService: AzureLogService,
   ) {}
@@ -257,12 +258,10 @@ export class MessageService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const messageTemplates = await this.dataSource
-      .getRepository(MessageTemplateEntity)
-      .findBy({
-        program: { id: programId },
-        type: key,
-      });
+    const messageTemplates = await this.messageTemplateRepo.findBy({
+      program: { id: programId },
+      type: key,
+    });
 
     const notification = messageTemplates.find(
       (template) => template.language === language,

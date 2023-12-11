@@ -584,8 +584,7 @@ export class ProgramService {
     programId: number,
     change: object,
   ): Promise<void> {
-    await this.dataSource
-      .getRepository(ProgramEntity)
+    await this.programRepository
       .createQueryBuilder()
       .update(ProgramEntity)
       .set(change)
