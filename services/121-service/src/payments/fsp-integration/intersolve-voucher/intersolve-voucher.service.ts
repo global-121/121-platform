@@ -609,7 +609,7 @@ export class IntersolveVoucherService
         .select('MAX(voucher.id)', 'max')
         .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
-        .where('registration.programId = :programId', {
+        .andWhere('registration.programId = :programId', {
           programId: programId,
         })
         .getRawOne()

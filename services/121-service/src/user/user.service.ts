@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -42,10 +42,7 @@ export class UserService {
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(
-    @Inject(REQUEST) private readonly request: Request,
-    private readonly dataSource: DataSource,
-  ) {}
+  public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const userEntity = await this.matchPassword(loginUserDto);
@@ -236,8 +233,7 @@ export class UserService {
     userType: UserType,
   ): Promise<UserRO> {
     // check uniqueness of email
-    const qb = this.dataSource
-      .getRepository(UserEntity)
+    const qb = this.userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -543,8 +539,7 @@ export class UserService {
   }
 
   public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
-    const saltCheck = await this.dataSource
-      .getRepository(UserEntity)
+    const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
       .where({ username: loginUserDto.username })
@@ -564,8 +559,7 @@ export class UserService {
             .toString('hex')
         : crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
     };
-    const userEntity = await this.dataSource
-      .getRepository(UserEntity)
+    const userEntity = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
