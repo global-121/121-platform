@@ -67,9 +67,7 @@ describe('Load PA table', () => {
       };
 
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
 
@@ -109,9 +107,7 @@ describe('Load PA table', () => {
       };
 
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
   });

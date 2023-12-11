@@ -52,9 +52,7 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObject1)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObject1);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -171,9 +169,7 @@ describe('Load PA table', () => {
       // Assert
 
       // Registration 1
-      for (const [key, value] of Object.entries(expectedValueObject1)) {
-        expect(data1[0][key]).toBe(value);
-      }
+      expect(data1[0]).toMatchObject(expectedValueObject1);
       for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
       }
@@ -183,9 +179,7 @@ describe('Load PA table', () => {
       expect(meta1.totalItems).toBe(2);
 
       // Registration 2
-      for (const [key, value] of Object.entries(expectedValueObject2)) {
-        expect(data2[0][key]).toBe(value);
-      }
+      expect(data2[0]).toMatchObject(expectedValueObject2);
       for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
       }
