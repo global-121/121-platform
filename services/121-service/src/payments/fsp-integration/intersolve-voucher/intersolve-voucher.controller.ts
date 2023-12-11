@@ -32,6 +32,7 @@ import { PermissionEnum } from '../../../user/permission.enum';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('financial-service-providers/intersolve-voucher')
@@ -39,6 +40,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
 export class IntersolveVoucherController {
   public constructor(
     private intersolveVoucherService: IntersolveVoucherService,
+    private intersolveVoucherCronService: IntersolveVoucherCronService,
   ) {}
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
@@ -156,5 +158,35 @@ export class IntersolveVoucherController {
       Number(param.programId),
       jobDetails.name,
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '(CRON) Cancel by refpos',
+  })
+  @ApiResponse({ status: 201, description: 'Vouchers canceled by refpos' })
+  @Post('/financial-service-providers/intersolve-voucher/cancel')
+  public async cancelByRefPos(): Promise<void> {
+    await this.intersolveVoucherCronService.cancelByRefposIntersolve();
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '(CRON) Cache unused vouchers',
+  })
+  @ApiResponse({ status: 201, description: 'Cached unused vouchers' })
+  @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
+  public async cacheUnusedVouchers(): Promise<void> {
+    await this.intersolveVoucherCronService.cacheUnusedVouchers();
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '(CRON) Send WhatsApp reminders',
+  })
+  @ApiResponse({ status: 201, description: 'Sent WhatsApp reminders' })
+  @Post('/financial-service-providers/intersolve-voucher/send-reminders')
+  public async sendWhatsappReminders(): Promise<void> {
+    await this.intersolveVoucherCronService.sendWhatsappReminders();
   }
 }

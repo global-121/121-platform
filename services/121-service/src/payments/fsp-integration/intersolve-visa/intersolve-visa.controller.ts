@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -147,5 +148,20 @@ export class IntersolveVisaController {
       params.referenceId,
       params.programId,
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '(CRON) Update all Visa wallet details',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Wallet and card replaced',
+  })
+  @Patch(
+    'programs/:programId/financial-service-providers/intersolve-visa/wallets',
+  )
+  public async updateVisaDebitWalletDetails(): Promise<void> {
+    await this.intersolveVisaService.updateVisaDebitWalletDetails();
   }
 }

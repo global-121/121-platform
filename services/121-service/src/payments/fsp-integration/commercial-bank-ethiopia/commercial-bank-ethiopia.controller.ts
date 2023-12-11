@@ -58,4 +58,21 @@ export class CommercialBankEthiopiaController {
       Number(programId),
     );
   }
+
+  @Admin()
+  @ApiOperation({
+    summary:
+      '(CRON) Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Done getting and storing account enquiry data for all registrations in all programs.',
+  })
+  @Post(
+    'financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
+  )
+  public async validateAllPas(): Promise<void> {
+    return this.commercialBankEthiopiaService.validateAllPas();
+  }
 }

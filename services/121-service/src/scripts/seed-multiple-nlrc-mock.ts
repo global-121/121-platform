@@ -14,6 +14,7 @@ import { InterfaceScript } from './scripts.module';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedMockHelper } from './seed-mock-helpers';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
+import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -24,6 +25,7 @@ const readSqlFile = (filepath: string): string => {
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
+  private axiosCallsService = new AxiosCallsService();
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
@@ -87,7 +89,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // Set up 1 registration with 1 payment and 1 message
     // TODO: this uses helper functions from the API-test folder, move this to a shared location
     const programIdVisa = 3;
-    const accessToken = await this.seedMockHelper.getAccessToken();
+    const accessToken = await this.axiosCallsService.getAccessToken();
     await this.seedMockHelper.changePhase(
       programIdVisa,
       ProgramPhase.registrationValidation,
