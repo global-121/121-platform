@@ -50,6 +50,7 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
       for (const [key, value] of Object.entries(expectedValueObject1)) {
         expect(data[0][key]).toBe(value);
@@ -126,6 +127,7 @@ describe('Load PA table', () => {
         accessToken,
       );
       const data = getRegistrationsResponse.body.data;
+
       // Assert
       expect(data.length).toBe(0);
     });
@@ -145,6 +147,7 @@ describe('Load PA table', () => {
       );
       const data1 = getRegistrationsResponse1.body.data;
       const meta1 = getRegistrationsResponse1.body.meta;
+
       const getRegistrationsResponse2 = await getRegistrations(
         programIdOCW,
         requestedDynamicAttributes,

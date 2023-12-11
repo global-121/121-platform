@@ -12,7 +12,9 @@ export const assertArraysAreEqual = (
   // Sort both actualArray and expectedArray
   const sortedActualArray = sortByFspName(actualArray);
   const sortedExpectedArray = sortByFspName(expectedArray);
+
   expect(sortedActualArray.length).toBe(sortedExpectedArray.length);
+
   for (let i = 0; i < sortedActualArray.length; i++) {
     for (const subKey in sortedExpectedArray[i]) {
       if (!keyToIgnore.includes(subKey)) {
@@ -24,10 +26,11 @@ export const assertArraysAreEqual = (
   }
 };
 
-export function sortByFspName(array): any[] {
+export function sortByFspName(array: { fsp: string }[]): any[] {
   return array.slice().sort((a, b) => {
     const nameA = a.fsp;
     const nameB = b.fsp;
+
     if (nameA < nameB) {
       return -1;
     }
@@ -97,9 +100,11 @@ export function processMessagePlaceholders(
     (t) =>
       t.type === statusChange && t.language === registration.preferredLanguage,
   )[0].message;
+
   const processedTemplate = template.replace(
     new RegExp(`{{${placeholderKey}}}`, 'g'),
     registration[`${placeholderKey}`],
   );
+
   return processedTemplate;
 }

@@ -21,9 +21,11 @@ export function deleteRegistrations(
   filter: Record<string, string> = {},
 ): Promise<request.Response> {
   const queryParams = {};
+
   if (referenceIds) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
+
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
       queryParams[key] = value;
@@ -31,7 +33,7 @@ export function deleteRegistrations(
   }
 
   return getServer()
-    .del(`/programs/${programId}/registrations`)
+    .delete(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();
@@ -45,10 +47,12 @@ export function searchRegistrationByReferenceId(
   const queryParams = {
     'filter.referenceId': referenceId,
   };
+
   return getServer()
     .get(`/programs/${programId}/registrations`)
+    .set('Cookie', [accessToken])
     .query(queryParams)
-    .set('Cookie', [accessToken]);
+    .send();
 }
 
 export function searchRegistrationByPhoneNumber(
@@ -58,10 +62,12 @@ export function searchRegistrationByPhoneNumber(
   const queryParams = {
     phonenumber: phoneNumber,
   };
+
   return getServer()
     .get(`/registrations`)
+    .set('Cookie', [accessToken])
     .query(queryParams)
-    .set('Cookie', [accessToken]);
+    .send();
 }
 
 export function getRegistrations(
@@ -74,6 +80,7 @@ export function getRegistrations(
   sort?: { field: string; direction: 'ASC' | 'DESC' },
 ): Promise<request.Response> {
   const queryParams = {};
+
   if (attributes) {
     queryParams['select'] = attributes.join(',');
   }
@@ -91,10 +98,12 @@ export function getRegistrations(
   if (sort) {
     queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
   }
+
   return getServer()
     .get(`/programs/${programId}/registrations`)
     .query(queryParams)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export async function awaitChangePaStatus(
@@ -106,14 +115,17 @@ export async function awaitChangePaStatus(
   includeTemplatedMessage = false,
 ): Promise<request.Response> {
   const queryParams = {};
+
   if (referenceIds) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
+
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
       queryParams[key] = value;
     }
   }
+
   const result = await getServer()
     .patch(`/programs/${programId}/registrations/status`)
     .set('Cookie', [accessToken])
@@ -123,11 +135,12 @@ export async function awaitChangePaStatus(
       message: null,
       messageTemplateKey: includeTemplatedMessage ? status : null,
     });
+
   await waitForStatusChangeToComplete(
     programId,
     referenceIds.length,
     status,
-    8000,
+    8_000,
     accessToken,
   );
 
@@ -162,7 +175,8 @@ export async function personAffectedMetrics(
 ): Promise<any> {
   return getServer()
     .get(`/programs/${programId}/metrics/person-affected`)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export function sendMessage(
@@ -171,16 +185,15 @@ export function sendMessage(
   message: string,
   accessToken: string,
 ): Promise<request.Response> {
-  const filter = {
+  const queryParams = {
     ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
   };
+
   return getServer()
     .post(`/programs/${programId}/registrations/message`)
     .set('Cookie', [accessToken])
-    .query(filter)
-    .send({
-      message: message,
-    });
+    .query(queryParams)
+    .send({ message });
 }
 
 export function updateRegistration(
@@ -207,10 +220,12 @@ export function getRegistrationChangeLog(
   const queryParams = {
     referenceId: referenceId,
   };
+
   return getServer()
     .get(`/programs/${programId}/registration-change-logs`)
     .query(queryParams)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export function getVisaWalletsAndDetails(
@@ -221,12 +236,14 @@ export function getVisaWalletsAndDetails(
   const queryParams = {
     referenceId: referenceId,
   };
+
   return getServer()
     .get(
       `/programs/${programId}/financial-service-providers/intersolve-visa/wallets`,
     )
     .query(queryParams)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export function issueNewVisaCard(
@@ -238,7 +255,8 @@ export function issueNewVisaCard(
     .put(
       `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
     )
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export function blockVisaCard(
@@ -274,5 +292,6 @@ export function getMessageHistory(
 ): Promise<request.Response> {
   return getServer()
     .get(`/programs/${programId}/registrations/message-history/${referenceId}`)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .send();
 }
