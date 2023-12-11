@@ -1,4 +1,4 @@
-import { In, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { MessageTemplateEntity } from '../src/notifications/message-template/message-template.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
 
