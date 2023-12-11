@@ -25,7 +25,7 @@ describe('Load PA table', () => {
     const attributeFirstName = 'firstName';
     const attributeLastName = 'lastName';
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
