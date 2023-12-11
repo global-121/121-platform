@@ -80,10 +80,6 @@ describe('Import a registration', () => {
       accessToken,
     );
     const registrationResult = result.body.data[0];
-    console.log(
-      '🚀 ~ file: import-registration.test.ts:81 ~ it ~ result.body:',
-      result.body,
-    );
     for (const key in registrationVisa) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
