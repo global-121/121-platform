@@ -40,14 +40,13 @@ export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
 }
 
 type EntityRelations = Record<string, string[]>;
-// Define here any entities that do not have a direct relation to registration
+// Define here any entities that do have an INDIRECT relation to registration
 const indirectRelationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
 
-// TODO use this for any entity that needs to be scoped that related to registration
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class ScopedRepository<T> {
   private repository: Repository<T>;
