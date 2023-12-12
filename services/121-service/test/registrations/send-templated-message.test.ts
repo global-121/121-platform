@@ -171,8 +171,4 @@ describe('Send templated message on status change of PA', () => {
 
     expect(messageHistory[0].body).toEqual(processedTemplate);
   });
-
-  it.skip('invite', async () => {
-    // TODO: this requires being able to pass a CSV to the /import-bulk endpoint or write a json version of that endpoint
-  });
 });
