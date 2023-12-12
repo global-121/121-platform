@@ -32,7 +32,7 @@ describe('Load PA table', () => {
 
       await importRegistrations(
         programIdOCW,
-        [registration1, registration2, registration3, registration4],
+        [registration1, registration3, registration4, registration2],
         accessToken,
       );
 
