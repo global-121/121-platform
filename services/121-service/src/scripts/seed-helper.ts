@@ -25,11 +25,6 @@ export class SeedHelper {
   ) {}
 
   public async addDefaultUsers(program: ProgramEntity): Promise<void> {
-    const fullAccessUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
-    });
-
     const viewOnlyUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
@@ -42,32 +37,25 @@ export class SeedHelper {
 
     const cvaManager = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_CVA_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
     });
 
     const cvaOfficer = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_CVA_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
     });
 
     const financeManager = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
-      password:
-        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FINANCE_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
     });
 
     const financeOfficer = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FINANCE_OFFICER,
-      password:
-        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FINANCE_OFFICER,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
     });
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    if (fullAccessUser) {
-      await this.assignAidworker(fullAccessUser.id, program.id, [
-        DefaultUserRole.ProgramAdmin,
-      ]);
-    }
     if (viewOnlyUser) {
       await this.assignAidworker(viewOnlyUser.id, program.id, [
         DefaultUserRole.View,
