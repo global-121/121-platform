@@ -1,4 +1,5 @@
 export enum DefaultUserRole {
+  Admin = 'admin',
   ProgramAdmin = 'program-admin',
   View = 'view',
   KoboUser = 'kobo-user',

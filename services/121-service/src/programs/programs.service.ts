@@ -344,7 +344,7 @@ export class ProgramService {
       newProgram.id,
       userId,
       {
-        roles: [DefaultUserRole.ProgramAdmin],
+        roles: [DefaultUserRole.Admin],
       },
     );
     return newProgram;

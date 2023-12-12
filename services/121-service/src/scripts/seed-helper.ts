@@ -25,6 +25,11 @@ export class SeedHelper {
   ) {}
 
   public async addDefaultUsers(program: ProgramEntity): Promise<void> {
+    const programAdminUser = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+    });
+
     const viewOnlyUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
@@ -56,6 +61,11 @@ export class SeedHelper {
     });
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    if (programAdminUser) {
+      await this.assignAidworker(programAdminUser.id, program.id, [
+        DefaultUserRole.ProgramAdmin,
+      ]);
+    }
     if (viewOnlyUser) {
       await this.assignAidworker(viewOnlyUser.id, program.id, [
         DefaultUserRole.View,
@@ -287,7 +297,7 @@ export class SeedHelper {
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
     await this.assignAidworker(adminUser.id, programId, [
-      DefaultUserRole.ProgramAdmin,
+      DefaultUserRole.Admin,
     ]);
   }
 
