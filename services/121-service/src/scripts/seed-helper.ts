@@ -56,7 +56,7 @@ export class SeedHelper {
     });
 
     const financeOfficer = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FINANCE_OFFICER,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
     });
 
