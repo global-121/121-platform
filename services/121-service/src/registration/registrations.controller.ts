@@ -72,6 +72,7 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import Api from 'twilio/lib/rest/Api';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -182,7 +183,9 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
-  @ApiOperation({ summary: 'Import set of PAs to invite, based on CSV' })
+  @ApiOperation({
+    summary: 'Import set of PAs to invite, based on CSV',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import-bulk')
   @ApiConsumes('multipart/form-data')
@@ -280,7 +283,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
     summary:
-      'Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
+      '(SCOPED) Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
   })
   @ApiParam({
     name: 'programId',
@@ -321,17 +324,19 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
-    description: 'Dry run result for the registration status update',
+    description:
+      'Dry run result for the registration status update - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: 202,
-    description: 'The registration status update was succesfully started',
+    description:
+      'The registration status update was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
     summary:
-      'Update registration status of set of PAs that can be defined via filter parameters.',
+      '(SCOPED) Update registration status of set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -441,11 +446,13 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
-    summary: 'Update provided attributes of registration (Used by Aidworker)',
+    summary:
+      '(SCOPED) Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
     status: 200,
-    description: 'Updated provided attributes of registration',
+    description:
+      'Updated provided attributes of registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -485,11 +492,12 @@ export class RegistrationsController {
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:
-      'Find registration by phone-number for Redline integration and FieldValidation',
+      '(SCOPED) Find registration by phone-number for Redline integration and FieldValidation',
   })
   @ApiResponse({
     status: 200,
-    description: 'Return registrations that match the exact phone-number',
+    description:
+      'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
     status: 401,
@@ -525,11 +533,12 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     summary:
-      'Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
+      '(SCOPED) Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
     status: 201,
-    description: 'Updated fsp and attributes',
+    description:
+      'Updated fsp and attributes - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -548,12 +557,14 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
-    description: 'Dry run result for deleting set of registrations',
+    description:
+      'Dry run result for deleting set of registrations - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: 202,
-    description: 'Deleting set of registrations was succesfully started',
+    description:
+      'Deleting set of registrations was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @PaginatedSwaggerDocs(
@@ -583,7 +594,7 @@ export class RegistrationsController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ summary: 'Delete set of registrations' })
+  @ApiOperation({ summary: '(SCOPED) Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Delete('programs/:programId/registrations')
   public async delete(
@@ -615,8 +626,14 @@ export class RegistrationsController {
 
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({ summary: 'Download all program answers (for validation)' })
-  @ApiResponse({ status: 200, description: 'Program answers downloaded' })
+  @ApiOperation({
+    summary: '(SCOPED) Download all program answers (for validation)',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Program answers downloaded - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
@@ -662,10 +679,11 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspREAD)
-  @ApiOperation({ summary: 'Get FSP-attribute answers' })
+  @ApiOperation({ summary: '(SCOPED) Get FSP-attribute answers' })
   @ApiResponse({
     status: 200,
-    description: 'Retrieved FSP-attribute answers',
+    description:
+      'Retrieved FSP-attribute answers - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -680,8 +698,12 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: 'Issue validationData (For AW)' })
-  @ApiResponse({ status: 200, description: 'Validation Data issued' })
+  @ApiOperation({ summary: '(SCOPED) Issue validationData (For AW)' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Validation Data issued - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/issue-validation')
   public async issue(
@@ -699,17 +721,19 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
-    description: 'Dry run result for sending a bulk message',
+    description:
+      'Dry run result for sending a bulk message - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: 202,
-    description: 'Sending bulk message was succesfully started',
+    description:
+      'Sending bulk message was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
     summary:
-      'Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
+      '(SCOPED) Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -776,8 +800,15 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
-  @ApiOperation({ summary: 'Get message history for one registration' })
+  @ApiOperation({
+    summary: '(SCOPED) Get message history for one registration',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Message history retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get('programs/:programId/registrations/message-history/:referenceId')
   public async getMessageHistoryRegistration(
     @Param() params: ReferenceIdDto,
@@ -789,8 +820,14 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Get registration status' })
-  @ApiResponse({ status: 200 })
+  @ApiOperation({
+    summary: 'Get registration status. Used by person affected only',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Registration status retrieved  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @Get('programs/:programId/registrations/status/:referenceId')
@@ -804,9 +841,14 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({ summary: 'Get Person Affected referenceId' })
+  @ApiOperation({ summary: '(SCOPED) Get Person Affected referenceId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'ReferenceId retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get('programs/:programId/registrations/referenceid/:paId')
   public async getReferenceId(@Param() params): Promise<any> {
     if (isNaN(params.paId)) {
@@ -820,7 +862,12 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({ summary: 'Get registration status changes' })
+  @ApiOperation({ summary: '(SCOPED) Get registration status changes' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Registration status changes retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @Get('programs/:programId/registrations/status-changes/:referenceId')

@@ -68,7 +68,7 @@ export class PaymentsController {
   }
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: 'Get payment aggregate results' })
+  @ApiOperation({ summary: '(SCOPED) Get payment aggregate results' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
     name: 'payment',
@@ -78,7 +78,8 @@ export class PaymentsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Retrieved payment aggregate results',
+    description:
+      'Retrieved payment aggregate results - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: PaymentReturnDto,
   })
   @Get('programs/:programId/payments/:payment')
@@ -94,16 +95,18 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiResponse({
     status: 200,
-    description: 'Dry run result for doing a payment',
+    description:
+      'Dry run result for doing a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: 202,
-    description: 'Doing the payment was succesfully started',
+    description:
+      'Doing the payment was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
-    summary: 'Send payout instruction to financial service provider',
+    summary: '(SCOPED) Send payout instruction to financial service provider',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -174,7 +177,7 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
     summary:
-      'Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
+      '(SCOPED) Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch('programs/:programId/payments')
@@ -194,14 +197,14 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     summary:
-      'Get payments instructions for past payment to post in Financial Service Provider Portal',
+      '(SCOPED) Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description:
-      'Get payments instructions for past payment to post in Financial Service Provider Portal',
+      'Get payments instructions for past payment to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/payments/:payment/fsp-instructions')
   public async getFspInstructions(
@@ -217,14 +220,15 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
-    summary: 'Upload payment reconciliation data from FSP per payment',
+    summary: '(SCOPED) Upload payment reconciliation data from FSP per payment',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
-    description: 'Uploaded payment reconciliation data',
+    description:
+      'Uploaded payment reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post('programs/:programId/payments/:payment/fsp-reconciliation')
   @ApiConsumes('multipart/form-data')

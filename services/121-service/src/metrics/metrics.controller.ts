@@ -38,7 +38,7 @@ export class MetricsController {
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
-    summary: 'Retrieve data for export',
+    summary: '(SCOPED) Retrieve data for export',
   })
   @ApiResponse({
     status: 200,
@@ -93,7 +93,7 @@ export class MetricsController {
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({
-    summary: 'Get metrics about people affected for dashboard page',
+    summary: '(SCOPED) Get metrics about people affected for dashboard page',
   })
   @ApiParam({
     name: 'programId',
@@ -122,7 +122,8 @@ export class MetricsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Metrics of a program to gain an overview of the program ',
+    description:
+      'Metrics of a program to gain an overview of the program - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/person-affected')
   public async getPAMetrics(
@@ -142,7 +143,9 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get payments with state sums by program-id' })
+  @ApiOperation({
+    summary: '(SCOPED) Get payments with state sums by program-id',
+  })
   @ApiParam({
     name: 'programId',
     required: true,
@@ -151,7 +154,7 @@ export class MetricsController {
   @ApiResponse({
     status: 200,
     description:
-      'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet',
+      'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/payment-state-sums')
   public async getPaymentsWithStateSums(@Param() params): Promise<any> {
@@ -161,10 +164,11 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get monitoring data' })
+  @ApiOperation({ summary: '(SCOPED) Get monitoring data' })
   @ApiResponse({
     status: 200,
-    description: 'All monitoring data of a program',
+    description:
+      'All monitoring data of a program - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get('programs/:programId/metrics/monitoring')
@@ -175,7 +179,7 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get program stats summary' })
+  @ApiOperation({ summary: '(SCOPED) Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,
@@ -187,11 +191,12 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get registration statuses with count' })
+  @ApiOperation({ summary: '(SCOPED) Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,
-    description: 'Registration statuses with count',
+    description:
+      'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/registration-status')
   public async getRegistrationStatusStats(

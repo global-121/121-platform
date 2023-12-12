@@ -14,6 +14,7 @@ import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api
 import { CommercialBankEthiopiaController } from './commercial-bank-ethiopia.controller';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -34,6 +35,9 @@ import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.servic
     SoapService,
     CommercialBankEthiopiaMockService,
     CustomHttpService,
+    createScopedRepositoryProvider(
+      CommercialBankEthiopiaAccountEnquiriesEntity,
+    ),
   ],
   controllers: [CommercialBankEthiopiaController],
   exports: [

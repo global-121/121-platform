@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
@@ -22,6 +22,8 @@ import {
   CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
+import { ScopedRepository } from '../../../scoped.repository';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -37,6 +39,12 @@ export class CommercialBankEthiopiaService
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
   @InjectRepository(CommercialBankEthiopiaAccountEnquiriesEntity)
   public commercialBankEthiopiaAccountEnquiriesEntity: Repository<CommercialBankEthiopiaAccountEnquiriesEntity>;
+  @Inject(
+    getScopedRepositoryProviderName(
+      CommercialBankEthiopiaAccountEnquiriesEntity,
+    ),
+  )
+  private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
@@ -428,32 +436,33 @@ export class CommercialBankEthiopiaService
   public async getAllPaValidations(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
-    const programPAs = await this.commercialBankEthiopiaAccountEnquiriesEntity
-      .createQueryBuilder('cbe')
-      .innerJoin('cbe.registration', 'registration')
-      .where('registration.programId = :programId', {
-        programId: programId,
-      })
-      .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
-        statusValues: [
-          'deleted',
-          'inclusionEnded',
-          'reject',
-          'noLongerEligible',
-          'registeredWhileNoLongerEligible',
-          'paused',
-        ],
-      })
-      .select([
-        'registration.registrationProgramId as "registrationProgramId"',
-        'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
-        'cbe.cbeName as "cbeName"',
-        'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
-        'cbe.errorMessage as "errorMessage"',
-        'cbe.cbeStatus as "cbeStatus"',
-        'cbe.updated as "updated"',
-      ])
-      .getRawMany();
+    const programPAs =
+      await this.commercialBankEthiopiaAccountEnquiriesScopedRepo
+        .createQueryBuilder('cbe')
+        .innerJoin('cbe.registration', 'registration')
+        .where('registration.programId = :programId', {
+          programId: programId,
+        })
+        .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
+          statusValues: [
+            'deleted',
+            'inclusionEnded',
+            'reject',
+            'noLongerEligible',
+            'registeredWhileNoLongerEligible',
+            'paused',
+          ],
+        })
+        .select([
+          'registration.registrationProgramId as "registrationProgramId"',
+          'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
+          'cbe.cbeName as "cbeName"',
+          'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
+          'cbe.errorMessage as "errorMessage"',
+          'cbe.cbeStatus as "cbeStatus"',
+          'cbe.updated as "updated"',
+        ])
+        .getRawMany();
 
     return { data: programPAs, fileName: 'cbe-validation-report' };
   }

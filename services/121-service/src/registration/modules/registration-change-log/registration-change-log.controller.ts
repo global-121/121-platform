@@ -29,8 +29,12 @@ export class RegistrationChangeLogController {
 
   // NOTE: REFACTOR: rename endpoint to /api/programs/:programid/registration-changes with OPTIONAL referenceID query param (OR: only rename AND add endpoint /api/programs/:programid/registration/:registrationid/changes)
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get changelog for registration' })
-  @ApiResponse({ status: 200, description: 'Get changelog for registration' })
+  @ApiOperation({ summary: '(SCOPED) Get changelog for registration' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Get changelog for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @Get('programs/:programId/registration-change-logs')
