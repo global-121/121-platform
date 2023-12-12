@@ -14,6 +14,8 @@ graph LR
   QueueMessageModule-->ProgramAttributesModule
   TransactionsModule-->MessageTemplateModule
   IntersolveVoucherModule-->WhatsappModule
+  WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
   CronjobModule-->IntersolveVisaModule
@@ -28,8 +30,6 @@ graph LR
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationChangeLogModule
   MessageModule-->WhatsappModule
-  WhatsappModule-->ImageCodeModule
-  WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule

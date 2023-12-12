@@ -43,7 +43,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityBaringo, false);
+    await this.seedHelper.addDefaultUsers(programEntityBaringo);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -64,7 +64,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityTurkana, false);
+    await this.seedHelper.addDefaultUsers(programEntityTurkana);
 
     // ************************
     // ***** Program West Pokot *****
@@ -81,7 +81,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityWestPokot, false);
+    await this.seedHelper.addDefaultUsers(programEntityWestPokot);
   }
 }
 

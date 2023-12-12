@@ -42,7 +42,7 @@ export class SeedEthJointResponse implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityAne, true);
+    await this.seedHelper.addDefaultUsers(programEntityAne);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -62,7 +62,7 @@ export class SeedEthJointResponse implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityDorcas, true);
+    await this.seedHelper.addDefaultUsers(programEntityDorcas);
 
     // ************************
     // ***** Program EKHCDC *****
@@ -78,7 +78,7 @@ export class SeedEthJointResponse implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityEKHCDC, true);
+    await this.seedHelper.addDefaultUsers(programEntityEKHCDC);
   }
 }
 

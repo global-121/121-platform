@@ -7,7 +7,7 @@ describe('Authentication', () => {
   describe('Login', () => {
     const fixtureProgramId = 1;
     const fixtureUser = {
-      username: 'full-access-user@example.org',
+      username: 'admin@example.org',
       password: 'password',
     };
 
