@@ -132,7 +132,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
           // PermissionEnum.AidWorkerDELETE, Moved to admin
-          PermissionEnum.AidWorkerProgramUPDATE,
+          // PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.AidWorkerProgramREAD,
         ],
       },
@@ -174,7 +174,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
           // PermissionEnum.AidWorkerDELETE,  Moved to admin
-          PermissionEnum.AidWorkerProgramUPDATE,
+          // PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.AidWorkerProgramREAD,
         ],
       },
