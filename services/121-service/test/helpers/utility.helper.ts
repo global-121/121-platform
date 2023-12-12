@@ -60,8 +60,8 @@ export async function removeUserPermissions(
   userRoleId,
   roleToUpdate,
 ): Promise<void> {
-  let accessToken = await getAccessToken();
-  getServer()
+  const accessToken = await getAccessToken();
+  await getServer()
     .put(`/roles/${userRoleId}`)
     .set('Cookie', [accessToken])
     .send(roleToUpdate);
