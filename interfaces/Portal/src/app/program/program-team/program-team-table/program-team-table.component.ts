@@ -20,6 +20,8 @@ import { ProgramTeamPopupComponent } from '../program-team-popup/program-team-po
 export class ProgramTeamTableComponent implements OnInit {
   @Input()
   private programId: number;
+  @Input()
+  public canManageAidworkers: boolean;
 
   public rows: TeamMemberRow[] = [];
   public DateFormat = DateFormat;

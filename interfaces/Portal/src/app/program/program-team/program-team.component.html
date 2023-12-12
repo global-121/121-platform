@@ -38,7 +38,10 @@
 
     <!--program team table -->
     <div class="ion-padding">
-      <app-program-team-table [programId]="programId"></app-program-team-table>
+      <app-program-team-table
+        [programId]="programId"
+        [canManageAidworkers]="canManageAidworkers"
+      ></app-program-team-table>
     </div>
   </section>
 </ion-content>
