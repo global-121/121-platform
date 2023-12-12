@@ -35,7 +35,7 @@ describe('Load PA table', () => {
         accessTokenAdmin,
       );
 
-      const cvaManagerUserRoleId = 4;
+      const cvaManagerUserRoleId = 5;
       const newPermissions = ['registration.read'];
       await updatePermissionsOfRole(cvaManagerUserRoleId, {
         label: 'Test Role',

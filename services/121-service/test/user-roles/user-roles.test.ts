@@ -4,20 +4,20 @@ import { getAccessToken, getServer, resetDB } from '../helpers/utility.helper';
 
 describe('Load PA table', () => {
   const programId = 1;
-  const userId = 1;
+  const userId = 2;
   const fixtureUserRoles = [
     {
-      id: 1,
+      id: 2,
       role: 'program-admin',
       label: 'Program Admin',
     },
     {
-      id: 2,
+      id: 3,
       role: 'view',
       label: 'Only view data, including Personally Identifiable Information',
     },
     {
-      id: 4,
+      id: 5,
       role: 'cva-manager',
       label: 'Cash Assistance Program Manager',
     },
