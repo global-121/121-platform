@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
+  deleteRegistrations,
   getRegistrationChangeLog,
   importRegistrations,
   updateRegistration,
@@ -23,6 +24,17 @@ describe('Get and update registration change log', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(programId, [registrationVisa], accessToken);
+  });
+
+  beforeAll(async () => {
+    await resetDB(SeedScript.nlrcMultiple);
+    accessToken = await getAccessToken();
+  });
+  beforeEach(async () => {
+    await importRegistrations(programId, [registrationVisa], accessToken);
+  });
+  afterEach(async () => {
+    await deleteRegistrations(programId, [referenceIdVisa], accessToken);
   });
 
   it('should keep a log of registration data changes', async () => {

@@ -56,7 +56,7 @@ describe('Load PA table', () => {
         accessToken,
         null,
         null,
-        { 'filter.status': 'included' },
+        { 'filter.status': RegistrationStatusEnum.included },
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;

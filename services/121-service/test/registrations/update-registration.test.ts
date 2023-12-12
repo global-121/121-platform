@@ -48,7 +48,6 @@ describe('Update attribute of PA', () => {
 
   it('should succesfully update', async () => {
     // Arrange
-
     const reason = 'automated test';
     const dataUpdateSucces = {
       phoneNumber: updatePhoneNumber,
@@ -120,15 +119,16 @@ describe('Update attribute of PA', () => {
   });
 
   it('should fail on duplicate referenceId', async () => {
+    // Arrange
     const registrationVisa2 = { ...registrationVisa };
     registrationVisa2.referenceId = 'duplicate-reference-id';
     await importRegistrations(programId, [registrationVisa2], accessToken);
-    // Arrange
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
       referenceId: registrationVisa2.referenceId,
     };
     const reason = 'automated test';
+
     // Act
     const response = await updateRegistration(
       programId,
@@ -159,15 +159,16 @@ describe('Update attribute of PA', () => {
   });
 
   it('should fail on short referenceId', async () => {
+    // Arrange
     const registrationVisa2 = { ...registrationVisa };
     registrationVisa2.referenceId = 'shor'; //t
     await importRegistrations(programId, [registrationVisa2], accessToken);
-    // Arrange
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
       referenceId: registrationVisa2.referenceId,
     };
     const reason = 'automated test';
+
     // Act
     const response = await updateRegistration(
       programId,

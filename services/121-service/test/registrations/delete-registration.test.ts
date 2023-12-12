@@ -15,13 +15,13 @@ describe('Delete PA', () => {
   const programId = 3;
   let accessToken: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-
+  });
+  beforeEach(async () => {
     await importRegistrations(programId, [registrationVisa], accessToken);
   });
-
   afterEach(async () => {
     await deleteRegistrations(programId, [referenceIdVisa], accessToken);
   });
