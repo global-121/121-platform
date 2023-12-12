@@ -41,8 +41,8 @@ export async function getAccessToken(): Promise<string> {
 
 export function loginAsProgramManager(): Promise<request.Response> {
   return getServer().post(`/users/login`).send({
-    username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+    username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_CVA_MANAGER,
   });
 }
 
@@ -54,4 +54,15 @@ export async function getAccessTokenProgramManager(): Promise<string> {
     .split(';')[0];
 
   return accessToken;
+}
+
+export async function removeUserPermissions(
+  userRoleId,
+  roleToUpdate,
+): Promise<void> {
+  let accessToken = await getAccessToken();
+  getServer()
+    .put(`/roles/${userRoleId}`)
+    .set('Cookie', [accessToken])
+    .send(roleToUpdate);
 }

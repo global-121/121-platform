@@ -9,6 +9,7 @@ import {
 import {
   getAccessToken,
   getAccessTokenProgramManager,
+  removeUserPermissions,
   resetDB,
 } from '../../helpers/utility.helper';
 import { programIdOCW, referenceId, registration1 } from './pagination-data';
@@ -33,6 +34,10 @@ describe('Load PA table', () => {
         [registration1],
         accessTokenAdmin,
       );
+      await removeUserPermissions(4, {
+        label: 'Test Role',
+        permissions: ['registration.read'],
+      });
       accessTokenProgramManager = await getAccessTokenProgramManager();
     });
 

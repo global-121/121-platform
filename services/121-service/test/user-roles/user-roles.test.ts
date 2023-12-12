@@ -13,13 +13,13 @@ describe('Load PA table', () => {
     },
     {
       id: 2,
-      role: 'run-program',
-      label: 'Run Program',
-    },
-    {
-      id: 3,
       role: 'view',
       label: 'Only view data, including Personally Identifiable Information',
+    },
+    {
+      id: 4,
+      role: 'cva-manager',
+      label: 'Cash Assistance Program Manager',
     },
   ];
 
@@ -55,7 +55,7 @@ describe('Load PA table', () => {
       // Arrange
       const testUserRoles = fixtureUserRoles;
       const testRoles = {
-        roles: ['program-admin', 'run-program'],
+        roles: ['program-admin', 'cva-manager'],
       };
 
       // Act
@@ -88,16 +88,16 @@ describe('Load PA table', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.length).toBe(3);
-      expect(response.body[2].role).toBe(testUserRoles[2].role);
-      expect(response.body[2].id).toBe(testUserRoles[2].id);
-      expect(response.body[2].label).toBe(testUserRoles[2].label);
+      expect(response.body[2].role).toBe(testUserRoles[1].role);
+      expect(response.body[2].id).toBe(testUserRoles[1].id);
+      expect(response.body[2].label).toBe(testUserRoles[1].label);
     });
 
     it('should return user roles after delete roles from specific program assignment', async () => {
       // Arrange
       const testUserRoles = fixtureUserRoles;
       const testRoles = {
-        roles: ['run-program', 'view'],
+        roles: ['view', 'cva-manager'],
       };
 
       // Act
