@@ -13,10 +13,7 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      RegistrationEntity,
-      ProgramAidworkerAssignmentEntity,
-    ]),
+    TypeOrmModule.forFeature([ProgramAidworkerAssignmentEntity]),
     RegistrationsModule,
     UserModule,
   ],
