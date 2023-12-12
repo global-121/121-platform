@@ -59,7 +59,7 @@ describe('Get and update registration change log', () => {
       newValue: data.phoneNumber,
       reason: reason,
     };
-    expect(data[0]).toMatchObject(checkingMap1);
+    expect(body[0]).toMatchObject(checkingMap1);
   });
 
   it('should not log if value did not change', async () => {
