@@ -86,7 +86,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ActionREAD,
           // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramREAD,
-          PermissionEnum.AidWorkerProgramUPDATE,
+          // PermissionEnum.AidWorkerProgramUPDATE, // Removed
           // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
