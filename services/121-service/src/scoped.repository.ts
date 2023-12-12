@@ -132,7 +132,6 @@ export class ScopedRepository<T> {
         joinProperty = joinAlias;
       }
       qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
-      console.log('joinAlias: ', joinProperty);
       qb = qb.andWhere(
         `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
         {

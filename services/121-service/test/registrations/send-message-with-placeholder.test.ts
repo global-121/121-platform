@@ -63,7 +63,6 @@ describe('Send custom message with placeholders', () => {
       registrationAh.namePartnerOrganization,
     ); //TODO: make this more flexible for other potential placeholders
 
-    console.log('processedMessage: ', processedMessage);
     expect(messageHistory[0].body).toEqual(processedMessage);
   });
 });
