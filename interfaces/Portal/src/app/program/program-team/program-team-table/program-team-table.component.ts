@@ -5,6 +5,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AuthService } from '../../../auth/auth.service';
+import Permission from '../../../auth/permission.enum';
 import { ProgramTeamPopupOperationEnum } from '../../../models/program-team-popup-operation.enum';
 import { TeamMember, TeamMemberRow } from '../../../models/user.model';
 import { TeamMemberService } from '../../../services/team-member.service';
@@ -24,16 +26,23 @@ export class ProgramTeamTableComponent implements OnInit {
   public rows: TeamMemberRow[] = [];
   public DateFormat = DateFormat;
   public popoverEvent: Event;
+  public canManageAidworkers: boolean = false;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private teamMemberService: TeamMemberService,
     public modalController: ModalController,
     private translate: TranslateService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
     this.loadData();
+
+    this.canManageAidworkers = this.authService.hasPermission(
+      this.programId,
+      Permission.AidWorkerProgramUPDATE,
+    );
 
     this.teamMemberService.teamMemberChanged$.subscribe(() => {
       this.loadData();
