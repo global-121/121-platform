@@ -8,17 +8,17 @@ import {
 } from '../../helpers/registration.helper';
 import {
   getAccessToken,
-  getAccessTokenProgramManager,
+  getAccessTokenCvaManager,
+  updatePermissionsOfRole,
   resetDB,
 } from '../../helpers/utility.helper';
 import { programIdOCW, referenceId, registration1 } from './pagination-data';
 
 describe('Load PA table', () => {
-  describe('getting registration using paginate', () => {
+  describe('Get registrations using paginate without registration:personal.read permission', () => {
     let accessTokenAdmin: string;
-    let accessTokenProgramManager: string;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessTokenAdmin = await getAccessToken();
 
@@ -27,24 +27,30 @@ describe('Load PA table', () => {
         ProgramPhase.registrationValidation,
         accessTokenAdmin,
       );
-
       await importRegistrations(
         programIdOCW,
         [registration1],
         accessTokenAdmin,
       );
-      accessTokenProgramManager = await getAccessTokenProgramManager();
+
+      const cvaManagerUserRoleId = 5;
+      const newPermissions = ['registration.read'];
+      await updatePermissionsOfRole(cvaManagerUserRoleId, {
+        label: 'Test Role',
+        permissions: newPermissions,
+      });
     });
 
-    it('should return all dynamic attributes that do not require personal.read permission', async () => {
+    it('should return all dynamic attributes that do not require registration:personal.read permission', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
+      const accessTokenCvaManager = await getAccessTokenCvaManager();
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         requestedDynamicAttributes,
-        accessTokenProgramManager,
+        accessTokenCvaManager,
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
@@ -71,8 +77,9 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
 
-    it('should return all dynamic attributes that were selected and do not require read personal read persmission', async () => {
+    it('should return all dynamic attributes that were selected and do not require registration:personal.read permission', async () => {
       // Arrange
+      const accessTokenCvaManager = await getAccessTokenCvaManager();
       const requestedDynamicAttributes = [
         'name',
         'phoneNumber',
@@ -84,7 +91,7 @@ describe('Load PA table', () => {
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         requestedDynamicAttributes,
-        accessTokenProgramManager,
+        accessTokenCvaManager,
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;

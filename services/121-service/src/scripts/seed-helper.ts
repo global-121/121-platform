@@ -5,6 +5,8 @@ import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
@@ -15,9 +17,7 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { DEBUG } from '../config';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 export class SeedHelper {
   public constructor(
@@ -27,22 +27,11 @@ export class SeedHelper {
 
   public async addDefaultUsers(
     program: ProgramEntity,
-    addFieldValidation: boolean,
     debugScopeUsers: string[] = [],
   ): Promise<void> {
-    const fullAccessUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
-    });
-
-    const runProgramUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-    });
-
-    const personalDataUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
+    const programAdminUser = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
 
     const viewOnlyUser = await this.getOrSaveUser({
@@ -55,21 +44,30 @@ export class SeedHelper {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
     });
 
+    const cvaManager = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+    });
+
+    const cvaOfficer = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+    });
+
+    const financeManager = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+    });
+
+    const financeOfficer = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
+    });
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    if (fullAccessUser) {
-      await this.assignAidworker(fullAccessUser.id, program.id, [
-        DefaultUserRole.RunProgram,
-        DefaultUserRole.PersonalData,
-      ]);
-    }
-    if (runProgramUser) {
-      await this.assignAidworker(runProgramUser.id, program.id, [
-        DefaultUserRole.RunProgram,
-      ]);
-    }
-    if (personalDataUser) {
-      await this.assignAidworker(personalDataUser.id, program.id, [
-        DefaultUserRole.PersonalData,
+    if (programAdminUser) {
+      await this.assignAidworker(programAdminUser.id, program.id, [
+        DefaultUserRole.ProgramAdmin,
       ]);
     }
     if (viewOnlyUser) {
@@ -82,16 +80,24 @@ export class SeedHelper {
         DefaultUserRole.KoboUser,
       ]);
     }
-
-    if (addFieldValidation) {
-      const fieldValidationUser = await this.getOrSaveUser({
-        username:
-          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
-        password:
-          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
-      });
-      await this.assignAidworker(fieldValidationUser.id, program.id, [
-        DefaultUserRole.FieldValidation,
+    if (cvaManager) {
+      await this.assignAidworker(cvaManager.id, program.id, [
+        DefaultUserRole.CvaManager,
+      ]);
+    }
+    if (cvaOfficer) {
+      await this.assignAidworker(cvaOfficer.id, program.id, [
+        DefaultUserRole.CvaOfficer,
+      ]);
+    }
+    if (financeManager) {
+      await this.assignAidworker(financeManager.id, program.id, [
+        DefaultUserRole.FinanceManager,
+      ]);
+    }
+    if (financeOfficer) {
+      await this.assignAidworker(financeOfficer.id, program.id, [
+        DefaultUserRole.FinanceManager,
       ]);
     }
 
@@ -313,7 +319,7 @@ export class SeedHelper {
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
     await this.assignAidworker(adminUser.id, programId, [
-      DefaultUserRole.ProgramAdmin,
+      DefaultUserRole.Admin,
     ]);
   }
 

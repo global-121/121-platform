@@ -2,31 +2,37 @@
 
 ```mermaid
 graph LR
+  ProgramModule-->SmsModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   MessageTemplateModule-->ProgramAttributesModule
+  CronjobModule-->IntersolveVoucherModule
+  IntersolveVoucherModule-->ImageCodeModule
+  IntersolveVoucherModule-->TransactionsModule
+  TransactionsModule-->QueueMessageModule
+  QueueMessageModule-->ProgramAttributesModule
+  TransactionsModule-->MessageTemplateModule
+  IntersolveVoucherModule-->WhatsappModule
+  WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
+  IntersolveVoucherModule-->QueueMessageModule
+  IntersolveVoucherModule-->MessageTemplateModule
+  CronjobModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->QueueMessageModule
+  CronjobModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaModule-->TransactionsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->QueueMessageModule
-  QueueMessageModule-->ProgramAttributesModule
   RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
-  TransactionsModule-->QueueMessageModule
-  TransactionsModule-->MessageTemplateModule
-  IntersolveVisaModule-->QueueMessageModule
   RegistrationsModule-->RegistrationChangeLogModule
   MessageModule-->WhatsappModule
-  WhatsappModule-->ImageCodeModule
-  WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule
   MessageModule-->IntersolveVoucherModule
-  IntersolveVoucherModule-->ImageCodeModule
-  IntersolveVoucherModule-->TransactionsModule
-  IntersolveVoucherModule-->QueueMessageModule
-  IntersolveVoucherModule-->MessageTemplateModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->ProgramModule
@@ -51,7 +57,6 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   PaymentsModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   MetricsModule-->TransactionsModule

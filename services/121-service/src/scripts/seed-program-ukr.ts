@@ -30,7 +30,7 @@ export class SeedProgramUkr implements InterfaceScript {
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(messageTemplatePilotUkr, program);
 
-    await this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceUkr);

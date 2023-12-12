@@ -349,7 +349,7 @@ export class ProgramService {
       newProgram.id,
       userId,
       {
-        roles: [DefaultUserRole.ProgramAdmin],
+        roles: [DefaultUserRole.Admin],
         scope: null,
       },
     );

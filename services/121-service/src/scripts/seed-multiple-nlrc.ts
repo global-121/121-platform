@@ -48,7 +48,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityLVV, true, debugScopes);
+    await this.seedHelper.addDefaultUsers(programEntityLVV, debugScopes);
 
     // ************************
     // ***** Program PV *****
@@ -64,7 +64,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityPV, true, debugScopes);
+    await this.seedHelper.addDefaultUsers(programEntityPV, debugScopes);
 
     // ************************
     // ***** Program OCW *****
@@ -80,7 +80,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityOCW, true, debugScopes);
+    await this.seedHelper.addDefaultUsers(programEntityOCW, debugScopes);
   }
 }
 

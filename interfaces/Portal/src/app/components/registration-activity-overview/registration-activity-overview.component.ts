@@ -84,6 +84,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   ];
   public canUpdatePersonalData: boolean;
 
+  private canViewRegistration: boolean;
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canViewPaymentData: boolean;
@@ -270,13 +271,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
     }
 
-    if (this.canViewPersonalData) {
-      const changes =
-        await this.programsService.getRegistrationChangeLogByReferenceId(
-          this.program.id,
-          this.person.referenceId,
-        );
-
+    if (this.canViewRegistration) {
       for (const statusChange of this.statusChanges) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
@@ -295,6 +290,14 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
         });
       }
+    }
+
+    if (this.canViewPersonalData) {
+      const changes =
+        await this.programsService.getRegistrationChangeLogByReferenceId(
+          this.program.id,
+          this.person.referenceId,
+        );
 
       for (const change of changes) {
         const attribute = this.program.paTableAttributes.find(
@@ -390,6 +393,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   }
 
   private loadPermissions() {
+    this.canViewRegistration = this.authService.hasAllPermissions(
+      this.program.id,
+      [Permission.RegistrationREAD],
+    );
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],

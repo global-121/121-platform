@@ -61,3 +61,21 @@ export async function getAccessTokenScoped(
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
 }
+
+export async function getAccessTokenCvaManager(): Promise<string> {
+  return await getAccessToken(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+  );
+}
+
+export async function updatePermissionsOfRole(
+  userRoleId,
+  roleToUpdate,
+): Promise<void> {
+  const accessToken = await getAccessToken();
+  await getServer()
+    .put(`/roles/${userRoleId}`)
+    .set('Cookie', [accessToken])
+    .send(roleToUpdate);
+}
