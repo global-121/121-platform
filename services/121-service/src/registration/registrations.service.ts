@@ -1015,6 +1015,7 @@ export class RegistrationsService {
             programIds: programIds,
           })
           .getMany();
+
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
