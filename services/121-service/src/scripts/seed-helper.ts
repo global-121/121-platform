@@ -110,7 +110,7 @@ export class SeedHelper {
         await this.assignAidworker(
           scopedUser.id,
           program.id,
-          [DefaultUserRole.ProgramAdmin],
+          [DefaultUserRole.Admin],
           debugScopeUser,
         );
       }

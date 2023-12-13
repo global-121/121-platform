@@ -5,6 +5,7 @@ import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
+import { NoteEntity } from '../notes/note.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';
@@ -84,6 +85,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     createScopedRepositoryProvider(RegistrationChangeLogEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
+    createScopedRepositoryProvider(NoteEntity),
   ],
   controllers: [RegistrationsController],
   exports: [
