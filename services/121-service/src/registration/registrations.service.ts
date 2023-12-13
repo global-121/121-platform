@@ -1218,10 +1218,9 @@ export class RegistrationsService {
   public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = user.programAssignments.map((p) => p.program.id);
     const data = {
-      answers: await this.getAllProgramAnswers(user),
-      fspData: await this.getAllFspAnswers(programIds),
+      answers: await this.getAllProgramAnswers(user.id),
+      fspData: await this.getAllFspAnswers(user.id),
       programIds: user.programAssignments.map((assignment) => {
         return assignment.program.id;
       }),
@@ -1230,18 +1229,18 @@ export class RegistrationsService {
   }
 
   public async getAllProgramAnswers(
-    user: UserEntity,
+    userId: number,
   ): Promise<RegistrationDataEntity[]> {
-    const programIds = user.programAssignments.map((p) => p.program.id);
     const registrationsToValidate = await this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .addSelect('"referenceId"')
+      .addSelect([
+        '"referenceId"',
+        'registration."programId" AS "programId"',
+        'scope',
+      ])
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoinAndSelect('registration.data', 'data')
       .leftJoinAndSelect('data.programQuestion', 'programQuestion')
-      .andWhere('registration.program.id IN (:...programIds)', {
-        programIds: programIds,
-      })
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
         registrationStatuses: [
           RegistrationStatusEnum.registered,
@@ -1250,8 +1249,14 @@ export class RegistrationsService {
       })
       .andWhere('data.programQuestionId is not null')
       .getMany();
+
+    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+      registrationsToValidate,
+      userId,
+    );
+
     let answers = [];
-    for (const r of registrationsToValidate) {
+    for (const r of filteredRegistrations) {
       const uniqueQuestions = [];
       for (const a of r.data) {
         a['referenceId'] = r.referenceId;
@@ -1279,17 +1284,19 @@ export class RegistrationsService {
   }
 
   public async getAllFspAnswers(
-    programIds: number[],
+    userId: number,
   ): Promise<FspAnswersAttrInterface[]> {
     const registrations = await this.registrationScopedRepository
       .createQueryBuilder('registration')
+      .addSelect([
+        '"referenceId"',
+        'registration."programId" AS "programId"',
+        'scope',
+      ])
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
       .leftJoin('registration.program', 'program')
       .andWhere('registration.fsp IS NOT NULL')
-      .andWhere('registration.program.id IN (:...programIds)', {
-        programIds: programIds,
-      })
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
         registrationStatuses: [
           RegistrationStatusEnum.registered,
@@ -1298,8 +1305,13 @@ export class RegistrationsService {
       })
       .getMany();
 
+    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+      registrations,
+      userId,
+    );
+
     const fspDataPerRegistration = [];
-    for (const registration of registrations) {
+    for (const registration of filteredRegistrations) {
       const answers = await this.getFspAnswers(registration.referenceId);
       const fspData = {
         attributes: registration.fsp.questions,
