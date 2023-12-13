@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceKRCS from '../../seed-data/instance/instance-krcs.json';
-import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
-import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
-import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
 import messageTemplateBaringo from '../../seed-data/message-template/message-template-krcs-baringo.json';
 import messageTemplateTurkana from '../../seed-data/message-template/message-template-krcs-turkana.json';
 import messageTemplateWestPokot from '../../seed-data/message-template/message-template-krcs-westpokot.json';
+import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
+import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
+import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedMultipleKRCS implements InterfaceScript {

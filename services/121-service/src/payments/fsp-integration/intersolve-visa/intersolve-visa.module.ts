@@ -1,9 +1,12 @@
 import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
@@ -13,11 +16,6 @@ import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
-import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
-import { Module } from '@nestjs/common';
-import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
 @Module({
   imports: [

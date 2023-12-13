@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TwilioMessageEntity } from './twilio.entity';
 import { LatestMessageEntity } from './latest-message.entity';
+import { TwilioMessageEntity } from './twilio.entity';
 
 @Injectable()
 export class LastMessageStatusService {

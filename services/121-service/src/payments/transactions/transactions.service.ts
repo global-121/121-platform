@@ -3,11 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
+import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
+import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
+import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import {
   PaTransactionResultDto,
   TransactionNotificationObject,
@@ -20,12 +26,6 @@ import {
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
-import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
-import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
-import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Injectable()
 export class TransactionsService {

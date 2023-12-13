@@ -7,9 +7,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { UserEntity } from '../user/user.entity';
+import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 import { UserModule } from '../user/user.module';
 import { ProgramFspConfigurationController } from './fsp-configuration/fsp-configuration.controller';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
@@ -19,7 +17,6 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramController } from './programs.controller';
 import { ProgramService } from './programs.service';
-import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 
 @Module({
   imports: [

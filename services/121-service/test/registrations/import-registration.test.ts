@@ -1,4 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  referenceIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
+import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   importRegistrations,
@@ -10,17 +15,12 @@ import {
   resetDB,
 } from '../helpers/utility.helper';
 import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
-import {
   programIdOCW,
   programIdPV,
   referenceId1PV,
   registration1PV,
   registration2PV,
 } from './pagination/pagination-data';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 
 describe('Import a registration', () => {
   let accessToken: string;

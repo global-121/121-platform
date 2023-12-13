@@ -17,6 +17,9 @@ import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attr
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { ScopedRepository } from '../../scoped.repository';
+import { UserService } from '../../user/user.service';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import {
   BulkImportDto,
   BulkImportResult,
@@ -38,9 +41,6 @@ import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
-import { UserService } from '../../user/user.service';
-import { ScopedRepository } from '../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 
 export enum ImportType {
   imported = 'import-as-imported',

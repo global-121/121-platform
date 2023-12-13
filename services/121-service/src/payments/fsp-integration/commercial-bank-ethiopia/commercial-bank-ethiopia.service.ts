@@ -5,7 +5,9 @@ import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -22,8 +24,6 @@ import {
   CommercialBankEthiopiaValidationData,
 } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
-import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaService

@@ -1,6 +1,7 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
   getCbeValidationReport,
@@ -8,7 +9,6 @@ import {
 } from '../helpers/program.helper';
 import { importRegistrations } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Export CBE validation report', () => {
   const programId = 1;

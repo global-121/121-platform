@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase } from '../helpers/program.helper';
@@ -7,7 +8,6 @@ import {
   searchRegistrationByPhoneNumber,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 
 describe('Find registrations by phone-number', () => {
   let accessToken: string;

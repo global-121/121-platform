@@ -9,8 +9,8 @@ import {
 import {
   getAccessToken,
   getAccessTokenCvaManager,
-  updatePermissionsOfRole,
   resetDB,
+  updatePermissionsOfRole,
 } from '../../helpers/utility.helper';
 import { programIdOCW, referenceId, registration1 } from './pagination-data';
 

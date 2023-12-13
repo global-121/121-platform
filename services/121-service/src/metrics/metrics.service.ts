@@ -25,18 +25,18 @@ import {
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationsService } from '../registration/registrations.service';
+import { ScopedRepository } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { ExportType } from './dto/export-details.dto';
 import { FileDto } from './dto/file.dto';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
-import { ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class MetricsService {

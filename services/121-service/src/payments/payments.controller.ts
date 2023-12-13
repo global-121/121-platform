@@ -40,10 +40,10 @@ import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
+import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
 import { RetryPaymentDto } from './dto/retry-payment.dto';
 import { PaymentsService } from './payments.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
-import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments')

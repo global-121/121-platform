@@ -1,19 +1,19 @@
+import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { processMessagePlaceholders } from '../helpers/assert.helper';
+import {
+  getMessageTemplates,
+  waitForMessagesToComplete,
+} from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   getMessageHistory,
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
-import {
-  getMessageTemplates,
-  waitForMessagesToComplete,
-} from '../helpers/program.helper';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { processMessagePlaceholders } from '../helpers/assert.helper';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
 describe('Send templated message on status change of PA', () => {
   const programId = 1; // status change templates are only available for LVV/PV

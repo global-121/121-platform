@@ -1,12 +1,12 @@
-import { Queue } from 'bull';
-import { MessageIncomingService } from './message-incoming.service';
 import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+import { getQueueName } from '../../utils/unit-test.helpers';
 import {
   ProcessName,
   QueueNameMessageCallBack,
 } from '../enum/queue.names.enum';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
-import { getQueueName } from '../../utils/unit-test.helpers';
+import { MessageIncomingService } from './message-incoming.service';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;

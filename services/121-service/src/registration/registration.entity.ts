@@ -24,6 +24,7 @@ import { AppDataSource } from '../../appdatasource';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
@@ -46,7 +47,6 @@ import { RegistrationDataError } from './errors/registration-data.error';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)

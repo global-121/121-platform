@@ -72,7 +72,6 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
-import Api from 'twilio/lib/rest/Api';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })

@@ -3,6 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { And, In, IsNull, Not, Repository } from 'typeorm';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
+import { LatestMessageEntity } from '../../notifications/latest-message.entity';
+import {
+  MessageProcessType,
+  MessageProcessTypeExtension,
+} from '../../notifications/message-job.dto';
+import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whatsapp-pending-message.entity';
@@ -11,26 +17,20 @@ import { SafaricomRequestEntity } from '../../payments/fsp-integration/safaricom
 import { ImageCodeExportVouchersEntity } from '../../payments/imagecode/image-code-export-vouchers.entity';
 import { PersonAffectedAppDataEntity } from '../../people-affected/person-affected-app-data.entity';
 import { ProgramEntity } from '../../programs/program.entity';
+import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
 import { AzureLogService } from '../../shared/services/azure-log.service';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import { BulkActionResultDto } from '../dto/bulk-action-result.dto';
+import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationViewEntity } from '../registration-view.entity';
-import { RegistrationsService } from '../registrations.service';
-import { RegistrationsPaginationService } from './registrations-pagination.service';
-import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
-import {
-  MessageProcessType,
-  MessageProcessTypeExtension,
-} from '../../notifications/message-job.dto';
 import {
   RegistrationScopedRepository,
   RegistrationViewScopedRepository,
 } from '../registration-scoped.repository';
-import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import { LatestMessageEntity } from '../../notifications/latest-message.entity';
+import { RegistrationViewEntity } from '../registration-view.entity';
+import { RegistrationsService } from '../registrations.service';
+import { RegistrationsPaginationService } from './registrations-pagination.service';
 
 @Injectable()
 export class RegistrationsBulkService {

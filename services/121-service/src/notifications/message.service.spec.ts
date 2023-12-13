@@ -1,14 +1,14 @@
-import { MessageService } from './message.service';
-import { LanguageEnum } from '../registration/enum/language.enum';
-import { MessageContentType } from './enum/message-type.enum';
-import { WhatsappService } from './whatsapp/whatsapp.service';
-import { SmsService } from './sms/sms.service';
 import { TestBed } from '@automock/jest';
-import { MessageJobDto, MessageProcessType } from './message-job.dto';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { AzureLogService } from '../shared/services/azure-log.service';
+import { LanguageEnum } from '../registration/enum/language.enum';
+import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { AzureLogService } from '../shared/services/azure-log.service';
+import { MessageContentType } from './enum/message-type.enum';
+import { MessageJobDto, MessageProcessType } from './message-job.dto';
+import { MessageService } from './message.service';
+import { SmsService } from './sms/sms.service';
+import { WhatsappService } from './whatsapp/whatsapp.service';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',

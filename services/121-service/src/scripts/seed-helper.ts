@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
+import { DEBUG } from '../config';
 import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -17,7 +18,6 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
-import { DEBUG } from '../config';
 
 export class SeedHelper {
   public constructor(

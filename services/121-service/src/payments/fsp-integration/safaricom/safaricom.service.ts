@@ -11,12 +11,12 @@ import {
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 import { SafaricomRequestEntity } from './safaricom-request.entity';
 import { SafaricomApiService } from './safaricom.api.service';
-import { waitFor } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class SafaricomService {

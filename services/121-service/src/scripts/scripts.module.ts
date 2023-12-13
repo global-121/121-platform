@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ORMConfig } from '../../ormconfig';
+import { MessageTemplateModule } from '../notifications/message-template/message-template.module';
 import { ScriptsController } from './scripts.controller';
 import SeedEthJointResponse from './seed-eth-joint-response';
 import { SeedHelper } from './seed-helper';
@@ -12,7 +13,6 @@ import SeedProgramLbn from './seed-program-lbn';
 import { SeedNLProgramLVV } from './seed-program-nlrc-lvv';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedProgramValidation } from './seed-program-validation';
-import { MessageTemplateModule } from '../notifications/message-template/message-template.module';
 
 @Module({
   imports: [

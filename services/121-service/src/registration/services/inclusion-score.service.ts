@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
+import { RegistrationScopedRepository } from '../registration-scoped.repository';
 import { RegistrationEntity } from '../registration.entity';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
-import { RegistrationScopedRepository } from '../registration-scoped.repository';
 
 @Injectable()
 export class InclusionScoreService {

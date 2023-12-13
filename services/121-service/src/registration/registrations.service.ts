@@ -8,12 +8,17 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
+import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
+import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
+import { UserService } from '../user/user.service';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
@@ -43,24 +48,19 @@ import {
 } from './enum/registration-status.enum';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { RegistrationViewEntity } from './registration-view.entity';
-import { RegistrationEntity } from './registration.entity';
 import {
   RegistrationScopedRepository,
   RegistrationViewScopedRepository,
 } from './registration-scoped.repository';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
+import { RegistrationEntity } from './registration.entity';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
   RegistrationsImportService,
 } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
-import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
-import { UserService } from '../user/user.service';
-import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
-import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
-import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {

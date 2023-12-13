@@ -3,6 +3,7 @@ import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersol
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { changePhase, doPayment, exportList } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
@@ -10,7 +11,6 @@ import {
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Export Visa debit card report', () => {
   const programId = 3;
