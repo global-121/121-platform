@@ -3,12 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  Query,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiConsumes,
@@ -18,8 +18,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { MessageTemplateService } from './message-template.service';
-import { MessageTemplateEntity } from './message-template.entity';
+import { DeleteResult } from 'typeorm';
+import { Permissions } from '../../guards/permissions.decorator';
+import { PermissionsGuard } from '../../guards/permissions.guard';
+import { PermissionEnum } from '../../user/permission.enum';
 import {
   CreateMessageTemplateDto,
   DeleteTemplateParamDto,
@@ -27,10 +29,8 @@ import {
   UpdateTemplateBodyDto,
   UpdateTemplateParamDto,
 } from './dto/message-template.dto';
-import { PermissionsGuard } from '../../guards/permissions.guard';
-import { Permissions } from '../../guards/permissions.decorator';
-import { PermissionEnum } from '../../user/permission.enum';
-import { DeleteResult } from 'typeorm';
+import { MessageTemplateEntity } from './message-template.entity';
+import { MessageTemplateService } from './message-template.service';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('notifications')

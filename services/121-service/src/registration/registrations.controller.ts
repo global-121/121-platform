@@ -72,7 +72,6 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
-import Api from 'twilio/lib/rest/Api';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -283,7 +282,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
     summary:
-      '(SCOPED) Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
+      '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
   })
   @ApiParam({
     name: 'programId',
@@ -336,7 +335,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      '(SCOPED) Update registration status of set of PAs that can be defined via filter parameters.',
+      '[SCOPED] Update registration status of set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -447,7 +446,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
     summary:
-      '(SCOPED) Update provided attributes of registration (Used by Aidworker)',
+      '[SCOPED] Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
     status: 200,
@@ -492,7 +491,7 @@ export class RegistrationsController {
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:
-      '(SCOPED) Find registration by phone-number for Redline integration and FieldValidation',
+      '[SCOPED] Find registration by phone-number for Redline integration and FieldValidation',
   })
   @ApiResponse({
     status: 200,
@@ -533,7 +532,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     summary:
-      '(SCOPED) Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
+      '[SCOPED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
     status: 201,
@@ -594,7 +593,7 @@ export class RegistrationsController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ summary: '(SCOPED) Delete set of registrations' })
+  @ApiOperation({ summary: '[SCOPED] Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Delete('programs/:programId/registrations')
   public async delete(
@@ -627,7 +626,7 @@ export class RegistrationsController {
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
-    summary: '(SCOPED) Download all program answers (for validation)',
+    summary: '[SCOPED] Download all program answers (for validation)',
   })
   @ApiResponse({
     status: 200,
@@ -679,7 +678,7 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationFspREAD)
-  @ApiOperation({ summary: '(SCOPED) Get FSP-attribute answers' })
+  @ApiOperation({ summary: '[SCOPED] Get FSP-attribute answers' })
   @ApiResponse({
     status: 200,
     description:
@@ -698,7 +697,7 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: '(SCOPED) Issue validationData (For AW)' })
+  @ApiOperation({ summary: '[SCOPED] Issue validationData (For AW)' })
   @ApiResponse({
     status: 200,
     description:
@@ -733,7 +732,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      '(SCOPED) Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
+      '[SCOPED] Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -801,7 +800,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
   @ApiOperation({
-    summary: '(SCOPED) Get message history for one registration',
+    summary: '[SCOPED] Get message history for one registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -841,7 +840,7 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({ summary: '(SCOPED) Get Person Affected referenceId' })
+  @ApiOperation({ summary: '[SCOPED] Get Person Affected referenceId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paId', required: true, type: 'integer' })
   @ApiResponse({
@@ -862,7 +861,7 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({ summary: '(SCOPED) Get registration status changes' })
+  @ApiOperation({ summary: '[SCOPED] Get registration status changes' })
   @ApiResponse({
     status: 200,
     description:

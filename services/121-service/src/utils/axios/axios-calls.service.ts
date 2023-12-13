@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { EXTERNAL_API } from '../../config';
 import { CookieNames } from '../../shared/enum/cookie.enums';
@@ -5,7 +6,6 @@ import {
   CustomHttpService,
   Header,
 } from '../../shared/services/custom-http.service';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AxiosCallsService {

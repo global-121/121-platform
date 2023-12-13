@@ -19,7 +19,7 @@ export class CommercialBankEthiopiaController {
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     summary:
-      '(SCOPED) Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
+      '[SCOPED] Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
   })
   @ApiResponse({
     status: 200,
@@ -62,7 +62,7 @@ export class CommercialBankEthiopiaController {
   @Admin()
   @ApiOperation({
     summary:
-      '(CRON) Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
+      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
   })
   @ApiResponse({
     status: 200,

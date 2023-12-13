@@ -33,7 +33,7 @@ export class IntersolveVisaController {
   @Permissions(PermissionEnum.FspDebitCardREAD)
   @ApiOperation({
     summary:
-      '(SCOPED) Get Intersolve Visa wallet data related to a registration',
+      '[SCOPED] Get Intersolve Visa wallet data related to a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -59,7 +59,7 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardBLOCK)
   @ApiOperation({
-    summary: '(SCOPED) Block Intersolve Visa wallet',
+    summary: '[SCOPED] Block Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
@@ -84,7 +84,7 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardUNBLOCK)
   @ApiOperation({
-    summary: '(SCOPED) Unblock Intersolve Visa wallet',
+    summary: '[SCOPED] Unblock Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
@@ -131,14 +131,14 @@ export class IntersolveVisaController {
   @Permissions(PermissionEnum.FspDebitCardCREATE)
   @ApiOperation({
     summary:
-      '(SCOPED) Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
+      '[SCOPED] Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 200,
     description:
-      'Wallet and card replace  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.d',
+      'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   // TODO: REFACTOR: PUT /api/programs/{programId}/financial-service-providers/intersolve-visa/wallets/:tokencode
   @Put(
@@ -155,7 +155,7 @@ export class IntersolveVisaController {
 
   @Admin()
   @ApiOperation({
-    summary: '(CRON) Update all Visa wallet details',
+    summary: '[CRON] Update all Visa wallet details',
   })
   @ApiResponse({
     status: 200,

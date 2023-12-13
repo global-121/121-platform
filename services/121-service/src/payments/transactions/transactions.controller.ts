@@ -25,7 +25,7 @@ export class TransactionsController {
   ) {}
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: '(SCOPED) Get all transactions' })
+  @ApiOperation({ summary: '[SCOPED] Get all transactions' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({
     name: 'payment',
@@ -58,7 +58,7 @@ export class TransactionsController {
 
   // TODO: REFACTOR combine this endpoint with GET /payments/transactions (or remove the need for this one altogether)
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: '(SCOPED) Get a single transaction' })
+  @ApiOperation({ summary: '[SCOPED] Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })

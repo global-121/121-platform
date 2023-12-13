@@ -1,12 +1,15 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
+import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
+import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { RegistrationEntity } from '../../../registration/registration.entity';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
@@ -20,11 +23,6 @@ import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
-import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
-import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
-import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
-import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -36,8 +34,6 @@ import { createScopedRepositoryProvider } from '../../../utils/scope/createScope
       TransactionEntity,
       ProgramEntity,
       ProgramFspConfigurationEntity,
-      UserEntity,
-      TwilioMessageEntity,
       ProgramAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),

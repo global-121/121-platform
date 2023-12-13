@@ -1,14 +1,14 @@
-import { QueueMessageService } from './queue-message.service';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
 import { LanguageEnum } from '../../registration/enum/language.enum';
+import { RegistrationViewEntity } from '../../registration/registration-view.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { getQueueName } from '../../utils/unit-test.helpers';
+import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.const';
 import { MessageContentType } from '../enum/message-type.enum';
 import { ProcessName } from '../enum/queue.names.enum';
-import { Queue } from 'bull';
-import { TestBed } from '@automock/jest';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.const';
-import { getQueueName } from '../../utils/unit-test.helpers';
+import { QueueMessageService } from './queue-message.service';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',

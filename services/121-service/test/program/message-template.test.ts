@@ -1,5 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
+import { CreateMessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   getMessageTemplates,
@@ -7,8 +9,6 @@ import {
   updateMessageTemplate,
 } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { CreateMessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
 
 describe('Message template', () => {
   let accessToken: string;

@@ -3,12 +3,17 @@ import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { ErrorEnum } from '../../../registration/errors/registration-data.error';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -61,11 +66,6 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { ScopedRepository } from '../../../scoped.repository';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 
 @Injectable()
 export class IntersolveVisaService

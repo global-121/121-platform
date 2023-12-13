@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
+import { ActionEntity } from '../actions/action.entity';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
@@ -25,8 +27,6 @@ import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity'
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
-import { ActionEntity } from '../actions/action.entity';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)

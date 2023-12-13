@@ -19,10 +19,12 @@ import {
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
+import { ScopedQueryBuilder } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
@@ -41,11 +43,9 @@ import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/i
 import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
+import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
-import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
-import { ScopedQueryBuilder } from '../scoped.repository';
 
 @Injectable()
 export class PaymentsService {

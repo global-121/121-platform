@@ -3,10 +3,10 @@ import { DataSource } from 'typeorm';
 import instanceNLRC from '../../seed-data/instance/instance-nlrc.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedNLProgramPV implements InterfaceScript {

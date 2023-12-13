@@ -1,4 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  referenceIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   importRegistrations,
@@ -6,10 +10,6 @@ import {
   updateRegistration,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
 
 const updatePhoneNumber = '15005550099';
 

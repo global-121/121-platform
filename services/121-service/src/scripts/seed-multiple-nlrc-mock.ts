@@ -7,14 +7,14 @@ import {
   referenceIdVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';
-import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedMockHelper } from './seed-mock-helpers';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
-import { AxiosCallsService } from '../utils/axios/axios-calls.service';
+import SeedMultipleNLRC from './seed-multiple-nlrc';
 
 const readSqlFile = (filepath: string): string => {
   return fs

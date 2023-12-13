@@ -1,7 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  amountVisa,
+  paymentNrVisa,
+  programIdVisa,
+  referenceIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
@@ -14,14 +22,6 @@ import {
   updateRegistration,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import {
-  amountVisa,
-  paymentNrVisa,
-  programIdVisa,
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
 
 describe('Do payment to 1 PA', () => {
   registrationVisa.whatsappPhoneNumber = '14155238887';

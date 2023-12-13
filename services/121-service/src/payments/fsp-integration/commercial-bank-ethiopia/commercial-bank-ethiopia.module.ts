@@ -6,6 +6,7 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserModule } from '../../../user/user.module';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -14,7 +15,6 @@ import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api
 import { CommercialBankEthiopiaController } from './commercial-bank-ethiopia.controller';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -24,7 +24,6 @@ import { createScopedRepositoryProvider } from '../../../utils/scope/createScope
       TransactionEntity,
       ProgramEntity,
       ProgramFspConfigurationEntity,
-      CommercialBankEthiopiaAccountEnquiriesEntity,
     ]),
     TransactionsModule,
     UserModule,

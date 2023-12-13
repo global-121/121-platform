@@ -6,20 +6,20 @@ import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { ProgramEntity } from '../../programs/program.entity';
 import { MessageContentType } from '../enum/message-type.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
+import { MessageProcessType } from '../message-job.dto';
+import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { MessageTemplateService } from '../message-template/message-template.service';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { MessageTemplateService } from '../message-template/message-template.service';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
-import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 

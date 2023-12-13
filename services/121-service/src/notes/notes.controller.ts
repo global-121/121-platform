@@ -29,7 +29,7 @@ export class NoteController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: '(SCOPED) Create note for registration' })
+  @ApiOperation({ summary: '[SCOPED] Create note for registration' })
   @ApiResponse({
     status: 201,
     description:
@@ -65,7 +65,7 @@ export class NoteController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: '(SCOPED) Get notes for registration' })
+  @ApiOperation({ summary: '[SCOPED] Get notes for registration' })
   @ApiResponse({
     status: 200,
     description:

@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { ScopedQueryBuilder } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/permission.enum';
 import { UserEntity } from '../../user/user.entity';
@@ -32,9 +33,8 @@ import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
-import { ScopedQueryBuilder } from '../../scoped.repository';
+import { RegistrationViewEntity } from '../registration-view.entity';
 
 interface Filter {
   comparator: FilterComparator;

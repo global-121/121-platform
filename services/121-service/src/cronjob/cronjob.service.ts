@@ -1,7 +1,7 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomHttpService } from '../shared/services/custom-http.service';
-import { HttpService } from '@nestjs/axios';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
 @Injectable()

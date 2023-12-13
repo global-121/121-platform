@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { BobFinanceService } from './bob-finance.service';
@@ -10,7 +9,7 @@ import { BobFinanceService } from './bob-finance.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
   ],
