@@ -25,7 +25,7 @@ import {
 describe('Import a registration', () => {
   let accessToken: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
   });
 
@@ -107,6 +107,7 @@ describe('Import a registration', () => {
     );
 
     // Assert
+    console.log('response.statusCode: ', response.statusCode);
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
@@ -115,6 +116,7 @@ describe('Import a registration', () => {
       accessToken,
     );
     const registrationsResult = result.body.data;
+    console.log('registrationsResult: ', registrationsResult);
     expect(registrationsResult).toHaveLength(0);
   });
 });
