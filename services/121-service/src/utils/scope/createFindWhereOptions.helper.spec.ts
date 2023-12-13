@@ -1,12 +1,12 @@
 import { FindOperator } from 'typeorm';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
 import {
-  FindOptionsCombined,
   convertToScopedOptions,
+  FindOptionsCombined,
 } from './createFindWhereOptions.helper';
 
 describe('createFindWhereOptions helper', () => {
-  it('convertToScopedOptions', () => {
+  it('should return correct scoped whereFilters', () => {
     // Arrange
     const options: FindOptionsCombined<RegistrationDataEntity> = {
       where: { program: { id: 3 }, registrationStatus: 'included' },
