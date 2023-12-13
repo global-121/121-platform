@@ -24,7 +24,6 @@ import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.servic
       TransactionEntity,
       ProgramEntity,
       ProgramFspConfigurationEntity,
-      CommercialBankEthiopiaAccountEnquiriesEntity,
     ]),
     TransactionsModule,
     UserModule,
