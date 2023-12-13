@@ -1,4 +1,5 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 
 export const programIdVisa = 3;
 export const paymentNrVisa = 1;
@@ -11,12 +12,12 @@ export const registrationVisa = {
   paymentAmountMultiplier: 1,
   firstName: 'Jane',
   lastName: 'Doe',
-  phoneNumber: '14155238887',
+  [CustomDataAttributes.phoneNumber]: '14155238887',
   fspName: FspName.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
-  whatsappPhoneNumber: '',
+  [CustomDataAttributes.whatsappPhoneNumber]: '',
 };
