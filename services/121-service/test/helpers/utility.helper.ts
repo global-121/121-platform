@@ -2,6 +2,10 @@ import * as request from 'supertest';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { CookieNames } from '../../src/shared/enum/cookie.enums';
+import { UpdateUserRoleDto } from '../../src/user/dto/user-role.dto';
+import { UserRoleResponseDTO } from '../../src/user/dto/userrole-response.dto';
+import { PermissionEnum } from '../../src/user/permission.enum';
+import { DefaultUserRole } from '../../src/user/user-role.enum';
 
 export function getHostname(): string {
   return 'http://localhost:3000/api';
@@ -70,12 +74,38 @@ export async function getAccessTokenCvaManager(): Promise<string> {
 }
 
 export async function updatePermissionsOfRole(
-  userRoleId,
-  roleToUpdate,
+  userRoleId: number,
+  roleToUpdate: UpdateUserRoleDto,
 ): Promise<void> {
   const accessToken = await getAccessToken();
   await getServer()
     .put(`/roles/${userRoleId}`)
     .set('Cookie', [accessToken])
     .send(roleToUpdate);
+}
+
+export async function getRole(type: string): Promise<UserRoleResponseDTO> {
+  const accessToken = await getAccessToken();
+  const allRolesResponse = await getServer()
+    .get(`/roles/`)
+    .set('Cookie', [accessToken])
+    .send();
+
+  const allRoles = allRolesResponse.body;
+
+  return allRoles.find((role: UserRoleResponseDTO) => role.role === type);
+}
+
+export async function removePermissionsFromRole(
+  roleName: DefaultUserRole,
+  permissionsToRemove: PermissionEnum[],
+): Promise<void> {
+  const role = await getRole(roleName);
+  const adjustedPermissions = role.permissions.filter(
+    (permission: PermissionEnum) => !permissionsToRemove.includes(permission),
+  );
+  await updatePermissionsOfRole(role.id, {
+    label: role.label,
+    permissions: adjustedPermissions as PermissionEnum[],
+  });
 }

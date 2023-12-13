@@ -1,6 +1,6 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
 
-export function createExpectedValueObject(registration, id): any {
+export function createExpectedValueObject(registration, id: number): any {
   const expectedValueObject = { ...registration };
   expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
   delete expectedValueObject.fspName;
@@ -8,6 +8,7 @@ export function createExpectedValueObject(registration, id): any {
   expectedValueObject[
     'personAffectedSequence'
   ] = `PA #${expectedValueObject['registrationProgramId']}`;
+
   return expectedValueObject;
 }
 

@@ -1,6 +1,8 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
+import { PermissionEnum } from '../../../src/user/permission.enum';
+import { DefaultUserRole } from '../../../src/user/user-role.enum';
 import { changePhase } from '../../helpers/program.helper';
 import {
   getRegistrations,
@@ -9,18 +11,17 @@ import {
 import {
   getAccessToken,
   getAccessTokenCvaManager,
+  removePermissionsFromRole,
   resetDB,
-  updatePermissionsOfRole,
 } from '../../helpers/utility.helper';
+
 import { programIdOCW, referenceId, registration1 } from './pagination-data';
 
 describe('Load PA table', () => {
-  describe('Get registrations using paginate without registration:personal.read permission', () => {
-    let accessTokenAdmin: string;
-
+  describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
     beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
-      accessTokenAdmin = await getAccessToken();
+      const accessTokenAdmin = await getAccessToken();
 
       await changePhase(
         programIdOCW,
@@ -33,15 +34,12 @@ describe('Load PA table', () => {
         accessTokenAdmin,
       );
 
-      const cvaManagerUserRoleId = 5;
-      const newPermissions = ['registration.read'];
-      await updatePermissionsOfRole(cvaManagerUserRoleId, {
-        label: 'Test Role',
-        permissions: newPermissions,
-      });
+      await removePermissionsFromRole(DefaultUserRole.CvaManager, [
+        PermissionEnum.RegistrationPersonalREAD,
+      ]);
     });
 
-    it('should return all dynamic attributes that do not require registration:personal.read permission', async () => {
+    it(`should return all dynamic attributes when none explicitly requested`, async () => {
       // Arrange
       const requestedDynamicAttributes = null;
       const accessTokenCvaManager = await getAccessTokenCvaManager();
@@ -55,37 +53,34 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
+      // Assert
       const expectedValueObject = {
         referenceId: referenceId,
-        preferredLanguage: registration1.preferredLanguage,
         paymentAmountMultiplier: 1,
-        firstName: undefined,
-        lastName: undefined,
-        phoneNumber: undefined,
+        preferredLanguage: registration1.preferredLanguage,
         financialServiceProvider: FspName.intersolveJumboPhysical,
-        whatsappPhoneNumber: undefined,
-        addressStreet: undefined,
-        addressHouseNumber: undefined,
-        addressHouseNumberAddition: undefined,
-        addressPostalCode: undefined,
-        addressCity: undefined,
-        name: undefined,
+      };
+      const notExpectedValueObject = {
+        firstName: registration1.firstName,
+        lastName: registration1.lastName,
+        phoneNumber: registration1.phoneNumber,
+        whatsappPhoneNumber: registration1.whatsappPhoneNumber,
+        addressStreet: registration1.addressStreet,
+        addressHouseNumber: registration1.addressHouseNumber,
+        addressHouseNumberAddition: registration1.addressHouseNumberAddition,
+        addressPostalCode: registration1.addressPostalCode,
+        addressCity: registration1.addressCity,
       };
 
-      // Assert
       expect(data[0]).toMatchObject(expectedValueObject);
+      expect(data[0]).not.toMatchObject(notExpectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
 
-    it('should return all dynamic attributes that were selected and do not require registration:personal.read permission', async () => {
+    it(`should only return the dynamic attributes requested`, async () => {
       // Arrange
       const accessTokenCvaManager = await getAccessTokenCvaManager();
-      const requestedDynamicAttributes = [
-        'name',
-        'phoneNumber',
-        'referenceId',
-        'preferredLanguage',
-      ];
+      const requestedDynamicAttributes = ['preferredLanguage', 'referenceId'];
 
       // Act
       const getRegistrationsResponse = await getRegistrations(
@@ -97,25 +92,40 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObject = {
-        referenceId: referenceId,
         preferredLanguage: registration1.preferredLanguage,
-        paymentAmountMultiplier: undefined,
-        firstName: undefined,
-        lastName: undefined,
-        phoneNumber: undefined,
-        financialServiceProvider: undefined,
-        whatsappPhoneNumber: undefined,
-        addressStreet: undefined,
-        addressHouseNumber: undefined,
-        addressHouseNumberAddition: undefined,
-        addressPostalCode: undefined,
-        addressCity: undefined,
-        name: undefined,
+        referenceId: referenceId,
       };
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject);
+      expect(data[0]).toStrictEqual(expectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
+  });
+
+  it(`should only return the dynamic attributes requested that are not "personal"`, async () => {
+    // Arrange
+    const accessTokenCvaManager = await getAccessTokenCvaManager();
+    const requestedDynamicAttributes = ['phoneNumber', 'preferredLanguage'];
+
+    // Act
+    const getRegistrationsResponse = await getRegistrations(
+      programIdOCW,
+      requestedDynamicAttributes,
+      accessTokenCvaManager,
+    );
+    const data = getRegistrationsResponse.body.data;
+    const meta = getRegistrationsResponse.body.meta;
+
+    const expectedValueObject = {
+      preferredLanguage: registration1.preferredLanguage,
+    };
+    const notExpectedValueObject = {
+      phoneNumber: registration1.phoneNumber,
+    };
+
+    // Assert
+    expect(data[0]).toMatchObject(expectedValueObject);
+    expect(data[0]).not.toMatchObject(notExpectedValueObject);
+    expect(meta.totalItems).toBe(1);
   });
 });
