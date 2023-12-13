@@ -25,13 +25,11 @@ Feature: Fill payment details
   Scenario: Store payment details when filled in
     Given the PA selects a financial service provider from the list
     Given the PA fills in the questions shown
-    When the PA presses "Store FSP details"
+    When the PA presses "SEND"
     Then the payment details are stored
     And a positive feedback message is shown
 
   Scenario: Store payment details when the person affected did not fill them in
     Given the PA selects a financial service provider from the list
-    Given the PA does not fill in the questions shown
-    When the PA presses "Store FSP details"
-    Then the payment details are not stored
-    And a prompt to fill the details is shown
+    When the PA does not fill in the questions shown
+    Then the "SEND" button does not appear
