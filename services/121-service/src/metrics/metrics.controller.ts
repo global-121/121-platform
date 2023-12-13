@@ -38,7 +38,7 @@ export class MetricsController {
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
-    summary: '(SCOPED) Retrieve data for export',
+    summary: '[SCOPED] Retrieve data for export',
   })
   @ApiResponse({
     status: 200,
@@ -93,7 +93,7 @@ export class MetricsController {
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({
-    summary: '(SCOPED) Get metrics about people affected for dashboard page',
+    summary: '[SCOPED] Get metrics about people affected for dashboard page',
   })
   @ApiParam({
     name: 'programId',
@@ -144,7 +144,7 @@ export class MetricsController {
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({
-    summary: '(SCOPED) Get payments with state sums by program-id',
+    summary: '[SCOPED] Get payments with state sums by program-id',
   })
   @ApiParam({
     name: 'programId',
@@ -164,7 +164,7 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: '(SCOPED) Get monitoring data' })
+  @ApiOperation({ summary: '[SCOPED] Get monitoring data' })
   @ApiResponse({
     status: 200,
     description:
@@ -179,7 +179,7 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: '(SCOPED) Get program stats summary' })
+  @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,
@@ -191,7 +191,7 @@ export class MetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: '(SCOPED) Get registration statuses with count' })
+  @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,

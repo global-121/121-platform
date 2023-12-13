@@ -68,7 +68,7 @@ export class PaymentsController {
   }
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: '(SCOPED) Get payment aggregate results' })
+  @ApiOperation({ summary: '[SCOPED] Get payment aggregate results' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
     name: 'payment',
@@ -106,7 +106,7 @@ export class PaymentsController {
     type: BulkActionResultDto,
   })
   @ApiOperation({
-    summary: '(SCOPED) Send payout instruction to financial service provider',
+    summary: '[SCOPED] Send payout instruction to financial service provider',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -177,7 +177,7 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
     summary:
-      '(SCOPED) Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
+      '[SCOPED] Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch('programs/:programId/payments')
@@ -197,7 +197,7 @@ export class PaymentsController {
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     summary:
-      '(SCOPED) Get payments instructions for past payment to post in Financial Service Provider Portal',
+      '[SCOPED] Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
@@ -220,7 +220,7 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
-    summary: '(SCOPED) Upload payment reconciliation data from FSP per payment',
+    summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
