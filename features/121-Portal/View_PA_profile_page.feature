@@ -18,6 +18,7 @@ Feature: View PA profile page
     And it shows the current status of the PA and the date the status was changed
     And it shows the PA's primary language, phone number and FSP
     And if there are program attributes, it shows the WhatsApp phone number and the Partner Organization
+    And - if program has scope - then it shows PAs scope
 
   Scenario: Open the edit PA popup
     Given the user sees the "Personal Information" table

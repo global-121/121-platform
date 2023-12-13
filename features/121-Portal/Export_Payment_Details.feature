@@ -15,6 +15,7 @@ Feature: Export payment data
     When the user clicks the "export included people affected" button
     Then an Excel-file is downloaded
     And it shows a list of the registrations that are "included"
+    And - if program and user have scope - then it shows only the PAs within the scope of the user
     And it shows the "name" and other program-attributes to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
     And it shows all program questions which have "included" as "export" attribute
@@ -30,6 +31,7 @@ Feature: Export payment data
     When the user clicks the "export report" button
     Then an Excel-file is dowloaded
     And it shows a list of the registrations that have been paid out
+    And - if program and user have scope - then it shows only the PAs within the scope of the user
     And "transaction" data: "payment", "timestamp", "amount" (multiplication of "paymentAmountMultiplier" and "transfer value"), "status", "errorMessage", "financialServiceProvider"
     And "registration" data: "referenceId", "phoneNumber" and any defined program-questions, fsp-questions and program-custom-attributes that have "payment" as part of the "export" attribute
     And any FSP-specific fields (currently only "OriginatorConversationID" for FSP "Safaricom")
