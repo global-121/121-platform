@@ -26,13 +26,7 @@ import { MessageTemplateModule } from '../message-template/message-template.modu
   imports: [
     TypeOrmModule.forFeature([
       TwilioMessageEntity,
-      TransactionEntity,
       ProgramEntity,
-      RegistrationEntity,
-      TransactionEntity,
-      WhatsappPendingMessageEntity,
-      TryWhatsappEntity,
-      WhatsappPendingMessageEntity,
       WhatsappTemplateTestEntity,
       LatestMessageEntity,
     ]),

@@ -12,11 +12,7 @@ import { NoteService } from './notes.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ProgramAidworkerAssignmentEntity]),
-    RegistrationsModule,
-    UserModule,
-  ],
+  imports: [TypeOrmModule.forFeature(), RegistrationsModule, UserModule],
   providers: [
     NoteService,
     GuardsService,

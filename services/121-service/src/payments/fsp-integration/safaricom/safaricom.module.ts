@@ -18,8 +18,6 @@ import { SafaricomService } from './safaricom.service';
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([
-      UserEntity,
-      ProgramEntity,
       TransactionEntity,
       RegistrationEntity,
       SafaricomRequestEntity,

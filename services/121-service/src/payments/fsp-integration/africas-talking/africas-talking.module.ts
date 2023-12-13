@@ -13,7 +13,7 @@ import { AfricasTalkingService } from './africas-talking.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([AfricasTalkingNotificationEntity, UserEntity]),
+    TypeOrmModule.forFeature([AfricasTalkingNotificationEntity]),
     UserModule,
     TransactionsModule,
   ],

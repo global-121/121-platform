@@ -42,7 +42,6 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
       ProgramEntity,
       TransactionEntity,
       RegistrationEntity,
-      UserEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,

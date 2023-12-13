@@ -16,7 +16,7 @@ import { RegistrationScopedRepository } from '../../../registration/registration
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([RegistrationEntity, ProgramEntity]),
+    TypeOrmModule.forFeature([RegistrationEntity]),
     UserModule,
     TransactionsModule,
   ],

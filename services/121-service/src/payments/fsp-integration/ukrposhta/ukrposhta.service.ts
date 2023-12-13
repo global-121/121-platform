@@ -20,7 +20,6 @@ export class UkrPoshtaService
 {
   public constructor(
     private readonly transactionsService: TransactionsService,
-    private readonly lookupService: LookupService,
   ) {}
 
   public async sendPayment(

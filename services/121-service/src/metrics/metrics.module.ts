@@ -28,10 +28,7 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
     TypeOrmModule.forFeature([
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
-      FinancialServiceProviderEntity,
       FspQuestionEntity,
-      TransactionEntity,
-      UserEntity,
       ProgramEntity,
     ]),
     ProgramModule,

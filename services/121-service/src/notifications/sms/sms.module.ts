@@ -15,11 +15,7 @@ import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      TwilioMessageEntity,
-      RegistrationEntity,
-      LatestMessageEntity,
-    ]),
+    TypeOrmModule.forFeature([TwilioMessageEntity, LatestMessageEntity]),
   ],
   providers: [SmsService, LastMessageStatusService],
   controllers: [],

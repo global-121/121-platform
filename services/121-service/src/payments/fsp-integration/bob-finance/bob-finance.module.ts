@@ -10,7 +10,7 @@ import { BobFinanceService } from './bob-finance.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
   ],
