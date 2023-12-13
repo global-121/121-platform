@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { And, In, IsNull, Not, Repository } from 'typeorm';
+import { NoteEntity } from '../../notes/note.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '../../notifications/latest-message.entity';
 import {
@@ -66,6 +67,8 @@ export class RegistrationsBulkService {
     private readonly twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private readonly registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    @Inject(getScopedRepositoryProviderName(NoteEntity))
+    private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
   public async patchRegistrationsStatus(
@@ -426,6 +429,9 @@ export class RegistrationsBulkService {
         );
 
       // Delete all data for this registration
+      await this.noteScopedRepository.deleteUnscoped({
+        registrationId: registration.id,
+      });
       await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
