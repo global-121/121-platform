@@ -45,12 +45,16 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Export Intersolve voucher image',
+    summary: '[SCOPED] Export Intersolve voucher image',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Voucher exported' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers',
   )
@@ -74,12 +78,16 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Get balance of Intersolve voucher',
+    summary: '[SCOPED] Get balance of Intersolve voucher',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Voucher balance retrieved' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
   )
@@ -162,7 +170,7 @@ export class IntersolveVoucherController {
 
   @Admin()
   @ApiOperation({
-    summary: '(CRON) Cancel by refpos',
+    summary: '[CRON] Cancel by refpos',
   })
   @ApiResponse({ status: 201, description: 'Vouchers canceled by refpos' })
   @Post('/financial-service-providers/intersolve-voucher/cancel')
@@ -172,7 +180,7 @@ export class IntersolveVoucherController {
 
   @Admin()
   @ApiOperation({
-    summary: '(CRON) Cache unused vouchers',
+    summary: '[CRON] Cache unused vouchers',
   })
   @ApiResponse({ status: 201, description: 'Cached unused vouchers' })
   @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
@@ -182,7 +190,7 @@ export class IntersolveVoucherController {
 
   @Admin()
   @ApiOperation({
-    summary: '(CRON) Send WhatsApp reminders',
+    summary: '[CRON] Send WhatsApp reminders',
   })
   @ApiResponse({ status: 201, description: 'Sent WhatsApp reminders' })
   @Post('/financial-service-providers/intersolve-voucher/send-reminders')

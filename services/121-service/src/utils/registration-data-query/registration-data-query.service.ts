@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   RegistrationDataOptions,
@@ -7,7 +8,6 @@ import {
 import { GenericAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
 import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
-import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class RegistrationDataScopedQueryService {

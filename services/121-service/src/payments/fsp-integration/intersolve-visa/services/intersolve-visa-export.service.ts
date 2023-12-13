@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ScopedRepository } from '../../../../scoped.repository';
+import { getScopedRepositoryProviderName } from '../../../../utils/scope/createScopedRepositoryProvider.helper';
 import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
 import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
-import { ScopedRepository } from '../../../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../../../utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class IntersolveVisaExportService {

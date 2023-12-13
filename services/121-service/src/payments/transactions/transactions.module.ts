@@ -3,18 +3,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../../actions/action.module';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
+import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
+import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 import { UserModule } from '../../user/user.module';
-import { UserEntity } from './../../user/user.entity';
+import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 import { TransactionEntity } from './transaction.entity';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
-import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
-import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
-import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 
 @Module({
   imports: [

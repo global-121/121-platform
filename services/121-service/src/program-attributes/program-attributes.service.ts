@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { In, Repository } from 'typeorm';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
@@ -13,9 +16,6 @@ import {
   Attribute,
   QuestionType,
 } from '../registration/enum/custom-data-attributes';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { ProgramEntity } from '../programs/program.entity';
 @Injectable()
 export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)

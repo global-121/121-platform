@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
-import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
 import messageTemplatePilotEth from '../../seed-data/message-template/message-template-pilot-zoa-eth.json';
+import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
@@ -10,7 +11,6 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {

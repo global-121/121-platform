@@ -1,5 +1,5 @@
-import { RegistrationEntity } from './registration.entity';
 import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import {
   DataSource,
@@ -15,11 +15,11 @@ import {
   SaveOptions,
   UpdateResult,
 } from 'typeorm';
-import { ScopedQueryBuilder } from '../scoped.repository';
-import { REQUEST } from '@nestjs/core';
-import { RegistrationViewEntity } from './registration-view.entity';
-import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { ScopedQueryBuilder } from '../scoped.repository';
+import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
+import { RegistrationViewEntity } from './registration-view.entity';
+import { RegistrationEntity } from './registration.entity';
 
 export class RegistrationScopedBaseRepository<T> {
   public readonly repository: Repository<T>;

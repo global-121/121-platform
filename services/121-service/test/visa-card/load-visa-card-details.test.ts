@@ -1,9 +1,16 @@
 import { IntersolveVisaCardStatus } from './../../src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 /* eslint-disable jest/no-conditional-expect */
+import {
+  amountVisa,
+  paymentNrVisa,
+  programIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
@@ -13,13 +20,6 @@ import {
   issueNewVisaCard,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import {
-  amountVisa,
-  paymentNrVisa,
-  programIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
 
 // This test takes a lot of time because there are my statusses to check
 jest.setTimeout(40_000);

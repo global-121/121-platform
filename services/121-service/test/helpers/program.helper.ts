@@ -1,18 +1,18 @@
 import * as request from 'supertest';
-import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
-import { MessageStatus } from '../../src/registration/enum/last-message-status';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
-import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
-import { getMessageHistory, getRegistrations } from './registration.helper';
-import { getServer } from './utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
 } from '../../src/notifications/message-template/dto/message-template.dto';
+import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
+import { MessageStatus } from '../../src/registration/enum/last-message-status';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { waitFor } from '../../src/utils/waitFor.helper';
+import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
+import { getMessageHistory, getRegistrations } from './registration.helper';
+import { getServer } from './utility.helper';
 
 export async function postProgram(
   program: CreateProgramDto,

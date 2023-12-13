@@ -23,8 +23,8 @@ import {
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from './config';
-import appInsights = require('applicationinsights');
 import { AzureLogService } from './shared/services/azure-log.service';
+import appInsights = require('applicationinsights');
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`

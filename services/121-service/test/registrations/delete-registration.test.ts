@@ -1,4 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  referenceIdVisa,
+  registrationVisa,
+} from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
@@ -6,10 +10,6 @@ import {
   searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
 
 describe('Delete PA', () => {
   const programId = 3;

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { CustomHttpService } from '../shared/services/custom-http.service';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { CustomHttpService } from '../shared/services/custom-http.service';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
 export class SeedMockHelper {

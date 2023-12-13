@@ -1,8 +1,8 @@
-import { getTransactions } from './program.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
-import { RegistrationEntity } from '../../src/registration/registration.entity';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '../../src/registration/registration.entity';
+import { waitFor } from '../../src/utils/waitFor.helper';
+import { getTransactions } from './program.helper';
 
 export const assertArraysAreEqual = (
   actualArray: any[],

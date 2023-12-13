@@ -1,7 +1,7 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
-import { TwilioMessageEntity } from './twilio.entity';
 import { Base121Entity } from '../base.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { TwilioMessageEntity } from './twilio.entity';
 
 @Entity('latest_message')
 export class LatestMessageEntity extends Base121Entity {

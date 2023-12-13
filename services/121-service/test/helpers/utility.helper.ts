@@ -1,7 +1,7 @@
 import * as request from 'supertest';
+import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { CookieNames } from '../../src/shared/enum/cookie.enums';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 
 export function getHostname(): string {
   return 'http://localhost:3000/api';

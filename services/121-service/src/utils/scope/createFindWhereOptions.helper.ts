@@ -1,5 +1,5 @@
-import { Like, FindManyOptions, FindOneOptions } from 'typeorm';
 import { cloneDeep, merge } from 'lodash';
+import { FindManyOptions, FindOneOptions, Like } from 'typeorm';
 
 export type FindOptionsCombined<T> = FindOneOptions<T> & FindManyOptions<T>;
 

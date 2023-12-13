@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';

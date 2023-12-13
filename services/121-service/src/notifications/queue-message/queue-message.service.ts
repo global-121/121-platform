@@ -1,5 +1,19 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Repository } from 'typeorm';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
+import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
+import { RegistrationViewEntity } from '../../registration/registration-view.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import {
+  DEFAULT_QUEUE_CREATE_MESSAGE,
+  MessageQueueMap,
+  MESSAGE_QUEUE_MAP,
+} from '../enum/message-queue-mapping.const';
 import { MessageContentType } from '../enum/message-type.enum';
+import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
@@ -7,21 +21,7 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../message-job.dto';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
-import {
-  DEFAULT_QUEUE_CREATE_MESSAGE,
-  MessageQueueMap,
-  MESSAGE_QUEUE_MAP,
-} from '../enum/message-queue-mapping.const';
 import { MessageTemplateEntity } from '../message-template/message-template.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 
 @Injectable()
 export class QueueMessageService {
