@@ -265,7 +265,7 @@ describe('Find registrations by phone-number', () => {
       testPhoneNumber,
     );
 
-    // Expect that the zeeland registration and registration2 returns
+    // Expect that the zeeland registration (right scope) and registration2 (no scope) are returned
     const returnedReferenceIds = searchResponse.body.map(
       (registration) => registration.referenceId,
     );

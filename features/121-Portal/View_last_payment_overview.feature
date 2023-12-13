@@ -10,6 +10,8 @@ Feature: View last payment overview
     Then right above the "People affected table" an overview of the last payment is shown
     And it mentions "Last payment: #<X>"
     And it shows the amount of successful, waiting, and failed payments
+    And - if program and user have scope - then these numbers are filtered to only those PAs within the scope of the user
+    And also if no PAs fall within the scope, then the overview still shows with 0 for all numbers
     And it shows a "Retry all" button only if there are failed payments and the user also has the "PaymentCREATE" permission
   >> For using "Retry all": see "Retry payment for all failed payments of PAs" in "Make_new_payment.feature"
 
