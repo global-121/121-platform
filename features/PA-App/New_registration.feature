@@ -110,7 +110,7 @@ Feature: New registration
     When the PA completes the registration
     Then the 2nd registration is updated to status "Registered"
     And all prior data related to the "Invited" registration is transfered to the "Registered" one
-    And this includes "registration data", "messages", "notes"
+    And this includes "registration data", "messages", "notes", "scope"
     And then the "Invited" registration is removed
     And - if the initial registration was earlier moved to "No longer eligible" - then this status is also transfered to the new registration
 
