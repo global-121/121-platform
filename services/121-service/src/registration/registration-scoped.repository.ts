@@ -54,6 +54,9 @@ export class RegistrationScopedBaseRepository<T> {
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));
+    }
     const qb = this.repository
       .createQueryBuilder(alias)
       .leftJoin(`${alias}.program`, 'program')
