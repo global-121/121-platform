@@ -97,7 +97,7 @@ export class UserService {
 
   public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
     // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
-    await this.getProgramIdsUserHasPermission(
+    await this.getProgramScopeIdsUserHasPermission(
       userId,
       PermissionEnum.AidWorkerProgramREAD,
     );
@@ -108,20 +108,25 @@ export class UserService {
     return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
   }
 
-  public async getProgramIdsUserHasPermission(
+  public async getProgramScopeIdsUserHasPermission(
     userId: number,
     permission: PermissionEnum,
-  ): Promise<number[]> {
+  ): Promise<{ programId: number; scope: string }[]> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = [];
+    const programIdScopeObjects: { programId: number; scope: string }[] = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
         if (role.permissions.map((p) => p.name).includes(permission)) {
-          programIds.push(assignment.programId);
+          const programIdScopeObject = {
+            programId: assignment.programId,
+            scope: assignment.scope,
+          };
+
+          programIdScopeObjects.push(programIdScopeObject);
         }
       }
     }
-    return programIds;
+    return programIdScopeObjects;
   }
 
   // TODO: REFACTOR: the Controller should throw the HTTP Status Code

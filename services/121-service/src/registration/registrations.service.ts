@@ -18,6 +18,7 @@ import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
@@ -29,6 +30,7 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
+import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
@@ -977,11 +979,6 @@ export class RegistrationsService {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
 
-    const programIds = await this.userService.getProgramIdsUserHasPermission(
-      userId,
-      PermissionEnum.RegistrationPersonalREAD,
-    );
-
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
         CustomDataAttributes.phoneNumber as string,
@@ -1001,18 +998,18 @@ export class RegistrationsService {
           where: { phoneNumber: phoneNumber },
         })
       ).map((r) => {
-        return { programId: r.programId, referenceId: r.referenceId };
+        return {
+          programId: r.programId,
+          referenceId: r.referenceId,
+          scope: r.scope,
+        };
       });
-
       const matchingRegistrationData =
         await this.registrationDataScopedRepository
           .createQueryBuilder('registrationData')
           .leftJoinAndSelect('registrationData.registration', 'registration')
           .andWhere('registrationData.value = :phoneNumber', {
             phoneNumber: phoneNumber,
-          })
-          .andWhere('registration.program.id IN (:...programIds)', {
-            programIds: programIds,
           })
           .getMany();
 
@@ -1022,6 +1019,7 @@ export class RegistrationsService {
           matchingRegistrations.push({
             programId: d.registration.programId,
             referenceId: d.registration.referenceId,
+            scope: d.registration.scope,
           });
         }
       }
@@ -1031,7 +1029,13 @@ export class RegistrationsService {
           index === self.findIndex((t) => t.referenceId === value.referenceId),
       );
 
-      for (const uniqueRegistration of uniqueRegistrations) {
+      const filteredRegistrations =
+        await this.filterRegistrationsByProgramScope(
+          uniqueRegistrations,
+          userId,
+        );
+
+      for (const uniqueRegistration of filteredRegistrations) {
         const registration = await this.getPaginateRegistrationForReferenceId(
           uniqueRegistration.referenceId,
           uniqueRegistration.programId,
@@ -1042,15 +1046,57 @@ export class RegistrationsService {
     return registrations;
   }
 
+  private async filterRegistrationsByProgramScope(
+    registrationObjects: ReferenceProgramIdScopeDto[],
+    userId: number,
+  ): Promise<RegistrationEntity[]> {
+    const filteredRegistrations = [];
+    const programIdScopeObjects =
+      await this.userService.getProgramScopeIdsUserHasPermission(
+        userId,
+        PermissionEnum.RegistrationPersonalREAD,
+      );
+    for (const registration of registrationObjects) {
+      // Filters out registrations of programs to which this user is not assigned
+      const programIdScopeObject = programIdScopeObjects.find(
+        (p) => p.programId === registration.programId,
+      );
+
+      if (programIdScopeObject) {
+        // Filters out registrations of a program to which this user is assigned, but not to the scope of the registration
+        const findProgramOption = {
+          where: {
+            programId: registration.programId,
+            referenceId: registration.referenceId,
+          },
+        };
+        const findOption = convertToScopedOptions<RegistrationEntity>(
+          findProgramOption,
+          [],
+          programIdScopeObject.scope,
+        );
+        const foundRegistration =
+          await this.registrationScopedRepository.findOne(findOption);
+
+        if (foundRegistration) {
+          filteredRegistrations.push(registration);
+        }
+      }
+    }
+    return filteredRegistrations;
+  }
+
   public async checkPermissionAndThrow(
     userId: number,
     permission: PermissionEnum,
     programId: number,
   ): Promise<void> {
-    const programIds = await this.userService.getProgramIdsUserHasPermission(
-      userId,
-      permission,
-    );
+    const programIds = (
+      await this.userService.getProgramScopeIdsUserHasPermission(
+        userId,
+        permission,
+      )
+    ).map((p) => p.programId);
     if (!programIds.includes(programId)) {
       const error = `User does not have the ${permission} permission for this program`;
       throw new HttpException({ error }, HttpStatus.UNAUTHORIZED);
@@ -1172,10 +1218,9 @@ export class RegistrationsService {
   public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = user.programAssignments.map((p) => p.program.id);
     const data = {
-      answers: await this.getAllProgramAnswers(user),
-      fspData: await this.getAllFspAnswers(programIds),
+      answers: await this.getAllProgramAnswers(user.id),
+      fspData: await this.getAllFspAnswers(user.id),
       programIds: user.programAssignments.map((assignment) => {
         return assignment.program.id;
       }),
@@ -1184,18 +1229,18 @@ export class RegistrationsService {
   }
 
   public async getAllProgramAnswers(
-    user: UserEntity,
+    userId: number,
   ): Promise<RegistrationDataEntity[]> {
-    const programIds = user.programAssignments.map((p) => p.program.id);
     const registrationsToValidate = await this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .addSelect('"referenceId"')
+      .addSelect([
+        '"referenceId"',
+        'registration."programId" AS "programId"',
+        'scope',
+      ])
       .leftJoinAndSelect('registration.program', 'program')
       .leftJoinAndSelect('registration.data', 'data')
       .leftJoinAndSelect('data.programQuestion', 'programQuestion')
-      .andWhere('registration.program.id IN (:...programIds)', {
-        programIds: programIds,
-      })
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
         registrationStatuses: [
           RegistrationStatusEnum.registered,
@@ -1204,8 +1249,14 @@ export class RegistrationsService {
       })
       .andWhere('data.programQuestionId is not null')
       .getMany();
+
+    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+      registrationsToValidate,
+      userId,
+    );
+
     let answers = [];
-    for (const r of registrationsToValidate) {
+    for (const r of filteredRegistrations) {
       const uniqueQuestions = [];
       for (const a of r.data) {
         a['referenceId'] = r.referenceId;
@@ -1233,17 +1284,19 @@ export class RegistrationsService {
   }
 
   public async getAllFspAnswers(
-    programIds: number[],
+    userId: number,
   ): Promise<FspAnswersAttrInterface[]> {
     const registrations = await this.registrationScopedRepository
       .createQueryBuilder('registration')
+      .addSelect([
+        '"referenceId"',
+        'registration."programId" AS "programId"',
+        'scope',
+      ])
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
       .leftJoin('registration.program', 'program')
       .andWhere('registration.fsp IS NOT NULL')
-      .andWhere('registration.program.id IN (:...programIds)', {
-        programIds: programIds,
-      })
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
         registrationStatuses: [
           RegistrationStatusEnum.registered,
@@ -1252,8 +1305,13 @@ export class RegistrationsService {
       })
       .getMany();
 
+    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+      registrations,
+      userId,
+    );
+
     const fspDataPerRegistration = [];
-    for (const registration of registrations) {
+    for (const registration of filteredRegistrations) {
       const answers = await this.getFspAnswers(registration.referenceId);
       const fspData = {
         attributes: registration.fsp.questions,

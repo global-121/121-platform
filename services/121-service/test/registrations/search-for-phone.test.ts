@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
+import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase } from '../helpers/program.helper';
@@ -8,12 +9,16 @@ import {
   importRegistrations,
   searchRegistrationByPhoneNumber,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import {
+  getAccessToken,
+  getAccessTokenScoped,
+  resetDB,
+} from '../helpers/utility.helper';
 
 describe('Find registrations by phone-number', () => {
   let accessToken: string;
-  const programId = 3;
-  const otherProgramId = 2;
+  const programIdOcw = 3;
+  const programIdPV = 2;
 
   const registration1 = {
     ...registrationVisa,
@@ -39,18 +44,18 @@ describe('Find registrations by phone-number', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      programId,
+      programIdOcw,
       ProgramPhase.registrationValidation,
       accessToken,
     );
     await changePhase(
-      otherProgramId,
+      programIdPV,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
     await importRegistrations(
-      programId,
+      programIdOcw,
       [registration1, registration2, registration3],
       accessToken,
     );
@@ -123,7 +128,7 @@ describe('Find registrations by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
     };
     await importRegistrations(
-      programId,
+      programIdOcw,
       [registrationWithSameWhatsApp],
       accessToken,
     );
@@ -152,7 +157,7 @@ describe('Find registrations by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
     };
     await importRegistrations(
-      programId,
+      programIdOcw,
       [registrationWithSameWhatsApp],
       accessToken,
     );
@@ -190,7 +195,7 @@ describe('Find registrations by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: undefined,
     };
     await importRegistrations(
-      programId,
+      programIdPV,
       [registrationInOtherProgram],
       accessToken,
     );
@@ -210,5 +215,63 @@ describe('Find registrations by phone-number', () => {
     expect(searchResponse.body[1][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
+  });
+
+  it('should only find registrations with scope', async () => {
+    //Arrange
+    const testPhoneNumber = registration2.phoneNumber;
+    const registrationInOtherProgramZeelandGoes = {
+      ...registrationVisa,
+      referenceId:
+        'test-pa-with-same-phone-number-in-other-program-zeeland-goes',
+      [CustomDataAttributes.phoneNumber]: testPhoneNumber,
+      [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+      scope: DebugScope.ZeelandMiddelburg,
+    };
+
+    const registrationInOtherProgramUtrechtHouten = {
+      ...registrationVisa,
+      referenceId:
+        'test-pa-with-same-phone-number-in-other-program-utrecht-houten',
+      [CustomDataAttributes.phoneNumber]: testPhoneNumber,
+      [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+      scope: DebugScope.UtrechtHouten,
+    };
+    await importRegistrations(
+      programIdPV,
+      [
+        registrationInOtherProgramZeelandGoes,
+        registrationInOtherProgramUtrechtHouten,
+      ],
+      accessToken,
+    );
+
+    const accessTokenZeeland = await getAccessTokenScoped(
+      DebugScope.ZeelandMiddelburg,
+    );
+    // Act
+    const searchResponse = await searchRegistrationByPhoneNumber(
+      `+${testPhoneNumber}`,
+      accessTokenZeeland,
+    );
+
+    // Assert
+    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
+    expect(searchResponse.body.length).toBe(2);
+    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+      testPhoneNumber,
+    );
+    expect(searchResponse.body[1][CustomDataAttributes.phoneNumber]).toBe(
+      testPhoneNumber,
+    );
+
+    // Expect that the zeeland registration and registration2 returns
+    const returnedReferenceIds = searchResponse.body.map(
+      (registration) => registration.referenceId,
+    );
+    expect(returnedReferenceIds).toContain(
+      registrationInOtherProgramZeelandGoes.referenceId,
+    );
+    expect(returnedReferenceIds).toContain(registration2.referenceId);
   });
 });
