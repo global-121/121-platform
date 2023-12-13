@@ -105,8 +105,7 @@ export class SeedHelper {
       for (const debugScopeUser of debugScopeUsers) {
         const scopedUser = await this.getOrSaveUser({
           username: `${debugScopeUser}@example.org`,
-          password:
-            process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+          password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
         });
         await this.assignAidworker(
           scopedUser.id,

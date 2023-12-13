@@ -19,7 +19,7 @@ export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 

@@ -22,7 +22,6 @@ import { RegistrationScopedRepository } from '../../registration/registration-sc
       ProgramEntity,
       LatestTransactionEntity,
       FinancialServiceProviderEntity,
-      UserEntity,
       TwilioMessageEntity,
     ]),
     UserModule,

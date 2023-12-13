@@ -25,12 +25,9 @@ import { ProgramAttributesModule } from '../program-attributes/program-attribute
   imports: [
     TypeOrmModule.forFeature([
       ProgramEntity,
-      UserEntity,
       FinancialServiceProviderEntity,
       ActionEntity,
-      TransactionEntity,
       FspQuestionEntity,
-      RegistrationEntity,
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
       ProgramFspConfigurationEntity,

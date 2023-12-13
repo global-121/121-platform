@@ -15,7 +15,7 @@ import { BelcashService } from './belcash.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity, ProgramEntity, BelcashRequestEntity]),
+    TypeOrmModule.forFeature([ProgramEntity, BelcashRequestEntity]),
     UserModule,
     TransactionsModule,
   ],

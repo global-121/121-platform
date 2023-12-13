@@ -10,11 +10,11 @@ import { UkrPoshtaService } from './ukrposhta.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
   ],
-  providers: [UkrPoshtaService, LookupService],
+  providers: [UkrPoshtaService],
   controllers: [],
   exports: [UkrPoshtaService],
 })

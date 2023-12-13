@@ -10,7 +10,7 @@ import { VodacashService } from './vodacash.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity, ProgramEntity]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
   ],
