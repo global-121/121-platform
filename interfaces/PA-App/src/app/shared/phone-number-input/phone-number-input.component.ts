@@ -89,8 +89,14 @@ export class PhoneNumberInputComponent {
       },
       (error) => {
         console.log('lookupPhoneNumber error: ', error);
-        // Allow any input as valid in case of errors during lookup
-        isValid = this.defaultValidity;
+        if (error?.error?.message[0]?.constraints?.isLength !== undefined) {
+          // if the phone number is too short or too long, it is invalid
+          // NOTE: this check is specifically tied to the constraints in phone-number.dto.ts
+          isValid = false;
+        } else {
+          // Allow any input as valid in case of errors during lookup
+          isValid = this.defaultValidity;
+        }
       },
     );
 
