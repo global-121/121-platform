@@ -14,4 +14,5 @@ Feature: Export all People Affected data changes
     And it contains all changes to People Affected data for the given program and within the provided dates (if any)
     And it contains PA information (paId, referenceId, fullName)
     And it contains data change details (fieldName, oldValue, newValue, reason, changedBy, changedAt)
+    And if scope is enabled for this program, the resulting Excel only contains data changes for the logged-in user's scope
 

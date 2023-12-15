@@ -117,9 +117,7 @@ describe('Load PA table', () => {
         3,
       );
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObjectWaiting)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObjectWaiting);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -146,9 +144,7 @@ describe('Load PA table', () => {
         2,
       );
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObjectFailed)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObjectFailed);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -179,15 +175,11 @@ describe('Load PA table', () => {
         4,
       );
       // Assert
-      for (const [key, value] of Object.entries(expectedValueObjectSucces1)) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObjectSucces1);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
-      for (const [key, value] of Object.entries(expectedValueObjectSucces4)) {
-        expect(data[1][key]).toBe(value);
-      }
+      expect(data[1]).toMatchObject(expectedValueObjectSucces4);
       for (const attribute of expectedAttributes) {
         expect(data[1]).toHaveProperty(attribute);
       }
@@ -217,11 +209,7 @@ describe('Load PA table', () => {
       };
       const expectedAttributesSelect = ['referenceId', 'lastName'];
       // Assert
-      for (const [key, value] of Object.entries(
-        expectedValueObjectSuccesSelect,
-      )) {
-        expect(data[0][key]).toBe(value);
-      }
+      expect(data[0]).toMatchObject(expectedValueObjectSuccesSelect);
       for (const attribute of expectedAttributesSelect) {
         expect(data[0]).toHaveProperty(attribute);
       }

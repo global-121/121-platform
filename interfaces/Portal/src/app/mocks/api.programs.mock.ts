@@ -53,6 +53,7 @@ const programsArray: Program[] = [
     ],
     languages: [LanguageEnum.en],
     enableMaxPayments: true,
+    enableScope: true,
     financialServiceProviders: [],
     aidworkerAssignments: [],
     fullnameNamingConvention: [],

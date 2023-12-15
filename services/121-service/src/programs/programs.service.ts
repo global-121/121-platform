@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
+import { ActionEntity } from '../actions/action.entity';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
@@ -25,7 +27,6 @@ import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity'
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -37,7 +38,9 @@ export class ProgramService {
   @InjectRepository(FspQuestionEntity)
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(ActionEntity)
+  public actionRepository: Repository<ActionEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,
@@ -166,6 +169,7 @@ export class ProgramService {
       fullnameNamingConvention: programEntity.fullnameNamingConvention,
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
+      enableScope: programEntity.enableScope,
     };
     if (programEntity.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
@@ -277,6 +281,7 @@ export class ProgramService {
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
+    program.enableScope = programData.enableScope;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
     program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 
@@ -345,6 +350,7 @@ export class ProgramService {
       userId,
       {
         roles: [DefaultUserRole.Admin],
+        scope: null,
       },
     );
     return newProgram;
@@ -578,8 +584,7 @@ export class ProgramService {
     programId: number,
     change: object,
   ): Promise<void> {
-    await this.dataSource
-      .getRepository(ProgramEntity)
+    await this.programRepository
       .createQueryBuilder()
       .update(ProgramEntity)
       .set(change)

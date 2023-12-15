@@ -11,6 +11,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
@@ -18,7 +19,7 @@ import { InclusionScoreService } from '../registration/services/inclusion-score.
 import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
-import { UserEntity } from './../user/user.entity';
+import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
 import { BelcashModule } from './fsp-integration/belcash/belcash.module';
 import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.module';
@@ -40,13 +41,10 @@ import { TransactionsModule } from './transactions/transactions.module';
       ProgramEntity,
       TransactionEntity,
       RegistrationEntity,
-      UserEntity,
-      RegistrationDataEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,
       ProgramCustomAttributeEntity,
-      RegistrationStatusChangeEntity,
     ]),
     UserModule,
     HttpModule,
@@ -71,7 +69,10 @@ import { TransactionsModule } from './transactions/transactions.module';
     RegistrationsImportService,
     LookupService,
     InclusionScoreService,
+    RegistrationScopedRepository,
     AzureLogService,
+    createScopedRepositoryProvider(RegistrationStatusChangeEntity),
+    createScopedRepositoryProvider(RegistrationDataEntity),
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService],

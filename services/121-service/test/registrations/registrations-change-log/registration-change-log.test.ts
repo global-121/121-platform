@@ -1,15 +1,16 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  referenceIdVisa,
+  registrationVisa,
+} from '../../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
+  deleteRegistrations,
   getRegistrationChangeLog,
   importRegistrations,
   updateRegistration,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../../seed-data/mock/visa-card.data';
 
 const reason = 'automated test';
 
@@ -23,6 +24,17 @@ describe('Get and update registration change log', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(programId, [registrationVisa], accessToken);
+  });
+
+  beforeAll(async () => {
+    await resetDB(SeedScript.nlrcMultiple);
+    accessToken = await getAccessToken();
+  });
+  beforeEach(async () => {
+    await importRegistrations(programId, [registrationVisa], accessToken);
+  });
+  afterEach(async () => {
+    await deleteRegistrations(programId, [referenceIdVisa], accessToken);
   });
 
   it('should keep a log of registration data changes', async () => {
@@ -45,6 +57,7 @@ describe('Get and update registration change log', () => {
       referenceIdVisa,
       accessToken,
     );
+
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);
@@ -58,9 +71,7 @@ describe('Get and update registration change log', () => {
       newValue: data.phoneNumber,
       reason: reason,
     };
-    for (const [key, value] of Object.entries(checkingMap1)) {
-      expect(body[0][key]).toBe(value);
-    }
+    expect(body[0]).toMatchObject(checkingMap1);
   });
 
   it('should not log if value did not change', async () => {
@@ -91,13 +102,16 @@ describe('Get and update registration change log', () => {
   });
 
   it('should return empty array for unkown referenceId', async () => {
+    // Arrange
     const wrongReferenceId = referenceIdVisa + '-fail-test';
+
     // Act
     const response = await getRegistrationChangeLog(
       programId,
       wrongReferenceId,
       accessToken,
     );
+
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);

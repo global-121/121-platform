@@ -32,7 +32,7 @@ describe('Load PA table', () => {
 
       await importRegistrations(
         programIdOCW,
-        [registration1, registration2, registration3, registration4],
+        [registration1, registration3, registration4, registration2],
         accessToken,
       );
 
@@ -45,9 +45,11 @@ describe('Load PA table', () => {
     });
 
     it('should sort based on registration root data', async () => {
-      // Act
+      // Arrange
       const field = 'paymentAmountMultiplier';
       const direction = 'DESC';
+
+      // Act
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -59,6 +61,7 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
       const orderedInput = [
         registration1,
@@ -66,6 +69,7 @@ describe('Load PA table', () => {
         registration3,
         registration4,
       ].sort((a, b) => (a[field] < b[field] ? 1 : -1)); // DESC
+
       expect(data[0][field]).toBe(orderedInput[0][field]);
       expect(data[1][field]).toBe(orderedInput[1][field]);
       expect(data[2][field]).toBe(orderedInput[2][field]);
@@ -74,9 +78,11 @@ describe('Load PA table', () => {
     });
 
     it('should sort based on registration data', async () => {
-      // Act
+      // Arrange
       const field = 'firstName';
       const direction = 'ASC';
+
+      // Act
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -88,6 +94,7 @@ describe('Load PA table', () => {
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
+
       // Assert
       const orderedInput = [
         registration1,
@@ -95,6 +102,7 @@ describe('Load PA table', () => {
         registration3,
         registration4,
       ].sort((a, b) => (a[field] > b[field] ? 1 : -1)); // ASC
+
       expect(data[0][field]).toBe(orderedInput[0][field]);
       expect(data[1][field]).toBe(orderedInput[1][field]);
       expect(data[2][field]).toBe(orderedInput[2][field]);

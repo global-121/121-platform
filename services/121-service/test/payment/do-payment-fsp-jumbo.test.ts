@@ -5,6 +5,7 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
@@ -15,7 +16,6 @@ import {
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitFor } from '../../src/utils/waitFor.helper';
 
 describe('Do payment to 1 PA', () => {
   const programId = 3;

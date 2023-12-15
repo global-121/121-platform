@@ -8,6 +8,7 @@ Feature: View and manage people affected (generic features)
   Scenario: View People Affected table
     When the user views a page with the "PA table"
     Then a table with all PAs of that program is shown
+    And - if the program and user have a scope - then only PAs within that scope are shown
     And depending on the "selected phase" only current people affected with given "PA statuses" are shown (see Scenario: Filter rows of PA-table by People Affected status)
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown and this is an auto-increment number per registration starting from 1 per program
@@ -26,6 +27,12 @@ Feature: View and manage people affected (generic features)
     And "inclusion score" column is shown (if "validation" is configured for the program)
     And "financial service provider" column is shown
     And "payment history" is shown (in "payment" page only)
+    And "last message" is shown and it shows the channel (SMS/Whatsapp) and status of the last message sent to the PA
+
+  Scenario: View Message History
+    When the user click the "last message" column
+    Then a popup appears with the message history of the PA
+    And it shows per message the type, the channel, the status, the message text (collapsed), the error code (if applicable)
 
   Scenario: View payment history column and popup
   >> See View_payment_history_popup.feature
@@ -144,7 +151,7 @@ Feature: View and manage people affected (generic features)
     Then a popup with the message "no people are eligible" is shown
     And the dropdown is reset to the default "choose action" option
 
-  Scenario: Sort people enrolled in a program by property(score, creation-date, update-date)
+  Scenario: Sort people enrolled in a program by property
     When the user clicks a column-header
     Then the rows show in "ascending or descending" order
 
@@ -213,5 +220,3 @@ Feature: View and manage people affected (generic features)
     When the user uses the text or status filter functions
     Then the PA-table updates to only filtered rows quickly and without problem
 
-  Scenario: View Message History
->> This is tested with Cypress. See message-history.cy.ts

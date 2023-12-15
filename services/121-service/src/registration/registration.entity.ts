@@ -21,8 +21,10 @@ import {
   Unique,
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
+import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
+import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
@@ -32,7 +34,6 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ReferenceIdConstraints } from '../shared/const';
 import { UserEntity } from '../user/user.entity';
-import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
@@ -46,7 +47,6 @@ import { RegistrationDataError } from './errors/registration-data.error';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { LatestMessageEntity } from '../notifications/latest-message.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -166,6 +166,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
   public notes: NoteEntity[];
+
+  // TODO: add some database constraints to make sure that scope is always lowercase
+  // TODO: DO not make this nullable but set everything to empty string in migration
+  // Also not use the setting {default: ''} because than we will forget to set it later just one time '' in the migration
+  @Index()
+  @Column({ nullable: false, default: '' })
+  public scope: string;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

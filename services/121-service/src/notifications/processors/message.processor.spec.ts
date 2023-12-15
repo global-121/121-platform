@@ -1,10 +1,10 @@
 import { TestBed } from '@automock/jest';
+import { Job } from 'bull';
+import { LanguageEnum } from '../../registration/enum/language.enum';
 import { MessageContentType } from '../enum/message-type.enum';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageService } from '../message.service';
 import { MessageProcessorReplyOnIncoming } from './message.processor';
-import { LanguageEnum } from '../../registration/enum/language.enum';
-import { Job } from 'bull';
 
 const mockMessageJob: MessageJobDto = {
   registrationId: 1,

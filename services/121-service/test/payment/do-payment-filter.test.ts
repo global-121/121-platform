@@ -1,4 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import {
+  amountVisa,
+  paymentNrVisa,
+  programIdVisa,
+} from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
@@ -20,11 +25,6 @@ import {
   registration3,
   registration4,
 } from '../registrations/pagination/pagination-data';
-import {
-  amountVisa,
-  paymentNrVisa,
-  programIdVisa,
-} from '../../seed-data/mock/visa-card.data';
 
 describe('Do payment with filter', () => {
   let accessToken: string;

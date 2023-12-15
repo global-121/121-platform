@@ -1,5 +1,5 @@
 @cronjob
-Feature: Send reminder message for unclaimed vouchers
+Feature: Send reminder message for unclaimed vouchers (use phonenumber: 16005550002 & change the cronjob to run every minute and change the time filter to test this)
 
   Background:
     Given a program with "Intersolve" FSP
@@ -8,6 +8,8 @@ Feature: Send reminder message for unclaimed vouchers
     Given the PA has received the initial WhatsApp-message
 
   Scenario: PA does not send anything to initial WhatsApp-message
+    When the PA does not send anything back
+    Then a reminder is sent out the next day at noon
     When the PA does not send anything back
     Then a reminder is sent out the next day at noon
     And a PA without WhatsApp should not get a reminder

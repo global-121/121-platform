@@ -1,18 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
+import { MessageProcessType } from '../../../notifications/message-job.dto';
+import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
+import { LanguageEnum } from '../../../registration/enum/language.enum';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
@@ -29,32 +35,28 @@ import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
-import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
-import { MessageProcessType } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVoucherService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(IntersolveVoucherInstructionsEntity)
   private readonly intersolveInstructionsRepository: Repository<IntersolveVoucherInstructionsEntity>;
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
   private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
+  public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  public readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = LanguageEnum.en;
 
   public constructor(
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
+    private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
@@ -96,7 +98,7 @@ export class IntersolveVoucherService
 
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
       if (paResult.status !== StatusEnum.waiting) {
-        const registration = await this.registrationRepository.findOne({
+        const registration = await this.registrationScopedRepository.findOne({
           where: { referenceId: paResult.referenceId },
         });
         await this.storeTransactionResult(
@@ -207,13 +209,13 @@ export class IntersolveVoucherService
     referenceId: string,
     payment: number,
   ): Promise<IntersolveVoucherEntity> {
-    const rawVoucher = await this.registrationRepository
+    const rawVoucher = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       //The .* is to prevent the raw query from prefixing with voucher_
       .select('voucher.*')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
-      .where('registration.referenceId = :referenceId', {
+      .andWhere('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
       .andWhere('voucher.payment = :payment', {
@@ -224,10 +226,10 @@ export class IntersolveVoucherService
       return;
     }
     const voucher: IntersolveVoucherEntity =
-      this.intersolveVoucherRepository.create(
+      this.intersolveVoucherScopedRepository.create(
         rawVoucher as IntersolveVoucherEntity,
       );
-    return await this.intersolveVoucherRepository.save(voucher);
+    return await this.intersolveVoucherScopedRepository.save(voucher);
   }
 
   private async issueVoucher(
@@ -299,7 +301,7 @@ export class IntersolveVoucherService
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: paymentInfo.referenceId },
     });
 
@@ -373,7 +375,7 @@ export class IntersolveVoucherService
     voucherData.send = false;
     voucherData.payment = payment;
     voucherData.amount = amount;
-    return this.intersolveVoucherRepository.save(voucherData);
+    return this.intersolveVoucherScopedRepository.save(voucherData);
   }
 
   public async processStatus(
@@ -400,7 +402,7 @@ export class IntersolveVoucherService
     if (status === StatusEnum.success) {
       transactionToUpdateFilter['transactionStep'] = 2;
     }
-
+    // No scoped needed as this is for incoming whatsapp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
       status: status,
       errorMessage:
@@ -427,13 +429,13 @@ export class IntersolveVoucherService
     payment: number,
     programId: number,
   ): Promise<any> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
       relations: ['images', 'images.voucher'],
     });
     if (!registration) {
       throw new HttpException(
-        'PA with this referenceId not found',
+        'PA with this referenceId not found (within your scope)',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -553,7 +555,7 @@ export class IntersolveVoucherService
 
     intersolveVoucher.lastRequestedBalance = realBalance;
     intersolveVoucher.updatedLastRequestedBalance = new Date();
-    await this.intersolveVoucherRepository.save(intersolveVoucher);
+    await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     return realBalance;
   }
 
@@ -574,15 +576,17 @@ export class IntersolveVoucherService
   public async getUnusedVouchers(
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
-    const unusedVouchersEntities = await this.intersolveVoucherRepository
+    console.log('programId: ', programId);
+    const unusedVouchersEntities = await this.intersolveVoucherScopedRepository
       .createQueryBuilder('voucher')
       .leftJoinAndSelect('voucher.image', 'image')
       .leftJoinAndSelect('image.registration', 'registration')
-      .where('voucher.balanceUsed = false')
+      .andWhere('voucher.balanceUsed = false')
       .andWhere('registration.programId = :programId', {
         programId: programId,
       })
       .getMany();
+    console.log('unusedVouchersEntities: ', unusedVouchersEntities);
 
     const unusedVouchersDtos: UnusedVoucherDto[] = [];
     for await (const voucher of unusedVouchersEntities) {
@@ -602,12 +606,12 @@ export class IntersolveVoucherService
 
   public async updateUnusedVouchers(programId?: number): Promise<void> {
     const maxId = (
-      await this.intersolveVoucherRepository
+      await this.intersolveVoucherScopedRepository
         .createQueryBuilder('voucher')
         .select('MAX(voucher.id)', 'max')
         .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
-        .where('registration.programId = :programId', {
+        .andWhere('registration.programId = :programId', {
           programId: programId,
         })
         .getRawOne()
@@ -620,24 +624,25 @@ export class IntersolveVoucherService
     let id = 1;
     // Run this in batches of 1,000 as it is performance-heavy
     while (id <= maxId) {
-      const previouslyUnusedVouchers = await this.intersolveVoucherRepository
-        .createQueryBuilder('voucher')
-        .leftJoinAndSelect('voucher.image', 'image')
-        .leftJoinAndSelect('image.registration', 'registration')
-        .where('voucher.balanceUsed = false')
-        .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
-          id: id,
-        })
-        .andWhere('registration.programId = :programId', {
-          programId: programId,
-        })
-        .getMany();
+      const previouslyUnusedVouchers =
+        await this.intersolveVoucherScopedRepository
+          .createQueryBuilder('voucher')
+          .leftJoinAndSelect('voucher.image', 'image')
+          .leftJoinAndSelect('image.registration', 'registration')
+          .andWhere('voucher.balanceUsed = false')
+          .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
+            id: id,
+          })
+          .andWhere('registration.programId = :programId', {
+            programId: programId,
+          })
+          .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
         const balance = await this.getBalance(voucher, programId);
         if (balance !== voucher.amount) {
           voucher.balanceUsed = true;
           voucher.send = true;
-          await this.intersolveVoucherRepository.save(voucher);
+          await this.intersolveVoucherScopedRepository.save(voucher);
         }
       }
       id += 1000;
@@ -656,11 +661,12 @@ export class IntersolveVoucherService
     intersolveVoucherId?: number,
   ): Promise<void> {
     if (intersolveVoucherId) {
-      const intersolveVoucher = await this.intersolveVoucherRepository.findOne({
-        where: { id: intersolveVoucherId },
-      });
+      const intersolveVoucher =
+        await this.intersolveVoucherScopedRepository.findOne({
+          where: { id: intersolveVoucherId },
+        });
       intersolveVoucher.send = true;
-      await this.intersolveVoucherRepository.save(intersolveVoucher);
+      await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     }
     const transactionResultDto = await this.createTransactionResult(
       amount,
@@ -686,7 +692,7 @@ export class IntersolveVoucherService
     errorMessage: string,
     messageSid?: string,
   ): Promise<PaTransactionResultDto> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { id: registrationId },
       relations: ['fsp', 'program'],
     });
@@ -725,12 +731,12 @@ export class IntersolveVoucherService
   ): Promise<void> {
     if (jobName === IntersolveVoucherJobName.getLastestVoucherBalance) {
       const maxId = (
-        await this.intersolveVoucherRepository
+        await this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')
           .select('MAX(voucher.id)', 'max')
           .leftJoin('voucher.image', 'image')
           .leftJoin('image.registration', 'registration')
-          .where('registration.programId = :programId', {
+          .andWhere('registration.programId = :programId', {
             programId: programId,
           })
           .getRawOne()
@@ -742,11 +748,11 @@ export class IntersolveVoucherService
         // Query gets all voouher that need to be checked these can be:
         // 1) Vouchers  with null (which have never been checked)
         // 2) Voucher with a balance 0 (which could have been used more in the meantime)
-        const q = await this.intersolveVoucherRepository
+        const q = await this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')
           .leftJoinAndSelect('voucher.image', 'image')
           .leftJoinAndSelect('image.registration', 'registration')
-          .where('voucher.lastRequestedBalance IS DISTINCT from 0')
+          .andWhere('voucher.lastRequestedBalance IS DISTINCT from 0')
           .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
             id: id,
           })
@@ -761,7 +767,7 @@ export class IntersolveVoucherService
           if (balance !== voucher.amount) {
             voucher.balanceUsed = true;
             voucher.send = true;
-            await this.intersolveVoucherRepository.save(voucher);
+            await this.intersolveVoucherScopedRepository.save(voucher);
           }
         }
         id += 1000;
@@ -774,11 +780,11 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<VoucherWithBalanceDto[]> {
     const vouchersWithBalance: VoucherWithBalanceDto[] = [];
-    const voucherWithBalanceRaw = await this.intersolveVoucherRepository
+    const voucherWithBalanceRaw = await this.intersolveVoucherScopedRepository
       .createQueryBuilder('voucher')
       .leftJoinAndSelect('voucher.image', 'image')
       .leftJoinAndSelect('image.registration', 'registration')
-      .where('voucher.lastRequestedBalance > 0')
+      .andWhere('voucher.lastRequestedBalance > 0')
       .andWhere('registration.programId = :programId', {
         programId: programId,
       })

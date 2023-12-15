@@ -1,21 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { ScopedRepository } from '../../../../scoped.repository';
+import { getScopedRepositoryProviderName } from '../../../../utils/scope/createScopedRepositoryProvider.helper';
 import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
 import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 
 @Injectable()
 export class IntersolveVisaExportService {
-  @InjectRepository(IntersolveVisaWalletEntity)
-  private readonly visaCardRepository: Repository<IntersolveVisaWalletEntity>;
-
   constructor(
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
+    private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaWalletEntity>,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
   public async getCards(programId: number): Promise<ExportCardsDto[]> {
-    const wallets = await this.visaCardRepository
+    const wallets = await this.intersolveVisaWalletScopedRepository
       .createQueryBuilder('wallet')
       .leftJoin('wallet.intersolveVisaCustomer', 'customer')
       .leftJoin('customer.registration', 'registration')
@@ -36,7 +35,7 @@ export class IntersolveVisaExportService {
           'customer',
         )} THEN true ELSE false END as "isCurrentWallet"`,
       ])
-      .where('registration."programId" = :programId', { programId })
+      .andWhere('registration."programId" = :programId', { programId })
       .getRawMany();
 
     const mappedWallets = this.mapToDto(wallets, programId);
@@ -78,11 +77,11 @@ export class IntersolveVisaExportService {
   }
 
   private getLatestWalletsSubquery(alias: string): any {
-    const subQuery = this.visaCardRepository
+    const subQuery = this.intersolveVisaWalletScopedRepository
       .createQueryBuilder('sub_wallet')
       .select('sub_wallet.id')
       .leftJoin('sub_wallet.intersolveVisaCustomer', 'sub_customer')
-      .where(`sub_customer.id = ${alias}.id`)
+      .andWhere(`sub_customer.id = ${alias}.id`)
       .orderBy('sub_wallet.created', 'DESC')
       .addOrderBy('sub_wallet.id', 'DESC')
       .limit(1)

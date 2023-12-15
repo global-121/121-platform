@@ -1,12 +1,12 @@
+import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { waitForMessagesToComplete } from '../helpers/program.helper';
 import {
   getMessageHistory,
   importRegistrations,
   sendMessage,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { waitForMessagesToComplete } from '../helpers/program.helper';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 
 describe('Send custom message with placeholders', () => {
   const programId = 1;
@@ -63,7 +63,6 @@ describe('Send custom message with placeholders', () => {
       registrationAh.namePartnerOrganization,
     ); //TODO: make this more flexible for other potential placeholders
 
-    console.log('processedMessage: ', processedMessage);
     expect(messageHistory[0].body).toEqual(processedMessage);
   });
 });

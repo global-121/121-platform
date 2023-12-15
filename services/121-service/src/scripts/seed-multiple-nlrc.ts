@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceNLRC from '../../seed-data/instance/instance-nlrc.json';
-import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
+import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
 import messageTemplateOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
-import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
+import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
+import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
+import { DebugScope } from './enum/debug-scope.enum';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedMultipleNLRC implements InterfaceScript {
@@ -25,6 +26,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
   );
 
   public async run(isApiTests?: boolean): Promise<void> {
+    const debugScopes = Object.values(DebugScope);
     const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
     await seedInit.run(isApiTests);
 
@@ -46,7 +48,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityLVV);
+    await this.seedHelper.addDefaultUsers(programEntityLVV, debugScopes);
 
     // ************************
     // ***** Program PV *****
@@ -62,7 +64,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityPV);
+    await this.seedHelper.addDefaultUsers(programEntityPV, debugScopes);
 
     // ************************
     // ***** Program OCW *****
@@ -78,7 +80,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityOCW);
+    await this.seedHelper.addDefaultUsers(programEntityOCW, debugScopes);
   }
 }
 

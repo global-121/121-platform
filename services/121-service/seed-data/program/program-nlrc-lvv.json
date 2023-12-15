@@ -165,5 +165,6 @@
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
   "languages": ["ar", "en", "es", "fr", "nl", "pt_BR"],
-  "enableMaxPayments": true
+  "enableMaxPayments": true,
+  "enableScope": true
 }

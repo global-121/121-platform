@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { QueueMessageService } from './queue-message.service';
 import { BullModule } from '@nestjs/bull';
-import { QueueNameCreateMessage } from '../enum/queue.names.enum';
-import { ProgramAttributesModule } from '../../program-attributes/program-attributes.module';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProgramAttributesModule } from '../../program-attributes/program-attributes.module';
+import { QueueNameCreateMessage } from '../enum/queue.names.enum';
+import { MessageTemplateEntity } from '../message-template/message-template.entity';
+import { QueueMessageService } from './queue-message.service';
 
 @Module({
   imports: [

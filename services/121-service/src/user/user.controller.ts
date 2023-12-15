@@ -35,12 +35,12 @@ import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.d
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 import { PermissionEnum } from './permission.enum';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
-import { UserRoleResponseDTO } from './dto/userrole-response.dto';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @Controller()

@@ -56,6 +56,7 @@ describe('Load PA table', () => {
       const testUserRoles = fixtureUserRoles;
       const testRoles = {
         roles: ['program-admin', 'cva-manager'],
+        scope: 'test',
       };
 
       // Act
@@ -77,6 +78,7 @@ describe('Load PA table', () => {
       const testUserRoles = fixtureUserRoles;
       const testRoles = {
         roles: ['view'],
+        scope: 'test',
       };
 
       // Act
@@ -98,6 +100,7 @@ describe('Load PA table', () => {
       const testUserRoles = fixtureUserRoles;
       const testRoles = {
         roles: ['view', 'cva-manager'],
+        scope: 'test',
       };
 
       // Act

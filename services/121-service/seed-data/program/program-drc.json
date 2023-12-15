@@ -1541,5 +1541,6 @@
     "B. 3. Quel est votre prénom ?"
   ],
   "languages": ["en", "fr"],
-  "enableMaxPayments": false
+  "enableMaxPayments": false,
+  "enableScope": false
 }

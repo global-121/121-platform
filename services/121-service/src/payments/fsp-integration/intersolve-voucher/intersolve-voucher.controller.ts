@@ -32,6 +32,7 @@ import { PermissionEnum } from '../../../user/permission.enum';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('financial-service-providers/intersolve-voucher')
@@ -39,16 +40,21 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
 export class IntersolveVoucherController {
   public constructor(
     private intersolveVoucherService: IntersolveVoucherService,
+    private intersolveVoucherCronService: IntersolveVoucherCronService,
   ) {}
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Export Intersolve voucher image',
+    summary: '[SCOPED] Export Intersolve voucher image',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Voucher exported' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers',
   )
@@ -72,12 +78,16 @@ export class IntersolveVoucherController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    summary: 'Get balance of Intersolve voucher',
+    summary: '[SCOPED] Get balance of Intersolve voucher',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Voucher balance retrieved' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
   )
@@ -156,5 +166,35 @@ export class IntersolveVoucherController {
       Number(param.programId),
       jobDetails.name,
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '[CRON] Cancel by refpos',
+  })
+  @ApiResponse({ status: 201, description: 'Vouchers canceled by refpos' })
+  @Post('/financial-service-providers/intersolve-voucher/cancel')
+  public async cancelByRefPos(): Promise<void> {
+    await this.intersolveVoucherCronService.cancelByRefposIntersolve();
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '[CRON] Cache unused vouchers',
+  })
+  @ApiResponse({ status: 201, description: 'Cached unused vouchers' })
+  @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
+  public async cacheUnusedVouchers(): Promise<void> {
+    await this.intersolveVoucherCronService.cacheUnusedVouchers();
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '[CRON] Send WhatsApp reminders',
+  })
+  @ApiResponse({ status: 201, description: 'Sent WhatsApp reminders' })
+  @Post('/financial-service-providers/intersolve-voucher/send-reminders')
+  public async sendWhatsappReminders(): Promise<void> {
+    await this.intersolveVoucherCronService.sendWhatsappReminders();
   }
 }

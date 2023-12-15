@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -21,12 +21,12 @@ import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { UserRoleResponseDTO } from './dto/userrole-response.dto';
+import { PermissionEnum } from './permission.enum';
 import { PermissionEntity } from './permissions.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { PermissionEnum } from './permission.enum';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -42,10 +42,7 @@ export class UserService {
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(
-    @Inject(REQUEST) private readonly request: Request,
-    private readonly dataSource: DataSource,
-  ) {}
+  public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const userEntity = await this.matchPassword(loginUserDto);
@@ -100,7 +97,7 @@ export class UserService {
 
   public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
     // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
-    await this.getProgramIdsUserHasPermission(
+    await this.getProgramScopeIdsUserHasPermission(
       userId,
       PermissionEnum.AidWorkerProgramREAD,
     );
@@ -111,20 +108,25 @@ export class UserService {
     return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
   }
 
-  public async getProgramIdsUserHasPermission(
+  public async getProgramScopeIdsUserHasPermission(
     userId: number,
     permission: PermissionEnum,
-  ): Promise<number[]> {
+  ): Promise<{ programId: number; scope: string }[]> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = [];
+    const programIdScopeObjects: { programId: number; scope: string }[] = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
         if (role.permissions.map((p) => p.name).includes(permission)) {
-          programIds.push(assignment.programId);
+          const programIdScopeObject = {
+            programId: assignment.programId,
+            scope: assignment.scope,
+          };
+
+          programIdScopeObjects.push(programIdScopeObject);
         }
       }
     }
-    return programIds;
+    return programIdScopeObjects;
   }
 
   // TODO: REFACTOR: the Controller should throw the HTTP Status Code
@@ -236,8 +238,7 @@ export class UserService {
     userType: UserType,
   ): Promise<UserRO> {
     // check uniqueness of email
-    const qb = this.dataSource
-      .getRepository(UserEntity)
+    const qb = this.userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -318,6 +319,9 @@ export class UserService {
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
+        programAssignment.scope = assignAidworkerToProgram.scope
+          ? assignAidworkerToProgram.scope.toLowerCase()
+          : '';
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
@@ -540,8 +544,7 @@ export class UserService {
   }
 
   public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
-    const saltCheck = await this.dataSource
-      .getRepository(UserEntity)
+    const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
       .where({ username: loginUserDto.username })
@@ -561,8 +564,7 @@ export class UserService {
             .toString('hex')
         : crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
     };
-    const userEntity = await this.dataSource
-      .getRepository(UserEntity)
+    const userEntity = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
@@ -608,6 +610,7 @@ export class UserService {
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
+        'MAX(assignment.scope) AS scope',
       ])
       .groupBy('user.id')
       .getRawMany();
@@ -626,6 +629,7 @@ export class UserService {
         active: user.active,
         lastLogin: user.lastLogin,
         roles,
+        scope: user.scope,
       };
     });
 
@@ -719,6 +723,9 @@ export class UserService {
 
         // If there are roles to add, update the roles in the programAssignment
         programAssignment.roles = existingRoles.concat(rolesToAdd);
+        programAssignment.scope = assignAidworkerToProgram.scope
+          ? assignAidworkerToProgram.scope.toLowerCase()
+          : '';
 
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
@@ -730,5 +737,16 @@ export class UserService {
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+  }
+
+  public async getUserScopeForProgram(
+    userId: number,
+    programId: number,
+  ): Promise<string> {
+    const user = await this.findById(userId);
+    const assignment = user.programAssignments.find(
+      (a) => a.programId === programId,
+    );
+    return assignment.scope;
   }
 }

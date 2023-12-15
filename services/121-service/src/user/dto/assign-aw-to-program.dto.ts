@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray, IsOptional } from 'class-validator';
+import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 import { DefaultUserRole } from '../user-role.enum';
 
 export class AssignAidworkerToProgramDto {
@@ -11,4 +11,9 @@ export class AssignAidworkerToProgramDto {
   @ArrayMinSize(0)
   @IsOptional()
   public readonly roles: DefaultUserRole[];
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  public readonly scope: string;
 }

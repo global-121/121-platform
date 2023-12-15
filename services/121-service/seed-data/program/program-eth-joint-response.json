@@ -87,5 +87,6 @@
   },
   "fullnameNamingConvention": ["fullname"],
   "languages": ["en"],
-  "enableMaxPayments": true
+  "enableMaxPayments": true,
+  "enableScope": false
 }

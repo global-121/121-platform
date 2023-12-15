@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
-import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
 import messageTemplatePilotEth from '../../seed-data/message-template/message-template-pilot-zoa-eth.json';
+import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
@@ -10,7 +11,6 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {
@@ -302,7 +302,7 @@ export class SeedProgramEth implements InterfaceScript {
   private async addUserPerCustomRole(program: ProgramEntity): Promise<void> {
     const administrationZoaUser = await this.seedHelper.getOrSaveUser({
       username: 'administrator-zoa-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(
       administrationZoaUser.id,
@@ -311,7 +311,7 @@ export class SeedProgramEth implements InterfaceScript {
     );
     const projectManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'project-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(
       projectManagementUser.id,
@@ -320,7 +320,7 @@ export class SeedProgramEth implements InterfaceScript {
     );
     const programmeManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'programme-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(
       programmeManagementUser.id,
@@ -329,7 +329,7 @@ export class SeedProgramEth implements InterfaceScript {
     );
     const operationManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'operation-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(
       operationManagementUser.id,
@@ -338,14 +338,14 @@ export class SeedProgramEth implements InterfaceScript {
     );
     const programQualiyUser = await this.seedHelper.getOrSaveUser({
       username: 'programme-quality-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(programQualiyUser.id, program.id, [
       'manager-of-programme-quality',
     ]);
     const projectOfficerUser = await this.seedHelper.getOrSaveUser({
       username: 'project-officer-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
     });
     await this.seedHelper.assignAidworker(projectOfficerUser.id, program.id, [
       'project-officer',

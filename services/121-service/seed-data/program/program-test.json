@@ -166,5 +166,6 @@
   "fullnameNamingConvention": ["name"],
   "languages": ["en"],
   "tryWhatsAppFirst": true,
-  "enableMaxPayments": false
+  "enableMaxPayments": false,
+  "enableScope": false
 }

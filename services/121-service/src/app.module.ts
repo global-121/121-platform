@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
@@ -12,23 +14,25 @@ import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
+import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
+import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
+import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
+import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
+import { ScopeMiddleware } from './shared/middleware/scope.middleware';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
-import { BullModule } from '@nestjs/bull';
-import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
-import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
-import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 
 @Module({
   imports: [
     TypeOrmModule,
+    TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     ProgramModule,
     ProgramAttributesModule,
     MessageTemplateModule,
@@ -79,4 +83,10 @@ import { MessageTemplateModule } from './notifications/message-template/message-
     },
   ],
 })
-export class ApplicationModule {}
+export class ApplicationModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(ScopeMiddleware)
+      .forRoutes({ path: 'programs/([0-9]+)*', method: RequestMethod.ALL });
+  }
+}

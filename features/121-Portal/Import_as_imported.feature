@@ -1,5 +1,5 @@
 @portal
-Feature: Import people affected
+Feature: Import registrations as imported
 
   Background:
     Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
@@ -17,8 +17,12 @@ Feature: Import people affected
     When the program is not configured with a paymentAmountMultiplierFormula
     Then it contains the column "paymentAmountMultiplier" after the column "phoneNumber"
 
+    When the program has scope enabled
+    Then it contains the column scope
+
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
+    Given - if program and user have a scope - the file only contains records within the scope of the user
     And it has columns "phoneNumber", and "paymentAmountMultiplier" and "preferredLanguage"
     And the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
@@ -50,36 +54,7 @@ Feature: Import people affected
 
   Scenario: Unsuccessfully import invalid CSV file
     Given the user clicks the "Import People Affected" button
-    When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, etc.)
+    When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, records with a scope outside of the user, etc.)
     Then the "OK" button becomes enabled
     When the user clicks "OK" to confirm the import
     Then a feedback popup appears that "Something went wrong with the import" and it explains possible reasons
-
-  Scenario: Person Affected registers with imported phone number
-    Given a "phoneNumber" is successfully imported
-    And there has been no registration with this "phoneNumber" yet (from after the import)
-    And the PA was either invited or not (including a stored message or not therefore)
-    And a note was created
-    When a new Person Affected starts registrations with this "phoneNumber" (see PA-app/New_registration.feature)
-    Then a new row with status "Created" is shown in the PA-table in Portal
-    And the row with status "Imported"/"Invited" is also still shown, because without the phone-number the system cannot know yet they belong together
-    When the Person Affected finishes registrations with using the known "phoneNumber"
-    Then the two rows are merged into one row with status "Registered"
-    And the "registration created" date is visible
-    And the invitation message is transferred (if applicable)
-    And the "note" is visible
-
-  Scenario: Person Affected registers with unknown phone number
-      """
-      Normal registration (see PA-app/New_registration.feature)
-      """
-
-  Scenario: Person Affected registers with phone number that was imported initially, but already has a connected registration
-      """
-      Normal registration (see PA-app/New_registration.feature)
-      """
-
-  Scenario: Person Affected registers with phone number that was not imported, but is already in the system
-      """
-      Normal registration (see PA-app/New_registration.feature)
-      """

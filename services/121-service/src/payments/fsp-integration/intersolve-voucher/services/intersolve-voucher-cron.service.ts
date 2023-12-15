@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DataSource, Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { FspName } from '../../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
-import { WhatsappService } from '../../../../notifications/whatsapp/whatsapp.service';
+import { MessageProcessType } from '../../../../notifications/message-job.dto';
+import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
 import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
@@ -14,8 +15,6 @@ import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service'
 import { IntersolveIssueVoucherRequestEntity } from '../intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '../intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../intersolve-voucher.service';
-import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
-import { MessageProcessType } from '../../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -23,6 +22,8 @@ export class IntersolveVoucherCronService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
   private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
+  @InjectRepository(IntersolveVoucherEntity)
+  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
@@ -34,10 +35,8 @@ export class IntersolveVoucherCronService {
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly whatsappService: WhatsappService,
     private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly dataSource: DataSource,
   ) {}
 
   public async cacheUnusedVouchers(): Promise<void> {
@@ -112,9 +111,6 @@ export class IntersolveVoucherCronService {
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      const intersolveVoucherRepository = this.dataSource.getRepository(
-        IntersolveVoucherEntity,
-      );
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
         .createQueryBuilder('transaction')
@@ -125,7 +121,7 @@ export class IntersolveVoucherCronService {
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-      const unsentIntersolveVouchers = await intersolveVoucherRepository
+      const unsentIntersolveVouchers = await this.intersolveVoucherRepository
         .createQueryBuilder('voucher')
         .select([
           'voucher.id as id',
@@ -184,12 +180,12 @@ export class IntersolveVoucherCronService {
           MessageContentType.paymentReminder,
           MessageProcessType.whatsappTemplateVoucherReminder,
         );
-        const reminderVoucher = await intersolveVoucherRepository.findOne({
+        const reminderVoucher = await this.intersolveVoucherRepository.findOne({
           where: { id: unsentIntersolveVoucher.id },
         });
 
         reminderVoucher.reminderCount += 1;
-        await intersolveVoucherRepository.save(reminderVoucher);
+        await this.intersolveVoucherRepository.save(reminderVoucher);
       }
 
       console.log(

@@ -1,22 +1,23 @@
   @portal
 
   Background:
-    Given user is on team members page
+    Given the user has the "AidWorkerProgramREAD" permission
 
   Scenario: View "Team Members"
-    Given user is on Team Members page
-    When Details are displayed in table in order (Name, Role, Status, Last login)
+    When user is on Team Members page
+    Then details are displayed in table in order (Name, Role, Status, Last login)
     And possible Roles can be configured per program
     And status can be Active
     And last login is displayed in format (dd/mm/yyyy) or empty
-    And user clicks on a sortable column users are sorted alphabetically or numerically
-    And on the right side on top of user table "Add/change team member" button is displayed
+    And each row has a 3 dot icon on the right side
+    And when user clicks on a sortable column users are sorted alphabetically or numerically
+    And on the right side on top of user table "Add team member" button is displayed
 
   Scenario: Add New Team member
     Given the user has the "AidWorkerProgramUPDATE" permission
-    When User clicks on "Add new user" button
-    And pop-up is displayed
-    Then user enter team members email
+    When User clicks on "Add team member" button
+    Then a pop-up is displayed
+    When the user enters team members email
     And Selects Role for team member by clicking on check boxes
     Then Clicks on "Add" butto
     And Notification with "You've succsessfully added a team member" message is displayed

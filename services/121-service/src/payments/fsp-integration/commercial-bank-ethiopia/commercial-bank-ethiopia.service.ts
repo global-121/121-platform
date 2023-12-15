@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -35,8 +37,12 @@ export class CommercialBankEthiopiaService
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-  @InjectRepository(CommercialBankEthiopiaAccountEnquiriesEntity)
-  public commercialBankEthiopiaAccountEnquiriesEntity: Repository<CommercialBankEthiopiaAccountEnquiriesEntity>;
+  @Inject(
+    getScopedRepositoryProviderName(
+      CommercialBankEthiopiaAccountEnquiriesEntity,
+    ),
+  )
+  private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
@@ -280,15 +286,14 @@ export class CommercialBankEthiopiaService
         );
       console.timeEnd(logString);
 
-      const result = {
-        registrationId: pa?.id,
-        fullNameUsedForTheMatch: pa?.fullName || null,
-        bankAccountNumberUsedForCall: pa?.bankAccountNumber || null,
-        cbeName: null,
-        namesMatch: false,
-        cbeStatus: null,
-        errorMessage: null,
-      };
+      const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
+      result.registrationId = pa?.id;
+      result.fullNameUsedForTheMatch = pa?.fullName || null;
+      result.bankAccountNumberUsedForCall = pa?.bankAccountNumber || null;
+      result.cbeName = null;
+      result.namesMatch = false;
+      result.cbeStatus = null;
+      result.errorMessage = null;
 
       if (paResult?.Status?.successIndicator?._text === 'Success') {
         const accountInfo =
@@ -326,17 +331,19 @@ export class CommercialBankEthiopiaService
               : paResult.Status.messages._text));
       }
       const existingRecord =
-        await this.commercialBankEthiopiaAccountEnquiriesEntity.findOne({
+        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.findOne({
           where: { registrationId: pa.id },
         });
 
       if (existingRecord) {
-        await this.commercialBankEthiopiaAccountEnquiriesEntity.update(
+        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.updateUnscoped(
           { registrationId: pa.id },
           result,
         );
       } else {
-        await this.commercialBankEthiopiaAccountEnquiriesEntity.save(result);
+        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.save(
+          result,
+        );
       }
     }
     console.timeEnd('getValidationStatus loop total');
@@ -428,32 +435,33 @@ export class CommercialBankEthiopiaService
   public async getAllPaValidations(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
-    const programPAs = await this.commercialBankEthiopiaAccountEnquiriesEntity
-      .createQueryBuilder('cbe')
-      .innerJoin('cbe.registration', 'registration')
-      .where('registration.programId = :programId', {
-        programId: programId,
-      })
-      .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
-        statusValues: [
-          'deleted',
-          'inclusionEnded',
-          'reject',
-          'noLongerEligible',
-          'registeredWhileNoLongerEligible',
-          'paused',
-        ],
-      })
-      .select([
-        'registration.registrationProgramId as "registrationProgramId"',
-        'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
-        'cbe.cbeName as "cbeName"',
-        'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
-        'cbe.errorMessage as "errorMessage"',
-        'cbe.cbeStatus as "cbeStatus"',
-        'cbe.updated as "updated"',
-      ])
-      .getRawMany();
+    const programPAs =
+      await this.commercialBankEthiopiaAccountEnquiriesScopedRepo
+        .createQueryBuilder('cbe')
+        .innerJoin('cbe.registration', 'registration')
+        .andWhere('registration.programId = :programId', {
+          programId: programId,
+        })
+        .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
+          statusValues: [
+            'deleted',
+            'inclusionEnded',
+            'reject',
+            'noLongerEligible',
+            'registeredWhileNoLongerEligible',
+            'paused',
+          ],
+        })
+        .select([
+          'registration.registrationProgramId as "registrationProgramId"',
+          'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
+          'cbe.cbeName as "cbeName"',
+          'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
+          'cbe.errorMessage as "errorMessage"',
+          'cbe.cbeStatus as "cbeStatus"',
+          'cbe.updated as "updated"',
+        ])
+        .getRawMany();
 
     return { data: programPAs, fileName: 'cbe-validation-report' };
   }

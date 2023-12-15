@@ -1,16 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
+import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { ErrorEnum } from '../../../registration/errors/registration-data.error';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -63,25 +66,22 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 
 @Injectable()
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(RegistrationEntity)
-  public registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(IntersolveVisaCustomerEntity)
-  public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
-  @InjectRepository(IntersolveVisaWalletEntity)
-  public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
-    private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
+    private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
+    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
+    private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 
   public async getTransactionInfo(
@@ -203,7 +203,7 @@ export class IntersolveVisaService
   private async getRelationOptionsForVisa(
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
@@ -232,7 +232,7 @@ export class IntersolveVisaService
 
     const transactionNotifications = [];
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: paymentDetails.referenceId },
     });
     let visaCustomer = await this.getCustomerEntity(registration.id);
@@ -260,7 +260,7 @@ export class IntersolveVisaService
       visaCustomer = new IntersolveVisaCustomerEntity();
       visaCustomer.registration = registration;
       visaCustomer.holderId = createCustomerResult.data.data.id;
-      await this.intersolveVisaCustomerRepo.save(visaCustomer);
+      await this.intersolveVisaCustomerScopedRepo.save(visaCustomer);
     }
 
     // Check if a wallet exists
@@ -296,7 +296,7 @@ export class IntersolveVisaService
             b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
         ).quantity.value;
       intersolveVisaWallet.lastExternalUpdate = new Date();
-      await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
+      await this.intersolveVisaWalletScopedRepo.save(intersolveVisaWallet);
 
       visaCustomer.visaWallets = [intersolveVisaWallet];
     }
@@ -329,7 +329,7 @@ export class IntersolveVisaService
 
       // if succes, update wallet: set linkedToVisaCustomer to true
       visaCustomer.visaWallets[0].linkedToVisaCustomer = true;
-      await this.intersolveVisaWalletRepository.save(
+      await this.intersolveVisaWalletScopedRepo.save(
         visaCustomer.visaWallets[0],
       );
     }
@@ -362,7 +362,7 @@ export class IntersolveVisaService
       // if success, update wallet: set debitCardCreated to true ..
       if (paTransactionResult.status === StatusEnum.success) {
         visaCustomer.visaWallets[0].debitCardCreated = true;
-        await this.intersolveVisaWalletRepository.save(
+        await this.intersolveVisaWalletScopedRepo.save(
           visaCustomer.visaWallets[0],
         );
 
@@ -412,7 +412,7 @@ export class IntersolveVisaService
   private async getCustomerEntity(
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
-    return await this.intersolveVisaCustomerRepo.findOne({
+    return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
       where: { registrationId: registrationId },
     });
@@ -628,7 +628,7 @@ export class IntersolveVisaService
     }
     wallet.spentThisMonth = transactionInfo.spentThisMonth;
     wallet.lastExternalUpdate = new Date();
-    return await this.intersolveVisaWalletRepository.save(wallet);
+    return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
 
   private getTwoMonthAgo(): Date {
@@ -695,7 +695,7 @@ export class IntersolveVisaService
     registration: RegistrationEntity;
     visaCustomer: IntersolveVisaCustomerEntity;
   }> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
       relations: ['fsp'],
     });
@@ -738,7 +738,7 @@ export class IntersolveVisaService
           result.data?.code,
         ))
     ) {
-      await this.intersolveVisaWalletRepository.update(
+      await this.intersolveVisaWalletScopedRepo.updateUnscoped(
         { tokenCode: tokenCode },
         { tokenBlocked: block },
       );
@@ -752,13 +752,15 @@ export class IntersolveVisaService
     block: boolean,
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const wallet = await this.intersolveVisaWalletRepository.findOne({
-      where: { tokenCode: tokenCode },
-      relations: [
+    const qb = this.intersolveVisaWalletScopedRepo
+      .createQueryBuilder('wallet')
+      .leftJoinAndSelect(
+        'wallet.intersolveVisaCustomer',
         'intersolveVisaCustomer',
-        'intersolveVisaCustomer.registration',
-      ],
-    });
+      )
+      .leftJoinAndSelect('intersolveVisaCustomer.registration', 'registration')
+      .andWhere('wallet.tokenCode = :tokenCode', { tokenCode });
+    const wallet = await qb.getOne();
 
     if (
       !wallet ||
@@ -826,7 +828,7 @@ export class IntersolveVisaService
     ) {
       return;
     }
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
     const visaCustomer = await this.getCustomerEntity(registration.id);
@@ -1027,7 +1029,7 @@ export class IntersolveVisaService
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
     ).quantity.value;
     newWallet.lastExternalUpdate = new Date();
-    await this.intersolveVisaWalletRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 5. register new wallet to customer
     const registerResult = await this.linkWalletToCustomer(
@@ -1039,7 +1041,7 @@ export class IntersolveVisaService
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
       // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletRepository.remove(newWallet);
+      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
 
       const errors = registerResult.data?.errors?.length
         ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
@@ -1058,7 +1060,7 @@ export class IntersolveVisaService
     }
     // if succes, update wallet: set linkedToVisaCustomer to true
     newWallet.linkedToVisaCustomer = true;
-    await this.intersolveVisaWalletRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 6. create new debit card
     const relationOptions = await this.getRelationOptionsForVisa(referenceId);
@@ -1075,7 +1077,7 @@ export class IntersolveVisaService
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
       // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletRepository.remove(newWallet);
+      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
 
       const errors = createDebitCardResult.data?.errors?.length
         ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
@@ -1091,7 +1093,7 @@ export class IntersolveVisaService
     }
     // if success, update wallet: set debitCardCreated to true ..
     newWallet.debitCardCreated = true;
-    await this.intersolveVisaWalletRepository.save(newWallet);
+    await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
     // 7. unload balance from old wallet (don't do this if the balance is < 1 because Intersolve doesn't allow this)
     if (currentBalance >= 1) {
@@ -1129,7 +1131,7 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
     });
     await this.queueMessageService.addMessageToQueue(
@@ -1151,16 +1153,16 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletRepository.find();
+    const wallets = await this.intersolveVisaWalletScopedRepo.find();
     for (const wallet of wallets) {
       await this.getWalletDetails(wallet);
     }
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
-    const count = await this.intersolveVisaCustomerRepo
+    const count = await this.intersolveVisaCustomerScopedRepo
       .createQueryBuilder('customer')
-      .where('customer.registrationId = :registrationId', { registrationId })
+      .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();
     return count > 0;
   }

@@ -104,4 +104,8 @@ export class UpdateProgramDto {
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description: JSON;
+
+  @ApiProperty({ example: true })
+  @IsOptional()
+  public readonly enableScope: boolean;
 }

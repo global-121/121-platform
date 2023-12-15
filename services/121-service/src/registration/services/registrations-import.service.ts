@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import csv from 'csv-parser';
@@ -17,6 +17,9 @@ import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attr
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { ScopedRepository } from '../../scoped.repository';
+import { UserService } from '../../user/user.service';
+import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import {
   BulkImportDto,
   BulkImportResult,
@@ -46,12 +49,6 @@ export enum ImportType {
 
 @Injectable()
 export class RegistrationsImportService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationStatusChangeEntity)
-  private readonly registrationStatusRepository: Repository<RegistrationStatusChangeEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
@@ -62,12 +59,19 @@ export class RegistrationsImportService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
+    private readonly userService: UserService,
+    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
+    private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
+    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
 
   public async importBulkAsImported(
@@ -78,6 +82,7 @@ export class RegistrationsImportService {
     const validatedImportRecords = await this.csvToValidatedBulkImport(
       csvFile,
       program.id,
+      userId,
     );
     let countImported = 0;
     let countExistingPhoneNr = 0;
@@ -104,6 +109,7 @@ export class RegistrationsImportService {
         continue;
       }
 
+      // Keep this on non-scoped repo as you do not want duplicates outside scope!
       const existingRegistrations = await this.registrationRepository.findOne({
         where: {
           phoneNumber: phoneNumberResult,
@@ -129,6 +135,7 @@ export class RegistrationsImportService {
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage =
         importResponseRecord.preferredLanguage;
+      newRegistration.program = program;
       if (!program.paymentAmountMultiplierFormula) {
         newRegistration.paymentAmountMultiplier =
           record.paymentAmountMultiplier || 1;
@@ -136,7 +143,9 @@ export class RegistrationsImportService {
       if (program.enableMaxPayments) {
         newRegistration.maxPayments = record.maxPayments;
       }
-      newRegistration.program = program;
+      if (program.enableScope) {
+        newRegistration.scope = record.scope || '';
+      }
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
       const savedRegistration = await newRegistration.save();
@@ -164,7 +173,7 @@ export class RegistrationsImportService {
       RegistrationStatusEnum.imported,
     );
     // Save registration data in bulk for performance
-    await this.registrationDataRepository.save(dataArray, {
+    await this.registrationDataScopedRepository.save(dataArray, {
       chunk: 5000,
     });
     await this.actionService.saveAction(
@@ -188,7 +197,7 @@ export class RegistrationsImportService {
       return string;
     }
     if (string === undefined) {
-      return this.isValueUdefinedOrNull(defaultValue)
+      return this.isValueUndefinedOrNull(defaultValue)
         ? undefined
         : defaultValue;
     }
@@ -204,13 +213,13 @@ export class RegistrationsImportService {
       case null:
         return false;
       default:
-        return this.isValueUdefinedOrNull(defaultValue)
+        return this.isValueUndefinedOrNull(defaultValue)
           ? undefined
           : defaultValue;
     }
   }
 
-  private isValueUdefinedOrNull(value: any): boolean {
+  private isValueUndefinedOrNull(value: any): boolean {
     return value === undefined || value === null;
   }
 
@@ -222,17 +231,18 @@ export class RegistrationsImportService {
     let dynamicAttributes: string[];
 
     if (type === ImportType.registered) {
-      genericAttributes = Object.values(GenericAttributes).map((item) =>
-        String(item),
-      );
+      genericAttributes = [
+        GenericAttributes.referenceId,
+        GenericAttributes.fspName,
+        GenericAttributes.phoneNumber,
+        GenericAttributes.preferredLanguage,
+      ].map((item) => String(item));
       dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
         (d) => d.name,
       );
     } else if (type === ImportType.imported) {
       genericAttributes = [
         GenericAttributes.phoneNumber,
-        GenericAttributes.paymentAmountMultiplier,
-        GenericAttributes.maxPayments,
         GenericAttributes.preferredLanguage,
       ].map((item) => String(item));
       dynamicAttributes = (
@@ -245,19 +255,13 @@ export class RegistrationsImportService {
     });
     // If paymentAmountMultiplier automatic, then drop from template
     if (!!program.paymentAmountMultiplierFormula) {
-      const index = genericAttributes.indexOf(
-        GenericAttributes.paymentAmountMultiplier,
-      );
-      if (index > -1) {
-        genericAttributes.splice(index, 1);
-      }
+      genericAttributes.push(String(GenericAttributes.paymentAmountMultiplier));
     }
-    // If maxPayments not enabled, then drop from template
-    if (!program.enableMaxPayments) {
-      const index = genericAttributes.indexOf(GenericAttributes.maxPayments);
-      if (index > -1) {
-        genericAttributes.splice(index, 1);
-      }
+    if (program.enableMaxPayments) {
+      genericAttributes.push(String(GenericAttributes.maxPayments));
+    }
+    if (program.enableScope) {
+      genericAttributes.push(String(GenericAttributes.scope));
     }
 
     const attributes = genericAttributes.concat(dynamicAttributes);
@@ -267,10 +271,12 @@ export class RegistrationsImportService {
   public async importRegistrations(
     csvFile,
     program: ProgramEntity,
+    userId: number,
   ): Promise<ImportResult> {
     const validatedImportRecords = await this.csvToValidatedRegistrations(
       csvFile,
       program.id,
+      userId,
     );
     return await this.importValidatedRegistrations(
       validatedImportRecords,
@@ -302,6 +308,9 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         registration.maxPayments = record.maxPayments;
+      }
+      if (program.enableScope) {
+        registration.scope = record.scope || '';
       }
       for await (const att of dynamicAttributes) {
         if (att.type === CustomAttributeType.boolean) {
@@ -345,9 +354,12 @@ export class RegistrationsImportService {
       );
       countImported += 1;
     }
-    await this.registrationDataRepository.save(registrationDataArrayAllPa, {
-      chunk: 5000,
-    });
+    await this.registrationDataScopedRepository.save(
+      registrationDataArrayAllPa,
+      {
+        chunk: 5000,
+      },
+    );
 
     // Store inclusion score and paymentAmountMultiplierFormula if it's relevant
     const programHasScore = await this.programHasInclusionScore(program.id);
@@ -379,9 +391,12 @@ export class RegistrationsImportService {
       registrationStatusChanges.push(registrationStatusChange);
     }
 
-    await this.registrationStatusRepository.save(registrationStatusChanges, {
-      chunk: 5000,
-    });
+    await this.registrationStatusChangeScopedRepository.save(
+      registrationStatusChanges,
+      {
+        chunk: 5000,
+      },
+    );
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {
@@ -435,17 +450,27 @@ export class RegistrationsImportService {
   private async csvToValidatedBulkImport(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateBulkImportCsvInput(importRecords, programId);
+    return await this.validateBulkImportCsvInput(
+      importRecords,
+      programId,
+      userId,
+    );
   }
 
   private async csvToValidatedRegistrations(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateRegistrationsInput(importRecords, programId);
+    return await this.validateRegistrationsInput(
+      importRecords,
+      programId,
+      userId,
+    );
   }
 
   public async validateCsv(csvFile): Promise<object[]> {
@@ -515,6 +540,14 @@ export class RegistrationsImportService {
       .elements;
   }
 
+  private recordHasAllowedScope(record: any, userScope: string): boolean {
+    return (
+      (userScope &&
+        record[AdditionalAttributes.scope]?.startsWith(userScope)) ||
+      !userScope
+    );
+  }
+
   public checkForCompletelyEmptyRow(row): boolean {
     if (Object.keys(row).every((key) => !row[key])) {
       return true;
@@ -525,6 +558,7 @@ export class RegistrationsImportService {
   private async validateBulkImportCsvInput(
     csvArray,
     programId: number,
+    userId: number,
   ): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
@@ -536,12 +570,33 @@ export class RegistrationsImportService {
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
+    const userScope = await this.userService.getUserScopeForProgram(
+      userId,
+      programId,
+    );
+
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
+
+      const correctScope = this.recordHasAllowedScope(row, userScope);
+      if (correctScope) {
+        importRecord.scope = row[AdditionalAttributes.scope];
+      } else {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.scope,
+          value: row[AdditionalAttributes.scope],
+          error: `User has program scope ${userScope} and does not have access to registration scope ${
+            row[AdditionalAttributes.scope]
+          }`,
+        };
+        errors.push(errorObj);
+      }
+
       const langResult = this.checkAndUpdateLanguage(
         row.preferredLanguage,
         languageMapping,
@@ -564,6 +619,9 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
+      }
+      if (program.enableScope) {
+        importRecord.scope = row.scope || '';
       }
       for await (const att of programCustomAttributes) {
         if (
@@ -683,9 +741,15 @@ export class RegistrationsImportService {
   public async validateRegistrationsInput(
     csvArray,
     programId: number,
+    userId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const errors = [];
     const validatatedArray = [];
+
+    const userScope = await this.userService.getUserScopeForProgram(
+      userId,
+      programId,
+    );
 
     const allReferenceIds = csvArray
       .filter((row) => row.referenceId)
@@ -712,6 +776,21 @@ export class RegistrationsImportService {
         continue;
       }
       const importRecord = new ImportRegistrationsDto();
+      const correctScope = this.recordHasAllowedScope(row, userScope);
+      if (correctScope) {
+        importRecord.scope = row[AdditionalAttributes.scope];
+      } else {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.scope,
+          value: row[AdditionalAttributes.scope],
+          error: `User has program scope ${userScope} and does not have access to registration scope ${
+            row[AdditionalAttributes.scope]
+          }`,
+        };
+        errors.push(errorObj);
+      }
+
       const langResult = this.checkAndUpdateLanguage(
         row.preferredLanguage,
         languageMapping,
@@ -729,6 +808,7 @@ export class RegistrationsImportService {
       }
 
       if (row.referenceId) {
+        // Keep this on non-scoped repo as you do not want duplicates outside scope!
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: row.referenceId },
         });
@@ -744,7 +824,6 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
-
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
@@ -754,6 +833,9 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
+      }
+      if (program.enableScope) {
+        importRecord.scope = row.scope;
       }
       const earlierCheckedPhoneNr = {
         original: null,

@@ -34,6 +34,7 @@ export class Program {
   notifications: string | TranslatableString;
   languages: LanguageEnum[];
   enableMaxPayments: boolean;
+  enableScope: boolean;
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
   filterableAttributes: FilterableAttributeGroup[];

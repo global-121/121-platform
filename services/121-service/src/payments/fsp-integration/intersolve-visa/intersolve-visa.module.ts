@@ -1,12 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { RegistrationEntity } from './../../../registration/registration.entity';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
@@ -15,17 +16,11 @@ import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      IntersolveVisaWalletEntity,
-      UserEntity,
-      RegistrationEntity,
-      IntersolveVisaCustomerEntity,
-    ]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
     QueueMessageModule,
@@ -35,9 +30,12 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     CustomHttpService,
-    RegistrationDataQueryService,
+    RegistrationDataScopedQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
+    RegistrationScopedRepository,
+    createScopedRepositoryProvider(IntersolveVisaWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [
