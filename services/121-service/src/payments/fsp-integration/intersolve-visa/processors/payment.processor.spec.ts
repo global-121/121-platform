@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 import { IntersolveVisaService } from '../intersolve-visa.service';
-import { PaymentIntersolveVisaSinglePaymentConsumer } from './payment.processor';
+import { PaymentProcessorIntersolveVisa } from './payment.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
@@ -28,12 +28,10 @@ const testJob = { data: mockPaymentJob } as Job;
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
-  let paymentProcessor: PaymentIntersolveVisaSinglePaymentConsumer;
+  let paymentProcessor: PaymentProcessorIntersolveVisa;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(
-      PaymentIntersolveVisaSinglePaymentConsumer,
-    )
+    const { unit, unitRef } = TestBed.create(PaymentProcessorIntersolveVisa)
       .mock(IntersolveVisaService)
       .using(intersolveVisaService)
       .compile();
