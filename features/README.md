@@ -103,9 +103,8 @@ Using application such as EspoCRM to call our API
 #### Using external tools/applications
 
 - Send a WhatsApp message
-  - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
-  - Read queued notification
+  - Claim pending message
 
 ### For Admin-user
 
