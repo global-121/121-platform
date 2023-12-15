@@ -9,4 +9,7 @@ export class PaymentDetailsDto {
   public phoneNumber: string;
   public referenceId: string;
   public transactionAmount: number;
+  public programId?: number;
+  public paymentNr?: number;
+  public bulkSize?: number;
 }

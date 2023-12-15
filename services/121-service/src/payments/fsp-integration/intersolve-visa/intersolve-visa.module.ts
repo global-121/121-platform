@@ -1,4 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
@@ -16,6 +17,8 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { AzureLogService } from '../../../shared/services/azure-log.service';
+import { PaymentIntersolveVisaSinglePaymentConsumer } from './processors/payment.processor';
 
 @Module({
   imports: [
@@ -29,6 +32,14 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     UserModule,
     TransactionsModule,
     QueueMessageModule,
+    BullModule.registerQueue({
+      name: 'paymentIntersolveVisa',
+      processors: [
+        {
+          path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
+        },
+      ],
+    }),
   ],
   providers: [
     IntersolveVisaService,
@@ -38,6 +49,8 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     RegistrationDataQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
+    PaymentIntersolveVisaSinglePaymentConsumer,
+    AzureLogService,
   ],
   controllers: [IntersolveVisaController],
   exports: [
@@ -45,6 +58,7 @@ import { QueueMessageModule } from '../../../notifications/queue-message/queue-m
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     IntersolveVisaExportService,
+    BullModule,
   ],
 })
 export class IntersolveVisaModule {}

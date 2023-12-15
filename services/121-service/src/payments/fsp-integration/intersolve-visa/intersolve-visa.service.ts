@@ -1,7 +1,10 @@
+import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Queue } from 'bull';
+import { ProcessName } from './enum/queue.names.enum';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
@@ -82,6 +85,8 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
+    @InjectQueue('paymentIntersolveVisa')
+    private readonly paymentIntersolveVisaQueue: Queue,
   ) {}
 
   public async getTransactionInfo(
@@ -157,26 +162,38 @@ export class IntersolveVisaService
     programId: number,
     paymentNr: number,
   ): Promise<void> {
+    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
+
+    for (const paymentDetails of paymentDetailsArray) {
+      paymentDetails.programId = programId;
+      paymentDetails.paymentNr = paymentNr;
+      paymentDetails.bulkSize = paymentList[0].bulkSize;
+      await this.paymentIntersolveVisaQueue.add(
+        ProcessName.sendSinglePayment,
+        paymentDetails,
+      );
+    }
+  }
+
+  public async sendQueuePayment(
+    paymentDetailsData: PaymentDetailsDto,
+  ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
-    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
-
-    for (const paymentDetails of paymentDetailsArray) {
-      const paymentRequestResultPerPa = await this.sendPaymentToPa(
-        paymentDetails,
-        paymentNr,
-        paymentDetails.transactionAmount,
-        paymentList[0].bulkSize, // bulkSize is the same for all payments in the bulk
-      );
-      fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        programId,
-        paymentNr,
-      );
-    }
+    const paymentRequestResultPerPa = await this.sendPaymentToPa(
+      paymentDetailsData,
+      paymentDetailsData.paymentNr,
+      paymentDetailsData.transactionAmount,
+      paymentDetailsData.bulkSize, // bulkSize is the same for all payments in the bulk
+    );
+    fspTransactionResult.paList.push(paymentRequestResultPerPa);
+    await this.transactionsService.storeTransactionUpdateStatus(
+      paymentRequestResultPerPa,
+      paymentDetailsData.programId,
+      paymentDetailsData.paymentNr,
+    );
   }
 
   private async getPaPaymentDetails(
@@ -218,7 +235,7 @@ export class IntersolveVisaService
     return registrationDataOptions;
   }
 
-  private async sendPaymentToPa(
+  public async sendPaymentToPa(
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
