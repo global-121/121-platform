@@ -1,17 +1,14 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import {
-  ProcessName,
-  QueueNameMessageCallBack,
-} from '../enum/queue.names.enum';
+import { ProcessName, QueueNamePayment } from '../enum/queue.names.enum';
 import { IntersolveVisaService } from '../intersolve-visa.service';
 
-@Processor(QueueNameMessageCallBack.paymentIntersolveVisa)
+@Processor(QueueNamePayment.paymentIntersolveVisa)
 export class PaymentIntersolveVisaSinglePaymentConsumer {
   constructor(private readonly paymentService: IntersolveVisaService) {}
 
-  @Process(ProcessName.sendSinglePayment)
-  async handleSend(job: Job): Promise<void> {
-    await this.paymentService.sendQueuePayment(job.data);
+  @Process(ProcessName.sendPayment)
+  async handleSendPayment(job: Job): Promise<void> {
+    await this.paymentService.processQueuedPayment(job.data);
   }
 }

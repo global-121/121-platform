@@ -1,7 +1,7 @@
 export enum ProcessName {
-  sendSinglePayment = 'sendSinglePayment',
+  sendPayment = 'sendPayment',
 }
 
-export enum QueueNameMessageCallBack {
+export enum QueueNamePayment {
   paymentIntersolveVisa = 'paymentIntersolveVisa',
 }

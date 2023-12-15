@@ -19,6 +19,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { PaymentIntersolveVisaSinglePaymentConsumer } from './processors/payment.processor';
+import { QueueNamePayment } from './enum/queue.names.enum';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { PaymentIntersolveVisaSinglePaymentConsumer } from './processors/payment
     TransactionsModule,
     QueueMessageModule,
     BullModule.registerQueue({
-      name: 'paymentIntersolveVisa',
+      name: QueueNamePayment.paymentIntersolveVisa,
       processors: [
         {
           path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',

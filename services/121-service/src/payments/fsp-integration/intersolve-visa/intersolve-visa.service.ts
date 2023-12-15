@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Queue } from 'bull';
-import { ProcessName } from './enum/queue.names.enum';
+import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
@@ -85,7 +85,7 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
-    @InjectQueue('paymentIntersolveVisa')
+    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
     private readonly paymentIntersolveVisaQueue: Queue,
   ) {}
 
@@ -169,13 +169,13 @@ export class IntersolveVisaService
       paymentDetails.paymentNr = paymentNr;
       paymentDetails.bulkSize = paymentList[0].bulkSize;
       await this.paymentIntersolveVisaQueue.add(
-        ProcessName.sendSinglePayment,
+        ProcessName.sendPayment,
         paymentDetails,
       );
     }
   }
 
-  public async sendQueuePayment(
+  public async processQueuedPayment(
     paymentDetailsData: PaymentDetailsDto,
   ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
