@@ -121,7 +121,7 @@ export class TransactionsService {
       .select([
         'transaction.created AS "paymentDate"',
         'payment',
-        '"referenceId"',
+        'c."referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as "errorMessage"',
