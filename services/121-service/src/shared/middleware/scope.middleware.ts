@@ -5,11 +5,8 @@ import { Repository } from 'typeorm';
 import { ProgramAidworkerAssignmentEntity } from '../../programs/program-aidworker.entity';
 import { getUserIdFromRequest } from '../../user/user.helper';
 
-// Extend Express Request interface to add a 'scope' property
-declare module 'express' {
-  export interface Request {
-    scope?: string;
-  }
+export interface RequestWithScope extends Request {
+  scope?: string;
 }
 
 @Injectable()
@@ -18,7 +15,7 @@ export class ScopeMiddleware implements NestMiddleware {
     @InjectRepository(ProgramAidworkerAssignmentEntity)
     private assignmentRepo: Repository<ProgramAidworkerAssignmentEntity>, // Inject your repository
   ) {}
-  async use(req: Request, res: Response, next: any): Promise<void> {
+  async use(req: RequestWithScope, res: Response, next: any): Promise<void> {
     const match = req.path.match(/\/programs\/(\d+)/);
     let programId: number;
     if (match) {

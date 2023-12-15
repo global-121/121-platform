@@ -17,13 +17,14 @@ import {
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ScopedQueryBuilder } from '../scoped.repository';
+import { RequestWithScope } from '../shared/middleware/scope.middleware';
 import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 
 export class RegistrationScopedBaseRepository<T> {
   public readonly repository: Repository<T>;
-  public request: Request;
+  public request: RequestWithScope;
 
   constructor(target: EntityTarget<T>, dataSource: DataSource) {
     this.repository = dataSource.createEntityManager().getRepository(target);
