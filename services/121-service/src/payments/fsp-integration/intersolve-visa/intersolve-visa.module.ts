@@ -18,7 +18,7 @@ import { IntersolveVisaExportService } from './services/intersolve-visa-export.s
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
-import { PaymentIntersolveVisaSinglePaymentConsumer } from './processors/payment.processor';
+import { PaymentProcessorIntersolveVisa } from './processors/payment.processor';
 import { QueueNamePayment } from './enum/queue.names.enum';
 
 @Module({
@@ -50,7 +50,7 @@ import { QueueNamePayment } from './enum/queue.names.enum';
     RegistrationDataQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
-    PaymentIntersolveVisaSinglePaymentConsumer,
+    PaymentProcessorIntersolveVisa,
     AzureLogService,
   ],
   controllers: [IntersolveVisaController],

@@ -186,7 +186,7 @@ export class IntersolveVisaService
       paymentDetailsData,
       paymentDetailsData.paymentNr,
       paymentDetailsData.transactionAmount,
-      paymentDetailsData.bulkSize, // bulkSize is the same for all payments in the bulk
+      paymentDetailsData.bulkSize,
     );
     fspTransactionResult.paList.push(paymentRequestResultPerPa);
     await this.transactionsService.storeTransactionUpdateStatus(
