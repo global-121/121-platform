@@ -9,6 +9,7 @@ Feature: Export duplicate people affected list
     When the user clicks the "export duplicate people affected" and confirms the confirm prompt
     Then an Excel-file is downloaded
     And it shows a list of the registrations that have any of the columns marked with "duplicateCheck" in common
+    And - if program and user have scope - then only duplications among registrations within the scope of the user are found and returned
     And it shows the "name" and other attributes to be able to identify people
     And the "export duplicate people affected" button remains enabled, so the action can be repeated
     And if no "duplicate people affected" registrations are found then an alert is shown that "no data can be downloaded"

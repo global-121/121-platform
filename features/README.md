@@ -40,7 +40,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Mark as no longer eligible](121-Portal/Mark_as_no_longer_eligible.feature)
 - [Import registered people affected](121-Portal/Import_people_affected.feature#L83)
 - [Select people for validation](121-Portal/Select_people_for_validation.feature)
-- [Export People Affected list](121-Portal/Export_PA_list.feature)
+- [Export People Affected](121-Portal/Export_people_affected.feature)
 - [Export selected for validation list](121-Portal/Export_selected_for_validation_list.feature)
 - [Export PA data changes](121-Portal/Export_PA_data_changes.feature)
 - [Include people affected](121-Portal/Include_people_affected.feature)
