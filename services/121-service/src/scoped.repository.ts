@@ -1,7 +1,6 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { Request } from 'express';
 import {
   DataSource,
   DeepPartial,
@@ -19,6 +18,7 @@ import {
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { RegistrationEntity } from './registration/registration.entity';
+import { RequestWithScope } from './shared/middleware/scope.middleware';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
@@ -58,7 +58,7 @@ export class ScopedRepository<T> {
   constructor(
     target: EntityTarget<T>,
     @InjectDataSource() dataSource: DataSource,
-    @Inject(REQUEST) private request: Request,
+    @Inject(REQUEST) private request: RequestWithScope,
   ) {
     this.repository = dataSource.createEntityManager().getRepository(target);
 
