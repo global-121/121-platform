@@ -10,8 +10,8 @@ export const registrationScopedGoesLvv = {
   scope: DebugScope.ZeelandGoes,
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550111',
-  firstName: 'Jane',
-  lastName: 'Doe',
+  nameFirst: 'Jane',
+  nameLast: 'Doe',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -20,8 +20,8 @@ export const registrationScopedMiddelburgLvv = {
   scope: DebugScope.ZeelandMiddelburg,
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550112',
-  firstName: 'Juliet',
-  lastName: 'Marsh',
+  nameFirst: 'Juliet',
+  nameLast: 'Marsh',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -30,8 +30,8 @@ export const registrationScopedUtrechtLvv = {
   preferredLanguage: 'nl',
   scope: DebugScope.UtrechtHouten,
   [CustomDataAttributes.phoneNumber]: '15005550121',
-  firstName: 'Sam',
-  lastName: 'Winters',
+  nameFirst: 'Sam',
+  nameLast: 'Winters',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -40,8 +40,8 @@ export const registrationNotScopedLvv = {
   scope: '',
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550200',
-  firstName: 'Nick',
-  lastName: 'Brouwers',
+  nameFirst: 'Nick',
+  nameLast: 'Brouwers',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -53,8 +53,8 @@ export const registrationScopedGoesPv = {
   scope: DebugScope.ZeelandGoes,
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550111',
-  firstName: 'Jane',
-  lastName: 'Doe',
+  nameFirst: 'Jane',
+  nameLast: 'Doe',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -63,8 +63,8 @@ export const registrationScopedMiddelburgPv = {
   scope: DebugScope.ZeelandMiddelburg,
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550112',
-  firstName: 'Juliet',
-  lastName: 'Marsh',
+  nameFirst: 'Juliet',
+  nameLast: 'Marsh',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -73,8 +73,8 @@ export const registrationScopedUtrechtPv = {
   preferredLanguage: 'nl',
   scope: DebugScope.UtrechtHouten,
   [CustomDataAttributes.phoneNumber]: '15005550121',
-  firstName: 'Sam',
-  lastName: 'Winters',
+  nameFirst: 'Sam',
+  nameLast: 'Winters',
   fspName: FspName.fspNoAttributes,
 };
 
@@ -83,7 +83,7 @@ export const registrationNotScopedPv = {
   scope: '',
   preferredLanguage: 'en',
   [CustomDataAttributes.phoneNumber]: '15005550200',
-  firstName: 'Nick',
-  lastName: 'Brouwers',
+  nameFirst: 'Nick',
+  nameLast: 'Brouwers',
   fspName: FspName.fspNoAttributes,
 };
