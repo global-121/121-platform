@@ -915,7 +915,7 @@ export class ProgramsServiceApiService {
   ): Promise<UserSearchResult[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${username}`,
+      `/programs/${programId}/users/search?username=${username}`,
     );
   }
 
