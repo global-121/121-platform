@@ -244,7 +244,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs',
+    summary: '(EXTERNALLY USED) Import set of registered PAs',
     description:
       'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
@@ -335,7 +335,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      '[SCOPED] Update registration status of set of PAs that can be defined via filter parameters.',
+      '[SCOPED] (EXTERNALLY USED) Update registration status of set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -532,7 +532,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     summary:
-      '[SCOPED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
+      '[SCOPED] (EXTERNALLY USED) Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
     status: 201,
@@ -800,7 +800,8 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
   @ApiOperation({
-    summary: '[SCOPED] Get message history for one registration',
+    summary:
+      '[SCOPED] (EXTERNALLY USED) Get message history for one registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

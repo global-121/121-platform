@@ -141,7 +141,7 @@ export class UserController {
 
   // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
+  @ApiOperation({ summary: '(EXTERNALLY USED) Sign-up new Aid Worker user' })
   @ApiResponse({
     status: 201,
     description: 'Created new Aid Worker user',
