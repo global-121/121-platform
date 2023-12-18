@@ -12,8 +12,9 @@ export function createExpectedValueObject(registration, id: number): any {
   return expectedValueObject;
 }
 
-export const programIdOCW = 3;
+export const programIdLVV = 1;
 export const programIdPV = 2;
+export const programIdOCW = 3;
 
 export const referenceId = '63e62864557597e0d';
 export const registration1 = {

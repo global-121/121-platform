@@ -3,10 +3,14 @@ import { DebugScope } from '../../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
 import {
-  registrationNotScoped,
-  registrationScopedGoes,
-  registrationScopedMiddelburg,
-  registrationScopedUtrecht,
+  registrationNotScopedLvv,
+  registrationNotScopedPv,
+  registrationScopedGoesLvv,
+  registrationScopedGoesPv,
+  registrationScopedMiddelburgLvv,
+  registrationScopedMiddelburgPv,
+  registrationScopedUtrechtLvv,
+  registrationScopedUtrechtPv,
 } from '../../fixtures/scoped-registrations';
 import { changePhase } from '../../helpers/program.helper';
 import { importRegistrations } from '../../helpers/registration.helper';
@@ -16,10 +20,14 @@ import {
   getServer,
   resetDB,
 } from '../../helpers/utility.helper';
-import { programIdOCW } from '../../registrations/pagination/pagination-data';
+import {
+  programIdLVV,
+  programIdPV,
+} from '../../registrations/pagination/pagination-data';
 
-describe('Programs / Registrations - [Scoped]', () => {
-  const testProgramId = programIdOCW;
+describe('Registrations - [Scoped]', () => {
+  const LvvProgramId = programIdLVV;
+  const PvProgramId = programIdPV;
   let accessToken: string;
 
   beforeAll(async () => {
@@ -27,18 +35,28 @@ describe('Programs / Registrations - [Scoped]', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      testProgramId,
+      LvvProgramId,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
     await importRegistrations(
-      testProgramId,
+      LvvProgramId,
       [
-        registrationScopedMiddelburg,
-        registrationScopedGoes,
-        registrationScopedUtrecht,
-        registrationNotScoped,
+        registrationScopedMiddelburgLvv,
+        registrationScopedGoesLvv,
+        registrationScopedUtrechtLvv,
+        registrationNotScopedLvv,
+      ],
+      accessToken,
+    );
+    await importRegistrations(
+      PvProgramId,
+      [
+        registrationScopedMiddelburgPv,
+        registrationScopedGoesPv,
+        registrationScopedUtrechtPv,
+        registrationNotScopedPv,
       ],
       accessToken,
     );
@@ -51,7 +69,7 @@ describe('Programs / Registrations - [Scoped]', () => {
 
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${testProgramId}/registrations`)
+      .get(`/programs/${PvProgramId}/registrations`)
       .set('Cookie', [accessToken])
       .send();
 
