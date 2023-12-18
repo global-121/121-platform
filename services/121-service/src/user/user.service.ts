@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -20,13 +20,16 @@ import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
-import { UserRoleResponseDTO } from './dto/userrole-response.dto';
+import {
+  AssignmentResponseDTO,
+  UserRoleResponseDTO,
+} from './dto/userrole-response.dto';
+import { PermissionEnum } from './permission.enum';
 import { PermissionEntity } from './permissions.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { PermissionEnum } from './permission.enum';
 export const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -42,10 +45,7 @@ export class UserService {
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(
-    @Inject(REQUEST) private readonly request: Request,
-    private readonly dataSource: DataSource,
-  ) {}
+  public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const userEntity = await this.matchPassword(loginUserDto);
@@ -100,7 +100,7 @@ export class UserService {
 
   public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
     // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
-    await this.getProgramIdsUserHasPermission(
+    await this.getProgramScopeIdsUserHasPermission(
       userId,
       PermissionEnum.AidWorkerProgramREAD,
     );
@@ -111,20 +111,25 @@ export class UserService {
     return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
   }
 
-  public async getProgramIdsUserHasPermission(
+  public async getProgramScopeIdsUserHasPermission(
     userId: number,
     permission: PermissionEnum,
-  ): Promise<number[]> {
+  ): Promise<{ programId: number; scope: string }[]> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = [];
+    const programIdScopeObjects: { programId: number; scope: string }[] = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
         if (role.permissions.map((p) => p.name).includes(permission)) {
-          programIds.push(assignment.programId);
+          const programIdScopeObject = {
+            programId: assignment.programId,
+            scope: assignment.scope,
+          };
+
+          programIdScopeObjects.push(programIdScopeObject);
         }
       }
     }
-    return programIds;
+    return programIdScopeObjects;
   }
 
   // TODO: REFACTOR: the Controller should throw the HTTP Status Code
@@ -236,8 +241,7 @@ export class UserService {
     userType: UserType,
   ): Promise<UserRO> {
     // check uniqueness of email
-    const qb = this.dataSource
-      .getRepository(UserEntity)
+    const qb = this.userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -279,11 +283,11 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
-  public async assignAidworkerRolesAndAssignmentToProgram(
+  public async assignAidworkerToProgram(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
+  ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -314,14 +318,24 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // if already assigned: add roles to program assignment
+    const scope = assignAidworkerToProgram.scope
+      ? assignAidworkerToProgram.scope.toLowerCase()
+      : '';
+
+    const response = new AssignmentResponseDTO();
+    response.programId = programId;
+    response.userId = userId;
+    response.scope = scope;
+    // if already assigned: add roles and scope to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
+        programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
-        return programAssignment.roles.map((role) =>
+        response.roles = programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
         );
+        return response;
       }
     }
 
@@ -330,15 +344,17 @@ export class UserService {
       user: { id: user.id },
       program: { id: program.id },
       roles: newRoles,
+      scope: scope,
     });
-    return newRoles.map((role) => this.getUserRoleResponse(role));
+    response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
+    return response;
   }
 
   public async deleteAidworkerRolesOrAssignment(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
+  ): Promise<AssignmentResponseDTO | void> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -384,6 +400,7 @@ export class UserService {
         if (rolesToDelete.length === 0 || rolesToKeep.length === 0) {
           // If no roles to delete are passed OR no roles are left, delete the assignment
           await this.assignmentRepository.remove(programAssignment);
+          return;
         } else if (rolesToKeep.length > 0) {
           // Keep only the roles that are not in the newRoles array
           programAssignment.roles = rolesToKeep;
@@ -392,7 +409,12 @@ export class UserService {
           await this.assignmentRepository.save(programAssignment);
           resultRoles = rolesToKeep;
         }
-        return resultRoles.map((role) => this.getUserRoleResponse(role));
+        return {
+          programId,
+          userId,
+          scope: programAssignment.scope,
+          roles: resultRoles.map((role) => this.getUserRoleResponse(role)),
+        };
       }
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
@@ -540,8 +562,7 @@ export class UserService {
   }
 
   public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
-    const saltCheck = await this.dataSource
-      .getRepository(UserEntity)
+    const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
       .where({ username: loginUserDto.username })
@@ -561,8 +582,7 @@ export class UserService {
             .toString('hex')
         : crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
     };
-    const userEntity = await this.dataSource
-      .getRepository(UserEntity)
+    const userEntity = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
@@ -608,6 +628,7 @@ export class UserService {
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
+        'MAX(assignment.scope) AS scope',
       ])
       .groupBy('user.id')
       .getRawMany();
@@ -626,6 +647,7 @@ export class UserService {
         active: user.active,
         lastLogin: user.lastLogin,
         roles,
+        scope: user.scope,
       };
     });
 
@@ -649,30 +671,35 @@ export class UserService {
       .getRawMany();
   }
 
-  public async getProgramRoles(
+  public async getAidworkerProgramAssignment(
     programId: number,
     userId: number,
-  ): Promise<UserRoleResponseDTO[]> {
-    const roles = await this.userRoleRepository
-      .createQueryBuilder('roles')
-      .leftJoin('roles.assignments', 'assignments')
-      .where('assignments.programId = :programId', { programId })
-      .andWhere('assignments.userId = :userId', { userId })
-      .getMany();
+  ): Promise<AssignmentResponseDTO> {
+    const assignment = await this.assignmentRepository
+      .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.roles', 'roles')
+      .where('assignment.programId = :programId', { programId })
+      .andWhere('assignment.userId = :userId', { userId })
+      .getOne();
 
-    if (!roles || !roles.length) {
+    if (!assignment) {
       const errors = `User assignment for user id ${userId} to program ${programId} not found`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    return roles.map((role) => this.getUserRoleResponse(role));
+    return {
+      programId,
+      userId,
+      scope: assignment.scope,
+      roles: assignment.roles.map((role) => this.getUserRoleResponse(role)),
+    };
   }
 
-  public async assigAidworkerRolesToProgram(
+  public async updateAidworkerProgramAssignment(
     programId: number,
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
+  ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: [
@@ -719,16 +746,35 @@ export class UserService {
 
         // If there are roles to add, update the roles in the programAssignment
         programAssignment.roles = existingRoles.concat(rolesToAdd);
+        programAssignment.scope = assignAidworkerToProgram.scope
+          ? assignAidworkerToProgram.scope.toLowerCase()
+          : '';
 
         // Save the updated programAssignment
         await this.assignmentRepository.save(programAssignment);
 
-        return programAssignment.roles.map((role) =>
-          this.getUserRoleResponse(role),
-        );
+        return {
+          programId,
+          userId,
+          scope: programAssignment.scope,
+          roles: programAssignment.roles.map((role) =>
+            this.getUserRoleResponse(role),
+          ),
+        };
       }
     }
     const errors = `User assignment for user id ${userId} to program ${programId} not found`;
     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+  }
+
+  public async getUserScopeForProgram(
+    userId: number,
+    programId: number,
+  ): Promise<string> {
+    const user = await this.findById(userId);
+    const assignment = user.programAssignments.find(
+      (a) => a.programId === programId,
+    );
+    return assignment.scope;
   }
 }

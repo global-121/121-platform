@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
+import { RegistrationScopedRepository } from '../registration-scoped.repository';
 import { RegistrationEntity } from '../registration.entity';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 
@@ -10,8 +11,10 @@ import { ProgramQuestionEntity } from './../../programs/program-question.entity'
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+
+  public constructor(
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+  ) {}
 
   public async calculatePaymentAmountMultiplier(
     program: ProgramEntity,
@@ -21,7 +24,7 @@ export class InclusionScoreService {
       return;
     }
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['data'],
     });
@@ -40,11 +43,11 @@ export class InclusionScoreService {
         Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    return await this.registrationRepository.save(registration);
+    return await this.registrationScopedRepository.save(registration);
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['program'],
     });
@@ -62,13 +65,13 @@ export class InclusionScoreService {
 
     registration.inclusionScore = score;
 
-    await this.registrationRepository.save(registration);
+    await this.registrationScopedRepository.save(registration);
   }
 
   private async createQuestionAnswerListPrefilled(
     referenceId: string,
   ): Promise<object> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['data', 'data.programQuestion'],
     });

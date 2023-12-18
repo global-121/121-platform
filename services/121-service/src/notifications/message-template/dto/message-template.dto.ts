@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
@@ -8,7 +9,6 @@ import {
   Length,
 } from 'class-validator';
 import { LanguageEnum } from '../../../registration/enum/language.enum';
-import { Transform } from 'class-transformer';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({

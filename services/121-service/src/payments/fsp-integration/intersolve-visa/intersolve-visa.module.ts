@@ -2,34 +2,29 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { RegistrationEntity } from './../../../registration/registration.entity';
+import { QueueNamePayment } from './enum/queue.names.enum';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
+import { PaymentProcessorIntersolveVisa } from './processors/payment.processor';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
-import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
-import { AzureLogService } from '../../../shared/services/azure-log.service';
-import { PaymentProcessorIntersolveVisa } from './processors/payment.processor';
-import { QueueNamePayment } from './enum/queue.names.enum';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      IntersolveVisaWalletEntity,
-      UserEntity,
-      RegistrationEntity,
-      IntersolveVisaCustomerEntity,
-    ]),
+    TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
     QueueMessageModule,
@@ -47,11 +42,14 @@ import { QueueNamePayment } from './enum/queue.names.enum';
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     CustomHttpService,
-    RegistrationDataQueryService,
+    RegistrationDataScopedQueryService,
     IntersolveVisaExportService,
     IntersolveVisaStatusMappingService,
     PaymentProcessorIntersolveVisa,
     AzureLogService,
+    RegistrationScopedRepository,
+    createScopedRepositoryProvider(IntersolveVisaWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [

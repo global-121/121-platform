@@ -10,6 +10,7 @@ import { MonitoringQuestionEntity } from './monitoring-question.entity';
 export class InstanceService {
   @InjectRepository(InstanceEntity)
   private readonly instanceRepository: Repository<InstanceEntity>;
+
   public async getInstance(): Promise<InstanceEntity> {
     const instances = await this.instanceRepository.find({
       relations: ['monitoringQuestion'],

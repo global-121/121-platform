@@ -29,6 +29,7 @@ export class Person {
   lastTransactionErrorMessage?: string;
   lastMessageStatus?: string;
   lastMessageType?: string;
+  scope?: string;
 }
 
 // Model for display (in table)

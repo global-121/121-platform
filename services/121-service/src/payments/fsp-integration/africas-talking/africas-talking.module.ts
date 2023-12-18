@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AzureLoggerMiddleware } from '../../../shared/middleware/azure-logger.middleware';
-import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
@@ -13,7 +12,7 @@ import { AfricasTalkingService } from './africas-talking.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([AfricasTalkingNotificationEntity, UserEntity]),
+    TypeOrmModule.forFeature([AfricasTalkingNotificationEntity]),
     UserModule,
     TransactionsModule,
   ],

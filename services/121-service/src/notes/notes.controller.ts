@@ -29,10 +29,11 @@ export class NoteController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ summary: 'Create note for registration' })
+  @ApiOperation({ summary: '[SCOPED] Create note for registration' })
   @ApiResponse({
     status: 201,
-    description: 'Created new note for registration',
+    description:
+      'Created new note for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
     status: 401,
@@ -40,7 +41,8 @@ export class NoteController {
   })
   @ApiResponse({
     status: 404,
-    description: 'ReferenceId is not known',
+    description:
+      'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/notes')
@@ -63,10 +65,11 @@ export class NoteController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ summary: 'Get notes for registration' })
+  @ApiOperation({ summary: '[SCOPED] Get notes for registration' })
   @ApiResponse({
     status: 200,
-    description: 'Retrieved notes for registration',
+    description:
+      'Retrieved notes for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: [ResponseNoteDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

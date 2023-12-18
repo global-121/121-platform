@@ -6,20 +6,15 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { LastMessageStatusService } from '../last-message-status.service';
+import { LatestMessageEntity } from '../latest-message.entity';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { SmsService } from './sms.service';
-import { LatestMessageEntity } from '../latest-message.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      TwilioMessageEntity,
-      RegistrationEntity,
-      LatestMessageEntity,
-    ]),
+    TypeOrmModule.forFeature([TwilioMessageEntity, LatestMessageEntity]),
   ],
   providers: [SmsService, LastMessageStatusService],
   controllers: [],

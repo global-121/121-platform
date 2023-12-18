@@ -22,6 +22,7 @@ import {
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/permission.enum';
@@ -39,7 +40,6 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')

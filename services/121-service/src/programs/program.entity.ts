@@ -11,6 +11,7 @@ import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { InstanceEntity } from '../instance/instance.entity';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attributes } from '../registration/dto/update-registration.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
@@ -25,7 +26,6 @@ import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-c
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -140,6 +140,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
+
+  @Column({ default: false })
+  public enableScope: boolean;
 
   @OneToMany(
     () => ProgramFspConfigurationEntity,

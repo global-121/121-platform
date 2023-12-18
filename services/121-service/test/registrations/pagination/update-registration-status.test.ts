@@ -41,6 +41,7 @@ describe('change the status of a set of registrations', () => {
       ProgramPhase.registrationValidation,
       accessToken,
     );
+
     await importRegistrations(programIdOCW, registrations, accessToken);
   });
 

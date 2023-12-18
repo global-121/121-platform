@@ -12,11 +12,11 @@ import {
   FindOperator,
   Not,
   Repository,
-  SelectQueryBuilder,
   WhereExpressionBuilder,
 } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { ScopedQueryBuilder } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/permission.enum';
 import { UserEntity } from '../../user/user.entity';
@@ -33,6 +33,7 @@ import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
+import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration-view.entity';
 
 interface Filter {
@@ -43,21 +44,22 @@ type ColumnsFilters = Record<string, Filter[]>;
 
 @Injectable()
 export class RegistrationsPaginationService {
-  @InjectRepository(RegistrationViewEntity)
-  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  public constructor(private readonly programService: ProgramService) {}
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+  ) {}
 
   public async getPaginate(
     query: PaginateQuery,
     programId: number,
     hasPersonalReadPermission: boolean,
     noLimit: boolean,
-    queryBuilder?: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
@@ -78,9 +80,9 @@ export class RegistrationsPaginationService {
     }
 
     if (!queryBuilder) {
-      queryBuilder = this.registrationViewRepository
+      queryBuilder = this.registrationViewScopedRepository
         .createQueryBuilder('registration')
-        .where({ status: Not(RegistrationStatusEnum.deleted) });
+        .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
     }
     queryBuilder = queryBuilder.andWhere(
       '"registration"."programId" = :programId',
@@ -267,10 +269,10 @@ export class RegistrationsPaginationService {
 
   private filterOnRegistrationData(
     query: PaginateQuery,
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
     registrationDataNamesProgram: string[],
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     const filterableColumnsRegData = this.createFilterObjects(
       registrationDataNamesProgram,
       AllowedFilterOperatorsString,
@@ -295,10 +297,10 @@ export class RegistrationsPaginationService {
   }
 
   private filterRegistrationDataQb(
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
     parsedFilter: ColumnsFilters,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     for (const [filterKey, filters] of Object.entries(parsedFilter)) {
       const relationInfoArray = registrationDataRelations.filter(
         (r) => r.name === filterKey,
@@ -333,11 +335,11 @@ export class RegistrationsPaginationService {
   }
 
   private applyFilterConditionRegData(
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     filterType: string,
     value: any,
     uniqueJoinId: string,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     const columnName = 'value';
     switch (filterType) {
       case 'equal':
@@ -369,7 +371,7 @@ export class RegistrationsPaginationService {
     for (const relationInfo of relationInfoArray) {
       for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
         if (i === 0) {
-          qb.where(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+          qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         } else {
           qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
         }
@@ -380,9 +382,9 @@ export class RegistrationsPaginationService {
 
   private sortOnRegistrationData(
     query: PaginateQuery,
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     const relationInfoArray = registrationDataRelations.filter(
       (r) => r.name === query.sortBy[0][0],
     );
@@ -527,9 +529,9 @@ export class RegistrationsPaginationService {
   }
 
   private addPaymentFilter(
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     paginateQuery: PaginateQuery,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     const filterableColumns = this.createFilterObjects(
       Object.values(PaymentFilterEnum),
       [FilterOperator.EQ],
@@ -582,11 +584,11 @@ export class RegistrationsPaginationService {
   }
 
   private addPaymentFilterJoin(
-    queryBuilder: SelectQueryBuilder<RegistrationViewEntity>,
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     alias: string,
     status: StatusEnum,
     paymentNumber: string,
-  ): SelectQueryBuilder<RegistrationViewEntity> {
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     queryBuilder.leftJoin(
       'registration.latestTransactions',
       alias,

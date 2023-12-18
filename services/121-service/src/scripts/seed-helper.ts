@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
+import { DEBUG } from '../config';
 import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -24,7 +25,10 @@ export class SeedHelper {
     private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
-  public async addDefaultUsers(program: ProgramEntity): Promise<void> {
+  public async addDefaultUsers(
+    program: ProgramEntity,
+    debugScopeUsers: string[] = [],
+  ): Promise<void> {
     const programAdminUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
@@ -95,6 +99,21 @@ export class SeedHelper {
       await this.assignAidworker(financeOfficer.id, program.id, [
         DefaultUserRole.FinanceManager,
       ]);
+    }
+
+    if (debugScopeUsers && DEBUG) {
+      for (const debugScopeUser of debugScopeUsers) {
+        const scopedUser = await this.getOrSaveUser({
+          username: `${debugScopeUser}@example.org`,
+          password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+        });
+        await this.assignAidworker(
+          scopedUser.id,
+          program.id,
+          [DefaultUserRole.Admin],
+          debugScopeUser,
+        );
+      }
     }
 
     await this.assignAdminUserToProgram(program.id);
@@ -266,6 +285,7 @@ export class SeedHelper {
     userId: number,
     programId: number,
     roles: DefaultUserRole[] | string[],
+    scope?: string,
   ): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const programRepository = this.dataSource.getRepository(ProgramEntity);
@@ -277,6 +297,7 @@ export class SeedHelper {
       id: userId,
     });
     await assignmentRepository.save({
+      scope: scope,
       user: user,
       program: await programRepository.findOne({
         where: {

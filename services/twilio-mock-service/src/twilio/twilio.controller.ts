@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { TwilioService } from './twilio.service';
 
+@ApiTags('1. twilio')
 @Controller()
 export class TwilioController {
   public constructor(private readonly twilioService: TwilioService) {}
@@ -13,7 +14,9 @@ export class TwilioController {
     type: 'string',
   })
   @Get('v1/PhoneNumbers/:phoneNumber')
-  public async fetchPhoneNumber(@Param('phoneNumber') phoneNumber: string): Promise<{
+  public async fetchPhoneNumber(
+    @Param('phoneNumber') phoneNumber: string,
+  ): Promise<{
     phone_number: string;
     national_format: string;
   }> {

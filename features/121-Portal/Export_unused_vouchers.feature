@@ -14,5 +14,6 @@ Feature: Export unused vouchers
     When the user confirms
     Then an Excel is downloaded
     And it contains all currently unused vouchers for the given program only
+    And - if program and user have scope - then it contains only vouchers of PAs within the scope of the user
     And it contains columns: payment, issueDate, whatsappPhoneNumber, phoneNumber, lastExternalUpdate, name
 

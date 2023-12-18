@@ -11,11 +11,18 @@ Feature: View dashboard page
     When the user views the "dashboard"-page
     Then the PA-status metrics table is showing on the top right
     And a date for "Last updated" is shown with a refresh button
-    And the "most recent payment" is selected in the 'Payment #' row
+    And the "most recent payment" is selected in the 'Payment #' row - if a payment has been done
     And the "most recent calendar month" is selected in the 'Calendar month' row
     And there is a column for each possible PA status, including "deleted"
     And for all rows and columns in the table an info-icon is shown
     And for all rows in the table numbers are shown reflecting the chosen program
+
+  Scenario: View PA-status metrics table with SCOPE
+    Given the program has scope enabled
+    Given the user has a scope for the given program
+    Given only part of the users have the right scope
+    When the user views the table
+    Then it only shows numbers reflecting the PAs within the scope of the user
 
   Scenario: View PA-status metrics for specific payment
     When the user clicks the "Choose payment"-list
@@ -48,6 +55,7 @@ Feature: View dashboard page
     And it also still includes "deleted" PAs
     And a date for "Last updated" is shown with a refresh button
     And an info icon is shown
+    And - if program and user have scope - then only the PAs within the scope of the user are counted
 
   Scenario: Refresh any element of the dashboard page
     Given the user has opened the "dashboard page" before

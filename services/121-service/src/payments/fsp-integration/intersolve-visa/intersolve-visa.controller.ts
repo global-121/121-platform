@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -31,13 +32,15 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardREAD)
   @ApiOperation({
-    summary: 'Get Intersolve Visa wallet data related to a registration',
+    summary:
+      '[SCOPED] Get Intersolve Visa wallet data related to a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
-    description: 'Wallets data retrieved',
+    description:
+      'Wallets data retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: GetWalletsResponseDto,
   })
   @Get(
@@ -56,14 +59,14 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardBLOCK)
   @ApiOperation({
-    summary: 'Block Intersolve Visa wallet',
+    summary: '[SCOPED] Block Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
     description:
-      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
+      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   // TODO: change to PATCH programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode + combine with unblock endpoint
   @Post(
@@ -81,14 +84,14 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardUNBLOCK)
   @ApiOperation({
-    summary: 'Unblock Intersolve Visa wallet',
+    summary: '[SCOPED] Unblock Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
     description:
-      'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked)',
+      'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   // TODO: change to PATCH programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode + combine with block endpoint
   @Post(
@@ -128,13 +131,14 @@ export class IntersolveVisaController {
   @Permissions(PermissionEnum.FspDebitCardCREATE)
   @ApiOperation({
     summary:
-      'Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
+      '[SCOPED] Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 200,
-    description: 'Wallet and card replaced',
+    description:
+      'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   // TODO: REFACTOR: PUT /api/programs/{programId}/financial-service-providers/intersolve-visa/wallets/:tokencode
   @Put(
@@ -147,5 +151,20 @@ export class IntersolveVisaController {
       params.referenceId,
       params.programId,
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: '[CRON] Update all Visa wallet details',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Wallet and card replaced',
+  })
+  @Patch(
+    'programs/:programId/financial-service-providers/intersolve-visa/wallets',
+  )
+  public async updateVisaDebitWalletDetails(): Promise<void> {
+    await this.intersolveVisaService.updateVisaDebitWalletDetails();
   }
 }

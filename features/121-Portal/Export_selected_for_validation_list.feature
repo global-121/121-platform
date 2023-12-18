@@ -10,6 +10,7 @@ Feature: Export selected for validation list
     When the user clicks the "export list: selected for validation" and confirms the confirm prompt
     Then an Excel-file is downloaded
     And it shows a list of the registrations that are "selected for validation"
+    And - if program and user have scope - then it contains only registrations within the scope of the user
     And it shows the "name" and "phonenumber" to be able to identify people
     And it shows all program questions which have "selected-for-validation" as "export" attribute
     And it shows all program custom attributes which have "selected-for-validation as "export" attribute

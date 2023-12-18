@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { UserEntity } from '../user/user.entity';
 import { InterfaceScript } from './scripts.module';
 import SeedInit from './seed-init';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 
 @Injectable()
 export class SeedProd implements InterfaceScript {

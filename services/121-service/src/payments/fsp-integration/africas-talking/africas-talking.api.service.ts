@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import * as africastalking from 'africastalking';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
-import * as africastalking from 'africastalking';
 import { waitFor } from '../../../utils/waitFor.helper';
+import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 
 @Injectable()
 export class AfricasTalkingApiService {

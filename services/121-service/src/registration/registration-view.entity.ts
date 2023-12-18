@@ -55,6 +55,7 @@ import { RegistrationEntity } from './registration.entity';
       )
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
+      .addSelect('registration.scope', 'scope')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
@@ -122,6 +123,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public paymentCountRemaining: number;
+
+  @ViewColumn()
+  public scope: string;
 
   @OneToMany(
     () => RegistrationDataEntity,

@@ -4,10 +4,10 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { MessageContentType } from '../enum/message-type.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
+import { MessageProcessType } from '../message-job.dto';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { EXTERNAL_API } from './../../config';
-import { MessageProcessType } from '../message-job.dto';
 
 @Injectable()
 export class SmsService {

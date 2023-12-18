@@ -6,7 +6,7 @@ import { ProgramNotificationEnum } from '../../../notifications/enum/program-not
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
+import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   PaTransactionResultDto,
@@ -31,7 +31,7 @@ export class IntersolveJumboService
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
-    private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
   ) {}
 
   public async sendPayment(

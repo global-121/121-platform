@@ -1,8 +1,8 @@
-import { ProgramCustomAttributeEntity } from './../src/programs/program-custom-attribute.entity';
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { RegistrationEntity } from '../src/registration/registration.entity';
-import { ProgramEntity } from '../src/programs/program.entity';
 import { CustomAttributeType } from '../src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramEntity } from '../src/programs/program.entity';
+import { RegistrationEntity } from '../src/registration/registration.entity';
+import { ProgramCustomAttributeEntity } from './../src/programs/program-custom-attribute.entity';
 
 export class removeMigrateNamePartnerOrg1643720490970
   implements MigrationInterface

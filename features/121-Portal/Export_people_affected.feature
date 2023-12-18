@@ -8,7 +8,8 @@ Feature: Export People Affected list
   Scenario: Export People Affected list
     When the user clicks the "export people affected" button and confirms the confirm prompt
     Then an Excel-file is downloaded
-    And it shows a list of all People Affected that are also in the PA-table, irrespective of status
+    And it shows a list of all People Affected
+    And - if program and user have scope - then it contains only registrations within the scope of the user
     And it shows the "name" and other dynamic program-attributes, that are also in the PA-table
     And it shows "id" and other generic attributes, that are also in the PA-table
     And it does not show any attributes that are not directly visible in the PA-table, such as "note"

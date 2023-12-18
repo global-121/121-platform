@@ -1,17 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { RegistrationsService } from '../registration/registrations.service';
+import { ScopedRepository } from '../scoped.repository';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { ResponseNoteDto } from './dto/response-note.dto';
 import { NoteEntity } from './note.entity';
 
 @Injectable()
 export class NoteService {
-  @InjectRepository(NoteEntity)
-  private noteRepository: Repository<NoteEntity>;
-
   public constructor(
     private readonly registrationsService: RegistrationsService,
+    @Inject(getScopedRepositoryProviderName(NoteEntity))
+    private noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
   public async createNote(
@@ -32,24 +31,23 @@ export class NoteService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const note = {
-      registrationId: registration.id,
-      userId,
-      text,
-    };
+    const note = new NoteEntity();
+    note.registrationId = registration.id;
+    note.userId = userId;
+    note.text = text;
 
-    await this.noteRepository.save(note);
+    await this.noteScopedRepository.save(note);
   }
 
   public async retrieveNotes(
     referenceId: string,
     programId: number,
   ): Promise<ResponseNoteDto[]> {
-    const notes = await this.noteRepository
+    const qb = this.noteScopedRepository
       .createQueryBuilder('note')
       .innerJoin('note.registration', 'registration')
       .innerJoinAndSelect('note.user', 'user')
-      .where('registration.referenceId = :referenceId', { referenceId })
+      .andWhere('registration.referenceId = :referenceId', { referenceId })
       .andWhere('registration.programId = :programId', { programId })
       .select([
         'note.id as id',
@@ -59,9 +57,8 @@ export class NoteService {
         'note.created as created',
         'user.username AS username',
       ])
-      .orderBy('note.created', 'DESC')
-      .getRawMany();
-
+      .orderBy('note.created', 'DESC');
+    const notes = await qb.getRawMany();
     return notes;
   }
 }

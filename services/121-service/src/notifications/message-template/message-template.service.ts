@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { MessageTemplateEntity } from './message-template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { LanguageEnum } from '../../registration/enum/language.enum';
 import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
+import { LanguageEnum } from '../../registration/enum/language.enum';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
 } from './dto/message-template.dto';
+import { MessageTemplateEntity } from './message-template.entity';
 
 @Injectable()
 export class MessageTemplateService {

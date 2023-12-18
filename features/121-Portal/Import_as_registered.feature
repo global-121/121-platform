@@ -1,5 +1,5 @@
 @portal
-Feature: Import registrations
+Feature: Import registrations as registered
 
   Background:
     Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
@@ -17,8 +17,12 @@ Feature: Import registrations
     When the program is not configured with a paymentAmountMultiplierFormula
     Then it contains the column "paymentAmountMultiplier" after the "fspQuestions"
 
+    When the program has scope enabled
+    Then it contains the column scope
+
   Scenario: Successfully import registrations via CSV
     Given a valid import CSV file is prepared based on the template
+    Given - if program and user have a scope - the file only contains records within the scope of the user
     And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
     And it has the dynamic columns for programQuestions of that program
     And it has the dynamic "programCustomAttributes" of that program
@@ -35,7 +39,7 @@ Feature: Import registrations
     And in the AW-app the validation data for these PAs can be downloaded
 
   Scenario: Unsuccessfully import registrations via CSV
-    Given an invalid import CSV file (wrong column names, disallowed values, etc.)
+    Given an invalid import CSV file (wrong column names, disallowed values, registrations outside the scope of the user, etc.)
     When the user selects this file and clicks "OK" to confirm the import
     Then feedback is given that something went wrong and it gives details on where the error is, mainly if in a generic column
     And there is no input validation on the dynamic columns

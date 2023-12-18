@@ -29,25 +29,25 @@ Features of the 121-platform are described in this folder in a standardized way 
 #### Using 121-Portal
 
 - [View dashboard page](121-Portal/View_dashboard_page.feature)
-- [Manage aidworkers](121-Portal/Manage_aidworkers.feature)
+- [Manage team members](121-Portal/Manage_team_members.feature)
 - [View and Manage people affected](121-Portal/View_and_Manage_people_affected.feature)
 - [View payment history popup](121-Portal/View_payment_history_popup.feature)
 - [Edit information of Person Affected](121-Portal/Edit_Info_Person_Affected.feature)
-- [Import registrations](121-Portal/Import_registrations.feature)
-- [Import people affected](121-Portal/Import_people_affected.feature)
+- [Import registrations as registered](121-Portal/Import_as_registered.feature)
+- [Import registrations as imported](121-Portal/Import_as_imported.feature)
 - [Invite people affected](121-Portal/Invite_people_affected.feature)
 - [Delete people affected](121-Portal/Delete_people_affected.feature)
 - [Mark as no longer eligible](121-Portal/Mark_as_no_longer_eligible.feature)
 - [Import registered people affected](121-Portal/Import_people_affected.feature#L83)
 - [Select people for validation](121-Portal/Select_people_for_validation.feature)
-- [Export People Affected list](121-Portal/Export_PA_list.feature)
+- [Export People Affected](121-Portal/Export_people_affected.feature)
 - [Export selected for validation list](121-Portal/Export_selected_for_validation_list.feature)
 - [Export PA data changes](121-Portal/Export_PA_data_changes.feature)
 - [Include people affected](121-Portal/Include_people_affected.feature)
 - [Reject or End Inclusion of people affected](121-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export duplicate People Affected list](121-Portal/Export_duplicate_people_affected_list.feature)
 - [Make a new payment](121-Portal/Make_new_payment.feature)
-- [See last payment aggregate overview](121-Portal/View_last_payment_overview.feature)
+- [View last payment overview](121-Portal/View_last_payment_overview.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
 - [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
 - [Export unused vouchers](121-Portal/Export_unused_vouchers.feature)
@@ -61,7 +61,7 @@ Features of the 121-platform are described in this folder in a standardized way 
   - Logout
   - [Change password] (121-Portal/Change_password.feature)
   - [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
-  - [Navigate program phases](121-Portal/Navigate_program_phases.feature)
+  - [Navigate program menu](121-Portal/Navigate_program_menu.feature)
 
 #### Using AW-App
 
@@ -103,9 +103,8 @@ Using application such as EspoCRM to call our API
 #### Using external tools/applications
 
 - Send a WhatsApp message
-  - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
-  - Read queued notification
+  - Claim pending message
 
 ### For Admin-user
 

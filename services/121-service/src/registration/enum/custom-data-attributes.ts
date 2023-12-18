@@ -34,6 +34,7 @@ export enum GenericAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   fspName = 'fspName',
   maxPayments = 'maxPayments',
+  scope = 'scope',
 }
 
 export class Attribute {

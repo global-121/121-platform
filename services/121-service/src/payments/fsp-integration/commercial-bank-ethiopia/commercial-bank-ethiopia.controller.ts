@@ -19,12 +19,12 @@ export class CommercialBankEthiopiaController {
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     summary:
-      'Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
+      '[SCOPED] Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
   })
   @ApiResponse({
     status: 200,
     description:
-      'An array of Registrations with the latest retrieved account enquiry data',
+      'An array of Registrations with the latest retrieved account enquiry data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -57,5 +57,22 @@ export class CommercialBankEthiopiaController {
     return this.commercialBankEthiopiaService.validatePasForProgram(
       Number(programId),
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary:
+      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Done getting and storing account enquiry data for all registrations in all programs.',
+  })
+  @Post(
+    'financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
+  )
+  public async validateAllPas(): Promise<void> {
+    return this.commercialBankEthiopiaService.validateAllPas();
   }
 }

@@ -30,4 +30,7 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
   @ManyToMany(() => UserRoleEntity, (role) => role.assignments)
   @JoinTable()
   public roles: UserRoleEntity[];
+
+  @Column({ nullable: false, default: '' })
+  public scope: string;
 }
