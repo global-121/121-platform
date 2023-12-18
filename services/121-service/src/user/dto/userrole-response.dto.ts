@@ -17,3 +17,19 @@ export class UserRoleResponseDTO {
   @IsOptional()
   public permissions?: string[];
 }
+
+export class AssignmentResponseDTO {
+  @ApiProperty({ example: 1 })
+  public programId: number;
+
+  @ApiProperty({ example: 1 })
+  public userId: number;
+
+  @ApiProperty({ example: [] })
+  public roles: UserRoleResponseDTO[];
+
+  @ApiProperty({
+    example: 'scope',
+  })
+  public scope?: string;
+}

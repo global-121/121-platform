@@ -794,7 +794,7 @@ export class ProgramsServiceApiService {
   ): Promise<Program> {
     return this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/roles`,
+      `/programs/${programId}/users/${userId}`,
       {
         roles,
       },
@@ -807,7 +807,7 @@ export class ProgramsServiceApiService {
   ): Promise<Program> {
     return this.apiService.delete(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/roles`,
+      `/programs/${programId}/users/${userId}`,
     );
   }
 

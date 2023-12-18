@@ -345,14 +345,10 @@ export class ProgramService {
     } finally {
       await queryRunner.release();
     }
-    await this.userService.assignAidworkerRolesAndAssignmentToProgram(
-      newProgram.id,
-      userId,
-      {
-        roles: [DefaultUserRole.Admin],
-        scope: null,
-      },
-    );
+    await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
+      roles: [DefaultUserRole.Admin],
+      scope: null,
+    });
     return newProgram;
   }
 

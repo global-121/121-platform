@@ -35,7 +35,10 @@ import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.d
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
-import { UserRoleResponseDTO } from './dto/userrole-response.dto';
+import {
+  AssignmentResponseDTO,
+  UserRoleResponseDTO,
+} from './dto/userrole-response.dto';
 import { PermissionEnum } from './permission.enum';
 import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
@@ -330,7 +333,7 @@ export class UserController {
   }
 
   @Admin()
-  @ApiTags('users/roles')
+  @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
@@ -343,18 +346,18 @@ export class UserController {
     status: 404,
     description: 'No roles found for user',
   })
-  @Get('programs/:programId/users/:userId/roles')
-  public async getProgramRoles(
+  @Get('programs/:programId/users/:userId')
+  public async getAidworkerProgramAssignment(
     @Param() params,
-  ): Promise<UserRoleResponseDTO[]> {
-    return await this.userService.getProgramRoles(
+  ): Promise<AssignmentResponseDTO> {
+    return await this.userService.getAidworkerProgramAssignment(
       Number(params.programId),
       Number(params.userId),
     );
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiTags('users/roles')
+  @ApiTags('users/assignments')
   @ApiOperation({
     summary:
       'Create program assignment including roles or OVERWRITE roles of existing program assignment',
@@ -371,12 +374,12 @@ export class UserController {
     status: 404,
     description: 'User, program or role(s) not found',
   })
-  @Put('programs/:programId/users/:userId/roles')
-  public async assignAidworkerRolesAndAssignmentToProgram(
+  @Put('programs/:programId/users/:userId')
+  public async assignAidworkerToProgram(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
-    return await this.userService.assignAidworkerRolesAndAssignmentToProgram(
+  ): Promise<AssignmentResponseDTO> {
+    return await this.userService.assignAidworkerToProgram(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,
@@ -384,7 +387,7 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiTags('users/roles')
+  @ApiTags('users/assignments')
   @ApiOperation({
     summary:
       'Add roles to existing program assignment (UNION of existing and new roles)',
@@ -400,12 +403,12 @@ export class UserController {
     status: 404,
     description: 'User, program or role(s) not found',
   })
-  @Patch('programs/:programId/users/:userId/roles')
-  public async assigAidworkerRolesToProgram(
+  @Patch('programs/:programId/users/:userId')
+  public async updateAidworkerProgramAssignment(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
-    return await this.userService.assigAidworkerRolesToProgram(
+  ): Promise<AssignmentResponseDTO> {
+    return await this.userService.updateAidworkerProgramAssignment(
       Number(params.programId),
       Number(params.userId),
       assignAidworkerToProgram,
@@ -413,7 +416,7 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiTags('users/roles')
+  @ApiTags('users/assignments')
   @ApiOperation({
     summary:
       'Remove roles from program-assignment (pass roles to delete in body) or remove aidworker from program (no body)',
@@ -424,18 +427,18 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description:
-      'Returns the remaining roles of the program assignment (empty array if program assignment removed)',
+      'Returns the program assignment with the remaining roles or nothing (if program assignment removed)',
     type: [UserRoleResponseDTO],
   })
   @ApiResponse({
     status: 404,
     description: 'User, program, role(s) or assignment not found',
   })
-  @Delete('programs/:programId/users/:userId/roles')
+  @Delete('programs/:programId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
     @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<UserRoleResponseDTO[]> {
+  ): Promise<AssignmentResponseDTO | void> {
     return await this.userService.deleteAidworkerRolesOrAssignment(
       Number(params.programId),
       Number(params.userId),
@@ -444,7 +447,7 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramREAD)
-  @ApiTags('users')
+  @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
