@@ -315,13 +315,15 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // if already assigned: add roles to program assignment
+    const scope = assignAidworkerToProgram.scope
+      ? assignAidworkerToProgram.scope.toLowerCase()
+      : '';
+
+    // if already assigned: add roles and scope to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
-        programAssignment.scope = assignAidworkerToProgram.scope
-          ? assignAidworkerToProgram.scope.toLowerCase()
-          : '';
+        programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles.map((role) =>
           this.getUserRoleResponse(role),
@@ -334,6 +336,7 @@ export class UserService {
       user: { id: user.id },
       program: { id: program.id },
       roles: newRoles,
+      scope: scope,
     });
     return newRoles.map((role) => this.getUserRoleResponse(role));
   }
