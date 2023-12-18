@@ -12,7 +12,7 @@ export const registrationScopedGoesLvv = {
   [CustomDataAttributes.phoneNumber]: '15005550111',
   nameFirst: 'Jane',
   nameLast: 'Doe',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgLvv = {
@@ -22,7 +22,7 @@ export const registrationScopedMiddelburgLvv = {
   [CustomDataAttributes.phoneNumber]: '15005550112',
   nameFirst: 'Juliet',
   nameLast: 'Marsh',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtLvv = {
@@ -32,7 +32,7 @@ export const registrationScopedUtrechtLvv = {
   [CustomDataAttributes.phoneNumber]: '15005550121',
   nameFirst: 'Sam',
   nameLast: 'Winters',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedLvv = {
@@ -42,7 +42,7 @@ export const registrationNotScopedLvv = {
   [CustomDataAttributes.phoneNumber]: '15005550200',
   nameFirst: 'Nick',
   nameLast: 'Brouwers',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 ////////////////////////
@@ -55,7 +55,7 @@ export const registrationScopedGoesPv = {
   [CustomDataAttributes.phoneNumber]: '15005550111',
   nameFirst: 'Jane',
   nameLast: 'Doe',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
@@ -65,7 +65,7 @@ export const registrationScopedMiddelburgPv = {
   [CustomDataAttributes.phoneNumber]: '15005550112',
   nameFirst: 'Juliet',
   nameLast: 'Marsh',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
@@ -75,7 +75,7 @@ export const registrationScopedUtrechtPv = {
   [CustomDataAttributes.phoneNumber]: '15005550121',
   nameFirst: 'Sam',
   nameLast: 'Winters',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
@@ -85,5 +85,5 @@ export const registrationNotScopedPv = {
   [CustomDataAttributes.phoneNumber]: '15005550200',
   nameFirst: 'Nick',
   nameLast: 'Brouwers',
-  fspName: FspName.fspNoAttributes,
+  fspName: FspName.intersolveVoucherPaper,
 };
