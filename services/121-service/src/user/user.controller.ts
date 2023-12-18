@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -18,6 +19,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -471,17 +473,17 @@ export class UserController {
     summary:
       'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
   })
-  @ApiParam({ name: 'username', required: true, type: 'string' })
+  @ApiQuery({ name: 'username', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of users that match the search criteria.',
     type: [FindUserReponseDto],
   })
-  @Get('programs/:programId/users/:username')
+  @Get('programs/:programId/users')
   public async getUsersByName(
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('username') username: string,
+    @Query('username') username: string,
   ): Promise<FindUserReponseDto[]> {
     return await this.userService.findUsersByName(username);
   }
