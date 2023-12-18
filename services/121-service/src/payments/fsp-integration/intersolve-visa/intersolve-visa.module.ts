@@ -40,6 +40,10 @@ import { QueueNamePayment } from './enum/queue.names.enum';
           path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
         },
       ],
+      limiter: {
+        max: 5, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
     }),
   ],
   providers: [
