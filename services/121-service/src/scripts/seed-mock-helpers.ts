@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { CustomHttpService } from '../shared/services/custom-http.service';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 

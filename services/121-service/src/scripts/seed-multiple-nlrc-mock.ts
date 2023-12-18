@@ -9,7 +9,7 @@ import {
 } from '../../seed-data/mock/visa-card.data';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';

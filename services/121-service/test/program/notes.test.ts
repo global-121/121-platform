@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { changePhase, getNotes, postNote } from '../helpers/program.helper';
 import { importRegistrations } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';

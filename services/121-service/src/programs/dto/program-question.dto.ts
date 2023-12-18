@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { CreateOptionsDto } from './create-options.dto';
 
 class BaseProgramQuestionDto {

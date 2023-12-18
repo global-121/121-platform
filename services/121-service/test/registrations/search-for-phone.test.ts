@@ -3,7 +3,7 @@ import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { changePhase } from '../helpers/program.helper';
 import {
   importRegistrations,

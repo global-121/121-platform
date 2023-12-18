@@ -14,7 +14,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
