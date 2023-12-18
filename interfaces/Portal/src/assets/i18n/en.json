@@ -37,7 +37,8 @@
         "name": "Name",
         "role": "Role",
         "status": "Status",
-        "last-activity": "Last login"
+        "last-activity": "Last login",
+        "scope": "Scope"
       },
       "status": {
         "true": "Active",

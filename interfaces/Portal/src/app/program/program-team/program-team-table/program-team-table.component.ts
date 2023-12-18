@@ -22,6 +22,8 @@ export class ProgramTeamTableComponent implements OnInit {
   private programId: number;
   @Input()
   public canManageAidworkers: boolean;
+  @Input()
+  public enableScope: boolean;
 
   public rows: TeamMemberRow[] = [];
   public DateFormat = DateFormat;
