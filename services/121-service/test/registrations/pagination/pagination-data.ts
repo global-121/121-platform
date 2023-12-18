@@ -114,32 +114,6 @@ export const registration6 = {
   whatsappPhoneNumber: '14155235551',
 };
 
-export const referenceId1PV = 'bcaf234f4gg4ag64541';
-export const registration1PV = {
-  referenceId: referenceId1PV,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  nameFirst: 'Yasmin',
-  nameLast: 'Abdullah',
-  phoneNumber: '14155235559',
-  fspName: FspName.intersolveVoucherWhatsapp,
-  whatsappPhoneNumber: '14155235559',
-  scope: 'zeeland.goes',
-};
-
-export const referenceId2PV = 'bcaf234f4gg4ag64542';
-export const registration2PV = {
-  referenceId: referenceId2PV,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  nameFirst: 'Jose',
-  nameLast: 'Santos',
-  phoneNumber: '14155235560',
-  fspName: FspName.intersolveVoucherWhatsapp,
-  whatsappPhoneNumber: '14155235560',
-  scope: 'utrecht.houten',
-};
-
 export const expectedAttributes = [
   'id',
   'status',
