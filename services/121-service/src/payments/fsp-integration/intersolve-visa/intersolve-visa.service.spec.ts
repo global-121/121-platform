@@ -30,7 +30,7 @@ const paymentDetailsResult: PaymentDetailsDto = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
   transactionAmount: 22,
 };
-const customPaymentDetails = [
+const mockPaPaymentDetails = [
   {
     referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
     phoneNumber: '14155238886',
@@ -48,30 +48,32 @@ const programId = 3;
 const paymentNr = 5;
 
 describe('IntersolveVisaService', () => {
-  let paymentService: IntersolveVisaService;
+  let intersolveVisaService: IntersolveVisaService;
   let paymentQueue: jest.Mocked<Queue>;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(IntersolveVisaService).compile();
 
-    paymentService = unit;
+    intersolveVisaService = unit;
     paymentQueue = unitRef.get(
       getQueueName(QueueNamePayment.paymentIntersolveVisa),
     );
   });
 
   it('should be defined', () => {
-    expect(paymentService).toBeDefined();
+    expect(intersolveVisaService).toBeDefined();
   });
 
   it('should add payment to queue', async () => {
+    jest
+      .spyOn(intersolveVisaService as any, 'getPaPaymentDetails')
+      .mockResolvedValue(mockPaPaymentDetails);
+
     // Act
-    await paymentService.sendPayment(
+    await intersolveVisaService.sendPayment(
       sendPaymentData,
       programId,
       paymentNr,
-      false,
-      customPaymentDetails,
     );
 
     // Assert

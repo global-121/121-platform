@@ -161,11 +161,8 @@ export class IntersolveVisaService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    useWhatsapp?: boolean,
-    customPaymentDetails?: PaymentDetailsDto[],
   ): Promise<void> {
-    const paymentDetailsArray =
-      customPaymentDetails || (await this.getPaPaymentDetails(paymentList));
+    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
 
     for (const paymentDetails of paymentDetailsArray) {
       paymentDetails.programId = programId;
