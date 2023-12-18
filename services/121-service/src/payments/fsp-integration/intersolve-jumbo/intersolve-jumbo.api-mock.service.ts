@@ -32,9 +32,10 @@ export class IntersolveJumboApiMockService {
           IntersolveJumboResultCode.InvalidOrderLine;
         response[
           'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultDescription._cdata = `Error found in OrderLine ${
-          index + 1
-        }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`;
+        ].WebserviceRequest.ResultDescription._cdata =
+          `Error found in OrderLine ${
+            index + 1
+          }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`;
         return response;
       } else if (
         element.lastName?.toLowerCase().includes('mock-fail-create-order')
@@ -45,9 +46,10 @@ export class IntersolveJumboApiMockService {
           IntersolveJumboResultCode.InvalidOrderLine;
         response[
           'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultDescription._cdata = `Error found in OrderLine ${
-          index + 1
-        }: Mock failed the create-pre-order step`;
+        ].WebserviceRequest.ResultDescription._cdata =
+          `Error found in OrderLine ${
+            index + 1
+          }: Mock failed the create-pre-order step`;
         return response;
       }
     }
