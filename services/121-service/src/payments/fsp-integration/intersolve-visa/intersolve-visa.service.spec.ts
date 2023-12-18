@@ -1,10 +1,10 @@
 import { TestBed } from '@automock/jest';
-import { IntersolveVisaService } from './intersolve-visa.service';
-import { PaPaymentDataDto } from '../../../payments/dto/pa-payment-data.dto';
 import { Queue } from 'bull';
+import { PaPaymentDataDto } from '../../../payments/dto/pa-payment-data.dto';
 import { getQueueName } from '../../../utils/unit-test.helpers';
-import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
+import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
+import { IntersolveVisaService } from './intersolve-visa.service';
 
 const sendPaymentData = [
   {
