@@ -148,6 +148,13 @@ export class PaymentsService {
       }
     }
 
+    let paymentInProgress = false;
+    try {
+      await this.checkPaymentInProgressAndThrow(programId);
+    } catch (error) {
+      paymentInProgress = true;
+    }
+
     return {
       nrSuccess:
         statusAggregation.find((row) => row.status === StatusEnum.success)
@@ -158,7 +165,7 @@ export class PaymentsService {
       nrError:
         statusAggregation.find((row) => row.status === StatusEnum.error)
           ?.count || 0,
-      nrPending: nrPending || 0,
+      paymentInProgress: paymentInProgress || nrPending > 0,
     };
   }
 
@@ -362,7 +369,7 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
-  // TODO: refactor this to use 1 query + include payment-id in action-table + share logic between front-end and back-end
+  // TODO: refactor this to use 1 query + include payment-id in action-table
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {

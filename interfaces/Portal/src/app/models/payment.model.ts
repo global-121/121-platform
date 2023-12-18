@@ -15,7 +15,6 @@ export class LastPaymentResults {
   error: number;
   success: number;
   waiting: number;
-  pending?: number;
 }
 
 export class PaymentRowDetail {
