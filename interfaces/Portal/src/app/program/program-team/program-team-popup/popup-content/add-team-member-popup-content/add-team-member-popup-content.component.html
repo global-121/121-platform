@@ -72,6 +72,22 @@
         ></app-warning-label>
       </div>
     </ion-row>
+    <ion-row
+      *ngIf="enableScope"
+      class="margin-top-14"
+    >
+      <ion-label class="label">{{
+        'page.program-team.table-headers.scope' | translate
+      }}</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="scope"
+        name="scope"
+        placeholder="{{
+          'page.program-team.popup.scope-placeholder' | translate
+        }}"
+      ></ion-input>
+    </ion-row>
   </ion-grid>
   <div class="buttons">
     <!-- cancel button -->

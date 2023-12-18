@@ -32,6 +32,7 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
 
   private userId: number;
 
+  public scope = '';
   public searchQuery = '';
 
   public rolesList: Role[] = [];
@@ -77,6 +78,7 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
       this.programId,
       this.userId,
       this.selectedRoleNames,
+      this.scope,
     );
     this.closeModal();
     this.teamMemberService.successPopup(

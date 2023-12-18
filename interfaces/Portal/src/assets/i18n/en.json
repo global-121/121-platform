@@ -52,6 +52,7 @@
         "roles-placeholder": "Assign a role(s)",
         "roles-required": "Please select at least one role",
         "role": "Role",
+        "scope-placeholder": "Input a scope, no scope means full access",
         "remove": {
           "title": "Remove team member",
           "introduction": "Removing the team member will result in them not having any access to program or its data.",

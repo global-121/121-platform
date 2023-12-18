@@ -52,6 +52,7 @@ export class ProgramTeamComponent implements OnInit {
         operation: ProgramTeamPopupOperationEnum.add,
         programId: Number(this.programId), // Not sure why this.route.snapshot.params.id is used in a lot of places but it's not a number
         title: this.translate.instant('page.program-team.popup.add.title'),
+        enableScope: this.enableScope,
       },
     });
     await modal.present();

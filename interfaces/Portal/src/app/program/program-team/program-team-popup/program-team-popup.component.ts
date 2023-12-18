@@ -36,6 +36,9 @@ export class ProgramTeamPopupComponent {
   @Input()
   public title: string;
 
+  @Input()
+  enableScope: boolean;
+
   public programTeamPopupOperationEnum = ProgramTeamPopupOperationEnum;
 
   public programId: number;

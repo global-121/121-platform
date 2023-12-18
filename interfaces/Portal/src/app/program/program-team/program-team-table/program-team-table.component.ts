@@ -87,6 +87,7 @@ export class ProgramTeamTableComponent implements OnInit {
         operation: ProgramTeamPopupOperationEnum.remove,
         programId: this.programId,
         teamMemberRow: row,
+        enableScope: this.enableScope,
         title: this.translate.instant('common.confirm'),
       },
     });
