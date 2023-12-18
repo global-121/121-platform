@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActionType } from '../models/actions.model';
-import { PaymentData } from '../models/payment.model';
+import { LastPaymentResults, PaymentData } from '../models/payment.model';
 import { Program } from '../models/program.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -78,7 +78,10 @@ export class PastPaymentsService {
     return this.programsService.getPaymentsWithStateSums(programId);
   }
 
-  public async checkPaymentInProgress(programId: number): Promise<boolean> {
+  public async checkPaymentInProgress(
+    programId: number,
+    lastPaymentResults?: LastPaymentResults,
+  ): Promise<boolean> {
     const latestPaymentStartedAction =
       await this.programsService.retrieveLatestActions(
         ActionType.paymentStarted,
@@ -100,6 +103,21 @@ export class PastPaymentsService {
     // If started and finished, then compare timestamps
     const startTimestamp = new Date(latestPaymentStartedAction.created);
     const finishTimestamp = new Date(latestPaymentFinishedAction.created);
-    return finishTimestamp < startTimestamp;
+    if (finishTimestamp < startTimestamp) {
+      // If finished before started, then in progress
+      return true;
+    } else {
+      // If finished after started, then check payment queue (which reverts to pending=0 if not queued)
+      if (!lastPaymentResults) {
+        const lastPaymentId = await this.getLastPaymentId(programId);
+        const paymentSummary = await this.programsService.getPaymentSummary(
+          programId,
+          lastPaymentId,
+        );
+        lastPaymentResults = new LastPaymentResults();
+        lastPaymentResults.pending = paymentSummary.nrPending;
+      }
+      return lastPaymentResults.pending > 0;
+    }
   }
 }

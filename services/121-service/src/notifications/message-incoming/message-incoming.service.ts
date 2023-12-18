@@ -11,7 +11,7 @@ import { TransactionEntity } from '../../payments/transactions/transaction.entit
 import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { waitFor } from '../../utils/waitFor.helper';
 import {
   MessageContentType,

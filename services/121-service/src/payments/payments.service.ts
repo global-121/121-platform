@@ -96,14 +96,14 @@ export class PaymentsService {
     return payments;
   }
 
-  public async getPaymentAggregation(
+  private async aggregateTransactionsByDimension(
+    dimension: string,
     programId: number,
     payment: number,
-  ): Promise<PaymentReturnDto> {
-    // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
-    const aggregateResults = await this.dataSource
+  ) {
+    return await this.dataSource
       .createQueryBuilder()
-      .select(['status', 'COUNT(*) as count'])
+      .select([dimension, 'COUNT(*) as count'])
       .from(
         '(' +
           this.transactionService
@@ -117,19 +117,45 @@ export class PaymentsService {
           .getLastTransactionsQuery(programId, payment)
           .getParameters(),
       )
-      .groupBy('status')
+      .groupBy(dimension)
       .getRawMany();
+  }
+
+  public async getPaymentAggregation(
+    programId: number,
+    payment: number,
+  ): Promise<PaymentReturnDto> {
+    // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
+    const statusAggregation = await this.aggregateTransactionsByDimension(
+      'status',
+      programId,
+      payment,
+    );
+
+    const fspAggregation = await this.aggregateTransactionsByDimension(
+      'fsp',
+      programId,
+      payment,
+    );
+
+    let queueProgress;
+    for (const fsp of fspAggregation) {
+      if (fsp.fsp === FspName.intersolveVisa) {
+        queueProgress = await this.intersolveVisaService.getQueueProgress();
+      }
+    }
 
     return {
       nrSuccess:
-        aggregateResults.find((row) => row.status === StatusEnum.success)
+        statusAggregation.find((row) => row.status === StatusEnum.success)
           ?.count || 0,
       nrWaiting:
-        aggregateResults.find((row) => row.status === StatusEnum.waiting)
+        statusAggregation.find((row) => row.status === StatusEnum.waiting)
           ?.count || 0,
       nrError:
-        aggregateResults.find((row) => row.status === StatusEnum.error)
+        statusAggregation.find((row) => row.status === StatusEnum.error)
           ?.count || 0,
+      nrPending: queueProgress?.delayed || 0,
     };
   }
 

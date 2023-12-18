@@ -113,7 +113,10 @@ export class ProgramPayoutComponent implements OnInit {
     this.showCbeValidationButton = this.checkShowCbeValidation();
 
     this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
+      await this.pastPaymentsService.checkPaymentInProgress(
+        this.programId,
+        this.lastPaymentResults,
+      );
   }
 
   private checkCanViewPayment(): boolean {
@@ -182,6 +185,7 @@ export class ProgramPayoutComponent implements OnInit {
       error: paymentSummary?.nrError || 0,
       success: paymentSummary?.nrSuccess || 0,
       waiting: paymentSummary?.nrWaiting || 0,
+      pending: paymentSummary?.nrPending || 0,
     };
   }
 

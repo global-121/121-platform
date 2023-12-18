@@ -75,4 +75,5 @@ export class PaymentReturnDto {
   nrSuccess: number;
   nrWaiting: number;
   nrError: number;
+  nrPending?: number;
 }

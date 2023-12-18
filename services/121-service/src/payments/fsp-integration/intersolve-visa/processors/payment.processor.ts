@@ -5,10 +5,10 @@ import { IntersolveVisaService } from '../intersolve-visa.service';
 
 @Processor(QueueNamePayment.paymentIntersolveVisa)
 export class PaymentProcessorIntersolveVisa {
-  constructor(private readonly paymentService: IntersolveVisaService) {}
+  constructor(private readonly intersolveVisaService: IntersolveVisaService) {}
 
   @Process(ProcessName.sendPayment)
   async handleSendPayment(job: Job): Promise<void> {
-    await this.paymentService.processQueuedPayment(job.data);
+    await this.intersolveVisaService.processQueuedPayment(job.data);
   }
 }
