@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { JobCounts, Queue } from 'bull';
+import { Queue } from 'bull';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -175,8 +175,14 @@ export class IntersolveVisaService
     }
   }
 
-  public async getQueueProgress(): Promise<JobCounts> {
-    return this.paymentIntersolveVisaQueue.getJobCounts();
+  public async getQueueProgress(
+    programId: number,
+    payment: number,
+  ): Promise<number> {
+    const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
+    return jobs.filter(
+      (j) => j.data.programId === programId && j.data.paymentNr === payment,
+    ).length;
   }
 
   public async processQueuedPayment(

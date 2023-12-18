@@ -100,7 +100,7 @@ export class PaymentsService {
     dimension: string,
     programId: number,
     payment: number,
-  ) {
+  ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
       .select([dimension, 'COUNT(*) as count'])
@@ -138,10 +138,13 @@ export class PaymentsService {
       payment,
     );
 
-    let queueProgress;
+    let nrPending;
     for (const fsp of fspAggregation) {
       if (fsp.fsp === FspName.intersolveVisa) {
-        queueProgress = await this.intersolveVisaService.getQueueProgress();
+        nrPending = await this.intersolveVisaService.getQueueProgress(
+          programId,
+          payment,
+        );
       }
     }
 
@@ -155,7 +158,7 @@ export class PaymentsService {
       nrError:
         statusAggregation.find((row) => row.status === StatusEnum.error)
           ?.count || 0,
-      nrPending: queueProgress?.delayed || 0,
+      nrPending: nrPending || 0,
     };
   }
 
