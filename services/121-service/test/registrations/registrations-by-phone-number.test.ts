@@ -14,11 +14,10 @@ import {
   getAccessTokenScoped,
   resetDB,
 } from '../helpers/utility.helper';
+import { programIdOCW, programIdPV } from './pagination/pagination-data';
 
-describe('Find registrations by phone-number', () => {
+describe('/ Registrations - by phone-number', () => {
   let accessToken: string;
-  const programIdOcw = 3;
-  const programIdPV = 2;
 
   const registration1 = {
     ...registrationVisa,
@@ -44,21 +43,34 @@ describe('Find registrations by phone-number', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      programIdOcw,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await changePhase(
-      programIdPV,
+      programIdOCW,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
     await importRegistrations(
-      programIdOcw,
+      programIdOCW,
       [registration1, registration2, registration3],
       accessToken,
     );
+  }, 20_000);
+
+  it('should not return anything for non-existing phone-numbers', async () => {
+    // Arrange
+    const testPhoneNumber = '15005550001';
+
+    // Act
+    const response = await searchRegistrationByPhoneNumber(
+      testPhoneNumber,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(0);
+    expect(
+      response.body[0][CustomDataAttributes.phoneNumber],
+    ).not.toBeDefined();
   });
 
   it('should return the correct registration', async () => {
@@ -66,15 +78,15 @@ describe('Find registrations by phone-number', () => {
     const testPhoneNumber = registration2[CustomDataAttributes.phoneNumber];
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       testPhoneNumber,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(1);
-    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
   });
@@ -84,18 +96,18 @@ describe('Find registrations by phone-number', () => {
     const testPhoneNumber = registration1[CustomDataAttributes.phoneNumber];
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       testPhoneNumber,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(2);
-    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
-    expect(searchResponse.body[1][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
   });
@@ -105,15 +117,15 @@ describe('Find registrations by phone-number', () => {
     const testPhoneNumber = registration2[CustomDataAttributes.phoneNumber];
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       `+${testPhoneNumber}`,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(1);
-    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
   });
@@ -128,23 +140,23 @@ describe('Find registrations by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
     };
     await importRegistrations(
-      programIdOcw,
+      programIdOCW,
       [registrationWithSameWhatsApp],
       accessToken,
     );
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       testPhoneNumber,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(1);
-    expect(
-      searchResponse.body[0][CustomDataAttributes.whatsappPhoneNumber],
-    ).toBe(testPhoneNumber);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0][CustomDataAttributes.whatsappPhoneNumber]).toBe(
+      testPhoneNumber,
+    );
   });
 
   it('should find all registrations with matching WhatsApp/regular-phonenumber(s)', async () => {
@@ -157,30 +169,30 @@ describe('Find registrations by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
     };
     await importRegistrations(
-      programIdOcw,
+      programIdOCW,
       [registrationWithSameWhatsApp],
       accessToken,
     );
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       testPhoneNumber,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(2);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(2);
     expect(
       [
-        searchResponse.body[0][CustomDataAttributes.whatsappPhoneNumber],
-        searchResponse.body[0][CustomDataAttributes.phoneNumber],
+        response.body[0][CustomDataAttributes.whatsappPhoneNumber],
+        response.body[0][CustomDataAttributes.phoneNumber],
       ].includes(testPhoneNumber),
     ).toBe(true);
     expect(
       [
-        searchResponse.body[1][CustomDataAttributes.whatsappPhoneNumber],
-        searchResponse.body[1][CustomDataAttributes.phoneNumber],
+        response.body[1][CustomDataAttributes.whatsappPhoneNumber],
+        response.body[1][CustomDataAttributes.phoneNumber],
       ].includes(testPhoneNumber),
     ).toBe(true);
   });
@@ -201,18 +213,18 @@ describe('Find registrations by phone-number', () => {
     );
 
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       `+${testPhoneNumber}`,
       accessToken,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(2);
-    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
-    expect(searchResponse.body[1][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
   });
@@ -250,23 +262,23 @@ describe('Find registrations by phone-number', () => {
       DebugScope.ZeelandMiddelburg,
     );
     // Act
-    const searchResponse = await searchRegistrationByPhoneNumber(
+    const response = await searchRegistrationByPhoneNumber(
       `+${testPhoneNumber}`,
       accessTokenZeeland,
     );
 
     // Assert
-    expect(searchResponse.statusCode).toBe(HttpStatus.OK);
-    expect(searchResponse.body.length).toBe(2);
-    expect(searchResponse.body[0][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
-    expect(searchResponse.body[1][CustomDataAttributes.phoneNumber]).toBe(
+    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
     );
 
     // Expect that the zeeland registration (right scope) and registration2 (no scope) are returned
-    const returnedReferenceIds = searchResponse.body.map(
+    const returnedReferenceIds = response.body.map(
       (registration) => registration.referenceId,
     );
     expect(returnedReferenceIds).toContain(
