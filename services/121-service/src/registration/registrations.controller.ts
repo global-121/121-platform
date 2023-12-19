@@ -446,7 +446,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
     summary:
-      '[SCOPED] Update provided attributes of registration (Used by Aidworker)',
+      '[SCOPED] (EXTERNALLY USED) Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
     status: 200,
@@ -800,8 +800,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
   @ApiOperation({
-    summary:
-      '[SCOPED] (EXTERNALLY USED) Get message history for one registration',
+    summary: '[SCOPED] Get message history for one registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

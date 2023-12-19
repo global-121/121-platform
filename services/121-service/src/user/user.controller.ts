@@ -199,7 +199,7 @@ export class UserController {
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
   @ApiTags('users')
-  @ApiOperation({ summary: 'Log in existing user' })
+  @ApiOperation({ summary: '(EXTERNALLY USED) Log in existing user' })
   @ApiResponse({
     status: 201,
     description: 'Logged in successfully',
