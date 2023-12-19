@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -18,6 +19,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -141,7 +143,7 @@ export class UserController {
 
   // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new Aid Worker user' })
   @ApiResponse({
     status: 201,
     description: 'Created new Aid Worker user',
@@ -199,7 +201,7 @@ export class UserController {
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
   @ApiTags('users')
-  @ApiOperation({ summary: 'Log in existing user' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
     status: 201,
     description: 'Logged in successfully',
@@ -332,6 +334,30 @@ export class UserController {
     return await this.userService.findByUsername(username);
   }
 
+  // This endpoint searches users accross all programs, which is needed to add a user to a program
+  // We did not create an extra permission for this as it is always used in combination with adding new users to a program
+  // ProgramId is therefore not needed in the service
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiTags('users')
+  @ApiOperation({
+    summary:
+      'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
+  })
+  @ApiQuery({ name: 'username', required: true, type: 'string' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of users that match the search criteria.',
+    type: [FindUserReponseDto],
+  })
+  @Get('programs/:programId/users/search')
+  public async getUsersByName(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Query('username') username: string,
+  ): Promise<FindUserReponseDto[]> {
+    return await this.userService.findUsersByName(username);
+  }
+
   @Admin()
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
@@ -460,29 +486,5 @@ export class UserController {
     @Param() params,
   ): Promise<GetUserReponseDto[]> {
     return await this.userService.getUsersInProgram(Number(params.programId));
-  }
-
-  // This endpoint searches users accross all programs, which is needed to add a user to a program
-  // We did not create an extra permission for this as it is always used in combination with adding new users to a program
-  // ProgramId is therefore not needed in the service
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiTags('users')
-  @ApiOperation({
-    summary:
-      'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
-  })
-  @ApiParam({ name: 'username', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns a list of users that match the search criteria.',
-    type: [FindUserReponseDto],
-  })
-  @Get('programs/:programId/users/:username')
-  public async getUsersByName(
-    @Param('programId', ParseIntPipe) programId: number,
-    @Param('username') username: string,
-  ): Promise<FindUserReponseDto[]> {
-    return await this.userService.findUsersByName(username);
   }
 }

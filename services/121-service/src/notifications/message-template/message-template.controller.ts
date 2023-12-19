@@ -80,7 +80,7 @@ export class MessageTemplateController {
   }
 
   @Permissions(PermissionEnum.ProgramUPDATE)
-  @ApiOperation({ summary: 'Update message template' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Update message template' })
   @ApiResponse({
     status: 200,
     description: 'Message template updated',
