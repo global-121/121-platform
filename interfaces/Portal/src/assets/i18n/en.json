@@ -649,18 +649,6 @@
           "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
           "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again."
         }
-      },
-      "manage-aidworkers": {
-        "section-title": "Manage aidworkers",
-        "column-email": "Email-adress",
-        "column-created": "Creation date",
-        "column-delete": "Delete aidworker",
-        "view-aidworkers": "Current aidworkers",
-        "create-aidworker": "Add new aidworker",
-        "email": "Enter email",
-        "confirm": "Add aidworker",
-        "create-password": "Enter a password of at least {{minimalLength}} characters:",
-        "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
       }
     },
     "help": {

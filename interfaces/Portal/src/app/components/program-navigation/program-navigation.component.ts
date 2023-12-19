@@ -24,7 +24,6 @@ export class ProgramNavigationComponent implements OnInit {
   public programId: number;
 
   public canViewMetrics: boolean;
-  public canManageAidworkers: boolean;
   public canReadAidWorkers: boolean;
 
   constructor(
@@ -35,10 +34,6 @@ export class ProgramNavigationComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    this.canManageAidworkers = this.authService.hasPermission(
-      this.programId,
-      Permission.AidWorkerProgramUPDATE,
-    );
     this.canReadAidWorkers = this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramREAD,
