@@ -74,7 +74,12 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
   }
 
   private async changeProgramIdEntities(queryRunner: QueryRunner) {
-    const tables = ['registration', 'transaction', 'action'];
+    const tables = [
+      'registration',
+      'transaction',
+      'action',
+      'whatsapp_template_test',
+    ];
     for (const table of tables) {
       await queryRunner.query(`
         update
@@ -233,10 +238,6 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       'utf8',
     );
     const programLvvJson = JSON.parse(programLvv);
-    console.log(
-      '🚀 ~ file: 1702982630555-merge-lvv-pv.ts:222 ~ MergeLvvPv1702982630555 ~ convertFirstNameToFullnameQuestion ~ programLvvJson:',
-      programLvvJson,
-    );
     const fullNameQuestion = programLvvJson.programQuestions.find(
       (pq) => pq.name === 'fullName',
     );
