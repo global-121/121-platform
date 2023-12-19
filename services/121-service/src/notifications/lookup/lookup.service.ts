@@ -10,7 +10,7 @@ export class LookupService {
     try {
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
-      await twilioClient.lookups
+      await twilioClient.lookups.v1
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       numberCorrect = true;
@@ -31,7 +31,7 @@ export class LookupService {
       // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
-      const lookupResponse = await twilioClient.lookups
+      const lookupResponse = await twilioClient.lookups.v1
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
@@ -56,7 +56,7 @@ export class LookupService {
       // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
-      const lookupResponse = await twilioClient.lookups
+      const lookupResponse = await twilioClient.lookups.v1
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       return Number(lookupResponse.nationalFormat.replace(/\s/g, ''));
