@@ -51,7 +51,7 @@ describe('/ Registrations - by reference-ID', () => {
     expect(response.body.referenceId).not.toBeDefined();
   });
 
-  it('should return the correct registration', async () => {
+  it('should return matching registration', async () => {
     // Arrange
     const testReferenceId = registrationScopedGoesPv.referenceId;
 
@@ -70,12 +70,12 @@ describe('/ Registrations - by reference-ID', () => {
   it('should return matching registration when scope matches', async () => {
     // Arrange
     const testReferenceId = registrationScopedGoesPv.referenceId;
-    accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
 
     // Act
+    const testAccessToken = await getAccessTokenScoped(DebugScope.Zeeland);
     const response = await getServer()
       .get(`/registrations/${testReferenceId}`)
-      .set('Cookie', [accessToken])
+      .set('Cookie', [testAccessToken])
       .send();
 
     // Assert
@@ -84,19 +84,22 @@ describe('/ Registrations - by reference-ID', () => {
     expect(response.body.programAnswers.length).toBe(3);
   });
 
-  it('should not return matching registration with non-matching scope', async () => {
+  it('should only return matching registration when scope matches', async () => {
     // Arrange
     const testReferenceId = registrationScopedGoesPv.referenceId;
-    accessToken = await getAccessTokenScoped(DebugScope.UtrechtHouten);
 
     // Act
+    const testAccessToken = await getAccessTokenScoped(
+      DebugScope.UtrechtHouten,
+    );
     const response = await getServer()
       .get(`/registrations/${testReferenceId}`)
-      .set('Cookie', [accessToken])
+      .set('Cookie', [testAccessToken])
       .send();
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body).toStrictEqual({});
     expect(response.body.referenceId).not.toBeDefined();
   });
 });
