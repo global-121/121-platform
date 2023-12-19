@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instanceNLRC from '../../seed-data/instance/instance-nlrc.json';
-import messageTemplateLVV from '../../seed-data/message-template/message-template-nlrc-lvv.json';
 import messageTemplateOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
-import programLVV from '../../seed-data/program/program-nlrc-lvv.json';
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
@@ -33,22 +31,6 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
     await this.seedHelper.addInstance(instanceNLRC);
-
-    // ************************
-    // ***** Program LVV *****
-    // ************************
-
-    // ***** CREATE PROGRAM *****
-    const programEntityLVV = await this.seedHelper.addProgram(programLVV);
-
-    // ***** CREATE MESSAGE TEMPLATES *****
-    await this.seedHelper.addMessageTemplates(
-      messageTemplateLVV,
-      programEntityLVV,
-    );
-
-    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.seedHelper.addDefaultUsers(programEntityLVV, debugScopes);
 
     // ************************
     // ***** Program PV *****
