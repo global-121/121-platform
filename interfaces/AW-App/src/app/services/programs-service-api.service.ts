@@ -86,7 +86,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/registrations/get/${referenceId}`,
+        `/registrations/${referenceId}`,
         false,
       )
       .toPromise();

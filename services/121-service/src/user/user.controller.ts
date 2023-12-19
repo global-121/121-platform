@@ -143,7 +143,7 @@ export class UserController {
 
   // TODO: define response type, this cannot use an interface though
   @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new Aid Worker user' })
   @ApiResponse({
     status: 201,
     description: 'Created new Aid Worker user',
@@ -201,7 +201,7 @@ export class UserController {
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
   @ApiTags('users')
-  @ApiOperation({ summary: 'Log in existing user' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
     status: 201,
     description: 'Logged in successfully',

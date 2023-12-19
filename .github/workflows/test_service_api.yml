@@ -77,7 +77,7 @@ jobs:
         run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
 
       - name: Wait for healthcheck 121-service
-        run: timeout 180s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+        run: timeout 90s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
 
       - name: Wait for healthcheck twilio-mock-service
         run: timeout 30s sh -c 'until docker ps | grep twilio-mock-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
