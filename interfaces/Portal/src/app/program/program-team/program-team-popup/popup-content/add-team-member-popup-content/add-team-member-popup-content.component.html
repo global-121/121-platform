@@ -9,15 +9,15 @@
     <ion-row class="search-wrapper">
       <ion-searchbar
         [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
-        id="searchbar"
+        class="team-member-searchbar"
         name="searchQuery"
         [(ngModel)]="searchQuery"
         (ionInput)="search($event)"
         [debounce]="1000"
+        searchIcon="undefined"
         placeholder="{{
           'page.program-team.popup.team-member-placeholder' | translate
         }}"
-        search-icon="'undefined'"
       >
       </ion-searchbar>
       <div *ngIf="isUserAlreadyTeamMember">
