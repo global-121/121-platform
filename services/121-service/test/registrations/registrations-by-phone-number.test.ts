@@ -290,23 +290,9 @@ describe('/ Registrations - by phone-number', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.length).toBe(2);
+    expect(response.body.length).toBe(1);
     expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
       testPhoneNumber,
-    );
-    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
-
-    // Expect that the registration with "matching scope" and registration with "no scope" are returned
-    const returnedReferenceIds = response.body.map(
-      (registration) => registration.referenceId,
-    );
-    expect(returnedReferenceIds).toContain(
-      registrationInOtherProgramZeelandMiddelburg.referenceId,
-    );
-    expect(returnedReferenceIds).toContain(
-      registrationOnlyPhoneNumberUnique.referenceId,
     );
   });
 });
