@@ -305,7 +305,7 @@ export function getMessageHistory(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
-) {
+): Promise<void> {
   const accessToken = await getAccessToken();
 
   await changePhase(
