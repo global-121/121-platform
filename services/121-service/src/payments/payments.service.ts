@@ -394,9 +394,13 @@ export class PaymentsService {
 
         for (const fsp of fspAggregation) {
           if (fsp.fsp === FspName.intersolveVisa) {
+            const programs = await this.programRepository.find({
+              where: {
+                financialServiceProviders: { fsp: FspName.intersolveVisa },
+              },
+            });
             const nrPending = await this.intersolveVisaService.getQueueProgress(
-              programId,
-              payment,
+              programs.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
             );
             if (nrPending > 0) {
               inProgress = true;

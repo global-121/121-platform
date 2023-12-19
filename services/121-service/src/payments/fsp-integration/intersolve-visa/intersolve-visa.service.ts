@@ -175,14 +175,13 @@ export class IntersolveVisaService
     }
   }
 
-  public async getQueueProgress(
-    programId: number,
-    payment: number,
-  ): Promise<number> {
-    const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
-    return jobs.filter(
-      (j) => j.data.programId === programId && j.data.paymentNr === payment,
-    ).length;
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
+      return jobs.filter((j) => j.data.programId === programId).length;
+    } else {
+      return await this.paymentIntersolveVisaQueue.getDelayedCount();
+    }
   }
 
   public async processQueuedPayment(
