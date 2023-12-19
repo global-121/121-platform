@@ -4,6 +4,7 @@ import { CustomDataAttributes } from '../../src/registration/enum/custom-data-at
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { registrationNotScopedPv } from '../fixtures/scoped-registrations';
 import { changePhase } from '../helpers/program.helper';
 import {
   importRegistrations,
@@ -14,27 +15,31 @@ import {
   getAccessTokenScoped,
   resetDB,
 } from '../helpers/utility.helper';
-import { programIdOCW, programIdPV } from './pagination/pagination-data';
+import {
+  programIdLVV,
+  programIdOCW,
+  programIdPV,
+} from './pagination/pagination-data';
 
 describe('/ Registrations - by phone-number', () => {
   let accessToken: string;
 
-  const registration1 = {
-    ...registrationVisa,
+  const registrationOnlyPhoneNumber = {
+    ...registrationNotScopedPv,
     referenceId: 'test-pa-1',
     [CustomDataAttributes.phoneNumber]: '15005550010',
     [CustomDataAttributes.whatsappPhoneNumber]: undefined,
   };
-  const registration2 = {
-    ...registrationVisa,
+  const registrationOnlyPhoneNumberUnique = {
+    ...registrationNotScopedPv,
     referenceId: 'test-pa-with-different-phone-number',
     [CustomDataAttributes.phoneNumber]: '15005550020',
     [CustomDataAttributes.whatsappPhoneNumber]: undefined,
   };
-  const registration3 = {
-    ...registrationVisa,
+  const registrationOnlyPhoneNumberSame = {
+    ...registrationNotScopedPv,
     referenceId: 'test-pa-with-same-phone-number',
-    [CustomDataAttributes.phoneNumber]: registration1.phoneNumber,
+    [CustomDataAttributes.phoneNumber]: registrationOnlyPhoneNumber.phoneNumber,
     [CustomDataAttributes.whatsappPhoneNumber]: undefined,
   };
 
@@ -43,14 +48,28 @@ describe('/ Registrations - by phone-number', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
+      programIdPV,
+      ProgramPhase.registrationValidation,
+      accessToken,
+    );
+    await changePhase(
+      programIdLVV,
+      ProgramPhase.registrationValidation,
+      accessToken,
+    );
+    await changePhase(
       programIdOCW,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
     await importRegistrations(
-      programIdOCW,
-      [registration1, registration2, registration3],
+      programIdLVV,
+      [
+        registrationOnlyPhoneNumber,
+        registrationOnlyPhoneNumberUnique,
+        registrationOnlyPhoneNumberSame,
+      ],
       accessToken,
     );
   }, 20_000);
@@ -68,14 +87,12 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(0);
-    expect(
-      response.body[0][CustomDataAttributes.phoneNumber],
-    ).not.toBeDefined();
   });
 
   it('should return the correct registration', async () => {
     // Arrange
-    const testPhoneNumber = registration2[CustomDataAttributes.phoneNumber];
+    const testPhoneNumber =
+      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -93,7 +110,8 @@ describe('/ Registrations - by phone-number', () => {
 
   it('should return all matching registrations', async () => {
     // Arrange
-    const testPhoneNumber = registration1[CustomDataAttributes.phoneNumber];
+    const testPhoneNumber =
+      registrationOnlyPhoneNumber[CustomDataAttributes.phoneNumber];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -114,7 +132,8 @@ describe('/ Registrations - by phone-number', () => {
 
   it('should find registration(s) with phonenumber "+"-notation', async () => {
     // Arrange
-    const testPhoneNumber = registration2[CustomDataAttributes.phoneNumber];
+    const testPhoneNumber =
+      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -133,7 +152,7 @@ describe('/ Registrations - by phone-number', () => {
   it('should find registration with matching WhatsApp-phonenumber', async () => {
     // Arrange
     const testPhoneNumber = '15005550055';
-    const registrationWithSameWhatsApp = {
+    const registrationWithWhatsApp = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-whatsapp-number',
       [CustomDataAttributes.phoneNumber]: '15005550050',
@@ -141,7 +160,7 @@ describe('/ Registrations - by phone-number', () => {
     };
     await importRegistrations(
       programIdOCW,
-      [registrationWithSameWhatsApp],
+      [registrationWithWhatsApp],
       accessToken,
     );
 
@@ -161,7 +180,7 @@ describe('/ Registrations - by phone-number', () => {
 
   it('should find all registrations with matching WhatsApp/regular-phonenumber(s)', async () => {
     // Arrange
-    const testPhoneNumber = registration2.phoneNumber;
+    const testPhoneNumber = registrationOnlyPhoneNumberUnique.phoneNumber;
     const registrationWithSameWhatsApp = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-whatsapp-number',
@@ -199,22 +218,22 @@ describe('/ Registrations - by phone-number', () => {
 
   it('should find registrations across programs', async () => {
     //Arrange
-    const testPhoneNumber = registration2.phoneNumber;
+    const testPhoneNumber = registrationOnlyPhoneNumberUnique.phoneNumber;
     const registrationInOtherProgram = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-phone-number-in-other-program',
       [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+      [CustomDataAttributes.whatsappPhoneNumber]: '15005550300',
     };
     await importRegistrations(
-      programIdPV,
+      programIdLVV,
       [registrationInOtherProgram],
       accessToken,
     );
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
-      `+${testPhoneNumber}`,
+      testPhoneNumber,
       accessToken,
     );
 
@@ -229,15 +248,16 @@ describe('/ Registrations - by phone-number', () => {
     );
   });
 
-  it('should only find registrations with scope', async () => {
+  it('should only find registrations with matching scope', async () => {
     //Arrange
-    const testPhoneNumber = registration2.phoneNumber;
-    const registrationInOtherProgramZeelandGoes = {
+    const testPhoneNumber =
+      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
+    const registrationInOtherProgramZeelandMiddelburg = {
       ...registrationVisa,
       referenceId:
-        'test-pa-with-same-phone-number-in-other-program-zeeland-goes',
+        'test-pa-with-same-phone-number-in-other-program-zeeland-middelburg',
       [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+      [CustomDataAttributes.whatsappPhoneNumber]: '15005550201',
       scope: DebugScope.ZeelandMiddelburg,
     };
 
@@ -246,25 +266,26 @@ describe('/ Registrations - by phone-number', () => {
       referenceId:
         'test-pa-with-same-phone-number-in-other-program-utrecht-houten',
       [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+      [CustomDataAttributes.whatsappPhoneNumber]: '15005550202',
       scope: DebugScope.UtrechtHouten,
     };
+
     await importRegistrations(
       programIdPV,
       [
-        registrationInOtherProgramZeelandGoes,
+        registrationInOtherProgramZeelandMiddelburg,
         registrationInOtherProgramUtrechtHouten,
       ],
       accessToken,
     );
 
-    const accessTokenZeeland = await getAccessTokenScoped(
+    // Act
+    const accessTokenZeelandMiddelburg = await getAccessTokenScoped(
       DebugScope.ZeelandMiddelburg,
     );
-    // Act
     const response = await searchRegistrationByPhoneNumber(
-      `+${testPhoneNumber}`,
-      accessTokenZeeland,
+      testPhoneNumber,
+      accessTokenZeelandMiddelburg,
     );
 
     // Assert
@@ -277,13 +298,15 @@ describe('/ Registrations - by phone-number', () => {
       testPhoneNumber,
     );
 
-    // Expect that the zeeland registration (right scope) and registration2 (no scope) are returned
+    // Expect that the registration with "matching scope" and registration with "no scope" are returned
     const returnedReferenceIds = response.body.map(
       (registration) => registration.referenceId,
     );
     expect(returnedReferenceIds).toContain(
-      registrationInOtherProgramZeelandGoes.referenceId,
+      registrationInOtherProgramZeelandMiddelburg.referenceId,
     );
-    expect(returnedReferenceIds).toContain(registration2.referenceId);
+    expect(returnedReferenceIds).toContain(
+      registrationOnlyPhoneNumberUnique.referenceId,
+    );
   });
 });
