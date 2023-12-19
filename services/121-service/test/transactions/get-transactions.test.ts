@@ -11,7 +11,7 @@ import {
   registrationScopedUtrechtPv,
 } from '../fixtures/scoped-registrations';
 import { getTransactions } from '../helpers/program.helper';
-import { seedPayedRegistrations } from '../helpers/registration.helper';
+import { seedPaidRegistrations } from '../helpers/registration.helper';
 import { getAccessTokenScoped, resetDB } from '../helpers/utility.helper';
 import {
   programIdLVV,
@@ -37,8 +37,8 @@ describe('Registrations - [Scoped]', () => {
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
-    await seedPayedRegistrations(registrationsLVV, LvvProgramId);
-    await seedPayedRegistrations(registrationsPV, PvProgramId);
+    await seedPaidRegistrations(registrationsLVV, LvvProgramId);
+    await seedPaidRegistrations(registrationsPV, PvProgramId);
   });
 
   it('should get all transactions within the scope of the requesting user', async () => {
@@ -56,17 +56,19 @@ describe('Registrations - [Scoped]', () => {
       null,
       accessTokenScoped,
     );
-    // Also check if the right amount of transactions are created
+
+    // Assert
+    // Check if the right amount of transactions are created
     expect(transactionsResponse.body.length).toBe(2);
+
+    // Also check if the right referenceIds are in the transactions
     const referenceIdsTransactions = transactionsResponse.body.map(
       (t) => t.referenceId,
     );
-
     const registrationsZeelandReferenceIds = [
       registrationScopedGoesPv.referenceId,
       registrationScopedMiddelburgPv.referenceId,
     ];
-    // Also check if the right referenceIds are in the transactions
     expect(referenceIdsTransactions.sort()).toEqual(
       registrationsZeelandReferenceIds.sort(),
     );

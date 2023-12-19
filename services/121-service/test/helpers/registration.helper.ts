@@ -302,7 +302,7 @@ export function getMessageHistory(
     .send();
 }
 
-export async function seedPayedRegistrations(
+export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
 ) {
