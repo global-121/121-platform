@@ -82,20 +82,20 @@ export class PaymentHistoryAccordionComponent {
     const content = hasWaiting
       ? paymentRow.errorMessage
       : hasError
-      ? this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.error-message',
-        ) +
-        ': <strong>' +
-        paymentRow.errorMessage +
-        '</strong><br><br>' +
-        this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.fix-error',
-        )
-      : isSinglePayment
-      ? this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.single-payment.intro',
-        )
-      : null;
+        ? this.translate.instant(
+            'page.program.program-people-affected.payment-status-popup.error-message',
+          ) +
+          ': <strong>' +
+          paymentRow.errorMessage +
+          '</strong><br><br>' +
+          this.translate.instant(
+            'page.program.program-people-affected.payment-status-popup.fix-error',
+          )
+        : isSinglePayment
+          ? this.translate.instant(
+              'page.program.program-people-affected.payment-status-popup.single-payment.intro',
+            )
+          : null;
 
     if (
       this.canViewVouchers &&

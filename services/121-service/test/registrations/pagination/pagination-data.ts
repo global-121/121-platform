@@ -5,9 +5,8 @@ export function createExpectedValueObject(registration, id: number): any {
   expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
   delete expectedValueObject.fspName;
   expectedValueObject['registrationProgramId'] = id;
-  expectedValueObject[
-    'personAffectedSequence'
-  ] = `PA #${expectedValueObject['registrationProgramId']}`;
+  expectedValueObject['personAffectedSequence'] =
+    `PA #${expectedValueObject['registrationProgramId']}`;
 
   return expectedValueObject;
 }
