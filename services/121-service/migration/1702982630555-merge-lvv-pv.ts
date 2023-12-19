@@ -215,7 +215,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     // // update first name question to full name
     const fs = require('fs');
     const programLvv = fs.readFileSync(
-      'seed-data/program/program-nlrc-lvv.json',
+      'seed-data/program/program-nlrc-pv.json',
       'utf8',
     );
     const programLvvJson = JSON.parse(programLvv);
@@ -231,7 +231,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       SET name = 'fullName', label = '${JSON.stringify(
         fullNameQuestion.label,
       )}',
-      "shortLabel" = '${JSON.stringify(fullNameQuestion.shortLabel)}',
+      "shortLabel" = '${JSON.stringify(fullNameQuestion.shortLabel)}'
       WHERE id = ${firstNameQuestionId}
     `);
 
