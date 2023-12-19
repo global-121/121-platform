@@ -651,9 +651,10 @@ export class RegistrationsController {
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
-    summary: 'Get registration with prefilled answers (for AW)',
+    summary:
+      '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
   })
-  @ApiResponse({ status: 200, description: 'Got registrations' })
+  @ApiResponse({ status: 200, description: 'A single registration' })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',

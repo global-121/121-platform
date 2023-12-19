@@ -33,7 +33,7 @@ export class RetryInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-    const res = ['/registrations/get', '/registrations/fsp-attributes/'];
+    const res = ['/registrations/fsp-attributes/'];
     // Exclude interceptor for offline usage
     for (const re of res) {
       if (request.url.search(re) !== -1) {

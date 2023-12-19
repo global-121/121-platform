@@ -236,9 +236,8 @@ describe('Load PA table', () => {
 
       // define filter as 'not yet sent payment #3'
       const filter = {};
-      filter[
-        `filter.${PaymentFilterEnum.notYetSentPayment}`
-      ] = `$eq:${payment3}`;
+      filter[`filter.${PaymentFilterEnum.notYetSentPayment}`] =
+        `$eq:${payment3}`;
 
       // Act
       const getRegistrationsResponse = await getRegistrations(

@@ -81,14 +81,14 @@ export class LookupService {
       phoneNumber.substring(0, 2) == '00'
         ? phoneNumber.substring(2)
         : phoneNumber.substring(0, 2) == '06'
-        ? '31' + phoneNumber
-        : phoneNumber.substring(0, 3) == '+00'
-        ? phoneNumber.substring(3)
-        : phoneNumber.substring(0, 2) == '+0'
-        ? phoneNumber.substring(2)
-        : phoneNumber.substring(0, 1) == '+'
-        ? phoneNumber.substring(1)
-        : phoneNumber;
+          ? '31' + phoneNumber
+          : phoneNumber.substring(0, 3) == '+00'
+            ? phoneNumber.substring(3)
+            : phoneNumber.substring(0, 2) == '+0'
+              ? phoneNumber.substring(2)
+              : phoneNumber.substring(0, 1) == '+'
+                ? phoneNumber.substring(1)
+                : phoneNumber;
     return `+${sanitizedPhoneNr}`;
   }
 }
