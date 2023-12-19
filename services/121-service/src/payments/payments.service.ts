@@ -132,25 +132,9 @@ export class PaymentsService {
       payment,
     );
 
-    const fspAggregation = await this.aggregateTransactionsByDimension(
-      'fsp',
-      programId,
-      payment,
-    );
-
-    let nrPending;
-    for (const fsp of fspAggregation) {
-      if (fsp.fsp === FspName.intersolveVisa) {
-        nrPending = await this.intersolveVisaService.getQueueProgress(
-          programId,
-          payment,
-        );
-      }
-    }
-
     let paymentInProgress = false;
     try {
-      await this.checkPaymentInProgressAndThrow(programId);
+      await this.checkPaymentInProgressAndThrow(programId, payment);
     } catch (error) {
       paymentInProgress = true;
     }
@@ -165,7 +149,7 @@ export class PaymentsService {
       nrError:
         statusAggregation.find((row) => row.status === StatusEnum.error)
           ?.count || 0,
-      paymentInProgress: paymentInProgress || nrPending > 0,
+      paymentInProgress: paymentInProgress,
     };
   }
 
@@ -178,7 +162,7 @@ export class PaymentsService {
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
     if (!dryRun) {
-      await this.checkPaymentInProgressAndThrow(programId);
+      await this.checkPaymentInProgressAndThrow(programId, payment);
     }
 
     const paginateQuery =
@@ -301,7 +285,7 @@ export class PaymentsService {
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<BulkActionResultDto> {
-    await this.checkPaymentInProgressAndThrow(programId);
+    await this.checkPaymentInProgressAndThrow(programId, payment);
 
     await this.checkProgram(programId);
 
@@ -372,6 +356,7 @@ export class PaymentsService {
   // TODO: refactor this to use 1 query + include payment-id in action-table
   public async checkPaymentInProgressAndThrow(
     programId: number,
+    payment?: number,
   ): Promise<void> {
     let inProgress = false;
     const latestPaymentStartedAction =
@@ -396,7 +381,31 @@ export class PaymentsService {
       // If started and finished, then compare timestamps
       const startTimestamp = new Date(latestPaymentStartedAction?.created);
       const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
-      inProgress = finishTimestamp < startTimestamp;
+      if (finishTimestamp < startTimestamp) {
+        // If latest finished-timestamp before latest start-timstamp, then in progress
+        inProgress = true;
+      } else {
+        // get all FSPs in payment
+        const fspAggregation = await this.aggregateTransactionsByDimension(
+          'fsp',
+          programId,
+          payment,
+        );
+
+        for (const fsp of fspAggregation) {
+          if (fsp.fsp === FspName.intersolveVisa) {
+            const nrPending = await this.intersolveVisaService.getQueueProgress(
+              programId,
+              payment,
+            );
+            if (nrPending > 0) {
+              inProgress = true;
+              break; // if one fsp is in progress, then the whole payment is in progress
+            }
+          }
+          // for fsp's without queue, do nothing, so inProgress remains false
+        }
+      }
     }
 
     if (inProgress) {
