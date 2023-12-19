@@ -33,7 +33,7 @@ export class IntersolveVisaController {
   @Permissions(PermissionEnum.FspDebitCardREAD)
   @ApiOperation({
     summary:
-      '[SCOPED] (EXTERNALLY USED) Get Intersolve Visa wallet data related to a registration',
+      '[SCOPED] [EXTERNALLY USED] Get Intersolve Visa wallet data related to a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -59,7 +59,7 @@ export class IntersolveVisaController {
 
   @Permissions(PermissionEnum.FspDebitCardBLOCK)
   @ApiOperation({
-    summary: '[SCOPED] (EXTERNALLY USED) Block Intersolve Visa wallet',
+    summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
