@@ -1,7 +1,13 @@
 import * as request from 'supertest';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { getServer } from './utility.helper';
+import {
+  changePhase,
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from './program.helper';
+import { getAccessToken, getServer } from './utility.helper';
 
 export function importRegistrations(
   programId: number,
@@ -294,4 +300,42 @@ export function getMessageHistory(
     .get(`/programs/${programId}/registrations/message-history/${referenceId}`)
     .set('Cookie', [accessToken])
     .send();
+}
+
+export async function seedPayedRegistrations(
+  registrations: any[],
+  programId: number,
+) {
+  const accessToken = await getAccessToken();
+
+  await changePhase(
+    programId,
+    ProgramPhase.registrationValidation,
+    accessToken,
+  );
+
+  await importRegistrations(programId, registrations, accessToken);
+
+  await changePhase(programId, ProgramPhase.inclusion, accessToken);
+  await changePhase(programId, ProgramPhase.payment, accessToken);
+
+  await awaitChangePaStatus(
+    programId,
+    registrations.map((r) => r.referenceId),
+    RegistrationStatusEnum.included,
+    accessToken,
+  );
+
+  await doPayment(programId, 1, 25, [], accessToken, {
+    'filter.status': '$in:included',
+  });
+
+  const registrationReferenceIds = registrations.map((r) => r.referenceId);
+
+  await waitForPaymentTransactionsToComplete(
+    programId,
+    registrationReferenceIds,
+    accessToken,
+    8000,
+  );
 }
