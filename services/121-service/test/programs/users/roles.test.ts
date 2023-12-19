@@ -45,15 +45,15 @@ describe('Programs / Users / Roles', () => {
 
     // Act
     const response = await getServer()
-      .get(`/programs/${programId}/users/${userId}/roles`)
+      .get(`/programs/${programId}/users/${userId}`)
       .set('Cookie', [accessToken]);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.length).toBe(1);
-    expect(response.body[0].role).toBe(testUserRoles[0].role);
-    expect(response.body[0].id).toBe(testUserRoles[0].id);
-    expect(response.body[0].label).toBe(testUserRoles[0].label);
+    expect(response.body.roles.length).toBe(1);
+    expect(response.body.roles[0].role).toBe(testUserRoles[0].role);
+    expect(response.body.roles[0].id).toBe(testUserRoles[0].id);
+    expect(response.body.roles[0].label).toBe(testUserRoles[0].label);
   });
 
   it('should return user roles after update to specific program assignments', async () => {
@@ -66,16 +66,16 @@ describe('Programs / Users / Roles', () => {
 
     // Act
     const response = await getServer()
-      .put(`/programs/${programId}/users/${userId}/roles`)
+      .put(`/programs/${programId}/users/${userId}`)
       .set('Cookie', [accessToken])
       .send(testRoles);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.length).toBe(2);
-    expect(response.body[0].role).toBe(testUserRoles[0].role);
-    expect(response.body[0].id).toBe(testUserRoles[0].id);
-    expect(response.body[0].label).toBe(testUserRoles[0].label);
+    expect(response.body.roles.length).toBe(2);
+    expect(response.body.roles[0].role).toBe(testUserRoles[0].role);
+    expect(response.body.roles[0].id).toBe(testUserRoles[0].id);
+    expect(response.body.roles[0].label).toBe(testUserRoles[0].label);
   });
 
   it('should return user roles after add new role to specific program assignment', async () => {
@@ -88,16 +88,16 @@ describe('Programs / Users / Roles', () => {
 
     // Act
     const response = await getServer()
-      .patch(`/programs/${programId}/users/${userId}/roles`)
+      .patch(`/programs/${programId}/users/${userId}`)
       .set('Cookie', [accessToken])
       .send(testRoles);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.length).toBe(3);
-    expect(response.body[2].role).toBe(testUserRoles[1].role);
-    expect(response.body[2].id).toBe(testUserRoles[1].id);
-    expect(response.body[2].label).toBe(testUserRoles[1].label);
+    expect(response.body.roles.length).toBe(3);
+    expect(response.body.roles[2].role).toBe(testUserRoles[1].role);
+    expect(response.body.roles[2].id).toBe(testUserRoles[1].id);
+    expect(response.body.roles[2].label).toBe(testUserRoles[1].label);
   });
 
   it('should return user roles after delete roles from specific program assignment', async () => {
@@ -110,15 +110,15 @@ describe('Programs / Users / Roles', () => {
 
     // Act
     const response = await getServer()
-      .delete(`/programs/${programId}/users/${userId}/roles`)
+      .delete(`/programs/${programId}/users/${userId}`)
       .set('Cookie', [accessToken])
       .send(testRoles);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.length).toBe(1);
-    expect(response.body[0].role).toBe(testUserRoles[0].role);
-    expect(response.body[0].id).toBe(testUserRoles[0].id);
-    expect(response.body[0].label).toBe(testUserRoles[0].label);
+    expect(response.body.roles.length).toBe(1);
+    expect(response.body.roles[0].role).toBe(testUserRoles[0].role);
+    expect(response.body.roles[0].id).toBe(testUserRoles[0].id);
+    expect(response.body.roles[0].label).toBe(testUserRoles[0].label);
   });
 });
