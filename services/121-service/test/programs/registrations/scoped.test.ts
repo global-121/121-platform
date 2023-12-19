@@ -62,7 +62,7 @@ describe('Registrations - [Scoped]', () => {
     );
   });
 
-  it('should return all registrations within the scope of the requesting user', async () => {
+  it('should return all registrations from 1 program within the scope of the requesting user', async () => {
     // Arrange
     const testScope = DebugScope.Zeeland;
     accessToken = await getAccessTokenScoped(testScope);
