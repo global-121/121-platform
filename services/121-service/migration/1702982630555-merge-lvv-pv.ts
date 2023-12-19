@@ -18,6 +18,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       await this.changeProgramIdEntities(queryRunner);
       await this.updatePaymentNumber(queryRunner);
       await this.removeUnusedEntities(queryRunner);
+      await this.mergeNameFirstLast(queryRunner);
     }
   }
 
@@ -158,6 +159,96 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       UPDATE "121-service".registration
       SET "registrationProgramId" = "registrationProgramId" + ${maxId}
       WHERE "programId" = 1
+    `);
+  }
+
+  private async mergeNameFirstLast(queryRunner: QueryRunner) {
+    await this.mergeNameFirstLastRegData(queryRunner);
+    await this.convertFirstNameToFullnameQuestion(queryRunner);
+  }
+  private async mergeNameFirstLastRegData(queryRunner: QueryRunner) {
+    // merge first and last name data
+    const firsNameQuestionIdResult = await queryRunner.query(`
+      SELECT id
+      FROM "121-service".program_question
+      WHERE name = 'nameFirst' and "programId" = 2
+
+    `);
+    const firstNameQuestionId = firsNameQuestionIdResult[0].id;
+    const lastNameQuestionIdResult = await queryRunner.query(`
+      SELECT id
+      FROM "121-service".program_question
+      WHERE name = 'nameLast' and "programId" = 2
+    `);
+    const lastNameQuestionId = lastNameQuestionIdResult[0].id;
+    await queryRunner.query(`
+      UPDATE "121-service".registration_data rd1
+      SET value = value || ' ' || (
+        SELECT value
+        FROM "121-service".registration_data rd2
+        WHERE "programQuestionId" = ${lastNameQuestionId}
+          AND "rd2"."registrationId" = "rd1"."registrationId"
+      )
+      WHERE "programQuestionId" = ${firstNameQuestionId}
+    `);
+    // remove last name question en registration data
+
+    await queryRunner.query(`
+      DELETE FROM "121-service".registration_data
+      WHERE "programQuestionId" = ${lastNameQuestionId}
+    `);
+    await queryRunner.query(`
+    DELETE FROM "121-service".program_question
+    WHERE id = ${lastNameQuestionId}
+  `);
+  }
+
+  private async convertFirstNameToFullnameQuestion(queryRunner: QueryRunner) {
+    const firsNameQuestionIdResult = await queryRunner.query(`
+      SELECT id
+      FROM "121-service".program_question
+      WHERE name = 'nameFirst' and "programId" = 2
+
+    `);
+    const firstNameQuestionId = firsNameQuestionIdResult[0].id;
+
+    // // update first name question to full name
+    const fs = require('fs');
+    const programLvv = fs.readFileSync(
+      'seed-data/program/program-nlrc-lvv.json',
+      'utf8',
+    );
+    const programLvvJson = JSON.parse(programLvv);
+    console.log(
+      '🚀 ~ file: 1702982630555-merge-lvv-pv.ts:222 ~ MergeLvvPv1702982630555 ~ convertFirstNameToFullnameQuestion ~ programLvvJson:',
+      programLvvJson,
+    );
+    const fullNameQuestion = programLvvJson.programQuestions.find(
+      (pq) => pq.name === 'fullName',
+    );
+    await queryRunner.query(`
+      UPDATE "121-service".program_question
+      SET name = 'fullName', label = '${JSON.stringify(
+        fullNameQuestion.label,
+      )}',
+      "shortLabel" = '${JSON.stringify(fullNameQuestion.shortLabel)}',
+      WHERE id = ${firstNameQuestionId}
+    `);
+
+    // Get current program fullNameNamingConvention
+    const currentProgram = await queryRunner.query(`
+      SELECT "fullnameNamingConvention"
+      FROM "121-service"."program"
+      WHERE id = 2
+    `);
+
+    // Update program fullNameNamingConvention
+    await queryRunner.query(`
+      UPDATE "121-service"."program"
+      SET "fullnameNamingConvention" = '${JSON.stringify(
+        programLvvJson.fullnameNamingConvention,
+      )}'
+      WHERE id = 2
     `);
   }
 

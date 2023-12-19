@@ -72,15 +72,14 @@
   ],
   "programQuestions": [
     {
-      "name": "nameFirst",
+      "name": "fullName",
       "label": {
-        "en": "Please enter your first name:",
-        "es": "Por favor introduzca su nombre:",
-        "nl": "Vul je voornaam in:",
-        "pt_BR": "Por favor, digite seu nome: ",
-        "tl": "Ilagay ang pangalan:",
-        "in": "Harap isi nama depan anda",
-        "fr": "Remplissez votre prénom, s'il vous plaît:"
+        "ar": "الرجاء إدخال اسمك الكامل:",
+        "en": "Please enter your full name:",
+        "nl": "Vul je volledige naam in:",
+        "fr": "Veuillez entrer votre nom complet:",
+        "es": "Por favor introduzca su nombre completo:",
+        "pt_BR": "Por favor, digite seu nome completo: "
       },
       "answerType": "text",
       "questionType": "standard",
@@ -93,30 +92,6 @@
       "editableInPortal": false,
       "shortLabel": {
         "en": "First Name"
-      }
-    },
-    {
-      "name": "nameLast",
-      "label": {
-        "en": "Please enter your last name:",
-        "es": "Por favor introduzca su apellido:",
-        "nl": "Vul je achternaam in:",
-        "pt_BR": "Por favor, digite seu sobrenome:",
-        "tl": "Ilagay ang apelyido:",
-        "in": "Harap isi nama akhir anda",
-        "fr": "Remplissez votre nom, s'il vous plaît:"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "pattern": null,
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Last Name"
       }
     },
     {
@@ -157,7 +132,7 @@
     "in": "<strong>Program sokongan Red Cross ini</strong>dibuat untuk membantu orang yang memerlukan bantuan pangan dan tidak bisa mendapatkan bantuan semacam ini di mana pun. Kami bekerja sama dengan organisasi-organisasi mitra sebagai berikut:  <ul class='ion-padding-start'><li>Stap Verder</li><li>Filipino LGBT Europe</li><li>Opportunities in Amsterdam</li><li>Company of Friends</li><li>Steungroep Vrouwen zonder Verblijfsvergunning </li> </ul> <br> Program sokongan The Red Cross bertujuan membantu Anda:  <ul class='ion-padding-start'> <li>Hingga Anda menerima bantuan pangan / keuangan dari organisasi lain </li><li>Hingga Anda tidak lagi terdaftar pada semua organisasi di atas</li> <li>Hingga Anda menerima jumlah maksimum voucher yang telah disetujui di awal bantuan. </li <li> Atau hingga akhir program (Anda akan diberi tahu dua minggu sebelumnya). </li></ul>  <br>  <strong>Program sokongan Red Cross</strong> akan membantu Anda dengan: <ul class='ion-padding-start'> <li>Voucher supermarket Albert Heijn senilai €17.50 setiap minggunya<br>WhatsApp akan digunakan untuk mengirimkan voucher supermarket Anda. Jika Anda tidak dapat menerima voucher  supermarketnya melalui WhatsApp, kami akan mengirimkannya melalui SMS lalu Anda dapat mengambilnya.</li></ul>",
     "fr": "Ce <strong> programme d'aide de la Croix-Rouge </strong> a été créé pour soutenir les personnes qui ont besoin d'aide alimentaire et qui ne reçoivent pas encore cette aide d'une autre organisation. Nous collaborons avec les organisations partenaires suivantes:<ul class='ion-padding-start'><li> Stap Verder </li> <li> Filipino LGBT Europe </li> <li> Opportunities in Amsterdam </li><li> Company of Friends </li><li> Steungroep Vrouwen zonder Verblijfsvergunning (SVZV)</li> </ul><br><br> Le<strong> programme d'aide de la Croix-Rouge </strong> vise à vous aider : <ul class='ion-padding-start'> Jusqu'à ce que vous receviez le soutien d'un autre organisme <li>Jusqu'à ce que vous ne soyez plus pris en charge par aucune des organisations ci-dessus</li><li>Jusqu'à ce que vous receviez le montant maximum de bons convenu au début de l'assistance.</li><li> Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance)</li></ul>  <br> Le <strong>programme d'aide de la Croix-Rouge</strong> vous soutient avec les éléments suivants: <ul class='ion-padding-start'><li>Bon d'achat hebdomadaire de €35 pour le supermarché Albert Heijn <br> WhatsApp sera utilisé pour envoyer votre bon de supermarché. Si vous ne parvenez pas à recevoir le bon de supermarché sur WhatsApp, nous vous enverrons un SMS et vous pourrez le récupérer. </li></ul>"
   },
-  "fullnameNamingConvention": ["nameFirst", "nameLast"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "es", "fr", "in", "nl", "pt_BR", "tl"],
   "enableMaxPayments": true,
   "enableScope": true
