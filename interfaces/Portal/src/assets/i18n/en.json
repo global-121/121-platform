@@ -31,7 +31,7 @@
       "pageTitle": "Program team",
       "page-description": "In this page you can create a team for your program",
       "add-team-member": "Add team member",
-      "edit-team-member-role": "Edit role",
+      "edit-team-member": "Edit",
       "remove-team-member": "Remove from Team",
       "table-headers": {
         "name": "Name",
@@ -70,7 +70,7 @@
           "already-member": "This user is already a team member"
         },
         "change": {
-          "title": "Edit team member roles",
+          "title": "Edit team member",
           "succes-message": "You’ve successfully edited the role(s) of this user",
           "confirm": "Save"
         }
