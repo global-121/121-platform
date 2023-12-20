@@ -16,8 +16,8 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       await this.updateRegistrationProgramId(queryRunner);
       await this.updateRegistrationDataId(queryRunner);
       await this.updateTemplates(queryRunner);
-      await this.changeProgramIdEntities(queryRunner);
       await this.updatePaymentNumber(queryRunner);
+      await this.changeProgramIdEntities(queryRunner);
       await this.removeUnusedEntities(queryRunner);
       await this.mergeNameFirstLast(queryRunner);
     }
@@ -47,9 +47,8 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       where
         "programId" = 2;`);
 
-    await queryRunner.query(`TRUNCATE "121-service"."latest_transaction"`);
-
     // Update latest transaction entity
+    await queryRunner.query(`TRUNCATE "121-service"."latest_transaction"`);
     await queryRunner.query(`
       INSERT INTO "121-service"."latest_transaction" ("payment", "registrationId", "transactionId")
       SELECT t.payment, t."registrationId", t.id AS transactionId
