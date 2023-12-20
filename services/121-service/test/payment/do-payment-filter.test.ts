@@ -20,19 +20,19 @@ import {
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import {
   programIdOCW,
-  registration1,
-  registration2,
-  registration3,
-  registration4,
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
 } from '../registrations/pagination/pagination-data';
 
 describe('Do payment with filter', () => {
   let accessToken: string;
   // Arrange
   const includedRefrenceIds = [
-    registration1.referenceId,
-    registration2.referenceId,
-    registration3.referenceId,
+    registrationOCW1.referenceId,
+    registrationOCW2.referenceId,
+    registrationOCW3.referenceId,
   ];
 
   beforeEach(async () => {
@@ -48,7 +48,7 @@ describe('Do payment with filter', () => {
     await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
     await importRegistrations(
       programIdOCW,
-      [registration1, registration2, registration3, registration4],
+      [registrationOCW1, registrationOCW2, registrationOCW3, registrationOCW4],
       accessToken,
     );
 
@@ -138,13 +138,13 @@ describe('Do payment with filter', () => {
       accessToken,
       {
         'filter.status': '$in:included',
-        'filter.referenceId': `$in:${registration1.referenceId}`,
+        'filter.referenceId': `$in:${registrationOCW1.referenceId}`,
       },
     );
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
-      [registration1.referenceId],
+      [registrationOCW1.referenceId],
       accessToken,
       8000,
     );
@@ -179,7 +179,7 @@ describe('Do payment with filter', () => {
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
-      [registration2.referenceId],
+      [registrationOCW2.referenceId],
       accessToken,
       8000,
     );

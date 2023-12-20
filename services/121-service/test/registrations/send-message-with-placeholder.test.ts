@@ -7,9 +7,10 @@ import {
   sendMessage,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from './pagination/pagination-data';
 
 describe('Send custom message with placeholders', () => {
-  const programId = 1;
+  const programId = programIdPV;
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
     preferredLanguage: 'en',

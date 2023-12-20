@@ -15,11 +15,7 @@ import {
   getAccessTokenScoped,
   resetDB,
 } from '../helpers/utility.helper';
-import {
-  programIdLVV,
-  programIdOCW,
-  programIdPV,
-} from './pagination/pagination-data';
+import { programIdOCW, programIdPV } from './pagination/pagination-data';
 
 describe('/ Registrations - by phone-number', () => {
   let accessToken: string;
@@ -52,11 +48,7 @@ describe('/ Registrations - by phone-number', () => {
       ProgramPhase.registrationValidation,
       accessToken,
     );
-    await changePhase(
-      programIdLVV,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
+
     await changePhase(
       programIdOCW,
       ProgramPhase.registrationValidation,
@@ -64,7 +56,7 @@ describe('/ Registrations - by phone-number', () => {
     );
 
     await importRegistrations(
-      programIdLVV,
+      programIdPV,
       [
         registrationOnlyPhoneNumber,
         registrationOnlyPhoneNumberUnique,
@@ -226,7 +218,7 @@ describe('/ Registrations - by phone-number', () => {
       [CustomDataAttributes.whatsappPhoneNumber]: '15005550300',
     };
     await importRegistrations(
-      programIdLVV,
+      programIdOCW,
       [registrationInOtherProgram],
       accessToken,
     );

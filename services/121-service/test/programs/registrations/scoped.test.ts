@@ -3,14 +3,9 @@ import { DebugScope } from '../../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.model';
 import {
-  registrationNotScopedLvv,
-  registrationNotScopedPv,
-  registrationScopedGoesLvv,
   registrationScopedGoesPv,
-  registrationScopedMiddelburgLvv,
   registrationScopedMiddelburgPv,
-  registrationScopedUtrechtLvv,
-  registrationScopedUtrechtPv,
+  registrationsPV,
 } from '../../fixtures/scoped-registrations';
 import { changePhase } from '../../helpers/program.helper';
 import { importRegistrations } from '../../helpers/registration.helper';
@@ -21,12 +16,13 @@ import {
   resetDB,
 } from '../../helpers/utility.helper';
 import {
-  programIdLVV,
+  programIdOCW,
   programIdPV,
+  registrationsOCW,
 } from '../../registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
-  const LvvProgramId = programIdLVV;
+  const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
   let accessToken: string;
 
@@ -35,31 +31,13 @@ describe('Registrations - [Scoped]', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      LvvProgramId,
+      OcwProgramId,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
-    await importRegistrations(
-      LvvProgramId,
-      [
-        registrationScopedMiddelburgLvv,
-        registrationScopedGoesLvv,
-        registrationScopedUtrechtLvv,
-        registrationNotScopedLvv,
-      ],
-      accessToken,
-    );
-    await importRegistrations(
-      PvProgramId,
-      [
-        registrationScopedMiddelburgPv,
-        registrationScopedGoesPv,
-        registrationScopedUtrechtPv,
-        registrationNotScopedPv,
-      ],
-      accessToken,
-    );
+    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    await importRegistrations(PvProgramId, registrationsPV, accessToken);
   });
 
   it('should return all registrations from 1 program within the scope of the requesting user', async () => {
@@ -95,16 +73,15 @@ describe('Registrations - [Scoped]', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
-    // Act
     // 8 registrations in total are registered
     // 4 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
-    // 1 of those 2 registrations has a nameFirst that has an 'a'
+    // 1 of those 2 registrations has a fullName that has an 'o'
     const getRegistrationsResponse = await getServer()
       .get(`/programs/${PvProgramId}/registrations`)
       .set('Cookie', [accessToken])
       .query({
-        ['filter.nameFirst']: `$ilike:a`,
+        ['filter.fullName']: `$ilike:o`,
       })
       .send();
 
