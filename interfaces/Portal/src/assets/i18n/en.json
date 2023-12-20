@@ -451,6 +451,9 @@
               "not-an-integer": "Input should be an integer",
               "too-low": "Input should be higher than the number of payments that have already been sent",
               "not-empty": "Input cannot be empty"
+            },
+            "scope": {
+              "label": "Scope"
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
