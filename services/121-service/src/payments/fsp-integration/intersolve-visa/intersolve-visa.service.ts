@@ -377,10 +377,10 @@ export class IntersolveVisaService
         createDebitCardResult.status === 200
           ? null
           : createDebitCardResult.data?.errors?.length
-          ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
-              createDebitCardResult.data?.errors,
-            )}`
-          : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
+            ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
+                createDebitCardResult.data?.errors,
+              )}`
+            : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
@@ -415,10 +415,10 @@ export class IntersolveVisaService
       paTransactionResult.message = loadBalanceResult.data?.success
         ? null
         : loadBalanceResult.data?.errors?.length
-        ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
-            loadBalanceResult.data?.errors,
-          )}`
-        : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+          ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
+              loadBalanceResult.data?.errors,
+            )}`
+          : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };

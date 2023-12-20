@@ -6,6 +6,10 @@ import {
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
+  registrationScopedGoesPv,
+  registrationScopedUtrechtPv,
+} from '../fixtures/scoped-registrations';
+import {
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
@@ -14,13 +18,7 @@ import {
   getAccessTokenScoped,
   resetDB,
 } from '../helpers/utility.helper';
-import {
-  programIdOCW,
-  programIdPV,
-  referenceId1PV,
-  registration1PV,
-  registration2PV,
-} from './pagination/pagination-data';
+import { programIdOCW, programIdPV } from './pagination/pagination-data';
 
 describe('Import a registration', () => {
   let accessToken: string;
@@ -68,7 +66,7 @@ describe('Import a registration', () => {
     // Act
     const response = await importRegistrations(
       programIdPV,
-      [registration1PV],
+      [registrationScopedGoesPv],
       accessToken,
     );
 
@@ -76,21 +74,21 @@ describe('Import a registration', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      referenceId1PV,
+      registrationScopedGoesPv.referenceId,
       programIdPV,
       accessToken,
     );
     const registrationResult = result.body.data[0];
 
-    for (const key in registrationVisa) {
+    for (const key in registrationScopedGoesPv) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
         expect(registrationResult['financialServiceProvider']).toBe(
-          registration1PV[key],
+          registrationScopedGoesPv[key],
         );
       } else {
         // eslint-disable-next-line jest/no-conditional-expect
-        expect(registrationResult[key]).toBe(registration1PV[key]);
+        expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
       }
     }
   });
@@ -102,21 +100,19 @@ describe('Import a registration', () => {
     // Act
     const response = await importRegistrations(
       programIdPV,
-      [registration1PV, registration2PV],
+      [registrationScopedGoesPv, registrationScopedUtrechtPv],
       accessToken,
     );
 
     // Assert
-    console.log('response.statusCode: ', response.statusCode);
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
-      referenceId1PV,
+      registrationScopedGoesPv.referenceId,
       programIdPV,
       accessToken,
     );
     const registrationsResult = result.body.data;
-    console.log('registrationsResult: ', registrationsResult);
     expect(registrationsResult).toHaveLength(0);
   });
 });

@@ -377,8 +377,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return attribute?.shortLabel
       ? this.translatableString.get(attribute.shortLabel)
       : translation !== translationKey
-      ? translation
-      : change.fieldName;
+        ? translation
+        : change.fieldName;
   }
 
   public getIconName(type: ActivityOverviewType): string {

@@ -975,9 +975,6 @@ export class RegistrationsService {
     userId: number,
   ): Promise<RegistrationViewEntity[]> {
     const registrations = [];
-    if (!userId) {
-      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
-    }
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1109,16 +1106,24 @@ export class RegistrationsService {
     userId: number,
   ): Promise<RegistrationEntity> {
     await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      [
-        'program',
-        'program.programQuestions',
-        'data',
-        'data.programQuestion',
-        'data.fspQuestion',
-      ],
+    let registration = await this.getRegistrationFromReferenceId(referenceId, [
+      'program',
+      'program.programQuestions',
+      'data',
+      'data.programQuestion',
+      'data.fspQuestion',
+    ]);
+
+    const registrationsScoped = await this.filterRegistrationsByProgramScope(
+      [registration],
+      userId,
     );
+    if (registrationsScoped.length !== 1) {
+      return null;
+    }
+
+    registration = registrationsScoped[0];
+
     const programAnswers = [];
     for (const d of registration.data) {
       if (d.programQuestionId) {

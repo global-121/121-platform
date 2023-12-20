@@ -18,8 +18,8 @@
   "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
   "distributionFrequency": "2-weeks",
-  "distributionDuration": 20,
-  "fixedTransferValue": 22,
+  "distributionDuration": 46,
+  "fixedTransferValue": 25,
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-voucher-whatsapp",
