@@ -244,7 +244,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs',
+    summary: '[EXTERNALLY USED] Import set of registered PAs',
     description:
       'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
@@ -335,7 +335,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      '[SCOPED] Update registration status of set of PAs that can be defined via filter parameters.',
+      '[SCOPED] [EXTERNALLY USED] Update registration status of set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -446,7 +446,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
     summary:
-      '[SCOPED] Update provided attributes of registration (Used by Aidworker)',
+      '[SCOPED] [EXTERNALLY USED] Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
     status: 200,
@@ -532,7 +532,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     summary:
-      '[SCOPED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
+      '[SCOPED] [EXTERNALLY USED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
     status: 201,
@@ -651,9 +651,10 @@ export class RegistrationsController {
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
-    summary: 'Get registration with prefilled answers (for AW)',
+    summary:
+      '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
   })
-  @ApiResponse({ status: 200, description: 'Got registrations' })
+  @ApiResponse({ status: 200, description: 'A single registration' })
   @ApiResponse({
     status: 401,
     description: 'No user detectable from cookie or no cookie present',

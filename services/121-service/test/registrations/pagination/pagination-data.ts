@@ -12,8 +12,9 @@ export function createExpectedValueObject(registration, id: number): any {
   return expectedValueObject;
 }
 
-export const programIdOCW = 3;
+export const programIdLVV = 1;
 export const programIdPV = 2;
+export const programIdOCW = 3;
 
 export const referenceId = '63e62864557597e0d';
 export const registration1 = {
@@ -111,32 +112,6 @@ export const registration6 = {
   phoneNumber: '14155235551',
   fspName: FspName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
-};
-
-export const referenceId1PV = 'bcaf234f4gg4ag64541';
-export const registration1PV = {
-  referenceId: referenceId1PV,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  nameFirst: 'Yasmin',
-  nameLast: 'Abdullah',
-  phoneNumber: '14155235559',
-  fspName: FspName.intersolveVoucherWhatsapp,
-  whatsappPhoneNumber: '14155235559',
-  scope: 'zeeland.goes',
-};
-
-export const referenceId2PV = 'bcaf234f4gg4ag64542';
-export const registration2PV = {
-  referenceId: referenceId2PV,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  nameFirst: 'Jose',
-  nameLast: 'Santos',
-  phoneNumber: '14155235560',
-  fspName: FspName.intersolveVoucherWhatsapp,
-  whatsappPhoneNumber: '14155235560',
-  scope: 'utrecht.houten',
 };
 
 export const expectedAttributes = [
