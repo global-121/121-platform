@@ -13,14 +13,14 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
 
     // Is NLRC
     if (instances.length > 0) {
-      // await this.updateRegistrationProgramId(queryRunner);
-      // await this.updateRegistrationDataId(queryRunner);
+      await this.updateRegistrationProgramId(queryRunner);
+      await this.updateRegistrationDataId(queryRunner);
       await this.updateProgramJson(queryRunner);
-      // await this.updateTemplates(queryRunner);
-      // await this.updatePaymentNumber(queryRunner);
-      // await this.changeProgramIdEntities(queryRunner);
-      // await this.removeUnusedEntities(queryRunner);
-      // await this.mergeNameFirstLast(queryRunner);
+      await this.updateTemplates(queryRunner);
+      await this.updatePaymentNumber(queryRunner);
+      await this.changeProgramIdEntities(queryRunner);
+      await this.removeUnusedEntities(queryRunner);
+      await this.mergeNameFirstLast(queryRunner);
     }
   }
 
