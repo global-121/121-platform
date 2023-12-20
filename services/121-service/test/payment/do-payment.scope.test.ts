@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import {
   registrationNotScopedLvv,
   registrationNotScopedPv,

@@ -8,7 +8,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export class UpdateProgramDto {
   @ApiProperty({

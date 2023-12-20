@@ -24,4 +24,5 @@ export class PaymentSummary {
   nrSuccess: number;
   nrWaiting: number;
   nrError: number;
+  paymentInProgress: boolean;
 }

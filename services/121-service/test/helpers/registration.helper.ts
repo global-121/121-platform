@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,

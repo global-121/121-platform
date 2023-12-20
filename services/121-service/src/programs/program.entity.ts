@@ -16,7 +16,7 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attributes } from '../registration/dto/update-registration.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import {
   AnswerTypes,
   CustomAttributeType,

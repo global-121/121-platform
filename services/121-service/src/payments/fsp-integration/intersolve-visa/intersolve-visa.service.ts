@@ -1,4 +1,6 @@
+import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Queue } from 'bull';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -57,6 +59,7 @@ import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
+import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
@@ -77,6 +80,8 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
+    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
+    private readonly paymentIntersolveVisaQueue: Queue,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
     private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
@@ -157,26 +162,47 @@ export class IntersolveVisaService
     programId: number,
     paymentNr: number,
   ): Promise<void> {
+    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
+
+    for (const paymentDetails of paymentDetailsArray) {
+      paymentDetails.programId = programId;
+      paymentDetails.paymentNr = paymentNr;
+      paymentDetails.bulkSize = paymentList[0].bulkSize;
+      await this.paymentIntersolveVisaQueue.add(
+        ProcessName.sendPayment,
+        paymentDetails,
+      );
+    }
+  }
+
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
+      return jobs.filter((j) => j.data.programId === programId).length;
+    } else {
+      return await this.paymentIntersolveVisaQueue.getDelayedCount();
+    }
+  }
+
+  public async processQueuedPayment(
+    paymentDetailsData: PaymentDetailsDto,
+  ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
-    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
-
-    for (const paymentDetails of paymentDetailsArray) {
-      const paymentRequestResultPerPa = await this.sendPaymentToPa(
-        paymentDetails,
-        paymentNr,
-        paymentDetails.transactionAmount,
-        paymentList[0].bulkSize, // bulkSize is the same for all payments in the bulk
-      );
-      fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        programId,
-        paymentNr,
-      );
-    }
+    const paymentRequestResultPerPa = await this.sendPaymentToPa(
+      paymentDetailsData,
+      paymentDetailsData.paymentNr,
+      paymentDetailsData.transactionAmount,
+      paymentDetailsData.bulkSize,
+    );
+    fspTransactionResult.paList.push(paymentRequestResultPerPa);
+    await this.transactionsService.storeTransactionUpdateStatus(
+      paymentRequestResultPerPa,
+      paymentDetailsData.programId,
+      paymentDetailsData.paymentNr,
+    );
   }
 
   private async getPaPaymentDetails(
@@ -218,7 +244,7 @@ export class IntersolveVisaService
     return registrationDataOptions;
   }
 
-  private async sendPaymentToPa(
+  public async sendPaymentToPa(
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,

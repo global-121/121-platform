@@ -9,7 +9,7 @@ import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserService } from '../user/user.service';
