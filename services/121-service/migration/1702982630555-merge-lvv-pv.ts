@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class MergeLvvPv1702982630555 implements MigrationInterface {
@@ -22,7 +23,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     }
   }
 
-  private async updatePaymentNumber(queryRunner: QueryRunner) {
+  private async updatePaymentNumber(queryRunner: QueryRunner): Promise<void> {
     const maxPaymentLvvResult = await queryRunner.query(`
       select
         max(payment) as max_payment
@@ -46,7 +47,9 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       where
         "programId" = 2;`);
 
-    // Update lasest transaction entity
+    await queryRunner.query(`TRUNCATE "121-service"."latest_transaction"`);
+
+    // Update latest transaction entity
     await queryRunner.query(`
       INSERT INTO "121-service"."latest_transaction" ("payment", "registrationId", "transactionId")
       SELECT t.payment, t."registrationId", t.id AS transactionId
@@ -61,7 +64,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
           AND t.created = latest_transactions.max_created;`);
   }
 
-  private async updateTemplates(queryRunner: QueryRunner) {
+  private async updateTemplates(queryRunner: QueryRunner): Promise<void> {
     // This is the only language that is different between LVV and PV
     // Message content does not need to be updated
     await queryRunner.query(`
@@ -73,7 +76,9 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
           "programId" = 1 and language = 'ar';`);
   }
 
-  private async changeProgramIdEntities(queryRunner: QueryRunner) {
+  private async changeProgramIdEntities(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     const tables = [
       'registration',
       'transaction',
@@ -91,7 +96,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     }
   }
 
-  private async removeUnusedEntities(queryRunner: QueryRunner) {
+  private async removeUnusedEntities(queryRunner: QueryRunner): Promise<void> {
     const tables = [
       'program_question',
       'program_custom_attribute',
@@ -114,7 +119,9 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
         id = 1;`);
   }
 
-  private async updateRegistrationDataId(queryRunner: QueryRunner) {
+  private async updateRegistrationDataId(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     const programQuestionNameIdsPV = await queryRunner.query(`
       select
         id, name
@@ -163,7 +170,9 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     }
   }
 
-  private async updateRegistrationProgramId(queryRunner: QueryRunner) {
+  private async updateRegistrationProgramId(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     // Get the maximum registrationProgramId from program 2
     const maxIdResult = await queryRunner.query(`
       SELECT MAX("registrationProgramId") as max_id
@@ -181,11 +190,13 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     `);
   }
 
-  private async mergeNameFirstLast(queryRunner: QueryRunner) {
+  private async mergeNameFirstLast(queryRunner: QueryRunner): Promise<void> {
     await this.mergeNameFirstLastRegData(queryRunner);
     await this.convertFirstNameToFullnameQuestion(queryRunner);
   }
-  private async mergeNameFirstLastRegData(queryRunner: QueryRunner) {
+  private async mergeNameFirstLastRegData(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     // merge first and last name data
     const firsNameQuestionIdResult = await queryRunner.query(`
       SELECT id
@@ -222,7 +233,9 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
   `);
   }
 
-  private async convertFirstNameToFullnameQuestion(queryRunner: QueryRunner) {
+  private async convertFirstNameToFullnameQuestion(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     const firsNameQuestionIdResult = await queryRunner.query(`
       SELECT id
       FROM "121-service".program_question
@@ -232,13 +245,13 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     const firstNameQuestionId = firsNameQuestionIdResult[0].id;
 
     // // update first name question to full name
-    const fs = require('fs');
-    const programLvv = fs.readFileSync(
+    // const fs = require('fs');
+    const programPv = fs.readFileSync(
       'seed-data/program/program-nlrc-pv.json',
       'utf8',
     );
-    const programLvvJson = JSON.parse(programLvv);
-    const fullNameQuestion = programLvvJson.programQuestions.find(
+    const programPvJson = JSON.parse(programPv);
+    const fullNameQuestion = programPvJson.programQuestions.find(
       (pq) => pq.name === 'fullName',
     );
     await queryRunner.query(`
@@ -250,22 +263,17 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       WHERE id = ${firstNameQuestionId}
     `);
 
-    // Get current program fullNameNamingConvention
-    const currentProgram = await queryRunner.query(`
-      SELECT "fullnameNamingConvention"
-      FROM "121-service"."program"
-      WHERE id = 2
-    `);
-
     // Update program fullNameNamingConvention
     await queryRunner.query(`
       UPDATE "121-service"."program"
       SET "fullnameNamingConvention" = '${JSON.stringify(
-        programLvvJson.fullnameNamingConvention,
+        programPvJson.fullnameNamingConvention,
       )}'
       WHERE id = 2
     `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }
