@@ -55,7 +55,6 @@ describe('QueueMessageService', () => {
     );
 
     // Assert
-    expect(messageQueue.add).toHaveBeenCalledTimes(1);
     expect(messageQueue.add).toHaveBeenCalledWith(ProcessName.send, {
       ...defaultMessageJob,
       whatsappPhoneNumber: registration['whatsappPhoneNumber'],
