@@ -46,6 +46,15 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
         payment = payment + ${difference}
       where
         "programId" = 2;`);
+    await queryRunner.query(`
+        UPDATE 
+          "121-service"."intersolve_voucher" iv
+        SET
+          payment = payment + ${difference}
+        FROM "121-service"."imagecode_export_vouchers" iev
+        LEFT JOIN "121-service"."registration" r ON r.id = iev."registrationId"
+        WHERE iev."voucherId" = iv.id
+          AND r."programId" = 2;`);
 
     // Update latest transaction entity
     await queryRunner.query(`TRUNCATE "121-service"."latest_transaction"`);
