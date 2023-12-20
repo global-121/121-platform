@@ -46,7 +46,7 @@ export class CreateAndUpdateMessageTemplates1701426130489
     // that are only created in a next migration (and thus not yet available e.g. enableScope)
     const relevantPrograms = await programRepository
       .createQueryBuilder('program')
-      .select('program.id')
+      .select('program.id as id')
       .where('program.ngo = :ngo', { ngo: 'NLRC' })
       .andWhere('program.id IN (:...ids)', { ids: [1, 2] })
       .getRawMany();
