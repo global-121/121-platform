@@ -13,13 +13,14 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
 
     // Is NLRC
     if (instances.length > 0) {
-      await this.updateRegistrationProgramId(queryRunner);
-      await this.updateRegistrationDataId(queryRunner);
-      await this.updateTemplates(queryRunner);
-      await this.updatePaymentNumber(queryRunner);
-      await this.changeProgramIdEntities(queryRunner);
-      await this.removeUnusedEntities(queryRunner);
-      await this.mergeNameFirstLast(queryRunner);
+      // await this.updateRegistrationProgramId(queryRunner);
+      // await this.updateRegistrationDataId(queryRunner);
+      await this.updateProgramJson(queryRunner);
+      // await this.updateTemplates(queryRunner);
+      // await this.updatePaymentNumber(queryRunner);
+      // await this.changeProgramIdEntities(queryRunner);
+      // await this.removeUnusedEntities(queryRunner);
+      // await this.mergeNameFirstLast(queryRunner);
     }
   }
 
@@ -47,7 +48,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       where
         "programId" = 2;`);
     await queryRunner.query(`
-        UPDATE 
+        UPDATE
           "121-service"."intersolve_voucher" iv
         SET
           payment = payment + ${difference}
@@ -239,6 +240,59 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     DELETE FROM "121-service".program_question
     WHERE id = ${lastNameQuestionId}
   `);
+  }
+
+  private async updateProgramJson(queryRunner: QueryRunner): Promise<void> {
+    // Get phoneNumber question id from program 2
+    const phoneNumberQuestionIdResult = await queryRunner.query(`
+      SELECT id
+      FROM "121-service".program_question
+      WHERE name = 'phoneNumber' and "programId" = 2
+    `);
+    const programPv = fs.readFileSync(
+      'seed-data/program/program-nlrc-pv.json',
+      'utf8',
+    );
+    const programPvJson = JSON.parse(programPv);
+    const phoneNumberQuestionId = phoneNumberQuestionIdResult[0].id;
+    const phonenumberQuestionSeed = programPvJson.programQuestions.find(
+      (pq) => pq.name === 'phoneNumber',
+    );
+    await queryRunner.query(
+      `
+      UPDATE "121-service".program_question
+      SET label = $1,
+      "shortLabel" = $2
+      WHERE id = $3
+    `,
+      [
+        JSON.stringify(phonenumberQuestionSeed.label),
+        JSON.stringify(phonenumberQuestionSeed.shortLabel),
+        phoneNumberQuestionId,
+      ],
+    );
+
+    // Do the same thing for the aboutProgram attribute of the program entity
+    const programPvAboutProgram = programPvJson.aboutProgram;
+    await queryRunner.query(
+      `
+      UPDATE "121-service"."program"
+      SET "aboutProgram" = $1
+      WHERE id = 2
+    `,
+      [JSON.stringify(programPvAboutProgram)],
+    );
+
+    // Do the same thing for languages of the program entity
+    const programPvLanguages = programPvJson.languages;
+    await queryRunner.query(
+      `
+      UPDATE "121-service"."program"
+      SET "languages" = $1
+      WHERE id = 2
+    `,
+      [JSON.stringify(programPvLanguages)],
+    );
   }
 
   private async convertFirstNameToFullnameQuestion(
