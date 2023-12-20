@@ -65,9 +65,9 @@
           'page.program-team.popup.scope-placeholder' | translate
         }}"
       ></ion-input>
-      <ion-note>{{
-        'page.program-team.popup.scope-separators' | translate
-      }}</ion-note>
+      <ion-note
+        [innerHTML]="'page.program-team.popup.scope-explanation' | translate"
+      ></ion-note>
     </ion-row>
   </ion-grid>
   <div class="buttons">
