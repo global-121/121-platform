@@ -16,7 +16,6 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       await this.updateRegistrationProgramId(queryRunner);
       await this.updateRegistrationDataId(queryRunner);
       await this.updateProgramJson(queryRunner);
-      await this.updateTemplates(queryRunner);
       await this.updatePaymentNumber(queryRunner);
       await this.changeProgramIdEntities(queryRunner);
       await this.removeUnusedEntities(queryRunner);
@@ -71,18 +70,6 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
           ON t.payment = latest_transactions.payment
           AND t."registrationId" = latest_transactions."registrationId"
           AND t.created = latest_transactions.max_created;`);
-  }
-
-  private async updateTemplates(queryRunner: QueryRunner): Promise<void> {
-    // This is the only language that is different between LVV and PV
-    // Message content does not need to be updated
-    await queryRunner.query(`
-        update
-          "121-service".message_template
-        set
-          "programId" = 2
-        where
-          "programId" = 1 and language = 'ar';`);
   }
 
   private async changeProgramIdEntities(
@@ -321,6 +308,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       SET name = 'fullName', label = '${JSON.stringify(
         fullNameQuestion.label,
       )}',
+      "editableInPortal" = true,
       "shortLabel" = '${JSON.stringify(fullNameQuestion.shortLabel)}'
       WHERE id = ${firstNameQuestionId}
     `);
