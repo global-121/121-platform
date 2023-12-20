@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.106.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.107.0...master)
+
+## [1.107.0](https://github.com/global-121/121-platform/compare/v1.106.3...v1.107.0) - 2023-12-20
+
+### Changed
+
+- User can only manage registrations within its scope
+- Upgraded TypeORM to v0.3.17 (from v0.3.6)
+- Intersolve Visa payments is queued
+- New default roles
+- Use placeholders in custom messages
+- Import max 1k registrations at once
 
 ## [1.106.3](https://github.com/global-121/121-platform/compare/v1.106.2...v1.106.3) - 2023-12-07
 
