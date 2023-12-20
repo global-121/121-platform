@@ -88,8 +88,8 @@ export class PhysicalCardPopupComponent implements OnInit {
         ? true
         : false
       : this.canPause()
-      ? true
-      : false;
+        ? true
+        : false;
   }
 
   public checkActionsInclude(actions: string[]) {
