@@ -9,7 +9,7 @@
     <ion-row class="search-wrapper">
       <ion-searchbar
         [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
-        class="team-member-searchbar"
+        class="team-member-searchbar ion-padding"
         name="searchQuery"
         [(ngModel)]="searchQuery"
         (ionInput)="search($event)"
@@ -74,13 +74,14 @@
     </ion-row>
     <ion-row
       *ngIf="enableScope"
-      class="margin-top-14"
+      class="ion-margin-top"
     >
       <ion-label class="label">{{
         'page.program-team.table-headers.scope' | translate
       }}</ion-label>
       <ion-input
         type="text"
+        fill="outline"
         [(ngModel)]="scope"
         name="scope"
         placeholder="{{
