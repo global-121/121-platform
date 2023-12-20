@@ -15,7 +15,7 @@ import {
   resetDB,
 } from '../../helpers/utility.helper';
 
-import { programIdOCW, referenceId, registration1 } from './pagination-data';
+import { programIdOCW, referenceId, registrationOCW1 } from './pagination-data';
 
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
@@ -30,7 +30,7 @@ describe('Load PA table', () => {
       );
       await importRegistrations(
         programIdOCW,
-        [registration1],
+        [registrationOCW1],
         accessTokenAdmin,
       );
 
@@ -57,19 +57,19 @@ describe('Load PA table', () => {
       const expectedValueObject = {
         referenceId: referenceId,
         paymentAmountMultiplier: 1,
-        preferredLanguage: registration1.preferredLanguage,
+        preferredLanguage: registrationOCW1.preferredLanguage,
         financialServiceProvider: FspName.intersolveJumboPhysical,
       };
       const notExpectedValueObject = {
-        firstName: registration1.firstName,
-        lastName: registration1.lastName,
-        phoneNumber: registration1.phoneNumber,
-        whatsappPhoneNumber: registration1.whatsappPhoneNumber,
-        addressStreet: registration1.addressStreet,
-        addressHouseNumber: registration1.addressHouseNumber,
-        addressHouseNumberAddition: registration1.addressHouseNumberAddition,
-        addressPostalCode: registration1.addressPostalCode,
-        addressCity: registration1.addressCity,
+        firstName: registrationOCW1.firstName,
+        lastName: registrationOCW1.lastName,
+        phoneNumber: registrationOCW1.phoneNumber,
+        whatsappPhoneNumber: registrationOCW1.whatsappPhoneNumber,
+        addressStreet: registrationOCW1.addressStreet,
+        addressHouseNumber: registrationOCW1.addressHouseNumber,
+        addressHouseNumberAddition: registrationOCW1.addressHouseNumberAddition,
+        addressPostalCode: registrationOCW1.addressPostalCode,
+        addressCity: registrationOCW1.addressCity,
       };
 
       expect(data[0]).toMatchObject(expectedValueObject);
@@ -92,7 +92,7 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObject = {
-        preferredLanguage: registration1.preferredLanguage,
+        preferredLanguage: registrationOCW1.preferredLanguage,
         referenceId: referenceId,
       };
 
@@ -117,10 +117,10 @@ describe('Load PA table', () => {
     const meta = getRegistrationsResponse.body.meta;
 
     const expectedValueObject = {
-      preferredLanguage: registration1.preferredLanguage,
+      preferredLanguage: registrationOCW1.preferredLanguage,
     };
     const notExpectedValueObject = {
-      phoneNumber: registration1.phoneNumber,
+      phoneNumber: registrationOCW1.phoneNumber,
     };
 
     // Assert

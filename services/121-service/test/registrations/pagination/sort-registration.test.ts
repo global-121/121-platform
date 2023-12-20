@@ -10,10 +10,10 @@ import {
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
   programIdOCW,
-  registration1,
-  registration2,
-  registration3,
-  registration4,
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -32,13 +32,18 @@ describe('Load PA table', () => {
 
       await importRegistrations(
         programIdOCW,
-        [registration1, registration3, registration4, registration2],
+        [
+          registrationOCW1,
+          registrationOCW3,
+          registrationOCW4,
+          registrationOCW2,
+        ],
         accessToken,
       );
 
       await awaitChangePaStatus(
         programIdOCW,
-        [registration1.referenceId],
+        [registrationOCW1.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
@@ -64,10 +69,10 @@ describe('Load PA table', () => {
 
       // Assert
       const orderedInput = [
-        registration1,
-        registration2,
-        registration3,
-        registration4,
+        registrationOCW1,
+        registrationOCW2,
+        registrationOCW3,
+        registrationOCW4,
       ].sort((a, b) => (a[field] < b[field] ? 1 : -1)); // DESC
 
       expect(data[0][field]).toBe(orderedInput[0][field]);
@@ -97,10 +102,10 @@ describe('Load PA table', () => {
 
       // Assert
       const orderedInput = [
-        registration1,
-        registration2,
-        registration3,
-        registration4,
+        registrationOCW1,
+        registrationOCW2,
+        registrationOCW3,
+        registrationOCW4,
       ].sort((a, b) => (a[field] > b[field] ? 1 : -1)); // ASC
 
       expect(data[0][field]).toBe(orderedInput[0][field]);

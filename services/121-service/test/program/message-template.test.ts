@@ -9,10 +9,11 @@ import {
   updateMessageTemplate,
 } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Message template', () => {
   let accessToken: string;
-  const programId = 1;
+  const programId = programIdPV;
   const type = 'registered';
   const language = LanguageEnum.en;
   const messageTemplate = {

@@ -5,18 +5,18 @@ export function createExpectedValueObject(registration, id: number): any {
   expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
   delete expectedValueObject.fspName;
   expectedValueObject['registrationProgramId'] = id;
-  expectedValueObject['personAffectedSequence'] =
-    `PA #${expectedValueObject['registrationProgramId']}`;
+  expectedValueObject[
+    'personAffectedSequence'
+  ] = `PA #${expectedValueObject['registrationProgramId']}`;
 
   return expectedValueObject;
 }
 
-export const programIdLVV = 1;
 export const programIdPV = 2;
 export const programIdOCW = 3;
 
 export const referenceId = '63e62864557597e0d';
-export const registration1 = {
+export const registrationOCW1 = {
   referenceId: referenceId,
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
@@ -32,11 +32,11 @@ export const registration1 = {
   addressCity: 'Stad',
 };
 
-const expectedValueObject1 = createExpectedValueObject(registration1, 1);
+const expectedValueObjectOCW1 = createExpectedValueObject(registrationOCW1, 1);
 
-export const referenceId2 = '22e62864557597e0d';
-export const registration2 = {
-  referenceId: referenceId2,
+export const referenceIdOCW2 = '22e62864557597e0d';
+export const registrationOCW2 = {
+  referenceId: referenceIdOCW2,
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
   firstName: 'Anna',
@@ -51,11 +51,11 @@ export const registration2 = {
   addressCity: 'AnotherCity',
 };
 
-const expectedValueObject2 = createExpectedValueObject(registration2, 2);
+const expectedValueObjectOCW2 = createExpectedValueObject(registrationOCW2, 2);
 
-export const referenceId3 = '43e62864557597e0d';
-export const registration3 = {
-  referenceId: referenceId3,
+export const referenceIdOCW3 = '43e62864557597e0d';
+export const registrationOCW3 = {
+  referenceId: referenceIdOCW3,
   preferredLanguage: 'nl',
   paymentAmountMultiplier: 2,
   firstName: 'Sophia',
@@ -69,11 +69,11 @@ export const registration3 = {
   addressPostalCode: '3456CD',
   addressCity: 'DifferentCity',
 };
-const expectedValueObject3 = createExpectedValueObject(registration3, 3);
+const expectedValueObjectOCW3 = createExpectedValueObject(registrationOCW3, 3);
 
-export const referenceId4 = '54e62864557597e0d';
-export const registration4 = {
-  referenceId: referenceId4,
+export const referenceIdOCW4 = '54e62864557597e0d';
+export const registrationOCW4 = {
+  referenceId: referenceIdOCW4,
   preferredLanguage: 'nl',
   paymentAmountMultiplier: 3,
   firstName: 'Luis',
@@ -87,11 +87,18 @@ export const registration4 = {
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
 };
-const expectedValueObject4 = createExpectedValueObject(registration4, 4);
+const expectedValueObjectOCW4 = createExpectedValueObject(registrationOCW4, 4);
 
-export const referenceId5 = '44e62864557597e0d';
-export const registration5 = {
-  referenceId: referenceId5,
+export const registrationsOCW = [
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
+];
+
+export const referenceIdPV5 = '44e62864557597e0d';
+export const registrationPV5 = {
+  referenceId: referenceIdPV5,
   preferredLanguage: 'nl',
   paymentAmountMultiplier: 1,
   firstName: 'Gemma',
@@ -101,9 +108,9 @@ export const registration5 = {
   whatsappPhoneNumber: '14155235555',
 };
 
-export const referenceId6 = 'asdf234f4gg4ag64545';
+export const referenceIdPV6 = 'asdf234f4gg4ag64545';
 export const registration6 = {
-  referenceId: referenceId6,
+  referenceId: referenceIdPV6,
   preferredLanguage: 'nl',
   paymentAmountMultiplier: 1,
   firstName: 'Jan',
@@ -128,7 +135,7 @@ export const expectedAttributes = [
   'paymentCount',
 ];
 
-export { expectedValueObject1 };
-export { expectedValueObject2 };
-export { expectedValueObject3 };
-export { expectedValueObject4 };
+export { expectedValueObjectOCW1 as expectedValueObjectOCW1 };
+export { expectedValueObjectOCW2 as expectedValueObjectOCW2 };
+export { expectedValueObjectOCW3 as expectedValueObjectOCW3 };
+export { expectedValueObjectOCW4 as expectedValueObjectOCW4 };

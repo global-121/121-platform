@@ -32,6 +32,12 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // Technically multiple instances could be loaded, but that should not be done
     await this.seedHelper.addInstance(instanceNLRC);
 
+    // ***** SET SEQUENCE *****
+    // This is to keep PV and OCW program ids on respectively 2 and 3
+    // This to prevent differences between our local and prod dbs so we are less prone to mistakes
+    this.dataSource.query(`
+    ALTER SEQUENCE "121-service".program_id_seq RESTART WITH 2;`);
+
     // ************************
     // ***** Program PV *****
     // ************************
