@@ -43,6 +43,7 @@ jobs:
           NODE_ENV: development
           TWILIO_SID: AC
           TWILIO_AUTHTOKEN: test
+          TWILIO_WHATSAPP_NUMBER: 15005550006
           MOCK_TWILIO: TRUE
           MOCK_INTERSOLVE: TRUE
           MOCK_VODACASH: TRUE
