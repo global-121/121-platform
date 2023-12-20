@@ -27,8 +27,12 @@ import { WarningLabelComponent } from './../../../../../shared/warning-label/war
 export class ChangeTeamMemberPopupContentComponent implements OnInit {
   @Input()
   public programId: number;
+
   @Input()
   public teamMemberRow: TeamMemberRow;
+
+  @Input()
+  public enableScope: boolean;
 
   private userId: number;
 
@@ -49,6 +53,7 @@ export class ChangeTeamMemberPopupContentComponent implements OnInit {
     this.userId = this.teamMemberRow.id;
     this.getRoles();
     this.initiateSelectedRoleNames();
+    this.scope = this.teamMemberRow.scope;
   }
 
   public rolesAreSelected(): boolean {

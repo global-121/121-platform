@@ -48,7 +48,26 @@
         <app-warning-label
           [warningText]="'page.program-team.popup.roles-required' | translate"
         ></app-warning-label>
-      </div>
+      </div> </ion-row
+    ><ion-row
+      *ngIf="enableScope"
+      class="ion-margin-top"
+    >
+      <ion-label class="label">{{
+        'page.program-team.table-headers.scope' | translate
+      }}</ion-label>
+      <ion-input
+        type="text"
+        fill="outline"
+        [(ngModel)]="scope"
+        name="scope"
+        placeholder="{{
+          'page.program-team.popup.scope-placeholder' | translate
+        }}"
+      ></ion-input>
+      <ion-note>{{
+        'page.program-team.popup.scope-separators' | translate
+      }}</ion-note>
     </ion-row>
   </ion-grid>
   <div class="buttons">

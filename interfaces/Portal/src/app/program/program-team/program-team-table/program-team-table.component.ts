@@ -74,6 +74,7 @@ export class ProgramTeamTableComponent implements OnInit {
         programId: this.programId,
         teamMemberRow: row,
         title: this.translate.instant('page.program-team.popup.change.title'),
+        enableScope: this.enableScope,
       },
     });
     await modal.present();
