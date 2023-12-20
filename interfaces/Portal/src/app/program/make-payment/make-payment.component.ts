@@ -98,8 +98,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
       this.payment ||
       (await this.pastPaymentsService.getNextPaymentId(this.program));
 
-    this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
+    this.paymentInProgress = await this.getPaymentInProgress();
 
     this.doPaymentfilters = this.referenceIds.length
       ? PaymentUtils.refernceIdsToFilter(this.referenceIds)
@@ -108,6 +107,17 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
     this.setPaymentAmountMultiplier();
+  }
+
+  private async getPaymentInProgress(): Promise<boolean> {
+    const lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+      this.programId,
+    );
+    const paymentSummary = await this.programsService.getPaymentSummary(
+      this.programId,
+      lastPaymentId,
+    );
+    return paymentSummary.paymentInProgress;
   }
 
   private setPaymentAmountMultiplier(): void {

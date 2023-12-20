@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export enum CustomAttributeType {
   text = 'text',
