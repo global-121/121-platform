@@ -15,7 +15,7 @@ import {
   resetDB,
 } from '../../helpers/utility.helper';
 
-import { programIdOCW, referenceId, registrationOCW1 } from './pagination-data';
+import { programIdOCW, registrationOCW1 } from './pagination-data';
 
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
@@ -55,7 +55,7 @@ describe('Load PA table', () => {
 
       // Assert
       const expectedValueObject = {
-        referenceId: referenceId,
+        referenceId: registrationOCW1.referenceId,
         paymentAmountMultiplier: 1,
         preferredLanguage: registrationOCW1.preferredLanguage,
         financialServiceProvider: FspName.intersolveJumboPhysical,
@@ -93,7 +93,7 @@ describe('Load PA table', () => {
 
       const expectedValueObject = {
         preferredLanguage: registrationOCW1.preferredLanguage,
-        referenceId: referenceId,
+        referenceId: registrationOCW1.referenceId,
       };
 
       // Assert

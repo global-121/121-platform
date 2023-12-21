@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { ProgramEntity } from '../../programs/program.entity';
+import { formatWhatsAppNumber } from '../../utils/phone-number.helpers';
 import { MessageContentType } from '../enum/message-type.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { MessageProcessType } from '../message-job.dto';
@@ -37,16 +38,14 @@ export class WhatsappService {
     messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
   ): Promise<string> {
-    const hasPlus = recipientPhoneNr.startsWith('+');
-
     const payload = {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
       statusCallback: !!process.env.MOCK_TWILIO // This is needed to send reply messages when using MOCK_TWILIO
         ? `${EXTERNAL_API.whatsAppStatus}?messageContentType=${messageContentType}`
         : EXTERNAL_API.whatsAppStatus,
-      to: `whatsapp:${hasPlus ? '' : '+'}${recipientPhoneNr}`,
+      to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
@@ -171,9 +170,9 @@ export class WhatsappService {
       const payload = {
         body: messageTemplate.message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+        from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
         statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
-        to: 'whatsapp:' + TWILIO_SANDBOX_WHATSAPP_NUMBER,
+        to: formatWhatsAppNumber(TWILIO_SANDBOX_WHATSAPP_NUMBER),
       };
       await twilioClient.messages.create(payload).then(async (message) => {
         await this.whatsappTemplateTestRepository.save({

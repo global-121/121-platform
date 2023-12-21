@@ -11,8 +11,11 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
-import { changePhase, doPayment } from '../helpers/program.helper';
+import {
+  changePhase,
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   getVisaWalletsAndDetails,
@@ -44,10 +47,12 @@ describe('Load Visa debit cards and details', () => {
   it('should succesfully show a Visa Debit card', async () => {
     const registrations = [registrationVisa];
     for (const status of Object.values(IntersolveVisaCardStatus)) {
-      const copyRegistration = { ...registrationVisa };
-      copyRegistration.lastName = `mock-fail-get-card-${status}`;
-      copyRegistration.referenceId = `copyRegistration.referenceId-${status}`;
-      copyRegistration.whatsappPhoneNumber = '14155238887';
+      const copyRegistration = {
+        ...registrationVisa,
+        lastName: `mock-fail-get-card-${status}`,
+        referenceId: `${registrationVisa.referenceId}-${status}`,
+        whatsappPhoneNumber: '14155238887',
+      };
       registrations.push(copyRegistration);
     }
     const referenceIds = registrations.map(
@@ -73,7 +78,7 @@ describe('Load Visa debit cards and details', () => {
       programIdVisa,
       referenceIds,
       accessToken,
-      30000,
+      30_000,
     );
     for (const registration of registrations) {
       await issueNewVisaCard(

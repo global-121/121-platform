@@ -3,7 +3,6 @@ import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-  referenceIdVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
@@ -45,11 +44,11 @@ describe('Block visa debit card', () => {
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangePaStatus(
       programIdVisa,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
-    const paymentReferenceIds = [referenceIdVisa];
+    const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programIdVisa,
       paymentNrVisa,
@@ -62,7 +61,7 @@ describe('Block visa debit card', () => {
     await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
     const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
@@ -75,14 +74,14 @@ describe('Block visa debit card', () => {
 
     const visaWalletResponseAfterBlock = await getVisaWalletsAndDetails(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
     await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
     // Assert
@@ -100,11 +99,11 @@ describe('Block visa debit card', () => {
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangePaStatus(
       programIdVisa,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
-    const paymentReferenceIds = [referenceIdVisa];
+    const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programIdVisa,
       paymentNrVisa,
@@ -117,7 +116,7 @@ describe('Block visa debit card', () => {
     await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
     const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
@@ -130,14 +129,14 @@ describe('Block visa debit card', () => {
     );
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
     await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
     // Assert

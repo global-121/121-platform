@@ -14,6 +14,7 @@ import { ErrorEnum } from '../../../registration/errors/registration-data.error'
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { formatPhoneNumber } from '../../../utils/phone-number.helpers';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -511,11 +512,9 @@ export class IntersolveVisaService
     createDebitCardPayload.brand = 'VISA_CARD';
     createDebitCardPayload.firstName = paymentDetails.firstName;
     createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber.startsWith(
-      '+',
-    )
-      ? paymentDetails.phoneNumber
-      : `+${paymentDetails.phoneNumber}`;
+    createDebitCardPayload.mobileNumber = formatPhoneNumber(
+      paymentDetails.phoneNumber,
+    );
     createDebitCardPayload.cardAddress = {
       address1: `${
         paymentDetails.addressStreet +

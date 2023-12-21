@@ -9,6 +9,7 @@ import {
 import { API_PATHS, EXTERNAL_API } from '../config';
 import { lastValueFrom } from 'rxjs';
 import { setTimeout } from 'node:timers/promises';
+import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
 
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {
@@ -225,7 +226,7 @@ export class TwilioService {
         'status',
         'incoming',
       );
-      request.To = process.env.TWILIO_WHATSAPP_NUMBER;
+      request.To = formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER);
       const httpService = new HttpService();
       try {
         // Try to reach 121-service through external API url

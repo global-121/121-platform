@@ -52,7 +52,7 @@ describe('send arbitrary messages to set of registrations', () => {
       programIdOCW,
       [referenceIds[0]],
       accessToken,
-      8000,
+      10_000,
     );
 
     const messageHistories = [];

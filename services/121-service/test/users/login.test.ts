@@ -4,8 +4,8 @@ import { CookieNames } from '../../src/shared/enum/cookie.enums';
 import { getServer, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from '../registrations/pagination/pagination-data';
 
-describe('Authentication', () => {
-  describe('Login', () => {
+describe('/ Users', () => {
+  describe('/ Login', () => {
     const fixtureProgramId = programIdPV;
     const fixtureUser = {
       username: 'admin@example.org',
