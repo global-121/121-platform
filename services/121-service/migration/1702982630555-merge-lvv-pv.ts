@@ -11,8 +11,16 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       where
         name = 'NLRC';`);
 
-    // Is NLRC
-    if (instances.length > 0) {
+    const programs = await queryRunner.query(`
+        select
+          id
+        from
+          "121-service"."program"
+        where
+          id = 1;`);
+
+    // Is NLRC & is program 1 still there?
+    if (instances.length > 0 && programs.length > 0) {
       await this.updateRegistrationProgramId(queryRunner);
       await this.updateRegistrationDataId(queryRunner);
       await this.updateProgramJson(queryRunner);
@@ -291,6 +299,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       WHERE name = 'nameFirst' and "programId" = 2
 
     `);
+
     const firstNameQuestionId = firsNameQuestionIdResult[0].id;
 
     // // update first name question to full name
