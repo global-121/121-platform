@@ -57,7 +57,7 @@ export class TransactionReturnDto {
   public payment: number;
   @ApiProperty({ example: '2982g82bdsf89sdsd', type: 'string' })
   public referenceId: string;
-  @ApiProperty({ example: 'success', type: 'string' })
+  @ApiProperty({ example: StatusEnum.success, type: 'string' })
   public status: string;
   @ApiProperty({ example: 22, type: 'number' })
   public amount: number;

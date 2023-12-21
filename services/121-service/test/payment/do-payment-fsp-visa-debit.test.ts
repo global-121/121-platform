@@ -8,6 +8,7 @@ import {
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
+import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
@@ -74,7 +75,7 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('succes');
+      expect(transactionsResponse.text).toContain(StatusEnum.success);
     });
 
     it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
@@ -318,7 +319,7 @@ describe('Do payment to 1 PA', () => {
       expect(doSecondPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('success');
+      expect(transactionsResponse.text).toContain(StatusEnum.success);
     });
 
     it('should successfully retry pay-out after create customer error', async () => {
@@ -368,7 +369,7 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('success');
+      expect(transactionsResponse.text).toContain(StatusEnum.success);
     });
 
     it('should not multiply again on retry', async () => {
@@ -418,7 +419,7 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.body[0].amount).toBe(
         amountVisa * registrationVisa.paymentAmountMultiplier,
       );
-      expect(transactionsResponse.text).toContain('succes');
+      expect(transactionsResponse.text).toContain(StatusEnum.success);
     });
 
     // TODO: We skipped testing successful retry after:

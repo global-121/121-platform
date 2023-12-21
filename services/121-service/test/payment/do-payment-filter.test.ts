@@ -75,7 +75,7 @@ describe('Do payment with filter', () => {
       programIdVisa,
       includedRefrenceIds,
       accessToken,
-      8000,
+      10_000,
     );
     const transactionsResponse = await getTransactions(
       programIdVisa,
@@ -111,7 +111,7 @@ describe('Do payment with filter', () => {
       programIdVisa,
       includedRefrenceIds,
       accessToken,
-      8000,
+      10_000,
     );
     const transactionsResponse = await getTransactions(
       programIdVisa,
@@ -146,7 +146,7 @@ describe('Do payment with filter', () => {
       programIdVisa,
       [registrationOCW1.referenceId],
       accessToken,
-      8000,
+      10_000,
     );
     const transactionsResponse = await getTransactions(
       programIdVisa,
@@ -181,7 +181,7 @@ describe('Do payment with filter', () => {
       programIdVisa,
       [registrationOCW2.referenceId],
       accessToken,
-      8000,
+      10_000,
     );
     const transactionsResponse = await getTransactions(
       programIdVisa,

@@ -1,6 +1,7 @@
 import { RegistrationStatusEnum } from '../../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
+import { StatusEnum } from '../../../src/shared/enum/status.enum';
 import {
   changePhase,
   doPayment,
@@ -81,8 +82,8 @@ describe('Load PA table', () => {
         programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment1,
       );
       await doPayment(
@@ -96,8 +97,8 @@ describe('Load PA table', () => {
         programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment2,
       );
     });
@@ -234,8 +235,8 @@ describe('Load PA table', () => {
         programIdOCW,
         [paymentReferenceIds[0]],
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment3,
       );
 

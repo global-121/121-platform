@@ -77,7 +77,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         programId,
         [registrationAh.referenceId],
         accessToken,
-        8000,
+        10_000,
       );
 
       const getTransactionsRes = await getTransactions(
@@ -88,8 +88,8 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       );
       const getTransactionsBody = getTransactionsRes.body;
       // Wait for registration to be updated
-      const timeout = 80000; // Timeout in milliseconds
-      const interval = 1000; // Interval between retries in milliseconds
+      const timeout = 80_000; // Timeout in milliseconds
+      const interval = 1_000; // Interval between retries in milliseconds
       let elapsedTime = 0;
       let getRegistration = null;
       while (

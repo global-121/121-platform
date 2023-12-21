@@ -78,7 +78,7 @@ describe('Load Visa debit cards and details', () => {
       programIdVisa,
       referenceIds,
       accessToken,
-      30000,
+      30_000,
     );
     for (const registration of registrations) {
       await issueNewVisaCard(

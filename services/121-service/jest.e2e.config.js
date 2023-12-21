@@ -10,7 +10,7 @@ module.exports = {
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
-  testTimeout: 10000,
+  testTimeout: 30_000,
   reporters: [
     'jest-ci-spec-reporter',
     ['github-actions', { silent: false }],

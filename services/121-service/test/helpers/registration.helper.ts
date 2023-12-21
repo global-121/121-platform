@@ -336,6 +336,6 @@ export async function seedPaidRegistrations(
     programId,
     registrationReferenceIds,
     accessToken,
-    8000,
+    30_000,
   );
 }

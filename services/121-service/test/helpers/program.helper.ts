@@ -9,6 +9,7 @@ import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { MessageStatus } from '../../src/registration/enum/last-message-status';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
+import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
@@ -154,7 +155,7 @@ export async function waitForPaymentTransactionsToComplete(
   paymentReferenceIds: string[],
   accessToken: string,
   maxWaitTimeMs: number,
-  completeStatusses: string[] = ['success'],
+  completeStatusses: string[] = [StatusEnum.success],
   payment = 1,
 ): Promise<void> {
   const startTime = Date.now();
