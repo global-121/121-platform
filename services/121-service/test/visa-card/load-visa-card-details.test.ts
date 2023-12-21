@@ -11,8 +11,11 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { waitForPaymentTransactionsToComplete } from '../helpers/assert.helper';
-import { changePhase, doPayment } from '../helpers/program.helper';
+import {
+  changePhase,
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   getVisaWalletsAndDetails,
