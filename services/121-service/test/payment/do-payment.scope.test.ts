@@ -3,16 +3,7 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import {
-  registrationNotScopedLvv,
-  registrationNotScopedPv,
-  registrationScopedGoesLvv,
-  registrationScopedGoesPv,
-  registrationScopedMiddelburgLvv,
-  registrationScopedMiddelburgPv,
-  registrationScopedUtrechtLvv,
-  registrationScopedUtrechtPv,
-} from '../fixtures/scoped-registrations';
+import { registrationsPV } from '../fixtures/scoped-registrations';
 import {
   changePhase,
   doPayment,
@@ -29,26 +20,16 @@ import {
   resetDB,
 } from '../helpers/utility.helper';
 import {
-  programIdLVV,
+  programIdOCW,
   programIdPV,
+  registrationsOCW,
 } from '../registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
-  const LvvProgramId = programIdLVV;
+  const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
   let accessToken: string;
-  const registrationsLVV = [
-    registrationScopedMiddelburgLvv,
-    registrationScopedGoesLvv,
-    registrationScopedUtrechtLvv,
-    registrationNotScopedLvv,
-  ];
-  const registrationsPV = [
-    registrationScopedMiddelburgPv,
-    registrationScopedGoesPv,
-    registrationScopedUtrechtPv,
-    registrationNotScopedPv,
-  ];
+
   const registrationsPvFirst3 = registrationsPV.slice(0, 3);
   const registrationsPvFirst3ReferenceIds = registrationsPvFirst3.map(
     (r) => r.referenceId,
@@ -64,23 +45,23 @@ describe('Registrations - [Scoped]', () => {
     accessToken = await getAccessToken();
 
     await changePhase(
-      LvvProgramId,
+      OcwProgramId,
       ProgramPhase.registrationValidation,
       accessToken,
     );
 
-    await importRegistrations(LvvProgramId, registrationsLVV, accessToken);
+    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
 
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
 
     await changePhase(PvProgramId, ProgramPhase.inclusion, accessToken);
     await changePhase(PvProgramId, ProgramPhase.payment, accessToken);
-    await changePhase(LvvProgramId, ProgramPhase.inclusion, accessToken);
-    await changePhase(LvvProgramId, ProgramPhase.payment, accessToken);
+    await changePhase(OcwProgramId, ProgramPhase.inclusion, accessToken);
+    await changePhase(OcwProgramId, ProgramPhase.payment, accessToken);
 
     await awaitChangePaStatus(
-      programIdLVV,
-      registrationsLVV.map((r) => r.referenceId),
+      OcwProgramId,
+      registrationsOCW.map((r) => r.referenceId),
       RegistrationStatusEnum.included,
       accessToken,
     );

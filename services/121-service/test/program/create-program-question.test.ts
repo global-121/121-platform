@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { postProgramQuestion } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Create program', () => {
   let accessToken: string;
@@ -40,7 +41,7 @@ describe('Create program', () => {
     // Act
     const createReponse = await postProgramQuestion(
       programQuestion as any,
-      1,
+      programIdPV,
       accessToken,
     );
 
@@ -50,11 +51,11 @@ describe('Create program', () => {
 
   it('should no be able to post a question with a name that already exists', async () => {
     // Arrange
-    await postProgramQuestion(programQuestion as any, 1, accessToken);
+    await postProgramQuestion(programQuestion as any, programIdPV, accessToken);
     // Act
     const createReponse2 = await postProgramQuestion(
       programQuestion as any,
-      1,
+      programIdPV,
       accessToken,
     );
     // Assert
@@ -70,7 +71,7 @@ describe('Create program', () => {
 
       const createReponse = await postProgramQuestion(
         programQuestionCopy as any,
-        1,
+        programIdPV,
         accessToken,
       );
       // Assert
@@ -88,7 +89,7 @@ describe('Create program', () => {
       // Act
       const createReponse = await postProgramQuestion(
         programQuestionCopy as any,
-        1,
+        programIdPV,
         accessToken,
       );
       // Assert

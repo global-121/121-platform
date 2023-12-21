@@ -10,7 +10,6 @@ import { SeedProd } from './seed-prod';
 import { SeedDemoProgram } from './seed-program-demo';
 import SeedProgramEth from './seed-program-eth';
 import SeedProgramLbn from './seed-program-lbn';
-import { SeedNLProgramLVV } from './seed-program-nlrc-lvv';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedProgramValidation } from './seed-program-validation';
 
@@ -24,7 +23,6 @@ import { SeedProgramValidation } from './seed-program-validation';
     SeedProd,
     SeedHelper,
     SeedProgramValidation,
-    SeedNLProgramLVV,
     SeedNLProgramPV,
     SeedProgramEth,
     SeedProgramLbn,

@@ -1,10 +1,16 @@
 import { BullModule } from '@nestjs/bull';
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  OnApplicationBootstrap,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
@@ -83,7 +89,13 @@ import { UserModule } from './user/user.module';
     },
   ],
 })
-export class ApplicationModule {
+export class ApplicationModule implements OnApplicationBootstrap {
+  constructor(private dataSource: DataSource) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    await this.dataSource.runMigrations();
+  }
+
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(ScopeMiddleware)

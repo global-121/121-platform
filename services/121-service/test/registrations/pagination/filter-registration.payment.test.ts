@@ -18,18 +18,18 @@ import {
   expectedAttributes,
   programIdOCW,
   programIdPV,
-  registration1,
-  registration3,
-  registration4,
-  registration5,
   registration6,
+  registrationOCW1,
+  registrationOCW3,
+  registrationOCW4,
+  registrationPV5,
 } from './pagination-data';
 
 describe('Load PA table', () => {
   describe('getting registration using paginate and filtering on payment', () => {
-    registration3.lastName = 'mock-fail-create-customer';
+    registrationOCW3.lastName = 'mock-fail-create-customer';
     // This number implies that in mock-service no incoming 'yes' is triggered, so that the transaction stays on 'waiting'
-    registration5.whatsappPhoneNumber = '16005550002';
+    registrationPV5.whatsappPhoneNumber = '16005550002';
 
     let accessToken: string;
     const payment1 = 1;
@@ -37,10 +37,10 @@ describe('Load PA table', () => {
     const payment3 = 3;
     const amount = 10;
     const registrations = [
-      registration1,
-      registration3,
-      registration5,
-      registration4,
+      registrationOCW1,
+      registrationOCW3,
+      registrationPV5,
+      registrationOCW4,
     ];
     const paymentReferenceIds = registrations.map(
       (registration) => registration.referenceId,
@@ -113,7 +113,7 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObjectWaiting = createExpectedValueObject(
-        registration5,
+        registrationPV5,
         3,
       );
       // Assert
@@ -140,7 +140,7 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObjectFailed = createExpectedValueObject(
-        registration3,
+        registrationOCW3,
         2,
       );
       // Assert
@@ -167,11 +167,11 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObjectSucces1 = createExpectedValueObject(
-        registration1,
+        registrationOCW1,
         1,
       );
       const expectedValueObjectSucces4 = createExpectedValueObject(
-        registration4,
+        registrationOCW4,
         4,
       );
       // Assert
@@ -189,8 +189,8 @@ describe('Load PA table', () => {
     it('should filter based on success payments in combination with select and other filters', async () => {
       const filter = {};
       filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
-      filter['filter.lastName'] = registration1.lastName;
-      filter['filter.phoneNumber'] = registration1.phoneNumber;
+      filter['filter.lastName'] = registrationOCW1.lastName;
+      filter['filter.phoneNumber'] = registrationOCW1.phoneNumber;
       // Act
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
@@ -204,8 +204,8 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       const expectedValueObjectSuccesSelect = {
-        referenceId: registration1.referenceId,
-        lastName: registration1.lastName,
+        referenceId: registrationOCW1.referenceId,
+        lastName: registrationOCW1.lastName,
       };
       const expectedAttributesSelect = ['referenceId', 'lastName'];
       // Assert

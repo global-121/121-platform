@@ -1,5 +1,4 @@
 export enum SeedScript {
-  nlrcLVV = 'nlrc-lvv',
   nlrcPV = 'nlrc-pv',
   DRC = 'drc',
   demo = 'demo',

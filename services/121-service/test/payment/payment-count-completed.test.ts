@@ -17,9 +17,10 @@ import {
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Do a payment to a PA with maxPayments=1', () => {
-  const programId = 1;
+  const programId = programIdPV;
   const referenceIdAh = '63e62864557597e0d-AH';
   const payment = 1;
   const amount = 22;
