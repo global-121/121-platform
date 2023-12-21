@@ -92,7 +92,7 @@ import { UserModule } from './user/user.module';
 export class ApplicationModule implements OnApplicationBootstrap {
   constructor(private dataSource: DataSource) {}
 
-  async onApplicationBootstrap() {
+  async onApplicationBootstrap(): void {
     await this.dataSource.runMigrations();
   }
 
