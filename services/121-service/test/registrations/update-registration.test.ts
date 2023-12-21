@@ -1,8 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   importRegistrations,
@@ -27,7 +24,7 @@ describe('Update attribute of PA', () => {
 
   it('should not update unknown registration', async () => {
     // Arrange
-    const wrongReferenceId = referenceIdVisa + '-fail-test';
+    const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
     const updatePhoneData = {
       phoneNumber: updatePhoneNumber,
     };
@@ -59,7 +56,7 @@ describe('Update attribute of PA', () => {
     // Act
     const response = await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       dataUpdateSucces,
       reason,
       accessToken,
@@ -69,7 +66,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.OK);
 
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programId,
       accessToken,
     );
@@ -96,7 +93,7 @@ describe('Update attribute of PA', () => {
     // Act
     const response = await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       dataUpdatePhoneFail,
       reason,
       accessToken,
@@ -105,7 +102,7 @@ describe('Update attribute of PA', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programId,
       accessToken,
     );
@@ -120,8 +117,10 @@ describe('Update attribute of PA', () => {
 
   it('should fail on duplicate referenceId', async () => {
     // Arrange
-    const registrationVisa2 = { ...registrationVisa };
-    registrationVisa2.referenceId = 'duplicate-reference-id';
+    const registrationVisa2 = {
+      ...registrationVisa,
+      referenceId: 'duplicate-reference-id',
+    };
     await importRegistrations(programId, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
@@ -132,7 +131,7 @@ describe('Update attribute of PA', () => {
     // Act
     const response = await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       dataUpdateReferenceIdFail,
       reason,
       accessToken,
@@ -142,7 +141,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     response.body;
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programId,
       accessToken,
     );
@@ -160,8 +159,10 @@ describe('Update attribute of PA', () => {
 
   it('should fail on short referenceId', async () => {
     // Arrange
-    const registrationVisa2 = { ...registrationVisa };
-    registrationVisa2.referenceId = 'shor'; //t
+    const registrationVisa2 = {
+      ...registrationVisa,
+      referenceId: 'shor', //t
+    };
     await importRegistrations(programId, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
@@ -172,7 +173,7 @@ describe('Update attribute of PA', () => {
     // Act
     const response = await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       dataUpdateReferenceIdFail,
       reason,
       accessToken,
@@ -181,7 +182,7 @@ describe('Update attribute of PA', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programId,
       accessToken,
     );

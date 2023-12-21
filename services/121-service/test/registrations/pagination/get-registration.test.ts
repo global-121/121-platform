@@ -7,9 +7,8 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
+  createExpectedValueObject,
   expectedAttributes,
-  expectedValueObjectOCW1,
-  expectedValueObjectOCW2,
   programIdOCW,
   registrationOCW1,
   registrationOCW2,
@@ -52,7 +51,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObjectOCW1);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -169,7 +170,9 @@ describe('Load PA table', () => {
       // Assert
 
       // Registration 1
-      expect(data1[0]).toMatchObject(expectedValueObjectOCW1);
+      expect(data1[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
       }
@@ -179,7 +182,9 @@ describe('Load PA table', () => {
       expect(meta1.totalItems).toBe(2);
 
       // Registration 2
-      expect(data2[0]).toMatchObject(expectedValueObjectOCW2);
+      expect(data2[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW2, 2),
+      );
       for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
       }

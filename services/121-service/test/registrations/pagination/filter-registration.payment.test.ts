@@ -18,11 +18,11 @@ import {
   expectedAttributes,
   programIdOCW,
   programIdPV,
-  registration6,
   registrationOCW1,
   registrationOCW3,
   registrationOCW4,
   registrationPV5,
+  registrationPV6,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -56,7 +56,12 @@ describe('Load PA table', () => {
         accessToken,
       );
       await importRegistrations(programIdOCW, registrations, accessToken);
-      await importRegistrations(programIdPV, [registration6], accessToken);
+      await changePhase(
+        programIdPV,
+        ProgramPhase.registrationValidation,
+        accessToken,
+      );
+      await importRegistrations(programIdPV, [registrationPV6], accessToken);
 
       await awaitChangePaStatus(
         programIdOCW,

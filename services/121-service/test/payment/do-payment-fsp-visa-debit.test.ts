@@ -3,7 +3,6 @@ import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-  referenceIdVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
@@ -48,11 +47,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -67,7 +66,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -84,11 +83,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -103,7 +102,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -120,11 +119,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -139,7 +138,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -156,11 +155,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -175,7 +174,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -192,11 +191,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -211,7 +210,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -228,11 +227,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
 
       // Act
       // do 1st payment
@@ -260,7 +259,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa + 1,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -279,11 +278,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
 
       // Act
       // do 1st payment
@@ -311,7 +310,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa + 1,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -328,11 +327,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -347,7 +346,7 @@ describe('Do payment to 1 PA', () => {
       // update PA
       await updateRegistration(
         programIdVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         { lastName: 'succeed' },
         'automated test',
         accessToken,
@@ -361,7 +360,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert
@@ -379,11 +378,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
-        [referenceIdVisa],
+        [registrationVisa.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdVisa];
+      const paymentReferenceIds = [registrationVisa.referenceId];
       // Act
       await doPayment(
         programIdVisa,
@@ -398,7 +397,7 @@ describe('Do payment to 1 PA', () => {
       // update PA
       await updateRegistration(
         programIdVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         { lastName: 'succeed' },
         'automated test',
         accessToken,
@@ -412,7 +411,7 @@ describe('Do payment to 1 PA', () => {
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
-        referenceIdVisa,
+        registrationVisa.referenceId,
         accessToken,
       );
       // Assert

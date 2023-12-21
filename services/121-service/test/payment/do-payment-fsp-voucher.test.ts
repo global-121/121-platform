@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -19,12 +20,11 @@ import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
-  const referenceIdAh = '63e62864557597e0d-AH';
   const payment = 1;
   const amount = 22;
   const registrationAh = {
-    referenceId: referenceIdAh,
-    preferredLanguage: 'en',
+    referenceId: '63e62864557597e0d-AH',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',
@@ -54,11 +54,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programId, [registrationAh], accessToken);
       await awaitChangePaStatus(
         programId,
-        [referenceIdAh],
+        [registrationAh.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdAh];
+      const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
       const doPaymentResponse = await doPayment(
@@ -75,7 +75,12 @@ describe('Do payment to 1 PA', () => {
       while (attempts <= 10) {
         attempts++;
         getTransactionsBody = (
-          await getTransactions(programId, payment, referenceIdAh, accessToken)
+          await getTransactions(
+            programId,
+            payment,
+            registrationAh.referenceId,
+            accessToken,
+          )
         ).body;
 
         if (

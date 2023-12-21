@@ -1,4 +1,5 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { waitForMessagesToComplete } from '../helpers/program.helper';
 import {
@@ -13,7 +14,7 @@ describe('Send custom message with placeholders', () => {
   const programId = programIdPV;
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
-    preferredLanguage: 'en',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',
