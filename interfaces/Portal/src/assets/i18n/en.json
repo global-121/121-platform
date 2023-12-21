@@ -53,7 +53,7 @@
         "roles-required": "Please select at least one role",
         "role": "Role",
         "scope-placeholder": "Fill in a scope",
-        "scope-explanation": "An empty scope means access to all PAs.<br>Please separate subscopes by using a dot (e.g scope.subscope)",
+        "scope-explanation": "To use a subscope type a dot between the scope and subscope (e.g. amsterdam.zuid)<br><br>* Leaving this field empty means the team member will have access to all PAs",
         "remove": {
           "title": "Remove team member",
           "introduction": "Removing the team member will result in them not having any access to program or its data.",
