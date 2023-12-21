@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.106.3...master)
 
+### Changed
+
+- Docker setup process (for API tests). Some ENV-variables where changed, so compare [`.env.example`](./services/.env.example) with your local `.env`-file.
+
 ## [1.106.3](https://github.com/global-121/121-platform/compare/v1.106.2...v1.106.3) - 2023-12-07
 
 ## Fixed
