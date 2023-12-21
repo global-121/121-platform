@@ -9,7 +9,6 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
-  createExpectedValueObject,
   programIdOCW,
   registrationOCW1,
   registrationOCW2,
