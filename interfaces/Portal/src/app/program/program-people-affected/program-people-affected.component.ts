@@ -125,6 +125,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public tableFilterType = TableFilterType;
 
   public canViewPersonalData: boolean;
+  public canUpdateRegistrationAttributeFinancial: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
   private canUpdatePaFsp: boolean;
@@ -325,6 +326,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.programId,
       [Permission.RegistrationPersonalREAD],
     );
+    this.canUpdateRegistrationAttributeFinancial =
+      this.authService.hasAllPermissions(this.programId, [
+        Permission.RegistrationAttributeFinacialUPDATE,
+      ]);
     this.canUpdatePersonalData = this.authService.hasAllPermissions(
       this.programId,
       [Permission.RegistrationPersonalUPDATE],
@@ -637,6 +642,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         referenceId: row.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
+        canUpdateRegistrationAttributeFinancial:
+          this.canUpdateRegistrationAttributeFinancial,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,

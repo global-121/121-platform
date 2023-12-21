@@ -68,10 +68,12 @@
           "
           [inProgress]="inProgress?.paymentAmountMultiplier || false"
           [isDisabled]="
-            !canUpdatePaData || program?.paymentAmountMultiplierFormula
+            !canUpdateRegistrationAttributeFinancial ||
+            program?.paymentAmountMultiplierFormula
           "
           [showSubmit]="
-            canUpdatePaData && !program?.paymentAmountMultiplierFormula
+            canUpdateRegistrationAttributeFinancial &&
+            !program?.paymentAmountMultiplierFormula
           "
           prop="paymentAmountMultiplier"
           class="ion-margin-vertical"
@@ -105,7 +107,7 @@
               )
             "
             [inProgress]="inProgress?.maxPayments || false"
-            [isDisabled]="!canUpdatePaData"
+            [isDisabled]="!canUpdateRegistrationAttributeFinancial"
             [showSubmit]="canUpdatePaData"
             prop="maxPayments"
             class="ion-margin-vertical"

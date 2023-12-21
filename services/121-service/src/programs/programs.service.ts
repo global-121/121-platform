@@ -10,7 +10,7 @@ import { ProgramAttributesService } from '../program-attributes/program-attribut
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.enum';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserService } from '../user/user.service';
 import {

@@ -4,7 +4,7 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { CookieNames } from '../../src/shared/enum/cookie.enums';
 import { UpdateUserRoleDto } from '../../src/user/dto/user-role.dto';
 import { UserRoleResponseDTO } from '../../src/user/dto/userrole-response.dto';
-import { PermissionEnum } from '../../src/user/permission.enum';
+import { PermissionEnum } from '../../src/user/enum/permission.enum';
 import { DefaultUserRole } from '../../src/user/user-role.enum';
 
 export function getHostname(): string {

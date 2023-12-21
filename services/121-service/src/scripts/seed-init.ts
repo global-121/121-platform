@@ -16,7 +16,7 @@ import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
