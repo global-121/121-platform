@@ -31,7 +31,11 @@ import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { LoginUserDto, UpdateUserDto } from './dto';
-import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import {
+  CreateProgramAssignmentDto,
+  DeleteProgramAssignmentDto,
+  UpdateProgramAssignmentDto,
+} from './dto/assign-aw-to-program.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
@@ -365,8 +369,8 @@ export class UserController {
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of roles assigned to the user',
-    type: [UserRoleResponseDTO],
+    description: 'Returns program assignment including roles and scope',
+    type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -385,16 +389,15 @@ export class UserController {
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiTags('users/assignments')
   @ApiOperation({
-    summary:
-      'Create program assignment including roles or OVERWRITE roles of existing program assignment',
+    summary: 'Create or OVERWRITE program assignment including roles and scope',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description:
-      'Returns the created or updated program assignment including a list of roles',
-    type: [UserRoleResponseDTO],
+      'Returns the created or overwritten program assignment including roles and scope',
+    type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -403,7 +406,7 @@ export class UserController {
   @Put('programs/:programId/users/:userId')
   public async assignAidworkerToProgram(
     @Param() params,
-    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    @Body() assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.assignAidworkerToProgram(
       Number(params.programId),
@@ -416,14 +419,14 @@ export class UserController {
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
-      'Add roles to existing program assignment (UNION of existing and new roles)',
+      'Update existing program assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Returns new list of roles of the program assignment',
-    type: [UserRoleResponseDTO],
+    description: 'Returns program assignment with all roles and scope',
+    type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -432,7 +435,7 @@ export class UserController {
   @Patch('programs/:programId/users/:userId')
   public async updateAidworkerProgramAssignment(
     @Param() params,
-    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.updateAidworkerProgramAssignment(
       Number(params.programId),
@@ -445,16 +448,16 @@ export class UserController {
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
-      'Remove roles from program-assignment (pass roles to delete in body) or remove aidworker from program (no body)',
+      'Remove roles from program-assignment (pass roles to delete in body) or remove assignment (no body)',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  @ApiBody({ type: AssignAidworkerToProgramDto, required: false })
+  @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
   @ApiResponse({
     status: 200,
     description:
       'Returns the program assignment with the remaining roles or nothing (if program assignment removed)',
-    type: [UserRoleResponseDTO],
+    type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: 404,
@@ -463,7 +466,7 @@ export class UserController {
   @Delete('programs/:programId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
     @Param() params,
-    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    @Body() assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     return await this.userService.deleteAidworkerRolesOrAssignment(
       Number(params.programId),

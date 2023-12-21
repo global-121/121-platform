@@ -5,6 +5,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ProgramTeamPopupOperationEnum } from '../../models/program-team-popup-operation.enum';
 import { ProgramTeamPopupComponent } from './program-team-popup/program-team-popup.component';
 import { ProgramTeamTableComponent } from './program-team-table/program-team-table.component';
@@ -23,6 +24,7 @@ import { ProgramTeamTableComponent } from './program-team-table/program-team-tab
 })
 export class ProgramTeamComponent implements OnInit {
   public programId: number;
+  public enableScope: boolean;
   public canManageAidworkers: boolean;
 
   constructor(
@@ -30,6 +32,7 @@ export class ProgramTeamComponent implements OnInit {
     private route: ActivatedRoute,
     private translate: TranslateService,
     private authService: AuthService,
+    private programService: ProgramsServiceApiService,
   ) {
     this.programId = this.route.snapshot.params.id;
   }
@@ -39,6 +42,7 @@ export class ProgramTeamComponent implements OnInit {
       this.programId,
       Permission.AidWorkerProgramUPDATE,
     );
+    this.enableScope = await this.getEnableScope();
   }
 
   public async programTeamPopup(): Promise<void> {
@@ -48,8 +52,14 @@ export class ProgramTeamComponent implements OnInit {
         operation: ProgramTeamPopupOperationEnum.add,
         programId: Number(this.programId), // Not sure why this.route.snapshot.params.id is used in a lot of places but it's not a number
         title: this.translate.instant('page.program-team.popup.add.title'),
+        enableScope: this.enableScope,
       },
     });
     await modal.present();
+  }
+
+  private async getEnableScope(): Promise<boolean> {
+    const program = await this.programService.getProgramById(this.programId);
+    return program.enableScope;
   }
 }

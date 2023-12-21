@@ -2,7 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 import { DefaultUserRole } from '../user-role.enum';
 
-export class AssignAidworkerToProgramDto {
+export class CreateProgramAssignmentDto {
+  @ApiProperty({
+    example: Object.values(DefaultUserRole),
+    enum: DefaultUserRole,
+  })
+  @IsArray()
+  @ArrayMinSize(0)
+  public readonly roles: DefaultUserRole[];
+
+  @ApiProperty()
+  @IsString()
+  public readonly scope: string;
+}
+
+export class UpdateProgramAssignmentDto {
   @ApiProperty({
     example: Object.values(DefaultUserRole),
     enum: DefaultUserRole,
@@ -10,10 +24,21 @@ export class AssignAidworkerToProgramDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly roles: DefaultUserRole[];
+  public readonly rolesToAdd: DefaultUserRole[];
 
   @ApiProperty()
   @IsString()
   @IsOptional()
   public readonly scope: string;
+}
+
+export class DeleteProgramAssignmentDto {
+  @ApiProperty({
+    example: Object.values(DefaultUserRole),
+    enum: DefaultUserRole,
+  })
+  @IsArray()
+  @ArrayMinSize(0)
+  @IsOptional()
+  public readonly rolesToDelete: DefaultUserRole[];
 }

@@ -28,6 +28,11 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
   @Input()
   public programId: number;
 
+  @Input()
+  public enableScope: boolean;
+
+  public scope = '';
+
   private userId: number;
   public isUserAlreadyTeamMember = false;
 
@@ -97,6 +102,7 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
       this.programId,
       this.userId,
       this.selectedRoleNames,
+      this.scope,
     );
     this.closeModal();
     this.teamMemberService.successPopup(
