@@ -82,7 +82,7 @@ describe('Programs / Users / Roles', () => {
     // Arrange
     const testUserRoles = fixtureUserRoles;
     const testRoles = {
-      roles: ['view'],
+      rolesToAdd: ['view'],
       scope: 'test',
     };
 
@@ -104,7 +104,7 @@ describe('Programs / Users / Roles', () => {
     // Arrange
     const testUserRoles = fixtureUserRoles;
     const testRoles = {
-      roles: ['view', 'cva-manager'],
+      rolesToDelete: ['view', 'cva-manager'],
       scope: 'test',
     };
 
