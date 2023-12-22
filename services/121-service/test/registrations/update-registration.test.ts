@@ -223,7 +223,6 @@ describe('Update attribute of PA', () => {
       accessToken,
     );
     const registration = getRegistrationResult.body.data[0];
-    console.log('registration: ', registration);
 
     // Assert
     expect(updateResponse.statusCode).toBe(HttpStatus.OK);
