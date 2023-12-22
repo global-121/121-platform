@@ -14,9 +14,10 @@ import {
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from './pagination/pagination-data';
 
 describe('Send templated message on status change of PA', () => {
-  const programId = 1; // status change templates are only available for LVV/PV
+  const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
     preferredLanguage: LanguageEnum.en,

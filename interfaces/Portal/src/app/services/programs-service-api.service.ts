@@ -791,12 +791,14 @@ export class ProgramsServiceApiService {
     programId: number | string,
     userId: number,
     roles: UserRole[] | string[],
+    scope: string,
   ): Promise<Program> {
     return this.apiService.put(
       environment.url_121_service_api,
       `/programs/${programId}/users/${userId}`,
       {
         roles,
+        scope,
       },
     );
   }

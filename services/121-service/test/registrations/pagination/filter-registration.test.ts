@@ -9,15 +9,13 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
+  createExpectedValueObject,
   expectedAttributes,
-  expectedValueObject1,
-  expectedValueObject3,
-  expectedValueObject4,
   programIdOCW,
-  registration1,
-  registration2,
-  registration3,
-  registration4,
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -36,13 +34,18 @@ describe('Load PA table', () => {
 
       await importRegistrations(
         programIdOCW,
-        [registration1, registration2, registration3, registration4],
+        [
+          registrationOCW1,
+          registrationOCW2,
+          registrationOCW3,
+          registrationOCW4,
+        ],
         accessToken,
       );
 
       await awaitChangePaStatus(
         programIdOCW,
-        [registration1.referenceId],
+        [registrationOCW1.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
@@ -62,7 +65,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject1);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -77,13 +82,15 @@ describe('Load PA table', () => {
         accessToken,
         null,
         null,
-        { 'filter.whatsappPhoneNumber': registration4.whatsappPhoneNumber },
+        { 'filter.whatsappPhoneNumber': registrationOCW4.whatsappPhoneNumber },
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject4);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW4, 4),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -99,15 +106,17 @@ describe('Load PA table', () => {
         null,
         null,
         {
-          'filter.whatsappPhoneNumber': registration3.whatsappPhoneNumber,
-          'filter.preferredLanguage': registration3.preferredLanguage,
+          'filter.whatsappPhoneNumber': registrationOCW3.whatsappPhoneNumber,
+          'filter.preferredLanguage': registrationOCW3.preferredLanguage,
         },
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject3);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW3, 3),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -124,19 +133,21 @@ describe('Load PA table', () => {
         null,
         null,
         {
-          'filter.whatsappPhoneNumber': `$ilike:${registration3.whatsappPhoneNumber.substring(
+          'filter.whatsappPhoneNumber': `$ilike:${registrationOCW3.whatsappPhoneNumber.substring(
             0,
             1,
           )}`,
-          'filter.preferredLanguage': `$in:nonExisting,${registration3.preferredLanguage}`,
-          'filter.addressCity': `$eq:${registration3.addressCity}`,
+          'filter.preferredLanguage': `$in:nonExisting,${registrationOCW3.preferredLanguage}`,
+          'filter.addressCity': `$eq:${registrationOCW3.addressCity}`,
         },
       );
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject3);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW3, 3),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }

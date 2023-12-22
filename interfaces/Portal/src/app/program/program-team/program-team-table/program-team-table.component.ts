@@ -22,6 +22,8 @@ export class ProgramTeamTableComponent implements OnInit {
   private programId: number;
   @Input()
   public canManageAidworkers: boolean;
+  @Input()
+  public enableScope: boolean;
 
   public rows: TeamMemberRow[] = [];
   public DateFormat = DateFormat;
@@ -72,6 +74,7 @@ export class ProgramTeamTableComponent implements OnInit {
         programId: this.programId,
         teamMemberRow: row,
         title: this.translate.instant('page.program-team.popup.change.title'),
+        enableScope: this.enableScope,
       },
     });
     await modal.present();
@@ -85,6 +88,7 @@ export class ProgramTeamTableComponent implements OnInit {
         operation: ProgramTeamPopupOperationEnum.remove,
         programId: this.programId,
         teamMemberRow: row,
+        enableScope: this.enableScope,
         title: this.translate.instant('common.confirm'),
       },
     });

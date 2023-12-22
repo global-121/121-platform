@@ -8,7 +8,6 @@ import { SeedMultipleKRCS } from './seed-multiple-krcs';
 import { SeedMultipleNLRC } from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
-import { SeedNLProgramLVV } from './seed-program-nlrc-lvv';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
@@ -82,8 +81,6 @@ export class ScriptsController {
       );
     } else if (script == SeedScript.nlrcMultiple) {
       seed = new SeedMultipleNLRC(this.dataSource, this.messageTemplateService);
-    } else if (script == SeedScript.nlrcLVV) {
-      seed = new SeedNLProgramLVV(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.nlrcPV) {
       seed = new SeedNLProgramPV(this.dataSource, this.messageTemplateService);
     } else if (script == SeedScript.DRC) {

@@ -1,19 +1,72 @@
 services:
+  121db:
+    env_file: .env
+    image: 'postgres:14'
+    init: true
+    container_name: 121db
+    volumes:
+      - './postgresql.conf:/etc/postgresql.conf'
+      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
+    ports:
+      - '5438:5432'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DBNAME}'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  121-redis:
+    container_name: 121queue
+    # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
+    image: 'redis:6.0-alpine'
+    ports:
+      - '6379:6379'
+
+  twilio-mock-service:
+    env_file: .env
+    build:
+      context: twilio-mock-service
+      target: production
+    init: true
+    container_name: twilio-mock-service
+    ports:
+      - '3001:3001'
+    stdin_open: true
+    tty: true
+    restart: on-failure
+    healthcheck:
+      test: curl --fail http://localhost:3001/api/v1/PhoneNumbers/123 || exit 1
+      interval: 3s
+      retries: 10
+      start_period: 30s
+      timeout: 10s
 
   121-service:
+    env_file: .env
     build:
       context: 121-service
       target: production
     init: true
     container_name: 121-service
-    env_file:
-      - .env
     environment:
       - GLOBAL_121_VERSION
     ports:
       - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
     stdin_open: true
     tty: true
+    depends_on:
+      121-redis:
+        condition: service_started
+        required: true
+      121db:
+        condition: service_healthy
+        required: true
+        restart: true
     restart: on-failure
     healthcheck:
       test: curl --fail http://localhost:${PORT_121_SERVICE}/api/instance || exit 1

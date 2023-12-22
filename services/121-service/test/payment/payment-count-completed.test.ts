@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -17,15 +18,15 @@ import {
   importRegistrations,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Do a payment to a PA with maxPayments=1', () => {
-  const programId = 1;
-  const referenceIdAh = '63e62864557597e0d-AH';
+  const programId = programIdPV;
   const payment = 1;
   const amount = 22;
   const registrationAh = {
-    referenceId: referenceIdAh,
-    preferredLanguage: 'en',
+    referenceId: '63e62864557597e0d-AH',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',
@@ -56,11 +57,11 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       await importRegistrations(programId, [registrationAh], accessToken);
       await awaitChangePaStatus(
         programId,
-        [referenceIdAh],
+        [registrationAh.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdAh];
+      const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
       const doPaymentResponse = await doPayment(
@@ -74,21 +75,21 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Assert
       await waitForPaymentTransactionsToComplete(
         programId,
-        [referenceIdAh],
+        [registrationAh.referenceId],
         accessToken,
-        8000,
+        10_000,
       );
 
       const getTransactionsRes = await getTransactions(
         programId,
         payment,
-        referenceIdAh,
+        registrationAh.referenceId,
         accessToken,
       );
       const getTransactionsBody = getTransactionsRes.body;
       // Wait for registration to be updated
-      const timeout = 80000; // Timeout in milliseconds
-      const interval = 1000; // Interval between retries in milliseconds
+      const timeout = 80_000; // Timeout in milliseconds
+      const interval = 1_000; // Interval between retries in milliseconds
       let elapsedTime = 0;
       let getRegistration = null;
       while (

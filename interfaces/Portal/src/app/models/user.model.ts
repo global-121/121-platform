@@ -22,6 +22,7 @@ export class TeamMember {
   active: boolean;
   lastLogin: Date;
   roles: Role[];
+  scope?: string;
 }
 
 export class TeamMemberRow extends TeamMember {

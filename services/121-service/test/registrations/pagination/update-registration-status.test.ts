@@ -13,19 +13,19 @@ import {
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
   programIdOCW,
-  registration1,
-  registration3,
-  registration4,
-  registration5,
+  registrationOCW1,
+  registrationOCW3,
+  registrationOCW4,
+  registrationPV5,
 } from './pagination-data';
 
 describe('change the status of a set of registrations', () => {
   let accessToken: string;
   const registrations = [
-    registration1,
-    registration3,
-    registration5,
-    registration4,
+    registrationOCW1,
+    registrationOCW3,
+    registrationPV5,
+    registrationOCW4,
   ];
   const oldStatus = RegistrationStatusEnum.registered;
   const referenceIds = registrations.map(
@@ -61,7 +61,7 @@ describe('change the status of a set of registrations', () => {
       programIdOCW,
       referenceIds,
       accessToken,
-      50000,
+      50_000,
       newStatus,
     );
     const getRegistrationsResponse = await getRegistrations(

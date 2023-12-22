@@ -7,12 +7,11 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
+  createExpectedValueObject,
   expectedAttributes,
-  expectedValueObject1,
-  expectedValueObject2,
   programIdOCW,
-  registration1,
-  registration2,
+  registrationOCW1,
+  registrationOCW2,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -35,7 +34,7 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      await importRegistrations(programIdOCW, [registration1], accessToken);
+      await importRegistrations(programIdOCW, [registrationOCW1], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
@@ -52,7 +51,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObject1);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -133,7 +134,7 @@ describe('Load PA table', () => {
     it('should be able to specify page attributes', async () => {
       // Arrange
       const requestedDynamicAttributes = null;
-      await importRegistrations(programIdOCW, [registration2], accessToken);
+      await importRegistrations(programIdOCW, [registrationOCW2], accessToken);
 
       // Act
       const getRegistrationsResponse1 = await getRegistrations(
@@ -169,7 +170,9 @@ describe('Load PA table', () => {
       // Assert
 
       // Registration 1
-      expect(data1[0]).toMatchObject(expectedValueObject1);
+      expect(data1[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
       }
@@ -179,7 +182,9 @@ describe('Load PA table', () => {
       expect(meta1.totalItems).toBe(2);
 
       // Registration 2
-      expect(data2[0]).toMatchObject(expectedValueObject2);
+      expect(data2[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW2, 2),
+      );
       for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
       }

@@ -3,7 +3,6 @@ import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-  referenceIdVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
@@ -43,11 +42,11 @@ describe('Issue new Visa debit card', () => {
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangePaStatus(
       programIdVisa,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
-    const paymentReferenceIds = [referenceIdVisa];
+    const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programIdVisa,
       paymentNrVisa,
@@ -58,17 +57,21 @@ describe('Issue new Visa debit card', () => {
 
     // Act
     await waitFor(2_000);
-    await issueNewVisaCard(programIdVisa, referenceIdVisa, accessToken);
+    await issueNewVisaCard(
+      programIdVisa,
+      registrationVisa.referenceId,
+      accessToken,
+    );
     await waitFor(2_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
     const messageReponse = await getMessageHistory(
       programIdVisa,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 

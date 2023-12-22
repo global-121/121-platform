@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -103,7 +104,7 @@ export class TwilioIncomingCallbackDto {
   @IsOptional()
   public MessageSid: string;
 
-  @ApiProperty({ example: 'whatsapp:+31600000000' })
+  @ApiProperty({ example: formatWhatsAppNumber('31600000000') })
   @IsString()
   public From: string;
 
@@ -113,7 +114,7 @@ export class TwilioIncomingCallbackDto {
   public WaId: string;
 
   @ApiProperty({
-    example: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
+    example: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
   })
   @IsString()
   @IsOptional()

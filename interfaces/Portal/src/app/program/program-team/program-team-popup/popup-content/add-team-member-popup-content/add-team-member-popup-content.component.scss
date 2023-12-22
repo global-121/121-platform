@@ -6,7 +6,7 @@ ion-searchbar {
   border-radius: 5px;
   --box-shadow: none;
   border: 1px solid var(--fiveten-neutral-200);
-  height: 44px;
+  height: 3em;
   margin-bottom: 14px;
 }
 
@@ -17,8 +17,8 @@ ion-searchbar {
 
 ion-select {
   --border-color: var(--fiveten-neutral-200);
-  height: 44px;
-  min-height: 44px;
+  height: 3em;
+  min-height: 3em;
   &::part(label) {
     color: var(--fiveten-neutral-200);
   }
@@ -28,6 +28,16 @@ ion-select {
     inset-inline-end: 20px !important;
     position: absolute;
     color: var(--ion-color-medium-shade);
+  }
+}
+
+ion-input {
+  --border-color: var(--fiveten-neutral-200) !important;
+  height: 3em !important;
+  min-height: 3em !important;
+
+  input {
+    caret-color: black !important;
   }
 }
 

@@ -1,5 +1,6 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -17,10 +18,9 @@ describe('Export Visa debit card report', () => {
   const payment = 1;
   const amount = 22;
 
-  const referenceIdVisa = '2982g82bdsf89sdsd';
   const registrationVisa = {
-    referenceId: referenceIdVisa,
-    preferredLanguage: 'en',
+    referenceId: '2982g82bdsf89sdsd',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     firstName: 'Jane',
     lastName: 'Doe',
@@ -55,11 +55,11 @@ describe('Export Visa debit card report', () => {
     await importRegistrations(programId, [registrationVisa], accessToken);
     await awaitChangePaStatus(
       programId,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
-    const paymentReferenceIds = [referenceIdVisa];
+    const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programId,
       payment,
@@ -71,7 +71,11 @@ describe('Export Visa debit card report', () => {
     // Act
     await waitFor(2_000);
 
-    await getVisaWalletsAndDetails(programId, referenceIdVisa, accessToken);
+    await getVisaWalletsAndDetails(
+      programId,
+      registrationVisa.referenceId,
+      accessToken,
+    );
 
     const exportResult = await exportList(
       programId,

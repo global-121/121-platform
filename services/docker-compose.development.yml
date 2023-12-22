@@ -13,38 +13,15 @@
 #
 
 services:
-  121db:
-    image: 'postgres:14'
-    init: true
-    container_name: 121db
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DBNAME}
-    volumes:
-      - './postgresql.conf:/etc/postgresql.conf'
-      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
-    ports:
-      - '5438:5432'
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DBNAME}'",
-        ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-
-  121-redis:
-    container_name: 121queue
-    # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
-    image: 'redis:6.0-alpine'
-    ports:
-      - '6379:6379'
-
   121-service:
+    depends_on:
+      121-redis:
+        condition: service_started
+        required: true
+      121db:
+        condition: service_healthy
+        required: true
+        restart: true
     build:
       target: development
     volumes:
@@ -52,18 +29,6 @@ services:
       - './121-service:/home/node/app'
 
   twilio-mock-service:
-    build:
-      context: twilio-mock-service
-      target: development
-    init: true
-    container_name: twilio-mock-service
-    env_file:
-      - .env
-    ports:
-      - '3001:3001'
-    stdin_open: true
-    tty: true
-    restart: on-failure
     volumes:
       - 'twilio_mock_service_node_modules:/home/node/app/node_modules'
       - './twilio-mock-service:/home/node/app'

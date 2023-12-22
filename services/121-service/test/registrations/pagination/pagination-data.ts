@@ -1,24 +1,28 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../../src/registration/enum/language.enum';
+import { RegistrationEntity } from '../../../src/registration/registration.entity';
 
-export function createExpectedValueObject(registration, id: number): any {
-  const expectedValueObject = { ...registration };
-  expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
+export function createExpectedValueObject(
+  registration: Partial<RegistrationEntity> | any,
+  sequenceNumber: number,
+): RegistrationEntity {
+  const expectedValueObject = {
+    ...registration,
+    financialServiceProvider: registration.fspName,
+    registrationProgramId: sequenceNumber,
+    personAffectedSequence: `PA #${sequenceNumber}`,
+  };
   delete expectedValueObject.fspName;
-  expectedValueObject['registrationProgramId'] = id;
-  expectedValueObject['personAffectedSequence'] =
-    `PA #${expectedValueObject['registrationProgramId']}`;
 
   return expectedValueObject;
 }
 
-export const programIdLVV = 1;
 export const programIdPV = 2;
 export const programIdOCW = 3;
 
-export const referenceId = '63e62864557597e0d';
-export const registration1 = {
-  referenceId: referenceId,
-  preferredLanguage: 'en',
+export const registrationOCW1 = {
+  referenceId: '63e62864557597e0d',
+  preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'John',
   lastName: 'Smith',
@@ -32,12 +36,9 @@ export const registration1 = {
   addressCity: 'Stad',
 };
 
-const expectedValueObject1 = createExpectedValueObject(registration1, 1);
-
-export const referenceId2 = '22e62864557597e0d';
-export const registration2 = {
-  referenceId: referenceId2,
-  preferredLanguage: 'en',
+export const registrationOCW2 = {
+  referenceId: '22e62864557597e0d',
+  preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'Anna',
   lastName: 'Hello',
@@ -51,12 +52,9 @@ export const registration2 = {
   addressCity: 'AnotherCity',
 };
 
-const expectedValueObject2 = createExpectedValueObject(registration2, 2);
-
-export const referenceId3 = '43e62864557597e0d';
-export const registration3 = {
-  referenceId: referenceId3,
-  preferredLanguage: 'nl',
+export const registrationOCW3 = {
+  referenceId: '43e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 2,
   firstName: 'Sophia',
   lastName: 'Johnson',
@@ -69,12 +67,10 @@ export const registration3 = {
   addressPostalCode: '3456CD',
   addressCity: 'DifferentCity',
 };
-const expectedValueObject3 = createExpectedValueObject(registration3, 3);
 
-export const referenceId4 = '54e62864557597e0d';
-export const registration4 = {
-  referenceId: referenceId4,
-  preferredLanguage: 'nl',
+export const registrationOCW4 = {
+  referenceId: '54e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 3,
   firstName: 'Luis',
   lastName: 'Garcia',
@@ -87,12 +83,17 @@ export const registration4 = {
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
 };
-const expectedValueObject4 = createExpectedValueObject(registration4, 4);
 
-export const referenceId5 = '44e62864557597e0d';
-export const registration5 = {
-  referenceId: referenceId5,
-  preferredLanguage: 'nl',
+export const registrationsOCW = [
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
+];
+
+export const registrationPV5 = {
+  referenceId: '44e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   firstName: 'Gemma',
   lastName: 'Houtenbos',
@@ -101,10 +102,9 @@ export const registration5 = {
   whatsappPhoneNumber: '14155235555',
 };
 
-export const referenceId6 = 'asdf234f4gg4ag64545';
-export const registration6 = {
-  referenceId: referenceId6,
-  preferredLanguage: 'nl',
+export const registrationPV6 = {
+  referenceId: 'asdf234f4gg4ag64545',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   firstName: 'Jan',
   lastName: 'Janssen',
@@ -127,8 +127,3 @@ export const expectedAttributes = [
   'name',
   'paymentCount',
 ];
-
-export { expectedValueObject1 };
-export { expectedValueObject2 };
-export { expectedValueObject3 };
-export { expectedValueObject4 };

@@ -9,15 +9,15 @@
     <ion-row class="search-wrapper">
       <ion-searchbar
         [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
-        id="searchbar"
+        class="team-member-searchbar ion-padding"
         name="searchQuery"
         [(ngModel)]="searchQuery"
         (ionInput)="search($event)"
         [debounce]="1000"
+        searchIcon="undefined"
         placeholder="{{
           'page.program-team.popup.team-member-placeholder' | translate
         }}"
-        search-icon="'undefined'"
       >
       </ion-searchbar>
       <div *ngIf="isUserAlreadyTeamMember">
@@ -71,6 +71,27 @@
           [warningText]="'page.program-team.popup.roles-required' | translate"
         ></app-warning-label>
       </div>
+    </ion-row>
+    <ion-row
+      *ngIf="enableScope"
+      class="ion-margin-top"
+    >
+      <ion-label class="label">{{
+        'page.program-team.table-headers.scope' | translate
+      }}</ion-label>
+      <ion-input
+        type="text"
+        fill="outline"
+        [(ngModel)]="scope"
+        name="scope"
+        placeholder="{{
+          'page.program-team.popup.scope-placeholder' | translate
+        }}"
+      ></ion-input>
+      <ion-note
+        class="ion-text-justify"
+        [innerHTML]="'page.program-team.popup.scope-explanation' | translate"
+      ></ion-note>
     </ion-row>
   </ion-grid>
   <div class="buttons">

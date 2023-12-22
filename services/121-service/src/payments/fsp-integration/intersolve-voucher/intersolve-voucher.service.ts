@@ -576,7 +576,6 @@ export class IntersolveVoucherService
   public async getUnusedVouchers(
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
-    console.log('programId: ', programId);
     const unusedVouchersEntities = await this.intersolveVoucherScopedRepository
       .createQueryBuilder('voucher')
       .leftJoinAndSelect('voucher.image', 'image')
@@ -586,7 +585,6 @@ export class IntersolveVoucherService
         programId: programId,
       })
       .getMany();
-    console.log('unusedVouchersEntities: ', unusedVouchersEntities);
 
     const unusedVouchersDtos: UnusedVoucherDto[] = [];
     for await (const voucher of unusedVouchersEntities) {

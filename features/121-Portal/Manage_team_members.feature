@@ -5,7 +5,7 @@
 
   Scenario: View "Team Members"
     When user is on Team Members page
-    Then details are displayed in table in order (Name, Role, Status, Last login)
+    Then details are displayed in table in order (Name, Role, Status, Scope - if enabled -, Last login)
     And possible Roles can be configured per program
     And status can be Active
     And last login is displayed in format (dd/mm/yyyy) or empty
@@ -19,6 +19,7 @@
     Then a pop-up is displayed
     When the user enters team members email
     And Selects Role for team member by clicking on check boxes
+    And - if Scope is enabled - fills in the Scope
     Then Clicks on "Add" butto
     And Notification with "You've succsessfully added a team member" message is displayed
     And user clicks on "X" on popup
@@ -29,16 +30,17 @@
     When user is on Team Members page
     Then the user sees a disabled "Add new user" menu option they cannot click
 
-  Scenario: Edit Team members Role
+  Scenario: Edit Team members
     Given There is a team member on the list
     Given the user has the "AidWorkerProgramUPDATE" permission
     When User clicks on Three dot icon on the right side of row where team member is displayed
     And Meatball menu is displayed
-    And User clicks on "Edit user"
+    And User clicks on "Edit"
     Then pop-up is displayed
     And user is not able to edit email
     And User changes Role of team member by clicking on checkboxes
-    And click "Save" button
+    And - if Scope is enabled - user updates the Scope
+    And clicks "Save" button
     Then "You've succsessfully edited the role(s) of this user"
     And user clicks on "X" on popup
     And Popup is closed

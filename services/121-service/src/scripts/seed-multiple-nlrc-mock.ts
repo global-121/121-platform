@@ -4,7 +4,6 @@ import path from 'path';
 import { DataSource } from 'typeorm';
 import {
   amountVisa,
-  referenceIdVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
@@ -112,7 +111,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     );
     await this.seedMockHelper.awaitChangePaStatus(
       programIdVisa,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
@@ -120,7 +119,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       programIdVisa,
       1,
       amountVisa,
-      [referenceIdVisa],
+      [registrationVisa.referenceId],
       accessToken,
     );
     await waitFor(3_000);
