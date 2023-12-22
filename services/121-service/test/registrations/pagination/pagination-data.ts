@@ -1,12 +1,18 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../../src/registration/enum/language.enum';
+import { RegistrationEntity } from '../../../src/registration/registration.entity';
 
-export function createExpectedValueObject(registration, id: number): any {
-  const expectedValueObject = { ...registration };
-  expectedValueObject['financialServiceProvider'] = expectedValueObject.fspName;
+export function createExpectedValueObject(
+  registration: Partial<RegistrationEntity> | any,
+  sequenceNumber: number,
+): RegistrationEntity {
+  const expectedValueObject = {
+    ...registration,
+    financialServiceProvider: registration.fspName,
+    registrationProgramId: sequenceNumber,
+    personAffectedSequence: `PA #${sequenceNumber}`,
+  };
   delete expectedValueObject.fspName;
-  expectedValueObject['registrationProgramId'] = id;
-  expectedValueObject['personAffectedSequence'] =
-    `PA #${expectedValueObject['registrationProgramId']}`;
 
   return expectedValueObject;
 }
@@ -14,10 +20,9 @@ export function createExpectedValueObject(registration, id: number): any {
 export const programIdPV = 2;
 export const programIdOCW = 3;
 
-export const referenceId = '63e62864557597e0d';
 export const registrationOCW1 = {
-  referenceId: referenceId,
-  preferredLanguage: 'en',
+  referenceId: '63e62864557597e0d',
+  preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'John',
   lastName: 'Smith',
@@ -31,12 +36,9 @@ export const registrationOCW1 = {
   addressCity: 'Stad',
 };
 
-const expectedValueObjectOCW1 = createExpectedValueObject(registrationOCW1, 1);
-
-export const referenceIdOCW2 = '22e62864557597e0d';
 export const registrationOCW2 = {
-  referenceId: referenceIdOCW2,
-  preferredLanguage: 'en',
+  referenceId: '22e62864557597e0d',
+  preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'Anna',
   lastName: 'Hello',
@@ -50,12 +52,9 @@ export const registrationOCW2 = {
   addressCity: 'AnotherCity',
 };
 
-const expectedValueObjectOCW2 = createExpectedValueObject(registrationOCW2, 2);
-
-export const referenceIdOCW3 = '43e62864557597e0d';
 export const registrationOCW3 = {
-  referenceId: referenceIdOCW3,
-  preferredLanguage: 'nl',
+  referenceId: '43e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 2,
   firstName: 'Sophia',
   lastName: 'Johnson',
@@ -68,12 +67,10 @@ export const registrationOCW3 = {
   addressPostalCode: '3456CD',
   addressCity: 'DifferentCity',
 };
-const expectedValueObjectOCW3 = createExpectedValueObject(registrationOCW3, 3);
 
-export const referenceIdOCW4 = '54e62864557597e0d';
 export const registrationOCW4 = {
-  referenceId: referenceIdOCW4,
-  preferredLanguage: 'nl',
+  referenceId: '54e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 3,
   firstName: 'Luis',
   lastName: 'Garcia',
@@ -86,7 +83,6 @@ export const registrationOCW4 = {
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
 };
-const expectedValueObjectOCW4 = createExpectedValueObject(registrationOCW4, 4);
 
 export const registrationsOCW = [
   registrationOCW1,
@@ -95,10 +91,9 @@ export const registrationsOCW = [
   registrationOCW4,
 ];
 
-export const referenceIdPV5 = '44e62864557597e0d';
 export const registrationPV5 = {
-  referenceId: referenceIdPV5,
-  preferredLanguage: 'nl',
+  referenceId: '44e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   firstName: 'Gemma',
   lastName: 'Houtenbos',
@@ -107,16 +102,27 @@ export const registrationPV5 = {
   whatsappPhoneNumber: '14155235555',
 };
 
-export const referenceIdPV6 = 'asdf234f4gg4ag64545';
-export const registration6 = {
-  referenceId: referenceIdPV6,
-  preferredLanguage: 'nl',
+export const registrationPV6 = {
+  referenceId: 'asdf234f4gg4ag64545',
+  preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   firstName: 'Jan',
   lastName: 'Janssen',
   phoneNumber: '14155235551',
   fspName: FspName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
+};
+
+export const registrationPvScoped = {
+  referenceId: '434e62869242497e1e',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  firstName: 'Freya',
+  lastName: 'Midgard',
+  phoneNumber: '14155235554',
+  fspName: FspName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235554',
+  scope: 'utrecht',
 };
 
 export const expectedAttributes = [
@@ -133,8 +139,3 @@ export const expectedAttributes = [
   'name',
   'paymentCount',
 ];
-
-export { expectedValueObjectOCW1 as expectedValueObjectOCW1 };
-export { expectedValueObjectOCW2 as expectedValueObjectOCW2 };
-export { expectedValueObjectOCW3 as expectedValueObjectOCW3 };
-export { expectedValueObjectOCW4 as expectedValueObjectOCW4 };

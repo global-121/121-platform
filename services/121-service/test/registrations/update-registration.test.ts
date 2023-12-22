@@ -1,20 +1,24 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
+import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
   updateRegistration,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import {
+  getAccessToken,
+  getAccessTokenScoped,
+  resetDB,
+} from '../helpers/utility.helper';
+import { registrationPvScoped } from './pagination/pagination-data';
 
 const updatePhoneNumber = '15005550099';
 
 describe('Update attribute of PA', () => {
-  const programId = 3;
+  const programIdPv = 2;
+  const programIdOcw = 3;
 
   let accessToken: string;
 
@@ -22,12 +26,13 @@ describe('Update attribute of PA', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programId, [registrationVisa], accessToken);
+    await importRegistrations(programIdOcw, [registrationVisa], accessToken);
+    await importRegistrations(programIdPv, [registrationPvScoped], accessToken);
   });
 
   it('should not update unknown registration', async () => {
     // Arrange
-    const wrongReferenceId = referenceIdVisa + '-fail-test';
+    const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
     const updatePhoneData = {
       phoneNumber: updatePhoneNumber,
     };
@@ -35,7 +40,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programId,
+      programIdOcw,
       wrongReferenceId,
       updatePhoneData,
       reason,
@@ -58,8 +63,8 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programId,
-      referenceIdVisa,
+      programIdOcw,
+      registrationVisa.referenceId,
       dataUpdateSucces,
       reason,
       accessToken,
@@ -69,8 +74,8 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.OK);
 
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
-      programId,
+      registrationVisa.referenceId,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -95,8 +100,8 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programId,
-      referenceIdVisa,
+      programIdOcw,
+      registrationVisa.referenceId,
       dataUpdatePhoneFail,
       reason,
       accessToken,
@@ -105,8 +110,8 @@ describe('Update attribute of PA', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
-      programId,
+      registrationVisa.referenceId,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -120,9 +125,11 @@ describe('Update attribute of PA', () => {
 
   it('should fail on duplicate referenceId', async () => {
     // Arrange
-    const registrationVisa2 = { ...registrationVisa };
-    registrationVisa2.referenceId = 'duplicate-reference-id';
-    await importRegistrations(programId, [registrationVisa2], accessToken);
+    const registrationVisa2 = {
+      ...registrationVisa,
+      referenceId: 'duplicate-reference-id',
+    };
+    await importRegistrations(programIdOcw, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
       referenceId: registrationVisa2.referenceId,
@@ -131,8 +138,8 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programId,
-      referenceIdVisa,
+      programIdOcw,
+      registrationVisa.referenceId,
       dataUpdateReferenceIdFail,
       reason,
       accessToken,
@@ -142,8 +149,8 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     response.body;
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
-      programId,
+      registrationVisa.referenceId,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -160,9 +167,11 @@ describe('Update attribute of PA', () => {
 
   it('should fail on short referenceId', async () => {
     // Arrange
-    const registrationVisa2 = { ...registrationVisa };
-    registrationVisa2.referenceId = 'shor'; //t
-    await importRegistrations(programId, [registrationVisa2], accessToken);
+    const registrationVisa2 = {
+      ...registrationVisa,
+      referenceId: 'shor', //t
+    };
+    await importRegistrations(programIdOcw, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
       firstName: 'Jane',
       referenceId: registrationVisa2.referenceId,
@@ -171,8 +180,8 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programId,
-      referenceIdVisa,
+      programIdOcw,
+      registrationVisa.referenceId,
       dataUpdateReferenceIdFail,
       reason,
       accessToken,
@@ -181,13 +190,72 @@ describe('Update attribute of PA', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
-      programId,
+      registrationVisa.referenceId,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
 
     // Is old data still the same?
     expect(registration.firstName).toBe(registrationVisa.firstName);
+  });
+
+  it('should update scope within current users scope', async () => {
+    // Arrange
+    const newScope = 'utrecht.houten';
+    const reason = 'automated test';
+    const updateDto = {
+      scope: newScope,
+    };
+    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+
+    // Act
+    const updateResponse = await updateRegistration(
+      programIdPv,
+      registrationPvScoped.referenceId,
+      updateDto,
+      reason,
+      accessToken,
+    );
+    const getRegistrationResult = await searchRegistrationByReferenceId(
+      registrationPvScoped.referenceId,
+      programIdPv,
+      accessToken,
+    );
+    const registration = getRegistrationResult.body.data[0];
+
+    // Assert
+    expect(updateResponse.statusCode).toBe(HttpStatus.OK);
+    expect(registration.scope).toBe(newScope);
+  });
+
+  it('should not update scope outside current users scope', async () => {
+    // Arrange
+    const oldScope = registrationPvScoped.scope;
+    const newScope = 'zeeland';
+    const reason = 'automated test';
+    const updateDto = {
+      scope: newScope,
+    };
+    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+
+    // Act
+    const updateResponse = await updateRegistration(
+      programIdPv,
+      registrationPvScoped.referenceId,
+      updateDto,
+      reason,
+      accessToken,
+    );
+    const getRegistrationResult = await searchRegistrationByReferenceId(
+      registrationPvScoped.referenceId,
+      programIdPv,
+      accessToken,
+    );
+    const registration = getRegistrationResult.body.data[0];
+
+    // Assert
+    expect(updateResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(registration.scope).toBe(oldScope);
   });
 });

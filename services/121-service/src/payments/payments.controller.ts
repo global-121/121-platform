@@ -117,8 +117,11 @@ export class PaymentsController {
     name: 'dryRun',
     required: false,
     type: 'boolean',
-    description:
-      'When this parameter is set to `true`, the function will simulate the execution of the process without actually doing any payment. Instead it will return data on how many PAs this action can be applied to. If this parameter is not included or is set to `false`, the function will execute normally. In both cases the response will be the same.',
+    description: `
+      Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
+      Instead it will return how many PA this action can be applied to.
+      So no payments will be done.
+      `,
   })
   @ApiQuery({
     name: 'limit',

@@ -33,10 +33,11 @@ describe('Load PA table', () => {
       await importRegistrations(
         programIdOCW,
         [
-          registrationOCW1,
-          registrationOCW3,
-          registrationOCW4,
-          registrationOCW2,
+          // Unordered on purpose, to test sorting/ordering later
+          registrationOCW1, // Sequence number: 1
+          registrationOCW3, // Sequence number: 2
+          registrationOCW4, // Sequence number: 3
+          registrationOCW2, // Sequence number: 4
         ],
         accessToken,
       );

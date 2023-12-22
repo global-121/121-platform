@@ -1,6 +1,7 @@
 import { RegistrationStatusEnum } from '../../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
+import { StatusEnum } from '../../../src/shared/enum/status.enum';
 import {
   changePhase,
   doPayment,
@@ -18,11 +19,11 @@ import {
   expectedAttributes,
   programIdOCW,
   programIdPV,
-  registration6,
   registrationOCW1,
   registrationOCW3,
   registrationOCW4,
   registrationPV5,
+  registrationPV6,
 } from './pagination-data';
 
 describe('Load PA table', () => {
@@ -56,7 +57,12 @@ describe('Load PA table', () => {
         accessToken,
       );
       await importRegistrations(programIdOCW, registrations, accessToken);
-      await importRegistrations(programIdPV, [registration6], accessToken);
+      await changePhase(
+        programIdPV,
+        ProgramPhase.registrationValidation,
+        accessToken,
+      );
+      await importRegistrations(programIdPV, [registrationPV6], accessToken);
 
       await awaitChangePaStatus(
         programIdOCW,
@@ -76,8 +82,8 @@ describe('Load PA table', () => {
         programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment1,
       );
       await doPayment(
@@ -91,16 +97,19 @@ describe('Load PA table', () => {
         programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment2,
       );
     });
 
     it('should filter based on waiting payments', async () => {
-      const filter = {};
-      filter[`filter.${PaymentFilterEnum.waitingPayment}`] = payment1;
+      // Arrange
+
       // Act
+      const filter = {
+        [`filter.${PaymentFilterEnum.waitingPayment}`]: `${payment1}`,
+      };
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -112,11 +121,12 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
+      // Assert
       const expectedValueObjectWaiting = createExpectedValueObject(
         registrationPV5,
         3,
       );
-      // Assert
+
       expect(data[0]).toMatchObject(expectedValueObjectWaiting);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
@@ -125,9 +135,12 @@ describe('Load PA table', () => {
     });
 
     it('should filter based on failed payments', async () => {
-      const filter = {};
-      filter[`filter.${PaymentFilterEnum.failedPayment}`] = payment1;
+      // Arrange
+
       // Act
+      const filter = {
+        [`filter.${PaymentFilterEnum.failedPayment}`]: `${payment1}`,
+      };
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -139,11 +152,12 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
+      // Assert
       const expectedValueObjectFailed = createExpectedValueObject(
         registrationOCW3,
         2,
       );
-      // Assert
+
       expect(data[0]).toMatchObject(expectedValueObjectFailed);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
@@ -152,9 +166,12 @@ describe('Load PA table', () => {
     });
 
     it('should filter based on success payments', async () => {
-      const filter = {};
-      filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
+      // Arrange
+
       // Act
+      const filter = {
+        [`filter.${PaymentFilterEnum.successPayment}`]: `$eq:${payment1}`,
+      };
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -166,6 +183,7 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
+      // Assert
       const expectedValueObjectSucces1 = createExpectedValueObject(
         registrationOCW1,
         1,
@@ -174,7 +192,7 @@ describe('Load PA table', () => {
         registrationOCW4,
         4,
       );
-      // Assert
+
       expect(data[0]).toMatchObject(expectedValueObjectSucces1);
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
@@ -187,11 +205,14 @@ describe('Load PA table', () => {
     });
 
     it('should filter based on success payments in combination with select and other filters', async () => {
-      const filter = {};
-      filter[`filter.${PaymentFilterEnum.successPayment}`] = `$eq:${payment1}`;
-      filter['filter.lastName'] = registrationOCW1.lastName;
-      filter['filter.phoneNumber'] = registrationOCW1.phoneNumber;
+      // Arrange
+
       // Act
+      const filter = {
+        [`filter.${PaymentFilterEnum.successPayment}`]: `$eq:${payment1}`,
+        ['filter.lastName']: registrationOCW1.lastName,
+        ['filter.phoneNumber']: registrationOCW1.phoneNumber,
+      };
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         ['referenceId', 'lastName'],
@@ -203,12 +224,12 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
+      // Assert
       const expectedValueObjectSuccesSelect = {
         referenceId: registrationOCW1.referenceId,
         lastName: registrationOCW1.lastName,
       };
       const expectedAttributesSelect = ['referenceId', 'lastName'];
-      // Assert
       expect(data[0]).toMatchObject(expectedValueObjectSuccesSelect);
       for (const attribute of expectedAttributesSelect) {
         expect(data[0]).toHaveProperty(attribute);
@@ -217,7 +238,7 @@ describe('Load PA table', () => {
     });
 
     it('should filter based on not yet sent payments', async () => {
-      // do payment 3 for only 1 PA
+      // Arrange
       await doPayment(
         programIdOCW,
         payment3,
@@ -229,17 +250,16 @@ describe('Load PA table', () => {
         programIdOCW,
         [paymentReferenceIds[0]],
         accessToken,
-        50000,
-        ['success', 'waiting', 'error'],
+        50_000,
+        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
         payment3,
       );
 
-      // define filter as 'not yet sent payment #3'
-      const filter = {};
-      filter[`filter.${PaymentFilterEnum.notYetSentPayment}`] =
-        `$eq:${payment3}`;
-
       // Act
+      const filter = {
+        [`filter.${PaymentFilterEnum.notYetSentPayment}`]: `$eq:${payment3}`,
+      };
+
       const getRegistrationsResponse = await getRegistrations(
         programIdOCW,
         null,
@@ -250,7 +270,7 @@ describe('Load PA table', () => {
       );
       const meta = getRegistrationsResponse.body.meta;
 
-      // Test if filtered set is all - 1
+      // Assert
       expect(meta.totalItems).toBe(paymentReferenceIds.length - 1);
     });
   });

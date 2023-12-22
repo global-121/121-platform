@@ -61,7 +61,7 @@ describe('change the status of a set of registrations', () => {
       programIdOCW,
       referenceIds,
       accessToken,
-      50000,
+      50_000,
       newStatus,
     );
     const getRegistrationsResponse = await getRegistrations(

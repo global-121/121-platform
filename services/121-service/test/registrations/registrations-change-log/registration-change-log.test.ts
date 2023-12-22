@@ -1,8 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
@@ -34,7 +31,11 @@ describe('Get and update registration change log', () => {
     await importRegistrations(programId, [registrationVisa], accessToken);
   });
   afterEach(async () => {
-    await deleteRegistrations(programId, [referenceIdVisa], accessToken);
+    await deleteRegistrations(
+      programId,
+      [registrationVisa.referenceId],
+      accessToken,
+    );
   });
 
   it('should keep a log of registration data changes', async () => {
@@ -46,7 +47,7 @@ describe('Get and update registration change log', () => {
     // Act
     await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       data,
       reason,
       accessToken,
@@ -54,7 +55,7 @@ describe('Get and update registration change log', () => {
 
     const response = await getRegistrationChangeLog(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
@@ -83,7 +84,7 @@ describe('Get and update registration change log', () => {
     // Act
     await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       data,
       reason,
       accessToken,
@@ -91,7 +92,7 @@ describe('Get and update registration change log', () => {
 
     const response = await getRegistrationChangeLog(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       accessToken,
     );
 
@@ -103,7 +104,7 @@ describe('Get and update registration change log', () => {
 
   it('should return empty array for unkown referenceId', async () => {
     // Arrange
-    const wrongReferenceId = referenceIdVisa + '-fail-test';
+    const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
 
     // Act
     const response = await getRegistrationChangeLog(

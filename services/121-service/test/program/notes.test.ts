@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { changePhase, getNotes, postNote } from '../helpers/program.helper';
@@ -9,10 +10,9 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 describe('Notes', () => {
   let accessToken: string;
   const programId = 3;
-  const referenceId = '456984cc-1066-48f3-b70b-0e16c3fe5bce';
   const registration = {
-    referenceId: referenceId,
-    preferredLanguage: 'en',
+    referenceId: '456984cc-1066-48f3-b70b-0e16c3fe5bce',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     firstName: 'John',
     lastName: 'Smith',
@@ -44,7 +44,7 @@ describe('Notes', () => {
   it('should post a note', async () => {
     // Act
     const postNoteResponse = await postNote(
-      referenceId,
+      registration.referenceId,
       noteText,
       programId,
       accessToken,
@@ -55,10 +55,14 @@ describe('Notes', () => {
   });
 
   it('should get a note', async () => {
-    await postNote(referenceId, noteText, programId, accessToken);
+    await postNote(registration.referenceId, noteText, programId, accessToken);
 
     // Act
-    const getNoteResponse = await getNotes(referenceId, programId, accessToken);
+    const getNoteResponse = await getNotes(
+      registration.referenceId,
+      programId,
+      accessToken,
+    );
 
     // Assert
     expect(getNoteResponse.statusCode).toBe(HttpStatus.OK);

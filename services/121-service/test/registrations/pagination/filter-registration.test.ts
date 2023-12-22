@@ -9,10 +9,8 @@ import {
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
+  createExpectedValueObject,
   expectedAttributes,
-  expectedValueObjectOCW1,
-  expectedValueObjectOCW3,
-  expectedValueObjectOCW4,
   programIdOCW,
   registrationOCW1,
   registrationOCW2,
@@ -67,7 +65,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObjectOCW1);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW1, 1),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -88,7 +88,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObjectOCW4);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW4, 4),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -112,7 +114,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObjectOCW3);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW3, 3),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }
@@ -141,7 +145,9 @@ describe('Load PA table', () => {
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert
-      expect(data[0]).toMatchObject(expectedValueObjectOCW3);
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW3, 3),
+      );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
       }

@@ -97,7 +97,7 @@ describe('Registrations - [Scoped]', () => {
       PvProgramId,
       registrationsPvFirst2ReferenceIds,
       accessToken,
-      8000,
+      10_000,
     );
     const transactionsResponse = await getTransactions(
       programIdPV,
