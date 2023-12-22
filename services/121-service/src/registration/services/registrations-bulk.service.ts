@@ -428,11 +428,15 @@ export class RegistrationsBulkService {
           ['user'],
         );
 
+      // anonymize some data for this registration
+      registration.phoneNumber = null;
+      await this.registrationScopedRepository.save(registration);
+
       // Delete all data for this registration
-      await this.noteScopedRepository.deleteUnscoped({
+      await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
-      await this.registrationDataScopedRepository.deleteUnscoped({
+      await this.noteScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
       if (registration.user) {
@@ -440,10 +444,10 @@ export class RegistrationsBulkService {
           user: { id: registration.user.id },
         });
       }
-      await this.twilioMessageScopedRepository.deleteUnscoped({
+      await this.latestMessageRepository.delete({
         registrationId: registration.id,
       });
-      await this.latestMessageRepository.delete({
+      await this.twilioMessageScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
       await this.twilioMessageRepository.delete({
@@ -455,10 +459,6 @@ export class RegistrationsBulkService {
       await this.tryWhatsappRepository.delete({
         registrationId: registration.id,
       });
-
-      // anonymize some data for this registration
-      registration.phoneNumber = null;
-      await this.registrationScopedRepository.save(registration);
 
       // FSP-specific
       // intersolve-voucher
