@@ -477,7 +477,7 @@ export class RegistrationsController {
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         params.programId,
-        PermissionEnum.RegistrationAttributeFinacialUPDATE,
+        PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
 
     if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {

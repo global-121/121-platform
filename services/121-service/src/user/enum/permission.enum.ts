@@ -49,7 +49,7 @@ export enum PermissionEnum {
   RegistrationDELETE = 'registration.delete',
 
   RegistrationAttributeUPDATE = 'registration:attribute.update',
-  RegistrationAttributeFinacialUPDATE = 'registration:attribute:financial.update',
+  RegistrationAttributeFinancialUPDATE = 'registration:attribute:financial.update',
 
   RegistrationFspREAD = 'registration:fsp.read',
   RegistrationFspUPDATE = 'registration:fsp.update',

@@ -328,7 +328,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
     this.canUpdateRegistrationAttributeFinancial =
       this.authService.hasAllPermissions(this.programId, [
-        Permission.RegistrationAttributeFinacialUPDATE,
+        Permission.RegistrationAttributeFinancialUPDATE,
       ]);
     this.canUpdatePersonalData = this.authService.hasAllPermissions(
       this.programId,
