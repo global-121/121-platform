@@ -112,7 +112,11 @@ export class RegistrationDataTypeValidator
     return true;
   }
 
-  private async scopeIsValid(value: string, userId: number, programId: number) {
+  private async scopeIsValid(
+    value: string,
+    userId: number,
+    programId: number,
+  ): Promise<boolean> {
     const assignmentRepo = AppDataSource.getRepository(
       ProgramAidworkerAssignmentEntity,
     );
