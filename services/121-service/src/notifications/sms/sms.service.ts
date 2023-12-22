@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { formatPhoneNumber } from '../../utils/phone-number.helpers';
 import { MessageContentType } from '../enum/message-type.enum';
 import { LastMessageStatusService } from '../last-message-status.service';
 import { MessageProcessType } from '../message-job.dto';
@@ -23,8 +24,7 @@ export class SmsService {
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
   ): Promise<void> {
-    const hasPlus = recipientPhoneNr.startsWith('+');
-    const to = `${hasPlus ? '' : '+'}${recipientPhoneNr}`;
+    const to = formatPhoneNumber(recipientPhoneNr);
 
     let messageToStore;
     try {

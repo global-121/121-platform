@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -19,12 +20,11 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Do payment to 1 PA', () => {
   const programId = 3;
-  const referenceIdJumbo = '63e62864557597e0d';
   const payment = 1;
   const amount = 22;
   const registrationJumbo = {
-    referenceId: referenceIdJumbo,
-    preferredLanguage: 'en',
+    referenceId: '63e62864557597e0d',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     firstName: 'John',
     lastName: 'Smith',
@@ -59,11 +59,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programId, [registrationJumbo], accessToken);
       await awaitChangePaStatus(
         programId,
-        [referenceIdJumbo],
+        [registrationJumbo.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdJumbo];
+      const paymentReferenceIds = [registrationJumbo.referenceId];
 
       // Act
       const doPaymentResponse = await doPayment(
@@ -81,7 +81,7 @@ describe('Do payment to 1 PA', () => {
           await getTransactions(
             programId,
             payment,
-            referenceIdJumbo,
+            registrationJumbo.referenceId,
             accessToken,
           )
         ).body;
@@ -105,11 +105,11 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programId, [registrationJumbo], accessToken);
       await awaitChangePaStatus(
         programId,
-        [referenceIdJumbo],
+        [registrationJumbo.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
-      const paymentReferenceIds = [referenceIdJumbo];
+      const paymentReferenceIds = [registrationJumbo.referenceId];
 
       // Act
       const doPaymentResponse = await doPayment(
@@ -127,7 +127,7 @@ describe('Do payment to 1 PA', () => {
           await getTransactions(
             programId,
             payment,
-            referenceIdJumbo,
+            registrationJumbo.referenceId,
             accessToken,
           )
         ).body;

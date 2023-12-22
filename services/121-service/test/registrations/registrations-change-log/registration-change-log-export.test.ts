@@ -1,8 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { exportList } from '../../helpers/program.helper';
 import {
@@ -14,9 +11,11 @@ import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 const reason1 = 'automated test 1';
 const reason2 = 'automated test 2';
 const programId = 3;
-const registrationVisa2 = { ...registrationVisa };
-registrationVisa2.referenceId = `${referenceIdVisa}2`;
-registrationVisa2.firstName = 'Jack';
+const registrationVisa2 = {
+  ...registrationVisa,
+  referenceId: `${registrationVisa.referenceId}2`,
+  firstName: 'Jack',
+};
 
 const dataUpdatePa1 = {
   phoneNumber: '15005550099', //changed value
@@ -42,7 +41,7 @@ describe('Export registration change log', () => {
 
     await updateRegistration(
       programId,
-      referenceIdVisa,
+      registrationVisa.referenceId,
       dataUpdatePa1,
       reason1,
       accessToken,

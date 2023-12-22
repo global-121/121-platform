@@ -1,4 +1,5 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
@@ -13,11 +14,10 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 describe('Export CBE validation report', () => {
   const programId = 1;
 
-  const referenceIdCbe = '2982g82bdsf89sdsd';
   const registrationCbe = {
-    referenceId: referenceIdCbe,
+    referenceId: '2982g82bdsf89sdsd',
     phoneNumber: '14155238886',
-    preferredLanguage: 'en',
+    preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     fspName: FspName.commercialBankEthiopia,
     maxPayments: 3,

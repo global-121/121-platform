@@ -1,43 +1,28 @@
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
-  registrationNotScopedLvv,
-  registrationNotScopedPv,
-  registrationScopedGoesLvv,
   registrationScopedGoesPv,
-  registrationScopedMiddelburgLvv,
   registrationScopedMiddelburgPv,
-  registrationScopedUtrechtLvv,
-  registrationScopedUtrechtPv,
+  registrationsPV,
 } from '../fixtures/scoped-registrations';
 import { getTransactions } from '../helpers/program.helper';
 import { seedPaidRegistrations } from '../helpers/registration.helper';
 import { getAccessTokenScoped, resetDB } from '../helpers/utility.helper';
 import {
-  programIdLVV,
+  programIdOCW,
   programIdPV,
+  registrationsOCW,
 } from '../registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
-  const LvvProgramId = programIdLVV;
+  const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
-  const registrationsLVV = [
-    registrationScopedMiddelburgLvv,
-    registrationScopedGoesLvv,
-    registrationScopedUtrechtLvv,
-    registrationNotScopedLvv,
-  ];
-  const registrationsPV = [
-    registrationScopedMiddelburgPv,
-    registrationScopedGoesPv,
-    registrationScopedUtrechtPv,
-    registrationNotScopedPv,
-  ];
+
   const payment = 1;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
-    await seedPaidRegistrations(registrationsLVV, LvvProgramId);
+    await seedPaidRegistrations(registrationsOCW, OcwProgramId);
     await seedPaidRegistrations(registrationsPV, PvProgramId);
   });
 

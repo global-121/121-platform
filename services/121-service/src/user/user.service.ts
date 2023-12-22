@@ -12,7 +12,11 @@ import { ProgramEntity } from '../programs/program.entity';
 import { CookieNames } from './../shared/enum/cookie.enums';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
 import { LoginUserDto, UpdateUserDto } from './dto';
-import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import {
+  CreateProgramAssignmentDto,
+  DeleteProgramAssignmentDto,
+  UpdateProgramAssignmentDto,
+} from './dto/assign-aw-to-program.dto';
 import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
@@ -286,7 +290,7 @@ export class UserService {
   public async assignAidworkerToProgram(
     programId: number,
     userId: number,
-    assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -353,7 +357,7 @@ export class UserService {
   public async deleteAidworkerRolesOrAssignment(
     programId: number,
     userId: number,
-    assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -375,16 +379,12 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const whereRolesClause = assignAidworkerToProgram.roles
-      ? { role: In(assignAidworkerToProgram.roles) }
-      : {};
-
     const rolesToDelete = await this.userRoleRepository.find({
-      where: whereRolesClause,
+      where: { role: In(assignAidworkerToProgram.rolesToDelete || []) },
     });
     if (
-      assignAidworkerToProgram.roles &&
-      rolesToDelete.length !== assignAidworkerToProgram.roles.length
+      assignAidworkerToProgram.rolesToDelete &&
+      rolesToDelete.length !== assignAidworkerToProgram.rolesToDelete.length
     ) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -698,7 +698,7 @@ export class UserService {
   public async updateAidworkerProgramAssignment(
     programId: number,
     userId: number,
-    assignAidworkerToProgram: AssignAidworkerToProgramDto,
+    assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -720,12 +720,13 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    const rolesToAdd = assignAidworkerToProgram.rolesToAdd || [];
     const newRoles = await this.userRoleRepository.find({
       where: {
-        role: In(assignAidworkerToProgram.roles),
+        role: In(rolesToAdd),
       },
     });
-    if (newRoles.length !== assignAidworkerToProgram.roles.length) {
+    if (newRoles.length !== rolesToAdd.length) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

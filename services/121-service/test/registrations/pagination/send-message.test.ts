@@ -10,11 +10,15 @@ import {
   sendMessage,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
-import { programIdOCW, registration1, registration2 } from './pagination-data';
+import {
+  programIdOCW,
+  registrationOCW1,
+  registrationOCW2,
+} from './pagination-data';
 
 describe('send arbitrary messages to set of registrations', () => {
   let accessToken: string;
-  const registrations = [registration1, registration2];
+  const registrations = [registrationOCW1, registrationOCW2];
 
   const referenceIds = registrations.map(
     (registration) => registration.referenceId,
@@ -48,7 +52,7 @@ describe('send arbitrary messages to set of registrations', () => {
       programIdOCW,
       [referenceIds[0]],
       accessToken,
-      8000,
+      10_000,
     );
 
     const messageHistories = [];

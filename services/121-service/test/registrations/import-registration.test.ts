@@ -1,8 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
@@ -41,7 +38,7 @@ describe('Import a registration', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programIdOCW,
       accessToken,
     );

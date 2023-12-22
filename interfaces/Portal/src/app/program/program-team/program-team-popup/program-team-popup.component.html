@@ -27,12 +27,14 @@
   <div *ngIf="operation === programTeamPopupOperationEnum.add">
     <app-add-team-member-popup-content
       [programId]="programId"
+      [enableScope]="enableScope"
     ></app-add-team-member-popup-content>
   </div>
   <div *ngIf="operation === programTeamPopupOperationEnum.edit">
     <app-change-team-member-popup-content
       [teamMemberRow]="teamMemberRow"
       [programId]="programId"
+      [enableScope]="enableScope"
     ></app-change-team-member-popup-content>
   </div>
   <div *ngIf="operation === programTeamPopupOperationEnum.remove">

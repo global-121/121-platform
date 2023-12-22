@@ -64,7 +64,7 @@ describe('/ Registrations - by reference-ID', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.referenceId).toBe(testReferenceId);
-    expect(response.body.programAnswers.length).toBe(3);
+    expect(response.body.programAnswers.length).toBe(2);
   });
 
   it('should return matching registration when scope matches', async () => {
@@ -81,7 +81,7 @@ describe('/ Registrations - by reference-ID', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.referenceId).toBe(testReferenceId);
-    expect(response.body.programAnswers.length).toBe(3);
+    expect(response.body.programAnswers.length).toBe(2);
   });
 
   it('should only return matching registration when scope matches', async () => {

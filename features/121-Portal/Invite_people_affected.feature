@@ -31,7 +31,7 @@ Feature: Invite people affected (extension of View_and_Manage_people_affected.fe
     Then the generic message template is sent via WhatsApp
     And it arrives successfully
     And the "Messages" column is filled with the text "WHATSAPP: sent" or "WHATSAPP: READ" for the selected rows
-    And the FSP is updated to "Intersolve Voucher Whatsapp" // This is needed to store Whatsapp phonenumber (see next line), and hard-coded for now as this feature is only used in NLRC LVV/PV
+    And the FSP is updated to "Intersolve Voucher Whatsapp" // This is needed to store Whatsapp phonenumber (see next line), and hard-coded for now as this feature is only used in NLRC PV
     And the "whatsapp phonenumber" is updated to the phoneNumber value
     And - if replied to (automatic if twilio-mock) - the actual invite message is sent via WhatsApp
 

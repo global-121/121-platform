@@ -1,12 +1,13 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
+import { LanguageEnum } from '../../../../registration/enum/language.enum';
 import { IntersolveVisaService } from '../intersolve-visa.service';
 import { PaymentProcessorIntersolveVisa } from './payment.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
   phoneNumber: '14155238886',
-  preferredLanguage: 'en',
+  preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'Test',
   lastName: 'mock-fail-create-debit-card',

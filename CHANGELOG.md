@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.107.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.0...master)
+
+## [1.108.0](https://github.com/global-121/121-platform/compare/v1.108.0...v1.107.0) - 2023-12-21
+
+### Migration
+
+- Migrate LVV and PV data of NLRC program
 
 ## [1.107.0](https://github.com/global-121/121-platform/compare/v1.106.3...v1.107.0) - 2023-12-20
 
@@ -17,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New default roles
 - Use placeholders in custom messages
 - Import max 1k registrations at once
+
+### Changed
+
+- Docker setup process (for API tests). Some ENV-variables where changed, so compare [`.env.example`](./services/.env.example) with your local `.env`-file.
 
 ## [1.106.3](https://github.com/global-121/121-platform/compare/v1.106.2...v1.106.3) - 2023-12-07
 

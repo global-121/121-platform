@@ -1,8 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  referenceIdVisa,
-  registrationVisa,
-} from '../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
@@ -23,12 +20,16 @@ describe('Delete PA', () => {
     await importRegistrations(programId, [registrationVisa], accessToken);
   });
   afterEach(async () => {
-    await deleteRegistrations(programId, [referenceIdVisa], accessToken);
+    await deleteRegistrations(
+      programId,
+      [registrationVisa.referenceId],
+      accessToken,
+    );
   });
 
   it('should not delete unknown registrations', async () => {
     // Arrange
-    const wrongReferenceId = referenceIdVisa + '-fail-test';
+    const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
 
     // Act
     const response = await deleteRegistrations(
@@ -44,7 +45,7 @@ describe('Delete PA', () => {
   });
 
   it('should succesfully delete', async () => {
-    const rightReferenceId = referenceIdVisa;
+    const rightReferenceId = registrationVisa.referenceId;
 
     // Act
     const response = await deleteRegistrations(
@@ -57,7 +58,7 @@ describe('Delete PA', () => {
     expect(response.statusCode).toBe(HttpStatus.ACCEPTED);
 
     const registration = await searchRegistrationByReferenceId(
-      referenceIdVisa,
+      registrationVisa.referenceId,
       programId,
       accessToken,
     );
