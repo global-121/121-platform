@@ -216,6 +216,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
         type: AnswerTypes.dropdown,
         options: await this.getPreferredLanguageOptions(),
       };
+    } else if (name === Attributes.scope) {
+      return { type: AnswerTypes.text };
     }
 
     const repo = AppDataSource.getRepository(ProgramEntity);

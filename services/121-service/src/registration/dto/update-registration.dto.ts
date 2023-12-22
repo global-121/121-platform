@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
 
@@ -30,6 +30,8 @@ export class UpdateAttributeDto {
     attribute: 'attribute',
   })
   public readonly value: string | number | string[];
+
+  public readonly userId: number;
 }
 
 export class UpdateRegistrationDto {
@@ -46,22 +48,4 @@ export class UpdateRegistrationDto {
   @IsOptional()
   @IsString()
   public readonly reason: string;
-}
-
-export class UpdateRegistrationEspoDto {
-  @ApiProperty({
-    description: 'ID of the updated entity',
-    example: '10d169fd-8da4-4acc-88fb-e1139bbbde6c',
-  })
-  @IsString()
-  @IsNotEmpty()
-  public readonly id: string;
-
-  @ApiProperty({
-    description: `Also 'key' itself can be replaced by any key. Additional key-value pairs can also be added within the same object.`,
-    example: 'value',
-  })
-  @IsString()
-  @IsOptional()
-  public readonly key: string;
 }

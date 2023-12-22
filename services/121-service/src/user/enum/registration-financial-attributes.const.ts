@@ -1,6 +1,6 @@
 import { RegistrationEntity } from '../../registration/registration.entity';
 
-type FinancialAttributes = Array<keyof RegistrationEntity>;
+type FinancialAttributes = (keyof RegistrationEntity)[];
 export const FinancialAttributes: FinancialAttributes = [
   'paymentAmountMultiplier',
   'maxPayments',

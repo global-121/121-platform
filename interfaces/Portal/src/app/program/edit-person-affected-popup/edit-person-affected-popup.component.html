@@ -142,6 +142,29 @@
           ></app-update-property-item>
         </ng-container>
 
+        <ng-container *ngIf="showScopeField">
+          <app-update-property-item
+            type="text"
+            [label]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.scope.label'
+                | translate
+            "
+            [value]="attributeValues?.scope"
+            (updated)="
+              updatePaAttribute(
+                'scope',
+                $event.value,
+                $event?.reason?.message,
+                false
+              )
+            "
+            [isDisabled]="!canUpdatePaData"
+            [showSubmit]="canUpdatePaData"
+            [inProgress]="inProgress?.scope || false"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
+
         <ng-container *ngIf="attributeValues.preferredLanguage">
           <app-update-property-item
             type="dropdown"

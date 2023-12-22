@@ -517,6 +517,7 @@ export class RegistrationsController {
         referenceId: params.referenceId,
         attribute: attributeKey,
         value: partialRegistration[attributeKey],
+        userId: userId,
       };
       const errors = await validate(
         plainToClass(UpdateAttributeDto, attributeDto),
