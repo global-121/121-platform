@@ -1,12 +1,20 @@
 import { HttpStatus } from '@nestjs/common';
 import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { UpdateUserRoleDto } from '../../src/user/dto/user-role.dto';
+import { PermissionEnum } from '../../src/user/enum/permission.enum';
+import { DefaultUserRole } from '../../src/user/user-role.enum';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
   updateRegistration,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import {
+  getAccessToken,
+  getRole,
+  resetDB,
+  updatePermissionsOfRole,
+} from '../helpers/utility.helper';
 
 const updatePhoneNumber = '15005550099';
 
@@ -190,5 +198,85 @@ describe('Update attribute of PA', () => {
 
     // Is old data still the same?
     expect(registration.firstName).toBe(registrationVisa.firstName);
+  });
+
+  it('should fail on updating financial data without the right permission', async () => {
+    // Arrange
+    const dataUpdateFinanancialFail = {
+      paymentAmountMultiplier: 5,
+      referenceId: registrationVisa.referenceId,
+    };
+    const reason = 'automated test';
+
+    const accessTokenNoFinancePermission = await getAccessToken(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+    );
+
+    // Act
+    const response = await updateRegistration(
+      programId,
+      registrationVisa.referenceId,
+      dataUpdateFinanancialFail,
+      reason,
+      accessTokenNoFinancePermission,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    response.body;
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programId,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    expect(registration.paymentAmountMultiplier).toBe(
+      registrationVisa.paymentAmountMultiplier,
+    );
+  });
+
+  it('should fail on updating  non financial data without the right permission', async () => {
+    // Arrange
+    const dataUpdateNonFinanancialFail = {
+      phoneNumber: 5,
+      referenceId: registrationVisa.referenceId,
+    };
+    const reason = 'automated test';
+
+    const roleReponse = await getRole(DefaultUserRole.CvaManager);
+    // Remove RegistrationAttributeUPDATE permission from roleReponse
+    roleReponse.permissions = roleReponse.permissions.filter(
+      (p) => p !== PermissionEnum.RegistrationAttributeUPDATE,
+    );
+    await updatePermissionsOfRole(
+      roleReponse.id,
+      roleReponse as UpdateUserRoleDto,
+    );
+
+    const accessTokenNoFinancePermission = await getAccessToken(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+    );
+
+    // Act
+    const response = await updateRegistration(
+      programId,
+      registrationVisa.referenceId,
+      dataUpdateNonFinanancialFail,
+      reason,
+      accessTokenNoFinancePermission,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    response.body;
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programId,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
   });
 });
