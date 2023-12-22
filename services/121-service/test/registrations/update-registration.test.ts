@@ -1,20 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { UpdateUserRoleDto } from '../../src/user/dto/user-role.dto';
-import { PermissionEnum } from '../../src/user/enum/permission.enum';
-import { DefaultUserRole } from '../../src/user/user-role.enum';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
   updateRegistration,
 } from '../helpers/registration.helper';
-import {
-  getAccessToken,
-  getRole,
-  resetDB,
-  updatePermissionsOfRole,
-} from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 const updatePhoneNumber = '15005550099';
 
@@ -236,23 +228,13 @@ describe('Update attribute of PA', () => {
     );
   });
 
-  it('should fail on updating  non financial data without the right permission', async () => {
+  it('should fail on updating non financial data without the right permission', async () => {
     // Arrange
     const dataUpdateNonFinanancialFail = {
       phoneNumber: 5,
       referenceId: registrationVisa.referenceId,
     };
     const reason = 'automated test';
-
-    const roleReponse = await getRole(DefaultUserRole.CvaManager);
-    // Remove RegistrationAttributeUPDATE permission from roleReponse
-    roleReponse.permissions = roleReponse.permissions.filter(
-      (p) => p !== PermissionEnum.RegistrationAttributeUPDATE,
-    );
-    await updatePermissionsOfRole(
-      roleReponse.id,
-      roleReponse as UpdateUserRoleDto,
-    );
 
     const accessTokenNoFinancePermission = await getAccessToken(
       process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
