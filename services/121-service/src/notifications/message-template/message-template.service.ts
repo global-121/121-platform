@@ -42,6 +42,18 @@ export class MessageTemplateService {
     programId: number,
     postData: CreateMessageTemplateDto,
   ): Promise<void> {
+    const existingTemplate = await this.messageTemplateRepository.findOne({
+      where: {
+        programId: programId,
+        type: postData.type,
+        language: postData.language,
+      },
+    });
+    if (existingTemplate) {
+      const errors = `Message template with type '${postData.type}' and language '${postData.language}' already exists in program ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
     const template = new MessageTemplateEntity();
     template.programId = programId;
     template.type = postData.type;
