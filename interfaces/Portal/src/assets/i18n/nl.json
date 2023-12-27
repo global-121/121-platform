@@ -53,10 +53,10 @@
     },
     "iframe": {
       "recipient": {
-        "multiple-recipients-found": "<b> {{paCount}} hulpvragers  </b> gevonden met dit nummer",
+        "multiple-recipients-found": "<b>{{paCount}} hulpvragers</b> gevonden met dit nummer",
         "no-phone-number": "Wanneer u een taak ontvangt, verschijnt hier alle informatie die is gekoppeld aan het telefoonnummer van de persoon in actieve programma's in het 121-platform.",
         "no-recipients-found": "Er is geen informatie gevonden die is gekoppeld aan het telefoonnummer van deze persoon in actieve programma's op het 121-platform.",
-        "single-recipient-found": "<b> 1 hulpvrager  </b> gevonden met dit nummer"
+        "single-recipient-found": "<b> 1 hulpvrager </b> gevonden met dit nummer"
       }
     },
     "login": {
@@ -111,7 +111,7 @@
         "role": "Rol",
         "roles-placeholder": "Rol(len) toewijzen",
         "roles-required": "Selecteer ten minste één rol",
-        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle PA's.",
+        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle hulpvragers.",
         "scope-placeholder": "Vul een scope in",
         "team-member": "Teamlid",
         "team-member-placeholder": "Selecteer een teamlid"
@@ -159,7 +159,7 @@
           "no-reconciliation": "U dient dit bestand slechts <strong> één keer per betaling </strong> te gebruiken in het portaal van de Financiële Dienstverlener.",
           "reconciliation": "Deze export omvat alleen hulpvragers waarvoor de huidige transactiestatus <strong> wachtend </strong> is."
         },
-        "timestamp": "De laatste export is uitgevoerd op: {{dateTime}}"
+        "timestamp": "Laatste export is uitgevoerd op: {{dateTime}}"
       },
       "export-list": {
         "all-people-affected": {
@@ -211,12 +211,12 @@
         "confirm-message": "Importeer verrekinngs data",
         "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener.",
         "import-result": {
-          "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong> . De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verreking komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet successvol zijn in de verrekinng, als mislukte betalingen worden beschouwd.",
+          "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong>. De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verrekening komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet succesvol zijn in de verrekening, als mislukte betalingen worden beschouwd.",
           "new": "Betalingsgegevens bijgewerkt voor <strong> {{countTotal}} </strong> getroffen mensen: <ul> <li> <strong> {{countPaymentSuccess}} </strong> betalingen zijn <strong> succesvol </strong> </li> <li> <strong> {{countPaymentFailed}} </strong> betalingen zijn <strong> mislukt </strong> </li> </ul>",
           "not-found": "Er zijn <strong>{{countNotFound}}</strong> transacties waarvoor geen overeenkomende betrokkene werd gevonden. Probeer deze te corrigeren en opnieuw te uploaden.",
           "ready": "Verrekening geïmporteerd voor betaling <strong>#{{payment}}</strong>."
         },
-        "timestamp": "De laatste import is uitgevoerd op: {{dateTime}}"
+        "timestamp": "Laatste import is uitgevoerd op: {{dateTime}}"
       },
       "metrics": {
         "export-button": {
@@ -292,8 +292,8 @@
         },
         "units": {
           "duration": {
-            "month": "maanden",
-            "week": "weken"
+            "month": "maand(en)",
+            "week": "week(en)"
           },
           "frequency": {
             "month": "maandelijks",
@@ -408,14 +408,14 @@
         "apply-action": "Actie toepassen",
         "bulk-action-conditions": {
           "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i> actief </i> hebben.",
-          "doPayment": "Let op: De actie {<strong>{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
+          "doPayment": "Let op: De actie <strong>{{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
           "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Actief </i> of <i> Voltooid </i> .",
-          "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Afgewezen </i> , <i> Opname beëindigd </i> , <i> Gepauzeerd </i> of <i> Voltooid </i> .",
-          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i> .",
-          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i> .",
+          "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>, <i>Geselecteerd voor validatie</i>, <i>Gevalideerd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
+          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i>.",
+          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
           "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
-          "selectForValidation": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> .",
+          "selectForValidation": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {
@@ -618,7 +618,7 @@
           "single-payment": {
             "intro": "Betaling voor 1 hulpvrager",
             "start-payout": "Start uitbetaling nu voor {{paNr}}",
-            "total-amount": "Totaalbedrag: {{cost}} * vermenigvuldigingsfactor van {{multiplier}} = {<strong>{totalCost}}</strong>"
+            "total-amount": "Totaalbedrag: {{cost}} * vermenigvuldigingsfactor van {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
         "status": {
@@ -637,7 +637,7 @@
           "validated": "Gevalideerd"
         },
         "submit-warning": "Je staat op het punt om:",
-        "submit-warning-people-affected": "Voer actie {{<strong>actionLabel</strong>}} uit voor {{applicableCount}} hulpvragers.",
+        "submit-warning-people-affected": "Voer actie <strong>{{actionLabel}}</strong> uit voor {{applicableCount}} hulpvragers.",
         "transaction": {
           "above": "Boven limiet",
           "amount": "Bedrag",
@@ -792,12 +792,12 @@
       "registeredDate": "Registratiedatum",
       "scope": "Connectie",
       "status": "Status: <b>{{status}}</b>",
-      "subtitle": "Hulpvrager #{{paNummer}}",
+      "subtitle": "Hulpvrager #{{paNumber}}",
       "whatsappPhoneNumber": "WhatsApp-nummer"
     },
     "physical-cards-overview": {
       "action-result": {
-        "new-card-error": "<span class=\"status-failed-text\">Er is iets misgegaan</span>{<br><br>{{error}}",
+        "new-card-error": "<span class=\"status-failed-text\">Er is iets misgegaan</span><br><br>{{error}}",
         "new-card-success": "Nieuwe VISA kaart succesvol uitgegeven",
         "pause-success": "VISA kaart succesvol gepauzeerd",
         "unpause-success": "VISA kaart succesvol geactiveerd"
