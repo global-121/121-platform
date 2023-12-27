@@ -36,10 +36,10 @@ export class TwilioService {
     };
   }
 
-  public createMessage(
+  public async createMessage(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     accountSid: string,
-  ): object {
+  ): Promise<object> {
     const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
     const response = {
       body: twilioMessagesCreateDto.Body,
@@ -129,7 +129,7 @@ export class TwilioService {
       } else {
         statuses = [TwilioStatus.queued, TwilioStatus.sent];
       }
-      this.sendMultipleSuccessStatusResponses(
+      await this.sendMultipleSuccessStatusResponses(
         twilioMessagesCreateDto,
         messageSid,
         response,
@@ -165,7 +165,7 @@ export class TwilioService {
     messageSid: string,
     response,
     statuses: TwilioStatus[],
-  ) {
+  ): Promise<void> {
     for (const status of statuses) {
       const modifiedResponse = { ...response };
       modifiedResponse.status = status;

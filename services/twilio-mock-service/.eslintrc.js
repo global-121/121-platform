@@ -17,12 +17,8 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       extends: [
-        'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
-        // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
-        // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
-        'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
@@ -51,14 +47,6 @@ module.exports = {
             argsIgnorePattern: '^_',
           },
         ],
-        'promise/no-nesting': 'error',
-        'promise/no-callback-in-promise': 'error',
-        'promise/no-multiple-resolved': 'error',
-        'promise/no-promise-in-callback': 'error',
-        'promise/no-return-in-finally': 'error',
-        // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
-        // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
-        'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
       },
     },
