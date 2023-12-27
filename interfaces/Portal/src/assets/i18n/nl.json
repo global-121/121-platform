@@ -1,0 +1,844 @@
+{
+  "header": {
+    "home": "Home",
+    "menu": "Menu",
+    "help": "Help",
+    "users": "Gebruikers",
+    "dashboard": "Dashboard",
+    "team": "Team",
+    "phases": "Fasen",
+    "design": "Programma ontwerp",
+    "registration-validation": "Registratie & validatie",
+    "inclusion": "Actief",
+    "payment": "Betaling",
+    "evaluation": "Evaluatie"
+  },
+  "user-state": {
+    "logged-in-as": "Aangemeld als",
+    "log-out": "Uitloggen"
+  },
+  "page": {
+    "dashboard": {
+      "pageTitle": "Dashboard",
+      "introduction": "De informatie op dit scherm is alleen afkomstig van gegevens in het 121 Platform.",
+      "help-explanation": "U kunt een beschrijving van elk label krijgen door op deze elementen te klikken/focussen/de cursor erop te plaatsen:",
+      "help-explanation-tooltip": "Zo!"
+    },
+    "team": {
+      "pageTitle": "Programmateam"
+    },
+    "program-team": {
+      "pageTitle": "Programmateam",
+      "page-description": "Op deze pagina kunt u een team voor uw programma aanmaken",
+      "add-team-member": "Teamlid toevoegen",
+      "edit-team-member-role": "Rol bewerken",
+      "remove-team-member": "Verwijderen uit team",
+      "table-headers": {
+        "name": "Naam",
+        "role": "Rol",
+        "status": "Status",
+        "last-activity": "Laatste login"
+      },
+      "status": {
+        "true": "Actief",
+        "false": "Geblokkeerd"
+      },
+      "team-members": "Teamleden",
+      "popup": {
+        "add-users-button": "Voeg gebruiker toe",
+        "team-member": "Teamlid",
+        "team-member-placeholder": "Selecteer een teamlid",
+        "roles-placeholder": "Rol(len) toewijzen",
+        "roles-required": "Selecteer ten minste één rol",
+        "role": "Rol",
+        "remove": {
+          "title": "Teamlid verwijderen",
+          "introduction": "Als het teamlid wordt verwijderd, heeft hij of zij geen toegang meer tot het programma of de gegevens.",
+          "attention": "Let op:",
+          "explanation": "Het verwijderen van een teamlid betekent niet dat hun account wordt verwijderd uit het 121 portal. Als je hun account wilt verwijderen, neem dan contact op met de beheerder.",
+          "confirmation-question": "Weet je zeker dat je deze gebruiker uit het programmateam wilt verwijderen?",
+          "confirm": "Gebruiker verwijderen",
+          "succes-message": "Je hebt een teamlid verwijderd"
+        },
+        "add": {
+          "title": "Teamlid toevoegen",
+          "succes-message": "Je hebt succesvol een teamlid toegevoegd",
+          "confirm": "Gebruiker toevoegen",
+          "already-member": "Deze gebruiker is al een teamlid"
+        },
+        "change": {
+          "title": "De rollen van teamleden bewerken",
+          "succes-message": "U heeft de rol(len) van deze gebruiker succesvol bewerkt",
+          "confirm": "Opslaan"
+        }
+      }
+    },
+    "login": {
+      "pageTitle": "Inloggen",
+      "portalTitle": "Portal",
+      "form": {
+        "email": {
+          "label": "E-mailadres"
+        },
+        "password": {
+          "label": "Wachtwoord",
+          "forgot": "Wachtwoord vergeten?"
+        },
+        "submit": {
+          "label": "Inloggen"
+        },
+        "error-messages": {
+          "invalid-email": "Voer een geldig e-mailadres in.",
+          "empty-password": "Voer een wachtwoord in.",
+          "401": "Deze combinatie van e-mailadres en wachtwoord is onbekend.",
+          "500": "Serverfout"
+        }
+      }
+    },
+    "home": {
+      "pageTitle": "Home"
+    },
+    "programs-list": {
+      "pageTitle": "Programma's",
+      "pageSubtitle": "Je voert {{nrPrograms}} programma('s) uit.",
+      "not-available": "Geen programma's beschikbaar. Neem contact op met je manager",
+      "card": {
+        "updated": "Laatst bijgewerkt: ",
+        "targeted": "Doel aantal registraties",
+        "included": "Actieve hulpvragers",
+        "budget": "Totaal projectbudget",
+        "spent": "Geld uitgeven",
+        "status": "Programmastatus:"
+      }
+    },
+    "program": {
+      "phases": {
+        "design": {
+          "label": "Programma ontwerp",
+          "btnText": "Open voor registratie"
+        },
+        "registrationValidation": {
+          "label": "Registratie & validatie",
+          "btnText": "Ga naar: Inclusie",
+          "label-no-validation": "Registratie",
+          "btnText-no-validation": "Ga naar: Inclusie",
+          "toggleText-enable-registrations": "Nieuwe registraties toestaan",
+          "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
+          "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma"
+        },
+        "inclusion": {
+          "label": "Inclusie",
+          "btnText": "Ga naar: Betaling"
+        },
+        "payment": {
+          "label": "Betaling",
+          "btnText": "Ga naar: Evaluatie"
+        },
+        "evaluation": {
+          "label": "Evaluatie",
+          "btnText": "Programma beëindigen"
+        }
+      },
+      "metrics": {
+        "pa": {
+          "targeted": "Doel registraties",
+          "imported": "Geïmporteerd",
+          "invited": "Uitgenodigd",
+          "noLongerEligible": "Komt niet meer in aanmerking",
+          "startedRegistration": "Registratie gestart",
+          "registered": "Geregistreerd",
+          "selectedForValidation": "Geselecteerd voor validatie",
+          "validated": "Gevalideerd",
+          "included": "Actief",
+          "inclusionEnded": "Beëindigd",
+          "rejected": "Afgewezen",
+          "deleted": "Verwijderd"
+        },
+        "state-explanation": {
+          "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
+          "invited": "Hulpvragers die zijn uitgenodigd (na import).",
+          "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
+          "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
+          "selectedForValidation": "Hulpvragers die geselecteerd zijn voor validatie.",
+          "validated": "Hulpvragers die zijn gevalideerd.",
+          "included": "Nieuwe hulpvragers die zijn opgenomen. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
+          "inclusionEnded": "Hulpvragers waarvoor de opname is beëindigd. <br> Zij ontvangen geen (meer) betalingen voor de volgende betalings-/uitbetalingsronde.",
+          "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
+          "rejected": "Hulpvragers die zijn afgewezen. <br> Ze zullen geen betalingen (meer) ontvangen voor de volgende betalings-/uitbetalingsronde.",
+          "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd."
+        },
+        "header": {
+          "metric": "Waarde",
+          "latest-value": "Laatste waarde"
+        },
+        "units": {
+          "frequency": {
+            "month": "maandelijks",
+            "weeks2": "2 wekelijks",
+            "week": "wekelijks"
+          },
+          "duration": {
+            "month": "maanden",
+            "week": "weken"
+          }
+        },
+        "timeframe": {
+          "payment": {
+            "label": "Betaling #:",
+            "select-hint": "Kies betaling...",
+            "option": "Betaling # {{number}} - {{date}}",
+            "explanation": "Alle hulpvragers die een bepaalde status bereikten - bijv. actief - op enig moment tussen de vorige betaling en de gekozen betaling. <br><br> Dit is niet het aantal geregistreerde hulpvragers op het moment van die betaling, maar het aantal hulpvragers dat werd geregistreerd tussen de vorige betaling en de gekozen betaling. <br><br> Merk op dat de geregistreerde hulpvragers in deze periode niet noodzakelijkerwijs dezelfde hulpvragers zijn als de hulpvragers die zich in deze periode hebben geregistreerd, omdat ze zich bijvoorbeeld in de vorige periode kunnen hebben geregistreerd."
+          },
+          "payment-from-start": {
+            "label": "Tot geselecteerde betaling #:",
+            "explanation": "Deze rij toont alle gegevens tot en met de geselecteerde betaling, in plaats van alleen de gegevens die specifiek zijn voor deze betalingsperiode (de periode tussen de vorige betaling en de geselecteerde betaling)."
+          },
+          "calendar-month": {
+            "label": "Kalendermaand:",
+            "select-hint": "Kies maand...",
+            "explanation": "Alle hulpvragers die op een bepaald moment in de gekozen maand een bepaalde status bereikten, bijvoorbeeld inbegrepen. <br><br> Dit is niet het aantal geregistreerde hulpvragers aan het eind van die maand, maar het aantal hulpvragers dat op enig moment in die maand was geregistreerd. <br><br> Merk op dat de hulpvragers die in deze maand zijn opgenomen niet noodzakelijkerwijs dezelfde hulpvragers zijn als de hulpvragers die zich in deze maand hebben geregistreerd, omdat ze zich bijvoorbeeld in de vorige maand kunnen hebben geregistreerd."
+          },
+          "month-from-start": {
+            "label": "Tot geselecteerde maand:",
+            "explanation": "In deze rij worden alle gegevens tot en met deze maand weergegeven, in plaats van alleen de gegevens die specifiek zijn voor deze maand."
+          },
+          "to-date": {
+            "label": "Tot nu toe:",
+            "explanation": "Alle hulpvragers die een bepaalde status hebben bereikt - bijv. inbegrepen - op enig moment tussen de start van het programma en nu. Dit is niet het aantal opgenomen PA's op <br><br> dit moment, maar het aantal van alle PA's die op een bepaald moment zijn opgenomen."
+          }
+        },
+        "export-button": {
+          "label": "Exporteren als CSV"
+        },
+        "totals": {
+          "total-helped-to-date": "Totaal aantal individuele hulpvragers geholpen tot nu toe",
+          "tooltip": "Hulpvragers die één of meer betalingen hebben ontvangen"
+        },
+        "over-time": {
+          "pa": {
+            "pre-existing": "Bestaande",
+            "new": "Nieuw"
+          },
+          "payment-label": "Betaling",
+          "tooltip": "Deze grafiek toont het aantal hulpvragers dat met succes per betaling is uitbetaald. <br><br>Dit aantal wordt uitgesplitst naar \"reeds bestaande\" en \"nieuwe\" hulpvragers, op basis van het feit of de hulpvrager al dan niet ook aanwezig was bij de vorige betaling. \"<br><br>Succesvol uitbetaald\" betekent dat de betaling (bv. voucher) met succes is uitgegeven en dat de hulpvrager hiervan op de hoogte is gesteld, maar impliceert niet dat de betaling is geïnd en/of uitgegeven."
+        }
+      },
+      "program-details": {
+        "section-title": "Programmadetails",
+        "location": "Locatie",
+        "titlePortal": "Titel portal",
+        "titlePaApp": "Titel PA-app",
+        "startDate": "Startdatum",
+        "endDate": "Einddatum",
+        "distributionFrequency": "Distributiefrequentie",
+        "distributionDuration": "Distributieduur",
+        "fixedTransferValue": "Overdrachtswaarde",
+        "aidworkerAssignments": "Toegewezen hulpverleners",
+        "financialServiceProviders": "Financiële dienstverleners"
+      },
+      "program-payout": {
+        "payment-nr": "Betaling #{{number}}",
+        "choose-payment": "Kies betaling...",
+        "all-closed-payments": "Alle afgesloten betalingen",
+        "closed": "Gesloten",
+        "open": "Open",
+        "start-payout": "Start betaling",
+        "total-included": "Uitbetaling aan: {{totalIncluded}} hulpvrager(s)",
+        "total-amount": "Maximaal bedrag dat aan deze betaling wordt besteed: {{totalCost}}",
+        "result": {
+          "api": "Succesvol verzonden betalingsverzoek voor {{nrPa}} hulpvrager('s). <br><br>Het kan enige tijd duren voordat de betalingen zijn verwerkt. Bekijk de PA-tabel hieronder voor de actuele status van de betaling(en). <br><br>U kunt deze pop-up sluiten.",
+          "csv": "Betalingsgegevens voor {{nrPa}} hulpvrager('s) voorbereid. <br><br>Volgende:Selecteer de betaling in de <ol><li>vervolgkeuzelijst <strong>Betaling kiezen...</strong></li> <li>Gebruik de knop <strong>Betalingsinstructies exporteren</strong></li> <li>Sla het resulterende XLSX-bestand op</li> in het formaat dat de financiële dienstverlener vereist <li>Upload het bestand in de portal van de financiële dienstverlener.</li></ol>",
+          "xml": "Betalingsgegevens voor {{nrPa}} hulpvrager('s) voorbereid. <br><br>Vervolgens:Selecteer de betaling in de <ol><li>vervolgkeuzelijst <strong>Betaling kiezen...</strong></li> <li>Gebruik de knop <strong>Betalingsinstructies exporteren</strong></li> <li>Sla het resulterende XML-bestand op</li><li>Upload het bestand in de portal van de financiële dienstverlener.</li></ol>"
+        },
+        "in-progress": "Betaling in uitvoering",
+        "calculating-transfer-amount": "Totaalbedrag berekenen",
+        "make-export": "Exporteer betalingsinformatie",
+        "last-payment": {
+          "last-payment": "Laatste betaling: {{nr}}",
+          "error": "Mislukt",
+          "success": "Succesvol",
+          "waiting": "Wachten",
+          "retry-all": "Probeer alles opnieuw {{number}} mislukt",
+          "confirm-prompt": "Hiermee wordt ALLEEN de {{number}} mislukte betaling(en) opnieuw geprobeerd."
+        },
+        "cbe": {
+          "btn": "CBE verificatierapport",
+          "subHeader": "CBE verificatierapport downloaden",
+          "message": "De gegevens in dit rapport zijn gebaseerd op gegevens die elke nacht worden geïmporteerd uit CBE. <br /> Als u vandaag gegevens hebt gewijzigd, wordt dit niet weergegeven in het rapport."
+        },
+        "make-payment": {
+          "error": {
+            "generic": "Er is iets misgegaan met de betaling. Neem contact op met 121 technische ondersteuning."
+          },
+          "make-payment": "Betaling doen: {{nr}}",
+          "number-included": "Hulpvragers inbegrepen: {{number}}"
+        }
+      },
+      "program-people-affected": {
+        "choose-action": "Kies actie...",
+        "no-actions": "Geen acties beschikbaar",
+        "apply-action": "Actie toepassen",
+        "filter-placeholder": "Type hier...",
+        "filter-toggle": "Alles weergeven",
+        "filter-tooltip": "Toon alle hulpvragers of alleen de hulpvragers die relevant zijn voor deze programmafase",
+        "filter-btn": {
+          "common": {
+            "filter-by": "Filter op:",
+            "all-options": "Alle",
+            "cancel-btn": "Annuleren",
+            "apply-btn": "Toepassen"
+          },
+          "btn-label": {
+            "paStatus": "Status"
+          },
+          "empty-selection-alert-message": "Selecteer ten minste één optie",
+          "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
+        },
+        "last-message": {
+          "no-message": "Nog geen berichten"
+        },
+        "max-payments": {
+          "left": "over"
+        },
+        "column": {
+          "select": "Selecteer",
+          "personAffectedSequence": "Hulpvrager",
+          "status": "Status",
+          "registrationCreated": "Aanmaakdatum",
+          "registrationCreatedDate": "Aanmaakdatum registratie",
+          "inclusionScore": "Inclusiescore",
+          "name": "Naam",
+          "dob": "Geboortedatum",
+          "phoneNumber": "Telefoonnummer",
+          "whatsappPhoneNumber": "WhatsApp nr.",
+          "preferredLanguage": "Voorkeurstaal",
+          "paymentAmountMultiplier": "Multiplier",
+          "maxPayments": "Max aantal betalingen",
+          "fspDisplayNamePortal": "Financiële dienstverlener",
+          "custom-attribute-true": "Ja",
+          "custom-attribute-false": "Nee",
+          "payment-history": "Betaalgeschiedenis",
+          "lastMessageStatus": "Laatste bericht",
+          "hasNote": "Heeft notitie",
+          "referenceId": "Referentie nummer",
+          "note": "Notitie",
+          "paymentCount": "Betalingen tot nu toe",
+          "paymentCountRemaining": "Resterende betalingen",
+          "failedPayment": "Mislukt bij betaling #",
+          "waitingPayment": "Wachtend op betaling #",
+          "successPayment": "Succesvol bij betaling #",
+          "notYetSentPayment": "Nog niet verzonden betaling #"
+        },
+        "language": {
+          "en": "Engels",
+          "ar": "Arabisch",
+          "tl": "Filipijns",
+          "pt_BR": "Portugees",
+          "in": "Indonesisch",
+          "nl": "Nederlands",
+          "es": "Spaans",
+          "fr": "Frans",
+          "tr": "Turks"
+        },
+        "status": {
+          "imported": "Geïmporteerd",
+          "invited": "Uitgenodigd",
+          "noLongerEligible": "Komt niet meer in aanmerking",
+          "startedRegistration": "Aangemaakt",
+          "registered": "Geregistreerd",
+          "registeredWhileNoLongerEligible": "Geregistreerd terwijl niet langer in aanmerking komend",
+          "selectedForValidation": "Geselecteerd voor validatie",
+          "validated": "Gevalideerd",
+          "included": "Actief",
+          "inclusionEnded": "Beëindigd",
+          "rejected": "Afgewezen",
+          "completed": "Voltooid",
+          "paused": "Gepauzeerd"
+        },
+        "actions": {
+          "invite": "Uitnodigen voor registratie",
+          "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
+          "selectForValidation": "Selecteer voor validatie",
+          "include": "Opnemen in programma",
+          "reject": "Afwijzen uit programma",
+          "endInclusion": "Beëindig deelname aan programma",
+          "sendMessage": "Stuur bericht",
+          "deletePa": "Hulpvrager verwijderen",
+          "doPayment": "Doe betaling",
+          "pause": "Pauzeer hulpvragers"
+        },
+        "action-inputs": {
+          "message-checkbox": "Stuur een bericht naar deze hulpvragers",
+          "delete-warning": "U staat op het punt de persoonlijke gegevens van deze hulpvragers te verwijderen. Deze actie kan niet ongedaan gemaakt worden. U kunt eerdere betalingen aan hen niet meer zien en u kunt geen nieuwe betalingen aan hen doen.",
+          "templated-explanation": "Het volgende bericht wordt naar de hulpvragers gestuurd in hun eigen taal.",
+          "templated-support": "Neem contact op met het 121 supportteam als je dit standaardbericht wilt wijzigen.",
+          "placeholder-pa-data": "Zorg ervoor dat voor alle gebruikte persoonlijke velden, de gegevens beschikbaar zijn voor alle geselecteerde hulpvragers.",
+          "placeholder-typeahead-placeholder": "Selecteer veld",
+          "add-placeholder": "Persoonlijk veld toevoegen",
+          "type-message": "Typ bericht",
+          "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben.",
+          "message-preview": "Voorbeeld van bericht"
+        },
+        "no-checkboxes": "Er zijn momenteel geen hulpvragers waarvoor deze actie kan worden toegepast.",
+        "submit-warning": "Je staat op het punt om:",
+        "submit-warning-people-affected": "Voer actie {{<strong>actionLabel</strong>}} uit voor {{applicableCount}} hulpvragers.",
+        "footer-selected-of-total": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
+        "transaction": {
+          "error": "Mislukt",
+          "waiting": "Wachten",
+          "waiting-message": "Wachtend op de statusupdate van deze transactie. Vernieuw de pagina voor de laatste status.",
+          "success": "Succes",
+          "payments-popup": "Betalingen",
+          "show-status": "Toon status",
+          "do-single-payment": "Eenmalige betaling doen",
+          "payment-number": "Betaling #{{number}}",
+          "planned": "Gepland",
+          "above": "Boven limiet",
+          "not-yet-sent": "Nog niet verzonden",
+          "open-voucher": "Voucher openen",
+          "send-payment": "Doe betaling",
+          "sent": "Verstuurd",
+          "amount": "Bedrag",
+          "received": "Ontvangen",
+          "fsp": "FSP",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "Visakaart-ID"
+          },
+          "retry": "Details",
+          "nosupport": "Geen FSP ondersteund voor deze betaling"
+        },
+        "edit-person-affected-popup": {
+          "edit-icon-title": "Bewerl hulpvrager",
+          "has-notes-title": "Notities beschikbaar",
+          "popup-title": "{{pa}} meer info",
+          "properties": {
+            "paymentAmountMultiplier": {
+              "label": "Bedrag multiplier",
+              "explanation": "De standaard bedrag wordt voor deze hulpvrager met dit getal vermenigvuldigd"
+            },
+            "phoneNumber": {
+              "label": "Telefoonnummer",
+              "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode."
+            },
+            "whatsappPhoneNumber": {
+              "label": "WhatsApp-nummer",
+              "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode."
+            },
+            "accountId": {
+              "label": "Account ID"
+            },
+            "date": {
+              "label": "Datum"
+            },
+            "openAnswer": {
+              "label": "Open antwoord"
+            },
+            "fixedChoice": {
+              "label": "Vaste keuze"
+            },
+            "personalId": {
+              "label": "Persoonlijk ID"
+            },
+            "preferredLanguage": {
+              "label": "Voorkeurstaal"
+            },
+            "maxPayments": {
+              "label-payments": "Max. betalingen ( {{alreadyReceivedPayments}} verzonden)",
+              "label-no-payments": "Max aantal betalingen",
+              "explanation": "Het maximale aantal betalingen voor deze hulpvrager. U kunt de limiet verwijderen door de waarde te verwijderen en op te slaan."
+            },
+            "error": {
+              "not-an-integer": "Input moet een geheel getal zijn",
+              "too-low": "De invoer moet hoger zijn dan het aantal betalingen dat al is verzonden",
+              "not-empty": "De invoer kan niet leeg zijn"
+            }
+          },
+          "fspChangeWarning": "Als u deze FSP selecteert, wordt de volgende informatie verwijderd die verband houden met de oude FSP:",
+          "fspNewAttributesExplanation": "Voor deze FSP is de volgende informatie vereist:",
+          "note": {
+            "section-title": "Notities voor hulpvragers",
+            "introduction": "In het onderstaande veld kunt u notities over deze persoon toevoegen, bewerken of verwijderen. Beperk het aantal persoonlijk identificeerbare gegevens (PII) tot een minimum en verwijder PII wanneer deze niet langer nodig is.",
+            "placeholder": "Type hier uw notitie",
+            "save": "Opslaan",
+            "latest-update": "Laatst bijgewerkt op: {{timestamp}}"
+          },
+          "error-alert": {
+            "invalid-date": "De datumnotatie die u hebt ingevoerd, is niet geldig. Een geldig voorbeeld van een datumnotatie is 31-12-1970. Dus: dag-maand-jaar, DD-MM-JJJJ"
+          },
+          "reason-popup": {
+            "subheader": "Reden voor update",
+            "explanation": "Geef een reden op waarom deze wijziging is aangebracht.",
+            "max-length": "Gebruik niet meer dan {{maxLength}} tekens.",
+            "unsaved-changes-explanation": "Uw wijzigingen zijn niet opgeslagen."
+          }
+        },
+        "message-history-popup": {
+          "message-title": "Bericht Geschiedenis",
+          "type": {
+            "whatsapp": "WhatsApp",
+            "sms": "SMS"
+          },
+          "content-type": {
+            "registered": "Registratie",
+            "included": "Actief",
+            "inclusion-ended": "Beëindigd",
+            "rejected": "Afwijzing",
+            "invited": "Uitnodiging voor registratie",
+            "custom": "Aangepast bericht",
+            "generic-templated": "Berichtmelding",
+            "payment-templated": "Betalings melding",
+            "payment-voucher": "Betalingsvoucher",
+            "payment": "Betaling",
+            "payment-instructions": "Betalingsinstructies",
+            "payment-reminder": "Betalingsherinnering",
+            "default-reply": "Standaard antwoord"
+          },
+          "twilio-status": {
+            "accepted": "Geaccepteerd",
+            "scheduled": "Gepland",
+            "queued": "Wachtrij",
+            "sending": "Bezig met verzenden",
+            "sent": "Verstuurd",
+            "delivery-unknown": "Levering onbekend",
+            "delivered": "Afgeleverd",
+            "undelivered": "Niet geleverd",
+            "failed": "Mislukt",
+            "read": "Gelezen"
+          },
+          "chip-status": {
+            "sent": "Verstuurd",
+            "delivered": "Afgeleverd",
+            "failed": "Mislukt",
+            "read": "Gelezen"
+          },
+          "status-line": {
+            "code": "Twilio foutcode: "
+          },
+          "accordion-header": "Tekst van het bericht",
+          "image-string": "(afbeelding)"
+        },
+        "payment-status-popup": {
+          "message-title": "Bericht verzonden betaling #{{payment}}: {{timestamp}}",
+          "money-title": "Voucher verzonden betaling #{{payment}}: {{timestamp}}",
+          "error-message": "Foutmelding",
+          "fix-error": "Onderneem de nodige actie om deze fout op te lossen. Gebruik vervolgens de onderstaande knop om de betaling voor deze hulpvrager opnieuw uit te voeren.",
+          "retry": "Probeer de betaling voor deze hulpvrager opnieuw",
+          "get-balance": "Huidige saldo van voucher opvragen",
+          "current-balance": "Huidig saldo: {{currentBalance}} <br> <br> om: {{timestamp}}",
+          "print-voucher": "Voucher afdrukken",
+          "download-voucher": "Voucher downloaden",
+          "single-payment": {
+            "intro": "Betaling voor 1 hulpvrager",
+            "start-payout": "Start uitbetaling nu voor {{paNr}}",
+            "total-amount": "Totaalbedrag: {{cost}} * vermenigvuldigingsfactor van {{multiplier}} = {<strong>{totalCost}}</strong>"
+          }
+        },
+        "bulk-action-response": {
+          "response": "Verzoek succesvol verzonden naar <strong> {{action}} </strong> voor <strong> {{paNumber}} </strong> hulpvragers. <br> <br> Het verwerken van de actie kan enige tijd duren. Bekijk onderstaande tabel voor de actuele status.",
+          "pa-moved-phase": "Hulpvragers kunnen zichtbaar zijn in een andere fase na deze statuswijziging.",
+          "close-popup": "U kunt deze pop-up sluiten."
+        },
+        "bulk-action-conditions": {
+          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i> .",
+          "selectForValidation": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> .",
+          "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Afgewezen </i> , <i> Opname beëindigd </i> , <i> Gepauzeerd </i> of <i> Voltooid </i> .",
+          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Actief </i> of <i> Voltooid </i> .",
+          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
+          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i> .",
+          "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
+          "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i> actief </i> hebben.",
+          "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld.",
+          "doPayment": "Let op: De actie {<strong>{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen."
+        },
+        "payment-history-popup": {
+          "title": "Betalingen"
+        }
+      },
+      "table-filter-row": {
+        "select-column-to-filter": "Typ of selecteer kolom om te filteren",
+        "apply-filter": "Filter toepassen",
+        "remove-filter": "Filter verwijderen",
+        "clear-all": "Wis alle filters",
+        "filtered-results": "Gefilterde hulpvragers"
+      },
+      "bulk-import": {
+        "import-error": "Er is iets misgegaan met de import. Controleer <ul><li>de gewenste extensie (.csv)Controleer</li> het <li>formaat en de kolomnamen van het CSV-bestand</li><li><strong>Foutmelding:</strong>{{specific}}</li></ul>",
+        "import-result": {
+          "ready": "Importeren klaar.",
+          "csv": "Er wordt automatisch een CSV gedownload, die de import-status en de registratie-status per rij toont.",
+          "new": "Er zijn {{countImported}} nieuwe records geïmporteerd.",
+          "existing": "Er waren {{countExistingPhoneNr}} bestaande telefoonnummers, die zijn overgeslagen.",
+          "invalid": "Er waren {{countInvalidPhoneNr}} onherkenbare telefoonnummers. Probeer ze te corrigeren en opnieuw te importeren."
+        },
+        "timestamp": "Laatste import is gedaan op: {{dateTime}}",
+        "imported": {
+          "btn-text": "importeer hulpvragers",
+          "explanation": "Zorg ervoor dat het overeenkomt met het vereiste formaat van het CSV-bestand van het sjabloon. Het importeren duurt ongeveer 1 minuut per 100 hulpvragers",
+          "confirm-message": "Het systeem importeert alleen nieuwe telefoonnummers als hulpvragers."
+        },
+        "registered": {
+          "btn-text": "Registraties importeren",
+          "explanation": "Zorg ervoor dat het overeenkomt met het vereiste formaat van het CSV-bestand van het sjabloon. Het importeren duurt ongeveer 1 minuut per 100 hulpvragers",
+          "confirm-message": "Het systeem creëert 'geregistreerde' hulpvragers."
+        }
+      },
+      "export-list": {
+        "timestamp": "Laatste export is gedaan op: {{dateTime}}",
+        "no-data": "Er zijn momenteel geen gegevens te downloaden",
+        "all-people-affected": {
+          "btn-text": "Exporteer hulpvragers",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers"
+        },
+        "included": {
+          "btn-text": "Export actieve hulpvragers",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle actieve hulpvragers."
+        },
+        "selected-for-validation": {
+          "btn-text": "Export: geselecteerd voor validatie",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die zijn geselecteerd voor validatie, dat kan worden gebruikt voor validatiebezoeken."
+        },
+        "payment": {
+          "btn-text": "Rapport exporteren",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die bij deze betaling zijn inbegrepen."
+        },
+        "unused-vouchers": {
+          "btn-text": "Lijst van ongebruikte vouchers exporteren",
+          "confirm-message": "Hiermee download je een Excel-bestand met alle ongebruikte voucher(s). <br /> <br /> Belangrijke opmerking: de ongebruikte vouchers die kunnen worden gedownload, zijn niet in realtime. Het rapport bevat de datum en tijd van de laatste externe update van elke voucher."
+        },
+        "duplicates": {
+          "btn-text": "Dubbele personen exporteren",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload van alle gedupliceerde hulpvragers.",
+          "basedOn": "Het controleren van duplicaten wordt gebaseerd op: {{duplicateAttributes}}",
+          "canTakeFewMinutes": "Dit kan enkele minuten duren."
+        },
+        "card-balances": {
+          "btn-text": "Export Visakaart gebruik",
+          "confirm-message": "Hiermee download je een Excel-bestand met het saldo van elke kaart.<br /><br />Belangrijke opmerking: De kaartsaldi die kunnen worden gedownload zijn niet in real-time. Het rapport bevat de datum en tijd van de laatste externe update van elke kaart."
+        },
+        "pa-data-changes": {
+          "btn-text": "Gegevenswijzigingen exporteren",
+          "confirm-message": "Hiermee download je een Excel-bestand met alle gegevenswijzigingen voor alle mensen die betrokken zijn bij dit programma.",
+          "confirm-prompt": {
+            "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren.",
+            "date-from": "Startdatum {{date}}",
+            "date-to": "Einddatum {{date}}",
+            "wrong-dates": "De einddatum moet na de startdatum zijn",
+            "confirm-btn": "Exporteren"
+          }
+        }
+      },
+      "export-fsp-intructions": {
+        "btn-text": "Betaalinstructies exporteren",
+        "confirm-message": "Hiermee downloadt u een bestand met betalingsinstructies voor de financiële dienstverlener.",
+        "sub-message": {
+          "reconciliation": "Deze export omvat alleen hulpvragers waarvoor de huidige transactiestatus <strong> wachtend </strong> is.",
+          "no-reconciliation": "U dient dit bestand slechts <strong> één keer per betaling </strong> te gebruiken in het portaal van de Financiële Dienstverlener."
+        },
+        "timestamp": "De laatste export is uitgevoerd op: {{dateTime}}"
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "Importeer verrekinngs data",
+        "confirm-message": "Importeer verrekinngs data",
+        "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener.",
+        "timestamp": "De laatste import is uitgevoerd op: {{dateTime}}",
+        "import-result": {
+          "ready": "Verrekening geïmporteerd voor betaling <strong>#{{payment}}</strong>.",
+          "new": "Betalingsgegevens bijgewerkt voor <strong> {{countTotal}} </strong> getroffen mensen: <ul> <li> <strong> {{countPaymentSuccess}} </strong> betalingen zijn <strong> succesvol </strong> </li> <li> <strong> {{countPaymentFailed}} </strong> betalingen zijn <strong> mislukt </strong> </li> </ul>",
+          "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong> . De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verreking komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet successvol zijn in de verrekinng, als mislukte betalingen worden beschouwd.",
+          "not-found": "Er zijn <strong>{{countNotFound}}</strong> transacties waarvoor geen overeenkomende betrokkene werd gevonden. Probeer deze te corrigeren en opnieuw te uploaden."
+        }
+      },
+      "manage-aidworkers": {
+        "section-title": "Beheer hulpverleners",
+        "column-email": "E-mailadres",
+        "column-created": "Aanmaakdatum",
+        "column-delete": "Hulpverlener verwijderen",
+        "view-aidworkers": "Huidige hulpverleners",
+        "create-aidworker": "Hulpverlener toevoegen",
+        "email": "E-mailadres invoeren",
+        "confirm": "Hulpverlener toevoegen",
+        "create-password": "Voer een wachtwoord in van ten minste {{minimalLength}} tekens:",
+        "succes-create": "Gebruiker aangemaakt met e-mailadres: ' <strong> {{email}} </strong> ' en wachtwoord ' <strong> {{password}} </strong> '. Breng hen nu op de hoogte van hun nieuwe account door een e-mail te sturen."
+      }
+    },
+    "help": {
+      "pageTitle": "Help",
+      "user-manual": "Handleiding",
+      "user-manual-content": "Moet worden toegevoegd."
+    },
+    "users": {
+      "pageTitle": "Gebruikers en rollen",
+      "page-description": "Op deze pagina kun je gebruikers toevoegen en beheren en rollen en rechten bekijken.",
+      "title": "Gebruikerspagina",
+      "users-tab": "Gebruikers",
+      "add-new-user": "Nieuwe gebruiker toevoegen",
+      "roles-tab": "Rollen",
+      "total-users": "Gebruikers",
+      "search": "Zoeken...",
+      "table-headers": {
+        "username": "Gebruikersnaam",
+        "user-type": "Type gebruiker",
+        "status": "Status",
+        "last-login": "Laatste login"
+      },
+      "user-type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      },
+      "status": {
+        "true": "Actief",
+        "false": "Niet actief"
+      }
+    },
+    "user": {
+      "pageTitle": "Gebruiker",
+      "change-password": {
+        "title": "Verander wachtwoord",
+        "current-password": "Huidig wachtwoord",
+        "new-password": "Nieuw paswoord",
+        "confirm-password": "Bevestig wachtwoord",
+        "success": "Wachtwoord gewijzigd",
+        "failed": "Mislukte poging: huidig wachtwoord onjuist"
+      },
+      "notification-messages": {
+        "password-requirements": "Het wachtwoord moet ten minste {{minLength}} tekens, één hoofdletter, één kleine letter en één cijfer bevatten.",
+        "different-passwords": "Wachtwoorden komen niet overeen."
+      }
+    },
+    "iframe": {
+      "recipient": {
+        "no-recipients-found": "Er is geen informatie gevonden die is gekoppeld aan het telefoonnummer van deze persoon in actieve programma's op het 121-platform.",
+        "no-phone-number": "Wanneer u een taak ontvangt, verschijnt hier alle informatie die is gekoppeld aan het telefoonnummer van de persoon in actieve programma's in het 121-platform.",
+        "single-recipient-found": "<b> 1 hulpvrager  </b> gevonden met dit nummer",
+        "multiple-recipients-found": "<b> {{paCount}} hulpvragers  </b> gevonden met dit nummer"
+      }
+    }
+  },
+  "common": {
+    "update": "Update",
+    "save": "Opslaan",
+    "confirm": "Weet je het zeker?",
+    "cancel": "Annuleren",
+    "ok": "OK",
+    "export-error": "Er is iets misgegaan bij het exporteren",
+    "import-error": "Er is iets misgegaan bij het importeren.",
+    "unknown-error": "Er is iets misgegaan. Fout is onbekend.",
+    "update-success": "Update succesvol",
+    "update-error": "Er is iets misgegaan: {{error}}",
+    "save-success": "Opgeslagen",
+    "timestamp": {
+      "done": "Gedaan op:"
+    },
+    "show-more": "Toon meer",
+    "try-again-contact-support": "Probeer het opnieuw. Neem contact op met 121 technische ondersteuning als het probleem zich blijft voordoen.",
+    "answer-is-required": "Op deze vraag is een antwoord nodig."
+  },
+  "registration-details": {
+    "pageTitle": "Registratie details",
+    "show-all": "Alles weergeven",
+    "personal-information-table": {
+      "subtitle": "Hulpvrager #{{paNummer}}",
+      "status": "Status: <b>{{status}}</b>",
+      "registeredDate": "Registratiedatum",
+      "lastUpdateDate": "Laatst bijgewerkt",
+      "namePartnerOrganization": "Partnerorganisatie",
+      "paymentsDone": "Gedane betalingen",
+      "primaryLanguage": "Moedertaal",
+      "phone": "Telefoonnummer",
+      "whatsappPhoneNumber": "WhatsApp-nummer",
+      "fsp": "Financiële dienstverlener",
+      "scope": "Connectie"
+    },
+    "physical-cards-overview": {
+      "title": "Visa kaarten",
+      "subtitle": "...",
+      "status": "Status",
+      "date-issued": "Uitgegeven",
+      "date-last-used": "Laatst gebruikt",
+      "current-balance": "Huidig saldo",
+      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}} {{currency}})",
+      "pause-card": "Kaart pauzeren",
+      "unpause-card": "Kaart activeren",
+      "issue-new-card": "Nieuwe kaart uitgeven",
+      "popup-title": "Visa kaart",
+      "not-used-yet": "Nog niet gebruikt",
+      "confirm-prompt": {
+        "prefix": "Weet u zeker dat u ",
+        "pause": "deze kaart pauzeren?",
+        "unpause": "deze kaart activeren?",
+        "new-card": "deze kaart definitief blokkeren en een nieuwe kaart uitgeven?",
+        "suffix": "<br> <br> Er wordt automatisch een bericht naar de hulpvrager gestuurd."
+      },
+      "action-result": {
+        "new-card-success": "Nieuwe VISA kaart succesvol uitgegeven",
+        "new-card-error": "<span class=\"status-failed-text\">Er is iets misgegaan</span>{<br><br>{{error}}",
+        "pause-success": "VISA kaart succesvol gepauzeerd",
+        "unpause-success": "VISA kaart succesvol geactiveerd"
+      },
+      "explanation": "Uitleg"
+    },
+    "activity-overview": {
+      "title": "Overzicht activiteiten",
+      "filters": {
+        "null": "Alle",
+        "dataChanges": "Veranderde gegevens",
+        "message": "Berichten",
+        "status": "Status historie",
+        "payment": "Betalingen",
+        "notes": "Notities"
+      },
+      "actions": "Acties",
+      "action": {
+        "add-note": "Notitie toevoegen"
+      },
+      "activities": {
+        "status": {
+          "label": "Status update",
+          "description": "Status hulpvrager gewijzigd in: {{status}}."
+        },
+        "message": {
+          "label": "Bericht"
+        },
+        "payment": {
+          "label": "Betaling #{{number}}",
+          "description": "Betaling #{{number}} is {{status}}."
+        },
+        "data-changes": {
+          "label": "Gegevenswijziging",
+          "values": "<b> Oud: </b> {{oldValue}} <br> <b> Nieuw: </b> {{newValue}}",
+          "reason": "<br> <b> Reden: </b> {{reason}}"
+        },
+        "note": {
+          "label": "Notitie"
+        }
+      },
+      "add-note-popup": {
+        "add-note-profile": "U staat op het punt een opmerking toe te voegen aan het profiel van {{name}}.",
+        "note-visible": "De notitie is zichtbaar voor andere 121 gebruikers die persoonlijke profielen mogen bekijken.",
+        "type-note": "Typ notitie:",
+        "note-textarea-placeholder": "Klik hier om een korte notitie te typen"
+      }
+    },
+    "payment-history": {
+      "transfer": "Betaling #{{paymentNr}}"
+    },
+    "error": "Persoon niet gevonden"
+  },
+  "refresh-data": {
+    "last-updated": "Laatst bijgewerkt: {{date}}"
+  },
+  "file-picker": {
+    "label": "Selecteer een bestand",
+    "download-template-button": "Download template CSV-bestand"
+  },
+  "select-typeahead": {
+    "placeholder": "Selecteer..."
+  },
+  "password-toggle": {
+    "show": "Toon wachtwoord",
+    "hide": "Verberg wachtwoord"
+  },
+  "system-notifications": {
+    "compatible-browsers": "Het 121 Portal werkt het beste in Chrome, Firefox, Safari en Microsoft Edge. Het 121 portal werkt niet in Internet Explorer"
+  }
+}
