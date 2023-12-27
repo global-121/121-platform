@@ -9,6 +9,7 @@ export const environment = {
   useServiceWorker: false, // Enable 'offline' support
   defaultLocale: 'en',
   envName: '', // To highlight the environment used
+  locales: 'en,ar,fr,nl,pt_BR,tl,in,es', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
 
   // APIs
   url_121_service_api: 'http://localhost:3000/api',
