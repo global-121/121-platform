@@ -14,14 +14,6 @@
 
 services:
   121-service:
-    depends_on:
-      121-redis:
-        condition: service_started
-        required: true
-      121db:
-        condition: service_healthy
-        required: true
-        restart: true
     build:
       target: development
     volumes:
@@ -29,6 +21,8 @@ services:
       - './121-service:/home/node/app'
 
   twilio-mock-service:
+    build:
+      target: development
     volumes:
       - 'twilio_mock_service_node_modules:/home/node/app/node_modules'
       - './twilio-mock-service:/home/node/app'
