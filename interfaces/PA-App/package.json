@@ -68,7 +68,7 @@
     "@angular/language-service": "^16.2.11",
     "@ionic/angular-toolkit": "^10.0.0",
     "@types/jasmine": "^4.6.1",
-    "@types/node": "^18.19.2",
+    "@types/node": "^18.19.3",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "dotenv": "^16.3.1",
