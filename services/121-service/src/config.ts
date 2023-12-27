@@ -2,7 +2,6 @@ import packageJson = require('../package.json');
 
 export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV);
 export const PORT = process.env.PORT_121_SERVICE;
-export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 
 const rootUrl =
   process.env.NODE_ENV === 'development'
