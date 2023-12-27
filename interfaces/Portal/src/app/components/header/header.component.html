@@ -101,13 +101,13 @@
           </ng-container>
         </ion-row>
       </ion-col>
-      <ion-col
-        [size]="isIframeHeader ? '6' : '5'"
-        class="ion-text-end"
-      >
-        <app-user-state
-          [showUserStateActions]="!isIframeHeader"
-        ></app-user-state>
+      <ion-col [size]="isIframeHeader ? '6' : '5'">
+        <ion-row class="ion-justify-content-end ion-align-items-center">
+          <app-language-switcher></app-language-switcher>
+          <app-user-state
+            [showUserStateActions]="!isIframeHeader"
+          ></app-user-state>
+        </ion-row>
       </ion-col>
     </ion-row>
   </ion-grid>
