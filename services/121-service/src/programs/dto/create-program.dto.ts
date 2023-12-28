@@ -284,4 +284,9 @@ export class CreateProgramDto {
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
   public monitoringDashboardUrl?: string;
+
+  @ApiProperty({ example: 100000 })
+  @IsOptional()
+  @IsNumber()
+  public readonly budget?: number;
 }

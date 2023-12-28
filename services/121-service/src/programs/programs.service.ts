@@ -133,6 +133,7 @@ export class ProgramService {
       targetNrRegistrations: programEntity.targetNrRegistrations,
       tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
       meetingDocuments: programEntity.meetingDocuments,
+      budget: programEntity.budget,
       phoneNumberPlaceholder: programEntity.phoneNumberPlaceholder,
       programCustomAttributes: programEntity.programCustomAttributes.map(
         (programCustomAttribute) => {

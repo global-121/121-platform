@@ -144,6 +144,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   public enableScope: boolean;
 
+  @Column({ nullable: true, default: null })
+  public budget: number;
+
   @OneToMany(
     () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,

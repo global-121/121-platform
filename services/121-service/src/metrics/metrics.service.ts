@@ -1321,7 +1321,11 @@ export class MetricsService {
       .setParameters(transactionsQuery.getParameters())
       .getRawOne();
 
-    const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
+    const totalBudget = (
+      await this.programRepository.findOneBy({
+        id: programId,
+      })
+    ).budget;
     return {
       programId,
       targetedPeople,

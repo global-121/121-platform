@@ -108,4 +108,9 @@ export class UpdateProgramDto {
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly enableScope: boolean;
+
+  @ApiProperty({ example: 100000 })
+  @IsOptional()
+  @IsNumber()
+  public readonly budget: number;
 }

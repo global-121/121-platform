@@ -40,6 +40,7 @@ export class Program {
   filterableAttributes: FilterableAttributeGroup[];
   monitoringDashboardUrl?: string;
   evaluationDashboardUrl?: string;
+  budget?: number;
 }
 
 class FilterableAttributeGroup {
