@@ -16,6 +16,8 @@ import {
 export class LanguageSwitcherComponent implements OnInit {
   public languages: LanguageOption[];
 
+  public selectedLanguage: string;
+
   constructor(private languageService: LanguageService) {}
   ngOnInit(): void {
     if (!this.languageService) {
@@ -23,6 +25,8 @@ export class LanguageSwitcherComponent implements OnInit {
       return;
     }
     this.languages = this.languageService.getLanguages();
+
+    this.selectedLanguage = this.languageService.getSelectedLanguage();
   }
 
   public selectLanguage($event) {
