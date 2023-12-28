@@ -163,6 +163,11 @@ export class ProgramAttributesService {
         type: 'numeric',
         label: null,
       },
+      {
+        name: 'fspDisplayNamePortal',
+        type: 'text',
+        label: null,
+      },
     ];
     if (hasMaxPayments) {
       defaultAttributes.push({
