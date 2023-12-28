@@ -127,7 +127,7 @@ export class RegistrationDataTypeValidator
     const scopeValid =
       (requestScope && value.startsWith(requestScope)) || !requestScope;
     if (!scopeValid) {
-      this.message = `Scope '${value}' is not valid for user`;
+      this.message = `'${value}' is not a valid scope. The valid scope for this account is '${requestScope}'`;
     }
     return scopeValid;
   }
