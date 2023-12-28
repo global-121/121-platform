@@ -52,6 +52,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canViewPaymentData = false;
 
+  public showScopeField = false;
+
   public person: Person;
 
   public DateFormat = DateFormat;
@@ -127,6 +129,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
+    }
+
+    this.showScopeField = this.program.enableScope;
+    if (this.showScopeField) {
+      this.attributeValues.scope = this.person?.scope;
     }
 
     this.loading = false;
