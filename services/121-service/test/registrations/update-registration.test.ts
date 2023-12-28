@@ -215,7 +215,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      programIdOcw,
       registrationVisa.referenceId,
       dataUpdateFinanancialFail,
       reason,
@@ -227,7 +227,7 @@ describe('Update attribute of PA', () => {
     response.body;
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdPv,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -251,7 +251,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      programIdOcw,
       registrationVisa.referenceId,
       dataUpdateNonFinanancialFail,
       reason,
@@ -263,7 +263,7 @@ describe('Update attribute of PA', () => {
     response.body;
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdPv,
+      programIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
