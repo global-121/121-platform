@@ -144,6 +144,7 @@ export class ProgramsServiceApiService {
       includeCustomAttributes?: boolean;
       includeProgramQuestions?: boolean;
       includeFspQuestions?: boolean;
+      includeTemplateDefaultAttributes?: boolean;
       phase?: ProgramPhase;
     },
   ): Promise<PaTableAttribute[]> {
@@ -152,6 +153,7 @@ export class ProgramsServiceApiService {
       includeCustomAttributes: true,
       includeProgramQuestions: true,
       includeFspQuestions: true,
+      includeTemplateDefaultAttributes: false,
     };
     params = params.appendAll(Object.assign(defaultOptions, options));
 

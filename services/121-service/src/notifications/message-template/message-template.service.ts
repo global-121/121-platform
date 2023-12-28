@@ -111,6 +111,7 @@ export class MessageTemplateService {
         true,
         true,
         false,
+        true,
       );
     const availablePlaceholders = availableAttributes.map(
       (a) => `{{${a.name}}}`,

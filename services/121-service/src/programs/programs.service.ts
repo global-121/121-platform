@@ -81,6 +81,7 @@ export class ProgramService {
           true,
           true,
           true,
+          false,
         );
 
       // TODO: Get these attributes from some enum or something
@@ -413,6 +414,7 @@ export class ProgramService {
         true,
         true,
         true,
+        false,
       );
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;

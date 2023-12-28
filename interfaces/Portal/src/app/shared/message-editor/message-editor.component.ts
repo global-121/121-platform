@@ -65,17 +65,33 @@ export class MessageEditorComponent implements AfterViewInit {
 
     this.attributes = await this.programsService.getPaTableAttributes(
       this.inputProps.programId,
-      { includeFspQuestions: false },
+      { includeFspQuestions: false, includeTemplateDefaultAttributes: true },
     );
 
     if (this.attributes) {
       this.attributeItems = this.attributes.map((att) => ({
         name: att.name,
-        label: att.shortLabel
-          ? this.translatableString.get(att.shortLabel)
-          : this.translatableString.get(att.label),
+        label: this.getLabel(att),
       }));
     }
+  }
+
+  private getLabel(attribute: PaTableAttribute): string {
+    // Get label of attributes configured in the program
+    const attributeShortLabel = this.translatableString.get(
+      attribute.shortLabel,
+    );
+    if (attributeShortLabel) {
+      return attributeShortLabel;
+    }
+    const attributLabel = this.translatableString.get(attribute.shortLabel);
+    if (attributLabel) {
+      return attributLabel;
+    }
+    // Get label of default attributes
+    return this.translate.instant(
+      `page.program.program-people-affected.column.${attribute.name}`,
+    );
   }
 
   public async closeModal() {
