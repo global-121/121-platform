@@ -4,7 +4,7 @@ import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
-import { PermissionEnum } from '../../../user/permission.enum';
+import { PermissionEnum } from '../../../user/enum/permission.enum';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 

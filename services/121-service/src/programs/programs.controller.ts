@@ -25,7 +25,7 @@ import { PermissionsGuard } from '../guards/permissions.guard';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';

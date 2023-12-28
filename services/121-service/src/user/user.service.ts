@@ -28,7 +28,7 @@ import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,
 } from './dto/userrole-response.dto';
-import { PermissionEnum } from './permission.enum';
+import { PermissionEnum } from './enum/permission.enum';
 import { PermissionEntity } from './permissions.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
