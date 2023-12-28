@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Person } from 'src/app/models/person.model';
 import { Item } from '../../components/select-typeahead/select-typeahead.component';
 import { PaTableAttribute } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -47,6 +48,8 @@ export class MessageEditorComponent implements AfterViewInit {
 
   public promptTypeEnum = PromptType;
 
+  private previewRegistration: Person;
+
   public constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
@@ -74,6 +77,17 @@ export class MessageEditorComponent implements AfterViewInit {
         label: this.getLabel(att),
       }));
     }
+
+    const getPeopleAffectedReponse =
+      await this.programsService.getPeopleAffected(
+        this.inputProps.programId,
+        1,
+        1,
+        this.inputProps.previewReferenceId,
+        null,
+        this.attributes.map((att) => att.name),
+      );
+    this.previewRegistration = getPeopleAffectedReponse?.data?.[0];
   }
 
   private getLabel(attribute: PaTableAttribute): string {
@@ -180,7 +194,7 @@ export class MessageEditorComponent implements AfterViewInit {
     this.attributes.forEach((att) => {
       preview = preview.replace(
         new RegExp(`{{${att.name}}}`, 'g'),
-        this.inputProps?.previewRegistration?.[att.name] || '',
+        this.previewRegistration?.[att.name] || '',
       );
     });
 
