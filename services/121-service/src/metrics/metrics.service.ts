@@ -444,7 +444,7 @@ export class MetricsService {
       queryBuilder.addSelect(`registration."${GenericAttributes.maxPayments}"`);
     }
 
-    if (exportType !== ExportType.allPeopleAffected) {
+    if (exportType !== ExportType.allPeopleAffected && !filter?.['status']) {
       queryBuilder = queryBuilder.andWhere(
         'registration."status" != :registrationStatus',
         {
