@@ -280,6 +280,11 @@ export class ProgramController {
     required: false,
     type: 'boolean',
   })
+  @ApiQuery({
+    name: 'includeTemplateDefaultAttributes',
+    required: false,
+    type: 'boolean',
+  })
   @Permissions(PermissionEnum.RegistrationREAD)
   @Get(':programId/attributes')
   public async getAttributes(
@@ -305,6 +310,7 @@ export class ProgramController {
       queryParams.includeCustomAttributes === 'true',
       queryParams.includeProgramQuestions === 'true',
       queryParams.includeFspQuestions === 'true',
+      queryParams.includeTemplateDefaultAttributes === 'true',
       queryParams.phase,
     );
   }

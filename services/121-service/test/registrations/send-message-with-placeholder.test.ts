@@ -1,3 +1,4 @@
+import fspIntersolveJson from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
@@ -15,9 +16,8 @@ describe('Send custom message with placeholders', () => {
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
     preferredLanguage: LanguageEnum.en,
-    paymentAmountMultiplier: 1,
-    nameFirst: 'John',
-    nameLast: 'Smith',
+    paymentAmountMultiplier: 2,
+    fullName: 'John Smith',
     phoneNumber: '14155238886',
     fspName: FspName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
@@ -34,7 +34,8 @@ describe('Send custom message with placeholders', () => {
 
   it('should send message with placeholder values processed', async () => {
     // Arrange
-    const message = 'This is a test message with {{namePartnerOrganization}}';
+    const message =
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayNamePortal}} and {{fullName}}';
 
     // Act
     await sendMessage(
@@ -60,10 +61,22 @@ describe('Send custom message with placeholders', () => {
     ).body;
 
     // Assert
-    const processedMessage = message.replace(
+    let processedMessage = message.replace(
       new RegExp('{{namePartnerOrganization}}', 'g'),
       registrationAh.namePartnerOrganization,
-    ); //TODO: make this more flexible for other potential placeholders
+    );
+    processedMessage = processedMessage.replace(
+      new RegExp('{{paymentAmountMultiplier}}', 'g'),
+      String(registrationAh.paymentAmountMultiplier),
+    );
+    processedMessage = processedMessage.replace(
+      new RegExp('{{fspDisplayNamePortal}}', 'g'),
+      fspIntersolveJson.fspDisplayNamePortal,
+    );
+    processedMessage = processedMessage.replace(
+      new RegExp('{{fullName}}', 'g'),
+      registrationAh.fullName,
+    );
 
     expect(messageHistory[0].body).toEqual(processedMessage);
   });

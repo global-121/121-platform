@@ -836,9 +836,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action.confirmConditions.inputRequired = false;
         action.confirmConditions.checkboxChecked = true;
       } else {
-        action.confirmConditions.previewRegistration = this.selectAllChecked
-          ? this.visiblePeopleAffected[0]
-          : this.selectedPeople[0];
+        action.confirmConditions.previewReferenceId = this.selectAllChecked
+          ? this.visiblePeopleAffected[0]?.referenceId
+          : this.selectedPeople[0]?.referenceId;
       }
       action.confirmConditions.programId = this.programId;
     }
