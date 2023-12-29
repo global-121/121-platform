@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
+import { paginate, PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Not, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -15,6 +16,9 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ProgramService } from '../programs/programs.service';
+import { PaginateConfigRegistrationView } from '../registration/const/filter-operation.const';
+import { PaginationFilter } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import {
@@ -25,8 +29,13 @@ import {
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from '../registration/registration-scoped.repository';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationsService } from '../registration/registrations.service';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { ScopedRepository } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
@@ -51,6 +60,7 @@ export class MetricsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
@@ -59,6 +69,8 @@ export class MetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly programService: ProgramService,
+    private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
@@ -74,11 +86,12 @@ export class MetricsService {
     maxPayment: number | null = null,
     fromDate?: Date,
     toDate?: Date,
+    paginationQuery?: PaginateQuery,
   ): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
-        return this.getAllPeopleAffectedList(programId);
+        return this.getAllPeopleAffectedList(programId, paginationQuery.filter);
       }
       case ExportType.included: {
         return this.getInclusionList(programId);
@@ -107,11 +120,15 @@ export class MetricsService {
     }
   }
 
-  private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
+  private async getAllPeopleAffectedList(
+    programId: number,
+    filter: PaginationFilter,
+  ): Promise<FileDto> {
     const data = await this.getRegistrationsList(
       programId,
       ExportType.allPeopleAffected,
       null,
+      filter,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -185,6 +202,7 @@ export class MetricsService {
     programId: number,
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
+    filter?: PaginationFilter,
   ): Promise<object[]> {
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
@@ -195,6 +213,7 @@ export class MetricsService {
       relationOptions,
       registrationStatus,
       exportType,
+      filter,
     );
 
     for await (const row of rows) {
@@ -396,36 +415,38 @@ export class MetricsService {
     relationOptions: RegistrationDataOptions[],
     status?: RegistrationStatusEnum,
     exportType?: ExportType,
+    filter?: PaginationFilter,
   ): Promise<object[]> {
-    let query = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoin('registration.fsp', 'fsp')
+    let queryBuilder = await this.paginateFilterToWhereQueryBuilder(
+      programId,
+      filter,
+    );
+    queryBuilder
       .select([
         `registration."referenceId" as "referenceId"`,
         `registration.id as id`,
         `registration."registrationProgramId"`,
-        `registration."registrationStatus" as status`,
+        `registration."status" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
-        `fsp."fspDisplayNamePortal" as financialServiceProvider`,
+        `"fspDisplayNamePortal" as financialServiceProvider`,
       ])
-      .andWhere({ programId: programId })
       .distinctOn(['registration.registrationProgramId'])
       .orderBy('"registration"."registrationProgramId"', 'ASC');
 
-    this.registrationsService.addStatusChangeToQuery(query);
+    this.registrationsService.addStatusChangeToQuery(queryBuilder);
 
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
     if (program.enableMaxPayments) {
-      query.addSelect(`registration."${GenericAttributes.maxPayments}"`);
+      queryBuilder.addSelect(`registration."${GenericAttributes.maxPayments}"`);
     }
 
     if (exportType !== ExportType.allPeopleAffected) {
-      query = query.andWhere(
-        'registration."registrationStatus" != :registrationStatus',
+      queryBuilder = queryBuilder.andWhere(
+        'registration."status" != :registrationStatus',
         {
           registrationStatus: RegistrationStatusEnum.deleted,
         },
@@ -433,11 +454,11 @@ export class MetricsService {
     }
 
     if (status) {
-      query = query.andWhere({ registrationStatus: status });
+      queryBuilder = queryBuilder.andWhere({ registrationStatus: status });
     }
 
     for (const r of relationOptions) {
-      query.select((subQuery) => {
+      queryBuilder.select((subQuery) => {
         return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
@@ -445,7 +466,54 @@ export class MetricsService {
       }, r.name);
     }
 
-    return await query.getRawMany();
+    return await queryBuilder.getRawMany();
+  }
+
+  // This function is used to transform the filter from the pagination package to a where query
+  private async paginateFilterToWhereQueryBuilder(
+    programId: number,
+    filter: PaginationFilter,
+  ): Promise<any> {
+    const paginateQuery = {
+      path: 'registration',
+      filter: filter,
+    };
+    // Create an empty scoped querybuilder object
+    let qbForWhereGeneration =
+      this.registrationScopedViewRepository.createQueryBuilder('registration');
+
+    const registrationDataRelations =
+      await this.programService.getAllRelationProgram(programId);
+    const registrationDataNamesProgram = registrationDataRelations
+      .map((r) => r.name)
+      .filter((r) => r !== CustomDataAttributes.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
+
+    // Check if the filter contains at least one registration data name
+    if (
+      paginateQuery.filter &&
+      registrationDataNamesProgram.some((key) =>
+        Object.keys(paginateQuery.filter).includes(key),
+      )
+    ) {
+      qbForWhereGeneration =
+        this.registrationsPaginationsService.filterOnRegistrationData(
+          paginateQuery,
+          qbForWhereGeneration,
+          registrationDataRelations,
+          registrationDataNamesProgram,
+        );
+    }
+
+    let paginateConfigCopy = { ...PaginateConfigRegistrationView };
+
+    // We do not use the paginate function here to get actual data we only use it to manipulate the querybuilder object
+    // However since other function is the paginate package are private it is impossible to only modify the querybuilder and not return data
+    await paginate<RegistrationViewEntity>(
+      paginateQuery,
+      qbForWhereGeneration,
+      paginateConfigCopy,
+    );
+    return qbForWhereGeneration;
   }
 
   private async getRegistrationsFieldsForDuplicates(

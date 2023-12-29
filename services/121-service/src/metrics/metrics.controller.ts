@@ -14,9 +14,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { PaginateConfigRegistrationViewWithPayments } from '../registration/const/filter-operation.const';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
 import {
@@ -45,18 +48,28 @@ export class MetricsController {
     description: 'Retrieved data for export',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'exportType', required: true, type: 'string' })
+  @ApiParam({
+    name: 'exportType',
+    required: true,
+    type: 'string',
+    enum: ExportType,
+  })
   @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
   // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
   @Get('programs/:programId/metrics/export-list/:exportType')
+  @PaginatedSwaggerDocs(
+    RegistrationViewEntity,
+    PaginateConfigRegistrationViewWithPayments,
+  )
   public async getExportList(
     @Param('programId') programId: number,
     @Param('exportType') exportType: ExportType,
     @Query() queryParams: ExportDetailsQueryParamsDto,
     @User('id') userId: number,
+    @Paginate() paginationQuery: PaginateQuery,
   ): Promise<any> {
     if (
       queryParams.toDate &&
@@ -74,6 +87,7 @@ export class MetricsController {
       queryParams.maxPayment,
       queryParams.fromDate,
       queryParams.toDate,
+      paginationQuery,
     );
   }
 

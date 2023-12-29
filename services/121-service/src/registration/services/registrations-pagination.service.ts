@@ -140,6 +140,10 @@ export class RegistrationsPaginationService {
       queryBuilder,
       paginateConfigCopy,
     );
+    console.log(
+      '🚀 ~ file: registrations-pagination.service.ts:143 ~ RegistrationsPaginationService ~ result:',
+      result,
+    );
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
@@ -267,7 +271,7 @@ export class RegistrationsPaginationService {
     }
   }
 
-  private filterOnRegistrationData(
+  public filterOnRegistrationData(
     query: PaginateQuery,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],

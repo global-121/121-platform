@@ -5,3 +5,7 @@ export class FilterAttributeDto {
   allowedOperators: FilterOperator[];
   isInteger: boolean;
 }
+
+export class PaginationFilter {
+  [column: string]: string | string[];
+}
