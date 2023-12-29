@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Order of deleting entities related to registrations
+- Payment amount multiplier in template
 
 ## [1.108.1](https://github.com/global-121/121-platform/compare/v1.108.1...v1.108.0) - 2023-12-28
 
