@@ -18,7 +18,7 @@ import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
-import { PaginateConfigRegistrationViewWithPayments } from '../registration/const/filter-operation.const';
+import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
@@ -41,7 +41,7 @@ export class MetricsController {
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
-    summary: '[SCOPED] Retrieve data for export',
+    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allPeopleAffected}`,
   })
   @ApiResponse({
     status: 200,
@@ -58,11 +58,25 @@ export class MetricsController {
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
   @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
   // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
     RegistrationViewEntity,
-    PaginateConfigRegistrationViewWithPayments,
+    PaginateConfigRegistrationViewOnlyFilters,
   )
   public async getExportList(
     @Param('programId') programId: number,
