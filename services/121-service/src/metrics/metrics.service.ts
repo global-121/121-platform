@@ -454,7 +454,7 @@ export class MetricsService {
     }
 
     if (status) {
-      queryBuilder = queryBuilder.andWhere({ registrationStatus: status });
+      queryBuilder = queryBuilder.andWhere({ status: status });
     }
 
     for (const r of relationOptions) {
