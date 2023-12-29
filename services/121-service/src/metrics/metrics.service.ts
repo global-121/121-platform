@@ -479,8 +479,9 @@ export class MetricsService {
       filter: filter,
     };
     // Create an empty scoped querybuilder object
-    let qbForWhereGeneration =
-      this.registrationScopedViewRepository.createQueryBuilder('registration');
+    let qbForWhereGeneration = this.registrationScopedViewRepository
+      .createQueryBuilder('registration')
+      .andWhere({ programId: programId });
 
     const registrationDataRelations =
       await this.programService.getAllRelationProgram(programId);
