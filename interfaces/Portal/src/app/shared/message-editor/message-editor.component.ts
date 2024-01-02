@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Person } from 'src/app/models/person.model';
 import { Item } from '../../components/select-typeahead/select-typeahead.component';
 import { PaTableAttribute } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -47,6 +48,8 @@ export class MessageEditorComponent implements AfterViewInit {
 
   public promptTypeEnum = PromptType;
 
+  private previewRegistration: Person;
+
   public constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
@@ -65,17 +68,44 @@ export class MessageEditorComponent implements AfterViewInit {
 
     this.attributes = await this.programsService.getPaTableAttributes(
       this.inputProps.programId,
-      { includeFspQuestions: false },
+      { includeFspQuestions: false, includeTemplateDefaultAttributes: true },
     );
 
     if (this.attributes) {
       this.attributeItems = this.attributes.map((att) => ({
         name: att.name,
-        label: att.shortLabel
-          ? this.translatableString.get(att.shortLabel)
-          : this.translatableString.get(att.label),
+        label: this.getLabel(att),
       }));
     }
+
+    const getPeopleAffectedReponse =
+      await this.programsService.getPeopleAffected(
+        this.inputProps.programId,
+        1,
+        1,
+        this.inputProps.previewReferenceId,
+        null,
+        this.attributes.map((att) => att.name),
+      );
+    this.previewRegistration = getPeopleAffectedReponse?.data?.[0];
+  }
+
+  private getLabel(attribute: PaTableAttribute): string {
+    // Get label of attributes configured in the program
+    const attributeShortLabel = this.translatableString.get(
+      attribute.shortLabel,
+    );
+    if (attributeShortLabel) {
+      return attributeShortLabel;
+    }
+    const attributLabel = this.translatableString.get(attribute.shortLabel);
+    if (attributLabel) {
+      return attributLabel;
+    }
+    // Get label of default attributes
+    return this.translate.instant(
+      `page.program.program-people-affected.column.${attribute.name}`,
+    );
   }
 
   public async closeModal() {
@@ -164,7 +194,7 @@ export class MessageEditorComponent implements AfterViewInit {
     this.attributes.forEach((att) => {
       preview = preview.replace(
         new RegExp(`{{${att.name}}}`, 'g'),
-        this.inputProps?.previewRegistration?.[att.name] || '',
+        this.previewRegistration?.[att.name] || '',
       );
     });
 

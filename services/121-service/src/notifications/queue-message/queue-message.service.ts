@@ -132,6 +132,7 @@ export class QueueMessageService {
       true,
       true,
       false,
+      true,
     );
     const usedPlaceholders = [];
     for (const placeholder of placeholders) {

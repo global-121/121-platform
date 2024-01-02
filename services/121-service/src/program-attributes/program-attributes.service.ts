@@ -117,6 +117,7 @@ export class ProgramAttributesService {
     includeCustomAttributes: boolean,
     includeProgramQuestions: boolean,
     includeFspQuestions: boolean,
+    includeTemplateDefaultAttributes: boolean,
     phase?: string,
   ): Promise<Attribute[]> {
     let customAttributes = [];
@@ -135,7 +136,47 @@ export class ProgramAttributesService {
       fspQuestions = await this.getAndMapProgramFspQuestions(programId, phase);
     }
 
-    return [...customAttributes, ...programQuestions, ...fspQuestions];
+    let templateDefaultAttributes = [];
+    if (includeTemplateDefaultAttributes) {
+      templateDefaultAttributes =
+        await this.getMessageTemplateDefaultAttributes(programId);
+    }
+
+    return [
+      ...customAttributes,
+      ...programQuestions,
+      ...fspQuestions,
+      ...templateDefaultAttributes,
+    ];
+  }
+
+  private async getMessageTemplateDefaultAttributes(
+    programId: number,
+  ): Promise<Attribute[]> {
+    const hasMaxPayments = await this.programRepository.findOne({
+      where: { id: programId },
+      select: ['enableMaxPayments'],
+    });
+    const defaultAttributes = [
+      {
+        name: 'paymentAmountMultiplier',
+        type: 'numeric',
+        label: null,
+      },
+      {
+        name: 'fspDisplayNamePortal',
+        type: 'text',
+        label: null,
+      },
+    ];
+    if (hasMaxPayments) {
+      defaultAttributes.push({
+        name: 'maxPayments',
+        type: 'numeric',
+        label: null,
+      });
+    }
+    return defaultAttributes;
   }
 
   public async getPaEditableAttributes(
