@@ -1,7 +1,7 @@
 {
   "tsconfig": "./",
   "project": "./src/app/**/*.{html,ts}",
-  "languages": "./src/assets/i18n/en.json",
+  "languages": "./src/assets/i18n/*.json",
   "rules": {
     "keysOnViews": "warning",
     "zombieKeys": "error",
@@ -10,9 +10,7 @@
     "deepSearch": "enable",
     "maxWarning": "0",
     "ignoredKeys": [
-      "_dir",
-      "personal.select-language.introduction.(.*)",
-      "personal.select-language.language.(.*)"
+      "_dir"
     ],
     "ignoredMisprintKeys": []
   }
