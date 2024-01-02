@@ -2,6 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { StatusTableFilterComponent } from '../../components/status-table-filter/status-table-filter.component';
+import { ExportType } from '../../models/export-type.model';
 import { ProgramPhase } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
 import {
@@ -43,6 +44,8 @@ export class TableFilterRowComponent {
   public tableFilterType = TableFilterType;
 
   public allPaStatuses = Object.values(RegistrationStatus);
+
+  public enumExportType = ExportType;
 
   constructor(private filterService: FilterService) {
     this.textFilter = this.filterService.textFilter$;

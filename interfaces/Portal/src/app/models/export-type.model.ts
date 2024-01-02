@@ -7,4 +7,5 @@ export enum ExportType {
   unusedVouchers = 'unused-vouchers',
   cardBalances = 'card-balances',
   paDataChanges = 'pa-data-changes',
+  filteredTable = 'filtered-table',
 }

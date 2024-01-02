@@ -25,6 +25,10 @@ export class RegistrationsService {
     };
   }
 
+  public getSortBy(): PaginationSort {
+    return this.sortBy;
+  }
+
   public setCurrentPage(currentPage: number) {
     this.pageMetaData.currentPage = currentPage;
   }
