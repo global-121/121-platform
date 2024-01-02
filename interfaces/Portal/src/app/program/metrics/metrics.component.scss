@@ -14,36 +14,17 @@
   font-size: 90%;
 }
 
-.metrics--cell-icon,
 .metrics--cell-label,
 .metrics--cell-value {
   padding: 0.4em 0.2em;
   border-block-end: 1px solid white;
 }
 
-.metrics--cell-icon {
-  text-align: center;
-  vertical-align: top;
-  pointer-events: none;
+.metrics--cell-label {
+  font-weight: bold;
 }
 
 .metrics--cell-value {
   padding-inline-start: 0.4em;
   border-inline-start: 1px solid white;
-}
-
-/*
-  Metric Groups:
-*/
-.metrics--group-program-properties {
-  background-color: gold;
-}
-.metrics--group-pa {
-  background-color: rosybrown;
-}
-.metrics--group-financial {
-  background-color: turquoise;
-}
-.metrics--group-aidworkers {
-  background-color: goldenrod;
 }
