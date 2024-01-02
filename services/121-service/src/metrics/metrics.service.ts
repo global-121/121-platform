@@ -460,18 +460,28 @@ export class MetricsService {
     const paginateQuery = {
       path: 'registration',
       filter: filter,
+      limit: 5000,
+      page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
     };
 
-    const paginateResult =
-      await this.registrationsPaginationsService.getPaginate(
-        paginateQuery,
-        programId,
-        true,
-        true,
-        queryBuilder,
-      );
-    return paginateResult.data;
+    // Get the data per 5000 registrations to prevent an out of memory error
+    let data = [];
+    let totalPages = 1; // higher than 1
+    while (paginateQuery.page <= totalPages) {
+      const paginateResult =
+        await this.registrationsPaginationsService.getPaginate(
+          paginateQuery,
+          programId,
+          true,
+          false,
+          queryBuilder.clone(),
+        );
+      data = data.concat(paginateResult.data);
+      paginateQuery.page = paginateResult.meta.currentPage + 1;
+      totalPages = paginateResult.meta.totalPages;
+    }
+    return data;
   }
 
   private async getRegistrationsFieldsForDuplicates(
