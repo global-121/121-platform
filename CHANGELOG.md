@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.3...master)
+
+## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.3...v1.108.2) - 2023-12-29
+
+### Fixed
+
+- Sorting of payments in iframe (by refetching the program)
 
 ## [1.108.2](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.1) - 2023-12-29
 
