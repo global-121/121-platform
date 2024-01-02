@@ -13,8 +13,15 @@ export class SendCustomTextDto {
   })
   @IsString()
   @MinLength(1)
-  @ValidateIf((o) => !o.skipMessageValidation)
+  @ValidateIf((o) => !o.skipMessageValidation && !o.messageTemplateKey)
   public readonly message: string;
+
+  @ApiProperty({
+    example: 'voucher-pickup-location',
+  })
+  @IsString()
+  @ValidateIf((o) => !o.skipMessageValidation && !o.message)
+  public readonly messageTemplateKey: string;
 
   @ApiProperty({
     example: 'false',

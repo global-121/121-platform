@@ -9,6 +9,7 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '../../notifications/message-job.dto';
+import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.entity';
@@ -35,6 +36,8 @@ import { RegistrationsPaginationService } from './registrations-pagination.servi
 
 @Injectable()
 export class RegistrationsBulkService {
+  @InjectRepository(MessageTemplateEntity)
+  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
@@ -80,7 +83,6 @@ export class RegistrationsBulkService {
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
-    // Overwrite the default select, as we only need the referenceId
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
         programId,
@@ -160,12 +162,17 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
+    messageTemplateKey: string,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
+    if (messageTemplateKey) {
+      await this.validateTemplateKey(programId, messageTemplateKey);
+    }
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
         programId,
         message,
+        messageTemplateKey,
       );
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
@@ -188,6 +195,7 @@ export class RegistrationsBulkService {
         chunkSize,
         resultDto.applicableCount,
         usedPlaceholders,
+        messageTemplateKey,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -202,6 +210,7 @@ export class RegistrationsBulkService {
     chunkSize: number,
     bulkSize: number,
     usedPlaceholders: string[],
+    messageTemplateKey: string,
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -230,6 +239,7 @@ export class RegistrationsBulkService {
         message,
         bulkSize,
         usedPlaceholders,
+        messageTemplateKey,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -428,15 +438,11 @@ export class RegistrationsBulkService {
           ['user'],
         );
 
-      // anonymize some data for this registration
-      registration.phoneNumber = null;
-      await this.registrationScopedRepository.save(registration);
-
       // Delete all data for this registration
-      await this.registrationDataScopedRepository.deleteUnscoped({
+      await this.noteScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
-      await this.noteScopedRepository.deleteUnscoped({
+      await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
       if (registration.user) {
@@ -444,10 +450,10 @@ export class RegistrationsBulkService {
           user: { id: registration.user.id },
         });
       }
-      await this.latestMessageRepository.delete({
+      await this.twilioMessageScopedRepository.deleteUnscoped({
         registrationId: registration.id,
       });
-      await this.twilioMessageScopedRepository.deleteUnscoped({
+      await this.latestMessageRepository.delete({
         registrationId: registration.id,
       });
       await this.twilioMessageRepository.delete({
@@ -459,6 +465,10 @@ export class RegistrationsBulkService {
       await this.tryWhatsappRepository.delete({
         registrationId: registration.id,
       });
+
+      // anonymize some data for this registration
+      registration.phoneNumber = null;
+      await this.registrationScopedRepository.save(registration);
 
       // FSP-specific
       // intersolve-voucher
@@ -508,6 +518,7 @@ export class RegistrationsBulkService {
     message: string,
     bulkSize: number,
     usedPlaceholders: string[],
+    messageTemplateKey?: string,
   ): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};
@@ -517,7 +528,7 @@ export class RegistrationsBulkService {
       await this.queueMessageService.addMessageToQueue(
         registration,
         message,
-        null,
+        messageTemplateKey,
         MessageContentType.custom,
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         null,
@@ -561,6 +572,21 @@ export class RegistrationsBulkService {
     }
     if (errors.length > 0) {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  private async validateTemplateKey(
+    programId: number,
+    messageTemplateKey: string,
+  ): Promise<void> {
+    const template = await this.messageTemplateRepository.findOne({
+      where: { programId: programId, type: messageTemplateKey },
+    });
+    if (!template) {
+      throw new HttpException(
+        `Message template with key ${messageTemplateKey} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 }
