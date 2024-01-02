@@ -1,0 +1,838 @@
+{
+  "common": {
+    "answer-is-required": "Une r\u00e9ponse est requise pour cette question.",
+    "cancel": "Annuler",
+    "confirm": "Es-tu s\u00fbr?",
+    "export-error": "Quelque chose s\u2019est mal pass\u00e9 avec l\u2019exportation.",
+    "import-error": "Quelque chose s\u2019est mal pass\u00e9 avec l\u2019importation.",
+    "ok": "OK",
+    "save": "Sauvegarder",
+    "save-success": "Enregistr\u00e9 avec succ\u00e8s",
+    "show-more": "Voir plus",
+    "timestamp": {
+      "done": "Fait le:"
+    },
+    "try-again-contact-support": "Veuillez r\u00e9essayer. Si le probl\u00e8me persiste, contactez le support technique.",
+    "unknown-error": "Quelque chose s\u2019est mal pass\u00e9. L\u2019erreur est inconnue.",
+    "update": "Mettre \u00e0 jour",
+    "update-error": "Quelque chose s\u2019est mal pass\u00e9 : {{error}}",
+    "update-success": "Mise \u00e0 jour r\u00e9ussie"
+  },
+  "file-picker": {
+    "download-template-button": "T\u00e9l\u00e9charger le mod\u00e8le de fichier CSV",
+    "label": "S\u00e9lectionner un fichier"
+  },
+  "header": {
+    "dashboard": "Tableau de bord",
+    "design": "Concevoir",
+    "evaluation": "\u00c9valuation",
+    "help": "Aide",
+    "home": "Domicile",
+    "inclusion": "Inclusion",
+    "menu": "Menu",
+    "payment": "Paiement",
+    "phases": "Phases",
+    "registration-validation": "Inscription et validation",
+    "team": "\u00c9quipe",
+    "users": "Utilisateurs"
+  },
+  "page": {
+    "dashboard": {
+      "help-explanation": "Vous pouvez obtenir une description de chaque \u00e9tiquette ou en-t\u00eate en cliquant/se concentrant/survolant ces \u00e9l\u00e9ments :",
+      "help-explanation-tooltip": "Comme \u00e7a!",
+      "introduction": "Les informations sur cet \u00e9cran proviennent uniquement des donn\u00e9es de la plate-forme 121.",
+      "pageTitle": "Tableau de bord"
+    },
+    "help": {
+      "pageTitle": "Aide",
+      "user-manual": "Manuel",
+      "user-manual-content": "Doit \u00eatre ajout\u00e9."
+    },
+    "home": {
+      "pageTitle": "Domicile"
+    },
+    "iframe": {
+      "recipient": {
+        "multiple-recipients-found": "<b> {{paCount}} personnes concern\u00e9es </b> trouv\u00e9es enregistr\u00e9es avec ce num\u00e9ro",
+        "no-phone-number": "Lorsque vous recevez une t\u00e2che, toutes les informations li\u00e9es au num\u00e9ro de t\u00e9l\u00e9phone de la personne qui se trouvent dans les programmes actifs de la Plateforme 121 appara\u00eetront ici.",
+        "no-recipients-found": "Aucune information li\u00e9e au num\u00e9ro de t\u00e9l\u00e9phone de cette personne n\u2019a \u00e9t\u00e9 trouv\u00e9e dans les programmes actifs de la Plateforme 121.",
+        "single-recipient-found": "1 <b> Personne concern\u00e9e </b> enregistr\u00e9e avec ce num\u00e9ro"
+      }
+    },
+    "login": {
+      "form": {
+        "email": {
+          "label": "Adresse courriel"
+        },
+        "error-messages": {
+          "401": "Cette combinaison d\u2019adresse e-mail et de mot de passe est inconnue.",
+          "500": "Erreur interne du serveur",
+          "empty-password": "Veuillez saisir un mot de passe.",
+          "invalid-email": "Veuillez saisir une adresse e-mail valide."
+        },
+        "password": {
+          "forgot": "Mot de passe oubli\u00e9 ?",
+          "label": "Mot de passe"
+        },
+        "submit": {
+          "label": "S'identifier"
+        }
+      },
+      "pageTitle": "S'identifier",
+      "portalTitle": "Portail"
+    },
+    "program-team": {
+      "add-team-member": "Ajouter un membre de l\u2019\u00e9quipe",
+      "edit-team-member": "\u00c9diter",
+      "page-description": "Sur cette page, vous pouvez cr\u00e9er une \u00e9quipe pour votre programme",
+      "pageTitle": "L\u2019\u00e9quipe du programme",
+      "popup": {
+        "add-users-button": "Ajouter un utilisateur",
+        "add": {
+          "already-member": "Cet utilisateur est d\u00e9j\u00e0 membre de l\u2019\u00e9quipe",
+          "confirm": "Ajouter un utilisateur",
+          "succes-message": "Vous avez ajout\u00c3\u00a9 avec t\u00c3\u00a9 un membre de l\u00e2\u20ac\u2122\u00c3\u00a9\u2122cole",
+          "title": "Ajouter un membre de l\u2019\u00e9quipe"
+        },
+        "change": {
+          "confirm": "Sauvegarder",
+          "succes-message": "Vous avez r\u00e9ussi \u00c3 \u2122modifier le(s) r\u00f4le(s) de cet utilisateur",
+          "title": "Modifier un membre de l\u2019\u00e9quipe"
+        },
+        "remove": {
+          "attention": "Attention: ",
+          "confirm": "Supprimer l\u2019utilisateur",
+          "confirmation-question": "\u00cates-vous s\u00fbr de supprimer cet utilisateur de l\u2019\u00e9quipe du programme ?",
+          "explanation": "La suppression d\u2019un membre de l\u2019\u00e9quipe ne signifie pas la suppression de son compte du portail 121. Si vous souhaitez supprimer leur compte, veuillez contacter l\u2019administrateur.",
+          "introduction": "La suppression du membre de l\u2019\u00e9quipe l\u2019emp\u00eachera d\u2019acc\u00e9der au programme ou \u00e0 ses donn\u00e9es.",
+          "succes-message": "Vous avez d\u00c3\u00a9lev\u00c3\u00a9 avec d\u00c3\u00a9lev\u00c3\u00a9 un membre de l\u00e2\ufffd \u2122",
+          "title": "Supprimer un membre de l\u2019\u00e9quipe"
+        },
+        "role": "R\u00f4le",
+        "roles-placeholder": "Attribuer un ou plusieurs r\u00f4les",
+        "roles-required": "Veuillez s\u00e9lectionner au moins un r\u00f4le",
+        "scope-explanation": "Pour utiliser une sous-port\u00e9e, tapez un point entre la port\u00e9e et la sous-port\u00e9e (par exemple, amsterdam.zuid)<br><br>* Si vous laissez ce champ vide, le membre de l\u2019\u00e9quipe aura acc\u00e8s \u00e0 tous les PA",
+        "scope-placeholder": "Renseignez une \u00e9tendue",
+        "team-member": "\u00c9quipier",
+        "team-member-placeholder": "S\u00e9lectionner un membre de l\u2019\u00e9quipe"
+      },
+      "remove-team-member": "Retirer de l\u2019\u00e9quipe",
+      "status": {
+        "false": "Inactif",
+        "true": "Actif"
+      },
+      "table-headers": {
+        "last-activity": "Derni\u00e8re connexion",
+        "name": "Nom",
+        "role": "R\u00f4le",
+        "scope": "Port\u00e9e",
+        "status": "Statut"
+      },
+      "team-members": "Membres de l\u2019\u00e9quipe"
+    },
+    "program": {
+      "bulk-import": {
+        "import-error": "Quelque chose s\u2019est mal pass\u00e9 avec l\u2019importation. V\u00e9rifiez <ul><li>l\u2019extension requise (.csv)V\u00e9rifiez</li> <li>le format et les noms de colonne du fichier CSV</li><li><strong>Message d\u2019erreur\u00a0:</strong>{{specific}}</li></ul>",
+        "import-result": {
+          "csv": "Un fichier CSV est automatiquement t\u00e9l\u00e9charg\u00e9, qui indique l\u2019\u00e9tat d\u2019importation et l\u2019\u00e9tat d\u2019enregistrement par ligne.",
+          "existing": "Il y avait {{countExistingPhoneNr}} num\u00e9ros de t\u00e9l\u00e9phone existants, qui sont ignor\u00e9s.",
+          "invalid": "Il y avait {{countInvalidPhoneNr}} num\u00e9ros de t\u00e9l\u00e9phone m\u00e9connaissables. Essayez de les corriger et importez-les \u00e0 nouveau.",
+          "new": "Il y a {{countImported}} nouveaux enregistrements import\u00e9s.",
+          "ready": "Pr\u00eat pour l\u2019importation."
+        },
+        "imported": {
+          "btn-text": "Importer les personnes concern\u00e9es",
+          "confirm-message": "Le syst\u00e8me ne d\u00e9tectera que les nouveaux num\u00e9ros de t\u00e9l\u00e9phone et les importera en tant que personnes concern\u00e9es.",
+          "explanation": "Assurez-vous de faire correspondre le format requis du fichier CSV du mod\u00e8le. L\u2019importation prend environ 1 minute pour 100 enregistrements"
+        },
+        "registered": {
+          "btn-text": "Importer des enregistrements",
+          "confirm-message": "Le syst\u00e8me cr\u00e9era des personnes affect\u00e9es \u00ab enregistr\u00e9es \u00bb.",
+          "explanation": "Assurez-vous de faire correspondre le format requis du fichier CSV du mod\u00e8le. L\u2019importation prend environ 1 minute pour 100 enregistrements"
+        },
+        "timestamp": "Derni\u00e8re importation effectu\u00e9e le : {{dateTime}}"
+      },
+      "export-fsp-intructions": {
+        "btn-text": "Instructions de paiement \u00e0 l\u2019exportation",
+        "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier contenant les instructions de paiement pour le prestataire de services financiers.",
+        "sub-message": {
+          "no-reconciliation": "Vous ne devez utiliser ce fichier <strong>qu\u2019une seule fois par paiement</strong> sur le portail du prestataire de services financiers.",
+          "reconciliation": "Cette exportation n\u2019inclura que les personnes concern\u00e9es pour lesquelles le statut actuel de la transaction est <strong>en attente</strong>."
+        },
+        "timestamp": "Derni\u00e8re exportation effectu\u00e9e le : {{dateTime}}"
+      },
+      "export-list": {
+        "all-people-affected": {
+          "btn-text": "Exporter les personnes touch\u00e9es",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec toutes les personnes concern\u00e9es."
+        },
+        "card-balances": {
+          "btn-text": "Exporter l\u2019utilisation de la carte de d\u00e9bit",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel indiquant le solde de chaque carte.<br /><br />Remarque importante : Les soldes des cartes disponibles au t\u00e9l\u00e9chargement ne sont pas en temps r\u00e9el. Le rapport inclut la date et l\u2019heure de la derni\u00e8re mise \u00e0 jour externe de chaque carte."
+        },
+        "duplicates": {
+          "basedOn": "La v\u00e9rification des doublons est bas\u00e9e sur : {{duplicateAttributes}}",
+          "btn-text": "Exporter les personnes concern\u00e9es en double",
+          "canTakeFewMinutes": "Cela peut prendre jusqu\u2019\u00e0 quelques minutes.",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec toutes les personnes concern\u00e9es qui sont en double."
+        },
+        "included": {
+          "btn-text": "Exportation incluse Personnes affect\u00e9es",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec toutes les personnes concern\u00e9es incluses."
+        },
+        "no-data": "Il n\u2019y a actuellement aucune donn\u00e9e \u00e0 t\u00e9l\u00e9charger",
+        "pa-data-changes": {
+          "btn-text": "Exporter les modifications apport\u00e9es aux donn\u00e9es",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel montrant toutes les modifications de donn\u00e9es pour toutes les personnes affect\u00e9es par ce programme.",
+          "confirm-prompt": {
+            "choose-dates": "Vous pouvez \u00e9galement passer une date de d\u00e9but et/ou une date de fin pour filtrer les modifications de donn\u00e9es.",
+            "confirm-btn": "Exportation",
+            "date-from": "Date de d\u00e9but {{date}}",
+            "date-to": "Date de fin {{date}}",
+            "wrong-dates": "La date de fin doit \u00eatre sup\u00e9rieure \u00e0 la date de d\u00e9but"
+          }
+        },
+        "payment": {
+          "btn-text": "Rapport d\u2019exportation",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec toutes les personnes touch\u00e9es incluses dans ce paiement."
+        },
+        "selected-for-validation": {
+          "btn-text": "Liste d\u2019exportation : s\u00e9lectionn\u00e9e pour validation",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec toutes les personnes concern\u00e9es s\u00e9lectionn\u00e9es pour la validation, \u00e0 utiliser pour les visites de validation."
+        },
+        "timestamp": "Derni\u00e8re exportation effectu\u00e9e le : {{dateTime}}",
+        "unused-vouchers": {
+          "btn-text": "Exporter la liste des bons d\u2019achat non utilis\u00e9s",
+          "confirm-message": "Cela t\u00e9l\u00e9chargera un fichier Excel avec tous les bons non utilis\u00e9s.<br /><br />Remarque importante : Les bons non utilis\u00e9s disponibles au t\u00e9l\u00e9chargement ne sont pas en temps r\u00e9el. Le rapport inclut la date et l\u2019heure de la derni\u00e8re mise \u00e0 jour externe de chaque bon."
+        }
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "Importer des donn\u00e9es de rapprochement des paiements",
+        "confirm-message": "Importer des donn\u00e9es de rapprochement des paiements",
+        "explanation": "Assurez-vous de t\u00e9l\u00e9charger les donn\u00e9es de rapprochement exactement comme fournies par le fournisseur de services financiers.",
+        "import-result": {
+          "mismatch": "ATTENTION : <strong>{{countPaymentStarted}}</strong> paiements ont \u00e9t\u00e9 lanc\u00e9s pour <strong>le paiement #{{payment}}</strong>. Les donn\u00e9es de rapprochement contiennent <strong>{{countImported}}</strong> paiements. Par cons\u00e9quent, le montant total dans les donn\u00e9es de rapprochement ne correspond pas aux paiements commenc\u00e9s. Notez que tous les paiements qui n\u2019ont pas d\u2019enregistrement de r\u00e9ussite dans les donn\u00e9es de rapprochement sont consid\u00e9r\u00e9s comme des paiements ayant \u00e9chou\u00e9.",
+          "new": "Donn\u00e9es de paiement mises \u00e0 jour pour <strong>les personnes concern\u00e9es par {{countTotal}}</strong> :<ul><li>22Les paiements RR11 sont <strong>r\u00e9ussis</strong>Les paiements <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> ont <strong>\u00e9chou\u00e9</strong></li></ul>",
+          "not-found": "Il y a eu <strong>{{countNotFound}}</strong> transactions pour lesquelles aucune personne touch\u00e9e n\u2019a \u00e9t\u00e9 trouv\u00e9e. Essayez de les corriger et t\u00e9l\u00e9chargez-les \u00e0 nouveau.",
+          "ready": "Donn\u00e9es de rapprochement import\u00e9es pour <strong>les #{{payment}}</strong> de paiement."
+        },
+        "timestamp": "Derni\u00e8re importation effectu\u00e9e le : {{dateTime}}"
+      },
+      "metrics": {
+        "export-button": {
+          "label": "Exporter au format CSV"
+        },
+        "header": {
+          "latest-value": "Derni\u00e8re valeur",
+          "metric": "M\u00e9trique"
+        },
+        "over-time": {
+          "pa": {
+            "new": "Nouveau",
+            "pre-existing": "Pr\u00e9existant"
+          },
+          "payment-label": "Paiement",
+          "tooltip": "Ce graphique montre le nombre de personnes touch\u00e9es qui ont \u00e9t\u00e9 pay\u00e9es avec succ\u00e8s par paiement. <br><br>Ce nombre est divis\u00e9 en PA \u00ab pr\u00e9existants \u00bb et \u00ab nouveaux \u00bb, selon que le PA \u00e9tait \u00e9galement pr\u00e9sent dans le paiement pr\u00e9c\u00e9dent ou non. <br><br>\u00ab Pay\u00e9 avec succ\u00e8s \u00bb signifie que le paiement (par exemple, le bon) a \u00e9t\u00e9 \u00e9mis avec succ\u00e8s et que le PA en est inform\u00e9, mais n\u2019implique pas que le paiement est collect\u00e9 et/ou d\u00e9pens\u00e9."
+        },
+        "pa": {
+          "deleted": "Supprim\u00e9",
+          "imported": "Import\u00e9",
+          "included": "Inclus",
+          "inclusionEnded": "Inclusion termin\u00e9e",
+          "invited": "Invit\u00e9",
+          "noLongerEligible": "N\u2019est plus admissible",
+          "registered": "Recommand\u00e9",
+          "rejected": "Rejet\u00e9",
+          "selectedForValidation": "S\u00e9lectionn\u00e9 pour validation",
+          "startedRegistration": "D\u00e9but de l\u2019inscription",
+          "targeted": "PA cibl\u00e9s",
+          "validated": "Valid\u00e9"
+        },
+        "state-explanation": {
+          "deleted": "PA qui ont \u00e9t\u00e9 supprim\u00e9s. Il peut s\u2019agir, par exemple, de PA supprim\u00e9s apr\u00e8s <br> une importation incorrecte, ainsi que de PA qui ont re\u00e7u des paiements, qui ne sont plus inclus et qui sont ensuite supprim\u00e9s apr\u00e8s un certain temps.",
+          "imported": "PA qui ont \u00e9t\u00e9 import\u00e9s, en fonction du num\u00e9ro de t\u00e9l\u00e9phone.",
+          "included": "PA qui ont \u00e9t\u00e9 inclus. <br> Ils recevront les paiements \u00e0 partir du prochain tour de paiement/versement.",
+          "inclusionEnded": "PA pour lesquels l\u2019inclusion a pris fin. <br> Ils ne recevront pas (plus) de paiements pour le prochain tour de paiement/versement.",
+          "invited": "PA qui ont \u00e9t\u00e9 invit\u00e9s (apr\u00e8s l\u2019importation).",
+          "noLongerEligible": "PA qui ont \u00e9t\u00e9 marqu\u00e9s comme \u00ab n\u2019\u00e9tant plus \u00e9ligibles \u00bb. <br> Il s\u2019agit de PA personnes qui ont \u00e9t\u00e9 invit\u00e9es mais qui ne se sont pas encore inscrites et qui ne sont plus \u00e9ligibles.",
+          "registered": "PA qui ont termin\u00e9 l\u2019enregistrement dans l\u2019application PA.",
+          "rejected": "PA qui ont \u00e9t\u00e9 rejet\u00e9s. <br> Ils ne recevront pas (plus) de paiements pour le prochain tour de paiement/versement.",
+          "selectedForValidation": "PA qui ont \u00e9t\u00e9 s\u00e9lectionn\u00e9s pour la validation.",
+          "startedRegistration": "PA qui ont commenc\u00e9 \u00e0 s\u2019inscrire dans l\u2019application PA.",
+          "validated": "PA qui ont \u00e9t\u00e9 valid\u00e9s."
+        },
+        "timeframe": {
+          "calendar-month": {
+            "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - \u00e0 n\u2019importe quel moment du mois choisi. Il ne s\u2019agit pas du nombre de PA inclus \u00e0 la fin de ce mois <br><br> , mais du nombre de PA qui ont \u00e9t\u00e9 inclus \u00e0 un moment donn\u00e9 de ce mois. Notez que les PA <br><br> inclus dans ce mois ne sont pas n\u00e9cessairement les m\u00eames PA que ceux qui se sont inscrits ce mois-ci, car ils peuvent s\u2019\u00eatre inscrits par exemple le mois pr\u00e9c\u00e9dent.",
+            "label": "Mois calendaire :",
+            "select-hint": "Choisissez le mois..."
+          },
+          "month-from-start": {
+            "explanation": "Cette ligne affiche toutes les donn\u00e9es jusqu\u2019\u00e0 ce mois inclus, au lieu de uniquement les donn\u00e9es sp\u00e9cifiques \u00e0 ce mois.",
+            "label": "Jusqu\u2019au mois s\u00e9lectionn\u00e9 :"
+          },
+          "payment-from-start": {
+            "explanation": "Cette ligne affiche toutes les donn\u00e9es jusqu\u2019au paiement s\u00e9lectionn\u00e9, au lieu de uniquement les donn\u00e9es sp\u00e9cifiques \u00e0 cette p\u00e9riode de paiement (la p\u00e9riode entre le paiement pr\u00e9c\u00e9dent et le paiement s\u00e9lectionn\u00e9).",
+            "label": "Jusqu\u2019au # de paiement s\u00e9lectionn\u00e9 :"
+          },
+          "payment": {
+            "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - \u00e0 tout moment entre le paiement pr\u00e9c\u00e9dent et le paiement choisi. Il ne s\u2019agit pas du nombre de PA inclus <br><br> au moment de ce paiement, mais du nombre de PA qui ont \u00e9t\u00e9 inclus entre le paiement pr\u00e9c\u00e9dent et le paiement choisi. Notez que les PA <br><br> inclus dans cette p\u00e9riode ne sont pas n\u00e9cessairement les m\u00eames PA que ceux qui se sont inscrits au cours de cette p\u00e9riode, car ils peuvent s\u2019\u00eatre inscrits par exemple au cours de la p\u00e9riode pr\u00e9c\u00e9dente.",
+            "label": "# de paiement\u00a0:",
+            "option": "#{{number}} de paiement - {{date}}",
+            "select-hint": "Choisissez le paiement..."
+          },
+          "to-date": {
+            "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - \u00e0 tout moment entre le d\u00e9but du programme et maintenant. Ce n\u2019est pas le nombre de PA inclus <br><br> pour le moment, mais le nombre de tous les PA qui ont \u00e9t\u00e9 inclus \u00e0 un moment donn\u00e9.",
+            "label": "\u00c0 ce jour :"
+          }
+        },
+        "totals": {
+          "tooltip": "PA qui ont re\u00e7u un ou plusieurs paiements",
+          "total-helped-to-date": "Nombre total de PA personnes aid\u00e9es \u00e0 ce jour"
+        },
+        "units": {
+          "duration": {
+            "month": "Mois(s)",
+            "week": "semaine(s)"
+          },
+          "frequency": {
+            "month": "mensuel",
+            "week": "hebdomadaire",
+            "weeks2": "2 par semaine"
+          }
+        }
+      },
+      "phases": {
+        "design": {
+          "btnText": "Ouvert aux inscriptions",
+          "label": "Concevoir"
+        },
+        "evaluation": {
+          "btnText": "Mettre fin au programme",
+          "label": "\u00c9valuation"
+        },
+        "inclusion": {
+          "btnText": "D\u00e9placer vers : Paiement",
+          "label": "Inclusion"
+        },
+        "payment": {
+          "btnText": "D\u00e9placer vers : \u00c9valuation",
+          "label": "Paiement"
+        },
+        "registrationValidation": {
+          "actionText-disabled-registrations": "Les inscriptions sont maintenant d\u00e9sactiv\u00e9es pour ce programme",
+          "actionText-enabled-registrations": "Les inscriptions sont maintenant activ\u00e9es pour ce programme",
+          "btnText": "D\u00e9placer vers : Inclusion",
+          "btnText-no-validation": "D\u00e9placer vers : Inclusion",
+          "label": "Inscription et validation",
+          "label-no-validation": "Inscription",
+          "toggleText-enable-registrations": "Autoriser les nouvelles inscriptions"
+        }
+      },
+      "program-details": {
+        "aidworkerAssignments": "Travailleurs humanitaires affect\u00e9s",
+        "distributionDuration": "Dur\u00e9e de distribution",
+        "distributionFrequency": "Fr\u00e9quence de distribution",
+        "endDate": "Date de fin",
+        "financialServiceProviders": "Prestataires de services financiers",
+        "fixedTransferValue": "Valeur de transfert",
+        "location": "Emplacement",
+        "section-title": "D\u00e9tails du programme",
+        "startDate": "Date de d\u00e9but",
+        "titlePaApp": "Titre PA-app",
+        "titlePortal": "Portail de titres"
+      },
+      "program-payout": {
+        "all-closed-payments": "Tous les paiements cl\u00f4tur\u00e9s",
+        "calculating-transfer-amount": "Calcul du montant total du transfert",
+        "cbe": {
+          "btn": "Rapport de v\u00e9rification CBE",
+          "message": "Les donn\u00e9es de ce rapport sont bas\u00e9es sur des donn\u00e9es import\u00e9es chaque nuit par CBE. <br /> Si vous avez modifi\u00e9 des donn\u00e9es aujourd\u2019hui, cela ne sera pas refl\u00e9t\u00e9 dans le rapport.",
+          "subHeader": "T\u00e9l\u00e9charger le rapport de v\u00e9rification CBE"
+        },
+        "choose-payment": "Choisissez le paiement...",
+        "closed": "Ferm\u00e9",
+        "in-progress": "Paiement en cours",
+        "last-payment": {
+          "confirm-prompt": "Cela r\u00e9essaiera UNIQUEMENT le(s) paiement(s) {{number}} ayant \u00e9chou\u00e9.",
+          "error": "Rat\u00e9",
+          "last-payment": "Dernier paiement\u00a0: {{nr}}",
+          "retry-all": "Echec de la nouvelle tentative de tous les {{number}}",
+          "success": "R\u00e9ussi",
+          "waiting": "Attente"
+        },
+        "make-export": "Exporter les donn\u00e9es de paiement",
+        "make-payment": {
+          "error": {
+            "generic": "Quelque chose s\u2019est mal pass\u00e9 avec le paiement. Veuillez contacter le support technique 121."
+          },
+          "make-payment": "Effectuer le paiement\u00a0: {{nr}}",
+          "number-included": "PA inclus\u00a0: {{number}}"
+        },
+        "open": "Ouvrir",
+        "payment-nr": "Paiement #{{number}}",
+        "result": {
+          "api": "Demande de paiement envoy\u00e9e avec succ\u00e8s pour {{nrPa}} PA(s). <br><br>Le traitement des paiements peut prendre un certain temps. Consultez le tableau PA ci-dessous pour conna\u00eetre l\u2019\u00e9tat actuel du ou des paiements. <br><br>Vous pouvez fermer cette fen\u00eatre contextuelle.",
+          "csv": "Pr\u00e9paration r\u00e9ussie des donn\u00e9es de paiement pour {{nrPa}} PA(s). <br><br>Ensuite, s\u2019il vous pla\u00eet :S\u00e9lectionnez le paiement dans le <ol><li>menu d\u00e9roulant <strong>Choisir</strong></li> le paiement... <li>Utilisez le bouton <strong>Exporter les instructions de paiement</strong></li> <li>Enregistrez le fichier XLSX obtenu dans le format requis par</li> le prestataire de services financiers <li>T\u00e9l\u00e9chargez le fichier sur le portail du prestataire de services financiers.</li></ol>",
+          "xml": "Pr\u00e9paration r\u00e9ussie des donn\u00e9es de paiement pour {{nrPa}} PA(s). <br><br>Ensuite, s\u2019il vous pla\u00eet :S\u00e9lectionnez le paiement <ol><li>dans le menu d\u00e9roulant <strong>Choisir</strong></li> le paiement... <li>Utilisez le bouton <strong>Exporter les instructions de paiement</strong></li> <li>Enregistrez le fichier XML r\u00e9sultant</li><li>T\u00e9l\u00e9chargez le fichier sur le portail du prestataire de services financiers.</li></ol>"
+        },
+        "start-payout": "Commencer le paiement maintenant",
+        "total-amount": "Montant maximum qui sera d\u00e9pens\u00e9 pour ce paiement : {{totalCost}}",
+        "total-included": "Paiement \u00e0\u00a0: {{totalIncluded}} PA(s)"
+      },
+      "program-people-affected": {
+        "action-inputs": {
+          "add-placeholder": "Ajouter un champ personnalis\u00e9",
+          "delete-warning": "Vous \u00eates sur le point de supprimer les informations personnelles de ces personnes concern\u00e9es. Cette action ne peut pas \u00eatre annul\u00e9e. Vous ne pouvez plus voir les paiements pass\u00e9s et vous ne pouvez pas leur faire de nouveaux paiements.",
+          "message-checkbox": "Envoyez un message \u00e0 ces personnes touch\u00e9es",
+          "message-preview": "Aper\u00e7u du message",
+          "placeholder-pa-data": "Veuillez vous assurer que pour tous les champs personnalis\u00e9s utilis\u00e9s, les donn\u00e9es sont disponibles pour toutes les personnes concern\u00e9es s\u00e9lectionn\u00e9es.",
+          "placeholder-typeahead-placeholder": "S\u00e9lectionner un champ",
+          "templated-explanation": "Le message suivant sera envoy\u00e9 aux PA dans leur propre langue.",
+          "templated-support": "Veuillez contacter l\u2019\u00e9quipe d\u2019assistance 121 si vous souhaitez modifier ce mod\u00e8le de message.",
+          "type-message": "Tapez message",
+          "type-message-tooltip": "Le message doit comporter plus de {{minLength}} caract\u00e8re(s). Notez que si vous d\u00e9passez 160 caract\u00e8res, la personne concern\u00e9e peut recevoir le message sous forme de plusieurs textes, si elle dispose d\u2019un t\u00e9l\u00e9phone polyvalent (non intelligent)."
+        },
+        "actions": {
+          "deletePa": "Supprimer PA",
+          "doPayment": "Effectuer le paiement",
+          "endInclusion": "Mettre fin \u00e0 l\u2019inclusion dans le programme",
+          "include": "Inclure dans le programme",
+          "invite": "Invitation \u00e0 l\u2019inscription",
+          "markNoLongerEligible": "Marquer comme n\u2019\u00e9tant plus \u00e9ligible",
+          "pause": "Pause PAs",
+          "reject": "Rejeter du programme",
+          "selectForValidation": "S\u00e9lectionner pour validation",
+          "sendMessage": "Envoyer un message aux PA"
+        },
+        "apply-action": "Appliquer l\u2019action",
+        "bulk-action-conditions": {
+          "deletePa": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux enregistrements qui n\u2019ont pas le statut <i>Inclus</i>.",
+          "doPayment": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions qui n\u2019ont pas encore re\u00e7u le paiement.",
+          "endInclusion": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions dont le statut <i>est Inclus</i> ou <i>Termin\u00e9</i>.",
+          "include": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux enregistrements dont le statut <i>est Enregistr\u00e9,</i> <i>S\u00e9lectionn\u00e9 pour validation</i>, <i>Valid\u00e9</i>, <i>Rejet\u00e9</i>, <i>Inclusion termin\u00e9e</i>, <i>Suspendu</i> ou <i>Termin\u00e9</i>.",
+          "invite": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions dont le statut est <i>Import\u00e9</i> ou <i>N\u2019est plus admissible</i>.",
+          "markNoLongerEligible": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions dont le statut <i>est Import\u00e9</i> ou <i>Invit\u00e9.</i>",
+          "pause": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux enregistrements dont le statut <i>est Inclus</i>.",
+          "reject": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions dont le statut est Enregistr\u00e9, <i>S\u00e9lectionn\u00e9 pour validation</i>, <i>Valid\u00e9</i>, <i>Inclus</i>, N\u2019est plus \u00e9ligible ou <i>Enregistr\u00e9 alors qu\u2019il n\u2019est plus \u00e9ligible</i>.<i></i><i></i>",
+          "selectForValidation": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux enregistrements dont le statut <i>est Enregistr\u00e9.</i>",
+          "sendMessage": "Remarque : L\u2019action <strong>{{action}}</strong> ne s\u2019applique qu\u2019aux inscriptions auxquelles un num\u00e9ro de t\u00e9l\u00e9phone est associ\u00e9."
+        },
+        "bulk-action-response": {
+          "close-popup": "Vous pouvez fermer cette fen\u00eatre contextuelle.",
+          "pa-moved-phase": "Les personnes affect\u00e9es peuvent \u00eatre visibles dans une autre phase apr\u00e8s ce changement de statut.",
+          "response": "Demande envoy\u00e9e avec succ\u00e8s \u00e0 {{action}} pour <strong>{{paNumber}}</strong> Personnes concern\u00e9es.<strong></strong> <br><br>Le traitement de l\u2019op\u00e9ration peut prendre un certain temps. Consultez la table PA ci-dessous pour conna\u00eetre l\u2019\u00e9tat \u00e0 jour."
+        },
+        "choose-action": "Choisissez l\u2019action...",
+        "column": {
+          "custom-attribute-false": "Non",
+          "custom-attribute-true": "Oui",
+          "dob": "Date de naissance",
+          "failedPayment": "\u00c9chec du paiement #",
+          "fspDisplayNamePortal": "Fournisseur de services financiers",
+          "hasNote": "A noter",
+          "inclusionScore": "Score d\u2019inclusion",
+          "lastMessageStatus": "Dernier message",
+          "maxPayments": "Paiements max.",
+          "name": "Nom",
+          "notYetSentPayment": "Le paiement n\u2019a pas encore \u00e9t\u00e9 envoy\u00e9 #",
+          "note": "Note",
+          "payment-history": "Historique des paiements",
+          "paymentAmountMultiplier": "Valeur(s) de transfert",
+          "paymentCount": "Paiements jusqu\u2019\u00e0 pr\u00e9sent",
+          "paymentCountRemaining": "Paiements restants",
+          "personAffectedSequence": "Personne touch\u00e9e",
+          "phoneNumber": "Num\u00e9ro de t\u00e9l\u00e9phone",
+          "preferredLanguage": "Langue pr\u00e9f\u00e9r\u00e9e",
+          "referenceId": "ID de r\u00e9f\u00e9rence",
+          "registrationCreated": "Cr\u00e9ation d\u2019une inscription",
+          "registrationCreatedDate": "Date de cr\u00e9ation de l\u2019inscription",
+          "select": "Choisir",
+          "status": "Statut",
+          "successPayment": "Succ\u00e8s pour le paiement #",
+          "waitingPayment": "En attente de paiement #",
+          "whatsappPhoneNumber": "WhatsApp nr."
+        },
+        "edit-person-affected-popup": {
+          "edit-icon-title": "Modifier les informations de la personne concern\u00e9e",
+          "error-alert": {
+            "invalid-date": "Le format de date que vous avez saisi n\u2019est pas valide. Un exemple de format de date valide est 31-12-1970 qui suit jour-mois-ann\u00e9e, JJ-MM-AAAA"
+          },
+          "fspChangeWarning": "La s\u00e9lection de ce FSP supprimera les attributs suivants li\u00e9s \u00e0 l\u2019ancien FSP :",
+          "fspNewAttributesExplanation": "Pour ce FSP, les attributs suivants sont requis :",
+          "has-notes-title": "Notes disponibles",
+          "note": {
+            "introduction": "Vous pouvez ajouter, modifier ou supprimer des notes sur cette personne concern\u00e9e dans le champ ci-dessous. Veuillez r\u00e9duire au minimum les informations personnelles identifiables (PII) et supprimer toutes les informations personnelles lorsque vous n\u2019en avez plus besoin.",
+            "latest-update": "Derni\u00e8re mise \u00e0 jour le\u00a0: {{timestamp}}",
+            "placeholder": "Commencez une note sur cette personne affect\u00e9e en tapant ici...",
+            "save": "Enregistrer la note",
+            "section-title": "Notes sur la personne touch\u00e9e"
+          },
+          "popup-title": "{{pa}} info d\u00e9taill\u00e9e",
+          "properties": {
+            "accountId": {
+              "label": "ID de compte"
+            },
+            "date": {
+              "label": "Date"
+            },
+            "error": {
+              "not-an-integer": "L\u2019entr\u00e9e doit \u00eatre un entier",
+              "not-empty": "L\u2019entr\u00e9e ne peut pas \u00eatre vide",
+              "too-low": "L\u2019entr\u00e9e doit \u00eatre sup\u00e9rieure au nombre de paiements qui ont d\u00e9j\u00e0 \u00e9t\u00e9 envoy\u00e9s."
+            },
+            "fixedChoice": {
+              "label": "Choix fixe"
+            },
+            "maxPayments": {
+              "explanation": "Le nombre maximal de paiements pour cette personne touch\u00e9e. Vous pouvez supprimer la limite en supprimant la valeur et en enregistrant.",
+              "label-no-payments": "Paiements maximaux",
+              "label-payments": "Paiements maximum ({{alreadyReceivedPayments}} d\u00e9j\u00e0 envoy\u00e9s)"
+            },
+            "openAnswer": {
+              "label": "R\u00e9ponse ouverte"
+            },
+            "paymentAmountMultiplier": {
+              "explanation": "La valeur de transfert sera multipli\u00e9e par ce nombre pour cette personne touch\u00e9e",
+              "label": "Multiplicateur de valeur de transfert"
+            },
+            "personalId": {
+              "label": "Pi\u00e8ce d\u2019identit\u00e9 personnelle"
+            },
+            "phoneNumber": {
+              "explanation": "Le format requis est le suivant : UNIQUEMENT les num\u00e9ros, y compris le code du pays.",
+              "label": "Num\u00e9ro de t\u00e9l\u00e9phone"
+            },
+            "preferredLanguage": {
+              "label": "Langue pr\u00e9f\u00e9r\u00e9e"
+            },
+            "scope": {
+              "label": "Port\u00e9e"
+            },
+            "whatsappPhoneNumber": {
+              "explanation": "Le format requis est le suivant : UNIQUEMENT les num\u00e9ros, y compris le code du pays.",
+              "label": "Num\u00e9ro WhatsApp"
+            }
+          },
+          "reason-popup": {
+            "explanation": "Veuillez fournir une raison pour laquelle ce changement a \u00e9t\u00e9 apport\u00e9.",
+            "max-length": "N\u2019utilisez pas plus de {{maxLength}} caract\u00e8res.",
+            "subheader": "Raison de la mise \u00e0 jour",
+            "unsaved-changes-explanation": "Vos modifications n\u2019ont pas \u00e9t\u00e9 enregistr\u00e9es."
+          }
+        },
+        "filter-btn": {
+          "btn-label": {
+            "paStatus": "Statut"
+          },
+          "common": {
+            "all-options": "Tout",
+            "apply-btn": "Appliquer",
+            "cancel-btn": "Annuler",
+            "filter-by": "Filtrer par\u00a0:"
+          },
+          "empty-selection-alert-message": "Veuillez s\u00e9lectionner au moins une option",
+          "multiple-choice-hidden-options": "La liste ci-dessus n\u2019affiche un statut que s\u2019il est attribu\u00e9 \u00e0 au moins une personne concern\u00e9e"
+        },
+        "filter-placeholder": "Tapez value...",
+        "filter-toggle": "Tout afficher",
+        "filter-tooltip": "Afficher toutes les personnes concern\u00e9es ou uniquement les personnes concern\u00e9es par cette phase du programme",
+        "footer-selected-of-total": "{{selectedCount}} s\u00e9lectionn\u00e9 / {{totalCount}} au total",
+        "language": {
+          "ar": "Arabe",
+          "en": "Anglais",
+          "es": "Espagnol",
+          "fr": "Fran\u00e7ais",
+          "in": "Indon\u00e9sien",
+          "nl": "N\u00e9erlandais",
+          "pt_BR": "Portugais",
+          "tl": "Filipino",
+          "tr": "Turc"
+        },
+        "last-message": {
+          "no-message": "Pas encore de messages"
+        },
+        "max-payments": {
+          "left": "restant"
+        },
+        "message-history-popup": {
+          "accordion-header": "Texte du message",
+          "chip-status": {
+            "delivered": "Livr\u00e9",
+            "failed": "Rat\u00e9",
+            "read": "Lire",
+            "sent": "Envoy\u00e8rent"
+          },
+          "content-type": {
+            "custom": "Message personnalis\u00e9",
+            "default-reply": "R\u00e9ponse par d\u00e9faut",
+            "generic-templated": "Notification de message",
+            "included": "Inclusion",
+            "inclusion-ended": "Fin de l\u2019inclusion",
+            "invited": "Invitation \u00e0 l\u2019inscription",
+            "payment": "Paiement",
+            "payment-instructions": "Instructions de paiement",
+            "payment-reminder": "Rappel de paiement",
+            "payment-templated": "Notification de paiement",
+            "payment-voucher": "Bon de paiement",
+            "registered": "Inscription",
+            "rejected": "Rejet"
+          },
+          "image-string": "(l\u2019image)",
+          "message-title": "Historique des messages",
+          "status-line": {
+            "code": "Code d\u2019erreur Twilio : "
+          },
+          "twilio-status": {
+            "accepted": "Accept\u00e9",
+            "delivered": "Livr\u00e9",
+            "delivery-unknown": "Livraison inconnue",
+            "failed": "Rat\u00e9",
+            "queued": "Queue",
+            "read": "Lire",
+            "scheduled": "Pr\u00e9vue",
+            "sending": "Envoi",
+            "sent": "Envoy\u00e8rent",
+            "undelivered": "Non livr\u00e9"
+          },
+          "type": {
+            "sms": "SMS",
+            "whatsapp": "WhatsApp (en anglais)"
+          }
+        },
+        "no-actions": "Aucune action disponible",
+        "no-checkboxes": "\u00c0 l\u2019heure actuelle, il n\u2019y a pas de personnes concern\u00e9es auxquelles cette action peut s\u2019appliquer.",
+        "payment-history-popup": {
+          "title": "Historique des paiements"
+        },
+        "payment-status-popup": {
+          "current-balance": "Solde actuel : {{currentBalance}}<br><br>\u00e0 : {{timestamp}}",
+          "download-voucher": "T\u00e9l\u00e9charger le bon d\u2019\u00e9change",
+          "error-message": "Message d'erreur",
+          "fix-error": "Veuillez prendre les mesures n\u00e9cessaires pour corriger cette erreur. Utilisez ensuite le bouton ci-dessous pour r\u00e9essayer de payer pour cette personne concern\u00e9e.",
+          "get-balance": "Obtenir le solde actuel du bon d\u2019achat",
+          "message-title": "Message envoy\u00e9 #{{payment}} de paiement : {{timestamp}}",
+          "money-title": "Bon d\u2019achat envoy\u00e9 #{{payment}} de paiement\u00a0: {{timestamp}}",
+          "print-voucher": "Imprimer le bon d\u2019achat",
+          "retry": "R\u00e9essayer le paiement pour ce PA",
+          "single-payment": {
+            "intro": "Ne payez que pour 1 PA",
+            "start-payout": "Commencez \u00e0 payer maintenant pour {{paNr}}",
+            "total-amount": "Montant total : {{cost}} * multiplicateur de {{multiplier}} = <strong>{{totalCost}}</strong>"
+          }
+        },
+        "status": {
+          "completed": "Termin\u00e9",
+          "imported": "Import\u00e9",
+          "included": "Inclus",
+          "inclusionEnded": "Fin de l\u2019inclusion",
+          "invited": "Invit\u00e9",
+          "noLongerEligible": "N\u2019est plus admissible",
+          "paused": "Pause",
+          "registered": "Recommand\u00e9",
+          "registeredWhileNoLongerEligible": "Inscrit alors qu\u2019il n\u2019est plus admissible",
+          "rejected": "Rejet\u00e9",
+          "selectedForValidation": "S\u00e9lectionn\u00e9 pour validation",
+          "startedRegistration": "Cr\u00e9\u00e9",
+          "validated": "Valid\u00e9"
+        },
+        "submit-warning": "Vous \u00eates sur le point de :",
+        "submit-warning-people-affected": "Effectuez l\u2019action {{actionLabel}} sur <strong>{{applicableCount}}</strong> Personnes affect\u00e9es.",
+        "transaction": {
+          "above": "Au-dessus de la limite",
+          "amount": "Quantit\u00e9",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "Pi\u00e8ce d\u2019identit\u00e9 de la carte Visa"
+          },
+          "do-single-payment": "Effectuer un paiement unique",
+          "error": "Rat\u00e9",
+          "fsp": "Le FSP",
+          "nosupport": "Aucun FSP n\u2019est pris en charge pour ce transfert",
+          "not-yet-sent": "Pas encore envoy\u00e9",
+          "open-voucher": "Bon d\u2019achat ouvert",
+          "payment-number": "Paiement #{{number}}",
+          "payments-popup": "Paiements",
+          "planned": "Planifi\u00e9",
+          "received": "Re\u00e7u",
+          "retry": "D\u00e9tails",
+          "send-payment": "Envoyer le paiement",
+          "sent": "Envoy\u00e8rent",
+          "show-status": "Afficher l\u2019\u00e9tat",
+          "success": "Succ\u00e8s",
+          "waiting": "Attente",
+          "waiting-message": "Toujours en attente d\u2019une mise \u00e0 jour de l\u2019\u00e9tat de cette transaction. Actualisez la page pour conna\u00eetre l\u2019\u00e9tat le plus r\u00e9cent."
+        }
+      },
+      "table-filter-row": {
+        "apply-filter": "Appliquer le filtre",
+        "clear-all": "Effacer tous les filtres",
+        "filtered-results": "Destinataires filtr\u00e9s",
+        "remove-filter": "Supprimer le filtre",
+        "select-column-to-filter": "Tapez ou s\u00e9lectionnez la colonne \u00e0 filtrer"
+      }
+    },
+    "programs-list": {
+      "card": {
+        "budget": "Budget total du projet ",
+        "included": "Inclus les personnes touch\u00e9es",
+        "spent": "Argent d\u00e9pens\u00e9",
+        "status": "\u00c9tat du programme : ",
+        "targeted": "Personnes cibl\u00e9es touch\u00e9es",
+        "updated": "Derni\u00e8re mise \u00e0 jour : "
+      },
+      "not-available": "Aucun programme n\u2019est disponible.",
+      "pageSubtitle": "Vous ex\u00e9cutez activement le(s) programme(s) {{nrPrograms}}",
+      "pageTitle": "Programmes"
+    },
+    "team": {
+      "pageTitle": "L\u2019\u00e9quipe du programme"
+    },
+    "user": {
+      "change-password": {
+        "confirm-password": "Confirmer le mot de passe",
+        "current-password": "Mot de passe actuel",
+        "failed": "\u00c9chec de la tentative : mot de passe actuel incorrect",
+        "new-password": "Nouveau mot de passe",
+        "success": "Mot de passe modifi\u00e9",
+        "title": "Changer le mot de passe"
+      },
+      "notification-messages": {
+        "different-passwords": "Les mots de passe ne correspondent pas.",
+        "password-requirements": "Le mot de passe doit comporter au moins {{minLength}} caract\u00e8res, une lettre majuscule, une lettre minuscule et un chiffre."
+      },
+      "pageTitle": "Utilisateur"
+    },
+    "users": {
+      "add-new-user": "Ajouter un nouvel utilisateur",
+      "page-description": "Sur cette page, vous pouvez ajouter et g\u00e9rer des utilisateurs, ainsi que voir les r\u00f4les et les autorisations.",
+      "pageTitle": "Utilisateurs et r\u00f4les",
+      "roles-tab": "R\u00f4les",
+      "search": "Rechercher...",
+      "status": {
+        "false": "Inactif",
+        "true": "Actif"
+      },
+      "table-headers": {
+        "last-login": "Derni\u00e8re connexion",
+        "status": "Statut",
+        "user-type": "Type d\u2019utilisateur",
+        "username": "Nom d\u2019utilisateur"
+      },
+      "title": "UTILISATEURS PAGE",
+      "total-users": "Utilisateurs",
+      "user-type": {
+        "admin": "Admin",
+        "regular": "R\u00e9gulier"
+      },
+      "users-tab": "Utilisateurs"
+    }
+  },
+  "password-toggle": {
+    "hide": "Masquer le mot de passe",
+    "show": "Afficher le mot de passe"
+  },
+  "refresh-data": {
+    "last-updated": "Derni\u00e8re mise \u00e0 jour : {{date}}"
+  },
+  "registration-details": {
+    "activity-overview": {
+      "action": {
+        "add-note": "Ajouter une note"
+      },
+      "actions": "Actions",
+      "activities": {
+        "data-changes": {
+          "label": "Modification des donn\u00e9es",
+          "reason": "<br><b>Raison\u00a0:</b> {{reason}}",
+          "values": "<b>Ancien</b>\u00a0: {{oldValue}}<br><b>Nouveau\u00a0:</b> {{newValue}}"
+        },
+        "message": {
+          "label": "Message"
+        },
+        "note": {
+          "label": "Note"
+        },
+        "payment": {
+          "description": "Le #{{number}} de paiement est de {{status}}.",
+          "label": "Paiement #{{number}}"
+        },
+        "status": {
+          "description": "Le statut de la personne touch\u00e9e a \u00e9t\u00e9 chang\u00e9 pour : {{status}}.",
+          "label": "Mise \u00e0 jour du statut"
+        }
+      },
+      "add-note-popup": {
+        "add-note-profile": "Vous \u00eates sur le point d\u2019ajouter une note au profil de {{ name }}.",
+        "note-textarea-placeholder": "Cliquez ici pour taper une courte note",
+        "note-visible": "La note sera visible par les 121 autres utilisateurs autoris\u00e9s \u00e0 consulter leurs profils personnels.",
+        "type-note": "Note de type :"
+      },
+      "filters": {
+        "dataChanges": "Modifications des donn\u00e9es",
+        "message": "Messages",
+        "notes": "Notes",
+        "null": "Tout",
+        "payment": "Paiements",
+        "status": "Historique des statuts"
+      },
+      "title": "Aper\u00e7u de l\u2019activit\u00e9"
+    },
+    "error": "Personne introuvable",
+    "pageTitle": "Modalit\u00e9s d\u2019inscription",
+    "payment-history": {
+      "transfer": "Paiement #{{paymentNr}}"
+    },
+    "personal-information-table": {
+      "fsp": "Fournisseur de services financiers",
+      "lastUpdateDate": "Derni\u00e8re mise \u00e0 jour",
+      "namePartnerOrganization": "Organisation partenaire",
+      "paymentsDone": "Paiements effectu\u00e9s",
+      "phone": "Num\u00e9ro de t\u00e9l\u00e9phone",
+      "primaryLanguage": "Langue principale",
+      "registeredDate": "Date d\u2019enregistrement",
+      "scope": "Port\u00e9e",
+      "status": "Statut\u00a0: <b>{{status}}</b>",
+      "subtitle": "PA #{{paNumber}}",
+      "whatsappPhoneNumber": "Num\u00e9ro WhatsApp"
+    },
+    "physical-cards-overview": {
+      "action-result": {
+        "new-card-error": "<span class=\"status-failed-text\">Quelque chose s\u2019est mal pass\u00e9</span><br><br>{{error}}",
+        "new-card-success": "Nouvelle carte de d\u00e9bit \u00e9mise avec succ\u00e8s",
+        "pause-success": "La carte de d\u00e9bit a \u00e9t\u00e9 mise en pause avec succ\u00e8s",
+        "unpause-success": "La carte de d\u00e9bit a \u00e9t\u00e9 r\u00e9activ\u00e9e avec succ\u00e8s"
+      },
+      "confirm-prompt": {
+        "new-card": "bloquer d\u00e9finitivement cette carte et \u00e9mettre une nouvelle carte ?",
+        "pause": "mettre cette carte en pause ?",
+        "prefix": "\u00cates-vous s\u00fbr de vouloir ",
+        "suffix": "<br><br>Cela enverra automatiquement un message \u00e0 la personne concern\u00e9e.",
+        "unpause": "R\u00e9activer cette carte ?"
+      },
+      "current-balance": "Solde actuel",
+      "date-issued": "D\u00e9livr\u00e9",
+      "date-last-used": "Derni\u00e8re utilisation",
+      "explanation": "Explication",
+      "issue-new-card": "\u00c9mettre une nouvelle carte",
+      "not-used-yet": "Pas encore utilis\u00e9",
+      "pause-card": "Carte de pause",
+      "popup-title": "Carte de d\u00e9bit",
+      "spent-this-month": "D\u00e9penses effectu\u00e9es ce mois-ci (maximum {{maxAmount}} {{currency}})",
+      "status": "Statut",
+      "subtitle": "...",
+      "title": "Cartes de d\u00e9bit",
+      "unpause-card": "Annuler la mise en pause de la carte"
+    },
+    "show-all": "Tout afficher"
+  },
+  "select-typeahead": {
+    "placeholder": "Choisir..."
+  },
+  "system-notifications": {
+    "compatible-browsers": "Le portail 121 fonctionne mieux dans Chrome, Firefox, Safari et Microsoft Edge. Le portail 121 ne fonctionne pas dans Internet Explorer."
+  },
+  "user-state": {
+    "log-out": "Se d\u00e9connecter",
+    "logged-in-as": "Connect\u00e9 en tant que"
+  }
+}
