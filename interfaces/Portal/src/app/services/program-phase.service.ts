@@ -41,15 +41,16 @@ export class ProgramPhaseService {
   }
 
   private createInitialPhases(): Phase[] {
+    const phaseLabels: {
+      label: string;
+      btnText: string;
+    } = this.translate.instant('page.program.phases');
+
     return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
-      label: this.translate.instant(
-        'page.program.phases.' + phase.name + '.label',
-      ),
-      btnText: this.translate.instant(
-        'page.program.phases.' + phase.name + '.btnText',
-      ),
+      label: phaseLabels[phase.name]['label'],
+      btnText: phaseLabels[phase.name]['btnText'],
     }));
   }
 
@@ -73,10 +74,10 @@ export class ProgramPhaseService {
         phase.name === ProgramPhase.registrationValidation
       ) {
         phase.label = this.translate.instant(
-          'page.program.phases.' + phase.name + '.label-no-validation',
+          'page.program.phases.registrationValidation.label-no-validation',
         );
         phase.btnText = this.translate.instant(
-          'page.program.phases.' + phase.name + '.btnText-no-validation',
+          'page.program.phases.registrationValidation.btnText-no-validation',
         );
       }
 
