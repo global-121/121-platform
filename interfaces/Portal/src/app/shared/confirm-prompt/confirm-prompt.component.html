@@ -7,6 +7,8 @@
   [color]="color"
   [shape]="shape || 'default'"
   [class]="class"
+  [class.ion-no-padding]="isPopoverExportButton"
+  [class.ion-margin-start]="isPopoverExportButton"
 >
   <ng-content></ng-content>
 </ion-button>

@@ -109,6 +109,9 @@ export class ConfirmPromptComponent {
   @Input()
   public bypassModalComponent = false;
 
+  @Input()
+  public isPopoverExportButton = false;
+
   @Output()
   private confirm = new EventEmitter<string>();
 
