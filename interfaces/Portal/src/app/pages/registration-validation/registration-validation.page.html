@@ -13,61 +13,17 @@
           [isTableLoading]="!isReady"
         ></app-bulk-import>
       </ion-col>
-      <ion-col>
+      <ion-col class="ion-justify-content-end">
         <app-phase-next
           *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
           [programId]="programId"
           [thisPhaseName]="thisPhase"
           [phaseReady]="isReady"
         ></app-phase-next>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="10">
-        <ion-row>
-          <div class="ion-no-padding ion-margin-end">
-            <app-export-list
-              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-              [programId]="programId"
-              [exportType]="enumExportType.allPeopleAffected"
-            ></app-export-list>
-          </div>
-          <div
-            class="ion-no-padding ion-margin-end"
-            *ngIf="program?.validation"
-          >
-            <app-export-list
-              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-              [programId]="programId"
-              [exportType]="enumExportType.selectedForValidation"
-            ></app-export-list>
-          </div>
-          <div
-            class="ion-no-padding ion-margin-end"
-            *ngIf="hasDuplicateAttributes"
-          >
-            <app-export-list
-              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-              [programId]="programId"
-              [exportType]="enumExportType.duplicates"
-            ></app-export-list>
-          </div>
-          <div class="ion-no-padding ion-margin-end">
-            <app-export-list
-              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-              [programId]="programId"
-              [exportType]="enumExportType.paDataChanges"
-            ></app-export-list>
-          </div>
-        </ion-row>
-      </ion-col>
-      <ion-col size="2">
-        <ion-row class="ion-justify-content-end">
-          <app-disable-registration
-            *appIfPermissions="[Permission.ProgramUPDATE]"
-            [programId]="programId"
-          ></app-disable-registration>
-        </ion-row>
+        <app-disable-registration
+          *appIfPermissions="[Permission.ProgramUPDATE]"
+          [programId]="programId"
+        ></app-disable-registration>
       </ion-col>
     </ion-row>
   </ion-grid>
