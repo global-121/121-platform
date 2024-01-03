@@ -81,7 +81,7 @@
           <!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>
       </ion-col>
-      <ion-col [size]="isIframeHeader ? '6' : '2'">
+      <ion-col [size]="isIframeHeader ? 4 : 1">
         <ion-row
           [ngClass]="{
             'ion-justify-content-center': !isIframeHeader,
@@ -101,7 +101,7 @@
           </ng-container>
         </ion-row>
       </ion-col>
-      <ion-col [size]="isIframeHeader ? '6' : '5'">
+      <ion-col [size]="isIframeHeader ? 8 : 6">
         <ion-row class="ion-justify-content-end ion-align-items-center">
           <app-language-switcher class="ion-margin-end"></app-language-switcher>
           <app-user-state
