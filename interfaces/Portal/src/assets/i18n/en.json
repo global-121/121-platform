@@ -10,10 +10,6 @@
     "ok": "OK",
     "save": "Save",
     "save-success": "Saved successfully",
-    "show-more": "Show More",
-    "timestamp": {
-      "done": "Done on:"
-    },
     "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
     "unknown-error": "Something went wrong. Error is unknown.",
     "update": "Update",
@@ -26,15 +22,9 @@
   },
   "header": {
     "dashboard": "Dashboard",
-    "design": "Design",
-    "evaluation": "Evaluation",
     "help": "Help",
     "home": "Home",
-    "inclusion": "Inclusion",
     "menu": "Menu",
-    "payment": "Payment",
-    "phases": "Phases",
-    "registration-validation": "Registration & Validation",
     "team": "Team",
     "users": "Users"
   },
@@ -73,14 +63,12 @@
           "invalid-email": "Please enter a valid email address."
         },
         "password": {
-          "forgot": "Forgot password?",
           "label": "Password"
         },
         "submit": {
           "label": "Log in"
         }
       },
-      "pageTitle": "Log in",
       "portalTitle": "Portal"
     },
     "program-team": {
@@ -89,7 +77,6 @@
       "page-description": "In this page you can create a team for your program",
       "pageTitle": "Program team",
       "popup": {
-        "add-users-button": "Add user",
         "add": {
           "already-member": "This user is already a team member",
           "confirm": "Add user",
@@ -120,8 +107,8 @@
       },
       "remove-team-member": "Remove from Team",
       "status": {
-        "false": "Inactive",
-        "true": "Active"
+        "inactive": "Inactive",
+        "active": "Active"
       },
       "table-headers": {
         "last-activity": "Last login",
@@ -585,18 +572,6 @@
           "status-line": {
             "code": "Twilio error code: "
           },
-          "twilio-status": {
-            "accepted": "Accepted",
-            "delivered": "Delivered",
-            "delivery-unknown": "Delivery unknown",
-            "failed": "Failed",
-            "queued": "Queued",
-            "read": "Read",
-            "scheduled": "Scheduled",
-            "sending": "Sending",
-            "sent": "Sent",
-            "undelivered": "Undelivered"
-          },
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp"
@@ -641,27 +616,19 @@
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "Perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected.",
         "transaction": {
-          "above": "Above limit",
           "amount": "Amount",
           "custom-data": {
             "intersolveVisaWalletTokenCode": "Visa card ID"
           },
           "do-single-payment": "Do single payment",
-          "error": "Failed",
           "fsp": "FSP",
-          "nosupport": "No FSP supported for this transfer",
           "not-yet-sent": "Not yet sent",
           "open-voucher": "Open voucher",
-          "payment-number": "Payment #{{number}}",
           "payments-popup": "Payments",
-          "planned": "Planned",
-          "received": "Received",
           "retry": "Details",
           "send-payment": "Send payment",
           "sent": "Sent",
           "show-status": "Show status",
-          "success": "Success",
-          "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status."
         }
       },
@@ -720,7 +687,6 @@
         "user-type": "User type",
         "username": "Username"
       },
-      "title": "USERS PAGE",
       "total-users": "Users",
       "user-type": {
         "admin": "Admin",

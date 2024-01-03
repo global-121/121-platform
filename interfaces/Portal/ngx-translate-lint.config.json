@@ -10,6 +10,13 @@
     "deepSearch": "enable",
     "maxWarning": "0",
     "ignoredKeys": [
+      "page.program.phases.(design|evaluation|inclusion|payment|registration-validation).(btnText|label)",
+      "page.program.program-people-affected.language.(.*)",
+      "page.program.program-people-affected.message-history-popup.chip-status.(.*)",
+      "page.program.program-people-affected.message-history-popup.content-type.custom.(.*)",
+      "page.program.program-people-affected.message-history-popup.type..(.*)",
+      "page.program.program-people-affected.status.(.*)",
+      "page.program.program-people-affected.transaction.custom-data.(.*)",
       "_dir"
     ],
     "ignoredMisprintKeys": []

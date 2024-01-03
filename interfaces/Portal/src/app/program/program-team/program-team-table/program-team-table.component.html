@@ -60,9 +60,12 @@
           [class.inactive]="row.active === false"
         >
           <ion-label>
-            <strong>{{
-              'page.program-team.status.' + row?.active | translate
-            }}</strong>
+            <strong *ngIf="row?.active === true">
+              {{ 'page.program-team.status.active' | translate }}
+            </strong>
+            <strong *ngIf="row?.active === false">
+              {{ 'page.program-team.status.inactive' | translate }}
+            </strong>
           </ion-label>
         </ion-chip>
       </ng-container>
