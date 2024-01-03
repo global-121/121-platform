@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export class LanguageOption {
-  key: string;
+  code: string;
+  dir: string;
   name: string;
 }
 
@@ -11,86 +13,131 @@ export class LanguageOption {
   providedIn: 'root',
 })
 export class LanguageService {
-  private DEFAULT_LANGUAGE_KEY = 'en';
-  private DEFAULT_LANGUAGE_LABEL = 'ENGLISH';
+  private DEFAULT_LANGUAGE_CODE = 'en';
+  private DEFAULT_LANGUAGE_DIR = 'ltr';
+  private DEFAULT_LANGUAGE_NAME = 'English';
+  private USER_PREFERENCE_KEY = 'selectedLanguage';
 
-  private selectedLanguage: string;
+  private allLocales = environment.locales
+    .trim()
+    .toLowerCase()
+    .split(/\s*,\s*/);
+
+  private availableLanguages: LanguageOption[];
+
+  private currentLanguage = new BehaviorSubject<string>(
+    this.DEFAULT_LANGUAGE_CODE,
+  );
+  public currentLanguage$ = this.currentLanguage.asObservable();
 
   constructor(private translate: TranslateService) {
     if (!this.translate) {
       return;
     }
-    this.translate.setDefaultLang(this.DEFAULT_LANGUAGE_KEY);
 
-    if (!this.selectedLanguage && !this.getStoredLanguage()) {
-      this.selectedLanguage = this.DEFAULT_LANGUAGE_KEY;
-      this.storeLanguage();
+    this.translate.onLangChange.subscribe(
+      (event: { lang: string; translations: { [key: string]: string } }) => {
+        document.documentElement.lang = event.lang;
+        document.documentElement.dir = event.translations['_dir'];
+      },
+    );
+
+    this.availableLanguages = this.loadLanguages();
+
+    let selectedLanguage = this.getStoredLanguage();
+
+    if (!selectedLanguage) {
+      // Start with the users' preferred language
+      const browserLanguage = this.translate.getBrowserLang();
+      if (browserLanguage && this.allLocales.includes(browserLanguage)) {
+        selectedLanguage = browserLanguage;
+      }
     }
 
-    this.selectedLanguage = this.getStoredLanguage();
+    // Finally, fall back to English
+    if (!selectedLanguage) {
+      selectedLanguage = this.DEFAULT_LANGUAGE_CODE;
+    }
 
-    this.translate.use(this.selectedLanguage);
+    this.useLanguage(selectedLanguage);
   }
 
-  public getLanguages(): LanguageOption[] {
+  private loadLanguages(): LanguageOption[] {
     if (!this.translate) {
       return [];
     }
-    const allLocales = environment.locales.trim().split(/\s*,\s*/);
-    if (!allLocales || allLocales.length === 0) {
+
+    if (!this.allLocales || this.allLocales.length === 0) {
       return [
-        this.getLanguageOption(this.DEFAULT_LANGUAGE_KEY, {
-          _languageLabel: this.DEFAULT_LANGUAGE_LABEL,
+        this.createLanguageOption(this.DEFAULT_LANGUAGE_CODE, {
+          _dir: this.DEFAULT_LANGUAGE_DIR,
+          _languageName: this.DEFAULT_LANGUAGE_NAME,
         }),
       ];
     }
 
     const languages = [];
 
-    // filter out locales that are missing the translation file
-    for (const locale of allLocales) {
+    // Filter out locales that are missing the translation file
+    for (const locale of this.allLocales) {
       this.translate.getTranslation(locale).subscribe({
         next: (localeObject) => {
-          languages.push(this.getLanguageOption(locale, localeObject));
+          languages.push(this.createLanguageOption(locale, localeObject));
         },
-        error: this.handleMissingFile,
+        error: (error) => {
+          console.warn(`Translations-file for "${locale}" missing!`, error);
+          if (locale === this.currentLanguage.value) {
+            this.useLanguage(this.DEFAULT_LANGUAGE_CODE);
+            this.storeLanguage(this.DEFAULT_LANGUAGE_CODE);
+          }
+        },
       });
     }
 
     return languages;
   }
 
-  public changeLanguage(languageKey: string) {
-    if (!this.translate) {
-      return;
+  public getLanguages(): LanguageOption[] {
+    if (!this.availableLanguages) {
+      this.availableLanguages = this.loadLanguages();
     }
-    this.translate.use(languageKey);
-    this.selectedLanguage = languageKey;
-    this.storeLanguage();
+
+    return this.availableLanguages;
+  }
+
+  public changeLanguage(languageKey: string): void {
+    this.storeLanguage(languageKey);
     window.location.reload();
-    document.documentElement.dir = this.translate.instant('_dir');
   }
 
-  private handleMissingFile(error) {
-    console.warn(error);
+  private useLanguage(languageKey: string): void {
+    this.currentLanguage.next(languageKey);
+    this.translate.use(languageKey);
   }
 
-  private getLanguageOption(locale: string, localeObject: any) {
+  private createLanguageOption(
+    locale: string,
+    localeObject: Extract<
+      { _dir: string; _languageName: string },
+      { [key: string]: string }
+    >,
+  ): {
+    code: string;
+    dir: string;
+    name: string;
+  } {
     return {
-      key: locale,
-      name: localeObject['_languageLabel'],
+      code: locale,
+      dir: localeObject['_dir'],
+      name: localeObject['_languageName'],
     };
   }
 
-  public getSelectedLanguage(): string {
-    return this.selectedLanguage;
+  private storeLanguage(languageKey: string): void {
+    window.localStorage.setItem(this.USER_PREFERENCE_KEY, languageKey);
   }
 
-  private storeLanguage() {
-    localStorage.setItem('selectedLanguage', this.selectedLanguage);
-  }
-
-  private getStoredLanguage(): string {
-    return localStorage.getItem('selectedLanguage');
+  private getStoredLanguage(): string | null {
+    return window.localStorage.getItem(this.USER_PREFERENCE_KEY);
   }
 }

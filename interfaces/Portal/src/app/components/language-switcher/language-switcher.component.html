@@ -7,15 +7,16 @@
     ></ion-icon>
     <ion-select
       *ngIf="languages"
-      [value]="selectedLanguage"
+      [value]="selectedLanguage | async"
       interface="popover"
-      (ionChange)="selectLanguage($event)"
+      (ionChange)="selectLanguage($event.detail.value)"
     >
       <ion-select-option
         *ngFor="let language of languages"
         [value]="language.key"
-        >{{ language.name }}</ion-select-option
       >
+        {{ language.name }}
+      </ion-select-option>
     </ion-select>
   </ion-item>
 </ion-list>
