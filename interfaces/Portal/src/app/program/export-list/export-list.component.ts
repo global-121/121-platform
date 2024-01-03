@@ -53,6 +53,9 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public exportFilteredTable: boolean;
 
+  @Input()
+  public isPopoverButton = false;
+
   public allPeopleAffectedOptions: {
     limit: number;
     page: number;
