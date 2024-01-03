@@ -1,0 +1,838 @@
+{
+  "header": {
+    "home": "وطن",
+    "menu": "قائمة",
+    "help": "تعليمات",
+    "users": "المستعملون",
+    "dashboard": "لوحه القياده",
+    "team": "فريق",
+    "phases": "اطوار",
+    "design": "تصميم",
+    "registration-validation": "التسجيل والتحقق من الصحة",
+    "inclusion": "ادراج",
+    "payment": "دفع",
+    "evaluation": "تقييم"
+  },
+  "user-state": {
+    "logged-in-as": "تم تسجيل الدخول باسم",
+    "log-out": "تسجيل الخروج"
+  },
+  "page": {
+    "dashboard": {
+      "pageTitle": "لوحه القياده",
+      "introduction": "تأتي المعلومات الموجودة على هذه الشاشة من البيانات الموجودة في منصة 121 فقط.",
+      "help-explanation": "يمكنك الحصول على وصف لكل تصنيف أو رأس بالنقر / التركيز / التمرير فوق هذه العناصر:",
+      "help-explanation-tooltip": "أحب هذا!"
+    },
+    "team": {
+      "pageTitle": "فريق البرنامج"
+    },
+    "program-team": {
+      "pageTitle": "فريق البرنامج",
+      "page-description": "في هذه الصفحة يمكنك إنشاء فريق لبرنامجك",
+      "add-team-member": "إضافة عضو في الفريق",
+      "remove-team-member": "إزالة من الفريق",
+      "table-headers": {
+        "name": "اسم",
+        "role": "دور",
+        "status": "حالة",
+        "last-activity": "آخر تسجيل دخول",
+        "scope": "نطاق"
+      },
+      "status": {
+        "true": "نشط",
+        "false": "كسلان"
+      },
+      "team-members": "أعضاء الفريق",
+      "popup": {
+        "add-users-button": "إضافة مستخدم",
+        "team-member": "عضو الفريق",
+        "team-member-placeholder": "حدد أحد أعضاء الفريق",
+        "roles-placeholder": "تعيين دور (أدوار)",
+        "roles-required": "الرجاء تحديد دور واحد على الأقل",
+        "role": "دور",
+        "remove": {
+          "title": "إزالة عضو الفريق",
+          "introduction": "ستؤدي إزالة عضو الفريق إلى عدم وصوله إلى البرنامج أو بياناته.",
+          "attention": "اهتمام: ",
+          "explanation": "لا تعني إزالة عضو الفريق حذف حسابه من بوابة 121. إذا كنت ترغب في حذف حسابهم ، فيرجى الاتصال بالمسؤول.",
+          "confirmation-question": "هل أنت متأكد من إزالة هذا المستخدم من فريق البرنامج؟",
+          "confirm": "إزالة مستخدم",
+          "succes-message": "™لقد نجحت في إزالة أحد أعضاء الفريق"
+        },
+        "add": {
+          "title": "إضافة عضو في الفريق",
+          "succes-message": "™لقد نجحت في إضافة أحد أعضاء الفريق",
+          "confirm": "إضافة مستخدم",
+          "already-member": "هذا المستخدم هو بالفعل عضو في الفريق"
+        },
+        "change": {
+          "title": "تحرير عضو الفريق",
+          "succes-message": "™لقد نجحت في تحرير دور (أدوار) هذا المستخدم",
+          "confirm": "أنقذ"
+        },
+        "scope-placeholder": "املأ نطاقا",
+        "scope-explanation": "لاستخدام نطاق فرعي اكتب نقطة بين النطاق والنطاق الفرعي (مثل amsterdam.zuid)<br><br>* ترك هذا الحقل فارغا يعني أن عضو الفريق سيتمكن من الوصول إلى جميع PAs"
+      },
+      "edit-team-member": "حرر"
+    },
+    "login": {
+      "pageTitle": "تسجيل الدخول",
+      "portalTitle": "بوابة",
+      "form": {
+        "email": {
+          "label": "عنوان البريد الإلكتروني"
+        },
+        "password": {
+          "label": "شعار",
+          "forgot": "نسيت كلمة المرور؟"
+        },
+        "submit": {
+          "label": "تسجيل الدخول"
+        },
+        "error-messages": {
+          "invalid-email": "الرجاء إدخال عنوان بريد إلكتروني صالح.",
+          "empty-password": "الرجاء إدخال كلمة المرور.",
+          "401": "هذا المزيج من عنوان البريد الإلكتروني وكلمة المرور غير معروف.",
+          "500": "خطأ داخلي في الخادم"
+        }
+      }
+    },
+    "home": {
+      "pageTitle": "وطن"
+    },
+    "programs-list": {
+      "pageTitle": "البرامج",
+      "pageSubtitle": "أنت تقوم بتشغيل برنامج (برامج) {{nrPrograms}} بنشاط",
+      "not-available": "لا توجد برامج متاحة.",
+      "card": {
+        "updated": "آخر تحديث: ",
+        "targeted": "الأشخاص المستهدفون المتضررون",
+        "included": "الأشخاص المشمولون المتضررون",
+        "budget": "إجمالي ميزانية المشروع ",
+        "spent": "الأموال المنفقة",
+        "status": "حالة البرنامج: "
+      }
+    },
+    "program": {
+      "phases": {
+        "design": {
+          "label": "تصميم",
+          "btnText": "فتح باب التسجيل"
+        },
+        "registrationValidation": {
+          "label": "التسجيل والتحقق من الصحة",
+          "btnText": "الانتقال إلى: التضمين",
+          "label-no-validation": "تسجيل",
+          "btnText-no-validation": "الانتقال إلى: التضمين",
+          "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة",
+          "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
+          "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج"
+        },
+        "inclusion": {
+          "label": "ادراج",
+          "btnText": "الانتقال إلى: الدفع"
+        },
+        "payment": {
+          "label": "دفع",
+          "btnText": "الانتقال إلى: التقييم"
+        },
+        "evaluation": {
+          "label": "تقييم",
+          "btnText": "إنهاء البرنامج"
+        }
+      },
+      "metrics": {
+        "pa": {
+          "targeted": "PA مستهدف",
+          "imported": "مستورد",
+          "invited": "مدعو",
+          "noLongerEligible": "لم يعد مؤهلا",
+          "startedRegistration": "بدأ التسجيل",
+          "registered": "المسجله",
+          "selectedForValidation": "تم اختياره للتحقق من الصحة",
+          "validated": "التحقق",
+          "included": "متضمن",
+          "inclusionEnded": "انتهى التضمين",
+          "rejected": "نبيذ",
+          "deleted": "محذوف"
+        },
+        "state-explanation": {
+          "imported": "PAs التي تم استيرادها ، بناء على رقم الهاتف.",
+          "invited": "PAs التي تمت دعوتها (بعد الاستيراد).",
+          "startedRegistration": "PAs التي بدأت التسجيل في تطبيق PA.",
+          "registered": "PAs التي أنهت التسجيل في تطبيق PA.",
+          "selectedForValidation": "PAs التي تم اختيارها للتحقق من الصحة.",
+          "validated": "PAs التي تم التحقق من صحتها.",
+          "included": "PAs التي تم تضمينها. <br> سيتلقون مدفوعات بدءا من جولة الدفع / الدفع التالية.",
+          "inclusionEnded": "PAs التي تم إنهاء إدراجها. <br> لن يتلقوا أي مدفوعات (أكثر) لجولة الدفع / الدفع التالية.",
+          "noLongerEligible": "PAs التي تم وضع علامة عليها على أنها \"لم تعد مؤهلة\". <br> هؤلاء هم PAs الذين تمت دعوتهم ولكنهم لم يسجلوا بعد وفي الوقت نفسه لم يعودوا مؤهلين.",
+          "rejected": "PAs التي تم رفضها. <br> لن يتلقوا أي مدفوعات (أكثر) لجولة الدفع / الدفع التالية.",
+          "deleted": "PAs التي تم حذفها. <br> يمكن أن يشمل ذلك على سبيل المثال PAs المحذوفة بعد استيراد غير صحيح ، وكذلك PAs الذين تلقوا مدفوعات ، ولم يعد يتم تضمينهم ، ويتم حذفهم لاحقا بعد مرور بعض الوقت."
+        },
+        "header": {
+          "metric": "متري",
+          "latest-value": "أحدث قيمة"
+        },
+        "units": {
+          "frequency": {
+            "month": "شهري",
+            "weeks2": "2 أسبوعيا",
+            "week": "أسبوعي"
+          },
+          "duration": {
+            "month": "شهر (أشهر)",
+            "week": "أسبوع (أسابيع)"
+          }
+        },
+        "timeframe": {
+          "payment": {
+            "label": "الدفع #:",
+            "select-hint": "اختر الدفع...",
+            "option": "#{{number}} الدفع - {{date}}",
+            "explanation": "جميع PA التي وصلت إلى حالة معينة - على سبيل المثال المدرجة - في أي لحظة بين الدفعة السابقة والدفعة المختارة. <br><br> هذا ليس عدد PA المضمنة في لحظة تلك الدفعة ، ولكن عدد PA التي تم تضمينها بين الدفعة السابقة والدفعة المختارة. <br><br> لاحظ أن PA المدرجة في هذه الفترة الزمنية قد لا تكون بالضرورة هي نفسها PA مثل تلك التي سجلت في هذه الفترة الزمنية ، حيث قد تكون مسجلة على سبيل المثال في الفترة الزمنية السابقة."
+          },
+          "payment-from-start": {
+            "label": "ما يصل إلى الدفع المحدد #:",
+            "explanation": "يعرض هذا الصف جميع البيانات حتى الدفعة المحددة، بدلا من البيانات الخاصة بفترة الدفع هذه فقط (الفترة بين الدفعة السابقة والدفعة المحددة)."
+          },
+          "calendar-month": {
+            "label": "الشهر التقويمي:",
+            "select-hint": "اختر الشهر...",
+            "explanation": "جميع PA التي وصلت إلى حالة معينة - على سبيل المثال المدرجة - في أي لحظة في الشهر المختار. <br><br> هذا ليس عدد PA المضمنة في نهاية ذلك الشهر ، ولكن عدد PA التي تم تضمينها في أي لحظة في ذلك الشهر. <br><br> لاحظ أن PA المدرجة في هذا الشهر قد لا تكون بالضرورة نفس PA تلك التي سجلت في هذا الشهر ، حيث قد تكون قد سجلت على سبيل المثال في الشهر السابق."
+          },
+          "month-from-start": {
+            "label": "حتى الشهر المحدد:",
+            "explanation": "يعرض هذا الصف جميع البيانات حتى هذا الشهر، بدلا من البيانات الخاصة بهذا الشهر فقط."
+          },
+          "to-date": {
+            "label": "حتى تاريخه:",
+            "explanation": "كل PA التي وصلت إلى حالة معينة - على سبيل المثال المدرجة - في أي لحظة بين بداية البرنامج والآن. <br><br> هذا ليس عدد PA المدرجة في الوقت الحالي ، ولكن عدد جميع PA التي تم تضمينها في مرحلة ما."
+          }
+        },
+        "export-button": {
+          "label": "تصدير بتنسيق CSV"
+        },
+        "totals": {
+          "total-helped-to-date": "العدد الإجمالي للأفراد PA الذين ساعدوا حتى الآن",
+          "tooltip": "PAs التي تلقت دفعة واحدة أو أكثر"
+        },
+        "over-time": {
+          "pa": {
+            "pre-existing": "موجودة مسبقا",
+            "new": "الجديد"
+          },
+          "payment-label": "دفع",
+          "tooltip": "يعرض هذا المخطط عدد الأشخاص المتأثرين الذين تم الدفع لهم بنجاح لكل دفعة. <br><br>يتم تقسيم هذا الرقم على PAs \"موجود مسبقا\" و \"جديد\" ، بناء على ما إذا كان PA موجودا أيضا في الدفعة السابقة أم لا.تعني عبارة \"تم الدفع بنجاح\" أن الدفعة <br><br>(مثل القسيمة) قد تم إصدارها بنجاح وتم إبلاغ PA بها ، ولكنها لا تعني أن الدفعة قد تم جمعها و / أو إنفاقها."
+        }
+      },
+      "program-details": {
+        "section-title": "تفاصيل البرنامج",
+        "location": "مكان",
+        "titlePortal": "بوابة العنوان",
+        "titlePaApp": "العنوان PA-التطبيق",
+        "startDate": "تاريخ البدء",
+        "endDate": "انتهاء العرض",
+        "distributionFrequency": "تردد التوزيع",
+        "distributionDuration": "مدة التوزيع",
+        "fixedTransferValue": "قيمة التحويل",
+        "aidworkerAssignments": "عمال الإغاثة المعينون",
+        "financialServiceProviders": "مقدمو الخدمات المالية"
+      },
+      "program-payout": {
+        "payment-nr": "#{{number}} الدفع",
+        "choose-payment": "اختر الدفع...",
+        "all-closed-payments": "جميع المدفوعات المغلقة",
+        "closed": "مغلق",
+        "open": "مفتوح",
+        "start-payout": "ابدأ الدفع الآن",
+        "total-included": "دفع تعويضات إلى: {{totalIncluded}} PA (ق)",
+        "total-amount": "الحد الأقصى للمبلغ الذي سيتم إنفاقه في هذه الدفعة: {{totalCost}}",
+        "result": {
+          "api": "تم إرسال طلب الدفع بنجاح ل {{nrPa}} PA (ق). <br><br>قد تستغرق معالجة المدفوعات بعض الوقت. افحص الجدول PA أدناه لمعرفة الحالة المحدثة للدفعة (الدفعات). <br><br>يمكنك إغلاق هذه النافذة المنبثقة.",
+          "csv": "تم إعداد بيانات الدفع بنجاح ل {{nrPa}} PA (s). <br><br>بعد ذلك ، من فضلك:حدد الدفع في <ol><li>القائمة المنسدلة <strong>اختر الدفع ...</strong></li> <li>استخدام زر <strong>تصدير تعليمات الدفع</strong></li> <li>احفظ ملف XLSX الناتج بالتنسيق المطلوب من قبل مزود</li> الخدمة المالية <li>قم بتحميل الملف في بوابة مقدم الخدمة المالية.</li></ol>",
+          "xml": "تم إعداد بيانات الدفع بنجاح ل {{nrPa}} PA (s). <br><br>بعد ذلك ، من فضلك:حدد الدفع في <ol><li>القائمة المنسدلة <strong>اختر الدفع ...</strong></li> <li>استخدام زر <strong>تصدير تعليمات الدفع</strong></li> <li>احفظ ملف XML الناتج</li><li>قم بتحميل الملف في بوابة مقدم الخدمة المالية.</li></ol>"
+        },
+        "in-progress": "الدفع قيد التنفيذ",
+        "calculating-transfer-amount": "حساب إجمالي مبلغ التحويل",
+        "make-export": "تصدير بيانات الدفع",
+        "last-payment": {
+          "last-payment": "الدفعة الأخيرة: {{nr}}",
+          "error": "فشل",
+          "success": "ناجح",
+          "waiting": "انتظار",
+          "retry-all": "فشل إعادة محاولة {{number}} بالكامل",
+          "confirm-prompt": "سيؤدي هذا إلى إعادة محاولة الدفع (المدفوعات) الفاشلة {{number}} فقط."
+        },
+        "cbe": {
+          "btn": "تقرير التحقق من البنك المركزي المصري",
+          "subHeader": "تحميل تقرير التحقق من البنك المركزي المصري",
+          "message": "تستند البيانات الواردة في هذا التقرير إلى البيانات التي يتم استيرادها كل ليلة من البنك المركزي المصري. <br /> إذا غيرت البيانات اليوم، فلن ينعكس ذلك في التقرير."
+        },
+        "make-payment": {
+          "error": {
+            "generic": "حدث خطأ ما في الدفع. يرجى الاتصال بالدعم الفني 121."
+          },
+          "make-payment": "هل الدفع: {{nr}}",
+          "number-included": "PA يشمل: {{number}}"
+        }
+      },
+      "program-people-affected": {
+        "choose-action": "اختر الإجراء...",
+        "no-actions": "لا توجد إجراءات متاحة",
+        "apply-action": "تطبيق الإجراء",
+        "filter-placeholder": "اكتب القيمة...",
+        "filter-toggle": "عرض الكل",
+        "filter-tooltip": "إظهار جميع الأشخاص المتأثرين أو الأشخاص المتأثرين فقط ذوي الصلة بمرحلة البرنامج هذه",
+        "filter-btn": {
+          "common": {
+            "filter-by": "تصفية حسب:",
+            "all-options": "كل",
+            "cancel-btn": "إلغاء الأمر",
+            "apply-btn": "طبق"
+          },
+          "btn-label": {
+            "paStatus": "حالة"
+          },
+          "empty-selection-alert-message": "يرجى تحديد خيار واحد على الأقل",
+          "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
+        },
+        "last-message": {
+          "no-message": "لا توجد رسائل حتى الآن"
+        },
+        "max-payments": {
+          "left": "باق"
+        },
+        "column": {
+          "select": "اختار",
+          "personAffectedSequence": "الشخص المتضرر",
+          "status": "حالة",
+          "registrationCreated": "تم إنشاء التسجيل",
+          "registrationCreatedDate": "تاريخ إنشاء التسجيل",
+          "inclusionScore": "درجة التضمين",
+          "name": "اسم",
+          "dob": "تاريخ الميلاد",
+          "phoneNumber": "رقم الهاتف",
+          "whatsappPhoneNumber": "رقم الواتساب.",
+          "preferredLanguage": "اللغة المفضلة",
+          "paymentAmountMultiplier": "قيمة (قيم) التحويل",
+          "maxPayments": "الحد الأقصى للمدفوعات",
+          "fspDisplayNamePortal": "مزود الخدمات المالية",
+          "custom-attribute-true": "نعم",
+          "custom-attribute-false": "لا",
+          "payment-history": "سجل الدفع",
+          "lastMessageStatus": "آخر رسالة",
+          "hasNote": "لديه ملاحظة",
+          "referenceId": "الرقم المرجعي",
+          "note": "ملاحظه",
+          "paymentCount": "المدفوعات حتى الآن",
+          "paymentCountRemaining": "المدفوعات المتبقية",
+          "failedPayment": "فشل الدفع #",
+          "waitingPayment": "في انتظار الدفع #",
+          "successPayment": "ناجح للدفع #",
+          "notYetSentPayment": "لم يتم إرسال الدفع بعد #"
+        },
+        "language": {
+          "en": "الإنكليزية",
+          "ar": "العربية",
+          "tl": "فيلبيني",
+          "pt_BR": "البرتغالية",
+          "in": "الإندونيسية",
+          "nl": "الهولندية",
+          "es": "الإسبانية",
+          "fr": "الفرنسية",
+          "tr": "التركية"
+        },
+        "status": {
+          "imported": "مستورد",
+          "invited": "مدعو",
+          "noLongerEligible": "لم يعد مؤهلا",
+          "startedRegistration": "انشاء",
+          "registered": "المسجله",
+          "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
+          "selectedForValidation": "تم اختياره للتحقق من الصحة",
+          "validated": "التحقق",
+          "included": "متضمن",
+          "inclusionEnded": "انتهى الإدراج",
+          "rejected": "نبيذ",
+          "completed": "اكمال",
+          "paused": "توقف"
+        },
+        "actions": {
+          "invite": "دعوة للتسجيل",
+          "markNoLongerEligible": "وضع علامة كغير مؤهل",
+          "selectForValidation": "حدد للتحقق من الصحة",
+          "include": "تضمين في البرنامج",
+          "reject": "رفض من البرنامج",
+          "endInclusion": "إنهاء التضمين في البرنامج",
+          "sendMessage": "إرسال رسالة إلى PA",
+          "deletePa": "حذف PA",
+          "doPayment": "هل الدفع",
+          "pause": "وقفة PA ثانية"
+        },
+        "action-inputs": {
+          "message-checkbox": "إرسال رسالة إلى هؤلاء الأشخاص المتضررين",
+          "delete-warning": "أنت على وشك حذف المعلومات الشخصية لهؤلاء الأشخاص المتأثرين. لا يمكن التراجع عن هذا الإجراء. لا يمكنك رؤية المدفوعات السابقة لهم بعد الآن ولا يمكنك إجراء مدفوعات جديدة لهم.",
+          "templated-explanation": "سيتم إرسال الرسالة التالية إلى PAs بلغتهم الخاصة.",
+          "templated-support": "الرجاء الاتصال بفريق الدعم 121 إذا كنت تريد تغيير هذه الرسالة النموذجية.",
+          "placeholder-pa-data": "يرجى التأكد من توفر البيانات لجميع الحقول المخصصة المستخدمة لجميع الأشخاص المتأثرين المحددين.",
+          "placeholder-typeahead-placeholder": "حدد الحقل",
+          "add-placeholder": "إضافة حقل مخصص",
+          "type-message": "اكتب رسالة",
+          "type-message-tooltip": "يجب أن تكون الرسالة أطول من {{minLength}} حرف (أحرف). لاحظ أنه إذا تجاوزت 160 حرفا ، فقد يتلقى الشخص المتأثر الرسالة كنصوص متعددة ، إذا كان لديه هاتف مميز (غير ذكي).",
+          "message-preview": "معاينة الرسالة"
+        },
+        "no-checkboxes": "لا يوجد حاليا أي أشخاص متأثرين يمكن تطبيق هذا الإجراء عليهم.",
+        "submit-warning": "أنت على وشك القيام بما يلي:",
+        "submit-warning-people-affected": "نفذ <strong>الإجراء {{actionLabel}} على {{applicableCount}}</strong> الأشخاص المتأثرين.",
+        "footer-selected-of-total": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
+        "transaction": {
+          "error": "فشل",
+          "waiting": "انتظار",
+          "waiting-message": "لا تزال تنتظر تحديث الحالة على هذه المعاملة. قم بتحديث الصفحة للحصول على أحدث حالة.",
+          "success": "نجاح",
+          "payments-popup": "الدفعات",
+          "show-status": "إظهار الحالة",
+          "do-single-payment": "قم بالدفع مرة واحدة",
+          "payment-number": "#{{number}} الدفع",
+          "planned": "المخطط",
+          "above": "فوق الحد",
+          "not-yet-sent": "لم يتم إرسالها بعد",
+          "open-voucher": "قسيمة مفتوحة",
+          "send-payment": "إرسال الدفع",
+          "sent": "ارسال",
+          "amount": "مبلغ",
+          "received": "تلقي",
+          "fsp": "إف إس بي",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "بطاقة فيزا"
+          },
+          "retry": "التفاصيل",
+          "nosupport": "لا يوجد FSP مدعوم لهذا النقل"
+        },
+        "edit-person-affected-popup": {
+          "edit-icon-title": "تعديل معلومات الشخص المتأثر",
+          "has-notes-title": "الملاحظات المتاحة",
+          "popup-title": "{{pa}} معلومات مفصلة",
+          "properties": {
+            "paymentAmountMultiplier": {
+              "label": "مضاعف قيمة التحويل",
+              "explanation": "سيتم ضرب قيمة التحويل في هذا الرقم لهذا الشخص المتضرر"
+            },
+            "phoneNumber": {
+              "label": "رقم الهاتف",
+              "explanation": "التنسيق المطلوب هو: الأرقام فقط ، بما في ذلك رمز البلد."
+            },
+            "whatsappPhoneNumber": {
+              "label": "رقم الواتساب",
+              "explanation": "التنسيق المطلوب هو: الأرقام فقط ، بما في ذلك رمز البلد."
+            },
+            "accountId": {
+              "label": "معرف الحساب"
+            },
+            "date": {
+              "label": "تاريخ"
+            },
+            "openAnswer": {
+              "label": "افتح الإجابة"
+            },
+            "fixedChoice": {
+              "label": "اختيار ثابت"
+            },
+            "personalId": {
+              "label": "الهوية الشخصية"
+            },
+            "preferredLanguage": {
+              "label": "اللغة المفضلة"
+            },
+            "maxPayments": {
+              "label-payments": "الحد الأقصى للمدفوعات (تم إرسال {{alreadyReceivedPayments}} بالفعل)",
+              "label-no-payments": "الحد الأقصى للمدفوعات",
+              "explanation": "الحد الأقصى لعدد المدفوعات لهذا الشخص المتأثر. يمكنك إزالة الحد عن طريق إزالة القيمة والحفظ."
+            },
+            "error": {
+              "not-an-integer": "يجب أن يكون الإدخال عددا صحيحا",
+              "too-low": "يجب أن تكون المدخلات أعلى من عدد الدفعات التي تم إرسالها بالفعل",
+              "not-empty": "لا يمكن أن يكون الإدخال فارغا"
+            },
+            "scope": {
+              "label": "نطاق"
+            }
+          },
+          "fspChangeWarning": "سيؤدي تحديد FSP هذا إلى حذف السمات التالية المتعلقة ب FSP القديم:",
+          "fspNewAttributesExplanation": "بالنسبة ل FSP هذا ، تكون السمات التالية مطلوبة:",
+          "note": {
+            "section-title": "ملاحظات حول الشخص المتضرر",
+            "introduction": "يمكنك إضافة أو تعديل أو إزالة ملاحظات حول هذا الشخص المتأثر بالذات في الحقل أدناه. يرجى تقليل معلومات التعريف الشخصية (PII) إلى الحد الأدنى وحذف أي معلومات تحديد الهوية الشخصية عند عدم الحاجة إليها.",
+            "placeholder": "ابدأ ملاحظة حول هذا الشخص المتأثر بالكتابة هنا ...",
+            "save": "حفظ الملاحظة",
+            "latest-update": "آخر تحديث على: {{timestamp}}"
+          },
+          "error-alert": {
+            "invalid-date": "تنسيق التاريخ الذي أدخلته غير صالح. مثال تنسيق التاريخ الصالح هو 31-12-1970 والذي يتبع اليوم والشهر والسنة ، DD-MM-YYYY"
+          },
+          "reason-popup": {
+            "subheader": "سبب التحديث",
+            "explanation": "يرجى تقديم سبب لإجراء هذا التغيير.",
+            "max-length": "لا تستخدم أكثر من {{maxLength}} حرفا.",
+            "unsaved-changes-explanation": "لم يتم حفظ التغييرات التي أجريتها."
+          }
+        },
+        "message-history-popup": {
+          "message-title": "سجل الرسائل",
+          "type": {
+            "whatsapp": "واتس اب",
+            "sms": "الرسائل القصيرة"
+          },
+          "content-type": {
+            "registered": "تسجيل",
+            "included": "ادراج",
+            "inclusion-ended": "انتهى الإدراج",
+            "rejected": "رفض",
+            "invited": "دعوة للتسجيل",
+            "custom": "رسالة مخصصة",
+            "generic-templated": "إشعار الرسالة",
+            "payment-templated": "إشعار الدفع",
+            "payment-voucher": "قسيمة الدفع",
+            "payment": "دفع",
+            "payment-instructions": "تعليمات الدفع",
+            "payment-reminder": "تذكير الدفع",
+            "default-reply": "الرد الافتراضي"
+          },
+          "twilio-status": {
+            "accepted": "قبلت",
+            "scheduled": "المقرر",
+            "queued": "قائمه الانتظار",
+            "sending": "ارسال",
+            "sent": "ارسال",
+            "delivery-unknown": "التسليم غير معروف",
+            "delivered": "تسليم",
+            "undelivered": "لم يتم التسليم",
+            "failed": "فشل",
+            "read": "قرأ"
+          },
+          "chip-status": {
+            "sent": "ارسال",
+            "delivered": "تسليم",
+            "failed": "فشل",
+            "read": "قرأ"
+          },
+          "status-line": {
+            "code": "رمز الخطأ تويليو: "
+          },
+          "accordion-header": "نص الرسالة",
+          "image-string": "(صورة)"
+        },
+        "payment-status-popup": {
+          "message-title": "تم إرسال الرسالة #{{payment}} الدفع: {{timestamp}}",
+          "money-title": "قسيمة الدفع المرسلة #{{payment}}: {{timestamp}}",
+          "error-message": "رسالة خطأ",
+          "fix-error": "يرجى اتخاذ الإجراء اللازم لإصلاح هذا الخطأ. ثم استخدم الزر أدناه لإعادة محاولة الدفع لهذا الشخص المتأثر.",
+          "retry": "أعد محاولة الدفع لهذا PA",
+          "get-balance": "احصل على الرصيد الحالي للقسيمة",
+          "current-balance": "الرصيد الحالي: {{currentBalance}}<br><br>في: {{timestamp}}",
+          "print-voucher": "طباعة القسيمة",
+          "download-voucher": "تحميل القسيمة",
+          "single-payment": {
+            "intro": "هل الدفع ل 1PA فقط",
+            "start-payout": "ابدأ الدفع الآن مقابل {{paNr}}",
+            "total-amount": "المبلغ الإجمالي: {{cost}} * مضاعف {{multiplier}} = <strong>{{totalCost}}</strong>"
+          }
+        },
+        "bulk-action-response": {
+          "response": "تم إرسال الطلب بنجاح إلى {{action}} ل <strong>{{paNumber}}</strong> الأشخاص المتضررين.<strong></strong> <br><br>قد تستغرق العملية بعض الوقت للمعالجة. افحص الجدول PA أدناه لمعرفة الحالة المحدثة.",
+          "pa-moved-phase": "قد يكون الأشخاص المتأثرون مرئيين في مرحلة أخرى بعد تغيير الحالة هذا.",
+          "close-popup": "يمكنك إغلاق هذه النافذة المنبثقة."
+        },
+        "bulk-action-conditions": {
+          "invite": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مستورد</i> أو <i>لم تعد مؤهلة</i>.",
+          "selectForValidation": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل.</i>",
+          "include": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل</i> أو <i>محدد للتحقق</i> من <i>الصحة أو تم التحقق من صحته</i> أو <i>مرفوض</i> أو <i>انتهى التضمين</i> أو <i>متوقف مؤقتا</i> أو <i>مكتمل</i>.",
+          "endInclusion": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مضمنة</i> أو <i>مكتملة</i>.",
+          "reject": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل</i> أو <i>محدد للتحقق</i> من <i>الصحة أو تم التحقق من صحته</i> أو <i>تضمينه</i> أو لم يعد مؤهلا أو <i>مسجلا بينما لم يعد مؤهلا</i>. <i></i>",
+          "markNoLongerEligible": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مستورد</i> أو <i>مدعو</i>.",
+          "pause": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مضمنة</i>.",
+          "deletePa": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات التي ليس لها الحالة <i>مشمول</i>.",
+          "sendMessage": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات التي لها رقم هاتف مرتبط بها.",
+          "doPayment": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات التي لم تستلم الدفعة بعد."
+        },
+        "payment-history-popup": {
+          "title": "سجل الدفع"
+        }
+      },
+      "table-filter-row": {
+        "select-column-to-filter": "كتابة عمود أو تحديده لتصفيته",
+        "apply-filter": "تطبيق عامل التصفية",
+        "remove-filter": "إزالة الفلتر",
+        "clear-all": "مسح كل عوامل التصفية",
+        "filtered-results": "المستلمون الذين تمت تصفيتهم"
+      },
+      "bulk-import": {
+        "import-error": "حدث خطأ ما في الاستيراد. تحقق من <ul><li>الامتداد المطلوب (.csv)تحقق من</li> <li>تنسيق وأسماء أعمدة ملف CSV</li><li><strong>رسالة الخطأ:</strong>{{specific}}</li></ul>",
+        "import-result": {
+          "ready": "جاهز للاستيراد.",
+          "csv": "يتم تنزيل ملف CSV تلقائيا، والذي يعرض حالة الاستيراد وحالة التسجيل لكل صف.",
+          "new": "هناك {{countImported}} سجلات جديدة مستوردة.",
+          "existing": "كان هناك {{countExistingPhoneNr}} أرقام هواتف حالية ، والتي تم تخطيها.",
+          "invalid": "كان هناك {{countInvalidPhoneNr}} أرقام هواتف لا يمكن التعرف عليها. حاول تصحيحها واستيرادها مرة أخرى."
+        },
+        "timestamp": "آخر استيراد تم في: {{dateTime}}",
+        "imported": {
+          "btn-text": "استيراد الأشخاص المتأثرين",
+          "explanation": "تأكد من مطابقة التنسيق المطلوب لملف CSV القالب. يستغرق الاستيراد حوالي 1 دقيقة لكل 100 سجل",
+          "confirm-message": "سيكتشف النظام أرقام الهواتف الجديدة فقط ويستوردها كأشخاص متأثرين."
+        },
+        "registered": {
+          "btn-text": "تسجيلات الاستيراد",
+          "explanation": "تأكد من مطابقة التنسيق المطلوب لملف CSV القالب. يستغرق الاستيراد حوالي 1 دقيقة لكل 100 سجل",
+          "confirm-message": "سيقوم النظام بإنشاء أشخاص \"مسجلين\" متأثرين."
+        }
+      },
+      "export-list": {
+        "timestamp": "آخر تصدير تم في: {{dateTime}}",
+        "no-data": "لا توجد حاليا بيانات للتنزيل",
+        "all-people-affected": {
+          "btn-text": "تصدير الأشخاص المتأثرين",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين."
+        },
+        "included": {
+          "btn-text": "وشملت التصدير الأشخاص المتضررين",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين المضمنة."
+        },
+        "selected-for-validation": {
+          "btn-text": "قائمة التصدير: محددة للتحقق من الصحة",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تحديد جميع الأشخاص المتأثرين للتحقق من الصحة ، لاستخدامه في زيارات التحقق من الصحة."
+        },
+        "payment": {
+          "btn-text": "تقرير التصدير",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تضمين جميع الأشخاص المتأثرين في هذه الدفعة."
+        },
+        "unused-vouchers": {
+          "btn-text": "تصدير قائمة القسائم غير المستخدمة",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع القسائم غير المستخدمة.<br /><br />ملاحظة مهمة: القسائم غير المستخدمة المتاحة للتنزيل ليست في الوقت الفعلي. يتضمن التقرير تاريخ ووقت آخر تحديث خارجي لكل قسيمة."
+        },
+        "duplicates": {
+          "btn-text": "تصدير الأشخاص المتأثرين المكررين",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين المكررة.",
+          "basedOn": "يعتمد التحقق من التكرارات على: {{duplicateAttributes}}",
+          "canTakeFewMinutes": "قد يستغرق هذا ما يصل إلى بضع دقائق."
+        },
+        "card-balances": {
+          "btn-text": "تصدير استخدام بطاقة الخصم",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel يوضح رصيد كل بطاقة <br / ><br / >ملاحظة مهمة: أرصدة البطاقات المتاحة للتنزيل ليست في الوقت الفعلي. يتضمن التقرير تاريخ ووقت آخر تحديث خارجي لكل بطاقة."
+        },
+        "pa-data-changes": {
+          "btn-text": "تصدير تغييرات البيانات",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel يعرض جميع تغييرات البيانات لجميع الأشخاص المتأثرين بهذا البرنامج.",
+          "confirm-prompt": {
+            "choose-dates": "اختياريا تمرير تاريخ البدء و / أو تاريخ الانتهاء لتصفية تغييرات البيانات.",
+            "date-from": "تاريخ البدء {{date}}",
+            "date-to": "تاريخ الانتهاء {{date}}",
+            "wrong-dates": "يجب أن يكون تاريخ الانتهاء أكبر من تاريخ البدء",
+            "confirm-btn": "تصدير"
+          }
+        }
+      },
+      "export-fsp-intructions": {
+        "btn-text": "تعليمات دفع الصادرات",
+        "confirm-message": "سيؤدي هذا إلى تنزيل ملف يحتوي على تعليمات الدفع لمزود الخدمة المالية.",
+        "sub-message": {
+          "reconciliation": "سيتضمن هذا التصدير فقط الأشخاص المتأثرين الذين <strong>تنتظرهم</strong> حالة المعاملة الحالية.",
+          "no-reconciliation": "يجب عليك استخدام هذا الملف <strong>مرة واحدة فقط لكل دفعة</strong> في بوابة مزود الخدمة المالية."
+        },
+        "timestamp": "آخر تصدير تم في: {{dateTime}}"
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "استيراد بيانات تسوية الدفعات",
+        "confirm-message": "استيراد بيانات تسوية الدفعات",
+        "explanation": "تأكد من تحميل بيانات التسوية تماما كما قدمها مزود الخدمة المالية.",
+        "timestamp": "آخر استيراد تم في: {{dateTime}}",
+        "import-result": {
+          "ready": "بيانات التسوية المستوردة <strong>للدفع #{{payment}}</strong>.",
+          "new": "تم تحديث بيانات الدفع ل {{countTotal}} الأشخاص المتأثرين:<ul><li>{{countPaymentSuccess}} <strong>تم تنفيذ</strong>عمليات الدفع بنجاح <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> فشلت المدفوعات <strong></strong></li></ul> <strong></strong>",
+          "mismatch": "كن حذرا: تم البدء في دفع <strong>{{countPaymentStarted}}</strong> <strong>للدفع #{{payment}}</strong>. تحتوي بيانات التسوية على <strong>دفعات {{countImported}}</strong>. لذلك ، لا يتطابق المبلغ الإجمالي في بيانات التسوية مع الدفعات التي بدأت. لاحظ أن جميع الدفعات التي ليس لها سجل نجاح في بيانات التسوية تعتبر دفعات فاشلة.",
+          "not-found": "كانت هناك <strong>{{countNotFound}}</strong> معاملة لم يتم العثور على شخص مطابق لها. حاول تصحيحها وتحميلها مرة أخرى."
+        }
+      }
+    },
+    "help": {
+      "pageTitle": "تعليمات",
+      "user-manual": "دليل الاستخدام",
+      "user-manual-content": "يجب إضافته."
+    },
+    "users": {
+      "pageTitle": "المستخدمون والأدوار",
+      "page-description": "في هذه الصفحة، يمكنك إضافة مستخدمين وإدارتهم، والاطلاع على الأدوار والأذونات.",
+      "title": "المستخدمون PAGE",
+      "users-tab": "المستعملون",
+      "add-new-user": "إضافة مستخدم جديد",
+      "roles-tab": "ادوار",
+      "total-users": "المستعملون",
+      "search": "بحث...",
+      "table-headers": {
+        "username": "اسم المستخدم",
+        "user-type": "نوع المستخدم",
+        "status": "حالة",
+        "last-login": "آخر تسجيل دخول"
+      },
+      "user-type": {
+        "admin": "المشرف",
+        "regular": "منتظم"
+      },
+      "status": {
+        "true": "نشط",
+        "false": "كسلان"
+      }
+    },
+    "user": {
+      "pageTitle": "مستخدم",
+      "change-password": {
+        "title": "تغيير كلمة المرور",
+        "current-password": "كلمة المرور الحالية",
+        "new-password": "كلمة مرور جديدة",
+        "confirm-password": "تأكيد كلمة المرور",
+        "success": "تم تغيير كلمة المرور",
+        "failed": "محاولة فاشلة: كلمة المرور الحالية غير صحيحة"
+      },
+      "notification-messages": {
+        "password-requirements": "يجب أن تحتوي كلمة المرور على {{minLength}} حرفا على الأقل وحرفا كبيرا واحدا وحرفا صغيرا ورقما واحدا.",
+        "different-passwords": "كلمات المرور غير متطابقة."
+      }
+    },
+    "iframe": {
+      "recipient": {
+        "no-recipients-found": "لم يتم العثور على معلومات مرتبطة برقم هاتف هذا الشخص في أي برامج نشطة في منصة 121.",
+        "no-phone-number": "عندما تتلقى مهمة ، ستظهر أي معلومات مرتبطة برقم هاتف الشخص الموجود في البرامج النشطة في النظام الأساسي 121 هنا.",
+        "single-recipient-found": "تم العثور <b> على 1 شخص متضرر </b> مسجل بهذا الرقم",
+        "multiple-recipients-found": "تم العثور على <b> {{paCount}} شخص متضرر مسجلين </b> بهذا الرقم"
+      }
+    }
+  },
+  "common": {
+    "update": "تحديث",
+    "save": "أنقذ",
+    "confirm": "هل أنت متأكد؟",
+    "cancel": "إلغاء الأمر",
+    "ok": "OK",
+    "export-error": "حدث خطأ ما في التصدير.",
+    "import-error": "حدث خطأ ما في الاستيراد.",
+    "unknown-error": "حدث خطأ ما. الخطأ غير معروف.",
+    "update-success": "تم التحديث بنجاح",
+    "update-error": "حدث خطأ ما: {{error}}",
+    "save-success": "تم الحفظ بنجاح",
+    "timestamp": {
+      "done": "حرر في:"
+    },
+    "show-more": "عرض المزيد",
+    "try-again-contact-support": "يرجى المحاولة مرة أخرى. إذا استمرت المشكلة، اتصل بالدعم التقني.",
+    "answer-is-required": "مطلوب إجابة لهذا السؤال."
+  },
+  "registration-details": {
+    "pageTitle": "تفاصيل التسجيل",
+    "show-all": "عرض الكل",
+    "personal-information-table": {
+      "subtitle": "PA #{{paNumber}}",
+      "status": "الحالة: <b>{{status}}</b>",
+      "registeredDate": "تاريخ التسجيل",
+      "lastUpdateDate": "آخر تحديث",
+      "namePartnerOrganization": "منظمة شريكة",
+      "paymentsDone": "المدفوعات المنجزة",
+      "primaryLanguage": "اللغة الأساسية",
+      "phone": "رقم الهاتف",
+      "whatsappPhoneNumber": "رقم الواتساب",
+      "fsp": "مزود الخدمات المالية",
+      "scope": "نطاق"
+    },
+    "physical-cards-overview": {
+      "title": "بطاقات السحب الآلي",
+      "subtitle": "...",
+      "status": "حالة",
+      "date-issued": "صادر",
+      "date-last-used": "اخر استخدام",
+      "current-balance": "الرصيد الحالي",
+      "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}} {{currency}})",
+      "pause-card": "إيقاف البطاقة مؤقتا",
+      "unpause-card": "إلغاء الإيقاف المؤقت للبطاقة",
+      "issue-new-card": "إصدار بطاقة جديدة",
+      "popup-title": "بانككارد",
+      "not-used-yet": "لم تستخدم بعد",
+      "confirm-prompt": {
+        "prefix": "هل أنت متأكد من أنك تريد ذلك ",
+        "pause": "هل أوقفت هذه البطاقة مؤقتا؟",
+        "unpause": "إلغاء إيقاف هذه البطاقة مؤقتا؟",
+        "new-card": "حظر هذه البطاقة بشكل دائم وإصدار بطاقة جديدة؟",
+        "suffix": "<br><br>سيؤدي هذا تلقائيا إلى إرسال رسالة إلى الشخص المتأثر."
+      },
+      "action-result": {
+        "new-card-success": "إصدار بطاقة خصم جديدة بنجاح",
+        "new-card-error": "<span class = \"الحالة-فشل-النص\">حدث خطأ ما</span><br><br>{{error}}",
+        "pause-success": "تم إيقاف بطاقة الخصم مؤقتا بنجاح",
+        "unpause-success": "بطاقة الخصم غير المتوقفة مؤقتا بنجاح"
+      },
+      "explanation": "تفسير"
+    },
+    "activity-overview": {
+      "title": "نظرة عامة على النشاط",
+      "filters": {
+        "null": "كل",
+        "dataChanges": "تغييرات البيانات",
+        "message": "رسائل",
+        "status": "سجل الحالة",
+        "payment": "الدفعات",
+        "notes": "تلاحظ"
+      },
+      "actions": "الاجراءات",
+      "action": {
+        "add-note": "إضافة ملاحظة"
+      },
+      "activities": {
+        "status": {
+          "label": "تحديث الحالة",
+          "description": "تم تغيير حالة الشخص المتأثر إلى: {{status}}."
+        },
+        "message": {
+          "label": "رسالة"
+        },
+        "payment": {
+          "label": "#{{number}} الدفع",
+          "description": "#{{number}} الدفع هو {{status}}."
+        },
+        "data-changes": {
+          "label": "تغيير البيانات",
+          "values": "<b>قديم</b>: {{oldValue}}<br><b>جديد:</b> {{newValue}}",
+          "reason": "<br><b>السبب:</b> {{reason}}"
+        },
+        "note": {
+          "label": "ملاحظه"
+        }
+      },
+      "add-note-popup": {
+        "add-note-profile": "أنت على وشك إضافة ملاحظة إلى ملف تعريف {{ name }}.",
+        "note-visible": "ستكون الملاحظة مرئية ل 121 مستخدما آخرين يسمح لهم بعرض الملفات الشخصية.",
+        "type-note": "اكتب ملاحظة:",
+        "note-textarea-placeholder": "انقر هنا لكتابة ملاحظة قصيرة"
+      }
+    },
+    "payment-history": {
+      "transfer": "#{{paymentNr}} الدفع"
+    },
+    "error": "لم يتم العثور على الشخص"
+  },
+  "refresh-data": {
+    "last-updated": "آخر تحديث: {{date}}"
+  },
+  "file-picker": {
+    "label": "حدد ملفا",
+    "download-template-button": "تحميل قالب CSV ملف"
+  },
+  "select-typeahead": {
+    "placeholder": "اختار..."
+  },
+  "password-toggle": {
+    "show": "إظهار كلمة المرور",
+    "hide": "إخفاء كلمة المرور"
+  },
+  "system-notifications": {
+    "compatible-browsers": "تعمل بوابة 121 بشكل أفضل في Chrome و Firefox و Safari و Microsoft Edge. لا يعمل مدخل 121 في Internet Explorer."
+  }
+}
