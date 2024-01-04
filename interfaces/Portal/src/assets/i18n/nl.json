@@ -10,15 +10,23 @@
     "ok": "OK",
     "save": "Opslaan",
     "save-success": "Opgeslagen",
-    "show-more": "Toon meer",
-    "timestamp": {
-      "done": "Gedaan op:"
-    },
     "try-again-contact-support": "Probeer het opnieuw. Neem contact op met 121 technische ondersteuning als het probleem zich blijft voordoen.",
     "unknown-error": "Er is iets misgegaan. Fout is onbekend.",
     "update": "Update",
     "update-error": "Er is iets misgegaan: {{error}}",
     "update-success": "Update succesvol"
+  },
+  "entity": {
+    "users": {
+      "status": {
+        "active": "Actief",
+        "inactive": "Geblokkeerd"
+      },
+      "type": {
+        "admin": "Admin",
+        "regular": "Regulier"
+      }
+    }
   },
   "file-picker": {
     "download-template-button": "Download template CSV-bestand",
@@ -26,15 +34,9 @@
   },
   "header": {
     "dashboard": "Dashboard",
-    "design": "Programma ontwerp",
-    "evaluation": "Evaluatie",
     "help": "Help",
     "home": "Home",
-    "inclusion": "Actief",
     "menu": "Menu",
-    "payment": "Betaling",
-    "phases": "Fasen",
-    "registration-validation": "Registratie & validatie",
     "team": "Team",
     "users": "Gebruikers"
   },
@@ -73,64 +75,13 @@
           "invalid-email": "Voer een geldig e-mailadres in."
         },
         "password": {
-          "forgot": "Wachtwoord vergeten?",
           "label": "Wachtwoord"
         },
         "submit": {
           "label": "Inloggen"
         }
       },
-      "pageTitle": "Inloggen",
       "portalTitle": "Portal"
-    },
-    "program-team": {
-      "add-team-member": "Teamlid toevoegen",
-      "edit-team-member": "Bewerken",
-      "page-description": "Op deze pagina kunt u een team voor uw programma aanmaken",
-      "pageTitle": "Programmateam",
-      "popup": {
-        "add-users-button": "Voeg gebruiker toe",
-        "add": {
-          "already-member": "Deze gebruiker is al een teamlid",
-          "confirm": "Gebruiker toevoegen",
-          "succes-message": "Je hebt succesvol een teamlid toegevoegd",
-          "title": "Teamlid toevoegen"
-        },
-        "change": {
-          "confirm": "Opslaan",
-          "succes-message": "U heeft de rol(len) van deze gebruiker succesvol bewerkt",
-          "title": "De rollen van teamleden bewerken"
-        },
-        "remove": {
-          "attention": "Let op:",
-          "confirm": "Gebruiker verwijderen",
-          "confirmation-question": "Weet je zeker dat je deze gebruiker uit het programmateam wilt verwijderen?",
-          "explanation": "Het verwijderen van een teamlid betekent niet dat hun account wordt verwijderd uit het 121 portal. Als je hun account wilt verwijderen, neem dan contact op met de beheerder.",
-          "introduction": "Als het teamlid wordt verwijderd, heeft hij of zij geen toegang meer tot het programma of de gegevens.",
-          "succes-message": "Je hebt een teamlid verwijderd",
-          "title": "Teamlid verwijderen"
-        },
-        "role": "Rol",
-        "roles-placeholder": "Rol(len) toewijzen",
-        "roles-required": "Selecteer ten minste één rol",
-        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle hulpvragers.",
-        "scope-placeholder": "Vul een scope in",
-        "team-member": "Teamlid",
-        "team-member-placeholder": "Selecteer een teamlid"
-      },
-      "remove-team-member": "Verwijderen uit team",
-      "status": {
-        "false": "Geblokkeerd",
-        "true": "Actief"
-      },
-      "table-headers": {
-        "last-activity": "Laatste login",
-        "name": "Naam",
-        "role": "Rol",
-        "scope": "Scope",
-        "status": "Status"
-      },
-      "team-members": "Teamleden"
     },
     "program": {
       "bulk-import": {
@@ -224,18 +175,6 @@
         "export-button": {
           "label": "Exporteren als CSV"
         },
-        "header": {
-          "latest-value": "Laatste waarde",
-          "metric": "Waarde"
-        },
-        "over-time": {
-          "pa": {
-            "new": "Nieuw",
-            "pre-existing": "Bestaande"
-          },
-          "payment-label": "Betaling",
-          "tooltip": "Deze grafiek toont het aantal hulpvragers dat met succes per betaling is uitbetaald. <br><br>Dit aantal wordt uitgesplitst naar \"reeds bestaande\" en \"nieuwe\" hulpvragers, op basis van het feit of de hulpvrager al dan niet ook aanwezig was bij de vorige betaling. \"<br><br>Succesvol uitbetaald\" betekent dat de betaling (bv. voucher) met succes is uitgegeven en dat de hulpvrager hiervan op de hoogte is gesteld, maar impliceert niet dat de betaling is geïnd en/of uitgegeven."
-        },
         "pa": {
           "deleted": "Verwijderd",
           "imported": "Geïmporteerd",
@@ -273,15 +212,15 @@
             "explanation": "In deze rij worden alle gegevens tot en met deze maand weergegeven, in plaats van alleen de gegevens die specifiek zijn voor deze maand.",
             "label": "Tot geselecteerde maand:"
           },
-          "payment-from-start": {
-            "explanation": "Deze rij toont alle gegevens tot en met de geselecteerde betaling, in plaats van alleen de gegevens die specifiek zijn voor deze betalingsperiode (de periode tussen de vorige betaling en de geselecteerde betaling).",
-            "label": "Tot geselecteerde betaling #:"
-          },
           "payment": {
             "explanation": "Alle hulpvragers die een bepaalde status bereikten - bijv. actief - op enig moment tussen de vorige betaling en de gekozen betaling. <br><br> Dit is niet het aantal geregistreerde hulpvragers op het moment van die betaling, maar het aantal hulpvragers dat werd geregistreerd tussen de vorige betaling en de gekozen betaling. <br><br> Merk op dat de geregistreerde hulpvragers in deze periode niet noodzakelijkerwijs dezelfde hulpvragers zijn als de hulpvragers die zich in deze periode hebben geregistreerd, omdat ze zich bijvoorbeeld in de vorige periode kunnen hebben geregistreerd.",
             "label": "Betaling #:",
             "option": "Betaling # {{number}} - {{date}}",
             "select-hint": "Kies betaling..."
+          },
+          "payment-from-start": {
+            "explanation": "Deze rij toont alle gegevens tot en met de geselecteerde betaling, in plaats van alleen de gegevens die specifiek zijn voor deze betalingsperiode (de periode tussen de vorige betaling en de geselecteerde betaling).",
+            "label": "Tot geselecteerde betaling #:"
           },
           "to-date": {
             "explanation": "Alle hulpvragers die een bepaalde status hebben bereikt - bijv. inbegrepen - op enig moment tussen de start van het programma en nu. Dit is niet het aantal opgenomen PA's op <br><br> dit moment, maar het aantal van alle PA's die op een bepaald moment zijn opgenomen.",
@@ -293,10 +232,6 @@
           "total-helped-to-date": "Totaal aantal individuele hulpvragers geholpen tot nu toe"
         },
         "units": {
-          "duration": {
-            "month": "maand(en)",
-            "week": "week(en)"
-          },
           "frequency": {
             "month": "maandelijks",
             "week": "wekelijks",
@@ -341,7 +276,6 @@
         "location": "Locatie",
         "section-title": "Programmadetails",
         "startDate": "Startdatum",
-        "titlePaApp": "Titel PA-app",
         "titlePortal": "Titel portal"
       },
       "program-payout": {
@@ -463,43 +397,21 @@
           "fspChangeWarning": "Als u deze FSP selecteert, wordt de volgende informatie verwijderd die verband houden met de oude FSP:",
           "fspNewAttributesExplanation": "Voor deze FSP is de volgende informatie vereist:",
           "has-notes-title": "Notities beschikbaar",
-          "note": {
-            "introduction": "In het onderstaande veld kunt u notities over deze persoon toevoegen, bewerken of verwijderen. Beperk het aantal persoonlijk identificeerbare gegevens (PII) tot een minimum en verwijder PII wanneer deze niet langer nodig is.",
-            "latest-update": "Laatst bijgewerkt op: {{timestamp}}",
-            "placeholder": "Type hier uw notitie",
-            "save": "Opslaan",
-            "section-title": "Notities voor hulpvragers"
-          },
           "popup-title": "{{pa}} meer info",
           "properties": {
-            "accountId": {
-              "label": "Account ID"
-            },
-            "date": {
-              "label": "Datum"
-            },
             "error": {
               "not-an-integer": "Input moet een geheel getal zijn",
               "not-empty": "De invoer kan niet leeg zijn",
               "too-low": "De invoer moet hoger zijn dan het aantal betalingen dat al is verzonden"
-            },
-            "fixedChoice": {
-              "label": "Vaste keuze"
             },
             "maxPayments": {
               "explanation": "Het maximale aantal betalingen voor deze hulpvrager. U kunt de limiet verwijderen door de waarde te verwijderen en op te slaan.",
               "label-no-payments": "Max aantal betalingen",
               "label-payments": "Max. betalingen ( {{alreadyReceivedPayments}} verzonden)"
             },
-            "openAnswer": {
-              "label": "Open antwoord"
-            },
             "paymentAmountMultiplier": {
               "explanation": "De standaard bedrag wordt voor deze hulpvrager met dit getal vermenigvuldigd",
               "label": "Bedrag multiplier"
-            },
-            "personalId": {
-              "label": "Persoonlijk ID"
             },
             "phoneNumber": {
               "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode.",
@@ -512,8 +424,7 @@
               "label": "Scope"
             },
             "whatsappPhoneNumber": {
-              "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode.",
-              "label": "WhatsApp-nummer"
+              "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode."
             }
           },
           "reason-popup": {
@@ -533,12 +444,9 @@
             "cancel-btn": "Annuleren",
             "filter-by": "Filter op:"
           },
-          "empty-selection-alert-message": "Selecteer ten minste één optie",
           "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
         },
         "filter-placeholder": "Type hier...",
-        "filter-toggle": "Alles weergeven",
-        "filter-tooltip": "Toon alle hulpvragers of alleen de hulpvragers die relevant zijn voor deze programmafase",
         "footer-selected-of-total": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
         "language": {
           "ar": "Arabisch",
@@ -585,18 +493,6 @@
           "status-line": {
             "code": "Twilio foutcode: "
           },
-          "twilio-status": {
-            "accepted": "Geaccepteerd",
-            "delivered": "Afgeleverd",
-            "delivery-unknown": "Levering onbekend",
-            "failed": "Mislukt",
-            "queued": "Wachtrij",
-            "read": "Gelezen",
-            "scheduled": "Gepland",
-            "sending": "Bezig met verzenden",
-            "sent": "Verstuurd",
-            "undelivered": "Niet geleverd"
-          },
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp"
@@ -641,27 +537,19 @@
         "submit-warning": "Je staat op het punt om:",
         "submit-warning-people-affected": "Voer actie <strong>{{actionLabel}}</strong> uit voor {{applicableCount}} hulpvragers.",
         "transaction": {
-          "above": "Boven limiet",
           "amount": "Bedrag",
           "custom-data": {
             "intersolveVisaWalletTokenCode": "Visakaart-ID"
           },
           "do-single-payment": "Eenmalige betaling doen",
-          "error": "Mislukt",
           "fsp": "FSP",
-          "nosupport": "Geen FSP ondersteund voor deze betaling",
           "not-yet-sent": "Nog niet verzonden",
           "open-voucher": "Voucher openen",
-          "payment-number": "Betaling #{{number}}",
           "payments-popup": "Betalingen",
-          "planned": "Gepland",
-          "received": "Ontvangen",
           "retry": "Details",
           "send-payment": "Doe betaling",
           "sent": "Verstuurd",
           "show-status": "Toon status",
-          "success": "Succes",
-          "waiting": "Wachten",
           "waiting-message": "Wachtend op de statusupdate van deze transactie. Vernieuw de pagina voor de laatste status."
         }
       },
@@ -672,6 +560,50 @@
         "remove-filter": "Filter verwijderen",
         "select-column-to-filter": "Typ of selecteer kolom om te filteren"
       }
+    },
+    "program-team": {
+      "add-team-member": "Teamlid toevoegen",
+      "edit-team-member": "Bewerken",
+      "page-description": "Op deze pagina kunt u een team voor uw programma aanmaken",
+      "pageTitle": "Programmateam",
+      "popup": {
+        "add": {
+          "already-member": "Deze gebruiker is al een teamlid",
+          "confirm": "Gebruiker toevoegen",
+          "succes-message": "Je hebt succesvol een teamlid toegevoegd",
+          "title": "Teamlid toevoegen"
+        },
+        "change": {
+          "confirm": "Opslaan",
+          "succes-message": "U heeft de rol(len) van deze gebruiker succesvol bewerkt",
+          "title": "De rollen van teamleden bewerken"
+        },
+        "remove": {
+          "attention": "Let op:",
+          "confirm": "Gebruiker verwijderen",
+          "confirmation-question": "Weet je zeker dat je deze gebruiker uit het programmateam wilt verwijderen?",
+          "explanation": "Het verwijderen van een teamlid betekent niet dat hun account wordt verwijderd uit het 121 portal. Als je hun account wilt verwijderen, neem dan contact op met de beheerder.",
+          "introduction": "Als het teamlid wordt verwijderd, heeft hij of zij geen toegang meer tot het programma of de gegevens.",
+          "succes-message": "Je hebt een teamlid verwijderd",
+          "title": "Teamlid verwijderen"
+        },
+        "role": "Rol",
+        "roles-placeholder": "Rol(len) toewijzen",
+        "roles-required": "Selecteer ten minste één rol",
+        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle hulpvragers.",
+        "scope-placeholder": "Vul een scope in",
+        "team-member": "Teamlid",
+        "team-member-placeholder": "Selecteer een teamlid"
+      },
+      "remove-team-member": "Verwijderen uit team",
+      "table-headers": {
+        "last-activity": "Laatste login",
+        "name": "Naam",
+        "role": "Rol",
+        "scope": "Scope",
+        "status": "Status"
+      },
+      "team-members": "Teamleden"
     },
     "programs-list": {
       "card": {
@@ -695,8 +627,7 @@
         "current-password": "Huidig wachtwoord",
         "failed": "Mislukte poging: huidig wachtwoord onjuist",
         "new-password": "Nieuw paswoord",
-        "success": "Wachtwoord gewijzigd",
-        "title": "Verander wachtwoord"
+        "success": "Wachtwoord gewijzigd"
       },
       "notification-messages": {
         "different-passwords": "Wachtwoorden komen niet overeen.",
@@ -710,28 +641,15 @@
       "pageTitle": "Gebruikers en rollen",
       "roles-tab": "Rollen",
       "search": "Zoeken...",
-      "status": {
-        "false": "Niet actief",
-        "true": "Actief"
-      },
       "table-headers": {
         "last-login": "Laatste login",
         "status": "Status",
         "user-type": "Type gebruiker",
         "username": "Gebruikersnaam"
       },
-      "title": "Gebruikerspagina",
       "total-users": "Gebruikers",
-      "user-type": {
-        "admin": "Admin",
-        "regular": "Regular"
-      },
       "users-tab": "Gebruikers"
     }
-  },
-  "password-toggle": {
-    "hide": "Verberg wachtwoord",
-    "show": "Toon wachtwoord"
   },
   "refresh-data": {
     "last-updated": "Laatst bijgewerkt: {{date}}"
@@ -753,10 +671,6 @@
         },
         "note": {
           "label": "Notitie"
-        },
-        "payment": {
-          "description": "Betaling #{{number}} is {{status}}.",
-          "label": "Betaling #{{number}}"
         },
         "status": {
           "description": "Status hulpvrager gewijzigd in: {{status}}.",
@@ -786,16 +700,11 @@
     },
     "personal-information-table": {
       "fsp": "Financiële dienstverlener",
-      "lastUpdateDate": "Laatst bijgewerkt",
-      "namePartnerOrganization": "Partnerorganisatie",
-      "paymentsDone": "Gedane betalingen",
       "phone": "Telefoonnummer",
       "primaryLanguage": "Moedertaal",
-      "registeredDate": "Registratiedatum",
       "scope": "Connectie",
       "status": "Status: <b>{{status}}</b>",
-      "subtitle": "Hulpvrager #{{paNumber}}",
-      "whatsappPhoneNumber": "WhatsApp-nummer"
+      "subtitle": "Hulpvrager #{{paNumber}}"
     },
     "physical-cards-overview": {
       "action-result": {
@@ -821,7 +730,6 @@
       "popup-title": "Visa kaart",
       "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}} {{currency}})",
       "status": "Status",
-      "subtitle": "...",
       "title": "Visa kaarten",
       "unpause-card": "Kaart activeren"
     },
