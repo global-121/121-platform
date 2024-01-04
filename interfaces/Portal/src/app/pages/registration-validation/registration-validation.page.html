@@ -1,12 +1,22 @@
 <app-header
   [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
 ></app-header>
-<app-program-navigation></app-program-navigation>
+<div
+  class="layout-flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
+>
+  <app-program-navigation></app-program-navigation>
+  <app-phase-next
+    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
+    [programId]="programId"
+    [thisPhaseName]="thisPhase"
+    [phaseReady]="isReady"
+  ></app-phase-next>
+</div>
 
 <ion-content class="ion-padding">
-  <ion-grid>
+  <ion-grid class="ion-no-padding">
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-no-padding">
         <app-bulk-import
           *appIfPermissions="[Permission.RegistrationCREATE, Permission.RegistrationImportTemplateREAD]"
           [programId]="programId"
@@ -14,12 +24,6 @@
         ></app-bulk-import>
       </ion-col>
       <ion-col class="ion-justify-content-end">
-        <app-phase-next
-          *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
-          [programId]="programId"
-          [thisPhaseName]="thisPhase"
-          [phaseReady]="isReady"
-        ></app-phase-next>
         <app-disable-registration
           *appIfPermissions="[Permission.ProgramUPDATE]"
           [programId]="programId"
