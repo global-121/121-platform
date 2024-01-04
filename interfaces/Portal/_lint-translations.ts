@@ -58,9 +58,8 @@ const ruleConfig: IRulesConfig = {
 
 // ----------------------------------------------------------------------------
 
-console.log('\n');
 console.info('NGX-Translate-Lint: Linting...');
-console.log('\n\n');
+console.log('\n');
 
 const ngxTranslateLint = new NgxTranslateLint(
   viewsPath,
@@ -78,6 +77,7 @@ console.info(`Checking ${languages.length} language(s):`);
 languages.forEach((language) => {
   console.info(`${getLocalPath(language.path)} : ${language.keys.length} keys`);
 });
+console.log('\n');
 
 // ----------------------------------------------------------------------------
 
@@ -85,7 +85,8 @@ languages.forEach((language) => {
 const results: ResultCliModel = ngxTranslateLint.lint();
 
 if (results.errors.length) {
-  console.error(`Found ${results.errors.length} issue(s).\n`);
+  console.error(`Found ${results.errors.length} issue(s).`);
+  console.log('\n');
 
   results.errors.forEach((result, index) => {
     console.warn(
@@ -104,9 +105,14 @@ if (results.errors.length) {
     console.log('\n');
   });
 
+  console.info(
+    'If these issues are false positives, please review the configuration.',
+  );
+  console.info(`See: ${getLocalPath(__filename)}`);
+  console.log('\n');
+
   process.exit(1);
 } else {
-  console.log('\n');
   console.info('Everything looks fine!');
   console.log('\n');
   process.exit(0);
