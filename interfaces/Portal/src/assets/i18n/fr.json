@@ -1,4 +1,6 @@
 {
+  "_dir": "ltr",
+  "_languageName": "Français",
   "common": {
     "answer-is-required": "Une réponse est requise pour cette question.",
     "cancel": "Annuler",
@@ -8,15 +10,23 @@
     "ok": "OK",
     "save": "Sauvegarder",
     "save-success": "Enregistré avec succès",
-    "show-more": "Voir plus",
-    "timestamp": {
-      "done": "Fait le :"
-    },
     "try-again-contact-support": "Veuillez réessayer. Si le problème persiste, contactez le support technique.",
     "unknown-error": "Quelque chose s’est mal passé. L’erreur est inconnue.",
     "update": "Mettre à jour",
     "update-error": "Quelque chose s’est mal passé : {{error}}",
     "update-success": "Mise à jour réussie"
+  },
+  "entity": {
+    "users": {
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "type": {
+        "admin": "Admin",
+        "regular": "Régulier"
+      }
+    }
   },
   "file-picker": {
     "download-template-button": "Télécharger le modèle de fichier CSV",
@@ -24,15 +34,9 @@
   },
   "header": {
     "dashboard": "Tableau de bord",
-    "design": "Concevoir",
-    "evaluation": "Évaluation",
     "help": "Aide",
     "home": "Domicile",
-    "inclusion": "Inclusion",
     "menu": "Menu",
-    "payment": "Paiement",
-    "phases": "Phases",
-    "registration-validation": "Inscription et validation",
     "team": "Équipe",
     "users": "Utilisateurs"
   },
@@ -71,64 +75,13 @@
           "invalid-email": "Veuillez saisir une adresse e-mail valide."
         },
         "password": {
-          "forgot": "Mot de passe oublié ?",
           "label": "Mot de passe"
         },
         "submit": {
           "label": "S'identifier"
         }
       },
-      "pageTitle": "S'identifier",
       "portalTitle": "Portail"
-    },
-    "program-team": {
-      "add-team-member": "Ajouter un membre de l’équipe",
-      "edit-team-member": "Éditer",
-      "page-description": "Sur cette page, vous pouvez créer une équipe pour votre programme",
-      "pageTitle": "L’équipe du programme",
-      "popup": {
-        "add-users-button": "Ajouter un utilisateur",
-        "add": {
-          "already-member": "Cet utilisateur est déjà membre de l’équipe",
-          "confirm": "Ajouter un utilisateur",
-          "succes-message": "Vous avez ajouté avec succès un membre de l'équipe",
-          "title": "Ajouter un membre de l’équipe"
-        },
-        "change": {
-          "confirm": "Sauvegarder",
-          "succes-message": "Vous avez modifié avec succès le(s) rôle(s) de cet utilisateur",
-          "title": "Modifier un membre de l’équipe"
-        },
-        "remove": {
-          "attention": "Attention: ",
-          "confirm": "Supprimer l’utilisateur",
-          "confirmation-question": "Êtes-vous sûr de supprimer cet utilisateur de l’équipe du programme ?",
-          "explanation": "La suppression d’un membre de l’équipe ne signifie pas la suppression de son compte du portail 121. Si vous souhaitez supprimer leur compte, veuillez contacter l’administrateur.",
-          "introduction": "La suppression du membre de l’équipe l’empêchera d’accéder au programme ou à ses données.",
-          "succes-message": "Vous avez réussi à supprimer un membre de l'équipe",
-          "title": "Supprimer un membre de l’équipe"
-        },
-        "role": "Rôle",
-        "roles-placeholder": "Attribuer un ou plusieurs rôles",
-        "roles-required": "Veuillez sélectionner au moins un rôle",
-        "scope-explanation": "Pour utiliser une sous-portée, tapez un point entre la portée et la sous-portée (par exemple, amsterdam.zuid)<br><br>* Si vous laissez ce champ vide, le membre de l’équipe aura accès à tous les PA",
-        "scope-placeholder": "Renseignez une étendue",
-        "team-member": "Équipier",
-        "team-member-placeholder": "Sélectionner un membre de l’équipe"
-      },
-      "remove-team-member": "Retirer de l’équipe",
-      "status": {
-        "false": "Inactif",
-        "true": "Actif"
-      },
-      "table-headers": {
-        "last-activity": "Dernière connexion",
-        "name": "Nom",
-        "role": "Rôle",
-        "scope": "Portée",
-        "status": "Statut"
-      },
-      "team-members": "Membres de l’équipe"
     },
     "program": {
       "bulk-import": {
@@ -222,18 +175,6 @@
         "export-button": {
           "label": "Exporter au format CSV"
         },
-        "header": {
-          "latest-value": "Dernière valeur",
-          "metric": "Métrique"
-        },
-        "over-time": {
-          "pa": {
-            "new": "Nouveau",
-            "pre-existing": "Préexistant"
-          },
-          "payment-label": "Paiement",
-          "tooltip": "Ce graphique montre le nombre de personnes touchées qui ont été payées avec succès par paiement. Ce nombre est divisé en PA « préexistants » et « nouveaux », selon que le PA <br><br>était également présent dans le paiement précédent ou non. <br><br>« Payé avec succès » signifie que le paiement (par exemple, le bon) a été émis avec succès et que le PA en est informé, mais n’implique pas que le paiement est collecté et/ou dépensé."
-        },
         "pa": {
           "deleted": "Supprimé",
           "imported": "Importé",
@@ -271,15 +212,15 @@
             "explanation": "Cette ligne affiche toutes les données jusqu’à ce mois inclus, au lieu de uniquement les données spécifiques à ce mois.",
             "label": "Jusqu’au mois sélectionné :"
           },
-          "payment-from-start": {
-            "explanation": "Cette ligne affiche toutes les données jusqu’au paiement sélectionné inclus, au lieu de uniquement les données spécifiques à cette période de paiement (la période entre le paiement précédent et le paiement sélectionné).",
-            "label": "Jusqu’au # de paiement sélectionné :"
-          },
           "payment": {
             "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - à tout moment entre le paiement précédent et le paiement choisi. Il ne s’agit pas du nombre de PA inclus <br><br> au moment de ce paiement, mais du nombre de PA qui ont été inclus entre le paiement précédent et le paiement choisi. Notez que les PA <br><br> inclus dans cette période ne sont pas nécessairement les mêmes PA que ceux qui se sont inscrits au cours de cette période, car ils peuvent s’être inscrits par exemple au cours de la période précédente.",
             "label": "# de paiement :",
             "option": "#{{number}} de paiement - {{date}}",
             "select-hint": "Choisissez le paiement..."
+          },
+          "payment-from-start": {
+            "explanation": "Cette ligne affiche toutes les données jusqu’au paiement sélectionné inclus, au lieu de uniquement les données spécifiques à cette période de paiement (la période entre le paiement précédent et le paiement sélectionné).",
+            "label": "Jusqu’au # de paiement sélectionné :"
           },
           "to-date": {
             "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - à tout moment entre le début du programme et maintenant. Ce n’est pas le nombre de PA inclus <br><br> pour le moment, mais le nombre de tous les PA qui ont été inclus à un moment donné.",
@@ -291,10 +232,6 @@
           "total-helped-to-date": "Nombre total de PA personnes aidées à ce jour"
         },
         "units": {
-          "duration": {
-            "month": "Mois(s)",
-            "week": "semaine(s)"
-          },
           "frequency": {
             "month": "mensuel",
             "week": "hebdomadaire",
@@ -339,7 +276,6 @@
         "location": "Emplacement",
         "section-title": "Détails du programme",
         "startDate": "Date de début",
-        "titlePaApp": "Titre PA-app",
         "titlePortal": "Portail de titres"
       },
       "program-payout": {
@@ -461,43 +397,21 @@
           "fspChangeWarning": "La sélection de ce FSP supprimera les attributs suivants liés à l’ancien FSP :",
           "fspNewAttributesExplanation": "Pour ce FSP, les attributs suivants sont requis :",
           "has-notes-title": "Notes disponibles",
-          "note": {
-            "introduction": "Vous pouvez ajouter, modifier ou supprimer des notes sur cette personne concernée dans le champ ci-dessous. Veuillez réduire au minimum les informations personnelles identifiables (PII) et supprimer toutes les informations personnelles lorsque vous n’en avez plus besoin.",
-            "latest-update": "Dernière mise à jour le : {{timestamp}}",
-            "placeholder": "Commencez une note sur cette personne affectée en tapant ici...",
-            "save": "Enregistrer la note",
-            "section-title": "Notes sur la personne touchée"
-          },
           "popup-title": "{{pa}} info détaillée",
           "properties": {
-            "accountId": {
-              "label": "ID de compte"
-            },
-            "date": {
-              "label": "Date"
-            },
             "error": {
               "not-an-integer": "L’entrée doit être un entier",
               "not-empty": "L’entrée ne peut pas être vide",
               "too-low": "L’entrée doit être supérieure au nombre de paiements qui ont déjà été envoyés."
-            },
-            "fixedChoice": {
-              "label": "Choix fixe"
             },
             "maxPayments": {
               "explanation": "Le nombre maximal de paiements pour cette personne touchée. Vous pouvez supprimer la limite en supprimant la valeur et en enregistrant.",
               "label-no-payments": "Paiements maximaux",
               "label-payments": "Paiements maximum ({{alreadyReceivedPayments}} déjà envoyés)"
             },
-            "openAnswer": {
-              "label": "Réponse ouverte"
-            },
             "paymentAmountMultiplier": {
               "explanation": "La valeur de transfert sera multipliée par ce nombre pour cette personne touchée",
               "label": "Multiplicateur de valeur de transfert"
-            },
-            "personalId": {
-              "label": "Pièce d’identité personnelle"
             },
             "phoneNumber": {
               "explanation": "Le format requis est le suivant : UNIQUEMENT les numéros, y compris le code du pays.",
@@ -507,11 +421,11 @@
               "label": "Langue préférée"
             },
             "scope": {
+              "explanation": "Séparez les parties par un point (c'est-à-dire 'amsterdam.west').",
               "label": "Portée"
             },
             "whatsappPhoneNumber": {
-              "explanation": "Le format requis est le suivant : UNIQUEMENT les numéros, y compris le code du pays.",
-              "label": "Numéro WhatsApp"
+              "explanation": "Le format requis est le suivant : UNIQUEMENT les numéros, y compris le code du pays."
             }
           },
           "reason-popup": {
@@ -531,12 +445,9 @@
             "cancel-btn": "Annuler",
             "filter-by": "Filtrer par :"
           },
-          "empty-selection-alert-message": "Veuillez sélectionner au moins une option",
           "multiple-choice-hidden-options": "La liste ci-dessus n’affiche un statut que s’il est attribué à au moins une personne concernée"
         },
         "filter-placeholder": "Tapez value...",
-        "filter-toggle": "Tout afficher",
-        "filter-tooltip": "Afficher toutes les personnes concernées ou uniquement les personnes concernées par cette phase du programme",
         "footer-selected-of-total": "{{selectedCount}} sélectionné / {{totalCount}} au total",
         "language": {
           "ar": "Arabe",
@@ -583,18 +494,6 @@
           "status-line": {
             "code": "Code d’erreur Twilio : "
           },
-          "twilio-status": {
-            "accepted": "Accepté",
-            "delivered": "Livré",
-            "delivery-unknown": "Livraison inconnue",
-            "failed": "Raté",
-            "queued": "Queue",
-            "read": "Lire",
-            "scheduled": "Prévue",
-            "sending": "Envoi",
-            "sent": "Envoyèrent",
-            "undelivered": "Non livré"
-          },
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp (en anglais)"
@@ -639,27 +538,19 @@
         "submit-warning": "Vous êtes sur le point de :",
         "submit-warning-people-affected": "Effectuez l’action {{actionLabel}} sur <strong>{{applicableCount}}</strong> Personnes affectées.",
         "transaction": {
-          "above": "Au-dessus de la limite",
           "amount": "Quantité",
           "custom-data": {
             "intersolveVisaWalletTokenCode": "Pièce d’identité de la carte Visa"
           },
           "do-single-payment": "Effectuer un paiement unique",
-          "error": "Raté",
           "fsp": "Le FSP",
-          "nosupport": "Aucun FSP n’est pris en charge pour ce transfert",
           "not-yet-sent": "Pas encore envoyé",
           "open-voucher": "Bon d’achat ouvert",
-          "payment-number": "Paiement #{{number}}",
           "payments-popup": "Paiements",
-          "planned": "Planifié",
-          "received": "Reçu",
           "retry": "Détails",
           "send-payment": "Envoyer le paiement",
           "sent": "Envoyèrent",
           "show-status": "Afficher l’état",
-          "success": "Succès",
-          "waiting": "Attente",
           "waiting-message": "Toujours en attente d’une mise à jour de l’état de cette transaction. Actualisez la page pour connaître l’état le plus récent."
         }
       },
@@ -670,6 +561,50 @@
         "remove-filter": "Supprimer le filtre",
         "select-column-to-filter": "Tapez ou sélectionnez la colonne à filtrer"
       }
+    },
+    "program-team": {
+      "add-team-member": "Ajouter un membre de l’équipe",
+      "edit-team-member": "Éditer",
+      "page-description": "Sur cette page, vous pouvez créer une équipe pour votre programme",
+      "pageTitle": "L’équipe du programme",
+      "popup": {
+        "add": {
+          "already-member": "Cet utilisateur est déjà membre de l’équipe",
+          "confirm": "Ajouter un utilisateur",
+          "succes-message": "Vous avez ajouté avec succès un membre de l'équipe",
+          "title": "Ajouter un membre de l’équipe"
+        },
+        "change": {
+          "confirm": "Sauvegarder",
+          "succes-message": "Vous avez modifié avec succès le(s) rôle(s) de cet utilisateur",
+          "title": "Modifier un membre de l’équipe"
+        },
+        "remove": {
+          "attention": "Attention: ",
+          "confirm": "Supprimer l’utilisateur",
+          "confirmation-question": "Êtes-vous sûr de supprimer cet utilisateur de l’équipe du programme ?",
+          "explanation": "La suppression d’un membre de l’équipe ne signifie pas la suppression de son compte du portail 121. Si vous souhaitez supprimer leur compte, veuillez contacter l’administrateur.",
+          "introduction": "La suppression du membre de l’équipe l’empêchera d’accéder au programme ou à ses données.",
+          "succes-message": "Vous avez réussi à supprimer un membre de l'équipe",
+          "title": "Supprimer un membre de l’équipe"
+        },
+        "role": "Rôle",
+        "roles-placeholder": "Attribuer un ou plusieurs rôles",
+        "roles-required": "Veuillez sélectionner au moins un rôle",
+        "scope-explanation": "Pour utiliser une sous-portée, tapez un point entre la portée et la sous-portée (par exemple, amsterdam.zuid)<br><br>* Si vous laissez ce champ vide, le membre de l’équipe aura accès à tous les PA",
+        "scope-placeholder": "Renseignez une étendue",
+        "team-member": "Équipier",
+        "team-member-placeholder": "Sélectionner un membre de l’équipe"
+      },
+      "remove-team-member": "Retirer de l’équipe",
+      "table-headers": {
+        "last-activity": "Dernière connexion",
+        "name": "Nom",
+        "role": "Rôle",
+        "scope": "Portée",
+        "status": "Statut"
+      },
+      "team-members": "Membres de l’équipe"
     },
     "programs-list": {
       "card": {
@@ -693,8 +628,7 @@
         "current-password": "Mot de passe actuel",
         "failed": "Échec de la tentative : mot de passe actuel incorrect",
         "new-password": "Nouveau mot de passe",
-        "success": "Mot de passe modifié",
-        "title": "Changer le mot de passe"
+        "success": "Mot de passe modifié"
       },
       "notification-messages": {
         "different-passwords": "Les mots de passe ne correspondent pas.",
@@ -708,28 +642,15 @@
       "pageTitle": "Utilisateurs et rôles",
       "roles-tab": "Rôles",
       "search": "Rechercher...",
-      "status": {
-        "false": "Inactif",
-        "true": "Actif"
-      },
       "table-headers": {
         "last-login": "Dernière connexion",
         "status": "Statut",
         "user-type": "Type d’utilisateur",
         "username": "Nom d’utilisateur"
       },
-      "title": "UTILISATEURS PAGE",
       "total-users": "Utilisateurs",
-      "user-type": {
-        "admin": "Admin",
-        "regular": "Régulier"
-      },
       "users-tab": "Utilisateurs"
     }
-  },
-  "password-toggle": {
-    "hide": "Masquer le mot de passe",
-    "show": "Afficher le mot de passe"
   },
   "refresh-data": {
     "last-updated": "Dernière mise à jour : {{date}}"
@@ -751,10 +672,6 @@
         },
         "note": {
           "label": "Note"
-        },
-        "payment": {
-          "description": "Le #{{number}} de paiement est de {{status}}.",
-          "label": "Paiement #{{number}}"
         },
         "status": {
           "description": "Le statut de la personne touchée a été changé pour : {{status}}.",
@@ -784,16 +701,11 @@
     },
     "personal-information-table": {
       "fsp": "Fournisseur de services financiers",
-      "lastUpdateDate": "Dernière mise à jour",
-      "namePartnerOrganization": "Organisation partenaire",
-      "paymentsDone": "Paiements effectués",
       "phone": "Numéro de téléphone",
       "primaryLanguage": "Langue principale",
-      "registeredDate": "Date d’enregistrement",
       "scope": "Portée",
       "status": "Statut : <b>{{status}}</b>",
-      "subtitle": "PA #{{paNumber}}",
-      "whatsappPhoneNumber": "Numéro WhatsApp"
+      "subtitle": "PA #{{paNumber}}"
     },
     "physical-cards-overview": {
       "action-result": {
@@ -819,7 +731,6 @@
       "popup-title": "Carte de débit",
       "spent-this-month": "Dépenses effectuées ce mois-ci (maximum {{maxAmount}} {{currency}})",
       "status": "Statut",
-      "subtitle": "...",
       "title": "Cartes de débit",
       "unpause-card": "Annuler la mise en pause de la carte"
     },

@@ -1,4 +1,6 @@
 {
+  "_dir": "rtl",
+  "_languageName": "العربية",
   "common": {
     "answer-is-required": "مطلوب إجابة لهذا السؤال.",
     "cancel": "إلغاء الأمر",
@@ -8,15 +10,23 @@
     "ok": "OK",
     "save": "أنقذ",
     "save-success": "تم الحفظ بنجاح",
-    "show-more": "عرض المزيد",
-    "timestamp": {
-      "done": "حرر في:"
-    },
     "try-again-contact-support": "يرجى المحاولة مرة أخرى. إذا استمرت المشكلة، اتصل بالدعم التقني.",
     "unknown-error": "حدث خطأ ما. الخطأ غير معروف.",
     "update": "تحديث",
     "update-error": "حدث خطأ ما: {{error}}",
     "update-success": "تم التحديث بنجاح"
+  },
+  "entity": {
+    "users": {
+      "status": {
+        "active": "نشط",
+        "inactive": "كسلان"
+      },
+      "type": {
+        "admin": "المشرف",
+        "regular": "منتظم"
+      }
+    }
   },
   "file-picker": {
     "download-template-button": "تحميل قالب CSV ملف",
@@ -24,15 +34,9 @@
   },
   "header": {
     "dashboard": "لوحه القياده",
-    "design": "تصميم",
-    "evaluation": "تقييم",
     "help": "تعليمات",
     "home": "وطن",
-    "inclusion": "ادراج",
     "menu": "قائمة",
-    "payment": "دفع",
-    "phases": "اطوار",
-    "registration-validation": "التسجيل والتحقق من الصحة",
     "team": "فريق",
     "users": "المستعملون"
   },
@@ -71,64 +75,13 @@
           "invalid-email": "الرجاء إدخال عنوان بريد إلكتروني صالح."
         },
         "password": {
-          "forgot": "نسيت كلمة المرور؟",
           "label": "شعار"
         },
         "submit": {
           "label": "تسجيل الدخول"
         }
       },
-      "pageTitle": "تسجيل الدخول",
       "portalTitle": "بوابة"
-    },
-    "program-team": {
-      "add-team-member": "إضافة عضو في الفريق",
-      "edit-team-member": "حرر",
-      "page-description": "في هذه الصفحة يمكنك إنشاء فريق لبرنامجك",
-      "pageTitle": "فريق البرنامج",
-      "popup": {
-        "add-users-button": "إضافة مستخدم",
-        "add": {
-          "already-member": "هذا المستخدم هو بالفعل عضو في الفريق",
-          "confirm": "إضافة مستخدم",
-          "succes-message": "™لقد نجحت في إضافة أحد أعضاء الفريق",
-          "title": "إضافة عضو في الفريق"
-        },
-        "change": {
-          "confirm": "أنقذ",
-          "succes-message": "™لقد نجحت في تحرير دور (أدوار) هذا المستخدم",
-          "title": "تحرير عضو الفريق"
-        },
-        "remove": {
-          "attention": "اهتمام: ",
-          "confirm": "إزالة مستخدم",
-          "confirmation-question": "هل أنت متأكد من إزالة هذا المستخدم من فريق البرنامج؟",
-          "explanation": "لا تعني إزالة عضو الفريق حذف حسابه من بوابة 121. إذا كنت ترغب في حذف حسابهم ، فيرجى الاتصال بالمسؤول.",
-          "introduction": "ستؤدي إزالة عضو الفريق إلى عدم وصوله إلى البرنامج أو بياناته.",
-          "succes-message": "™لقد نجحت في إزالة أحد أعضاء الفريق",
-          "title": "إزالة عضو الفريق"
-        },
-        "role": "دور",
-        "roles-placeholder": "تعيين دور (أدوار)",
-        "roles-required": "الرجاء تحديد دور واحد على الأقل",
-        "scope-explanation": "لاستخدام نطاق فرعي اكتب نقطة بين النطاق والنطاق الفرعي (مثل amsterdam.zuid)<br><br>* ترك هذا الحقل فارغا يعني أن عضو الفريق سيتمكن من الوصول إلى جميع PAs",
-        "scope-placeholder": "املأ نطاقا",
-        "team-member": "عضو الفريق",
-        "team-member-placeholder": "حدد أحد أعضاء الفريق"
-      },
-      "remove-team-member": "إزالة من الفريق",
-      "status": {
-        "false": "كسلان",
-        "true": "نشط"
-      },
-      "table-headers": {
-        "last-activity": "آخر تسجيل دخول",
-        "name": "اسم",
-        "role": "دور",
-        "scope": "نطاق",
-        "status": "حالة"
-      },
-      "team-members": "أعضاء الفريق"
     },
     "program": {
       "bulk-import": {
@@ -222,18 +175,6 @@
         "export-button": {
           "label": "تصدير بتنسيق CSV"
         },
-        "header": {
-          "latest-value": "أحدث قيمة",
-          "metric": "متري"
-        },
-        "over-time": {
-          "pa": {
-            "new": "الجديد",
-            "pre-existing": "موجودة مسبقا"
-          },
-          "payment-label": "دفع",
-          "tooltip": "يعرض هذا المخطط عدد الأشخاص المتأثرين الذين تم الدفع لهم بنجاح لكل دفعة. <br><br>يتم تقسيم هذا الرقم على PAs \"موجود مسبقا\" و \"جديد\" ، بناء على ما إذا كان PA موجودا أيضا في الدفعة السابقة أم لا.تعني عبارة \"تم الدفع بنجاح\" أن الدفعة <br><br>(مثل القسيمة) قد تم إصدارها بنجاح وتم إبلاغ PA بها ، ولكنها لا تعني أن الدفعة قد تم جمعها و / أو إنفاقها."
-        },
         "pa": {
           "deleted": "محذوف",
           "imported": "مستورد",
@@ -271,15 +212,15 @@
             "explanation": "يعرض هذا الصف جميع البيانات حتى هذا الشهر، بدلا من البيانات الخاصة بهذا الشهر فقط.",
             "label": "حتى الشهر المحدد:"
           },
-          "payment-from-start": {
-            "explanation": "يعرض هذا الصف جميع البيانات حتى الدفعة المحددة، بدلا من البيانات الخاصة بفترة الدفع هذه فقط (الفترة بين الدفعة السابقة والدفعة المحددة).",
-            "label": "ما يصل إلى الدفع المحدد #:"
-          },
           "payment": {
             "explanation": "جميع PA التي وصلت إلى حالة معينة - على سبيل المثال المدرجة - في أي لحظة بين الدفعة السابقة والدفعة المختارة. <br><br> هذا ليس عدد PA المضمنة في لحظة تلك الدفعة ، ولكن عدد PA التي تم تضمينها بين الدفعة السابقة والدفعة المختارة. <br><br> لاحظ أن PA المدرجة في هذه الفترة الزمنية قد لا تكون بالضرورة هي نفسها PA مثل تلك التي سجلت في هذه الفترة الزمنية ، حيث قد تكون مسجلة على سبيل المثال في الفترة الزمنية السابقة.",
             "label": "الدفع #:",
             "option": "#{{number}} الدفع - {{date}}",
             "select-hint": "اختر الدفع..."
+          },
+          "payment-from-start": {
+            "explanation": "يعرض هذا الصف جميع البيانات حتى الدفعة المحددة، بدلا من البيانات الخاصة بفترة الدفع هذه فقط (الفترة بين الدفعة السابقة والدفعة المحددة).",
+            "label": "ما يصل إلى الدفع المحدد #:"
           },
           "to-date": {
             "explanation": "كل PA التي وصلت إلى حالة معينة - على سبيل المثال المدرجة - في أي لحظة بين بداية البرنامج والآن. <br><br> هذا ليس عدد PA المدرجة في الوقت الحالي ، ولكن عدد جميع PA التي تم تضمينها في مرحلة ما.",
@@ -291,10 +232,6 @@
           "total-helped-to-date": "العدد الإجمالي للأفراد PA الذين ساعدوا حتى الآن"
         },
         "units": {
-          "duration": {
-            "month": "شهر (أشهر)",
-            "week": "أسبوع (أسابيع)"
-          },
           "frequency": {
             "month": "شهري",
             "week": "أسبوعي",
@@ -339,7 +276,6 @@
         "location": "مكان",
         "section-title": "تفاصيل البرنامج",
         "startDate": "تاريخ البدء",
-        "titlePaApp": "العنوان PA-التطبيق",
         "titlePortal": "بوابة العنوان"
       },
       "program-payout": {
@@ -461,43 +397,21 @@
           "fspChangeWarning": "سيؤدي تحديد FSP هذا إلى حذف السمات التالية المتعلقة ب FSP القديم:",
           "fspNewAttributesExplanation": "بالنسبة ل FSP هذا ، تكون السمات التالية مطلوبة:",
           "has-notes-title": "الملاحظات المتاحة",
-          "note": {
-            "introduction": "يمكنك إضافة أو تعديل أو إزالة ملاحظات حول هذا الشخص المتأثر بالذات في الحقل أدناه. يرجى تقليل معلومات التعريف الشخصية (PII) إلى الحد الأدنى وحذف أي معلومات تحديد الهوية الشخصية عند عدم الحاجة إليها.",
-            "latest-update": "آخر تحديث على: {{timestamp}}",
-            "placeholder": "ابدأ ملاحظة حول هذا الشخص المتأثر بالكتابة هنا ...",
-            "save": "حفظ الملاحظة",
-            "section-title": "ملاحظات حول الشخص المتضرر"
-          },
           "popup-title": "{{pa}} معلومات مفصلة",
           "properties": {
-            "accountId": {
-              "label": "معرف الحساب"
-            },
-            "date": {
-              "label": "تاريخ"
-            },
             "error": {
               "not-an-integer": "يجب أن يكون الإدخال عددا صحيحا",
               "not-empty": "لا يمكن أن يكون الإدخال فارغا",
               "too-low": "يجب أن تكون المدخلات أعلى من عدد الدفعات التي تم إرسالها بالفعل"
-            },
-            "fixedChoice": {
-              "label": "اختيار ثابت"
             },
             "maxPayments": {
               "explanation": "الحد الأقصى لعدد المدفوعات لهذا الشخص المتأثر. يمكنك إزالة الحد عن طريق إزالة القيمة والحفظ.",
               "label-no-payments": "الحد الأقصى للمدفوعات",
               "label-payments": "الحد الأقصى للمدفوعات (تم إرسال {{alreadyReceivedPayments}} بالفعل)"
             },
-            "openAnswer": {
-              "label": "افتح الإجابة"
-            },
             "paymentAmountMultiplier": {
               "explanation": "سيتم ضرب قيمة التحويل في هذا الرقم لهذا الشخص المتضرر",
               "label": "مضاعف قيمة التحويل"
-            },
-            "personalId": {
-              "label": "الهوية الشخصية"
             },
             "phoneNumber": {
               "explanation": "التنسيق المطلوب هو: الأرقام فقط ، بما في ذلك رمز البلد.",
@@ -507,11 +421,11 @@
               "label": "اللغة المفضلة"
             },
             "scope": {
+              "explanation": "افصل بين الأجزاء بنقطة (أي 'amsterdam.west').",
               "label": "نطاق"
             },
             "whatsappPhoneNumber": {
-              "explanation": "التنسيق المطلوب هو: الأرقام فقط ، بما في ذلك رمز البلد.",
-              "label": "رقم الواتساب"
+              "explanation": "التنسيق المطلوب هو: الأرقام فقط ، بما في ذلك رمز البلد."
             }
           },
           "reason-popup": {
@@ -531,12 +445,9 @@
             "cancel-btn": "إلغاء الأمر",
             "filter-by": "تصفية حسب:"
           },
-          "empty-selection-alert-message": "يرجى تحديد خيار واحد على الأقل",
           "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
         },
         "filter-placeholder": "اكتب القيمة...",
-        "filter-toggle": "عرض الكل",
-        "filter-tooltip": "إظهار جميع الأشخاص المتأثرين أو الأشخاص المتأثرين فقط ذوي الصلة بمرحلة البرنامج هذه",
         "footer-selected-of-total": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
         "language": {
           "ar": "العربية",
@@ -583,18 +494,6 @@
           "status-line": {
             "code": "رمز الخطأ تويليو: "
           },
-          "twilio-status": {
-            "accepted": "قبلت",
-            "delivered": "تسليم",
-            "delivery-unknown": "التسليم غير معروف",
-            "failed": "فشل",
-            "queued": "قائمه الانتظار",
-            "read": "قرأ",
-            "scheduled": "المقرر",
-            "sending": "ارسال",
-            "sent": "ارسال",
-            "undelivered": "لم يتم التسليم"
-          },
           "type": {
             "sms": "الرسائل القصيرة",
             "whatsapp": "واتس اب"
@@ -639,27 +538,19 @@
         "submit-warning": "أنت على وشك القيام بما يلي:",
         "submit-warning-people-affected": "نفذ <strong>الإجراء {{actionLabel}} على {{applicableCount}}</strong> الأشخاص المتأثرين.",
         "transaction": {
-          "above": "فوق الحد",
           "amount": "مبلغ",
           "custom-data": {
             "intersolveVisaWalletTokenCode": "بطاقة فيزا"
           },
           "do-single-payment": "قم بالدفع مرة واحدة",
-          "error": "فشل",
           "fsp": "إف إس بي",
-          "nosupport": "لا يوجد FSP مدعوم لهذا النقل",
           "not-yet-sent": "لم يتم إرسالها بعد",
           "open-voucher": "قسيمة مفتوحة",
-          "payment-number": "#{{number}} الدفع",
           "payments-popup": "الدفعات",
-          "planned": "المخطط",
-          "received": "تلقي",
           "retry": "التفاصيل",
           "send-payment": "إرسال الدفع",
           "sent": "ارسال",
           "show-status": "إظهار الحالة",
-          "success": "نجاح",
-          "waiting": "انتظار",
           "waiting-message": "لا تزال تنتظر تحديث الحالة على هذه المعاملة. قم بتحديث الصفحة للحصول على أحدث حالة."
         }
       },
@@ -670,6 +561,50 @@
         "remove-filter": "إزالة الفلتر",
         "select-column-to-filter": "كتابة عمود أو تحديده لتصفيته"
       }
+    },
+    "program-team": {
+      "add-team-member": "إضافة عضو في الفريق",
+      "edit-team-member": "حرر",
+      "page-description": "في هذه الصفحة يمكنك إنشاء فريق لبرنامجك",
+      "pageTitle": "فريق البرنامج",
+      "popup": {
+        "add": {
+          "already-member": "هذا المستخدم هو بالفعل عضو في الفريق",
+          "confirm": "إضافة مستخدم",
+          "succes-message": "™لقد نجحت في إضافة أحد أعضاء الفريق",
+          "title": "إضافة عضو في الفريق"
+        },
+        "change": {
+          "confirm": "أنقذ",
+          "succes-message": "™لقد نجحت في تحرير دور (أدوار) هذا المستخدم",
+          "title": "تحرير عضو الفريق"
+        },
+        "remove": {
+          "attention": "اهتمام: ",
+          "confirm": "إزالة مستخدم",
+          "confirmation-question": "هل أنت متأكد من إزالة هذا المستخدم من فريق البرنامج؟",
+          "explanation": "لا تعني إزالة عضو الفريق حذف حسابه من بوابة 121. إذا كنت ترغب في حذف حسابهم ، فيرجى الاتصال بالمسؤول.",
+          "introduction": "ستؤدي إزالة عضو الفريق إلى عدم وصوله إلى البرنامج أو بياناته.",
+          "succes-message": "™لقد نجحت في إزالة أحد أعضاء الفريق",
+          "title": "إزالة عضو الفريق"
+        },
+        "role": "دور",
+        "roles-placeholder": "تعيين دور (أدوار)",
+        "roles-required": "الرجاء تحديد دور واحد على الأقل",
+        "scope-explanation": "لاستخدام نطاق فرعي اكتب نقطة بين النطاق والنطاق الفرعي (مثل amsterdam.zuid)<br><br>* ترك هذا الحقل فارغا يعني أن عضو الفريق سيتمكن من الوصول إلى جميع PAs",
+        "scope-placeholder": "املأ نطاقا",
+        "team-member": "عضو الفريق",
+        "team-member-placeholder": "حدد أحد أعضاء الفريق"
+      },
+      "remove-team-member": "إزالة من الفريق",
+      "table-headers": {
+        "last-activity": "آخر تسجيل دخول",
+        "name": "اسم",
+        "role": "دور",
+        "scope": "نطاق",
+        "status": "حالة"
+      },
+      "team-members": "أعضاء الفريق"
     },
     "programs-list": {
       "card": {
@@ -693,8 +628,7 @@
         "current-password": "كلمة المرور الحالية",
         "failed": "محاولة فاشلة: كلمة المرور الحالية غير صحيحة",
         "new-password": "كلمة مرور جديدة",
-        "success": "تم تغيير كلمة المرور",
-        "title": "تغيير كلمة المرور"
+        "success": "تم تغيير كلمة المرور"
       },
       "notification-messages": {
         "different-passwords": "كلمات المرور غير متطابقة.",
@@ -708,28 +642,15 @@
       "pageTitle": "المستخدمون والأدوار",
       "roles-tab": "ادوار",
       "search": "بحث...",
-      "status": {
-        "false": "كسلان",
-        "true": "نشط"
-      },
       "table-headers": {
         "last-login": "آخر تسجيل دخول",
         "status": "حالة",
         "user-type": "نوع المستخدم",
         "username": "اسم المستخدم"
       },
-      "title": "المستخدمون PAGE",
       "total-users": "المستعملون",
-      "user-type": {
-        "admin": "المشرف",
-        "regular": "منتظم"
-      },
       "users-tab": "المستعملون"
     }
-  },
-  "password-toggle": {
-    "hide": "إخفاء كلمة المرور",
-    "show": "إظهار كلمة المرور"
   },
   "refresh-data": {
     "last-updated": "آخر تحديث: {{date}}"
@@ -751,10 +672,6 @@
         },
         "note": {
           "label": "ملاحظه"
-        },
-        "payment": {
-          "description": "#{{number}} الدفع هو {{status}}.",
-          "label": "#{{number}} الدفع"
         },
         "status": {
           "description": "تم تغيير حالة الشخص المتأثر إلى: {{status}}.",
@@ -784,16 +701,11 @@
     },
     "personal-information-table": {
       "fsp": "مزود الخدمات المالية",
-      "lastUpdateDate": "آخر تحديث",
-      "namePartnerOrganization": "منظمة شريكة",
-      "paymentsDone": "المدفوعات المنجزة",
       "phone": "رقم الهاتف",
       "primaryLanguage": "اللغة الأساسية",
-      "registeredDate": "تاريخ التسجيل",
       "scope": "نطاق",
       "status": "الحالة: <b>{{status}}</b>",
-      "subtitle": "PA #{{paNumber}}",
-      "whatsappPhoneNumber": "رقم الواتساب"
+      "subtitle": "PA #{{paNumber}}"
     },
     "physical-cards-overview": {
       "action-result": {
@@ -819,7 +731,6 @@
       "popup-title": "بانككارد",
       "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}} {{currency}})",
       "status": "حالة",
-      "subtitle": "...",
       "title": "بطاقات السحب الآلي",
       "unpause-card": "إلغاء الإيقاف المؤقت للبطاقة"
     },

@@ -60,9 +60,12 @@
           [class.inactive]="row.active === false"
         >
           <ion-label>
-            <strong>{{
-              'page.program-team.status.' + row?.active | translate
-            }}</strong>
+            <strong *ngIf="row?.active === true">
+              {{ 'entity.users.status.active' | translate }}
+            </strong>
+            <strong *ngIf="row?.active === false">
+              {{ 'entity.users.status.inactive' | translate }}
+            </strong>
           </ion-label>
         </ion-chip>
       </ng-container>
@@ -131,7 +134,9 @@
                 button
                 (click)="removeFromTeam(row)"
               >
-                {{ 'page.program-team.remove-team-member' | translate }}
+                <ion-text color="danger">
+                  {{ 'page.program-team.remove-team-member' | translate }}
+                </ion-text>
               </ion-item>
             </ion-list>
           </app-popover-content>

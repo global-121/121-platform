@@ -1,4 +1,6 @@
 {
+  "_dir": "ltr",
+  "_languageName": "Español",
   "common": {
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
     "cancel": "Cancelar",
@@ -8,15 +10,23 @@
     "ok": "OK",
     "save": "Salvar",
     "save-success": "Guardado con éxito",
-    "show-more": "Mostrar más",
-    "timestamp": {
-      "done": "Hecho el:"
-    },
     "try-again-contact-support": "Por favor, inténtelo de nuevo. Si el problema persiste, póngase en contacto con el soporte técnico.",
     "unknown-error": "Algo salió mal. Se desconoce el error.",
     "update": "Actualizar",
     "update-error": "Algo salió mal: {{error}}",
     "update-success": "Actualización correcta"
+  },
+  "entity": {
+    "users": {
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      }
+    }
   },
   "file-picker": {
     "download-template-button": "Descargar archivo CSV de la plantilla",
@@ -24,15 +34,9 @@
   },
   "header": {
     "dashboard": "Salpicadero",
-    "design": "Diseño",
-    "evaluation": "Evaluación",
     "help": "Ayuda",
     "home": "Hogar",
-    "inclusion": "Inclusión",
     "menu": "Menú",
-    "payment": "Pago",
-    "phases": "Fases",
-    "registration-validation": "Registro y validación",
     "team": "Equipo",
     "users": "Usuarios"
   },
@@ -71,64 +75,13 @@
           "invalid-email": "Introduzca una dirección de correo electrónico válida."
         },
         "password": {
-          "forgot": "¿Olvidó su contraseña?",
           "label": "Contraseña"
         },
         "submit": {
           "label": "Inicia sesión"
         }
       },
-      "pageTitle": "Inicia sesión",
       "portalTitle": "Portal"
-    },
-    "program-team": {
-      "add-team-member": "Agregar miembro del equipo",
-      "edit-team-member": "Editar",
-      "page-description": "En esta página puedes crear un equipo para tu programa",
-      "pageTitle": "Equipo del programa",
-      "popup": {
-        "add-users-button": "Agregar usuario",
-        "add": {
-          "already-member": "Este usuario ya es miembro del equipo",
-          "confirm": "Agregar usuario",
-          "succes-message": "Ha agregado con éxito un miembro del equipo ™",
-          "title": "Agregar miembro del equipo"
-        },
-        "change": {
-          "confirm": "Salvar",
-          "succes-message": "™Ha editado correctamente los roles de este usuario",
-          "title": "Editar miembro del equipo"
-        },
-        "remove": {
-          "attention": "Atención: ",
-          "confirm": "Eliminar usuario",
-          "confirmation-question": "¿Está seguro de eliminar a este usuario del equipo del programa?",
-          "explanation": "Eliminar a un miembro del equipo no significa eliminar su cuenta del portal 121. Si desea eliminar su cuenta, póngase en contacto con el administrador.",
-          "introduction": "La eliminación del miembro del equipo hará que no tenga acceso al programa ni a sus datos.",
-          "succes-message": "Has eliminado con éxito a un miembro del ™equipo",
-          "title": "Eliminar miembro del equipo"
-        },
-        "role": "Rol",
-        "roles-placeholder": "Asignar uno o varios roles",
-        "roles-required": "Seleccione al menos un rol",
-        "scope-explanation": "Para usar un suboscilo, escriba un punto entre el alcance y el subscopio (por ejemplo, amsterdam.zuid)<br><br>* Dejar este campo vacío significa que el miembro del equipo tendrá acceso a todos los PA",
-        "scope-placeholder": "Rellena un ámbito",
-        "team-member": "Miembro del equipo",
-        "team-member-placeholder": "Seleccionar un miembro del equipo"
-      },
-      "remove-team-member": "Eliminar del equipo",
-      "status": {
-        "false": "Inactivo",
-        "true": "Activo"
-      },
-      "table-headers": {
-        "last-activity": "Último inicio de sesión",
-        "name": "Nombre",
-        "role": "Rol",
-        "scope": "Alcance",
-        "status": "Estado"
-      },
-      "team-members": "Miembros del equipo"
     },
     "program": {
       "bulk-import": {
@@ -222,18 +175,6 @@
         "export-button": {
           "label": "Exportar como CSV"
         },
-        "header": {
-          "latest-value": "Valor más reciente",
-          "metric": "Métrico"
-        },
-        "over-time": {
-          "pa": {
-            "new": "Nuevo",
-            "pre-existing": "Preexistente"
-          },
-          "payment-label": "Pago",
-          "tooltip": "Este gráfico muestra el número de personas afectadas a las que se les pagó con éxito por pago. <br><br>Este número se divide en PA «preexistentes» y «nuevos», en función de si el PA también estaba presente en el pago anterior o no. <br><br>«Pagado con éxito» significa que el pago (por ejemplo, el vale) se emitió con éxito y se informa al PA al respecto, pero no implica que el pago se cobre y/o se gaste."
-        },
         "pa": {
           "deleted": "Borrado",
           "imported": "Importado",
@@ -271,15 +212,15 @@
             "explanation": "Esta fila muestra todos los datos hasta este mes inclusive, en lugar de solo los datos específicos de este mes.",
             "label": "Hasta el mes seleccionado:"
           },
-          "payment-from-start": {
-            "explanation": "Esta fila muestra todos los datos hasta el pago seleccionado e incluido, en lugar de solo los datos específicos de este período de pago (el período entre el pago anterior y el pago seleccionado).",
-            "label": "Hasta el # de pago seleccionado:"
-          },
           "payment": {
             "explanation": "Todos los PA que alcanzaron un cierto estado, por ejemplo, incluidos, en cualquier momento entre el pago anterior y el pago elegido. Este no es el número de PA <br><br> incluidos en el momento de ese pago, sino el número de PA que se incluyeron entre el pago anterior y el pago elegido. Tenga en cuenta que los PA incluidos en este período de tiempo pueden <br><br> no ser necesariamente los mismos PA que los que se registraron en este período de tiempo, ya que pueden haberse registrado, por ejemplo, en el período de tiempo anterior.",
             "label": "Pago #:",
             "option": "Pago #{{number}} - {{date}}",
             "select-hint": "Elige el modo de pago..."
+          },
+          "payment-from-start": {
+            "explanation": "Esta fila muestra todos los datos hasta el pago seleccionado e incluido, en lugar de solo los datos específicos de este período de pago (el período entre el pago anterior y el pago seleccionado).",
+            "label": "Hasta el # de pago seleccionado:"
           },
           "to-date": {
             "explanation": "Todos los PA que alcanzaron un cierto estado, por ejemplo, incluidos, en cualquier momento entre el inicio del programa y ahora. Este no es el número de PA <br><br> incluidos en este momento, sino el número de todos los PA que se incluyeron en algún momento.",
@@ -291,10 +232,6 @@
           "total-helped-to-date": "Número total de personas atendidas hasta la fecha"
         },
         "units": {
-          "duration": {
-            "month": "mes(es)",
-            "week": "semana(s)"
-          },
           "frequency": {
             "month": "mensual",
             "week": "semanal",
@@ -339,7 +276,6 @@
         "location": "Ubicación",
         "section-title": "Detalles del programa",
         "startDate": "Fecha de inicio",
-        "titlePaApp": "Título PA-app",
         "titlePortal": "Portal de títulos"
       },
       "program-payout": {
@@ -461,43 +397,21 @@
           "fspChangeWarning": "Al seleccionar este FSP, se eliminarán los siguientes atributos relacionados con el FSP anterior:",
           "fspNewAttributesExplanation": "Para este FSP se requieren los siguientes atributos:",
           "has-notes-title": "Notas disponibles",
-          "note": {
-            "introduction": "Puede agregar, editar o eliminar notas sobre esta persona afectada en particular en el campo a continuación. Mantenga la información de identificación personal (PII) al mínimo y elimine cualquier PII cuando ya no sea necesaria.",
-            "latest-update": "Última actualización el: {{timestamp}}",
-            "placeholder": "Comienza una nota sobre esta persona afectada escribiendo aquí...",
-            "save": "Guardar nota",
-            "section-title": "Notas sobre la persona afectada"
-          },
           "popup-title": "{{pa}} información detallada",
           "properties": {
-            "accountId": {
-              "label": "ID de cuenta"
-            },
-            "date": {
-              "label": "Fecha"
-            },
             "error": {
               "not-an-integer": "La entrada debe ser un número entero",
               "not-empty": "La entrada no puede estar vacía",
               "too-low": "La entrada debe ser mayor que el número de pagos que ya se han enviado"
-            },
-            "fixedChoice": {
-              "label": "Elección fija"
             },
             "maxPayments": {
               "explanation": "El número máximo de pagos para esta Persona Afectada. Puede eliminar el límite eliminando el valor y guardando.",
               "label-no-payments": "Pagos máximos",
               "label-payments": "Pagos máximos ({{alreadyReceivedPayments}} ya enviados)"
             },
-            "openAnswer": {
-              "label": "Respuesta abierta"
-            },
             "paymentAmountMultiplier": {
               "explanation": "El valor de transferencia se multiplicará por este número para esta Persona Afectada",
               "label": "Multiplicador de valor de transferencia"
-            },
-            "personalId": {
-              "label": "Identificación personal"
             },
             "phoneNumber": {
               "explanation": "El formato requerido es: SOLO números, incluido el código de país.",
@@ -507,11 +421,11 @@
               "label": "Idioma preferido"
             },
             "scope": {
+              "explanation": "Separe las partes con un punto (es decir, 'amsterdam.west').",
               "label": "Alcance"
             },
             "whatsappPhoneNumber": {
-              "explanation": "El formato requerido es: SOLO números, incluido el código de país.",
-              "label": "Número de WhatsApp"
+              "explanation": "El formato requerido es: SOLO números, incluido el código de país."
             }
           },
           "reason-popup": {
@@ -531,12 +445,9 @@
             "cancel-btn": "Cancelar",
             "filter-by": "Filtrar por:"
           },
-          "empty-selection-alert-message": "Seleccione al menos una opción",
           "multiple-choice-hidden-options": "La lista anterior solo muestra un estado si se asigna al menos a una persona afectada"
         },
         "filter-placeholder": "Escriba el valor...",
-        "filter-toggle": "Mostrar todo",
-        "filter-tooltip": "Mostrar todas las personas afectadas o solo las personas afectadas relevantes para esta fase del programa",
         "footer-selected-of-total": "{{selectedCount}} seleccionados / {{totalCount}} en total",
         "language": {
           "ar": "Árabe",
@@ -583,18 +494,6 @@
           "status-line": {
             "code": "Código de error de Twilio: "
           },
-          "twilio-status": {
-            "accepted": "Aceptado",
-            "delivered": "Entregado",
-            "delivery-unknown": "Entrega desconocida",
-            "failed": "Fracasado",
-            "queued": "Cola",
-            "read": "Leer",
-            "scheduled": "Programado",
-            "sending": "Envío",
-            "sent": "Enviado",
-            "undelivered": "No entregado"
-          },
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp (en inglés)"
@@ -639,27 +538,19 @@
         "submit-warning": "Estás a punto de:",
         "submit-warning-people-affected": "Realice la acción {{actionLabel}} en <strong>{{applicableCount}}</strong> Personas afectadas.",
         "transaction": {
-          "above": "Por encima del límite",
           "amount": "Importe",
           "custom-data": {
             "intersolveVisaWalletTokenCode": "Identificación de la tarjeta Visa"
           },
           "do-single-payment": "Hacer pago único",
-          "error": "Fracasado",
           "fsp": "FSP",
-          "nosupport": "No se admite FSP para esta transferencia",
           "not-yet-sent": "Aún no se ha enviado",
           "open-voucher": "Abrir cupón",
-          "payment-number": "Pago #{{number}}",
           "payments-popup": "Pagos",
-          "planned": "Planificado",
-          "received": "Recibido",
           "retry": "Detalles",
           "send-payment": "Enviar pago",
           "sent": "Enviado",
           "show-status": "Mostrar estado",
-          "success": "Éxito",
-          "waiting": "Espera",
           "waiting-message": "Todavía estoy esperando la actualización del estado de esta transacción. Actualice la página para ver el estado más reciente."
         }
       },
@@ -670,6 +561,50 @@
         "remove-filter": "Quitar el filtro",
         "select-column-to-filter": "Escriba o seleccione la columna que desea filtrar"
       }
+    },
+    "program-team": {
+      "add-team-member": "Agregar miembro del equipo",
+      "edit-team-member": "Editar",
+      "page-description": "En esta página puedes crear un equipo para tu programa",
+      "pageTitle": "Equipo del programa",
+      "popup": {
+        "add": {
+          "already-member": "Este usuario ya es miembro del equipo",
+          "confirm": "Agregar usuario",
+          "succes-message": "Ha agregado con éxito un miembro del equipo ™",
+          "title": "Agregar miembro del equipo"
+        },
+        "change": {
+          "confirm": "Salvar",
+          "succes-message": "™Ha editado correctamente los roles de este usuario",
+          "title": "Editar miembro del equipo"
+        },
+        "remove": {
+          "attention": "Atención: ",
+          "confirm": "Eliminar usuario",
+          "confirmation-question": "¿Está seguro de eliminar a este usuario del equipo del programa?",
+          "explanation": "Eliminar a un miembro del equipo no significa eliminar su cuenta del portal 121. Si desea eliminar su cuenta, póngase en contacto con el administrador.",
+          "introduction": "La eliminación del miembro del equipo hará que no tenga acceso al programa ni a sus datos.",
+          "succes-message": "Has eliminado con éxito a un miembro del ™equipo",
+          "title": "Eliminar miembro del equipo"
+        },
+        "role": "Rol",
+        "roles-placeholder": "Asignar uno o varios roles",
+        "roles-required": "Seleccione al menos un rol",
+        "scope-explanation": "Para usar un suboscilo, escriba un punto entre el alcance y el subscopio (por ejemplo, amsterdam.zuid)<br><br>* Dejar este campo vacío significa que el miembro del equipo tendrá acceso a todos los PA",
+        "scope-placeholder": "Rellena un ámbito",
+        "team-member": "Miembro del equipo",
+        "team-member-placeholder": "Seleccionar un miembro del equipo"
+      },
+      "remove-team-member": "Eliminar del equipo",
+      "table-headers": {
+        "last-activity": "Último inicio de sesión",
+        "name": "Nombre",
+        "role": "Rol",
+        "scope": "Alcance",
+        "status": "Estado"
+      },
+      "team-members": "Miembros del equipo"
     },
     "programs-list": {
       "card": {
@@ -693,8 +628,7 @@
         "current-password": "Contraseña actual",
         "failed": "Intento fallido: la contraseña actual es incorrecta",
         "new-password": "Nueva contraseña",
-        "success": "Contraseña cambiada",
-        "title": "Cambiar contraseña"
+        "success": "Contraseña cambiada"
       },
       "notification-messages": {
         "different-passwords": "Las contraseñas no coinciden.",
@@ -708,28 +642,15 @@
       "pageTitle": "Usuarios y roles",
       "roles-tab": "Papeles",
       "search": "Buscar...",
-      "status": {
-        "false": "Inactivo",
-        "true": "Activo"
-      },
       "table-headers": {
         "last-login": "Último inicio de sesión",
         "status": "Estado",
         "user-type": "Tipo de usuario",
         "username": "Nombre de usuario"
       },
-      "title": "USUARIOS PAGE",
       "total-users": "Usuarios",
-      "user-type": {
-        "admin": "Admin",
-        "regular": "Regular"
-      },
       "users-tab": "Usuarios"
     }
-  },
-  "password-toggle": {
-    "hide": "Ocultar contraseña",
-    "show": "Mostrar contraseña"
   },
   "refresh-data": {
     "last-updated": "Última actualización: {{date}}"
@@ -751,10 +672,6 @@
         },
         "note": {
           "label": "Nota"
-        },
-        "payment": {
-          "description": "El #{{number}} de pago es {{status}}.",
-          "label": "Pago #{{number}}"
         },
         "status": {
           "description": "El estado de la persona afectada ha cambiado a: {{status}}.",
@@ -784,16 +701,11 @@
     },
     "personal-information-table": {
       "fsp": "Proveedor de servicios financieros",
-      "lastUpdateDate": "Última actualización",
-      "namePartnerOrganization": "Organización asociada",
-      "paymentsDone": "Pagos realizados",
       "phone": "Número de teléfono",
       "primaryLanguage": "Idioma principal",
-      "registeredDate": "Fecha de registro",
       "scope": "Alcance",
       "status": "Estado: <b>{{status}}</b>",
-      "subtitle": "PA #{{paNumber}}",
-      "whatsappPhoneNumber": "Número de WhatsApp"
+      "subtitle": "PA #{{paNumber}}"
     },
     "physical-cards-overview": {
       "action-result": {
@@ -819,7 +731,6 @@
       "popup-title": "Tarjeta de débito",
       "spent-this-month": "Gastado este mes (máximo {{maxAmount}}, {{currency}})",
       "status": "Estado",
-      "subtitle": "...",
       "title": "Tarjetas de débito",
       "unpause-card": "Tarjeta de reanudación"
     },
