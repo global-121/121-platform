@@ -3,6 +3,14 @@
   "i18n-ally.dirStructure": "file",
   "i18n-ally.localesPaths": ["src/assets/i18n/"],
   "i18n-ally.enabledFrameworks": ["ngx-translate"],
+  "i18n-ally.showFlags": false,
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.usage.scanningIgnore": [
+    "coverage/*",
+    "dist/*",
+    "node_modules/*",
+    "www/*"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[markdown]": {
