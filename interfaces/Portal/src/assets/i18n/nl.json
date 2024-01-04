@@ -421,6 +421,7 @@
               "label": "Voorkeurstaal"
             },
             "scope": {
+              "explanation": "Verbindt de delen met een punt (bijv. 'amsterdam.west').",
               "label": "Scope"
             },
             "whatsappPhoneNumber": {

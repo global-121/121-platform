@@ -421,6 +421,7 @@
               "label": "اللغة المفضلة"
             },
             "scope": {
+              "explanation": "افصل بين الأجزاء بنقطة (أي 'amsterdam.west').",
               "label": "نطاق"
             },
             "whatsappPhoneNumber": {

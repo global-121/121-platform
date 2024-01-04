@@ -397,7 +397,6 @@
           "fspChangeWarning": "Al seleccionar este FSP, se eliminarán los siguientes atributos relacionados con el FSP anterior:",
           "fspNewAttributesExplanation": "Para este FSP se requieren los siguientes atributos:",
           "has-notes-title": "Notas disponibles",
-
           "popup-title": "{{pa}} información detallada",
           "properties": {
             "error": {
@@ -422,6 +421,7 @@
               "label": "Idioma preferido"
             },
             "scope": {
+              "explanation": "Separe las partes con un punto (es decir, 'amsterdam.west').",
               "label": "Alcance"
             },
             "whatsappPhoneNumber": {

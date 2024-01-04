@@ -421,6 +421,7 @@
               "label": "Langue préférée"
             },
             "scope": {
+              "explanation": "Séparez les parties par un point (c'est-à-dire 'amsterdam.west').",
               "label": "Portée"
             },
             "whatsappPhoneNumber": {
