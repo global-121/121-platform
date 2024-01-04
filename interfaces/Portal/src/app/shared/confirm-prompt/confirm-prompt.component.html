@@ -2,7 +2,7 @@
   type="button"
   [disabled]="disabled"
   (click)="showPrompt()"
-  [size]="size"
+  [size]="isPopoverExportButton ? 'small' : size"
   [fill]="fill"
   [color]="color"
   [shape]="shape || 'default'"

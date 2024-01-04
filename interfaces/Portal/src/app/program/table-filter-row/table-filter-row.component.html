@@ -1,4 +1,7 @@
-<div class="layout-flex-row ion-align-items-center">
+<div
+  style="width: 100%"
+  class="layout-flex-row ion-align-items-center ion-justify-content-between"
+>
   <div
     class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
     [ngClass]="{
@@ -82,8 +85,10 @@
     </div>
   </div>
   <div
-    style="min-height: 3rem; padding-top: 6px; padding-bottom: 6px; width: 10%"
-    class="layout-flex-row ion-align-items-center ion-justify-content-end ion-margin-start ion-margin-top"
+    class="ion-align-items-center ion-justify-content-end ion-margin-top"
+    [ngClass]="{
+      'is-loading': isLoading
+    }"
   >
     <app-export-select
       *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"

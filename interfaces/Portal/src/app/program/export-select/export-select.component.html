@@ -1,32 +1,36 @@
-<ion-button
-  (click)="togglePopover()"
-  [id]="thisPhase + 'exportPopoverButton'"
-  fill="outline"
->
-  <ion-icon
-    slot="start"
-    name="download-outline"
-  ></ion-icon>
-  {{ 'page.program.export-list.select-btn-text' | translate }}
-  <ion-icon
-    slot="end"
-    [name]="isPopoverOpen ? 'chevron-up-outline' : 'chevron-down-outline'"
-  ></ion-icon>
-</ion-button>
-<ion-popover
-  [trigger]="thisPhase + 'exportPopoverButton'"
-  [isOpen]="isPopoverOpen"
-  side="bottom"
-  alignment="start"
-  [showBackdrop]="false"
-  (didDismiss)="isPopoverOpen = false"
->
-  <ng-template>
-    <app-export-list
-      *ngFor="let option of options"
-      [programId]="programId"
-      [exportType]="option"
-      [isPopoverButton]="true"
-    ></app-export-list>
-  </ng-template>
-</ion-popover>
+<ng-container *ngIf="options && options.length > 0">
+  <ion-button
+    (click)="togglePopover()"
+    [id]="thisPhase + 'exportPopoverButton'"
+    fill="outline"
+    class="ion-margin-start"
+  >
+    <ion-icon
+      slot="start"
+      name="download-outline"
+    ></ion-icon>
+    {{ 'page.program.export-list.select-btn-text' | translate }}
+    <ion-icon
+      slot="end"
+      [name]="isPopoverOpen ? 'chevron-up-outline' : 'chevron-down-outline'"
+    ></ion-icon>
+  </ion-button>
+  <ion-popover
+    [trigger]="thisPhase + 'exportPopoverButton'"
+    [isOpen]="isPopoverOpen"
+    side="bottom"
+    alignment="end"
+    [showBackdrop]="false"
+    (didDismiss)="isPopoverOpen = false"
+    class="export-select-popover"
+  >
+    <ng-template>
+      <app-export-list
+        *ngFor="let option of options"
+        [programId]="programId"
+        [exportType]="option"
+        [isPopoverButton]="true"
+      ></app-export-list>
+    </ng-template>
+  </ion-popover>
+</ng-container>
