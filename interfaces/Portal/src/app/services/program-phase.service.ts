@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { ProgramPhase } from '../models/program.model';
 import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -8,9 +7,7 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class Phase {
   id: number;
   name: ProgramPhase;
-  label: string;
   labelKey: string;
-  btnText: string;
   btnTextKey: string;
   active?: boolean;
   disabled?: boolean;
@@ -28,7 +25,6 @@ export class ProgramPhaseService {
 
   constructor(
     private programsService: ProgramsServiceApiService,
-    private translate: TranslateService,
     private router: Router,
   ) {}
 
@@ -46,11 +42,7 @@ export class ProgramPhaseService {
     return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
-      label: this.translate.instant(`page.program.phases.${phase.name}.label`),
       labelKey: `page.program.phases.${phase.name}.label`,
-      btnText: this.translate.instant(
-        `page.program.phases.${phase.name}.btnText`,
-      ),
       btnTextKey: `page.program.phases.${phase.name}.btnText`,
     }));
   }
@@ -74,12 +66,10 @@ export class ProgramPhaseService {
         !this.validation &&
         phase.name === ProgramPhase.registrationValidation
       ) {
-        phase.label = this.translate.instant(
-          'page.program.phases.registrationValidation.label-no-validation',
-        );
-        phase.btnText = this.translate.instant(
-          'page.program.phases.registrationValidation.btnText-no-validation',
-        );
+        phase.labelKey =
+          'page.program.phases.registrationValidation.label-no-validation';
+        phase.btnTextKey =
+          'page.program.phases.registrationValidation.btnText-no-validation';
       }
 
       return phase;
