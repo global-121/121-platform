@@ -219,10 +219,6 @@
         "export-button": {
           "label": "Export as CSV"
         },
-        "header": {
-          "latest-value": "Latest value",
-          "metric": "Metric"
-        },
         "pa": {
           "deleted": "Deleted",
           "imported": "Imported",
@@ -324,7 +320,6 @@
         "location": "Location",
         "section-title": "Program Details",
         "startDate": "Start date",
-        "titlePaApp": "Title PA-app",
         "titlePortal": "Title portal"
       },
       "program-payout": {

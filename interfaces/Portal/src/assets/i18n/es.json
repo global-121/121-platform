@@ -1,4 +1,6 @@
 {
+  "_dir": "ltr",
+  "_languageName": "Español",
   "common": {
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
     "cancel": "Cancelar",
