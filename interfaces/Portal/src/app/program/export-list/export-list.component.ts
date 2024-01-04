@@ -58,9 +58,9 @@ export class ExportListComponent implements OnChanges {
   }
 
   private updateBtnText() {
-    this.btnText = this.translate.instant('page.program.export-list')[
-      this.exportType
-    ]['btn-text'];
+    this.btnText = this.translate.instant(
+      `page.program.export-list.${this.exportType}.btn-text`,
+    );
   }
 
   private async updateDisplayMessage(): Promise<void> {
@@ -93,9 +93,9 @@ export class ExportListComponent implements OnChanges {
   }
 
   private async updateHeaderAndMessage() {
-    this.subHeader = this.translate.instant('page.program.export-list')[
-      this.exportType
-    ]['confirm-message'];
+    this.subHeader = this.translate.instant(
+      `page.program.export-list.${this.exportType}.confirm-message`,
+    );
     await this.updateDisplayMessage();
   }
 

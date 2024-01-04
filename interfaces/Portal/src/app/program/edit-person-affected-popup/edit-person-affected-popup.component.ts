@@ -240,7 +240,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     const errorKeyPrefix =
       'page.program.program-people-affected.edit-person-affected-popup.properties';
     const errorMessage = this.translate.instant('common.update-error', {
-      error: this.translate.instant(errorKeyPrefix)['error'][errorType],
+      error: this.translate.instant(`${errorKeyPrefix}.error.${errorType}`),
     });
     actionResult(this.alertController, this.translate, errorMessage);
     this.inProgress[attribute] = false;

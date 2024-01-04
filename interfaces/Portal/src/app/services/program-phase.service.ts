@@ -9,7 +9,9 @@ export class Phase {
   id: number;
   name: ProgramPhase;
   label: string;
+  labelKey: string;
   btnText: string;
+  btnTextKey: string;
   active?: boolean;
   disabled?: boolean;
 }
@@ -41,16 +43,15 @@ export class ProgramPhaseService {
   }
 
   private createInitialPhases(): Phase[] {
-    const phaseLabels: {
-      label: string;
-      btnText: string;
-    } = this.translate.instant('page.program.phases');
-
     return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
-      label: phaseLabels[phase.name]['label'],
-      btnText: phaseLabels[phase.name]['btnText'],
+      label: this.translate.instant(`page.program.phases.${phase.name}.label`),
+      labelKey: `page.program.phases.${phase.name}.label`,
+      btnText: this.translate.instant(
+        `page.program.phases.${phase.name}.btnText`,
+      ),
+      btnTextKey: `page.program.phases.${phase.name}.btnText`,
     }));
   }
 

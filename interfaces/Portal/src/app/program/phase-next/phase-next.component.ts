@@ -26,7 +26,7 @@ export class PhaseNextComponent implements OnInit {
   public activePhase: Phase;
 
   public btnAvailable: boolean;
-  public btnText: string;
+  public btnTextKey: string;
   public isInProgress = false;
 
   constructor(private programPhaseService: ProgramPhaseService) {}
@@ -37,7 +37,7 @@ export class PhaseNextComponent implements OnInit {
     );
     this.updatePhases();
     this.btnAvailable = this.checkAvailable();
-    this.btnText = this.fillBtnText();
+    this.btnTextKey = this.getBtnTextKey();
   }
 
   private checkAvailable(): boolean {
@@ -50,7 +50,7 @@ export class PhaseNextComponent implements OnInit {
 
   private async updatePhases() {
     this.activePhase = this.programPhaseService.getActivePhase();
-    this.btnText = this.activePhase.btnText;
+    this.btnTextKey = this.activePhase.btnText;
     this.btnAvailable = this.isNotLastPhase();
   }
 
@@ -60,8 +60,9 @@ export class PhaseNextComponent implements OnInit {
     return this.thisPhaseName !== lastPhase;
   }
 
-  private fillBtnText() {
-    return this.programPhaseService.getPhaseByName(this.thisPhaseName).btnText;
+  private getBtnTextKey() {
+    return this.programPhaseService.getPhaseByName(this.thisPhaseName)
+      .btnTextKey;
   }
 
   public async advancePhase() {
