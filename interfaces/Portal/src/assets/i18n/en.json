@@ -16,6 +16,18 @@
     "update-error": "Something went wrong: {{error}}",
     "update-success": "Update successful"
   },
+  "entity": {
+    "users": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "type": {
+        "admin": "Admin",
+        "regular": "Regular"
+      }
+    }
+  },
   "file-picker": {
     "download-template-button": "Download template CSV-file",
     "label": "Select a file"
@@ -106,10 +118,6 @@
         "team-member-placeholder": "Select a team member"
       },
       "remove-team-member": "Remove from Team",
-      "status": {
-        "inactive": "Inactive",
-        "active": "Active"
-      },
       "table-headers": {
         "last-activity": "Last login",
         "name": "Name",
@@ -215,14 +223,6 @@
           "latest-value": "Latest value",
           "metric": "Metric"
         },
-        "over-time": {
-          "pa": {
-            "new": "New",
-            "pre-existing": "Pre-existing"
-          },
-          "payment-label": "Payment",
-          "tooltip": "This chart shows the number of People Affected that were successfully paid out per payment.<br><br>This number is split by 'pre-existing' and 'new' PAs, based on whether the PA was also present in the previous payment or not.<br><br>'Successfully paid out' means that the payment (e.g. voucher) was successfully issued and the PA is informed about it, but does not imply the payment is collected and/or spent."
-        },
         "pa": {
           "deleted": "Deleted",
           "imported": "Imported",
@@ -280,10 +280,6 @@
           "total-helped-to-date": "Total number of individual PA helped to date"
         },
         "units": {
-          "duration": {
-            "month": "month(s)",
-            "week": "week(s)"
-          },
           "frequency": {
             "month": "monthly",
             "week": "weekly",
@@ -384,7 +380,7 @@
         },
         "actions": {
           "deletePa": "Delete PA",
-          "doPayment": "Do payment",
+          "doPayment": "Do payment #{{paymentNr}}",
           "endInclusion": "End inclusion in program",
           "include": "Include in program",
           "invite": "Invite for registration",
@@ -450,43 +446,21 @@
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
           "fspNewAttributesExplanation": "For this FSP the following attributes are required:",
           "has-notes-title": "Notes available",
-          "note": {
-            "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
-            "latest-update": "Latest update on: {{timestamp}}",
-            "placeholder": "Start a note about this Person Affected by typing here...",
-            "save": "Save note",
-            "section-title": "Notes about Person Affected"
-          },
           "popup-title": "{{pa}} detailed info",
           "properties": {
-            "accountId": {
-              "label": "Account ID"
-            },
-            "date": {
-              "label": "Date"
-            },
             "error": {
               "not-an-integer": "Input should be an integer",
               "not-empty": "Input cannot be empty",
               "too-low": "Input should be higher than the number of payments that have already been sent"
-            },
-            "fixedChoice": {
-              "label": "Fixed choice"
             },
             "maxPayments": {
               "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.",
               "label-no-payments": "Max payments",
               "label-payments": "Max payments ({{alreadyReceivedPayments}} already sent)"
             },
-            "openAnswer": {
-              "label": "Open answer"
-            },
             "paymentAmountMultiplier": {
               "explanation": "The transfer value will be multiplied by this number for this Person Affected",
               "label": "Transfer value multiplier"
-            },
-            "personalId": {
-              "label": "Personal ID"
             },
             "phoneNumber": {
               "explanation": "The required format is: ONLY numbers, including country-code.",
@@ -496,11 +470,11 @@
               "label": "Preferred language"
             },
             "scope": {
+              "explanation": "Separate the parts with a dot (i.e. 'amsterdam.west').",
               "label": "Scope"
             },
             "whatsappPhoneNumber": {
-              "explanation": "The required format is: ONLY numbers, including country-code.",
-              "label": "WhatsApp number"
+              "explanation": "The required format is: ONLY numbers, including country-code."
             }
           },
           "reason-popup": {
@@ -520,12 +494,9 @@
             "cancel-btn": "Cancel",
             "filter-by": "Filter by:"
           },
-          "empty-selection-alert-message": "Please select at least one option",
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
-        "filter-toggle": "Show all",
-        "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
         "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "language": {
           "ar": "Arabic",
@@ -662,8 +633,7 @@
         "current-password": "Current password",
         "failed": "Failed attempt: current password incorrect",
         "new-password": "New password",
-        "success": "Password changed",
-        "title": "Change password"
+        "success": "Password changed"
       },
       "notification-messages": {
         "different-passwords": "Passwords do not match.",
@@ -677,10 +647,6 @@
       "pageTitle": "Users and roles",
       "roles-tab": "Roles",
       "search": "Search...",
-      "status": {
-        "false": "Inactive",
-        "true": "Active"
-      },
       "table-headers": {
         "last-login": "Last login",
         "status": "Status",
@@ -688,16 +654,8 @@
         "username": "Username"
       },
       "total-users": "Users",
-      "user-type": {
-        "admin": "Admin",
-        "regular": "Regular"
-      },
       "users-tab": "Users"
     }
-  },
-  "password-toggle": {
-    "hide": "Hide password",
-    "show": "Show password"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
@@ -719,10 +677,6 @@
         },
         "note": {
           "label": "Note"
-        },
-        "payment": {
-          "description": "Payment #{{number}} is {{status}}.",
-          "label": "Payment #{{number}}"
         },
         "status": {
           "description": "Person affected status changed to: {{status}}.",
@@ -752,16 +706,11 @@
     },
     "personal-information-table": {
       "fsp": "Financial Service Provider",
-      "lastUpdateDate": "Last update",
-      "namePartnerOrganization": "Partner organization",
-      "paymentsDone": "Payments done",
       "phone": "Phone number",
       "primaryLanguage": "Primary language",
-      "registeredDate": "Registered date",
       "scope": "Scope",
       "status": "Status: <b>{{status}}</b>",
-      "subtitle": "PA #{{paNumber}}",
-      "whatsappPhoneNumber": "WhatsApp number"
+      "subtitle": "PA #{{paNumber}}"
     },
     "physical-cards-overview": {
       "action-result": {
@@ -787,7 +736,6 @@
       "popup-title": "Debit card",
       "spent-this-month": "Spent this month (maximum {{maxAmount}} {{currency}})",
       "status": "Status",
-      "subtitle": "...",
       "title": "Debit cards",
       "unpause-card": "Unpause card"
     },

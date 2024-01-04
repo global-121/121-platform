@@ -61,10 +61,10 @@
         >
           <ion-label>
             <strong *ngIf="row?.active === true">
-              {{ 'page.program-team.status.active' | translate }}
+              {{ 'entity.users.status.active' | translate }}
             </strong>
             <strong *ngIf="row?.active === false">
-              {{ 'page.program-team.status.inactive' | translate }}
+              {{ 'entity.users.status.inactive' | translate }}
             </strong>
           </ion-label>
         </ion-chip>
@@ -134,7 +134,9 @@
                 button
                 (click)="removeFromTeam(row)"
               >
-                {{ 'page.program-team.remove-team-member' | translate }}
+                <ion-text color="danger">
+                  {{ 'page.program-team.remove-team-member' | translate }}
+                </ion-text>
               </ion-item>
             </ion-list>
           </app-popover-content>

@@ -9,6 +9,11 @@ export class User {
   isAdmin?: boolean;
 }
 
+export enum UserType {
+  admin = 'admin',
+  regular = 'regular',
+}
+
 export class UserSearchResult {
   id: number;
   username: string;
