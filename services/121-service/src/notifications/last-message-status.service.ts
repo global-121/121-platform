@@ -12,6 +12,12 @@ export class LastMessageStatusService {
   public async updateLatestMessage(
     message: TwilioMessageEntity,
   ): Promise<void> {
+    // If registraitonId is null, it means that the message is not related to a registration
+    // and therefore we don't need to update the latest message status
+    // This is the case when we get message from an unkown number
+    if (!message.registrationId) {
+      return;
+    }
     const latestMessage = new LatestMessageEntity();
     latestMessage.registrationId = message.registrationId;
     latestMessage.messageId = message.id;

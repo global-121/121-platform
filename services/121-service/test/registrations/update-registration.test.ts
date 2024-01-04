@@ -200,6 +200,76 @@ describe('Update attribute of PA', () => {
     expect(registration.firstName).toBe(registrationVisa.firstName);
   });
 
+  it('should fail on updating financial data without the right permission', async () => {
+    // Arrange
+    const dataUpdateFinanancialFail = {
+      paymentAmountMultiplier: 5,
+      referenceId: registrationVisa.referenceId,
+    };
+    const reason = 'automated test';
+
+    const accessTokenNoFinancePermission = await getAccessToken(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+    );
+
+    // Act
+    const response = await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      dataUpdateFinanancialFail,
+      reason,
+      accessTokenNoFinancePermission,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    response.body;
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programIdOcw,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    expect(registration.paymentAmountMultiplier).toBe(
+      registrationVisa.paymentAmountMultiplier,
+    );
+  });
+
+  it('should fail on updating non financial data without the right permission', async () => {
+    // Arrange
+    const dataUpdateNonFinanancialFail = {
+      phoneNumber: 5,
+      referenceId: registrationVisa.referenceId,
+    };
+    const reason = 'automated test';
+
+    const accessTokenNoFinancePermission = await getAccessToken(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+    );
+
+    // Act
+    const response = await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      dataUpdateNonFinanancialFail,
+      reason,
+      accessTokenNoFinancePermission,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    response.body;
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programIdOcw,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
+  });
+
   it('should update scope within current users scope', async () => {
     // Arrange
     const newScope = 'utrecht.houten';

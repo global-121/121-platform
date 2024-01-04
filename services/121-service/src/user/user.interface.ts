@@ -1,4 +1,4 @@
-import { PermissionEnum } from './permission.enum';
+import { PermissionEnum } from './enum/permission.enum';
 
 export interface UserData {
   username: string;

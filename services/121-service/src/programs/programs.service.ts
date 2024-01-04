@@ -10,7 +10,7 @@ import { ProgramAttributesService } from '../program-attributes/program-attribut
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
 import { ProgramPhase } from '../shared/enum/program-phase.enum';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserService } from '../user/user.service';
 import {
@@ -81,6 +81,7 @@ export class ProgramService {
           true,
           true,
           true,
+          false,
         );
 
       // TODO: Get these attributes from some enum or something
@@ -133,6 +134,7 @@ export class ProgramService {
       targetNrRegistrations: programEntity.targetNrRegistrations,
       tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
       meetingDocuments: programEntity.meetingDocuments,
+      budget: programEntity.budget,
       phoneNumberPlaceholder: programEntity.phoneNumberPlaceholder,
       programCustomAttributes: programEntity.programCustomAttributes.map(
         (programCustomAttribute) => {
@@ -413,6 +415,7 @@ export class ProgramService {
         true,
         true,
         true,
+        false,
       );
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;

@@ -93,23 +93,20 @@
         </ion-row>
         <ion-row>
           <ion-col class="border-right">
-            <div class="ion-padding">
-              <ion-col>
-                <!-- <ng-container
-              *ngTemplateOutlet="
-                statContainer;
-                context: {
-                  statAmount:
-                    programStats?.totalBudget > 0
-                    ? (programStats?.totalBudget | number: '1.0-0')
-                    : '-',
-                  statName: 'budget',
-                  statLabel: 'page.programs-list.card.budget' | translate
-                }
-              "
-            ></ng-container> -->
-              </ion-col>
-            </div>
+            <ng-container
+              *ngIf="programStats?.totalBudget && programStats?.totalBudget > 0"
+            >
+              <ng-container
+                *ngTemplateOutlet="
+                  statContainer;
+                  context: {
+                    statAmount: programStats?.totalBudget,
+                    statName: 'budget',
+                    statLabel: 'page.programs-list.card.budget' | translate
+                  }
+                "
+              ></ng-container>
+            </ng-container>
           </ion-col>
           <ion-col>
             <ng-container

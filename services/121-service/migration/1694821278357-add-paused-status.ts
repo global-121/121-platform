@@ -1,5 +1,5 @@
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { PermissionEnum } from '../src/user/permission.enum';
+import { PermissionEnum } from '../src/user/enum/permission.enum';
 import { PermissionEntity } from '../src/user/permissions.entity';
 import { UserRoleEntity } from '../src/user/user-role.entity';
 

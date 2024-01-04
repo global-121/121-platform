@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import { PermissionEnum } from '../enum/permission.enum';
 
 export class UserRoleResponseDTO {
   @ApiProperty({ example: 5 })
@@ -15,7 +16,7 @@ export class UserRoleResponseDTO {
     example: ['registration:attribute.update', 'registration:fsp.read'],
   })
   @IsOptional()
-  public permissions?: string[];
+  public permissions?: PermissionEnum[];
 }
 
 export class AssignmentResponseDTO {

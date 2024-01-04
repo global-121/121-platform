@@ -18,7 +18,7 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { ScopedQueryBuilder } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { PermissionEnum } from '../../user/permission.enum';
+import { PermissionEnum } from '../../user/enum/permission.enum';
 import { UserEntity } from '../../user/user.entity';
 import {
   AllowedFilterOperatorsString,

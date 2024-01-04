@@ -1,7 +1,7 @@
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import { PermissionEnum } from '../../../src/user/permission.enum';
+import { PermissionEnum } from '../../../src/user/enum/permission.enum';
 import { DefaultUserRole } from '../../../src/user/user-role.enum';
 import { changePhase } from '../../helpers/program.helper';
 import {
