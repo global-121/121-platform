@@ -7,12 +7,12 @@
     [duplicateAttributesProps]="duplicateAttributesProps"
     [datetimeProps]="datetimeProps"
     [isPopoverExportButton]="isPopoverButton"
-    [fill]="isPopoverButton ? 'clear' : 'solid'"
+    [fill]="isPopoverButton ? 'clear' : 'outline'"
     [color]="isPopoverButton ? 'secondary' : 'primary'"
   >
     <ion-icon
       *ngIf="!isPopoverButton"
-      name="download"
+      name="download-outline"
       slot="start"
       aria-hidden="true"
     ></ion-icon>
