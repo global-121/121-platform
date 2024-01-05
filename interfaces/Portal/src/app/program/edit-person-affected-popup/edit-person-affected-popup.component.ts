@@ -28,31 +28,31 @@ import { actionResult } from '../../shared/action-result';
   styleUrls: ['./edit-person-affected-popup.component.scss'],
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   public programId: number;
 
-  @Input()
+  @Input({ required: true })
   public referenceId: string;
 
-  @Input()
+  @Input({ required: true })
   public canUpdatePaData = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewPersonalData = false;
 
-  @Input()
+  @Input({ required: true })
   public canUpdateRegistrationAttributeFinancial = false;
 
-  @Input()
+  @Input({ required: true })
   public canUpdatePersonalData = false;
 
-  @Input()
+  @Input({ required: true })
   public canUpdatePaFsp = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewMessageHistory = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewPaymentData = false;
 
   public showScopeField = false;
