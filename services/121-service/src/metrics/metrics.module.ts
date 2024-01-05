@@ -13,7 +13,10 @@ import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from '../registration/registration-scoped.repository';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { UserModule } from '../user/user.module';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
@@ -43,6 +46,7 @@ import { MetricsService } from './metrics.service';
     MetricsService,
     RegistrationDataScopedQueryService,
     RegistrationScopedRepository,
+    RegistrationViewScopedRepository,
     createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(TransactionEntity),
   ],

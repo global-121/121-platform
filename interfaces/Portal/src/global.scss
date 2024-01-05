@@ -365,3 +365,16 @@ ion-input.custom-border {
     }
   }
 }
+
+.export-select-popover {
+  min-width: 250px;
+}
+
+.layout-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.full-width {
+  width: 100%;
+}

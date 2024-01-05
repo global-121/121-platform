@@ -772,7 +772,9 @@ export class RegistrationsService {
   }
 
   public addStatusChangeToQuery(
-    q: ScopedQueryBuilder<RegistrationEntity>,
+    q:
+      | ScopedQueryBuilder<RegistrationEntity>
+      | ScopedQueryBuilder<RegistrationViewEntity>,
   ): void {
     for (const registrationStatus in RegistrationStatusEnum) {
       const timestampField =

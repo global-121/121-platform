@@ -6,9 +6,14 @@
     [message]="message"
     [duplicateAttributesProps]="duplicateAttributesProps"
     [datetimeProps]="datetimeProps"
+    [isPopoverExportButton]="isPopoverButton"
+    fill="outline"
+    color="primary"
+    [class.full-width]="isPopoverButton"
   >
     <ion-icon
-      name="download"
+      *ngIf="!isPopoverButton"
+      name="download-outline"
       slot="start"
       aria-hidden="true"
     ></ion-icon>

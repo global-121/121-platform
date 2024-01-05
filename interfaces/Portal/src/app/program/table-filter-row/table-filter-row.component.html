@@ -1,80 +1,100 @@
 <div
-  class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
-  [ngClass]="{
-    'is-loading': isLoading
-  }"
+  style="width: 100%"
+  class="layout-flex-row ion-align-items-center ion-justify-content-between"
 >
   <div
-    class="layout-flex-row ion-align-items-center"
-    style="flex-basis: 80%"
+    class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
+    [ngClass]="{
+      'is-loading': isLoading
+    }"
   >
-    <span>
-      <ion-icon
-        name="funnel"
-        color="black"
-        aria-hidden="true"
-        class="ion-margin-start"
-      ></ion-icon>
-    </span>
+    <div
+      class="layout-flex-row ion-align-items-center"
+      style="flex-basis: 80%"
+    >
+      <span>
+        <ion-icon
+          name="funnel"
+          color="black"
+          aria-hidden="true"
+          class="ion-margin-start"
+        ></ion-icon>
+      </span>
 
-    <app-select-typeahead
-      [items]="allFilters"
-      [(selection)]="textFilterOption"
-      [placeholder]="
-        'page.program.table-filter-row.select-column-to-filter' | translate
-      "
-      [multiple]="false"
-      [disabled]="isLoading"
-      class="tfr--text-filter--select ion-margin-end"
-    ></app-select-typeahead>
-
-    <ng-container *ngIf="showInput()">
-      <ion-input
+      <app-select-typeahead
+        [items]="allFilters"
+        [(selection)]="textFilterOption"
         [placeholder]="
-          'page.program.program-people-affected.filter-placeholder' | translate
+          'page.program.table-filter-row.select-column-to-filter' | translate
         "
-        [attr.title]="
-          'page.program.program-people-affected.filter-placeholder' | translate
-        "
-        [attr.aria-label]="
-          'page.program.program-people-affected.filter-placeholder' | translate
-        "
-        [type]="getFilterInputType()"
-        [(ngModel)]="filterRowsVisibleQuery"
+        [multiple]="false"
         [disabled]="isLoading"
-        [clearInput]="true"
-        (keyup.enter)="applyFilter()"
-        class="tfr--text-filter--input"
-      >
-      </ion-input>
+        class="tfr--text-filter--select ion-margin-end"
+      ></app-select-typeahead>
 
-      <ion-button
-        fill="outline"
-        [disabled]="disableApplyButton()"
-        (click)="applyFilter()"
-      >
-        {{ 'page.program.table-filter-row.apply-filter' | translate }}
-      </ion-button>
-    </ng-container>
+      <ng-container *ngIf="showInput()">
+        <ion-input
+          [placeholder]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          [attr.title]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          [attr.aria-label]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          [type]="getFilterInputType()"
+          [(ngModel)]="filterRowsVisibleQuery"
+          [disabled]="isLoading"
+          [clearInput]="true"
+          (keyup.enter)="applyFilter()"
+          class="tfr--text-filter--input"
+        >
+        </ion-input>
+
+        <ion-button
+          fill="outline"
+          [disabled]="disableApplyButton()"
+          (click)="applyFilter()"
+        >
+          {{ 'page.program.table-filter-row.apply-filter' | translate }}
+        </ion-button>
+      </ng-container>
+    </div>
+
+    <div
+      style="border-left: 1px solid var(--fiveten-neutral-200)"
+      class="layout-flex-row ion-align-items-center ion-padding-horizontal"
+    >
+      <ion-label class="ion-text-nowrap">
+        {{
+          'page.program.program-people-affected.filter-btn.common.filter-by'
+            | translate
+        }}
+      </ion-label>
+      &nbsp;
+      <app-status-table-filter
+        #statusTableFilter
+        *ngIf="programId"
+        [programId]="programId"
+        [thisPhase]="thisPhase"
+      ></app-status-table-filter>
+    </div>
   </div>
-
   <div
-    style="border-inline-start: 1px solid var(--fiveten-neutral-200)"
-    class="layout-flex-row ion-align-items-center ion-padding-horizontal"
+    class="ion-align-items-center ion-justify-content-end ion-margin-top"
+    [ngClass]="{
+      'is-loading': isLoading
+    }"
   >
-    <ion-label class="ion-text-nowrap">
-      {{
-        'page.program.program-people-affected.filter-btn.common.filter-by'
-          | translate
-      }}
-    </ion-label>
-    &nbsp;
-    <app-status-table-filter
-      #statusTableFilter
-      *ngIf="programId"
+    <app-export-select
+      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
       [programId]="programId"
       [thisPhase]="thisPhase"
-    ></app-status-table-filter>
+    ></app-export-select>
   </div>
 </div>
 
