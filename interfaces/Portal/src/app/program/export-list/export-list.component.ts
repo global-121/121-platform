@@ -135,7 +135,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
 
   private updateBtnText() {
     this.btnText = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.btn-text',
+      `page.program.export-list.${this.exportType}.btn-text`,
     );
   }
 
@@ -170,9 +170,8 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
 
   private async updateHeaderAndMessage() {
     this.subHeader = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.confirm-message',
+      `page.program.export-list.${this.exportType}.confirm-message`,
     );
-
     await this.updateDisplayMessage();
   }
 

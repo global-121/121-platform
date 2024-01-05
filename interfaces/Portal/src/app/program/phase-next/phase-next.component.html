@@ -11,9 +11,9 @@
     *ngIf="btnAvailable"
     [disabled]="checkDisabled()"
     (confirm)="advancePhase()"
-    [subHeader]="btnText"
+    [subHeader]="btnTextKey | translate"
     class="ion-margin-start"
   >
-    {{ btnText }}
+    {{ btnTextKey | translate }}
   </app-confirm-prompt>
 </div>

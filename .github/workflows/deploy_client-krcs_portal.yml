@@ -33,6 +33,7 @@ jobs:
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAALsAAAAAAP///wAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREzMzMzMzMzMzMzMzMzMzMzMzMzIwMjMzMzMzMwADMzMyIiIgAgAiIiAAAAECAQAAAAAAAQIBAAAAAAABAgEAAAAAAAECAQAAAiIiIAIAIiIhERERAAERERERERIQEhERERERERERERERERERERERERERERERERERH//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
         env:
           NG_ENV_NAME: ''
+          NG_LOCALES: 'en,ar,fr,es'
           NG_URL_121_SERVICE_API: 'https://krcs.121.global/api'
           NG_AI_IKEY: '0e57907b-8dba-4fd7-a640-9d36fa2bb0d4'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
@@ -44,7 +45,6 @@ jobs:
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1
         with:
-          skip_deploy_on_missing_secrets: true
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'

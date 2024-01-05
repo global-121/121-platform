@@ -7,6 +7,7 @@ export const environment = {
   // Configuration/Feature-switches:
   useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
   defaultLocale: 'en',
+  locales: '${process.env.NG_LOCALES || ''}',
   envName: '${process.env.NG_ENV_NAME || ''}',
 
   // APIs:

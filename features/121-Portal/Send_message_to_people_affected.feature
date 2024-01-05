@@ -10,12 +10,21 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     When user selects the "Send message to PAs" action
     Then the eligible rows are only those with a phone number
 
+  Scenario: Configure a custom message in popoup
+    Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
+    When user selects the "Send message to PAs" action
+    Then the popup shows an empty message
+    And the user can edit the message
+    And the user can add placeholders for (Program question, Program attributes, Payment multiplier, Fsp diplayname and Max payments)
+    And the placeholders are replaced by the preview values of the first PA in the popup
+
   Scenario: Confirm "Send message to PAs" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
     When the "bulk action" is "Send message to PAs"
     Then a message is sent to the selected rows
     And if "whatsappPhoneNumber" is known then the generic Whatsapp template is sent and otherwise dirctly the actual message via SMS
     And the latest message columm shows this message type and also the latest status (In twilio-mock: READ for whatsapp and SENT for SMS)
+    And if placeholders were used then they are replaced by the actual values of the PA
     And if the WhatsApp is being replied to (in twilio-mock automatic) then also the follow-up WhatsApp message is sent
 
   # You can use 15005550001 in combination with Twilio Mock to test a failed message

@@ -79,6 +79,7 @@ describe('ProgramAttributesService', () => {
         true,
         false,
         false,
+        false,
       );
 
       const resultTypeMapping = result.map((r) => r.questionType);

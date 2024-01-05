@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HeaderComponent } from '../components/header/header.component';
+import { LanguageSwitcherComponent } from '../components/language-switcher/language-switcher.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
@@ -78,6 +79,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ProgramNavigationComponent,
     PhaseNavigationComponent,
     SelectTypeaheadComponent,
+    LanguageSwitcherComponent,
   ],
   exports: [
     BulkImportComponent,
@@ -109,6 +111,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ProgramCardComponent,
     MessageHistoryPopupComponent,
     TableFilterRowComponent,
+    LanguageSwitcherComponent,
     ExportSelectComponent,
   ],
 })
