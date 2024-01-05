@@ -421,14 +421,20 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<any> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return voucher.image;
+    const image = await this.imageCodeService.generateVoucherImage({
+      dateTime: voucher.created,
+      amount: voucher.amount,
+      code: voucher.barcode,
+      pin: voucher.pin,
+    });
+    return image;
   }
 
   private async getVoucher(
     referenceId: string,
     payment: number,
     programId: number,
-  ): Promise<any> {
+  ): Promise<IntersolveVoucherEntity> {
     const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
       relations: ['images', 'images.voucher'],
@@ -440,16 +446,16 @@ export class IntersolveVoucherService
       );
     }
 
-    const voucher = registration.images.find(
+    const imageCodeExportVouchersEntity = registration.images.find(
       (image) => image.voucher.payment === payment,
     );
-    if (!voucher) {
+    if (!imageCodeExportVouchersEntity) {
       throw new HttpException(
         'Voucher not found. Maybe this payment was not (yet) made to this PA.',
         HttpStatus.NOT_FOUND,
       );
     }
-    return voucher;
+    return imageCodeExportVouchersEntity.voucher;
   }
 
   public async getInstruction(programId: number): Promise<any> {
@@ -510,7 +516,7 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getBalance(voucher.voucher, programId);
+    return await this.getBalance(voucher, programId);
   }
 
   private async getBalance(
