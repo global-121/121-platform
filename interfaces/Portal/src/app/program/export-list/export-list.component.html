@@ -7,8 +7,9 @@
     [duplicateAttributesProps]="duplicateAttributesProps"
     [datetimeProps]="datetimeProps"
     [isPopoverExportButton]="isPopoverButton"
-    [fill]="isPopoverButton ? 'clear' : 'outline'"
-    [color]="isPopoverButton ? 'secondary' : 'primary'"
+    fill="outline"
+    color="primary"
+    [class.full-width]="isPopoverButton"
   >
     <ion-icon
       *ngIf="!isPopoverButton"
