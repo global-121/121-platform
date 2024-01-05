@@ -1,5 +1,8 @@
 import { TestBed } from '@automock/jest';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Queue } from 'bull';
+import { Repository } from 'typeorm';
+import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
@@ -8,6 +11,7 @@ import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.cons
 import { MessageContentType } from '../enum/message-type.enum';
 import { ProcessName } from '../enum/queue.names.enum';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
+import { MessageTemplateEntity } from '../message-template/message-template.entity';
 import { QueueMessageService } from './queue-message.service';
 
 const defaultMessageJob = {
@@ -23,12 +27,19 @@ const defaultMessageJob = {
 describe('QueueMessageService', () => {
   let queueMessageService: QueueMessageService;
   let messageQueue: jest.Mocked<Queue>;
+  let programAttributesService: ProgramAttributesService;
+  let messageTemplateRepository: Repository<MessageTemplateEntity>; // Declare the variable
+  // Declare the variable
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
 
     queueMessageService = unit;
     messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
+    programAttributesService = unitRef.get(ProgramAttributesService);
+    messageTemplateRepository = unitRef.get(
+      getRepositoryToken(MessageTemplateEntity) as any,
+    );
   });
 
   it('should be defined', () => {
@@ -105,6 +116,64 @@ describe('QueueMessageService', () => {
       customData: undefined,
       mediaUrl: undefined,
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
+  });
+
+  describe('getPlaceholdersInMessageText', () => {
+    it('should get the placeholders from custom message text', async () => {
+      // Arrange
+      jest
+        .spyOn(programAttributesService as any, 'getAttributes')
+        .mockImplementation(() => {
+          return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
+        });
+      const messageText = 'Hello {{fullName}}, how are you?';
+      const expectedPlaceholders = ['fullName'];
+
+      // Act
+      const result = await queueMessageService.getPlaceholdersInMessageText(
+        2,
+        messageText,
+      );
+
+      // Assert
+      expect(result).toStrictEqual(expectedPlaceholders);
+    });
+
+    it('should get the placeholders from a message that comes from messageTemplateRepository', async () => {
+      jest
+        .spyOn(programAttributesService as any, 'getAttributes')
+        .mockImplementation(() => {
+          return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
+        });
+
+      jest.spyOn(messageTemplateRepository, 'findOne').mockResolvedValue(
+        Promise.resolve({
+          message:
+            'Hello {{fullName}}, how are you? Greetings from {{namePartnerOrganization}}',
+          language: LanguageEnum.en,
+          type: 'test',
+          programId: 2,
+          created: new Date(),
+          updated: new Date(),
+          isWhatsappTemplate: false,
+          id: 1,
+        }),
+      );
+
+      // Arrange
+      const messageTemplateKey = 'test';
+      const expectedPlaceholders = ['fullName', 'namePartnerOrganization'];
+
+      // Act
+      const result = await queueMessageService.getPlaceholdersInMessageText(
+        2,
+        null,
+        messageTemplateKey,
+      );
+
+      // Assert
+      expect(result).toStrictEqual(expectedPlaceholders);
     });
   });
 });
