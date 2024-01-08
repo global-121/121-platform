@@ -40,6 +40,12 @@
     "team": "Team",
     "users": "Users"
   },
+  "ngx-datatable": {
+    "empty-message": "No data to display.",
+    "total-message": "total",
+    "selected-message": "selected",
+    "selection-summary": "{{selectedCount}} selected / {{totalCount}} total"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
@@ -453,7 +459,6 @@
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
-        "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "language": {
           "ar": "Arabic",
           "en": "English",
@@ -609,7 +614,7 @@
         "scope": "Scope",
         "status": "Status"
       },
-      "team-members": "Team members"
+      "team-members": "team members"
     },
     "programs-list": {
       "card": {
@@ -653,7 +658,7 @@
         "user-type": "User type",
         "username": "Username"
       },
-      "total-users": "Users",
+      "total-users": "users",
       "users-tab": "Users"
     }
   },

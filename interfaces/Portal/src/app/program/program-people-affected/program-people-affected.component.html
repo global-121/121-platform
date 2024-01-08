@@ -99,6 +99,11 @@
   [offset]="pageMetaData?.currentPage"
   [limit]="pageMetaData?.itemsPerPage"
   (page)="setPage($event)"
+  [messages]="{
+    emptyMessage: 'ngx-datatable.empty-message' | translate,
+    totalMessage: 'ngx-datatable.total-message' | translate,
+    selectedMessage: 'ngx-datatable.selected-message' | translate
+  }"
 >
   <ngx-datatable-column
     prop="selected"
@@ -366,17 +371,15 @@
       let-pageSize="pageSize"
       let-curPage="curPage"
     >
-      <div style="padding: 5px 10px">
-        <div>
-          {{
-            'page.program.program-people-affected.footer-selected-of-total'
-              | translate
-                : {
-                    selectedCount: selectedCount | number: '1.0-0',
-                    totalCount: pageMetaData?.totalItems || 0 | number: '1.0-0'
-                  }
-          }}
-        </div>
+      <div class="ion-padding">
+        {{
+          'ngx-datatable.selection-summary'
+            | translate
+              : {
+                  selectedCount: selectedCount | number: '1.0-0',
+                  totalCount: pageMetaData?.totalItems || 0 | number: '1.0-0'
+                }
+        }}
       </div>
       <datatable-pager
         class="datatable-pager"

@@ -16,6 +16,11 @@
   [headerHeight]="40"
   [footerHeight]="50"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
+  [messages]="{
+    emptyMessage: 'ngx-datatable.empty-message' | translate,
+    totalMessage: 'page.users.total-users' | translate,
+    selectedMessage: 'ngx-datatable.selected-message' | translate
+  }"
 >
   <!-- username -->
   <ngx-datatable-column
@@ -88,16 +93,4 @@
       {{ row.lastLogin | date: DateFormat.dateOnly }}
     </ng-template>
   </ngx-datatable-column>
-
-  <!--footer-->
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-    >
-      <div style="padding: 5px 10px">
-        <div>{{ rowCount }} {{ 'page.users.total-users' | translate }}</div>
-      </div>
-    </ng-template>
-  </ngx-datatable-footer>
 </ngx-datatable>

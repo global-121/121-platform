@@ -40,6 +40,12 @@
     "team": "فريق",
     "users": "المستعملون"
   },
+  "ngx-datatable": {
+    "empty-message": "لا توجد بيانات لعرض.",
+    "selected-message": "المحدد",
+    "selection-summary": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
+    "total-message": "المجموع"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "يمكنك الحصول على وصف لكل تصنيف أو رأس بالنقر / التركيز / التمرير فوق هذه العناصر:",
@@ -448,7 +454,6 @@
           "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
         },
         "filter-placeholder": "اكتب القيمة...",
-        "footer-selected-of-total": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
         "language": {
           "ar": "العربية",
           "en": "الإنكليزية",

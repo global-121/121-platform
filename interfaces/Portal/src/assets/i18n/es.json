@@ -40,6 +40,12 @@
     "team": "Equipo",
     "users": "Usuarios"
   },
+  "ngx-datatable": {
+    "empty-message": "No hay información para mostrar.",
+    "selected-message": "seleccionados",
+    "selection-summary": "{{selectedCount}} seleccionados / {{totalCount}} en total",
+    "total-message": "total"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "Puede obtener una descripción de cada etiqueta o encabezado haciendo clic/enfocándo/pasando el cursor sobre estos elementos:",
@@ -448,7 +454,6 @@
           "multiple-choice-hidden-options": "La lista anterior solo muestra un estado si se asigna al menos a una persona afectada"
         },
         "filter-placeholder": "Escriba el valor...",
-        "footer-selected-of-total": "{{selectedCount}} seleccionados / {{totalCount}} en total",
         "language": {
           "ar": "Árabe",
           "en": "Inglés",
@@ -604,7 +609,7 @@
         "scope": "Alcance",
         "status": "Estado"
       },
-      "team-members": "Miembros del equipo"
+      "team-members": "miembros del equipo"
     },
     "programs-list": {
       "card": {
@@ -648,7 +653,7 @@
         "user-type": "Tipo de usuario",
         "username": "Nombre de usuario"
       },
-      "total-users": "Usuarios",
+      "total-users": "usuarios",
       "users-tab": "Usuarios"
     }
   },

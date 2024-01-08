@@ -60,6 +60,10 @@
   }
 
   .datatable-footer {
+    .page-count {
+      height: auto;
+      min-height: 50px;
+    }
     .datatable-pager .pager li.disabled a {
       opacity: 0.33;
     }

@@ -14,6 +14,11 @@
   [headerHeight]="40"
   [footerHeight]="50"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
+  [messages]="{
+    emptyMessage: 'ngx-datatable.empty-message' | translate,
+    totalMessage: 'page.program-team.team-members' | translate,
+    selectedMessage: 'ngx-datatable.selected-message' | translate
+  }"
 >
   <!-- name -->
   <ngx-datatable-column
@@ -144,18 +149,4 @@
       </ion-popover>
     </ng-template>
   </ngx-datatable-column>
-
-  <!--footer-->
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-    >
-      <div style="padding: 5px 10px">
-        <div>
-          {{ rowCount }} {{ 'page.program-team.team-members' | translate }}
-        </div>
-      </div>
-    </ng-template>
-  </ngx-datatable-footer>
 </ngx-datatable>

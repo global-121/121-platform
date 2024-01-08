@@ -40,6 +40,12 @@
     "team": "Team",
     "users": "Gebruikers"
   },
+  "ngx-datatable": {
+    "empty-message": "Geen gegevens om weer te geven.",
+    "selected-message": "geselecteerd",
+    "selection-summary": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
+    "total-message": "totaal"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "U kunt een beschrijving van elk label krijgen door op deze elementen te klikken/focussen/de cursor erop te plaatsen:",
@@ -448,7 +454,6 @@
           "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
         },
         "filter-placeholder": "Type hier...",
-        "footer-selected-of-total": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
         "language": {
           "ar": "Arabisch",
           "en": "Engels",
@@ -604,7 +609,7 @@
         "scope": "Scope",
         "status": "Status"
       },
-      "team-members": "Teamleden"
+      "team-members": "teamleden"
     },
     "programs-list": {
       "card": {
@@ -648,7 +653,7 @@
         "user-type": "Type gebruiker",
         "username": "Gebruikersnaam"
       },
-      "total-users": "Gebruikers",
+      "total-users": "gebruikers",
       "users-tab": "Gebruikers"
     }
   },
