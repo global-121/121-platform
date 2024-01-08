@@ -1,16 +1,9 @@
-<div
-  #proxyScrollbar
-  class="proxy-scrollbar"
-  data-target-scroll-element-selector="datatable-body"
-  data-target-width-element-selector="datatable-scroller"
->
-  <div class="proxy-scrollbar--content"></div>
-</div>
 <ngx-datatable
   class="bootstrap data-table--max-height"
   [rows]="filteredRows"
   [columnMode]="'force'"
-  [rowHeight]="45"
+  [virtualization]="false"
+  [rowHeight]="'auto'"
   [scrollbarV]="true"
   [scrollbarH]="true"
   [headerHeight]="40"
@@ -22,7 +15,6 @@
     selectedMessage: 'ngx-datatable.selected-message' | translate
   }"
 >
-  <!-- username -->
   <ngx-datatable-column
     prop="username"
     [name]="'page.users.table-headers.username' | translate"
@@ -35,7 +27,6 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- user type -->
   <ngx-datatable-column
     prop="admin"
     [name]="'page.users.table-headers.user-type' | translate"
@@ -53,7 +44,6 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- status-->
   <ngx-datatable-column
     prop="active"
     [name]="'page.users.table-headers.status' | translate"
@@ -81,7 +71,6 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- last activity -->
   <ngx-datatable-column
     prop="lastLogin"
     [name]="'page.users.table-headers.last-login' | translate"
