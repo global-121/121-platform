@@ -136,6 +136,10 @@
           "canTakeFewMinutes": "Dit kan enkele minuten duren.",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload van alle gedupliceerde hulpvragers."
         },
+        "filtered-table": {
+          "btn-text": "Gefilterde weergave exporteren",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload waarin het filter is toegepast op alle hulpvragers."
+        },
         "included": {
           "btn-text": "Export actieve hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle actieve hulpvragers."
@@ -156,6 +160,7 @@
           "btn-text": "Rapport exporteren",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die bij deze betaling zijn inbegrepen."
         },
+        "select-btn-text": "Exporteren",
         "selected-for-validation": {
           "btn-text": "Export: geselecteerd voor validatie",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die zijn geselecteerd voor validatie, dat kan worden gebruikt voor validatiebezoeken."
