@@ -42,9 +42,10 @@
   },
   "ngx-datatable": {
     "empty-message": "No data to display.",
-    "total-message": "total",
+    "manage-row": "Options",
     "selected-message": "selected",
-    "selection-summary": "{{selectedCount}} selected / {{totalCount}} total"
+    "selection-summary": "{{selectedCount}} selected / {{totalCount}} total",
+    "total-message": "total"
   },
   "page": {
     "dashboard": {
@@ -121,7 +122,6 @@
         "timestamp": "Latest export has been done on: {{dateTime}}"
       },
       "export-list": {
-        "select-btn-text": "Export",
         "all-people-affected": {
           "btn-text": "Export People Affected",
           "confirm-message": "This will download an Excel file with all People Affected."
@@ -135,6 +135,10 @@
           "btn-text": "Export duplicate People Affected",
           "canTakeFewMinutes": "This can take up to a few minutes.",
           "confirm-message": "This will download an Excel file with all People Affected that are duplicate."
+        },
+        "filtered-table": {
+          "btn-text": "Export Filtered View",
+          "confirm-message": "This will download an Excel file with the filter applied to all People Affected."
         },
         "included": {
           "btn-text": "Export included People Affected",
@@ -156,6 +160,7 @@
           "btn-text": "Export Report",
           "confirm-message": "This will download an Excel file with all People Affected included in this payment."
         },
+        "select-btn-text": "Export",
         "selected-for-validation": {
           "btn-text": "Export list: selected for validation",
           "confirm-message": "This will download an Excel file with all People Affected selected for validation, to be used for Validation visits."
@@ -164,10 +169,6 @@
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
           "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher's last external update."
-        },
-        "filtered-table": {
-          "btn-text": "Export Filtered View",
-          "confirm-message": "This will download an Excel file with the filter applied to all People Affected."
         }
       },
       "import-fsp-reconciliation": {

@@ -42,6 +42,7 @@
   },
   "ngx-datatable": {
     "empty-message": "No hay información para mostrar.",
+    "manage-row": "Opciones",
     "selected-message": "seleccionados",
     "selection-summary": "{{selectedCount}} seleccionados / {{totalCount}} en total",
     "total-message": "total"

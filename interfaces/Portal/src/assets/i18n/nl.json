@@ -42,6 +42,7 @@
   },
   "ngx-datatable": {
     "empty-message": "Geen gegevens om weer te geven.",
+    "manage-row": "Opties",
     "selected-message": "geselecteerd",
     "selection-summary": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
     "total-message": "totaal"

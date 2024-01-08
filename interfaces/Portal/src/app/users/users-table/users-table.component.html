@@ -1,12 +1,10 @@
 <ngx-datatable
-  class="bootstrap data-table--max-height"
+  class="bootstrap ngx-datatable--full-height"
   [rows]="filteredRows"
   [columnMode]="'force'"
   [virtualization]="false"
   [rowHeight]="'auto'"
-  [scrollbarV]="true"
-  [scrollbarH]="true"
-  [headerHeight]="40"
+  [headerHeight]="50"
   [footerHeight]="50"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
   [messages]="{
@@ -23,7 +21,9 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.username }}
+      <span [attr.title]="row.username">
+        {{ row.username }}
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
@@ -78,7 +78,12 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.lastLogin | date: DateFormat.dateOnly }}
+      <time
+        datetime="row.lastLogin"
+        [attr.title]="row.lastLogin | date: DateFormat.dateOnly"
+      >
+        {{ row.lastLogin | date: DateFormat.dateOnly }}
+      </time>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

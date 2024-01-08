@@ -42,6 +42,7 @@
   },
   "ngx-datatable": {
     "empty-message": "لا توجد بيانات لعرض.",
+    "manage-row": "خيارات",
     "selected-message": "المحدد",
     "selection-summary": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
     "total-message": "المجموع"
