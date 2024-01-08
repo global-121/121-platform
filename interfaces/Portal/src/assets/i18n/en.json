@@ -748,7 +748,8 @@
     "show-all": "Show All"
   },
   "select-typeahead": {
-    "placeholder": "Select..."
+    "placeholder": "Select...",
+    "search-placeholder": "Search..."
   },
   "system-notifications": {
     "compatible-browsers": "The 121 Portal works best in Chrome, Firefox, Safari and Microsoft Edge. The 121 Portal does not work in Internet Explorer."

@@ -743,7 +743,8 @@
     "show-all": "Alles weergeven"
   },
   "select-typeahead": {
-    "placeholder": "Selecteer..."
+    "placeholder": "Selecteer...",
+    "search-placeholder": "Zoekopdracht..."
   },
   "system-notifications": {
     "compatible-browsers": "Het 121 Portal werkt het beste in Chrome, Firefox, Safari en Microsoft Edge. Het 121 portal werkt niet in Internet Explorer."

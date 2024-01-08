@@ -743,7 +743,8 @@
     "show-all": "Tout afficher"
   },
   "select-typeahead": {
-    "placeholder": "Choisir..."
+    "placeholder": "Choisir...",
+    "search-placeholder": "Recherche..."
   },
   "system-notifications": {
     "compatible-browsers": "Le portail 121 fonctionne mieux dans Chrome, Firefox, Safari et Microsoft Edge. Le portail 121 ne fonctionne pas dans Internet Explorer."

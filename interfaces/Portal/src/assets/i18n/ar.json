@@ -743,7 +743,8 @@
     "show-all": "عرض الكل"
   },
   "select-typeahead": {
-    "placeholder": "اختار..."
+    "placeholder": "اختار...",
+    "search-placeholder": "يبحث..."
   },
   "system-notifications": {
     "compatible-browsers": "تعمل بوابة 121 بشكل أفضل في Chrome و Firefox و Safari و Microsoft Edge. لا يعمل مدخل 121 في Internet Explorer."
