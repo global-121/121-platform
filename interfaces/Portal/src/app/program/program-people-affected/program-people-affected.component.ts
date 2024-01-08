@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
-  Platform,
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -168,7 +167,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private alertController: AlertController,
     public modalController: ModalController,
     public popoverController: PopoverController,
-    public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
