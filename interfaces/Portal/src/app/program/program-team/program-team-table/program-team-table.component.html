@@ -53,17 +53,16 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
+          class="user-status-badge"
           [class.active]="row.active === true"
           [class.inactive]="row.active === false"
         >
-          <ion-label>
-            <strong *ngIf="row?.active === true">
-              {{ 'entity.users.status.active' | translate }}
-            </strong>
-            <strong *ngIf="row?.active === false">
-              {{ 'entity.users.status.inactive' | translate }}
-            </strong>
-          </ion-label>
+          <strong *ngIf="row?.active === true">
+            {{ 'entity.users.status.active' | translate }}
+          </strong>
+          <strong *ngIf="row?.active === false">
+            {{ 'entity.users.status.inactive' | translate }}
+          </strong>
         </ion-chip>
       </ng-container>
     </ng-template>
