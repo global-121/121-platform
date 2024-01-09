@@ -40,6 +40,13 @@
     "team": "Equipo",
     "users": "Usuarios"
   },
+  "ngx-datatable": {
+    "empty-message": "No hay información para mostrar.",
+    "manage-row": "Opciones",
+    "selected-message": "seleccionados",
+    "selection-summary": "{{selectedCount}} seleccionados / {{totalCount}} en total",
+    "total-message": "total"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "Puede obtener una descripción de cada etiqueta o encabezado haciendo clic/enfocándo/pasando el cursor sobre estos elementos:",
@@ -129,6 +136,10 @@
           "canTakeFewMinutes": "Esto puede tardar hasta unos minutos.",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas que están duplicadas."
         },
+        "filtered-table": {
+          "btn-text": "Exportar vista filtrada",
+          "confirm-message": "Esto descargará un archivo Excel con el filtro aplicado a todas las Personas Afectadas."
+        },
         "included": {
           "btn-text": "La exportación incluyó a las personas afectadas",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas incluidas."
@@ -149,6 +160,7 @@
           "btn-text": "Informe de exportación",
           "confirm-message": "Esto descargará un archivo Excel con todas las personas afectadas incluidas en este pago."
         },
+        "select-btn-text": "Exportar",
         "selected-for-validation": {
           "btn-text": "Lista de exportación: seleccionada para validación",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas seleccionadas para la validación, que se utilizará para las visitas de validación."
@@ -448,7 +460,6 @@
           "multiple-choice-hidden-options": "La lista anterior solo muestra un estado si se asigna al menos a una persona afectada"
         },
         "filter-placeholder": "Escriba el valor...",
-        "footer-selected-of-total": "{{selectedCount}} seleccionados / {{totalCount}} en total",
         "language": {
           "ar": "Árabe",
           "en": "Inglés",
@@ -604,7 +615,7 @@
         "scope": "Alcance",
         "status": "Estado"
       },
-      "team-members": "Miembros del equipo"
+      "team-members": "miembros del equipo"
     },
     "programs-list": {
       "card": {
@@ -648,7 +659,7 @@
         "user-type": "Tipo de usuario",
         "username": "Nombre de usuario"
       },
-      "total-users": "Usuarios",
+      "total-users": "usuarios",
       "users-tab": "Usuarios"
     }
   },
@@ -729,7 +740,7 @@
       "not-used-yet": "Todavía no se ha utilizado",
       "pause-card": "Tarjeta de pausa",
       "popup-title": "Tarjeta de débito",
-      "spent-this-month": "Gastado este mes (máximo {{maxAmount}}, {{currency}})",
+      "spent-this-month": "Gastado este mes (máximo {{maxAmount}})",
       "status": "Estado",
       "title": "Tarjetas de débito",
       "unpause-card": "Tarjeta de reanudación"
@@ -737,7 +748,8 @@
     "show-all": "Mostrar todo"
   },
   "select-typeahead": {
-    "placeholder": "Escoger..."
+    "placeholder": "Escoger...",
+    "search-placeholder": "Buscar..."
   },
   "system-notifications": {
     "compatible-browsers": "El portal 121 funciona mejor en Chrome, Firefox, Safari y Microsoft Edge. El Portal 121 no funciona en Internet Explorer."

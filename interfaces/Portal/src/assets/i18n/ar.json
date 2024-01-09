@@ -40,6 +40,13 @@
     "team": "فريق",
     "users": "المستعملون"
   },
+  "ngx-datatable": {
+    "empty-message": "لا توجد بيانات لعرض.",
+    "manage-row": "خيارات",
+    "selected-message": "المحدد",
+    "selection-summary": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
+    "total-message": "المجموع"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "يمكنك الحصول على وصف لكل تصنيف أو رأس بالنقر / التركيز / التمرير فوق هذه العناصر:",
@@ -129,6 +136,10 @@
           "canTakeFewMinutes": "قد يستغرق هذا ما يصل إلى بضع دقائق.",
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين المكررة."
         },
+        "filtered-table": {
+          "btn-text": "تصدير العرض الذي تمت تصفيته",
+          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تطبيق عامل التصفية على جميع الأشخاص المتأثرين."
+        },
         "included": {
           "btn-text": "وشملت التصدير الأشخاص المتضررين",
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين المضمنة."
@@ -149,6 +160,7 @@
           "btn-text": "تقرير التصدير",
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تضمين جميع الأشخاص المتأثرين في هذه الدفعة."
         },
+        "select-btn-text": "يصدّر",
         "selected-for-validation": {
           "btn-text": "قائمة التصدير: محددة للتحقق من الصحة",
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تحديد جميع الأشخاص المتأثرين للتحقق من الصحة ، لاستخدامه في زيارات التحقق من الصحة."
@@ -448,7 +460,6 @@
           "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
         },
         "filter-placeholder": "اكتب القيمة...",
-        "footer-selected-of-total": "محدد {{selectedCount}} / إجمالي {{totalCount}}",
         "language": {
           "ar": "العربية",
           "en": "الإنكليزية",
@@ -729,7 +740,7 @@
       "not-used-yet": "لم تستخدم بعد",
       "pause-card": "إيقاف البطاقة مؤقتا",
       "popup-title": "بانككارد",
-      "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}} {{currency}})",
+      "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}})",
       "status": "حالة",
       "title": "بطاقات السحب الآلي",
       "unpause-card": "إلغاء الإيقاف المؤقت للبطاقة"
@@ -737,7 +748,8 @@
     "show-all": "عرض الكل"
   },
   "select-typeahead": {
-    "placeholder": "اختار..."
+    "placeholder": "اختار...",
+    "search-placeholder": "يبحث..."
   },
   "system-notifications": {
     "compatible-browsers": "تعمل بوابة 121 بشكل أفضل في Chrome و Firefox و Safari و Microsoft Edge. لا يعمل مدخل 121 في Internet Explorer."

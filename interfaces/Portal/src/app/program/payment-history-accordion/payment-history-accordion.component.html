@@ -43,7 +43,8 @@
                 <ion-note class="date">
                   <small>
                     {{
-                      paymentRow.sentDate | date: DateFormat.dayAndTimeReverse
+                      paymentRow.sentDate
+                        | date: DateFormat.dayAndTimeReverse : locale
                     }}
                   </small>
                 </ion-note>
@@ -135,7 +136,8 @@
                     class="padding"
                   >
                     {{
-                      paymentRow.sentDate | date: DateFormat.dayAndTimeReverse
+                      paymentRow.sentDate
+                        | date: DateFormat.dayAndTimeReverse : locale
                     }}
                   </ion-text>
                 </ion-label>
@@ -153,7 +155,15 @@
                   <ion-text
                     *ngIf="paymentRow.transaction?.status"
                     class="padding"
-                    >{{ paymentRow.amount }}
+                  >
+                    {{
+                      paymentRow.amount
+                        | currency
+                          : paymentRow.currency
+                          : 'symbol'
+                          : '1.2-2'
+                          : locale
+                    }}
                   </ion-text>
                 </ion-label>
               </ion-item>

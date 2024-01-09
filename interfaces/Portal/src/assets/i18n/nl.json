@@ -40,6 +40,13 @@
     "team": "Team",
     "users": "Gebruikers"
   },
+  "ngx-datatable": {
+    "empty-message": "Geen gegevens om weer te geven.",
+    "manage-row": "Opties",
+    "selected-message": "geselecteerd",
+    "selection-summary": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
+    "total-message": "totaal"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "U kunt een beschrijving van elk label krijgen door op deze elementen te klikken/focussen/de cursor erop te plaatsen:",
@@ -129,6 +136,10 @@
           "canTakeFewMinutes": "Dit kan enkele minuten duren.",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload van alle gedupliceerde hulpvragers."
         },
+        "filtered-table": {
+          "btn-text": "Gefilterde weergave exporteren",
+          "confirm-message": "Hiermee wordt een Excel-bestand gedownload waarin het filter is toegepast op alle hulpvragers."
+        },
         "included": {
           "btn-text": "Export actieve hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle actieve hulpvragers."
@@ -149,6 +160,7 @@
           "btn-text": "Rapport exporteren",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die bij deze betaling zijn inbegrepen."
         },
+        "select-btn-text": "Exporteren",
         "selected-for-validation": {
           "btn-text": "Export: geselecteerd voor validatie",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die zijn geselecteerd voor validatie, dat kan worden gebruikt voor validatiebezoeken."
@@ -448,7 +460,6 @@
           "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
         },
         "filter-placeholder": "Type hier...",
-        "footer-selected-of-total": "{{selectedCount}} geselecteerd / {{totalCount}} totaal",
         "language": {
           "ar": "Arabisch",
           "en": "Engels",
@@ -604,13 +615,13 @@
         "scope": "Scope",
         "status": "Status"
       },
-      "team-members": "Teamleden"
+      "team-members": "teamleden"
     },
     "programs-list": {
       "card": {
         "budget": "Totaal projectbudget",
         "included": "Actieve hulpvragers",
-        "spent": "Geld uitgeven",
+        "spent": "Geld verstrekt",
         "status": "Programmastatus:",
         "targeted": "Doel aantal registraties",
         "updated": "Laatst bijgewerkt: "
@@ -627,7 +638,7 @@
         "confirm-password": "Bevestig wachtwoord",
         "current-password": "Huidig wachtwoord",
         "failed": "Mislukte poging: huidig wachtwoord onjuist",
-        "new-password": "Nieuw paswoord",
+        "new-password": "Nieuw wachtwoord",
         "success": "Wachtwoord gewijzigd"
       },
       "notification-messages": {
@@ -648,7 +659,7 @@
         "user-type": "Type gebruiker",
         "username": "Gebruikersnaam"
       },
-      "total-users": "Gebruikers",
+      "total-users": "gebruikers",
       "users-tab": "Gebruikers"
     }
   },
@@ -729,7 +740,7 @@
       "not-used-yet": "Nog niet gebruikt",
       "pause-card": "Kaart pauzeren",
       "popup-title": "Visa kaart",
-      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}} {{currency}})",
+      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}})",
       "status": "Status",
       "title": "Visa kaarten",
       "unpause-card": "Kaart activeren"
@@ -737,7 +748,8 @@
     "show-all": "Alles weergeven"
   },
   "select-typeahead": {
-    "placeholder": "Selecteer..."
+    "placeholder": "Selecteer...",
+    "search-placeholder": "Zoeken..."
   },
   "system-notifications": {
     "compatible-browsers": "Het 121 Portal werkt het beste in Chrome, Firefox, Safari en Microsoft Edge. Het 121 portal werkt niet in Internet Explorer."

@@ -46,7 +46,7 @@ export class BulkActionsService {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   private bulkActions: BulkAction[] = [

@@ -57,8 +57,8 @@
                 class="ion-text-end"
                 style="font-weight: 400"
               >
-                {{ message.created | date: DateFormat.dayAndTime }}</ion-note
-              >
+                {{ message.created | date: DateFormat.dayAndTime : locale }}
+              </ion-note>
             </div>
           </ion-col>
           <ion-col size="3">

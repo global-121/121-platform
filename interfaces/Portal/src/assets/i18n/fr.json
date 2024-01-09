@@ -40,6 +40,13 @@
     "team": "Équipe",
     "users": "Utilisateurs"
   },
+  "ngx-datatable": {
+    "empty-message": "Aucune donnée à afficher.",
+    "manage-row": "Possibilités",
+    "selected-message": "sélectionnés",
+    "selection-summary": "{{selectedCount}} sélectionnés / {{totalCount}} total",
+    "total-message": "total"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "Vous pouvez obtenir une description de chaque étiquette ou en-tête en cliquant/se concentrant/survolant ces éléments :",
@@ -129,6 +136,10 @@
           "canTakeFewMinutes": "Cela peut prendre jusqu’à quelques minutes.",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées qui sont en double."
         },
+        "filtered-table": {
+          "btn-text": "Exporter la vue filtrée",
+          "confirm-message": "Cela téléchargera un fichier Excel avec le filtre appliqué à toutes les personnes concernées."
+        },
         "included": {
           "btn-text": "Exportation incluse Personnes affectées",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées incluses."
@@ -149,6 +160,7 @@
           "btn-text": "Rapport d’exportation",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes touchées incluses dans ce paiement."
         },
+        "select-btn-text": "Exporter",
         "selected-for-validation": {
           "btn-text": "Liste d’exportation : sélectionnée pour validation",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées sélectionnées pour la validation, à utiliser pour les visites de validation."
@@ -448,7 +460,6 @@
           "multiple-choice-hidden-options": "La liste ci-dessus n’affiche un statut que s’il est attribué à au moins une personne concernée"
         },
         "filter-placeholder": "Tapez value...",
-        "footer-selected-of-total": "{{selectedCount}} sélectionné / {{totalCount}} au total",
         "language": {
           "ar": "Arabe",
           "en": "Anglais",
@@ -604,7 +615,7 @@
         "scope": "Portée",
         "status": "Statut"
       },
-      "team-members": "Membres de l’équipe"
+      "team-members": "membres de l’équipe"
     },
     "programs-list": {
       "card": {
@@ -648,7 +659,7 @@
         "user-type": "Type d’utilisateur",
         "username": "Nom d’utilisateur"
       },
-      "total-users": "Utilisateurs",
+      "total-users": "utilisateurs",
       "users-tab": "Utilisateurs"
     }
   },
@@ -737,7 +748,8 @@
     "show-all": "Tout afficher"
   },
   "select-typeahead": {
-    "placeholder": "Choisir..."
+    "placeholder": "Choisir...",
+    "search-placeholder": "Recherche..."
   },
   "system-notifications": {
     "compatible-browsers": "Le portail 121 fonctionne mieux dans Chrome, Firefox, Safari et Microsoft Edge. Le portail 121 ne fonctionne pas dans Internet Explorer."

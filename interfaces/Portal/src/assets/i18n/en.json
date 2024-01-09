@@ -40,6 +40,13 @@
     "team": "Team",
     "users": "Users"
   },
+  "ngx-datatable": {
+    "empty-message": "No data to display.",
+    "manage-row": "Options",
+    "selected-message": "selected",
+    "selection-summary": "{{selectedCount}} selected / {{totalCount}} total",
+    "total-message": "total"
+  },
   "page": {
     "dashboard": {
       "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
@@ -115,7 +122,6 @@
         "timestamp": "Latest export has been done on: {{dateTime}}"
       },
       "export-list": {
-        "select-btn-text": "Export",
         "all-people-affected": {
           "btn-text": "Export People Affected",
           "confirm-message": "This will download an Excel file with all People Affected."
@@ -129,6 +135,10 @@
           "btn-text": "Export duplicate People Affected",
           "canTakeFewMinutes": "This can take up to a few minutes.",
           "confirm-message": "This will download an Excel file with all People Affected that are duplicate."
+        },
+        "filtered-table": {
+          "btn-text": "Export Filtered View",
+          "confirm-message": "This will download an Excel file with the filter applied to all People Affected."
         },
         "included": {
           "btn-text": "Export included People Affected",
@@ -150,6 +160,7 @@
           "btn-text": "Export Report",
           "confirm-message": "This will download an Excel file with all People Affected included in this payment."
         },
+        "select-btn-text": "Export",
         "selected-for-validation": {
           "btn-text": "Export list: selected for validation",
           "confirm-message": "This will download an Excel file with all People Affected selected for validation, to be used for Validation visits."
@@ -158,10 +169,6 @@
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
           "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher's last external update."
-        },
-        "filtered-table": {
-          "btn-text": "Export Filtered View",
-          "confirm-message": "This will download an Excel file with the filter applied to all People Affected."
         }
       },
       "import-fsp-reconciliation": {
@@ -453,7 +460,6 @@
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
-        "footer-selected-of-total": "{{selectedCount}} selected / {{totalCount}} total",
         "language": {
           "ar": "Arabic",
           "en": "English",
@@ -609,7 +615,7 @@
         "scope": "Scope",
         "status": "Status"
       },
-      "team-members": "Team members"
+      "team-members": "team members"
     },
     "programs-list": {
       "card": {
@@ -653,7 +659,7 @@
         "user-type": "User type",
         "username": "Username"
       },
-      "total-users": "Users",
+      "total-users": "users",
       "users-tab": "Users"
     }
   },
@@ -734,7 +740,7 @@
       "not-used-yet": "Not used yet",
       "pause-card": "Pause card",
       "popup-title": "Debit card",
-      "spent-this-month": "Spent this month (maximum {{maxAmount}} {{currency}})",
+      "spent-this-month": "Spent this month (maximum {{maxAmount}})",
       "status": "Status",
       "title": "Debit cards",
       "unpause-card": "Unpause card"
@@ -742,7 +748,8 @@
     "show-all": "Show All"
   },
   "select-typeahead": {
-    "placeholder": "Select..."
+    "placeholder": "Select...",
+    "search-placeholder": "Search..."
   },
   "system-notifications": {
     "compatible-browsers": "The 121 Portal works best in Chrome, Firefox, Safari and Microsoft Edge. The 121 Portal does not work in Internet Explorer."

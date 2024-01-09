@@ -55,7 +55,13 @@
       <ion-toolbar style="--min-height: 0">
         <ion-searchbar
           #searchbar
+          [placeholder]="
+            searchPlaceholder ||
+            ('select-typeahead.search-placeholder' | translate)
+          "
           (ionInput)="onSearchbarInput($event)"
+          enterkeyhint="search"
+          inputmode="search"
           style="
             padding: 0 !important;
             border-bottom: 1px solid var(--ion-color-medium);

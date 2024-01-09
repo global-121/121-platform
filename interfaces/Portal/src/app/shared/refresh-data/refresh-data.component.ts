@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-refresh-data',
@@ -7,6 +8,9 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
   styleUrls: ['./refresh-data.component.scss'],
 })
 export class RefreshDataComponent {
+  @Input()
+  public locale: string = environment.defaultLocale;
+
   @Input()
   public lastUpdated: Date | string;
 

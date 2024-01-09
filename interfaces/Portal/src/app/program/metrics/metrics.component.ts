@@ -37,7 +37,7 @@ export class MetricsComponent implements OnInit {
     private translatableString: TranslatableStringService,
     private programsService: ProgramsServiceApiService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   public async ngOnInit() {

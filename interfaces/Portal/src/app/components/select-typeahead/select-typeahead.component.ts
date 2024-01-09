@@ -33,6 +33,9 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
   public placeholder: string;
 
   @Input()
+  public searchPlaceholder: string;
+
+  @Input()
   public disabled = false;
 
   @Input()
