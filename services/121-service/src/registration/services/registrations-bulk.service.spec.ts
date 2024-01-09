@@ -92,7 +92,7 @@ describe('RegistrationBulkService', () => {
 
     jest
       .spyOn(queueMessageService as any, 'addMessageToQueue')
-      .mockImplementation(() => {});
+      .mockImplementation();
   });
 
   it('should be defined', () => {
