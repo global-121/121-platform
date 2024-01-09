@@ -7,25 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.3...master)
 
-## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.3...v1.108.2) - 2023-12-29
+- - -
+
+## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.3) - 2023-12-29
 
 ### Fixed
 
 - Sorting of payments in iframe (by refetching the program)
 
-## [1.108.2](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.1) - 2023-12-29
+## [1.108.2](https://github.com/global-121/121-platform/compare/v1.108.1...v1.108.2) - 2023-12-29
 
 ### Fixed
 
 - Payment amount multiplier in template
 
-## [1.108.1](https://github.com/global-121/121-platform/compare/v1.108.1...v1.108.0) - 2023-12-28
+## [1.108.1](https://github.com/global-121/121-platform/compare/v1.108.0...v1.108.1) - 2023-12-28
 
 ### Fixed
 
 - Order of deleting entities related to registrations
 
-## [1.108.0](https://github.com/global-121/121-platform/compare/v1.108.0...v1.107.0) - 2023-12-21
+## [1.108.0](https://github.com/global-121/121-platform/compare/v1.107.0...v1.108.0) - 2023-12-21
 
 ### Migration
 
