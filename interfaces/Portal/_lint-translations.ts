@@ -17,7 +17,7 @@ import { ProgramPhase } from 'src/app/models/program.model';
 // ----------------------------------------------------------------------------
 
 const viewsPath: string = './src/app/**/*.{html,ts}';
-const languagesPath: string = './src/assets/i18n/en.json';
+const languagesPath: string = './src/assets/i18n/*.json';
 const ignoredLanguagesPath: string = '';
 
 const ruleConfig: IRulesConfig = {

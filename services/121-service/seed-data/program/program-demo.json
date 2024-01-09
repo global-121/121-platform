@@ -5,13 +5,25 @@
   "location": "Demoland",
   "ngo": "Demo NGO",
   "titlePortal": {
-    "en": "Demo Cash Aid Project"
+    "ar": "مشروع المساعدات النقدية التجريبي",
+    "en": "Demo Cash Aid Project",
+    "es": "Proyecto de demostración de ayuda monetaria",
+    "fr": "Projet de démonstration d'aide en espèces",
+    "nl": "Demo Cash Hulpprogramma"
   },
   "titlePaApp": {
-    "en": "Demo Cash Aid Project"
+    "ar": "مشروع المساعدات النقدية التجريبي",
+    "en": "Demo Cash Aid Project",
+    "es": "Proyecto de demostración de ayuda monetaria",
+    "fr": "Projet de démonstration d'aide en espèces",
+    "nl": "Demo Cash Hulpprogramma"
   },
   "description": {
-    "en": ""
+    "ar": "",
+    "en": "",
+    "es": "",
+    "fr": "",
+    "nl": ""
   },
   "startDate": "2022-09-29T12:00:00Z",
   "endDate": "2030-11-30T12:00:00Z",
@@ -40,7 +52,11 @@
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": true,
   "meetingDocuments": {
-    "en": ""
+    "ar": "الوثيقة 3; الوثيقة 2; الوثيقة 1",
+    "en": "Document 1; Document 2; Document 3",
+    "es": "Documento 1; Documento 2; Documento 3",
+    "fr": "Document 1; Document 2; Document 3",
+    "nl": "Document 1; Document 2; Document 3"
   },
   "phoneNumberPlaceholder": "+31 600 00 00 00",
   "programCustomAttributes": [],
@@ -48,7 +64,11 @@
     {
       "name": "name",
       "label": {
-        "en": "1. What is your name?"
+        "ar": "1. ما اسمك؟",
+        "en": "1. What is your name?",
+        "es": "1. ¿Cuál es tu nombre?",
+        "fr": "1. Quel est ton nom ?",
+        "nl": "1. Wat is je naam?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -59,13 +79,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Name"
+        "ar": "الاسم",
+        "en": "Name",
+        "es": "Nombre",
+        "fr": "Nom",
+        "nl": "Naam"
       }
     },
     {
       "name": "middlename",
       "label": {
-        "en": "2. What is your middle name?"
+        "ar": "2. ما هو اسمك الأوسط؟",
+        "en": "2. What is your middle name?",
+        "es": "2. ¿Cuál es tu segundo nombre?",
+        "fr": "2. Quel est votre deuxième prénom ?",
+        "nl": "2. Wat is je tweede naam?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -76,13 +104,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Middle name"
+        "ar": "الاسم الأوسط",
+        "en": "Middle name",
+        "es": "Segundo nombre",
+        "fr": "Deuxième prénom",
+        "nl": "Tweede naam"
       }
     },
     {
       "name": "firstname",
       "label": {
-        "en": "3. What is your first name?"
+        "ar": "1. ما هو اسمك الأول؟",
+        "en": "3. What is your first name?",
+        "es": "1. ¿Cuál es tu nombre?",
+        "fr": "1. Quel est votre prénom ?",
+        "nl": "1. Wat is je voornaam?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -93,29 +129,53 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "First name"
+        "ar": "الاسم الأول",
+        "en": "First Name",
+        "es": "Nombre de pila",
+        "fr": "Prénom",
+        "nl": "Voornaam"
       }
     },
     {
       "name": "gender",
       "label": {
-        "en": "4. What is your gender?"
+        "ar": "4. ما هو جنسك؟",
+        "en": "4. What is your gender?",
+        "es": "4. ¿Cuál es tu género?",
+        "fr": "4. Quel est votre sexe ?",
+        "nl": "4. Wat is je geslacht?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
-          "option": "Masculin ",
+          "option": "M",
           "label": {
+            "ar": "ذكر",
             "en": "Male",
-            "fr": "Masculin"
+            "es": "Masculino",
+            "fr": "Masculin",
+            "nl": "Man"
           }
         },
         {
-          "option": "Féminin",
+          "option": "F",
           "label": {
+            "ar": "أنثى",
             "en": "Female",
-            "fr": "Féminin"
+            "es": "Femenino",
+            "fr": "Féminin",
+            "nl": "Vrouw"
+          }
+        },
+        {
+          "option": "X",
+          "label": {
+            "ar": "أخرى",
+            "en": "Other",
+            "es": "Otra",
+            "fr": "Autre",
+            "nl": "Anders"
           }
         }
       ],
@@ -125,13 +185,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Gender"
+        "ar": "جنس",
+        "en": "Gender",
+        "es": "Género",
+        "fr": "Genre",
+        "nl": "Geslacht"
       }
     },
     {
       "name": "birthdate",
       "label": {
-        "en": "5. What is your birth date?"
+        "ar": "5. ما هو تاريخ ميلادك؟",
+        "en": "5. What is your birth date?",
+        "es": "5. ¿Cuál es tu fecha de nacimiento?",
+        "fr": "5. Quelle est votre date de naissance ?",
+        "nl": "5. Wat is je geboortedatum?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -142,13 +210,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Birth date"
+        "ar": "تاريخ الميلاد",
+        "en": "Birth date",
+        "es": "Fecha de nacimiento",
+        "fr": "Date de naissance",
+        "nl": "Geboortedatum"
       }
     },
     {
       "name": "documentid",
       "label": {
-        "en": "6. What is your document ID number? (- of none)"
+        "ar": "6. ما هو رقم هوية المستند الخاص بك؟ (- إذا لم يكن هناك)",
+        "en": "6. What is your document ID number? (- if none)",
+        "es": "6. ¿Cuál es el número de identificación de su documento? (- si ninguno)",
+        "fr": "6. Quel est le numéro d'identification de votre document ? (- s'il n'y en a pas)",
+        "nl": "6. Wat is uw document-ID-nummer? (- indien geen)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -160,13 +236,21 @@
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Document ID"
+        "ar": "معرف المستند",
+        "en": "Document ID",
+        "es": "Número de identificación",
+        "fr": "Numéro d'identification",
+        "nl": "Document ID"
       }
     },
     {
       "name": "headhousehold",
       "label": {
-        "en": "7. Are you the head of household?"
+        "ar": "7. هل أنت رب الأسرة؟",
+        "en": "7. Are you the head of household?",
+        "es": "7. ¿Es usted cabeza de familia?",
+        "fr": "7. Êtes-vous chef de famille ?",
+        "nl": "7. Bent u het hoofd van het huishouden?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -174,15 +258,21 @@
         {
           "option": "Oui",
           "label": {
+            "ar": "نعم",
             "en": "Yes",
-            "fr": "Oui"
+            "es": "Sí",
+            "fr": "Oui",
+            "nl": "Ja"
           }
         },
         {
           "option": "Non",
           "label": {
+            "ar": "لا",
             "en": "No",
-            "fr": "Non"
+            "es": "No",
+            "fr": "Non",
+            "nl": "Nee"
           }
         }
       ],
@@ -192,13 +282,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Household head"
+        "ar": "رب الأسرة",
+        "en": "Household head",
+        "es": "Jefe de hogar",
+        "fr": "Chef de ménage",
+        "nl": "Hoofd huishouden"
       }
     },
     {
       "name": "males",
       "label": {
-        "en": "8. How many male(s) of 18 or older live in your household? (0 if none)"
+        "ar": "",
+        "en": "8. How many male(s) of 18 or older live in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -209,13 +307,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Men"
+        "ar": "",
+        "en": "Men",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "boys",
       "label": {
-        "en": "9. How many boy(s) of 17 or younger live in your household? (0 if none)"
+        "ar": "",
+        "en": "9. How many boy(s) of 17 or younger live in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -228,13 +334,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Boys"
+        "ar": "",
+        "en": "Boys",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "women",
       "label": {
-        "en": "10. How many women of 18 or older live in your household? (0 if none)"
+        "ar": "",
+        "en": "10. How many women of 18 or older live in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -245,13 +359,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Women"
+        "ar": "",
+        "en": "Women",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "girls",
       "label": {
-        "en": "11. How many girl(s) of 17 or younger live in your household? (0 if none)"
+        "ar": "",
+        "en": "11. How many girl(s) of 17 or younger live in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -264,13 +386,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Girls"
+        "ar": "",
+        "en": "Girls",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "householdsituation",
       "label": {
-        "en": "12. What is your household's situation?"
+        "ar": "",
+        "en": "12. What is your household's situation?",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -278,29 +408,41 @@
         {
           "option": "returnee",
           "label": {
+            "ar": "",
             "en": "Retournee",
-            "fr": "Retourné"
+            "es": "",
+            "fr": "Retourné",
+            "nl": ""
           }
         },
         {
           "option": "displaced",
           "label": {
+            "ar": "",
             "en": "Displaced",
-            "fr": "Déplacé"
+            "es": "",
+            "fr": "Déplacé",
+            "nl": ""
           }
         },
         {
           "option": "autochtoneprivate",
           "label": {
+            "ar": "",
             "en": "Autochtone (private residency)",
-            "fr": "Autochtone (simple résident)"
+            "es": "",
+            "fr": "Autochtone (simple résident)",
+            "nl": ""
           }
         },
         {
           "option": "autochtonehost",
           "label": {
+            "ar": "",
             "en": "Autochtone (host family)",
-            "fr": "Autochtone (famille d’accueil)"
+            "es": "",
+            "fr": "Autochtone (famille d’accueil)",
+            "nl": ""
           }
         }
       ],
@@ -315,13 +457,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Household situation"
+        "ar": "",
+        "en": "Household situation",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "maritalsituation",
       "label": {
-        "en": "13. What is the marital situation of the head of your household?"
+        "ar": "",
+        "en": "13. What is the marital situation of the head of your household?",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -329,43 +479,61 @@
         {
           "option": "widowed",
           "label": {
+            "ar": "",
             "en": "Widowed",
-            "fr": "Veuf/Veuve"
+            "es": "",
+            "fr": "Veuf/Veuve",
+            "nl": "Weduwe/Weduwnaar"
           }
         },
         {
           "option": "married",
           "label": {
+            "ar": "",
             "en": "Married",
-            "fr": "Marié(e)"
+            "es": "",
+            "fr": "Marié(e)",
+            "nl": "Getrouwd"
           }
         },
         {
           "option": "abandoned",
           "label": {
+            "ar": "",
             "en": "Abandoned",
-            "fr": "Abandonné(e)"
+            "es": "",
+            "fr": "Abandonné(e)",
+            "nl": "Verlaten"
           }
         },
         {
           "option": "seperated",
           "label": {
+            "ar": "",
             "en": "Seperated",
-            "fr": "Séparé(e)"
+            "es": "",
+            "fr": "Séparé(e)",
+            "nl": "Uit elkaar"
           }
         },
         {
           "option": "divorced",
           "label": {
+            "ar": "",
             "en": "Divorced",
-            "fr": "Divorcé (e)"
+            "es": "",
+            "fr": "Divorcé (e)",
+            "nl": "Gescheiden"
           }
         },
         {
           "option": "girl",
           "label": {
+            "ar": "",
             "en": "Girl/adolescent < 18 pregnant or mother",
-            "fr": "Enfant/adolescent ménage"
+            "es": "",
+            "fr": "Enfant/adolescent ménage",
+            "nl": ""
           }
         }
       ],
@@ -382,13 +550,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Marital situation"
+        "ar": "",
+        "en": "Marital situation",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "specialcharacteristics",
       "label": {
-        "en": "14. What are special characteristics of the head of your household (if any)?"
+        "ar": "",
+        "en": "14. What are special characteristics of the head of your household (if any)?",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -396,43 +572,71 @@
         {
           "option": "olderalone",
           "label": {
-            "en": "Older person living alone"
+            "ar": "",
+            "en": "Older person living alone",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "elderlycharge",
           "label": {
-            "en": "Elderly person in charge of a household"
+            "ar": "",
+            "en": "Elderly person in charge of a household",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "pregnantbrestfeeding",
           "label": {
-            "en": "Pregnant/breastfeeding woman"
+            "ar": "",
+            "en": "Pregnant/breastfeeding woman",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "womancharge",
           "label": {
-            "en": "Woman in charge of a household"
+            "ar": "",
+            "en": "Woman in charge of a household",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "childcharge",
           "label": {
-            "en": "Child/adolescent in charge of a household"
+            "ar": "",
+            "en": "Child/adolescent in charge of a household",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "girlmother",
           "label": {
-            "en": "Girl/adolescent < 18 pregnant or mother"
+            "ar": "",
+            "en": "Girl/adolescent < 18 pregnant or mother",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         },
         {
           "option": "none",
           "label": {
-            "en": "None"
+            "ar": "",
+            "en": "None",
+            "es": "",
+            "fr": "",
+            "nl": ""
           }
         }
       ],
@@ -450,13 +654,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Special characteristics"
+        "ar": "",
+        "en": "Special characteristics",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "pregnant",
       "label": {
-        "en": "15. How many pregnant women are in your household? (0 if none)"
+        "ar": "",
+        "en": "15. How many pregnant women are in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -469,13 +681,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Pregnant women"
+        "ar": "",
+        "en": "Pregnant women",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "breastfeeding",
       "label": {
-        "en": "16. How many breastfeeding women are in your household? (0 if none)"
+        "ar": "",
+        "en": "16. How many breastfeeding women are in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -488,13 +708,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Breastfeeding women"
+        "ar": "",
+        "en": "Breastfeeding women",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "womendisabled",
       "label": {
-        "en": "17. How many women in your household aged 18 and over have a disability? (0 if none)"
+        "ar": "",
+        "en": "17. How many women in your household aged 18 and over have a disability? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -507,13 +735,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Women disability"
+        "ar": "",
+        "en": "Women disability",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "mendisabled",
       "label": {
-        "en": "18. How many men in your household aged 18 and over have a disability? (0 if none)"
+        "ar": "",
+        "en": "18. How many men in your household aged 18 and over have a disability? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -526,13 +762,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Men disability"
+        "ar": "",
+        "en": "Men disability",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "girlsdisabled",
       "label": {
-        "en": "19. How many girls in your household aged under 18 have a disability? (0 if none)"
+        "ar": "",
+        "en": "19. How many girls in your household aged under 18 have a disability? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -545,13 +789,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Girls disability"
+        "ar": "",
+        "en": "Girls disability",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "boysdisabled",
       "label": {
-        "en": "20. How many boys in your household aged under 18 have a disability? (0 if none)"
+        "ar": "",
+        "en": "20. How many boys in your household aged under 18 have a disability? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -564,13 +816,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Boys disability"
+        "ar": "",
+        "en": "Boys disability",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "childrenmalnourished",
       "label": {
-        "en": "21. How many malnourished children are in your household? (0 if none)"
+        "ar": "",
+        "en": "21. How many malnourished children are in your household? (0 if none)",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -583,13 +843,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Malnourished children"
+        "ar": "",
+        "en": "Malnourished children",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     },
     {
       "name": "malnourishedtreatment",
       "label": {
-        "en": "22. If there are malnourished children in your household are you pursuing treatment at the health center?"
+        "ar": "",
+        "en": "22. If there are malnourished children in your household are you pursuing treatment at the health center?",
+        "es": "",
+        "fr": "",
+        "nl": ""
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -597,15 +865,21 @@
         {
           "option": "Oui",
           "label": {
+            "ar": "نعم",
             "en": "Yes",
-            "fr": "Oui"
+            "es": "Sí",
+            "fr": "Oui",
+            "nl": "Ja"
           }
         },
         {
           "option": "Non",
           "label": {
+            "ar": "لا",
             "en": "No",
-            "fr": "Non"
+            "es": "No",
+            "fr": "Non",
+            "nl": "Nee"
           }
         }
       ],
@@ -615,13 +889,21 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Malnourished treatment"
+        "ar": "",
+        "en": "Malnourished treatment",
+        "es": "",
+        "fr": "",
+        "nl": ""
       }
     }
   ],
   "aboutProgram": {
-    "en": "[about aid program]"
+    "ar": "[حول برنامج المساعدات]",
+    "en": "[about aid program]",
+    "es": "[sobre el programa de ayuda]",
+    "fr": "[à propos du programme d'aide]",
+    "nl": "[beschrijving van het programma]"
   },
   "fullnameNamingConvention": ["name", "middlename", "firstname"],
-  "languages": ["en"]
+  "languages": ["ar", "en", "es", "fr", "nl"]
 }

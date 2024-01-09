@@ -56,7 +56,7 @@ See the [/services/](../services/)-directory in this repository.
 
 All interfaces use a common set of dependencies/frameworks/libraries.
 
-- [Ionic v6](https://ionicframework.com/docs/)  
+- [Ionic v7](https://ionicframework.com/docs/)  
   This UI-kit or library gives us a foundation to quickly build interfaces cross-platform and cross-device-type(mobile/desktop).  
   We use the (default) framework of Angular with(in) Ionic.
 
@@ -64,11 +64,11 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
   - Icons: <https://ionicons.com/>
 
-- [Angular v15](https://v15.angular.io/docs)  
+- [Angular v16+](https://v16.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v15.angular.io/api>
-  - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
+  - API Documentation: <https://v16.angular.io/api>
+  - Used by Angular, RxJS: <https://rxjs.dev/api>
 
 - [`ngx-translate` v14](https://www.npmjs.com/package/@ngx-translate/core/v/14.0.0)  
   An Angular-service to handle internationalization(i18n) or translations.
