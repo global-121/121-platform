@@ -1,15 +1,29 @@
 {
-  "fsp": "FSP - all attributes",
+  "fsp": "fsp_all_attributes",
   "integrationType": "api",
   "fspDisplayNamePaApp": {
-    "en": "FSP - all attributes"
+    "ar": "FSP - جميع الصفات",
+    "en": "FSP - all attributes",
+    "es": "FSP - todos los atributos",
+    "fr": "FSP - tous les attribut",
+    "nl": "FSP - alle attributen"
   },
-  "fspDisplayNamePortal": "FSP - all attributes",
+  "fspDisplayNamePortal": {
+    "ar": "FSP - جميع الصفات",
+    "en": "FSP - all attributes",
+    "es": "FSP - todos los atributos",
+    "fr": "FSP - tous les attribut",
+    "nl": "FSP - alle attributen"
+  },
   "questions": [
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Phone number with country-code. It should look like: <strong>+000 000 00 00</strong>"
+        "ar": "رقم الهاتف مع رمز البلد. يجب أن يبدو مثل: <strong>+000 000 00 00</strong>",
+        "en": "Phone number with country-code. It should look like: <strong>+000 000 00 00</strong>",
+        "es": "Número de teléfono con código de país. Debería verse así: <strong>+000 000 00 00</strong>",
+        "fr": "Numéro de téléphone avec indicatif du pays. Cela devrait ressembler à : <strong>+000 000 00 00</strong>",
+        "nl": "Telefoonnummer met landcode. Het zou er zo uit moeten zien: <strong>+000 000 00 00</strong>"
       },
       "placeholder": {
         "en": "+000 000 00 00"
@@ -17,64 +31,108 @@
       "answerType": "tel",
       "options": null,
       "shortLabel": {
-        "en": "Phone Number"
+        "ar": "الهاتف.",
+        "en": "Phone Nr.",
+        "es": "Nr. teléfono",
+        "fr": "Nr. de téléphone",
+        "nl": "Telefoonnr."
       }
     },
     {
       "name": "accountId",
       "label": {
-        "en": "Your account number"
+        "ar": "رقم حسابك",
+        "en": "Your account number",
+        "es": "Tu numero de cuenta",
+        "fr": "Votre numéro de compte",
+        "nl": "Uw rekeningnummer"
       },
       "answerType": "numeric",
       "options": null,
       "shortLabel": {
-        "en": "Account Nr"
+        "ar": "حسابك",
+        "en": "Account Nr.",
+        "es": "Num. de cuenta",
+        "fr": "Num. de compte",
+        "nl": "Rekeningnr."
       }
     },
     {
       "name": "date",
       "label": {
-        "en": "Your date"
+        "ar": "تاريخك",
+        "en": "Your date",
+        "es": "Tu fecha",
+        "fr": "Votre date",
+        "nl": "Uw datum"
       },
       "answerType": "date",
       "options": null,
       "shortLabel": {
-        "en": "Date"
+        "ar": "تاريخ",
+        "en": "Date",
+        "es": "Fecha",
+        "fr": "Date",
+        "nl": "Datum"
       }
     },
     {
       "name": "openAnswer",
       "label": {
-        "en": "Your answer"
+        "ar": "إجابتك",
+        "en": "Your answer",
+        "es": "Tu respuesta",
+        "fr": "Votre Réponse",
+        "nl": "Uw antwoord"
       },
       "answerType": "text",
       "options": null,
       "shortLabel": {
-        "en": "Open Answer"
+        "ar": "إجابة مفتوحة",
+        "en": "Open Answer",
+        "es": "Abrir respuesta",
+        "fr": "Réponse ouverte",
+        "nl": "Open antwoord"
       }
     },
     {
       "name": "fixedChoice",
       "label": {
-        "en": "Your choice"
+        "ar": "اختيارك",
+        "en": "Your choice",
+        "es": "Tu elección",
+        "fr": "Votre choix",
+        "nl": "Uw keuze"
       },
       "answerType": "dropdown",
       "options": [
         {
           "option": "true",
           "label": {
-            "en": "Yes"
+            "ar": "نعم",
+            "en": "Yes",
+            "es": "Sí",
+            "fr": "Oui",
+            "nl": "Ja"
           }
         },
         {
           "option": "false",
           "label": {
-            "en": "No"
+            "ar": "لا",
+            "en": "No",
+            "es": "No",
+            "fr": "Non",
+            "nl": "Nee"
           }
         }
       ],
       "shortLabel": {
-        "en": "Choice"
+        "ar": "خيار",
+        "en": "Choice",
+        "es": "Elección",
+        "fr": "Choix",
+        "nl": "Keuze"
       }
     }
   ]
