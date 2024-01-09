@@ -438,11 +438,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private getLabelForAttribute(attributeName: string): string {
-    const paAttribute = this.program.paTableAttributes.find(
+    const paTableAttributes = this.program.paTableAttributes || [];
+    const paAttribute = paTableAttributes.find(
       (attribute) => attribute.name === attributeName,
     );
 
-    if (paAttribute && paAttribute.shortLabel) {
+    if (paAttribute && paAttribute?.shortLabel) {
       return this.translatableStringService.get(paAttribute.shortLabel);
     }
 

@@ -300,7 +300,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         );
 
       for (const change of changes) {
-        const attribute = this.program.paTableAttributes.find(
+        const paTableAttributes = this.program.paTableAttributes || [];
+        const attribute = paTableAttributes.find(
           (attr) => attr.name === change.fieldName,
         );
 
