@@ -90,6 +90,50 @@
       },
       "portalTitle": "Portal"
     },
+    "program-team": {
+      "add-team-member": "Teamlid toevoegen",
+      "edit-team-member": "Bewerken",
+      "page-description": "Op deze pagina kunt u een team voor uw programma aanmaken",
+      "pageTitle": "Programmateam",
+      "popup": {
+        "add": {
+          "already-member": "Deze gebruiker is al een teamlid",
+          "confirm": "Gebruiker toevoegen",
+          "succes-message": "Je hebt succesvol een teamlid toegevoegd",
+          "title": "Teamlid toevoegen"
+        },
+        "change": {
+          "confirm": "Opslaan",
+          "succes-message": "U heeft de rol(len) van deze gebruiker succesvol bewerkt",
+          "title": "De rollen van teamleden bewerken"
+        },
+        "remove": {
+          "attention": "Let op:",
+          "confirm": "Gebruiker verwijderen",
+          "confirmation-question": "Weet je zeker dat je deze gebruiker uit het programmateam wilt verwijderen?",
+          "explanation": "Het verwijderen van een teamlid betekent niet dat hun account wordt verwijderd uit het 121 portal. Als je hun account wilt verwijderen, neem dan contact op met de beheerder.",
+          "introduction": "Als het teamlid wordt verwijderd, heeft hij of zij geen toegang meer tot het programma of de gegevens.",
+          "succes-message": "Je hebt een teamlid verwijderd",
+          "title": "Teamlid verwijderen"
+        },
+        "role": "Rol",
+        "roles-placeholder": "Rol(len) toewijzen",
+        "roles-required": "Selecteer ten minste één rol",
+        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle hulpvragers.",
+        "scope-placeholder": "Vul een scope in",
+        "team-member": "Teamlid",
+        "team-member-placeholder": "Selecteer een teamlid"
+      },
+      "remove-team-member": "Verwijderen uit team",
+      "table-headers": {
+        "last-activity": "Laatste login",
+        "name": "Naam",
+        "role": "Rol",
+        "scope": "Scope",
+        "status": "Status"
+      },
+      "team-members": "teamleden"
+    },
     "program": {
       "bulk-import": {
         "import-error": "Er is iets misgegaan met de import. Controleer <ul><li>de gewenste extensie (.csv)Controleer</li> het <li>formaat en de kolomnamen van het CSV-bestand</li><li><strong>Foutmelding:</strong>{{specific}}</li></ul>",
@@ -224,15 +268,15 @@
             "explanation": "In deze rij worden alle gegevens tot en met deze maand weergegeven, in plaats van alleen de gegevens die specifiek zijn voor deze maand.",
             "label": "Tot geselecteerde maand:"
           },
+          "payment-from-start": {
+            "explanation": "Deze rij toont alle gegevens tot en met de geselecteerde betaling, in plaats van alleen de gegevens die specifiek zijn voor deze betalingsperiode (de periode tussen de vorige betaling en de geselecteerde betaling).",
+            "label": "Tot geselecteerde betaling #:"
+          },
           "payment": {
             "explanation": "Alle hulpvragers die een bepaalde status bereikten - bijv. actief - op enig moment tussen de vorige betaling en de gekozen betaling. <br><br> Dit is niet het aantal geregistreerde hulpvragers op het moment van die betaling, maar het aantal hulpvragers dat werd geregistreerd tussen de vorige betaling en de gekozen betaling. <br><br> Merk op dat de geregistreerde hulpvragers in deze periode niet noodzakelijkerwijs dezelfde hulpvragers zijn als de hulpvragers die zich in deze periode hebben geregistreerd, omdat ze zich bijvoorbeeld in de vorige periode kunnen hebben geregistreerd.",
             "label": "Betaling #:",
             "option": "Betaling # {{number}} - {{date}}",
             "select-hint": "Kies betaling..."
-          },
-          "payment-from-start": {
-            "explanation": "Deze rij toont alle gegevens tot en met de geselecteerde betaling, in plaats van alleen de gegevens die specifiek zijn voor deze betalingsperiode (de periode tussen de vorige betaling en de geselecteerde betaling).",
-            "label": "Tot geselecteerde betaling #:"
           },
           "to-date": {
             "explanation": "Alle hulpvragers die een bepaalde status hebben bereikt - bijv. inbegrepen - op enig moment tussen de start van het programma en nu. Dit is niet het aantal opgenomen PA's op <br><br> dit moment, maar het aantal van alle PA's die op een bepaald moment zijn opgenomen.",
@@ -572,50 +616,6 @@
         "remove-filter": "Filter verwijderen",
         "select-column-to-filter": "Typ of selecteer kolom om te filteren"
       }
-    },
-    "program-team": {
-      "add-team-member": "Teamlid toevoegen",
-      "edit-team-member": "Bewerken",
-      "page-description": "Op deze pagina kunt u een team voor uw programma aanmaken",
-      "pageTitle": "Programmateam",
-      "popup": {
-        "add": {
-          "already-member": "Deze gebruiker is al een teamlid",
-          "confirm": "Gebruiker toevoegen",
-          "succes-message": "Je hebt succesvol een teamlid toegevoegd",
-          "title": "Teamlid toevoegen"
-        },
-        "change": {
-          "confirm": "Opslaan",
-          "succes-message": "U heeft de rol(len) van deze gebruiker succesvol bewerkt",
-          "title": "De rollen van teamleden bewerken"
-        },
-        "remove": {
-          "attention": "Let op:",
-          "confirm": "Gebruiker verwijderen",
-          "confirmation-question": "Weet je zeker dat je deze gebruiker uit het programmateam wilt verwijderen?",
-          "explanation": "Het verwijderen van een teamlid betekent niet dat hun account wordt verwijderd uit het 121 portal. Als je hun account wilt verwijderen, neem dan contact op met de beheerder.",
-          "introduction": "Als het teamlid wordt verwijderd, heeft hij of zij geen toegang meer tot het programma of de gegevens.",
-          "succes-message": "Je hebt een teamlid verwijderd",
-          "title": "Teamlid verwijderen"
-        },
-        "role": "Rol",
-        "roles-placeholder": "Rol(len) toewijzen",
-        "roles-required": "Selecteer ten minste één rol",
-        "scope-explanation": "Typ om een sub-scope te gebruiken een punt tussen de scope en de sub-scope (bijv. amsterdam.zuid)<br><br>* Wanneer dit veld leeg is, heeft het teamlid toegang tot alle hulpvragers.",
-        "scope-placeholder": "Vul een scope in",
-        "team-member": "Teamlid",
-        "team-member-placeholder": "Selecteer een teamlid"
-      },
-      "remove-team-member": "Verwijderen uit team",
-      "table-headers": {
-        "last-activity": "Laatste login",
-        "name": "Naam",
-        "role": "Rol",
-        "scope": "Scope",
-        "status": "Status"
-      },
-      "team-members": "teamleden"
     },
     "programs-list": {
       "card": {

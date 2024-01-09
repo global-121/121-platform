@@ -90,6 +90,50 @@
       },
       "portalTitle": "Portal"
     },
+    "program-team": {
+      "add-team-member": "Agregar miembro del equipo",
+      "edit-team-member": "Editar",
+      "page-description": "En esta página puedes crear un equipo para tu programa",
+      "pageTitle": "Equipo del programa",
+      "popup": {
+        "add": {
+          "already-member": "Este usuario ya es miembro del equipo",
+          "confirm": "Agregar usuario",
+          "succes-message": "Ha agregado con éxito un miembro del equipo ™",
+          "title": "Agregar miembro del equipo"
+        },
+        "change": {
+          "confirm": "Salvar",
+          "succes-message": "™Ha editado correctamente los roles de este usuario",
+          "title": "Editar miembro del equipo"
+        },
+        "remove": {
+          "attention": "Atención: ",
+          "confirm": "Eliminar usuario",
+          "confirmation-question": "¿Está seguro de eliminar a este usuario del equipo del programa?",
+          "explanation": "Eliminar a un miembro del equipo no significa eliminar su cuenta del portal 121. Si desea eliminar su cuenta, póngase en contacto con el administrador.",
+          "introduction": "La eliminación del miembro del equipo hará que no tenga acceso al programa ni a sus datos.",
+          "succes-message": "Has eliminado con éxito a un miembro del ™equipo",
+          "title": "Eliminar miembro del equipo"
+        },
+        "role": "Rol",
+        "roles-placeholder": "Asignar uno o varios roles",
+        "roles-required": "Seleccione al menos un rol",
+        "scope-explanation": "Para usar un suboscilo, escriba un punto entre el alcance y el subscopio (por ejemplo, amsterdam.zuid)<br><br>* Dejar este campo vacío significa que el miembro del equipo tendrá acceso a todos los PA",
+        "scope-placeholder": "Rellena un ámbito",
+        "team-member": "Miembro del equipo",
+        "team-member-placeholder": "Seleccionar un miembro del equipo"
+      },
+      "remove-team-member": "Eliminar del equipo",
+      "table-headers": {
+        "last-activity": "Último inicio de sesión",
+        "name": "Nombre",
+        "role": "Rol",
+        "scope": "Alcance",
+        "status": "Estado"
+      },
+      "team-members": "miembros del equipo"
+    },
     "program": {
       "bulk-import": {
         "import-error": "Algo salió mal con la importación. <ul><li>Compruebe la extensión requerida (.csv)Compruebe</li> <li>el formato y los nombres de columna del archivo CSV Mensaje de</li><li><strong>error:</strong>{{specific}}</li></ul>",
@@ -224,15 +268,15 @@
             "explanation": "Esta fila muestra todos los datos hasta este mes inclusive, en lugar de solo los datos específicos de este mes.",
             "label": "Hasta el mes seleccionado:"
           },
+          "payment-from-start": {
+            "explanation": "Esta fila muestra todos los datos hasta el pago seleccionado e incluido, en lugar de solo los datos específicos de este período de pago (el período entre el pago anterior y el pago seleccionado).",
+            "label": "Hasta el # de pago seleccionado:"
+          },
           "payment": {
             "explanation": "Todos los PA que alcanzaron un cierto estado, por ejemplo, incluidos, en cualquier momento entre el pago anterior y el pago elegido. Este no es el número de PA <br><br> incluidos en el momento de ese pago, sino el número de PA que se incluyeron entre el pago anterior y el pago elegido. Tenga en cuenta que los PA incluidos en este período de tiempo pueden <br><br> no ser necesariamente los mismos PA que los que se registraron en este período de tiempo, ya que pueden haberse registrado, por ejemplo, en el período de tiempo anterior.",
             "label": "Pago #:",
             "option": "Pago #{{number}} - {{date}}",
             "select-hint": "Elige el modo de pago..."
-          },
-          "payment-from-start": {
-            "explanation": "Esta fila muestra todos los datos hasta el pago seleccionado e incluido, en lugar de solo los datos específicos de este período de pago (el período entre el pago anterior y el pago seleccionado).",
-            "label": "Hasta el # de pago seleccionado:"
           },
           "to-date": {
             "explanation": "Todos los PA que alcanzaron un cierto estado, por ejemplo, incluidos, en cualquier momento entre el inicio del programa y ahora. Este no es el número de PA <br><br> incluidos en este momento, sino el número de todos los PA que se incluyeron en algún momento.",
@@ -572,50 +616,6 @@
         "remove-filter": "Quitar el filtro",
         "select-column-to-filter": "Escriba o seleccione la columna que desea filtrar"
       }
-    },
-    "program-team": {
-      "add-team-member": "Agregar miembro del equipo",
-      "edit-team-member": "Editar",
-      "page-description": "En esta página puedes crear un equipo para tu programa",
-      "pageTitle": "Equipo del programa",
-      "popup": {
-        "add": {
-          "already-member": "Este usuario ya es miembro del equipo",
-          "confirm": "Agregar usuario",
-          "succes-message": "Ha agregado con éxito un miembro del equipo ™",
-          "title": "Agregar miembro del equipo"
-        },
-        "change": {
-          "confirm": "Salvar",
-          "succes-message": "™Ha editado correctamente los roles de este usuario",
-          "title": "Editar miembro del equipo"
-        },
-        "remove": {
-          "attention": "Atención: ",
-          "confirm": "Eliminar usuario",
-          "confirmation-question": "¿Está seguro de eliminar a este usuario del equipo del programa?",
-          "explanation": "Eliminar a un miembro del equipo no significa eliminar su cuenta del portal 121. Si desea eliminar su cuenta, póngase en contacto con el administrador.",
-          "introduction": "La eliminación del miembro del equipo hará que no tenga acceso al programa ni a sus datos.",
-          "succes-message": "Has eliminado con éxito a un miembro del ™equipo",
-          "title": "Eliminar miembro del equipo"
-        },
-        "role": "Rol",
-        "roles-placeholder": "Asignar uno o varios roles",
-        "roles-required": "Seleccione al menos un rol",
-        "scope-explanation": "Para usar un suboscilo, escriba un punto entre el alcance y el subscopio (por ejemplo, amsterdam.zuid)<br><br>* Dejar este campo vacío significa que el miembro del equipo tendrá acceso a todos los PA",
-        "scope-placeholder": "Rellena un ámbito",
-        "team-member": "Miembro del equipo",
-        "team-member-placeholder": "Seleccionar un miembro del equipo"
-      },
-      "remove-team-member": "Eliminar del equipo",
-      "table-headers": {
-        "last-activity": "Último inicio de sesión",
-        "name": "Nombre",
-        "role": "Rol",
-        "scope": "Alcance",
-        "status": "Estado"
-      },
-      "team-members": "miembros del equipo"
     },
     "programs-list": {
       "card": {

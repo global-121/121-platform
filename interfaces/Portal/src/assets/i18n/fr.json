@@ -90,6 +90,50 @@
       },
       "portalTitle": "Portail"
     },
+    "program-team": {
+      "add-team-member": "Ajouter un membre de l’équipe",
+      "edit-team-member": "Éditer",
+      "page-description": "Sur cette page, vous pouvez créer une équipe pour votre programme",
+      "pageTitle": "L’équipe du programme",
+      "popup": {
+        "add": {
+          "already-member": "Cet utilisateur est déjà membre de l’équipe",
+          "confirm": "Ajouter un utilisateur",
+          "succes-message": "Vous avez ajouté avec succès un membre de l'équipe",
+          "title": "Ajouter un membre de l’équipe"
+        },
+        "change": {
+          "confirm": "Sauvegarder",
+          "succes-message": "Vous avez modifié avec succès le(s) rôle(s) de cet utilisateur",
+          "title": "Modifier un membre de l’équipe"
+        },
+        "remove": {
+          "attention": "Attention: ",
+          "confirm": "Supprimer l’utilisateur",
+          "confirmation-question": "Êtes-vous sûr de supprimer cet utilisateur de l’équipe du programme ?",
+          "explanation": "La suppression d’un membre de l’équipe ne signifie pas la suppression de son compte du portail 121. Si vous souhaitez supprimer leur compte, veuillez contacter l’administrateur.",
+          "introduction": "La suppression du membre de l’équipe l’empêchera d’accéder au programme ou à ses données.",
+          "succes-message": "Vous avez réussi à supprimer un membre de l'équipe",
+          "title": "Supprimer un membre de l’équipe"
+        },
+        "role": "Rôle",
+        "roles-placeholder": "Attribuer un ou plusieurs rôles",
+        "roles-required": "Veuillez sélectionner au moins un rôle",
+        "scope-explanation": "Pour utiliser une sous-portée, tapez un point entre la portée et la sous-portée (par exemple, amsterdam.zuid)<br><br>* Si vous laissez ce champ vide, le membre de l’équipe aura accès à tous les PA",
+        "scope-placeholder": "Renseignez une étendue",
+        "team-member": "Équipier",
+        "team-member-placeholder": "Sélectionner un membre de l’équipe"
+      },
+      "remove-team-member": "Retirer de l’équipe",
+      "table-headers": {
+        "last-activity": "Dernière connexion",
+        "name": "Nom",
+        "role": "Rôle",
+        "scope": "Portée",
+        "status": "Statut"
+      },
+      "team-members": "membres de l’équipe"
+    },
     "program": {
       "bulk-import": {
         "import-error": "Quelque chose s’est mal passé avec l’importation. Vérifiez <ul><li>l’extension requise (.csv)Vérifiez</li> <li>le format et les noms de colonne du fichier CSV</li><li><strong>Message d’erreur :</strong>{{specific}}</li></ul>",
@@ -224,15 +268,15 @@
             "explanation": "Cette ligne affiche toutes les données jusqu’à ce mois inclus, au lieu de uniquement les données spécifiques à ce mois.",
             "label": "Jusqu’au mois sélectionné :"
           },
+          "payment-from-start": {
+            "explanation": "Cette ligne affiche toutes les données jusqu’au paiement sélectionné inclus, au lieu de uniquement les données spécifiques à cette période de paiement (la période entre le paiement précédent et le paiement sélectionné).",
+            "label": "Jusqu’au # de paiement sélectionné :"
+          },
           "payment": {
             "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - à tout moment entre le paiement précédent et le paiement choisi. Il ne s’agit pas du nombre de PA inclus <br><br> au moment de ce paiement, mais du nombre de PA qui ont été inclus entre le paiement précédent et le paiement choisi. Notez que les PA <br><br> inclus dans cette période ne sont pas nécessairement les mêmes PA que ceux qui se sont inscrits au cours de cette période, car ils peuvent s’être inscrits par exemple au cours de la période précédente.",
             "label": "# de paiement :",
             "option": "#{{number}} de paiement - {{date}}",
             "select-hint": "Choisissez le paiement..."
-          },
-          "payment-from-start": {
-            "explanation": "Cette ligne affiche toutes les données jusqu’au paiement sélectionné inclus, au lieu de uniquement les données spécifiques à cette période de paiement (la période entre le paiement précédent et le paiement sélectionné).",
-            "label": "Jusqu’au # de paiement sélectionné :"
           },
           "to-date": {
             "explanation": "Tous les PA qui ont atteint un certain statut - par exemple inclus - à tout moment entre le début du programme et maintenant. Ce n’est pas le nombre de PA inclus <br><br> pour le moment, mais le nombre de tous les PA qui ont été inclus à un moment donné.",
@@ -572,50 +616,6 @@
         "remove-filter": "Supprimer le filtre",
         "select-column-to-filter": "Tapez ou sélectionnez la colonne à filtrer"
       }
-    },
-    "program-team": {
-      "add-team-member": "Ajouter un membre de l’équipe",
-      "edit-team-member": "Éditer",
-      "page-description": "Sur cette page, vous pouvez créer une équipe pour votre programme",
-      "pageTitle": "L’équipe du programme",
-      "popup": {
-        "add": {
-          "already-member": "Cet utilisateur est déjà membre de l’équipe",
-          "confirm": "Ajouter un utilisateur",
-          "succes-message": "Vous avez ajouté avec succès un membre de l'équipe",
-          "title": "Ajouter un membre de l’équipe"
-        },
-        "change": {
-          "confirm": "Sauvegarder",
-          "succes-message": "Vous avez modifié avec succès le(s) rôle(s) de cet utilisateur",
-          "title": "Modifier un membre de l’équipe"
-        },
-        "remove": {
-          "attention": "Attention: ",
-          "confirm": "Supprimer l’utilisateur",
-          "confirmation-question": "Êtes-vous sûr de supprimer cet utilisateur de l’équipe du programme ?",
-          "explanation": "La suppression d’un membre de l’équipe ne signifie pas la suppression de son compte du portail 121. Si vous souhaitez supprimer leur compte, veuillez contacter l’administrateur.",
-          "introduction": "La suppression du membre de l’équipe l’empêchera d’accéder au programme ou à ses données.",
-          "succes-message": "Vous avez réussi à supprimer un membre de l'équipe",
-          "title": "Supprimer un membre de l’équipe"
-        },
-        "role": "Rôle",
-        "roles-placeholder": "Attribuer un ou plusieurs rôles",
-        "roles-required": "Veuillez sélectionner au moins un rôle",
-        "scope-explanation": "Pour utiliser une sous-portée, tapez un point entre la portée et la sous-portée (par exemple, amsterdam.zuid)<br><br>* Si vous laissez ce champ vide, le membre de l’équipe aura accès à tous les PA",
-        "scope-placeholder": "Renseignez une étendue",
-        "team-member": "Équipier",
-        "team-member-placeholder": "Sélectionner un membre de l’équipe"
-      },
-      "remove-team-member": "Retirer de l’équipe",
-      "table-headers": {
-        "last-activity": "Dernière connexion",
-        "name": "Nom",
-        "role": "Rôle",
-        "scope": "Portée",
-        "status": "Statut"
-      },
-      "team-members": "membres de l’équipe"
     },
     "programs-list": {
       "card": {
