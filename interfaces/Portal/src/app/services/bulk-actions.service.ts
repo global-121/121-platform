@@ -308,6 +308,7 @@ export class BulkActionsService {
           customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
