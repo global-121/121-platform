@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.3...master)
 
-- - -
+### Added
+
+- Multiple translations of the Portal (Arabic, French, Spanish, Dutch) + language-switcher in the UI.  
+  From now on, make sure to:
+  - Watch the outcome of the `lint:translations`-task, when adding/removing/updating English text-strings.
+  - When possible, also add translations by hand matching existing translations (i.e. use the same terms/verbs/etc.).
+  - When showing/formatting a `Date`, Currency-amount or `Number`, use the current (`this.`)`locale`. **Don't** hard-code these things into the strings themselves.
+
+---
 
 ## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.3) - 2023-12-29
 
