@@ -38,7 +38,7 @@
           {{ 'page.program.program-payout.closed' | translate }}
         </ng-container>
         -
-        {{ payment.paymentDate | date: DateFormat.dateOnly }}
+        {{ payment.paymentDate | date: DateFormat.dateOnly : locale }}
       </option>
     </select>
 

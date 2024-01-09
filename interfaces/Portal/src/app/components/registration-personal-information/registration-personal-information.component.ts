@@ -71,7 +71,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private enumService: EnumService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   async ngOnInit() {

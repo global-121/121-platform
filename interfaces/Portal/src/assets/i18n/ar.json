@@ -740,7 +740,7 @@
       "not-used-yet": "لم تستخدم بعد",
       "pause-card": "إيقاف البطاقة مؤقتا",
       "popup-title": "بانككارد",
-      "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}} {{currency}})",
+      "spent-this-month": "قضيت هذا الشهر (بحد أقصى {{maxAmount}})",
       "status": "حالة",
       "title": "بطاقات السحب الآلي",
       "unpause-card": "إلغاء الإيقاف المؤقت للبطاقة"

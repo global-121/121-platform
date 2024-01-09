@@ -176,7 +176,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private filterService: FilterService,
     private tableService: TableService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
 
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);

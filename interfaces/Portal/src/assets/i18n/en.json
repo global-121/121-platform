@@ -740,7 +740,7 @@
       "not-used-yet": "Not used yet",
       "pause-card": "Pause card",
       "popup-title": "Debit card",
-      "spent-this-month": "Spent this month (maximum {{maxAmount}} {{currency}})",
+      "spent-this-month": "Spent this month (maximum {{maxAmount}})",
       "status": "Status",
       "title": "Debit cards",
       "unpause-card": "Unpause card"

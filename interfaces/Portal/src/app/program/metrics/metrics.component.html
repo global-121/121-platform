@@ -20,6 +20,7 @@
   <div *ngIf="!isCollapsed">
     <app-refresh-data
       [lastUpdated]="lastUpdated"
+      [locale]="locale"
       (refresh)="update()"
     ></app-refresh-data>
   </div>

@@ -29,7 +29,7 @@ export class PaymentHistoryAccordionComponent {
   getCustomDataAttributesCheck = PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
-  public paymentRow: any;
+  public paymentRow: PaymentRowDetail;
 
   @Input()
   public enableSinglePayment: any;
@@ -47,7 +47,7 @@ export class PaymentHistoryAccordionComponent {
   private canDoSinglePayment = false;
 
   @Input()
-  private lastPaymentId;
+  private lastPaymentId: number;
 
   constructor(
     private modalController: ModalController,

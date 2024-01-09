@@ -55,7 +55,7 @@ export class PaymentStatusPopupComponent implements OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   async ngOnInit() {
@@ -168,14 +168,14 @@ export class PaymentStatusPopupComponent implements OnInit {
     const symbol = `${this.singlePayoutDetails.currency} `;
     const costFormatted = formatCurrency(
       cost,
-      environment.defaultLocale,
+      this.locale,
       symbol,
       this.singlePayoutDetails.currency,
     );
     const totalCost = cost * this.singlePayoutDetails.multiplier;
     const totalCostFormatted = formatCurrency(
       totalCost,
-      environment.defaultLocale,
+      this.locale,
       symbol,
       this.singlePayoutDetails.currency,
     );
@@ -293,7 +293,7 @@ export class PaymentStatusPopupComponent implements OnInit {
     const symbol = `${this.payoutDetails.currency} `;
     return formatCurrency(
       balance,
-      environment.defaultLocale,
+      this.locale,
       symbol,
       this.payoutDetails.currency,
     );

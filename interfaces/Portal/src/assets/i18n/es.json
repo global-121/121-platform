@@ -740,7 +740,7 @@
       "not-used-yet": "Todavía no se ha utilizado",
       "pause-card": "Tarjeta de pausa",
       "popup-title": "Tarjeta de débito",
-      "spent-this-month": "Gastado este mes (máximo {{maxAmount}}, {{currency}})",
+      "spent-this-month": "Gastado este mes (máximo {{maxAmount}})",
       "status": "Estado",
       "title": "Tarjetas de débito",
       "unpause-card": "Tarjeta de reanudación"

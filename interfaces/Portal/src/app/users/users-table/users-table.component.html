@@ -79,10 +79,10 @@
       ngx-datatable-cell-template
     >
       <time
-        datetime="row.lastLogin"
-        [attr.title]="row.lastLogin | date: DateFormat.dateOnly"
+        [attr.datetime]="row.lastLogin"
+        [attr.title]="row.lastLogin | date: DateFormat.dateOnly : locale"
       >
-        {{ row.lastLogin | date: DateFormat.dateOnly }}
+        {{ row.lastLogin | date: DateFormat.dateOnly : locale }}
       </time>
     </ng-template>
   </ngx-datatable-column>

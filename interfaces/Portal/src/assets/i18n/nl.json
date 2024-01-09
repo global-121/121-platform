@@ -621,7 +621,7 @@
       "card": {
         "budget": "Totaal projectbudget",
         "included": "Actieve hulpvragers",
-        "spent": "Geld uitgeven",
+        "spent": "Geld verstrekt",
         "status": "Programmastatus:",
         "targeted": "Doel aantal registraties",
         "updated": "Laatst bijgewerkt: "
@@ -740,7 +740,7 @@
       "not-used-yet": "Nog niet gebruikt",
       "pause-card": "Kaart pauzeren",
       "popup-title": "Visa kaart",
-      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}} {{currency}})",
+      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}})",
       "status": "Status",
       "title": "Visa kaarten",
       "unpause-card": "Kaart activeren"
