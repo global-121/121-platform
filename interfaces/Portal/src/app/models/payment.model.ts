@@ -21,7 +21,8 @@ export class PaymentRowDetail {
   text: string;
   sentDate?: string;
   paymentIndex?: number;
-  amount?: string;
+  amount?: number;
+  currency?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;
   transaction?: Transaction;

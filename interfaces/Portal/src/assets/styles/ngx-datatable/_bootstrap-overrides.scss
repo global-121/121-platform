@@ -60,6 +60,10 @@
   }
 
   .datatable-footer {
+    .page-count {
+      height: auto;
+      min-height: 50px;
+    }
     .datatable-pager .pager li.disabled a {
       opacity: 0.33;
     }
@@ -101,6 +105,21 @@
       background-position-x: 0%;
       animation: progress 3s infinite alternate ease-in-out;
     }
+  }
+}
+
+.ngx-datatable--full-height {
+  min-height: 72vh;
+}
+
+.ngx-datatable--manage-row-cell {
+  padding-block: 0 !important;
+
+  .datatable-body-cell-label {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
   }
 }
 

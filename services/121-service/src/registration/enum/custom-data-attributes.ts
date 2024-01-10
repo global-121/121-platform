@@ -35,6 +35,10 @@ export enum GenericAttributes {
   fspName = 'fspName',
   maxPayments = 'maxPayments',
   scope = 'scope',
+  status = 'status',
+  registrationProgramId = 'registrationProgramId',
+  fspDisplayNamePortal = 'fspDisplayNamePortal',
+  registrationCreatedDate = 'registrationCreatedDate',
 }
 
 export class Attribute {

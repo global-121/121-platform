@@ -20,10 +20,10 @@ ion-progress-bar {
   cursor: pointer;
 }
 
-.border-bottom {
+.border-block-end {
   border-bottom: 1px solid var(--ion-color-light);
 }
 
-.border-right {
-  border-right: 1px solid var(--ion-color-light);
+.border-inline-end {
+  border-inline-end: 1px solid var(--ion-color-light);
 }

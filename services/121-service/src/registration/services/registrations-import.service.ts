@@ -254,7 +254,7 @@ export class RegistrationsImportService {
       id: programId,
     });
     // If paymentAmountMultiplier automatic, then drop from template
-    if (!!program.paymentAmountMultiplierFormula) {
+    if (!program.paymentAmountMultiplierFormula) {
       genericAttributes.push(String(GenericAttributes.paymentAmountMultiplier));
     }
     if (program.enableMaxPayments) {

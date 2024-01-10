@@ -24,7 +24,7 @@
           [dismissOnSelect]="true"
           class="popover-menu"
         >
-          <ng-template class="menu-list">
+          <ng-template>
             <ion-content class="pop-over-container">
               <ion-list>
                 <ion-list-header lines="full">
@@ -81,7 +81,7 @@
           <!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>
       </ion-col>
-      <ion-col [size]="isIframeHeader ? '6' : '2'">
+      <ion-col [size]="isIframeHeader ? 4 : 1">
         <ion-row
           [ngClass]="{
             'ion-justify-content-center': !isIframeHeader,
@@ -96,18 +96,20 @@
           </div>
           <ng-container *ngIf="isIframeHeader">
             <ion-text color="secondary">
-              <h1 class="ion-no-margin">121 Portal</h1>
+              <h1 class="ion-no-margin">
+                {{ 'page.login.portalTitle' | translate }}
+              </h1>
             </ion-text>
           </ng-container>
         </ion-row>
       </ion-col>
-      <ion-col
-        [size]="isIframeHeader ? '6' : '5'"
-        class="ion-text-end"
-      >
-        <app-user-state
-          [showUserStateActions]="!isIframeHeader"
-        ></app-user-state>
+      <ion-col [size]="isIframeHeader ? 8 : 6">
+        <ion-row class="ion-justify-content-end ion-align-items-center">
+          <app-language-switcher class="ion-margin-end"></app-language-switcher>
+          <app-user-state
+            [showUserStateActions]="!isIframeHeader"
+          ></app-user-state>
+        </ion-row>
       </ion-col>
     </ion-row>
   </ion-grid>

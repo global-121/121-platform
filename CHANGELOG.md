@@ -5,9 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.3...master)
 
-## [1.108.0](https://github.com/global-121/121-platform/compare/v1.108.0...v1.107.0) - 2023-12-21
+### Added
+
+- Multiple translations of the Portal (Arabic, French, Spanish, Dutch) + language-switcher in the UI.  
+  From now on, make sure to:
+  - Watch the outcome of the `lint:translations`-task, when adding/removing/updating English text-strings.
+  - When possible, also add translations by hand matching existing translations (i.e. use the same terms/verbs/etc.).
+  - When showing/formatting a `Date`, Currency-amount or `Number`, use the current (`this.`)`locale`. **Don't** hard-code these things into the strings themselves.
+
+---
+
+## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.3) - 2023-12-29
+
+### Fixed
+
+- Sorting of payments in iframe (by refetching the program)
+
+## [1.108.2](https://github.com/global-121/121-platform/compare/v1.108.1...v1.108.2) - 2023-12-29
+
+### Fixed
+
+- Payment amount multiplier in template
+
+## [1.108.1](https://github.com/global-121/121-platform/compare/v1.108.0...v1.108.1) - 2023-12-28
+
+### Fixed
+
+- Order of deleting entities related to registrations
+
+## [1.108.0](https://github.com/global-121/121-platform/compare/v1.107.0...v1.108.0) - 2023-12-21
 
 ### Migration
 

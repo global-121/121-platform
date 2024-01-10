@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { Program, ProgramStats } from 'src/app/models/program.model';
 import {
   Phase,
   ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-program-card',
@@ -12,6 +14,8 @@ import {
   styleUrls: ['./program-card.component.scss'],
 })
 export class ProgramCardComponent implements OnInit {
+  public locale: string;
+
   @Input()
   program: Program;
 
@@ -20,9 +24,16 @@ export class ProgramCardComponent implements OnInit {
 
   public DateFormat = DateFormat;
   public progress = 0;
+  public phase: Phase;
+
   private programPhases: Phase[];
 
-  constructor(private programPhaseService: ProgramPhaseService) {}
+  constructor(
+    private programPhaseService: ProgramPhaseService,
+    private translate: TranslateService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     if (!this.program) {
@@ -33,8 +44,7 @@ export class ProgramCardComponent implements OnInit {
       this.program.id,
     );
 
-    this.progress =
-      this.programPhases.find((p) => p.name === this.program.phase).id /
-      this.programPhases.length;
+    this.phase = this.programPhases.find((p) => p.name === this.program.phase);
+    this.progress = this.phase.id / this.programPhases.length;
   }
 }

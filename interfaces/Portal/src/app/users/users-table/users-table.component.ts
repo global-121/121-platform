@@ -3,19 +3,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { TableData } from 'src/app/models/user.model';
+import { StatusName, TableData, UserType } from 'src/app/models/user.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-
-enum StatusName {
-  active = 'active',
-  inactive = 'inactive',
-}
-
-enum UserType {
-  admin = 'admin',
-  regular = 'regular',
-}
 
 interface NewTableData {
   status: StatusName;
@@ -33,7 +23,8 @@ interface NewTableData {
   styleUrls: ['./users-table.component.scss'],
 })
 export class UsersTableComponent implements OnInit {
-  @Input() set filterValue(value: string) {
+  @Input()
+  set filterValue(value: string) {
     this.filterData(value);
   }
 

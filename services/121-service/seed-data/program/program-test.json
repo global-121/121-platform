@@ -5,13 +5,25 @@
   "location": "Westeros",
   "ngo": "Yellow Cross",
   "titlePortal": {
-    "en": "Cash program Westeros"
+    "ar": "برنامج النقدية فيستروس",
+    "en": "Cash program Westeros",
+    "es": "Programa de efectivo Poniente",
+    "fr": "Programme de trésorerie Westeros",
+    "nl": "Cashprogramma Westeros"
   },
   "titlePaApp": {
-    "en": "Cash program Westeros"
+    "ar": "برنامج النقدية فيستروس",
+    "en": "Cash program Westeros",
+    "es": "Programa de efectivo Poniente",
+    "fr": "Programme de trésorerie Westeros",
+    "nl": "Cashprogramma Westeros"
   },
   "description": {
-    "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
+    "ar": "يهدف هذا البرنامج إلى مساعدة عامة الناس في ويستروس الأكثر تضرراً من حرب الملوك الخمسة.",
+    "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings.",
+    "es": "Este programa tiene como objetivo ayudar a los plebeyos de Poniente más afectados por la Guerra de los Cinco Reyes.",
+    "fr": "Ce programme vise à aider les roturiers de Westeros les plus touchés par la guerre des Cinq Rois.",
+    "nl": "Dit programma is bedoeld om de gewone mensen in Westeros te helpen die het zwaarst getroffen zijn door de Oorlog van de Vijf Koningen."
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
@@ -38,13 +50,13 @@
       "fsp": "Africas-talking"
     },
     {
-      "fsp": "Bank A"
+      "fsp": "bank_a"
     },
     {
-      "fsp": "FSP - all attributes"
+      "fsp": "fsp_all_attributes"
     },
     {
-      "fsp": "FSP - no attributes"
+      "fsp": "fsp_no_attributes"
     },
     {
       "fsp": "VodaCash"
@@ -52,14 +64,22 @@
   ],
   "targetNrRegistrations": 250,
   "meetingDocuments": {
-    "en": "Dragon license certificate; House birth certificate"
+    "ar": "شهادة رخصة التنين ; شهادة ميلاد البيت",
+    "en": "Dragon license certificate; House birth certificate",
+    "es": "Certificado de licencia de dragón; Certificado de nacimiento de la casa",
+    "fr": "Certificat de licence dragon; Acte de naissance maison",
+    "nl": "Draak-licentiecertificaat; Huisgeboortecertificaat"
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
   "programQuestions": [
     {
       "name": "name",
       "label": {
-        "en": "My full name:"
+        "ar": "إسمي الكامل:",
+        "en": "My full name:",
+        "es": "Mi nombre completo:",
+        "fr": "Mon nom complet:",
+        "nl": "Mijn volledige naam:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -68,13 +88,21 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "shortLabel": {
-        "en": "Full Name"
+        "ar": "الاسم",
+        "en": "Name",
+        "es": "Nombre",
+        "fr": "Nom",
+        "nl": "Naam"
       }
     },
     {
       "name": "dob",
       "label": {
-        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
+        "ar": "تاريخ ميلادي: التنسيق هو يوم - شهر - سنة مثال: 31-12-1970",
+        "en": "My date of birth: Format is day-month-year example: 31-12-1970",
+        "es": "Mi fecha de nacimiento: El formato es día-mes-año ejemplo: 31-12-1970",
+        "fr": "Ma date de naissance : Le format est jour-mois-année, exemple : 31-12-1970",
+        "nl": "Mijn geboortedatum: Formaat is dag-maand-jaar, bijvoorbeeld: 31-12-1970"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -84,13 +112,21 @@
       "scoring": {},
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Date of Birth"
+        "ar": "تاريخ الميلاد",
+        "en": "Birth date",
+        "es": "Fecha de nacimiento",
+        "fr": "Date de naissance",
+        "nl": "Geboortedatum"
       }
     },
     {
       "name": "house",
       "label": {
-        "en": "1. I am a..?"
+        "ar": "1. أنا ..؟",
+        "en": "1. I am a..?",
+        "es": "1. ¿Soy un...?",
+        "fr": "1. Je suis un..?",
+        "nl": "1. Ik ben een..?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -120,13 +156,21 @@
         "greyjoy": 9
       },
       "shortLabel": {
-        "en": "House"
+        "ar": "بيت العائلة",
+        "en": "House",
+        "es": "Casa",
+        "fr": "Maison",
+        "nl": "Huis"
       }
     },
     {
       "name": "dragon",
       "label": {
-        "en": "2. How many dragons do you own?"
+        "ar": "2. كم عدد التنانين التي تمتلكها؟",
+        "en": "2. How many dragons do you own?",
+        "es": "2. ¿Cuántos dragones tienes?",
+        "fr": "2. Combien de dragons possédez-vous ?",
+        "nl": "2. Hoeveel draken bezit je?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -136,14 +180,22 @@
         "multiplier": 2
       },
       "shortLabel": {
-        "en": "Dragon Nr."
+        "ar": "عدد التنين",
+        "en": "Dragon count",
+        "es": "Recuento de dragones",
+        "fr": "Nombre de dragons",
+        "nl": "Aantal draken"
       }
     }
   ],
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Knows nothing"
+        "ar": "لا يعرف شيئًا",
+        "en": "Knows nothing",
+        "es": "No sabe nada",
+        "fr": "Ne sait rien",
+        "nl": "Weet niets"
       },
       "name": "knowsNothing",
       "type": "boolean",
@@ -152,19 +204,27 @@
     },
     {
       "label": {
-        "en": "Text custom attribute"
+        "ar": "الشعار",
+        "en": "Motto",
+        "es": "Lema",
+        "fr": "Devise",
+        "nl": "Motto"
       },
-      "name": "textCustomAttribute",
+      "name": "motto",
       "type": "text",
       "editableInPortal": true,
       "phases": ["registrationValidation"]
     }
   ],
   "aboutProgram": {
-    "en": "[about aid program]"
+    "ar": "[حول برنامج المساعدات]",
+    "en": "[about aid program]",
+    "es": "[sobre el programa de ayuda]",
+    "fr": "[à propos du programme d'aide]",
+    "nl": "[beschrijving van het programma]"
   },
   "fullnameNamingConvention": ["name"],
-  "languages": ["en"],
+  "languages": ["ar", "en", "es", "fr", "nl"],
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false

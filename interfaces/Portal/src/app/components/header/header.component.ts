@@ -9,20 +9,22 @@ import { Program } from 'src/app/models/program.model';
 import { User } from 'src/app/models/user.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { UserStateComponent } from '../user-state/user-state.component';
 
 @Component({
   standalone: true,
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
   imports: [
     CommonModule,
     IonicModule,
     TranslateModule,
     RouterModule,
     UserStateComponent,
+    LanguageSwitcherComponent,
   ],
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
   @Input()

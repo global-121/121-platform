@@ -1,11 +1,27 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { map, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import RegistrationStatus from '../../enums/registration-status.enum';
+import {
+  FilterService,
+  PaginationFilter,
+  PaginationSort,
+} from '../../services/filter.service';
 import { LatestActionService } from '../../services/latest-action.service';
+import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { DatetimeProps } from '../../shared/datetime-picker/datetime-picker.component';
@@ -15,7 +31,7 @@ import { DatetimeProps } from '../../shared/datetime-picker/datetime-picker.comp
   templateUrl: './export-list.component.html',
   styleUrls: ['./export-list.component.scss'],
 })
-export class ExportListComponent implements OnChanges {
+export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public programId: number;
 
@@ -34,6 +50,26 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public message: string;
 
+  @Input()
+  public exportFilteredTable: boolean;
+
+  @Input()
+  public isPopoverButton = false;
+
+  public allPeopleAffectedOptions: {
+    limit: number;
+    page: number;
+    referenceId?: string;
+    filterOnPayment?: number;
+    attributes?: string[];
+    statuses?: RegistrationStatus[];
+    filters?: PaginationFilter[];
+    sort?: PaginationSort;
+  } = {
+    limit: 10,
+    page: 1,
+  };
+
   public isInProgress = false;
 
   public btnText: string;
@@ -42,13 +78,53 @@ export class ExportListComponent implements OnChanges {
   public duplicateAttributesProps: DuplicateAttributesProps;
   public datetimeProps: DatetimeProps;
 
+  private textFilterSubscription: Subscription;
+  private statusFilterSubscription: Subscription;
+
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
     private latestActionService: LatestActionService,
-  ) {}
+    private filterService: FilterService,
+    private registrationService: RegistrationsService,
+  ) {
+    this.textFilterSubscription = this.filterService.textFilter$.subscribe(
+      this.onTextFilterChange,
+    );
+    this.statusFilterSubscription = this.filterService.statusFilter$.subscribe(
+      this.onStatusFilterChange,
+    );
+  }
+  ngOnDestroy(): void {
+    this.textFilterSubscription.unsubscribe();
+    this.statusFilterSubscription.unsubscribe();
+  }
+  ngOnInit(): void {
+    if (!this.exportFilteredTable) {
+      return;
+    }
+
+    this.filterService.statusFilter$.pipe(
+      map((filter) => (this.allPeopleAffectedOptions.statuses = filter)),
+    );
+
+    const { itemsPerPage, currentPage } =
+      this.registrationService.getPageMetadata();
+    this.allPeopleAffectedOptions.limit = itemsPerPage;
+    this.allPeopleAffectedOptions.page = currentPage + 1;
+
+    this.allPeopleAffectedOptions.sort = this.registrationService.getSortBy();
+  }
+
+  private onTextFilterChange = (filter: PaginationFilter[]) => {
+    this.allPeopleAffectedOptions.filters = filter;
+  };
+
+  private onStatusFilterChange = (filter: RegistrationStatusEnum[]) => {
+    this.allPeopleAffectedOptions.statuses = filter;
+  };
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
@@ -59,7 +135,7 @@ export class ExportListComponent implements OnChanges {
 
   private updateBtnText() {
     this.btnText = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.btn-text',
+      `page.program.export-list.${this.exportType}.btn-text`,
     );
   }
 
@@ -94,9 +170,8 @@ export class ExportListComponent implements OnChanges {
 
   private async updateHeaderAndMessage() {
     this.subHeader = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.confirm-message',
+      `page.program.export-list.${this.exportType}.confirm-message`,
     );
-
     await this.updateDisplayMessage();
   }
 
@@ -116,14 +191,20 @@ export class ExportListComponent implements OnChanges {
       ).toISOString(); // Add one day to include the selected date as the time is otherwise set to 00:00:00
     }
 
+    let exportType = this.exportType;
+    if (this.exportType === ExportType.filteredTable) {
+      exportType = ExportType.allPeopleAffected;
+    }
+
     this.programsService
       .exportList(
         Number(this.programId),
-        this.exportType,
+        exportType,
         dateFrom,
         dateToAdjusted,
         Number(this.minPayment),
         Number(this.maxPayment),
+        this.allPeopleAffectedOptions,
       )
       .then(
         (res) => {

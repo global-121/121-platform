@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import { DateFormat } from '../enums/date-format.enum';
 import { ActionType } from '../models/actions.model';
@@ -11,8 +12,11 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 })
 export class LatestActionService {
   private locale: string;
-  constructor(private programsService: ProgramsServiceApiService) {
-    this.locale = environment.defaultLocale;
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private translate: TranslateService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   public async getLatestActionTime(

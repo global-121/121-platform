@@ -10,13 +10,16 @@ import { ToastController } from '@ionic/angular';
 export class SystemNotificationComponent implements OnInit {
   @Input() public message: string;
   @Input() public color: string;
+  @Input() public delay = 0;
 
   private toast: HTMLIonToastElement;
 
   constructor(public toastController: ToastController) {}
 
   ngOnInit(): void {
-    this.presentToast();
+    setTimeout(() => {
+      this.presentToast();
+    }, this.delay);
   }
 
   async presentToast() {

@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../environments/environment';
 import { DateFormat } from '../../enums/date-format.enum';
 
@@ -15,6 +16,8 @@ export interface DatetimeProps {
   styleUrls: ['./datetime-picker.component.scss'],
 })
 export class DatetimePickerComponent {
+  private locale: string;
+
   @Input()
   public datetimeProps: DatetimeProps;
 
@@ -22,7 +25,12 @@ export class DatetimePickerComponent {
   openFromPopover = false;
   openToPopover = false;
 
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private translate: TranslateService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   public dateFromChanged() {
     if (!this.datetimeProps.dateFrom) {
@@ -59,7 +67,7 @@ export class DatetimePickerComponent {
     return formatDate(
       this.datetimeProps.dateFrom,
       DateFormat.dateOnlyReverse,
-      environment.defaultLocale,
+      this.locale,
     );
   }
 
@@ -70,7 +78,7 @@ export class DatetimePickerComponent {
     return formatDate(
       this.datetimeProps.dateTo,
       DateFormat.dateOnlyReverse,
-      environment.defaultLocale,
+      this.locale,
     );
   }
 

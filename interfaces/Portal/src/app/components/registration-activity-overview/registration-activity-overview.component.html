@@ -112,7 +112,9 @@
                   </ion-label>
                   <ion-note>
                     <small>
-                      {{ item.date | date: DateFormat.dayAndTimeReverse }}
+                      {{
+                        item.date | date: DateFormat.dayAndTimeReverse : locale
+                      }}
                     </small>
                   </ion-note>
                 </ion-row>

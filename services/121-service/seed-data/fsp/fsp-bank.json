@@ -1,20 +1,38 @@
 {
-  "fsp": "Bank A",
+  "fsp": "bank_a",
   "integrationType": "api",
   "fspDisplayNamePaApp": {
-    "en": "Bank A"
+    "ar": "البنك أ",
+    "en": "Bank A",
+    "es": "Banco A",
+    "fr": "Banque A",
+    "nl": "Bank A"
   },
-  "fspDisplayNamePortal": "Bank A",
+  "fspDisplayNamePortal": {
+    "ar": "البنك أ",
+    "en": "Bank A",
+    "es": "Banco A",
+    "fr": "Banque A",
+    "nl": "Bank A"
+  },
   "questions": [
     {
       "name": "personalId",
       "label": {
-        "en": "What is your national ID, so we can transfer money to your bank account"
+        "ar": "ما هو الرقم القومي الخاص بك حتى نتمكن من تحويل الأموال إلى حسابك البنكي",
+        "en": "What is your national ID, so we can transfer money to your bank account",
+        "es": "¿Cuál es tu documento nacional de identidad para que podamos transferir dinero a tu cuenta bancaria?",
+        "fr": "Quelle est votre carte d'identité nationale pour que nous puissions transférer de l'argent sur votre compte bancaire",
+        "nl": "Wat is uw nationale identiteitsbewijs, zodat we geld naar uw bankrekening kunnen overmaken"
       },
       "answerType": "text",
       "options": null,
       "shortLabel": {
-        "en": "Personal ID"
+        "ar": "الهوية الشخصية",
+        "en": "Personal ID",
+        "es": "ID Personal",
+        "fr": "ID Personnel",
+        "nl": "Nationaal ID"
       }
     }
   ]

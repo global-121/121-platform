@@ -267,7 +267,7 @@ export class RegistrationsPaginationService {
     }
   }
 
-  private filterOnRegistrationData(
+  public filterOnRegistrationData(
     query: PaginateQuery,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],

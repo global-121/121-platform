@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
-  Platform,
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -168,7 +167,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private alertController: AlertController,
     public modalController: ModalController,
     public popoverController: PopoverController,
-    public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
@@ -178,7 +176,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private filterService: FilterService,
     private tableService: TableService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
 
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
@@ -440,11 +438,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private getLabelForAttribute(attributeName: string): string {
-    const paAttribute = this.program.paTableAttributes.find(
+    const paTableAttributes = this.program.paTableAttributes || [];
+    const paAttribute = paTableAttributes.find(
       (attribute) => attribute.name === attributeName,
     );
 
-    if (paAttribute && paAttribute.shortLabel) {
+    if (paAttribute && paAttribute?.shortLabel) {
       return this.translatableStringService.get(paAttribute.shortLabel);
     }
 
