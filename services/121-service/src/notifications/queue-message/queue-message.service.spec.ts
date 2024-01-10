@@ -28,8 +28,7 @@ describe('QueueMessageService', () => {
   let queueMessageService: QueueMessageService;
   let messageQueue: jest.Mocked<Queue>;
   let programAttributesService: ProgramAttributesService;
-  let messageTemplateRepository: Repository<MessageTemplateEntity>; // Declare the variable
-  // Declare the variable
+  let messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
