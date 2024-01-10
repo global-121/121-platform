@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
@@ -25,7 +26,7 @@ import {
   templateUrl: './message-editor.component.html',
   styleUrls: ['./message-editor.component.css'],
 })
-export class MessageEditorComponent implements AfterViewInit {
+export class MessageEditorComponent implements AfterViewInit, OnInit {
   @Input()
   public inputProps: InputProps;
 
