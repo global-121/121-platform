@@ -339,7 +339,11 @@
           "templated-explanation": "The following message will be sent to PAs in their own language.",
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
           "type-message": "Type message",
-          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone."
+          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
+          "type-custom-message": "Type custom message",
+          "type-custom-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
+          "available-languages": "Available template languages",
+          "select-message-template": "Select message template"
         },
         "actions": {
           "deletePa": "Delete PA",
@@ -547,7 +551,7 @@
           "validated": "Validated"
         },
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "Perform action <strong>{{actionLabel}}</strong> on {{applicableCount}} People Affected.",
+        "submit-warning-people-affected": "{{actionLabel}} for {{applicableCount}} People Affected.",
         "transaction": {
           "amount": "Amount",
           "custom-data": {

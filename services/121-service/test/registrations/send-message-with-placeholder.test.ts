@@ -39,10 +39,10 @@ describe('Send custom message with placeholders', () => {
 
     // Act
     await sendMessage(
+      accessToken,
       programId,
       [registrationAh.referenceId],
       message,
-      accessToken,
     );
 
     await waitForMessagesToComplete(

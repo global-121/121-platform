@@ -42,10 +42,10 @@ describe('send arbitrary messages to set of registrations', () => {
 
     // Act
     const sendMessageResponse = await sendMessage(
+      accessToken,
       programIdOCW,
       [referenceIds[0]],
       message,
-      accessToken,
     );
 
     await waitForMessagesToComplete(

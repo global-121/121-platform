@@ -107,5 +107,27 @@
       "in": "Ini adalah pesan otomatis. apabila ada pertanyaan harap kontak the Red Cross Helpdesk di WhatsApp +3197010286964",
       "fr": "Ceci est un message automatisé, pour toutes questions, s'il vous plaît, veuillez contacter le Guiche d'information de la Croix-Rouge sur WhatsApp: +3197010286964"
     }
+  },
+  "remindInvite": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nلا يزال بإمكانك الاشتراك في قسائم ألبرت هيجن (Albert Heijn) الأسبوعية. انقر على الرابط وعبأ بيانات الطلب:\n\nhttps://register.nlrc.121.global/?programs=2\n\nهل لديك أي أسئلة؟ راسلنا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nأو اتصل بـ {{namePartnerOrganization}}.",
+      "en": "This is a message from the Red Cross.\n\nYou can still sign up for the weekly Albert Heijn vouchers. Click on the link and complete the application:\n\nhttps://register.nlrc.121.global/?programs=2\n\nDo you have questions? Send us a message via WhatsApp:\n\nhttps://wa.me/3197010286964\n\nor contact {{namePartnerOrganization}}.",
+      "es": "Este es un mensaje de la Cruz Roja.\n\nTodavía puedes apuntarte para recibir los vales semanales de Albert Heijn. Haz clic en el enlace y rellena la solicitud:\n\nhttps://register.nlrc.121.global/?programs=2\n\n¿Tienes alguna pregunta? Envíanos un mensaje por WhatsApp:\n\nhttps://wa.me/3197010286964\n\no ponte en contacto con {{namePartnerOrganization}}.",
+      "nl": "Dit is een bericht van het Rode Kruis.\n\nJe kan je nog steeds aanmelden voor de wekelijkse Albert Heijn waardebonnen. Klik op de link en vul de aanvraag in:\n\nhttps://register.nlrc.121.global/?programs=2\n\nHeb je vragen? Stuur ons een bericht via WhatsApp:\n\nhttps://wa.me/3197010286964\n\nof neem contact op met {{namePartnerOrganization}}.",
+      "pt_BR": "Esta é uma mensagem da Cruz Vermelha.\n\nAinda pode inscrever-se para receber cupões semanais do Albert Heijn. Clique na ligação e conclua a candidatura:\n\nhttps://register.nlrc.121.global/?programs=2\n\nTem dúvidas? Envie-nos uma mensagem através do WhatsApp:\n\nhttps://wa.me/3197010286964\n\nou contacte o parceiro {{namePartnerOrganization}}.",
+      "fr": "Ce message vous est envoyé par la Croix-Rouge.\n\nVous pouvez encore vous inscrire pour recevoir des bons d’achat hebdomadaires Albert Heijn. Cliquez sur le lien et complétez la demande :\n\nhttps://register.nlrc.121.global/?programs=2\n\nAvez-vous des questions ? Envoyez-nous un message via WhatsApp :\n\nhttps://wa.me/3197010286964\n\nou contactez {{namePartnerOrganization}}."
+    }
+  },
+  "prepareToEndInclusion": {
+    "isWhatsappTemplate": false,
+    "message": {
+      "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nستحصل على القسيمة الأخيرة في غضون أربعة أسابيع نظرًا لبلوغ الحد الأقصى لفترة المساعدات الغذائية.\n\nتكون مساعداتنا الغذائية مؤقتة دائمًا والهدف منها أن تكون معونة طارئة. نحن نعمل مع المنظمة الشريكة لنا.\n\nهل لديك أي أسئلة متعلقة بذلك؟ يُرجى الاتصال بـ {{namePartnerOrganization}} أو إرسال رسالة إلينا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nنتمنى لكم كل التوفيق،",
+      "en": "This is a message from the Red Cross.\n\nIn four weeks you will receive the last voucher because the maximum period of food aid has been reached.\n\nOur food aid is always temporary and intended as emergency aid. We work together with our partner organization.\n\nDo you have questions about this? Please contact {{namePartnerOrganization}} or send us a message via WhatsApp:\n\nhttps://wa.me/3197010286964\n\nWe wish you all the best.",
+      "es": "Este es un mensaje de la Cruz Roja.\n\nDentro de cuatro semanas recibirás el último vale, porque se ha alcanzado el periodo máximo de ayuda alimentaria.\n\nNuestra ayuda alimentaria siempre es temporal y está pensada como una ayuda de emergencia. Colaboramos con nuestras organizaciones asociadas.\n\n¿Tienes alguna pregunta al respecto? Ponte en contacto con {{namePartnerOrganization}} o envíanos un mensaje por WhatsApp:\n\nhttps://wa.me/3197010286964\n\nTe deseamos todo lo mejor.",
+      "nl": "Dit is een bericht van het Rode Kruis.\n\nOver vier weken ontvang je de laatste waardebon omdat de maximale periode van de voedselhulp dan is bereikt.\n\nOnze voedselhulp is altijd tijdelijk en bedoeld als noodhulp. Wij werken samen met onze partnerorganisatie.\n\nHeb je hier vragen over? Neem dan contact op met {{namePartnerOrganization}} of stuur ons een bericht via WhatsApp:\n\nhttps://wa.me/3197010286964\n\nWe wensen je het allerbeste.",
+      "pt_BR": "Esta é uma mensagem da Cruz Vermelha.\n\nDentro de quatro semanas irá receber o último cupão porque foi atingido o período máximo de ajuda alimentar.\n\nA nossa ajuda alimentar é sempre temporária e destina-se a ser uma ajuda de emergência. Trabalhamos em conjunto com a nossa organização parceira.\n\nTem dúvidas sobre isto? Contacte o parceiro {{namePartnerOrganization}} ou envie-nos uma mensagem através do WhatsApp:\n\nhttps://wa.me/3197010286964\n\nDesejamos-lhe as ma",
+      "fr": "Ce message vous est envoyé par la Croix-Rouge.\n\nDans quatre semaines, vous recevrez le dernier bon d’achat, car la durée maximale de l’aide alimentaire a été atteinte.\n\nNotre aide alimentaire est toujours temporaire et destinée à être une aide d’urgence. Nous travaillons en collaboration avec notre organisation partenaire.\n\nAvez-vous des questions à ce sujet ? Contactez {{namePartnerOrganization}} ou envoyez-nous un message via WhatsApp :\n\nhttps://wa.me/3197010286964\n\nNous vous souhaitons une bonne continuation."
+    }
   }
 }

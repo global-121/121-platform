@@ -3,13 +3,16 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageTemplate } from 'src/app/models/message.model';
 import { Person } from 'src/app/models/person.model';
 import { Item } from '../../components/select-typeahead/select-typeahead.component';
 import { PaTableAttribute } from '../../models/program.model';
+import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { actionResult } from '../action-result';
@@ -23,7 +26,7 @@ import {
   templateUrl: './message-editor.component.html',
   styleUrls: ['./message-editor.component.css'],
 })
-export class MessageEditorComponent implements AfterViewInit {
+export class MessageEditorComponent implements AfterViewInit, OnInit {
   @Input()
   public inputProps: InputProps;
 
@@ -50,14 +53,42 @@ export class MessageEditorComponent implements AfterViewInit {
 
   private previewRegistration: Person;
 
-  public constructor(
+  private defaulLanguage: string;
+
+  public messageTemplates: MessageTemplate[];
+  public templateTypes: string[];
+  public selectedTemplateType: string;
+  public customTemplateType = 'customTemplate';
+  public showCustomTemplate: boolean = false;
+  public showPreview: boolean = false;
+  public showMessageTemplate: boolean = false;
+
+  constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
     private alertController: AlertController,
     private programsService: ProgramsServiceApiService,
+    private enumService: EnumService,
   ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.showMessageTemplate = this.message.includes('Send Message');
+    this.messageTemplates =
+      await this.programsService.getMessageTemplatesByProgram(
+        this.inputProps.programId,
+      );
+
+    this.templateTypes = [
+      ...new Set(this.messageTemplates.map((template) => template.type)),
+    ];
+    this.templateTypes.push(this.customTemplateType);
+    this.selectedTemplateType = this.customTemplateType;
+    this.showCustomTemplate = true;
+    this.showPreview = true;
+    this.defaulLanguage = this.translate.getDefaultLang();
+  }
 
   async ngAfterViewInit(): Promise<void> {
     this.checked = this.inputProps ? this.inputProps.checkboxChecked : true;
@@ -129,6 +160,13 @@ export class MessageEditorComponent implements AfterViewInit {
       return false;
     }
 
+    if (
+      this.selectedTemplateType !== this.customTemplateType &&
+      this.selectedTemplateType !== undefined
+    ) {
+      return false;
+    }
+
     if (this.inputProps.inputRequired && this.input && this.input.value) {
       return false;
     }
@@ -151,6 +189,20 @@ export class MessageEditorComponent implements AfterViewInit {
 
     if (this.inputProps.checkbox && !this.checked) {
       this.modalController.dismiss(null, null);
+      return;
+    }
+
+    if (
+      this.selectedTemplateType !== this.customTemplateType &&
+      this.selectedTemplateType !== undefined
+    ) {
+      this.modalController.dismiss(
+        {
+          message: this.preview,
+          messageTemplateKey: this.selectedTemplateType,
+        },
+        null,
+      );
       return;
     }
 
@@ -199,5 +251,66 @@ export class MessageEditorComponent implements AfterViewInit {
     });
 
     this.preview = preview;
+  }
+
+  public templateTypeChanged(): void {
+    this.showCustomTemplate = false;
+    this.showPreview = false;
+  }
+
+  public toggleCustomTemplate() {
+    this.preview = '';
+
+    if (this.selectedTemplateType !== this.customTemplateType) {
+      const selectedTemplate = this.messageTemplates.find(
+        (template) =>
+          template.type === this.selectedTemplateType &&
+          template.language === this.defaulLanguage,
+      );
+
+      this.preview = selectedTemplate ? selectedTemplate.message : '';
+      this.showCustomTemplate = false;
+      this.showPreview = true;
+    } else {
+      this.showCustomTemplate = true;
+      this.showPreview = true;
+    }
+  }
+
+  public getAvailableLanguages(): string[] {
+    if (this.selectedTemplateType !== this.customTemplateType) {
+      const templatesForType = this.messageTemplates.filter(
+        (template) => template.type === this.selectedTemplateType,
+      );
+
+      const uniqueLanguages = [
+        ...new Set(
+          templatesForType.map((template) =>
+            this.enumService.getEnumLabel(
+              'preferredLanguage',
+              template.language,
+            ),
+          ),
+        ),
+      ];
+
+      return uniqueLanguages;
+    }
+
+    return [];
+  }
+
+  public getPreviewToDisplay(): string {
+    if (this.selectedTemplateType !== this.customTemplateType) {
+      const selectedTemplate = this.messageTemplates.find(
+        (template) =>
+          template.type === this.selectedTemplateType &&
+          template.language === this.defaulLanguage,
+      );
+
+      return selectedTemplate ? selectedTemplate.message : '';
+    }
+
+    return this.preview;
   }
 }

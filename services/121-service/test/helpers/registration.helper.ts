@@ -186,10 +186,11 @@ export async function personAffectedMetrics(
 }
 
 export function sendMessage(
+  accessToken: string,
   programId: number,
   referenceIds: string[],
-  message: string,
-  accessToken: string,
+  message?: string,
+  messageTemplateKey?: string,
 ): Promise<request.Response> {
   const queryParams = {
     ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
@@ -199,7 +200,7 @@ export function sendMessage(
     .post(`/programs/${programId}/registrations/message`)
     .set('Cookie', [accessToken])
     .query(queryParams)
-    .send({ message });
+    .send({ message, messageTemplateKey });
 }
 
 export function updateRegistration(
