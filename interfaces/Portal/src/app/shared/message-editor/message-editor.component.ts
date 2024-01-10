@@ -52,6 +52,8 @@ export class MessageEditorComponent implements AfterViewInit {
 
   private previewRegistration: Person;
 
+  private defaulLanguage: string;
+
   public messageTemplates: MessageTemplate[];
   public templateTypes: string[];
   public selectedTemplateType: string;
@@ -84,6 +86,7 @@ export class MessageEditorComponent implements AfterViewInit {
     this.selectedTemplateType = this.customTemplateType;
     this.showCustomTemplate = true;
     this.showPreview = true;
+    this.defaulLanguage = this.translate.getDefaultLang();
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -261,7 +264,7 @@ export class MessageEditorComponent implements AfterViewInit {
       const selectedTemplate = this.messageTemplates.find(
         (template) =>
           template.type === this.selectedTemplateType &&
-          template.language === 'en',
+          template.language === this.defaulLanguage,
       );
 
       this.preview = selectedTemplate ? selectedTemplate.message : '';
@@ -301,7 +304,7 @@ export class MessageEditorComponent implements AfterViewInit {
       const selectedTemplate = this.messageTemplates.find(
         (template) =>
           template.type === this.selectedTemplateType &&
-          template.language === 'en',
+          template.language === this.defaulLanguage,
       );
 
       return selectedTemplate ? selectedTemplate.message : '';
