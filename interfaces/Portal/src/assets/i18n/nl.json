@@ -339,7 +339,10 @@
           "templated-explanation": "Het volgende bericht wordt naar de hulpvragers gestuurd in hun eigen taal.",
           "templated-support": "Neem contact op met het 121 supportteam als je dit standaardbericht wilt wijzigen.",
           "type-message": "Typ bericht",
-          "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben."
+          "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben.",
+          "type-custom-message": "Typ aangepast bericht",
+          "type-custom-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Let op: als je meer dan 160 tekens gebruikt, kan de betrokken persoon het bericht als meerdere teksten ontvangen, als ze een eenvoudige mobiele telefoon hebben.",
+          "available-languages": "Beschikbare talen"
         },
         "actions": {
           "deletePa": "Hulpvrager verwijderen",

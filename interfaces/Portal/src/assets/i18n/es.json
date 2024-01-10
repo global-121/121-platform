@@ -339,7 +339,10 @@
           "templated-explanation": "El siguiente mensaje se enviará a los PA en su propio idioma.",
           "templated-support": "Póngase en contacto con el equipo de soporte del 121 si desea cambiar este mensaje con plantilla.",
           "type-message": "Escriba el mensaje",
-          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente)."
+          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente).",
+          "type-custom-message": "Escribe un mensaje personalizado",
+          "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
+          "available-languages": "Idiomas de plantilla disponibles"
         },
         "actions": {
           "deletePa": "Eliminar PA",
