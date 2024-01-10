@@ -34,7 +34,12 @@
   <ng-container *ngIf="showMessageTemplate; else elseNotMessageTemplate">
     <ng-container *ngIf="templateTypes">
       <div class="ion-margin-vertical">
-        <strong> {{ 'Select message template' | translate }}: </strong>
+        <strong>
+          {{
+            'page.program.program-people-affected.action-inputs.select-message-template'
+              | translate
+          }}:
+        </strong>
       </div>
 
       <ion-row

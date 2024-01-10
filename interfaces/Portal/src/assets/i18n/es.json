@@ -342,7 +342,8 @@
           "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente).",
           "type-custom-message": "Escribe un mensaje personalizado",
           "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
-          "available-languages": "Idiomas de plantilla disponibles"
+          "available-languages": "Idiomas de plantilla disponibles",
+          "select-message-template": "Selecciona la plantilla de mensaje"
         },
         "actions": {
           "deletePa": "Eliminar PA",
