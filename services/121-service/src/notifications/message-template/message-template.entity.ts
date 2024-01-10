@@ -24,7 +24,7 @@ export class MessageTemplateEntity extends Base121Entity {
   @Column()
   public isWhatsappTemplate: boolean;
 
-  @Column({ default: true })
+  @Column({ default: false })
   public isSendMessageTemplate: boolean;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates)
