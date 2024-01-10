@@ -5,9 +5,6 @@ import { IntersolveVoucherEntity } from '../fsp-integration/intersolve-voucher/i
 
 @Entity('imagecode_export_vouchers')
 export class ImageCodeExportVouchersEntity extends Base121Entity {
-  @Column({ type: 'bytea' })
-  public image: any;
-
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.images,

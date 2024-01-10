@@ -806,6 +806,7 @@ export class ProgramsServiceApiService {
     message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     const params = this.filterToParams(filters, dryRun);
     return this.apiService.post(
@@ -814,6 +815,7 @@ export class ProgramsServiceApiService {
       {
         message,
         skipMessageValidation: dryRun,
+        messageTemplateKey,
       },
       false,
       false,

@@ -12,11 +12,12 @@ import {
   awaitChangePaStatus,
   getMessageHistory,
   importRegistrations,
+  sendMessage,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from './pagination/pagination-data';
 
-describe('Send templated message on status change of PA', () => {
+describe('Send templated message', () => {
   const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
@@ -40,136 +41,176 @@ describe('Send templated message on status change of PA', () => {
 
     messageTemplates = (await getMessageTemplates(programId, accessToken)).body;
   });
+  describe('on status change of PA', () => {
+    it('include', async () => {
+      // Arrange
+      const statusChange = RegistrationStatusEnum.included;
 
-  it('include', async () => {
-    // Arrange
-    const statusChange = RegistrationStatusEnum.included;
-
-    // Act
-    await awaitChangePaStatus(
-      programId,
-      [registrationAh.referenceId],
-      statusChange,
-      accessToken,
-      null,
-      true, // check the checkbox for sending templated message about status change
-    );
-
-    await waitForMessagesToComplete(
-      programId,
-      [registrationAh.referenceId],
-      accessToken,
-      8000,
-    );
-
-    const messageHistory = (
-      await getMessageHistory(
+      // Act
+      await awaitChangePaStatus(
         programId,
-        registrationAh.referenceId,
+        [registrationAh.referenceId],
+        statusChange,
         accessToken,
-      )
-    ).body;
+        null,
+        true, // check the checkbox for sending templated message about status change
+      );
 
-    // Assert
-    const processedTemplate = processMessagePlaceholders(
-      messageTemplates,
-      registrationAh,
-      statusChange,
-      'namePartnerOrganization',
-    );
+      await waitForMessagesToComplete(
+        programId,
+        [registrationAh.referenceId],
+        accessToken,
+        8000,
+      );
 
-    expect(messageHistory[0].body).toEqual(processedTemplate);
+      const messageHistory = (
+        await getMessageHistory(
+          programId,
+          registrationAh.referenceId,
+          accessToken,
+        )
+      ).body;
+
+      // Assert
+      const processedTemplate = processMessagePlaceholders(
+        messageTemplates,
+        registrationAh,
+        statusChange,
+        'namePartnerOrganization',
+      );
+
+      expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
+
+    it('end inclusion', async () => {
+      // Arrange > include first to be able to end inclusion
+      const statusChange = RegistrationStatusEnum.inclusionEnded;
+      await awaitChangePaStatus(
+        programId,
+        [registrationAh.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+
+      // Act
+      await awaitChangePaStatus(
+        programId,
+        [registrationAh.referenceId],
+        statusChange,
+        accessToken,
+        null,
+        true, // check the checkbox for sending templated message about status change
+      );
+
+      await waitForMessagesToComplete(
+        programId,
+        [registrationAh.referenceId],
+        accessToken,
+        8000,
+      );
+
+      const messageHistory = (
+        await getMessageHistory(
+          programId,
+          registrationAh.referenceId,
+          accessToken,
+        )
+      ).body;
+
+      // Assert
+      const processedTemplate = processMessagePlaceholders(
+        messageTemplates,
+        registrationAh,
+        statusChange,
+        'namePartnerOrganization',
+      );
+
+      expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
+
+    it('reject', async () => {
+      // Arrange > include first to be able to reject
+      const statusChange = RegistrationStatusEnum.rejected;
+      await awaitChangePaStatus(
+        programId,
+        [registrationAh.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+
+      // Act
+      await awaitChangePaStatus(
+        programId,
+        [registrationAh.referenceId],
+        statusChange,
+        accessToken,
+        null,
+        true, // check the checkbox for sending templated message about status change
+      );
+
+      await waitForMessagesToComplete(
+        programId,
+        [registrationAh.referenceId],
+        accessToken,
+        8000,
+      );
+
+      const messageHistory = (
+        await getMessageHistory(
+          programId,
+          registrationAh.referenceId,
+          accessToken,
+        )
+      ).body;
+
+      // Assert
+      const processedTemplate = processMessagePlaceholders(
+        messageTemplates,
+        registrationAh,
+        statusChange,
+        'namePartnerOrganization',
+      );
+
+      expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
   });
 
-  it('end inclusion', async () => {
-    // Arrange > include first to be able to end inclusion
-    const statusChange = RegistrationStatusEnum.inclusionEnded;
-    await awaitChangePaStatus(
-      programId,
-      [registrationAh.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-
-    // Act
-    await awaitChangePaStatus(
-      programId,
-      [registrationAh.referenceId],
-      statusChange,
-      accessToken,
-      null,
-      true, // check the checkbox for sending templated message about status change
-    );
-
-    await waitForMessagesToComplete(
-      programId,
-      [registrationAh.referenceId],
-      accessToken,
-      8000,
-    );
-
-    const messageHistory = (
-      await getMessageHistory(
-        programId,
-        registrationAh.referenceId,
+  describe('on custom message', () => {
+    it('using the invite template', async () => {
+      const templateKey = RegistrationStatusEnum.invited;
+      // Act
+      await sendMessage(
         accessToken,
-      )
-    ).body;
-
-    // Assert
-    const processedTemplate = processMessagePlaceholders(
-      messageTemplates,
-      registrationAh,
-      statusChange,
-      'namePartnerOrganization',
-    );
-
-    expect(messageHistory[0].body).toEqual(processedTemplate);
-  });
-
-  it('reject', async () => {
-    // Arrange > include first to be able to reject
-    const statusChange = RegistrationStatusEnum.rejected;
-    await awaitChangePaStatus(
-      programId,
-      [registrationAh.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-
-    // Act
-    await awaitChangePaStatus(
-      programId,
-      [registrationAh.referenceId],
-      statusChange,
-      accessToken,
-      null,
-      true, // check the checkbox for sending templated message about status change
-    );
-
-    await waitForMessagesToComplete(
-      programId,
-      [registrationAh.referenceId],
-      accessToken,
-      8000,
-    );
-
-    const messageHistory = (
-      await getMessageHistory(
         programId,
-        registrationAh.referenceId,
+        [registrationAh.referenceId],
+        null,
+        templateKey,
+      );
+
+      await waitForMessagesToComplete(
+        programId,
+        [registrationAh.referenceId],
         accessToken,
-      )
-    ).body;
+        8000,
+      );
 
-    // Assert
-    const processedTemplate = processMessagePlaceholders(
-      messageTemplates,
-      registrationAh,
-      statusChange,
-      'namePartnerOrganization',
-    );
+      const messageHistory = (
+        await getMessageHistory(
+          programId,
+          registrationAh.referenceId,
+          accessToken,
+        )
+      ).body;
 
-    expect(messageHistory[0].body).toEqual(processedTemplate);
+      // Assert
+      const processedTemplate = processMessagePlaceholders(
+        messageTemplates,
+        registrationAh,
+        templateKey,
+        'namePartnerOrganization',
+      );
+
+      expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
   });
 });

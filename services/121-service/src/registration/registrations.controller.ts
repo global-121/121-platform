@@ -842,6 +842,7 @@ export class RegistrationsController {
       query,
       programId,
       body.message,
+      body.messageTemplateKey,
       dryRun,
     );
 

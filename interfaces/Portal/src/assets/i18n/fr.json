@@ -339,7 +339,11 @@
           "templated-explanation": "Le message suivant sera envoyé aux PA dans leur propre langue.",
           "templated-support": "Veuillez contacter l’équipe d’assistance 121 si vous souhaitez modifier ce modèle de message.",
           "type-message": "Tapez message",
-          "type-message-tooltip": "Le message doit comporter plus de {{minLength}} caractère(s). Notez que si vous dépassez 160 caractères, la personne concernée peut recevoir le message sous forme de plusieurs textes, si elle dispose d’un téléphone polyvalent (non intelligent)."
+          "type-message-tooltip": "Le message doit comporter plus de {{minLength}} caractère(s). Notez que si vous dépassez 160 caractères, la personne concernée peut recevoir le message sous forme de plusieurs textes, si elle dispose d’un téléphone polyvalent (non intelligent).",
+          "type-custom-message": "Escribe un mensaje personalizado",
+          "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
+          "available-languages": "Idiomas de plantilla disponibles",
+          "select-message-template": "Sélectionnez le modèle de message"
         },
         "actions": {
           "deletePa": "Supprimer PA",

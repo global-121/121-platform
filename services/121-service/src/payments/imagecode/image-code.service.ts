@@ -45,12 +45,6 @@ export class ImageCodeService {
       await this.registrationRepository.findOne({
         where: { referenceId: referenceId },
       });
-    imageCodeExportVouchersEntity.image = await this.generateVoucherImage({
-      dateTime: intersolveVoucherEntity.created,
-      amount: intersolveVoucherEntity.amount,
-      code: intersolveVoucherEntity.barcode,
-      pin: intersolveVoucherEntity.pin,
-    });
     imageCodeExportVouchersEntity.voucher = intersolveVoucherEntity;
 
     return this.imageExportVouchersRepository.save(

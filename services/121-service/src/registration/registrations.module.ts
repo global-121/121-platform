@@ -9,6 +9,7 @@ import { NoteEntity } from '../notes/note.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';
+import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { QueueMessageModule } from '../notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
@@ -57,6 +58,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       PersonAffectedAppDataEntity,
       TwilioMessageEntity,
       WhatsappPendingMessageEntity,
+      MessageTemplateEntity,
     ]),
     UserModule,
     HttpModule,
