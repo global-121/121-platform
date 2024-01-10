@@ -28,29 +28,34 @@ import { actionResult } from '../../shared/action-result';
   styleUrls: ['./edit-person-affected-popup.component.scss'],
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   public programId: number;
 
-  @Input()
+  @Input({ required: true })
   public referenceId: string;
 
-  @Input()
+  @Input({ required: true })
   public canUpdatePaData = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewPersonalData = false;
 
-  @Input()
+  @Input({ required: true })
+  public canUpdateRegistrationAttributeFinancial = false;
+
+  @Input({ required: true })
   public canUpdatePersonalData = false;
 
-  @Input()
+  @Input({ required: true })
   public canUpdatePaFsp = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewMessageHistory = false;
 
-  @Input()
+  @Input({ required: true })
   public canViewPaymentData = false;
+
+  public showScopeField = false;
 
   public person: Person;
 
@@ -129,6 +134,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.fillPaTableAttributes();
     }
 
+    this.showScopeField = this.program.enableScope;
+    if (this.showScopeField) {
+      this.attributeValues.scope = this.person?.scope;
+    }
+
     this.loading = false;
   }
 
@@ -194,6 +204,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         reason,
       )
       .then((response: Person) => {
+        console.log(
+          '🚀 ~ file: edit-person-affected-popup.component.ts:197 ~ EditPersonAffectedPopupComponent ~ .then ~ response:',
+          response,
+        );
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = valueToStore;
         this.attributeValues.paymentAmountMultiplier =

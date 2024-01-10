@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
-  Platform,
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -125,6 +124,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public tableFilterType = TableFilterType;
 
   public canViewPersonalData: boolean;
+  public canUpdateRegistrationAttributeFinancial: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
   private canUpdatePaFsp: boolean;
@@ -167,7 +167,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private alertController: AlertController,
     public modalController: ModalController,
     public popoverController: PopoverController,
-    public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
@@ -177,7 +176,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     private filterService: FilterService,
     private tableService: TableService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
 
     this.registrationsService?.setCurrentPage(0);
     this.registrationsService?.setItemsPerPage(12);
@@ -325,6 +324,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.programId,
       [Permission.RegistrationPersonalREAD],
     );
+    this.canUpdateRegistrationAttributeFinancial =
+      this.authService.hasAllPermissions(this.programId, [
+        Permission.RegistrationAttributeFinancialUPDATE,
+      ]);
     this.canUpdatePersonalData = this.authService.hasAllPermissions(
       this.programId,
       [Permission.RegistrationPersonalUPDATE],
@@ -435,11 +438,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private getLabelForAttribute(attributeName: string): string {
-    const paAttribute = this.program.paTableAttributes.find(
+    const paTableAttributes = this.program.paTableAttributes || [];
+    const paAttribute = paTableAttributes.find(
       (attribute) => attribute.name === attributeName,
     );
 
-    if (paAttribute && paAttribute.shortLabel) {
+    if (paAttribute && paAttribute?.shortLabel) {
       return this.translatableStringService.get(paAttribute.shortLabel);
     }
 
@@ -637,6 +641,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         referenceId: row.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
+        canUpdateRegistrationAttributeFinancial:
+          this.canUpdateRegistrationAttributeFinancial,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,
@@ -829,9 +835,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         action.confirmConditions.inputRequired = false;
         action.confirmConditions.checkboxChecked = true;
       } else {
-        action.confirmConditions.previewRegistration = this.selectAllChecked
-          ? this.visiblePeopleAffected[0]
-          : this.selectedPeople[0];
+        action.confirmConditions.previewReferenceId = this.selectAllChecked
+          ? this.visiblePeopleAffected[0]?.referenceId
+          : this.selectedPeople[0]?.referenceId;
       }
       action.confirmConditions.programId = this.programId;
     }

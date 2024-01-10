@@ -240,6 +240,16 @@ If the errors are related to not being able to access/connect to the database th
 - Setting `dropSchema: true` in `ormconfig.ts` of the specific service.
 - Restarting that service will reset/recreate its database(-schema)
 
+### Upgrade Node.js version
+
+When considering upgrading the (LTS) version of the Node.js runtime, take into account:
+
+- The Node.js Release schedule: <https://github.com/nodejs/release#release-schedule>
+- The (specific) version supported by Microsoft Azure App Services,  
+  in their Node.js Support Timeline: <https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md>
+- Angular's Actively supported versions: <https://angular.io/guide/versions#actively-supported-versions>
+- Ionic Framework's supported Node.js versions: <https://ionicframework.com/docs/intro/environment#Node--npm>
+
 ### Updated/new Node.js dependencies
 
 When new Node.js dependencies are added to a service since it is last build on you local machine, you can:

@@ -21,7 +21,7 @@ import {
 import { DeleteResult } from 'typeorm';
 import { Permissions } from '../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../guards/permissions.guard';
-import { PermissionEnum } from '../../user/permission.enum';
+import { PermissionEnum } from '../../user/enum/permission.enum';
 import {
   CreateMessageTemplateDto,
   DeleteTemplateParamDto,

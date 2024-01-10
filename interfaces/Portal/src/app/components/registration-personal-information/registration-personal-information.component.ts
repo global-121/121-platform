@@ -56,6 +56,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   private canUpdatePaData: boolean;
   private canUpdatePaFsp: boolean;
   private canViewPersonalData: boolean;
+  private canUpdateRegistrationAttributeFinancial: boolean;
   private canUpdatePersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canViewPaymentData: boolean;
@@ -70,7 +71,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private enumService: EnumService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   async ngOnInit() {
@@ -188,6 +189,8 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         referenceId: this.person?.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
+        canUpdateRegistrationAttributeFinancial:
+          this.canUpdateRegistrationAttributeFinancial,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,
@@ -213,6 +216,10 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       this.program.id,
       [Permission.RegistrationPersonalUPDATE],
     );
+    this.canUpdateRegistrationAttributeFinancial =
+      this.authService.hasAllPermissions(this.program.id, [
+        Permission.RegistrationAttributeFinancialUPDATE,
+      ]);
     this.canViewMessageHistory = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationNotificationREAD],

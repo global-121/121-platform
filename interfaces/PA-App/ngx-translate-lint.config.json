@@ -9,25 +9,10 @@
     "emptyKeys": "warning",
     "deepSearch": "enable",
     "maxWarning": "0",
-    "misprintCoefficient": "0.9",
     "ignoredKeys": [
       "_dir",
-      "personal.select-language.introduction.ar",
-      "personal.select-language.introduction.en",
-      "personal.select-language.introduction.es",
-      "personal.select-language.introduction.fr",
-      "personal.select-language.introduction.in",
-      "personal.select-language.introduction.nl",
-      "personal.select-language.introduction.pt_BR",
-      "personal.select-language.introduction.tl",
-      "personal.select-language.language.ar",
-      "personal.select-language.language.en",
-      "personal.select-language.language.es",
-      "personal.select-language.language.fr",
-      "personal.select-language.language.in",
-      "personal.select-language.language.nl",
-      "personal.select-language.language.pt_BR",
-      "personal.select-language.language.tl"
+      "personal.select-language.introduction.(.*)",
+      "personal.select-language.language.(.*)"
     ],
     "ignoredMisprintKeys": []
   }

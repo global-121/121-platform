@@ -25,7 +25,7 @@ import { PermissionsGuard } from '../guards/permissions.guard';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
@@ -280,6 +280,11 @@ export class ProgramController {
     required: false,
     type: 'boolean',
   })
+  @ApiQuery({
+    name: 'includeTemplateDefaultAttributes',
+    required: false,
+    type: 'boolean',
+  })
   @Permissions(PermissionEnum.RegistrationREAD)
   @Get(':programId/attributes')
   public async getAttributes(
@@ -305,6 +310,7 @@ export class ProgramController {
       queryParams.includeCustomAttributes === 'true',
       queryParams.includeProgramQuestions === 'true',
       queryParams.includeFspQuestions === 'true',
+      queryParams.includeTemplateDefaultAttributes === 'true',
       queryParams.phase,
     );
   }

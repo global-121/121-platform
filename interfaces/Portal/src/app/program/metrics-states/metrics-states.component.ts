@@ -17,6 +17,8 @@ import { PastPaymentsService } from '../../services/past-payments.service';
   styleUrls: ['./metrics-states.component.scss'],
 })
 export class MetricsStatesComponent implements OnChanges {
+  public locale: string;
+
   @Input()
   private program: Program;
 
@@ -54,7 +56,9 @@ export class MetricsStatesComponent implements OnChanges {
     private translate: TranslateService,
     private programService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
-  ) {}
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   public async ngOnChanges(changes: SimpleChanges) {
     if (changes.program && typeof changes.program.currentValue === 'object') {
@@ -285,7 +289,7 @@ export class MetricsStatesComponent implements OnChanges {
       chosenMonthString = formatDate(
         chosenMonthObject.date,
         DateFormat.monthOnly,
-        environment.defaultLocale,
+        this.locale,
       );
     }
 
@@ -297,7 +301,7 @@ export class MetricsStatesComponent implements OnChanges {
       chosenPaymentString = `${chosenPaymentObject.id} - ${formatDate(
         chosenPaymentObject.date,
         DateFormat.dateOnly,
-        environment.defaultLocale,
+        this.locale,
       )}`;
     }
 

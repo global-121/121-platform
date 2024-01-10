@@ -300,7 +300,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         );
 
       for (const change of changes) {
-        const attribute = this.program.paTableAttributes.find(
+        const paTableAttributes = this.program.paTableAttributes || [];
+        const attribute = paTableAttributes.find(
           (attr) => attr.name === change.fieldName,
         );
 
@@ -371,9 +372,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   private getSubLabelText(change: any, attribute: Attribute): string {
     const translationKey = `page.program.program-people-affected.column.${change.fieldName}`;
-    const translation = this.translate.instant(
-      `page.program.program-people-affected.column.${change.fieldName}`,
-    );
+    const translation = this.translate.instant(translationKey);
     return attribute?.shortLabel
       ? this.translatableString.get(attribute.shortLabel)
       : translation !== translationKey

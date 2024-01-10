@@ -13,7 +13,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminAuthGuard } from '../guards/admin.guard';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
 import { CreateNoteDto } from './dto/note.dto';
 import { ResponseNoteDto } from './dto/response-note.dto';

@@ -144,6 +144,7 @@ export class ProgramsServiceApiService {
       includeCustomAttributes?: boolean;
       includeProgramQuestions?: boolean;
       includeFspQuestions?: boolean;
+      includeTemplateDefaultAttributes?: boolean;
       phase?: ProgramPhase;
     },
   ): Promise<PaTableAttribute[]> {
@@ -152,6 +153,7 @@ export class ProgramsServiceApiService {
       includeCustomAttributes: true,
       includeProgramQuestions: true,
       includeFspQuestions: true,
+      includeTemplateDefaultAttributes: false,
     };
     params = params.appendAll(Object.assign(defaultOptions, options));
 
@@ -454,6 +456,16 @@ export class ProgramsServiceApiService {
     toDate?: string,
     minPayment?: number,
     maxPayment?: number,
+    allPeopleAffectedOptions?: {
+      limit: number;
+      page: number;
+      referenceId?: string;
+      filterOnPayment?: number;
+      attributes?: string[];
+      statuses?: RegistrationStatus[];
+      filters?: PaginationFilter[];
+      sort?: PaginationSort;
+    },
   ): Promise<any> {
     let params = new HttpParams();
     if (fromDate) {
@@ -467,6 +479,51 @@ export class ProgramsServiceApiService {
     }
     if (maxPayment) {
       params = params.append('maxPayment', maxPayment);
+    }
+    if (type === ExportType.allPeopleAffected && allPeopleAffectedOptions) {
+      params = params.append('limit', allPeopleAffectedOptions.limit);
+      params = params.append('page', allPeopleAffectedOptions.page);
+      // TODO: This still needs to be added to the back-end in a future item
+      if (allPeopleAffectedOptions.referenceId) {
+        params = params.append(
+          'filter.referenceId',
+          allPeopleAffectedOptions.referenceId,
+        );
+      }
+      if (allPeopleAffectedOptions.filterOnPayment) {
+        params = params.append(
+          'filterOnPayment',
+          allPeopleAffectedOptions.filterOnPayment,
+        );
+      }
+      if (allPeopleAffectedOptions.attributes) {
+        params = params.append(
+          'select',
+          allPeopleAffectedOptions.attributes.join(),
+        );
+      }
+      if (allPeopleAffectedOptions.statuses) {
+        params = params.append(
+          'filter.status',
+          `$in:${allPeopleAffectedOptions.statuses.join(',')}`,
+        );
+      }
+      if (allPeopleAffectedOptions.filters) {
+        for (const filter of allPeopleAffectedOptions.filters) {
+          const defaultFilter = FilterOperatorEnum.ilike;
+          const operator = filter.operator ? filter.operator : defaultFilter;
+          params = params.append(
+            `filter.${filter.name}`,
+            `${operator}:${filter.value}`,
+          );
+        }
+      }
+      if (allPeopleAffectedOptions.sort) {
+        params = params.append(
+          'sortBy',
+          `${allPeopleAffectedOptions.sort.column}:${allPeopleAffectedOptions.sort.direction}`,
+        );
+      }
     }
     return this.apiService
       .get(

@@ -164,14 +164,12 @@ ion-button {
 
   h1 {
     margin-top: 10px;
-    margin-left: 4px;
+    margin-inline-start: 4px;
     letter-spacing: 3px;
   }
 }
 
 .auth-form-container {
-  max-width: 339px;
-  margin: auto;
   border: 1px solid #b3bcd0;
   border-radius: 0;
 }
@@ -187,8 +185,7 @@ ion-button {
 
 .login-notification {
   max-width: 339px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
 }
 .navigation-button {
   --navigation-button--indicator-size: 2px;
@@ -211,7 +208,7 @@ ion-button {
 }
 
 .ml-auto {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .select-popover {
   &::part(content) {
@@ -219,7 +216,7 @@ ion-button {
     --max-width: 100%;
 
     ion-label {
-      padding-right: 8px;
+      padding-inline-end: 0.5em;
     }
   }
 }
@@ -320,14 +317,36 @@ ion-input.custom-border {
   flex-direction: row;
   justify-content: flex-start;
   margin-top: 30px;
-  padding-left: 32px;
+  padding-inline-start: 32px;
   border-bottom: 1px solid var(--fiveten-neutral-600);
 }
 
 .tab {
   --background: #f4f7fa;
-  margin-right: 16px;
   --color-checked: #4f22d7;
+  margin-inline-end: 1em;
+}
+
+/*
+  Component: User-Status-Badge (chip)
+*/
+.user-status-badge {
+  margin: 0;
+  min-height: auto;
+  padding-inline: 0.75em;
+  padding-block: 0.375em;
+  font-size: 0.75em;
+  opacity: 1;
+
+  &.active {
+    --color: var(--ion-color-status-successful-text);
+    --background: var(--fiveten-success-200);
+  }
+
+  &.inactive {
+    --color: var(--ion-color-medium);
+    --background: var(--ion-color-light-shade);
+  }
 }
 
 .rolesDropdown {
@@ -367,4 +386,17 @@ ion-input.custom-border {
       padding-inline-start: 0;
     }
   }
+}
+
+.export-select-popover {
+  min-width: 250px;
+}
+
+.layout-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.full-width {
+  width: 100%;
 }

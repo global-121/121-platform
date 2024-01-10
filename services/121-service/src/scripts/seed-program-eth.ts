@@ -5,7 +5,7 @@ import messageTemplatePilotEth from '../../seed-data/message-template/message-te
 import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { ProgramEntity } from '../programs/program.entity';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { InterfaceScript } from './scripts.module';

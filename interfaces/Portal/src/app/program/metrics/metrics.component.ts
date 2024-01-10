@@ -37,7 +37,7 @@ export class MetricsComponent implements OnInit {
     private translatableString: TranslatableStringService,
     private programsService: ProgramsServiceApiService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   public async ngOnInit() {
@@ -72,14 +72,6 @@ export class MetricsComponent implements OnInit {
       icon: 'document',
       label: 'page.program.program-details.titlePortal',
       value: getValueOrEmpty(this.program.titlePortal, (value) =>
-        this.translatableString.get(value),
-      ),
-    });
-    this.metricsMap.set(`${group}.titlePaApp`, {
-      group,
-      icon: 'document',
-      label: 'page.program.program-details.titlePaApp',
-      value: getValueOrEmpty(this.program.titlePaApp, (value) =>
         this.translatableString.get(value),
       ),
     });
@@ -157,6 +149,14 @@ export class MetricsComponent implements OnInit {
       icon: 'gift',
       label: 'page.program.program-details.fixedTransferValue',
       value: getValueOrUnknown(this.program.fixedTransferValue, (value) =>
+        formatCurrency(value, locale, symbol, currencyCode),
+      ),
+    });
+    this.metricsMap.set(`${group}.budget`, {
+      group,
+      icon: 'cash-outline',
+      label: 'page.programs-list.card.budget',
+      value: getValueOrUnknown(this.program.budget, (value) =>
         formatCurrency(value, locale, symbol, currencyCode),
       ),
     });

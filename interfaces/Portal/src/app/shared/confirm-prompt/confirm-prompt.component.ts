@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BulkActionId } from '../../models/bulk-actions.models';
-import { PersonRow } from '../../models/person.model';
 import { ExportDuplicatesPopupComponent } from '../../program/export-duplicates-popup/export-duplicates-popup.component';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import {
@@ -50,7 +49,7 @@ export interface InputProps {
   supportMessage?: string;
   messageTemplateKey?: string;
   programId?: number;
-  previewRegistration?: PersonRow;
+  previewReferenceId?: string;
 }
 
 export enum PromptType {
@@ -108,6 +107,9 @@ export class ConfirmPromptComponent {
 
   @Input()
   public bypassModalComponent = false;
+
+  @Input()
+  public isPopoverExportButton = false;
 
   @Output()
   private confirm = new EventEmitter<string>();

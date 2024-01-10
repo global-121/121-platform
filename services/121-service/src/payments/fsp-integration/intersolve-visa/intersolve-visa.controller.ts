@@ -19,7 +19,7 @@ import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
-import { PermissionEnum } from '../../../user/permission.enum';
+import { PermissionEnum } from '../../../user/enum/permission.enum';
 import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';

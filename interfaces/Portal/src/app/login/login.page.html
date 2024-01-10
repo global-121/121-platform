@@ -1,6 +1,7 @@
 <app-system-notification
   [message]="'system-notifications.compatible-browsers'|translate"
   color="tertiary"
+  [delay]="500"
   #systemNotification
 ></app-system-notification>
 <ion-content>
@@ -8,25 +9,24 @@
     <ion-row
       class="ion-justify-content-center ion-align-items-center full-height"
     >
-      <ion-col size="4"> </ion-col>
-      <ion-col
-        size="12"
-        size-lg="4"
-      >
-        <div
-          id="portal-title"
-          class="ion-margin-vertical"
-        >
-          <div id="logo-container">
-            <img
-              src="./assets/img/121-logo.512.webp"
-              alt="121"
-            />
+      <div style="width: 100%; min-width: 20em; max-width: 24em">
+        <ion-row class="ion-justify-content-between ion-align-items-center">
+          <div
+            id="portal-title"
+            class="ion-margin"
+          >
+            <div id="logo-container">
+              <img
+                src="./assets/img/121-logo.512.webp"
+                alt="121"
+              />
+            </div>
+            <h1 class="text-uppercase">
+              {{ 'page.login.portalTitle'|translate }}
+            </h1>
           </div>
-          <h1 class="text-uppercase">
-            {{ 'page.login.portalTitle'|translate }}
-          </h1>
-        </div>
+          <app-language-switcher></app-language-switcher>
+        </ion-row>
         <ion-item
           *ngIf="errorStatusCode !== 0"
           color="danger"
@@ -188,8 +188,7 @@
             </div>
           </form>
         </div>
-      </ion-col>
-      <ion-col size="4"> </ion-col>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

@@ -7,7 +7,6 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import { ApplicationModule } from './app.module';
 import {
   APP_FAVICON,

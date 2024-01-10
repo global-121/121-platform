@@ -144,6 +144,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   public enableScope: boolean;
 
+  @Column({ nullable: true, default: null })
+  public budget: number;
+
   @OneToMany(
     () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
@@ -216,6 +219,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
         type: AnswerTypes.dropdown,
         options: await this.getPreferredLanguageOptions(),
       };
+    } else if (name === Attributes.scope) {
+      return { type: AnswerTypes.text };
     }
 
     const repo = AppDataSource.getRepository(ProgramEntity);

@@ -1,23 +1,18 @@
-<div
-  #proxyScrollbar
-  class="proxy-scrollbar"
-  data-target-scroll-element-selector="datatable-body"
-  data-target-width-element-selector="datatable-scroller"
->
-  <div class="proxy-scrollbar--content"></div>
-</div>
 <ngx-datatable
-  class="bootstrap data-table--max-height"
+  class="bootstrap ngx-datatable--full-height"
   [rows]="filteredRows"
   [columnMode]="'force'"
-  [rowHeight]="45"
-  [scrollbarV]="true"
-  [scrollbarH]="true"
-  [headerHeight]="40"
+  [virtualization]="false"
+  [rowHeight]="'auto'"
+  [headerHeight]="50"
   [footerHeight]="50"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
+  [messages]="{
+    emptyMessage: 'ngx-datatable.empty-message' | translate,
+    totalMessage: 'page.users.total-users' | translate,
+    selectedMessage: 'ngx-datatable.selected-message' | translate
+  }"
 >
-  <!-- username -->
   <ngx-datatable-column
     prop="username"
     [name]="'page.users.table-headers.username' | translate"
@@ -26,11 +21,12 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.username }}
+      <span [attr.title]="row.username">
+        {{ row.username }}
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- user type -->
   <ngx-datatable-column
     prop="admin"
     [name]="'page.users.table-headers.user-type' | translate"
@@ -39,11 +35,15 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ 'page.users.user-type.' + row?.userType | translate }}
+      <span *ngIf="row?.admin === true">
+        {{ 'entity.users.type.admin' | translate }}
+      </span>
+      <span *ngIf="row?.admin === false">
+        {{ 'entity.users.type.regular' | translate }}
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- status-->
   <ngx-datatable-column
     prop="active"
     [name]="'page.users.table-headers.status' | translate"
@@ -55,20 +55,21 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
+          class="user-status-badge"
           [class.active]="row.active === true"
           [class.inactive]="row.active === false"
         >
-          <ion-label>
-            <strong>{{
-              'page.users.status.' + row?.active | translate
-            }}</strong>
-          </ion-label>
+          <strong *ngIf="row?.active === true">
+            {{ 'entity.users.status.active' | translate }}
+          </strong>
+          <strong *ngIf="row?.active === false">
+            {{ 'entity.users.status.inactive' | translate }}
+          </strong>
         </ion-chip>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- last activity -->
   <ngx-datatable-column
     prop="lastLogin"
     [name]="'page.users.table-headers.last-login' | translate"
@@ -77,19 +78,12 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.lastLogin | date: DateFormat.dateOnly }}
+      <time
+        [attr.datetime]="row.lastLogin"
+        [attr.title]="row.lastLogin | date: DateFormat.dateOnly : locale"
+      >
+        {{ row.lastLogin | date: DateFormat.dateOnly : locale }}
+      </time>
     </ng-template>
   </ngx-datatable-column>
-
-  <!--footer-->
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-    >
-      <div style="padding: 5px 10px">
-        <div>{{ rowCount }} {{ 'page.users.total-users' | translate }}</div>
-      </div>
-    </ng-template>
-  </ngx-datatable-footer>
 </ngx-datatable>

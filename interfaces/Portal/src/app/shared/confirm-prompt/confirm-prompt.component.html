@@ -1,4 +1,9 @@
+<ng-template #contentContainer>
+  <ng-content></ng-content>
+</ng-template>
+
 <ion-button
+  *ngIf="!isPopoverExportButton"
   type="button"
   [disabled]="disabled"
   (click)="showPrompt()"
@@ -8,5 +13,17 @@
   [shape]="shape || 'default'"
   [class]="class"
 >
-  <ng-content></ng-content>
+  <ng-container *ngTemplateOutlet="contentContainer"></ng-container>
 </ion-button>
+
+<ion-item
+  *ngIf="isPopoverExportButton"
+  lines="none"
+  size="small"
+  [button]="true"
+  (click)="showPrompt()"
+  class="ion-no-padding ion-no-margin"
+  style="font-size: 0.8em; --inner-padding-start: 1em; --min-height: 2.5em"
+>
+  <ng-container *ngTemplateOutlet="contentContainer"></ng-container>
+</ion-item>

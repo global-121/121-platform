@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../../../appdatasource';
+import { ProgramAidworkerAssignmentEntity } from '../../programs/program-aidworker.entity';
 import { CreateRegistrationDto } from '../dto/create-registration.dto';
 import { Attributes } from '../dto/update-registration.dto';
 import {
@@ -28,6 +29,7 @@ export class RegistrationDataTypeValidator
   ): Promise<boolean> {
     const referenceId = args.object[args.constraints[0]['referenceId']];
     const attribute = args.object[args.constraints[0]['attribute']];
+    const userId = args.object['userId'];
 
     if (referenceId === undefined || attribute === undefined) {
       this.message = 'ReferenceId or attribute are undefined';
@@ -56,12 +58,21 @@ export class RegistrationDataTypeValidator
         referenceId,
       );
     }
-    return this.typeIsValid(
+    const typeValid = this.typeIsValid(
       value,
       validationInfo.type,
       validationInfo.options,
       attribute,
     );
+    if (!typeValid) {
+      return false;
+    }
+
+    if (attribute == Attributes.scope) {
+      return this.scopeIsValid(value, userId, registration.programId);
+    }
+
+    return true;
   }
 
   private createErrorMessageType(type, value, attribute): void {
@@ -99,6 +110,26 @@ export class RegistrationDataTypeValidator
       }
     }
     return true;
+  }
+
+  private async scopeIsValid(
+    value: string,
+    userId: number,
+    programId: number,
+  ): Promise<boolean> {
+    const assignmentRepo = AppDataSource.getRepository(
+      ProgramAidworkerAssignmentEntity,
+    );
+    const assignment = await assignmentRepo.findOne({
+      where: { userId: userId, programId: programId },
+    });
+    const requestScope = assignment?.scope ? assignment.scope : '';
+    const scopeValid =
+      (requestScope && value.startsWith(requestScope)) || !requestScope;
+    if (!scopeValid) {
+      this.message = `'${value}' is not a valid scope. The valid scope for this account is '${requestScope}'`;
+    }
+    return scopeValid;
   }
 
   private typeIsValid(

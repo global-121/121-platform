@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
+import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Not, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -15,6 +16,8 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ProgramService } from '../programs/programs.service';
+import { PaginationFilter } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import {
@@ -25,8 +28,12 @@ import {
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
+import {
+  RegistrationScopedRepository,
+  RegistrationViewScopedRepository,
+} from '../registration/registration-scoped.repository';
 import { RegistrationsService } from '../registration/registrations.service';
+import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { ScopedRepository } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
@@ -51,6 +58,7 @@ export class MetricsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
@@ -59,6 +67,8 @@ export class MetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly programService: ProgramService,
+    private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
@@ -74,11 +84,12 @@ export class MetricsService {
     maxPayment: number | null = null,
     fromDate?: Date,
     toDate?: Date,
+    paginationQuery?: PaginateQuery,
   ): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
-        return this.getAllPeopleAffectedList(programId);
+        return this.getAllPeopleAffectedList(programId, paginationQuery.filter);
       }
       case ExportType.included: {
         return this.getInclusionList(programId);
@@ -107,11 +118,15 @@ export class MetricsService {
     }
   }
 
-  private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
+  private async getAllPeopleAffectedList(
+    programId: number,
+    filter: PaginationFilter,
+  ): Promise<FileDto> {
     const data = await this.getRegistrationsList(
       programId,
       ExportType.allPeopleAffected,
       null,
+      filter,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -185,7 +200,11 @@ export class MetricsService {
     programId: number,
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
+    filter?: PaginationFilter,
   ): Promise<object[]> {
+    if (registrationStatus) {
+      filter = { status: registrationStatus };
+    }
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
       exportType,
@@ -193,8 +212,8 @@ export class MetricsService {
     const rows = await this.getRegistrationsGenericFields(
       programId,
       relationOptions,
-      registrationStatus,
       exportType,
+      filter,
     );
 
     for await (const row of rows) {
@@ -394,58 +413,75 @@ export class MetricsService {
   private async getRegistrationsGenericFields(
     programId: number,
     relationOptions: RegistrationDataOptions[],
-    status?: RegistrationStatusEnum,
     exportType?: ExportType,
+    filter?: PaginationFilter,
   ): Promise<object[]> {
-    let query = this.registrationScopedRepository
+    // Create an empty scoped querybuilder object
+    let queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
-      .leftJoin('registration.fsp', 'fsp')
-      .select([
-        `registration."referenceId" as "referenceId"`,
-        `registration.id as id`,
-        `registration."registrationProgramId"`,
-        `registration."registrationStatus" as status`,
-        `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
-        `fsp."fspDisplayNamePortal" as financialServiceProvider`,
-      ])
-      .andWhere({ programId: programId })
-      .distinctOn(['registration.registrationProgramId'])
-      .orderBy('"registration"."registrationProgramId"', 'ASC');
+      .andWhere({ programId: programId });
 
-    this.registrationsService.addStatusChangeToQuery(query);
-
-    const program = await this.programRepository.findOneBy({
-      id: programId,
-    });
-    if (program.enableMaxPayments) {
-      query.addSelect(`registration."${GenericAttributes.maxPayments}"`);
-    }
-
-    if (exportType !== ExportType.allPeopleAffected) {
-      query = query.andWhere(
-        'registration."registrationStatus" != :registrationStatus',
+    if (exportType !== ExportType.allPeopleAffected && !filter?.['status']) {
+      queryBuilder = queryBuilder.andWhere(
+        'registration."status" != :registrationStatus',
         {
           registrationStatus: RegistrationStatusEnum.deleted,
         },
       );
     }
 
-    if (status) {
-      query = query.andWhere({ registrationStatus: status });
+    const defaultSelect = [
+      GenericAttributes.referenceId,
+      GenericAttributes.registrationProgramId,
+      GenericAttributes.status,
+      GenericAttributes.phoneNumber,
+      GenericAttributes.preferredLanguage,
+      GenericAttributes.paymentAmountMultiplier,
+      GenericAttributes.registrationCreatedDate,
+      GenericAttributes.fspDisplayNamePortal,
+    ] as string[];
+
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
+
+    if (program.enableMaxPayments) {
+      defaultSelect.push(GenericAttributes.maxPayments);
     }
 
-    for (const r of relationOptions) {
-      query.select((subQuery) => {
-        return this.registrationDataQueryService.customDataEntrySubQuery(
-          subQuery,
-          r.relation,
+    if (program.enableScope) {
+      defaultSelect.push(GenericAttributes.scope);
+    }
+
+    const registrationDataNamesProgram = relationOptions
+      .map((r) => r.name)
+      .filter((r) => r !== CustomDataAttributes.phoneNumber);
+
+    const paginateQuery = {
+      path: 'registration',
+      filter: filter,
+      limit: 5000,
+      page: 1,
+      select: defaultSelect.concat(registrationDataNamesProgram),
+    };
+
+    // Get the data per 5000 registrations to prevent an out of memory error
+    let data = [];
+    let totalPages = 1; // higher than 1
+    while (paginateQuery.page <= totalPages) {
+      const paginateResult =
+        await this.registrationsPaginationsService.getPaginate(
+          paginateQuery,
+          programId,
+          true,
+          false,
+          queryBuilder.clone(),
         );
-      }, r.name);
+      data = data.concat(paginateResult.data);
+      paginateQuery.page = paginateResult.meta.currentPage + 1;
+      totalPages = paginateResult.meta.totalPages;
     }
-
-    return await query.getRawMany();
+    return data;
   }
 
   private async getRegistrationsFieldsForDuplicates(
@@ -1321,7 +1357,11 @@ export class MetricsService {
       .setParameters(transactionsQuery.getParameters())
       .getRawOne();
 
-    const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
+    const totalBudget = (
+      await this.programRepository.findOneBy({
+        id: programId,
+      })
+    ).budget;
     return {
       programId,
       targetedPeople,

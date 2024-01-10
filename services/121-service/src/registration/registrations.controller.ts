@@ -43,8 +43,10 @@ import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
+import { FinancialAttributes } from '../user/enum/registration-financial-attributes.const';
 import { User } from '../user/user.decorator';
+import { UserService } from '../user/user.service';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
@@ -84,6 +86,7 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
+    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -446,7 +449,6 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Update provided attributes of registration (Used by Aidworker)',
@@ -465,13 +467,57 @@ export class RegistrationsController {
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    const hasRegistrationUpdatePermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        params.programId,
+        PermissionEnum.RegistrationAttributeUPDATE,
+      );
+    const hasUpdateFinancialPermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        params.programId,
+        PermissionEnum.RegistrationAttributeFinancialUPDATE,
+      );
+
+    if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {
+      const errors = `User does not have permission to update attributes`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
     const partialRegistration = updateRegistrationDataDto.data;
+
+    if (!hasUpdateFinancialPermission && hasRegistrationUpdatePermission) {
+      for (const attributeKey of Object.keys(partialRegistration)) {
+        if (
+          FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
+        ) {
+          const errors = `User does not have permission to update financial attributes`;
+          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+        }
+      }
+    }
+
+    if (hasUpdateFinancialPermission && !hasRegistrationUpdatePermission) {
+      for (const attributeKey of Object.keys(partialRegistration)) {
+        if (
+          !FinancialAttributes.includes(
+            attributeKey as keyof RegistrationEntity,
+          )
+        ) {
+          const errors = `User does not have permission to update attributes`;
+          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+        }
+      }
+    }
+
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeDto: UpdateAttributeDto = {
         referenceId: params.referenceId,
         attribute: attributeKey,
         value: partialRegistration[attributeKey],
+        userId: userId,
       };
       const errors = await validate(
         plainToClass(UpdateAttributeDto, attributeDto),

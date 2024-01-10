@@ -70,7 +70,7 @@ export class BulkImportComponent implements OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
   async ngOnInit() {

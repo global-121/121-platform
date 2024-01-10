@@ -68,7 +68,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     private router: Router,
     private filterService: FilterService,
   ) {
-    this.locale = environment.defaultLocale;
+    this.locale = this.translate.currentLang || environment.defaultLocale;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.ngOnInit();
@@ -250,7 +250,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     const symbol = `${this.program.currency} `;
     const totalCostFormatted = formatCurrency(
       totalCost,
-      environment.defaultLocale,
+      this.locale,
       symbol,
       this.program.currency,
     );

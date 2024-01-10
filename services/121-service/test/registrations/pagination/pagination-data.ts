@@ -113,6 +113,18 @@ export const registrationPV6 = {
   whatsappPhoneNumber: '14155235551',
 };
 
+export const registrationPvScoped = {
+  referenceId: '434e62869242497e1e',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  firstName: 'Freya',
+  lastName: 'Midgard',
+  phoneNumber: '14155235554',
+  fspName: FspName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235554',
+  scope: 'utrecht',
+};
+
 export const expectedAttributes = [
   'id',
   'status',

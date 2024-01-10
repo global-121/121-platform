@@ -15,7 +15,7 @@ import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-vi
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
@@ -772,7 +772,9 @@ export class RegistrationsService {
   }
 
   public addStatusChangeToQuery(
-    q: ScopedQueryBuilder<RegistrationEntity>,
+    q:
+      | ScopedQueryBuilder<RegistrationEntity>
+      | ScopedQueryBuilder<RegistrationViewEntity>,
   ): void {
     for (const registrationStatus in RegistrationStatusEnum) {
       const timestampField =

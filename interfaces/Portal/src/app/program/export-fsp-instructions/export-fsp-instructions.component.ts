@@ -62,9 +62,9 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
     );
     // This shows the 'reconciliation' variant if there is at least one FSP with reconciliation (not 100% correct, but good enough for now)
     this.message = this.translate.instant(
-      `page.program.export-fsp-intructions.sub-message.${
-        this.hasFspWithReconciliation ? 'reconciliation' : 'no-reconciliation'
-      }`,
+      this.hasFspWithReconciliation
+        ? 'page.program.export-fsp-intructions.sub-message.reconciliation'
+        : 'page.program.export-fsp-intructions.sub-message.no-reconciliation',
     );
     if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
       const actionTimestamp =

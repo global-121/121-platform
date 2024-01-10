@@ -36,7 +36,7 @@ import { ImportResult } from '../registration/dto/bulk-import.dto';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';

@@ -1,21 +1,18 @@
-<div
-  #proxyScrollbar
-  class="proxy-scrollbar"
-  data-target-scroll-element-selector="datatable-body"
-  data-target-width-element-selector="datatable-scroller"
->
-  <div class="proxy-scrollbar--content"></div>
-</div>
 <ngx-datatable
-  class="bootstrap"
+  class="bootstrap ngx-datatable--full-height"
   [rows]="rows"
   [columnMode]="'force'"
+  [virtualization]="false"
   [rowHeight]="'auto'"
-  [headerHeight]="40"
+  [headerHeight]="50"
   [footerHeight]="50"
   [sorts]="[{ prop: 'username', dir: 'asc' }]"
+  [messages]="{
+    emptyMessage: 'ngx-datatable.empty-message' | translate,
+    totalMessage: 'page.program-team.team-members' | translate,
+    selectedMessage: 'ngx-datatable.selected-message' | translate
+  }"
 >
-  <!-- name -->
   <ngx-datatable-column
     prop="username"
     [name]="'page.program-team.table-headers.name' | translate"
@@ -24,11 +21,12 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.username }}
+      <span [attr.title]="row.username">
+        {{ row.username }}
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- Role -->
   <ngx-datatable-column
     prop="role"
     [name]="'page.program-team.table-headers.role' | translate"
@@ -44,7 +42,6 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- status-->
   <ngx-datatable-column
     prop="active"
     [name]="'page.program-team.table-headers.status' | translate"
@@ -56,20 +53,21 @@
       <ng-container>
         <ion-chip
           [disabled]="true"
+          class="user-status-badge"
           [class.active]="row.active === true"
           [class.inactive]="row.active === false"
         >
-          <ion-label>
-            <strong>{{
-              'page.program-team.status.' + row?.active | translate
-            }}</strong>
-          </ion-label>
+          <strong *ngIf="row?.active === true">
+            {{ 'entity.users.status.active' | translate }}
+          </strong>
+          <strong *ngIf="row?.active === false">
+            {{ 'entity.users.status.inactive' | translate }}
+          </strong>
         </ion-chip>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- scope -->
   <ngx-datatable-column
     *ngIf="enableScope"
     prop="scope"
@@ -79,11 +77,12 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.scope }}
+      <code [attr.title]="row.scope">
+        {{ row.scope }}
+      </code>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- last activity -->
   <ngx-datatable-column
     prop="lastLogin"
     [name]="'page.program-team.table-headers.last-activity' | translate"
@@ -92,12 +91,21 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{ row.lastLogin | date: DateFormat.dateOnly }}
+      <time
+        [attr.datetime]="row.lastLogin"
+        [attr.title]="row.lastLogin | date: DateFormat.dateOnly : locale"
+      >
+        {{ row.lastLogin | date: DateFormat.dateOnly : locale }}
+      </time>
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- Meatball menu -->
-  <ngx-datatable-column prop="">
+  <ngx-datatable-column
+    prop=""
+    [resizeable]="false"
+    [sortable]="false"
+    cellClass="ngx-datatable--manage-row-cell"
+  >
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
@@ -107,10 +115,16 @@
         fill="clear"
         color="dark"
         size="small"
+        shape="round"
         (click)="toggleTeamMemberPopover($event, row)"
-        class="meatball-menu-button"
+        [attr.title]="'ngx-datatable.manage-row' | translate"
+        [attr.aria-label]="'ngx-datatable.manage-row' | translate"
+        class="ion-no-margin"
       >
-        <ion-icon name="ellipsis-horizontal"></ion-icon>
+        <ion-icon
+          slot="icon-only"
+          name="ellipsis-horizontal"
+        ></ion-icon>
       </ion-button>
       <ion-popover
         [isOpen]="row.showTeamMemberPopover"
@@ -131,7 +145,9 @@
                 button
                 (click)="removeFromTeam(row)"
               >
-                {{ 'page.program-team.remove-team-member' | translate }}
+                <ion-text color="danger">
+                  {{ 'page.program-team.remove-team-member' | translate }}
+                </ion-text>
               </ion-item>
             </ion-list>
           </app-popover-content>
@@ -139,18 +155,4 @@
       </ion-popover>
     </ng-template>
   </ngx-datatable-column>
-
-  <!--footer-->
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-    >
-      <div style="padding: 5px 10px">
-        <div>
-          {{ rowCount }} {{ 'page.program-team.team-members' | translate }}
-        </div>
-      </div>
-    </ng-template>
-  </ngx-datatable-footer>
 </ngx-datatable>

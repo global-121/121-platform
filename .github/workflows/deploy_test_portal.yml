@@ -52,6 +52,7 @@ jobs:
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
         env:
           NG_ENV_NAME: 'test'
+          NG_LOCALES: 'en,ar,fr,nl,es'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
@@ -62,8 +63,9 @@ jobs:
       - name: Deploy to Azure Static Web App
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: true
         with:
-          skip_deploy_on_missing_secrets: true
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
@@ -86,6 +88,8 @@ jobs:
     steps:
       - name: 'Close Pull Request: Deploy to Azure Static Web App'
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: true
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
           action: 'close'

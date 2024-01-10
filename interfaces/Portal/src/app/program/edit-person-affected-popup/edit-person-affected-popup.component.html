@@ -68,10 +68,12 @@
           "
           [inProgress]="inProgress?.paymentAmountMultiplier || false"
           [isDisabled]="
-            !canUpdatePaData || program?.paymentAmountMultiplierFormula
+            !canUpdateRegistrationAttributeFinancial ||
+            program?.paymentAmountMultiplierFormula
           "
           [showSubmit]="
-            canUpdatePaData && !program?.paymentAmountMultiplierFormula
+            canUpdateRegistrationAttributeFinancial &&
+            !program?.paymentAmountMultiplierFormula
           "
           prop="paymentAmountMultiplier"
           class="ion-margin-vertical"
@@ -105,7 +107,7 @@
               )
             "
             [inProgress]="inProgress?.maxPayments || false"
-            [isDisabled]="!canUpdatePaData"
+            [isDisabled]="!canUpdateRegistrationAttributeFinancial"
             [showSubmit]="canUpdatePaData"
             prop="maxPayments"
             class="ion-margin-vertical"
@@ -136,6 +138,33 @@
             [inProgress]="inProgress?.phoneNumber || false"
             [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
+
+        <ng-container *ngIf="showScopeField">
+          <app-update-property-item
+            type="text"
+            [label]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.scope.label'
+                | translate
+            "
+            [explanation]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.scope.explanation'
+                | translate
+            "
+            [value]="attributeValues?.scope"
+            (updated)="
+              updatePaAttribute(
+                'scope',
+                $event.value,
+                $event?.reason?.message,
+                false
+              )
+            "
+            [isDisabled]="!canUpdatePaData"
+            [showSubmit]="canUpdatePaData"
+            [inProgress]="inProgress?.scope || false"
             class="ion-margin-vertical"
           ></app-update-property-item>
         </ng-container>

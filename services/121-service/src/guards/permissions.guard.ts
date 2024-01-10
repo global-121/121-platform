@@ -9,9 +9,9 @@ import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { CookieErrors, CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { UserToken } from '../user/user.interface';
 import { UserService } from '../user/user.service';
-import { PermissionEnum } from './../user/permission.enum';
 import { GuardsService } from './guards.service';
 
 @Injectable()
