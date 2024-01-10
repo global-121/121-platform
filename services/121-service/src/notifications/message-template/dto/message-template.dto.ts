@@ -21,12 +21,23 @@ export class CreateMessageTemplateDto {
   @IsString()
   @IsEnum(LanguageEnum)
   public readonly language: LanguageEnum;
+  @ApiProperty({
+    example: { en: 'Template label' },
+  })
+  public readonly label: JSON;
   @ApiProperty()
   @IsString()
   public readonly message: string;
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly isWhatsappTemplate: boolean;
+  @ApiProperty({
+    example: true,
+    description:
+      'Set to true if you want the template to be selectable through Send Message action in portal',
+  })
+  @IsBoolean()
+  public readonly isSendMessageTemplate: boolean;
 }
 
 export class UpdateTemplateParamDto {

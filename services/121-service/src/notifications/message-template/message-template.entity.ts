@@ -12,6 +12,9 @@ export class MessageTemplateEntity extends Base121Entity {
   @Column()
   public type: string;
 
+  @Column('json', { nullable: true })
+  public label: JSON;
+
   @Column()
   public language: string;
 
@@ -20,6 +23,9 @@ export class MessageTemplateEntity extends Base121Entity {
 
   @Column()
   public isWhatsappTemplate: boolean;
+
+  @Column({ default: true })
+  public isSendMessageTemplate: boolean;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates)
   @JoinColumn({ name: 'programId' })

@@ -19,6 +19,7 @@ describe('Message template', () => {
   const messageTemplate = {
     message: 'testing message',
     isWhatsappTemplate: true,
+    isSendMessageTemplate: true,
   };
 
   beforeEach(async () => {

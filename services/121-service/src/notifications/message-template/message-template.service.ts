@@ -58,8 +58,10 @@ export class MessageTemplateService {
     template.programId = programId;
     template.type = postData.type;
     template.language = postData.language;
+    template.label = postData.label;
     template.message = postData.message;
     template.isWhatsappTemplate = postData.isWhatsappTemplate;
+    template.isSendMessageTemplate = postData.isSendMessageTemplate;
 
     await this.validatePlaceholders(programId, template.message);
 

@@ -152,10 +152,12 @@ describe('QueueMessageService', () => {
             'Hello {{fullName}}, how are you? Greetings from {{namePartnerOrganization}}',
           language: LanguageEnum.en,
           type: 'test',
+          label: null,
           programId: 2,
           created: new Date(),
           updated: new Date(),
           isWhatsappTemplate: false,
+          isSendMessageTemplate: true,
           id: 1,
         }),
       );

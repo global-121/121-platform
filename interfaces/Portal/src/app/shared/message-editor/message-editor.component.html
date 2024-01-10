@@ -53,9 +53,9 @@
         >
           <option
             *ngFor="let templateType of templateTypes"
-            [value]="templateType"
+            [value]="templateType.type"
           >
-            {{ templateType }}
+            {{ templateType.label }}
           </option>
         </select>
       </ion-row>

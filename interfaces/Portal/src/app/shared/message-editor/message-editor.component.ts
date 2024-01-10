@@ -56,7 +56,7 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
   private defaulLanguage: string;
 
   public messageTemplates: MessageTemplate[];
-  public templateTypes: string[];
+  public templateTypes: any[];
   public selectedTemplateType: string;
   public customTemplateType = 'customTemplate';
   public showCustomTemplate: boolean = false;
@@ -80,10 +80,26 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
         this.inputProps.programId,
       );
 
-    this.templateTypes = [
-      ...new Set(this.messageTemplates.map((template) => template.type)),
-    ];
-    this.templateTypes.push(this.customTemplateType);
+    this.templateTypes = this.messageTemplates
+      .filter((template) => template.isSendMessageTemplate)
+      .map((template) => {
+        return {
+          type: template.type,
+          label: this.translatableString.get(template.label),
+        };
+      })
+      .filter(
+        (template, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.type === template.type && t.label === template.label,
+          ),
+      );
+
+    this.templateTypes.push({
+      type: this.customTemplateType,
+      label: 'Custom Message',
+    });
     this.selectedTemplateType = this.customTemplateType;
     this.showCustomTemplate = true;
     this.showPreview = true;
