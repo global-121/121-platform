@@ -7,3 +7,9 @@ singleQuote: true
 trailingComma: all
 plugins:
   - prettier-plugin-organize-imports
+overrides:
+  - files: src/assets/i18n/*.json
+    options:
+      jsonRecursiveSort: true
+      plugins:
+        - prettier-plugin-sort-json
