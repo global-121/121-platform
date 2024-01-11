@@ -333,19 +333,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Add personalized field",
+          "available-languages": "Available template languages",
           "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
           "message-checkbox": "Send a message to these People Affected",
           "message-preview": "Message preview",
           "placeholder-pa-data": "Please make sure that for all used personalized fields, the data is available for all selected People Affected.",
           "placeholder-typeahead-placeholder": "Select field",
+          "select-message-template": "Select message template",
           "templated-explanation": "The following message will be sent to PAs in their own language.",
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
-          "type-message": "Type message",
-          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
           "type-custom-message": "Type custom message",
           "type-custom-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
-          "available-languages": "Available template languages",
-          "select-message-template": "Select message template"
+          "type-message": "Type message",
+          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone."
         },
         "actions": {
           "deletePa": "Delete PA",

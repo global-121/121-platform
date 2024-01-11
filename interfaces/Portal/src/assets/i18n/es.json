@@ -333,19 +333,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Agregar campo personalizado",
+          "available-languages": "Idiomas de plantilla disponibles",
           "delete-warning": "Está a punto de eliminar la información personal de estas Personas Afectadas. Esta acción no se puede deshacer. Ya no puede ver los pagos anteriores de ellos y no puede realizar nuevos pagos a ellos.",
           "message-checkbox": "Envía un mensaje a estas personas afectadas",
           "message-preview": "Vista previa del mensaje",
           "placeholder-pa-data": "Asegúrese de que para todos los campos personalizados utilizados, los datos estén disponibles para todas las personas afectadas seleccionadas.",
           "placeholder-typeahead-placeholder": "Seleccionar campo",
+          "select-message-template": "Selecciona la plantilla de mensaje",
           "templated-explanation": "El siguiente mensaje se enviará a los PA en su propio idioma.",
           "templated-support": "Póngase en contacto con el equipo de soporte del 121 si desea cambiar este mensaje con plantilla.",
-          "type-message": "Escriba el mensaje",
-          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente).",
           "type-custom-message": "Escribe un mensaje personalizado",
           "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
-          "available-languages": "Idiomas de plantilla disponibles",
-          "select-message-template": "Selecciona la plantilla de mensaje"
+          "type-message": "Escriba el mensaje",
+          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente)."
         },
         "actions": {
           "deletePa": "Eliminar PA",
