@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.108.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.109.0...master)
+
+---
+
+## [1.109.0](https://github.com/global-121/121-platform/compare/v1.108.3...v1.109.0)
 
 ### Added
 
@@ -14,6 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Watch the outcome of the `lint:translations`-task, when adding/removing/updating English text-strings.
   - When possible, also add translations by hand matching existing translations (i.e. use the same terms/verbs/etc.).
   - When showing/formatting a `Date`, Currency-amount or `Number`, use the current (`this.`)`locale`. **Don't** hard-code these things into the strings themselves.
+- Edit scope of registrations
+- Configure funds of program
+- Export PAs based on table filter
+- Send templated messages through 'send message' action
+
+### Changed
+
+- Editing financial attributes requires a separate permission now
+- Voucher images removed from database
 
 ---
 
