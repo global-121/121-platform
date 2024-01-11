@@ -1,70 +1,21 @@
 {
-  "tabs": {
-    "user": "Aid worker",
-    "actions": "Actions"
-  },
   "account": {
-    "introduction": "Welcome to 121. Please log in below.",
-    "email-label": "E-mail",
-    "password-label": "Password",
-    "create-label": "New password",
-    "confirm-label": "Confirm new password",
-    "login-button": "Log in",
-    "logged-in": "You are succesfully logged in.",
-    "logged-out": "You are succesfully logged out.",
-    "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
-    "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
-    "logout-button": "Log out",
     "change-password": "Change password",
+    "changed-password": "Your password is changed succesfully.",
     "close-change-password": "Cancel",
     "conclusion": "You are currently logged in.",
+    "confirm-label": "Confirm new password",
+    "create-label": "New password",
+    "email-label": "E-mail",
+    "introduction": "Welcome to 121. Please log in below.",
+    "logged-in": "You are succesfully logged in.",
+    "logged-out": "You are succesfully logged out.",
+    "login-button": "Log in",
+    "logout-button": "Log out",
+    "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
+    "password-label": "Password",
     "unequal-passwords": "The passwords you provided are not the same. Please try again.",
-    "changed-password": "Your password is changed succesfully."
-  },
-  "validation": {
-    "main-menu": {
-      "introduction": "The following actions are available. Please select one.",
-      "download-data": "Download validation data",
-      "find-by-phone": "Find Person Affected by phonenumber",
-      "upload-data": "Upload validation data"
-    },
-    "download-data": {
-      "downloading": "Validation data is being downloaded. Wait a second.",
-      "download-result": "Validation data downloaded for {{nrDownloaded}} People Affected.",
-      "download-aborted": "No validation data could be downloaded at this time. Please try again later."
-    },
-    "find-by-phone": {
-      "introduction": "Enter phonenumber to retrieve Person Affected's information.",
-      "enter-phone": "Enter phonenumber with country code",
-      "find-phone": "Find phonenumber",
-      "error": "No Person Affected found with this phonenumber. Please try again by changing the phonenumber above and pressing the button again.",
-      "name": "Name",
-      "multiple-found": "Multiple PAs are found for this phone-number. Please select the right one.",
-      "conclusion": "Thank you. You have correctly identified a Person Affected.",
-      "main-menu": "Back to main menu"
-    },
-    "upload-data": {
-      "uploading": "Validation data is being uploaded for {{nrStored}} PA. Wait a second.",
-      "upload-result": "Validation data uploaded succesfully.",
-      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first.",
-      "upload-aborted": "No validation data could be uploaded at this time. Please try again later."
-    },
-    "validate-program": {
-      "introduction": "Below you see the Person Affected's information for the specific program. Check it with the Person Affected, adapt where necessary, and confirm.",
-      "submit": "Confirm",
-      "please-confirm": "Below is an overview of the Person Affected's information. Please confirm.",
-      "change": "Change information",
-      "confirm-button": "Save",
-      "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available)."
-    },
-    "validate-fsp": {
-      "introduction": "Below you see the Person Affected's information for the chosen Financial Service Provider. Check it with the Person Affected, adapt where necessary, and confirm.",
-      "submit": "Save",
-      "no-fsp": "There are no questions to validate for the chosen Financial Service Provider",
-      "back-menu": "Back to main menu",
-      "generic-error": "Something went wrong.",
-      "conclusion": "The financial service provider data has been saved. Please make sure to upload it (now or when internet is available)."
-    }
+    "wrong-credentials": "Your email and/or password are not recognized. Please try again."
   },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
@@ -86,5 +37,54 @@
   "shared": {
     "close": "Close",
     "submit-button": "Submit"
+  },
+  "tabs": {
+    "actions": "Actions",
+    "user": "Aid worker"
+  },
+  "validation": {
+    "download-data": {
+      "download-aborted": "No validation data could be downloaded at this time. Please try again later.",
+      "download-result": "Validation data downloaded for {{nrDownloaded}} People Affected.",
+      "downloading": "Validation data is being downloaded. Wait a second."
+    },
+    "find-by-phone": {
+      "conclusion": "Thank you. You have correctly identified a Person Affected.",
+      "enter-phone": "Enter phonenumber with country code",
+      "error": "No Person Affected found with this phonenumber. Please try again by changing the phonenumber above and pressing the button again.",
+      "find-phone": "Find phonenumber",
+      "introduction": "Enter phonenumber to retrieve Person Affected's information.",
+      "main-menu": "Back to main menu",
+      "multiple-found": "Multiple PAs are found for this phone-number. Please select the right one.",
+      "name": "Name"
+    },
+    "main-menu": {
+      "download-data": "Download validation data",
+      "find-by-phone": "Find Person Affected by phonenumber",
+      "introduction": "The following actions are available. Please select one.",
+      "upload-data": "Upload validation data"
+    },
+    "upload-data": {
+      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first.",
+      "upload-aborted": "No validation data could be uploaded at this time. Please try again later.",
+      "upload-result": "Validation data uploaded succesfully.",
+      "uploading": "Validation data is being uploaded for {{nrStored}} PA. Wait a second."
+    },
+    "validate-fsp": {
+      "back-menu": "Back to main menu",
+      "conclusion": "The financial service provider data has been saved. Please make sure to upload it (now or when internet is available).",
+      "generic-error": "Something went wrong.",
+      "introduction": "Below you see the Person Affected's information for the chosen Financial Service Provider. Check it with the Person Affected, adapt where necessary, and confirm.",
+      "no-fsp": "There are no questions to validate for the chosen Financial Service Provider",
+      "submit": "Save"
+    },
+    "validate-program": {
+      "change": "Change information",
+      "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available).",
+      "confirm-button": "Save",
+      "introduction": "Below you see the Person Affected's information for the specific program. Check it with the Person Affected, adapt where necessary, and confirm.",
+      "please-confirm": "Below is an overview of the Person Affected's information. Please confirm.",
+      "submit": "Confirm"
+    }
   }
 }

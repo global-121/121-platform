@@ -4,18 +4,26 @@
     "delete-data": "Eliminar mi cuenta",
     "logout": "Cerrar sesión"
   },
-  "multiple-registration-mode": {
-    "toggle": "Modo para inscripciones múltiples"
-  },
   "connection": {
     "error-retry": "Algo salió mal, ¿desea intentarlo otra vez?"
   },
+  "multiple-registration-mode": {
+    "toggle": "Modo para inscripciones múltiples"
+  },
   "notification": {
     "error-reload": "Algo salió mal, vuelve a cargar la aplicación.",
-    "wait-to-go-offline": "Espera 30 segundos antes de usar la aplicación sin conexión para que se descargue todo el contenido de la aplicación.",
-    "update-available": "Actualización disponible, vuelve a cargar la aplicación."
+    "update-available": "Actualización disponible, vuelve a cargar la aplicación.",
+    "wait-to-go-offline": "Espera 30 segundos antes de usar la aplicación sin conexión para que se descargue todo el contenido de la aplicación."
   },
   "personal": {
+    "batch": {
+      "menu-text": "Las inscripciones se almacenan dentro del navegador. Cuando la página web esté abierta y estés en línea, se subirán al servidor automáticamente.",
+      "menu-text-offline": "En este momento estás desconectado/a.",
+      "menu-title": "Múltiples inscripciones",
+      "toolbar-queue-button": "{{nrRegistrations}} Inscripciones",
+      "upload-alert-header": "Subiendo inscripciones al servidor.",
+      "upload-alert-message": "Ahora estás en línea. Subiendo {{nrRegistrations}} inscripciones al servidor."
+    },
     "consent-question": {
       "agree": "Estoy de Acuerdo",
       "answer": "He leído/escuchado cómo mi información personal se almacenará de forma segura. Entiendo que es obligatorio enviar mi información personal para recibir ayuda.   <br><br> Entiendo quién ve mi información personal.   <br><br> Tocando &quot;<b>Acepto</b>&quot; Elijo participar en el programa de ayuda.   <br><br> Tocando &quot;<b>No estoy de acuerdo</b>&quot; Elijo no participar en el programa de ayuda.",
@@ -29,11 +37,15 @@
       "please-confirm": "A continuación se muestra una descripción general de su información. Marque y luego toque enviar.",
       "submit-confirm": "Enviar mi Información"
     },
+    "next-pa": {
+      "new-pa": "Agregar otra persona afectada",
+      "save-pa": "Guardar los datos de esta persona afectada"
+    },
     "registration-summary": {
       "documents": "Asegúrate de contar con los siguientes documentos:",
       "no-validation-conclusion": "Gracias. Su registro está completo.<br><br> Recibirá un SMS/WhatsApp al numero de teléfono proporcionado a la brevedad para confirmar su registro. <br><br> Se le informará si su aplicación ha sido exitosa dentro de un periodo de 48 horas.<br><br> Es todo por el momento.",
-      "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa.",
-      "offline-warning": "Actualmente estás desconectado. La inscripción no se puede almacenar. Conéctate a Internet con el dispositivo, por ejemplo, conectándote al WiFi, y haz clic en \"Intentar de nuevo\"."
+      "offline-warning": "Actualmente estás desconectado. La inscripción no se puede almacenar. Conéctate a Internet con el dispositivo, por ejemplo, conectándote al WiFi, y haz clic en \"Intentar de nuevo\".",
+      "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa."
     },
     "select-fsp": {
       "attributes": {
@@ -65,18 +77,6 @@
       "validation": {
         "phone-number": "No pudimos verificar el numero de teléfono. Por favor modifique e inténtelo de nuevo."
       }
-    },
-    "next-pa": {
-      "new-pa": "Agregar otra persona afectada",
-      "save-pa": "Guardar los datos de esta persona afectada"
-    },
-    "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} Inscripciones",
-      "menu-title": "Múltiples inscripciones",
-      "menu-text-offline": "En este momento estás desconectado/a.",
-      "menu-text": "Las inscripciones se almacenan dentro del navegador. Cuando la página web esté abierta y estés en línea, se subirán al servidor automáticamente.",
-      "upload-alert-header": "Subiendo inscripciones al servidor.",
-      "upload-alert-message": "Ahora estás en línea. Subiendo {{nrRegistrations}} inscripciones al servidor."
     }
   },
   "q-and-a-set": {
