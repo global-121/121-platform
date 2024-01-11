@@ -14,11 +14,13 @@ import { programIdPV } from '../registrations/pagination/pagination-data';
 describe('Message template', () => {
   let accessToken: string;
   const programId = programIdPV;
-  const type = 'registered';
+  const type = 'type';
   const language = LanguageEnum.en;
   const messageTemplate = {
     message: 'testing message',
     isWhatsappTemplate: true,
+    isSendMessageTemplate: true,
+    label: JSON.parse(JSON.stringify({ en: 'test' })),
   };
 
   beforeEach(async () => {
@@ -78,10 +80,11 @@ describe('Message template', () => {
   });
 
   it('should update message template by language and type', async () => {
+    const typeToUpdate = 'registered';
     const updatedMessage = 'test1';
     const updatedMessageTemplate = await updateMessageTemplate(
       programId,
-      type,
+      typeToUpdate,
       language,
       { message: updatedMessage },
       accessToken,

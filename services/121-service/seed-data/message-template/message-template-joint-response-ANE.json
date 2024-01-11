@@ -1,5 +1,6 @@
 {
   "registered": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "This is a message from ANE.\n\nThank you for your registration. We will inform you later if you are included in this project or not.",

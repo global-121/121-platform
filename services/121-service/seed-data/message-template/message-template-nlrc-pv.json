@@ -1,5 +1,6 @@
 {
   "registered": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات إضافية في غضون 48 ساعة.",
@@ -13,6 +14,10 @@
     }
   },
   "invited": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "Invite"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر. {{namePartnerOrganization}} قد أرسل إلينا رقم هاتفك.\n\nيمكننا مساعدتك من خلال قسائم ألبرت هيجن (Albert Heijn) الأسبوعية. انقر على الرابط وعبأ بيانات الطلب:\n\nhttps://register.nlrc.121.global/?programs=2\n\nيجب أن يتوفر لديك اتصال بالإنترنت لفتح الرابط.\n\nهل لديك أي أسئلة؟ راسلنا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nأو اتصل بـ {{namePartnerOrganization}}.",
@@ -24,6 +29,10 @@
     }
   },
   "included": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "Include"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nشكرًا لكم على التسجيل. اعتبارًا من الآن، ستُرسل إليك قسيمة ألبرت هيجن (Albert Heijn) عبر الواتساب كل ثلاثاء. ستتلقى القسائم طالما أنك مدرج في قائمة {{namePartnerOrganization}}.\n\nيمكن أن يزودك الصليب الأحمر أيضًا بمعلومات عن المساعدات الطبية أو المساعدات الغذائية أو المساعدات المتعلقة بالسلامة، على سبيل المثال. تفقد موقعنا الإلكتروني:\n\nhttps://helpfulinformation.redcross.nl/\n\nأو اطرح سؤالك عبر الواتساب:\n\nhttps://wa.me/3197010286964",
@@ -35,6 +44,10 @@
     }
   },
   "inclusionEnded": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "End inclusion"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nتلقيت هذا الأسبوع قسيمتك الأخيرة لأنك لم تُعد مدرجًا في قائمة {{namePartnerOrganization}}.\n\nهل لديك أي أسئلة متعلقة بذلك؟ راسلنا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nأو اتصل بـ {{namePartnerOrganization}}.\n\nنتمنى لكم كل التوفيق،",
@@ -46,6 +59,10 @@
     }
   },
   "rejected": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "Reject"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nيؤسفنا أن نرفض طلبك للحصول على قسائم ألبرت هيجن (Albert Heijn). لست مسجلاً لدى إحدى المنظمات الشريكة لنا للحصول على هذه المساعدات.\n\nهل لديك أي أسئلة متعلقة بذلك؟ يُرجى مراسلتنا عبر الواتساب:\n\nhttps://wa.me/3197010286964",
@@ -57,6 +74,7 @@
     }
   },
   "whatsappGenericMessage": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": true,
     "message": {
       "ar": "هذه رسالة من الصليب الأحمر.\n\nهناك رسالة في انتظارك. الرجاء الرد ب- \"نعم\" على هذه الرسالة لتلقيتها",
@@ -70,6 +88,7 @@
     }
   },
   "whatsappPayment": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": true,
     "message": {
       "ar": "هذه رسالة من الصليب الأحمر.\n\nإن قسيمة ألبرت هاين الشرائية جاهزة للارسال.\n\nالرجاء الرد بـ “yes” على هذه الرسالة لاستلام:\n1. قسيمة هذا الاسبوع.\n2.أي قسائم سابقة لم يتم استلامها بعد.",
@@ -83,6 +102,7 @@
     }
   },
   "whatsappVoucher": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه رسالة من الصليب الأحمر.\n\nتحتوي هذه الرسالة على صورتين:\n1 الأولى لقسيمة الشراء من البرت هاين (cadeaukaart) - مع رمز مرئي.\n2 و تتضمن الأخرى شرحاً لكيفية استخدام قسيمة الشراء  من البرت هاين.\n\nإذا تلقيت أكثر من إيصال، فذلك لأن هناك قسائم من الأسابيع السابقة لم استلم حتى الآن .\n\n المبلغ الذي تتلقاه مكتوب في أعلى القسيمة. \\ nيمكنك استخدام هذه القسيمة لدى أي سوبر ماركت ألبرت هاين في هولندا.\n\nلست مضطراً لاستخدام كامل المبلغ مرة واحدة. لذى الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\n\nسوف سيتم ارسال قسيمة اسبوعية في كل ثلاثاء.\n\nعند إيقاف الدعم, ستتلقى رسالة من الصليب الأحمر توضح لك متى ولماذا ننهي هذا الدعم.\n\nهل لديك اسئلة؟ قم بمراسلتنا عبر تطبيق واتسآب https://wa.me/3197010286964",
@@ -96,6 +116,7 @@
     }
   },
   "whatsappReply": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +3197010286964",
@@ -109,6 +130,10 @@
     }
   },
   "remindInvite": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "Remind invite"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nلا يزال بإمكانك الاشتراك في قسائم ألبرت هيجن (Albert Heijn) الأسبوعية. انقر على الرابط وعبأ بيانات الطلب:\n\nhttps://register.nlrc.121.global/?programs=2\n\nهل لديك أي أسئلة؟ راسلنا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nأو اتصل بـ {{namePartnerOrganization}}.",
@@ -120,6 +145,10 @@
     }
   },
   "prepareToEndInclusion": {
+    "isSendMessageTemplate": true,
+    "label": {
+      "en": "Prepare to end inclusion"
+    },
     "isWhatsappTemplate": false,
     "message": {
       "ar": "هذه الرسالة واردة من الصليب الأحمر.\n\nستحصل على القسيمة الأخيرة في غضون أربعة أسابيع نظرًا لبلوغ الحد الأقصى لفترة المساعدات الغذائية.\n\nتكون مساعداتنا الغذائية مؤقتة دائمًا والهدف منها أن تكون معونة طارئة. نحن نعمل مع المنظمة الشريكة لنا.\n\nهل لديك أي أسئلة متعلقة بذلك؟ يُرجى الاتصال بـ {{namePartnerOrganization}} أو إرسال رسالة إلينا عبر الواتساب:\n\nhttps://wa.me/3197010286964\n\nنتمنى لكم كل التوفيق،",

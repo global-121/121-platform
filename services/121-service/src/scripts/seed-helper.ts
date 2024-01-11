@@ -341,6 +341,8 @@ export class SeedHelper {
           language,
           languages[language],
           messageTemplates[messageType].isWhatsappTemplate,
+          messageTemplates[messageType].isSendMessageTemplate,
+          messageTemplates[messageType].label,
         );
 
         await messageTemplateRepo.save(template);
@@ -354,13 +356,19 @@ export class SeedHelper {
     language: string,
     message: string,
     isWhatsappTemplate: boolean,
+    isSendMessageTemplate: boolean,
+    label: object,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;
     messageTemplateEntity.type = type;
+    messageTemplateEntity.label = label
+      ? JSON.parse(JSON.stringify(label))
+      : null;
     messageTemplateEntity.language = language;
     messageTemplateEntity.message = message;
     messageTemplateEntity.isWhatsappTemplate = isWhatsappTemplate;
+    messageTemplateEntity.isSendMessageTemplate = isSendMessageTemplate;
 
     await this.messageTemplateService.validatePlaceholders(
       program.id,

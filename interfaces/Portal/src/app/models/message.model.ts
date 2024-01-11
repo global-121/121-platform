@@ -1,3 +1,5 @@
+import { TranslatableString } from './translatable-string.model';
+
 export class Message {
   body: string;
   created: string;
@@ -47,8 +49,10 @@ export class MessageTemplate {
   created: string;
   updated: string;
   type: string;
+  label: TranslatableString;
   language: string;
   message: string;
   isWhatsappTemplate: true;
+  isSendMessageTemplate: true;
   programId: number;
 }

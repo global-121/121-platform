@@ -1,5 +1,6 @@
 {
   "whatsappGenericMessage": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": true,
     "message": {
       "en": "There is a message waiting for you. Please reply “yes” to this message to receive it.\n\nKind regards, NL Red Cross / School Meals Programme",
@@ -9,6 +10,7 @@
     }
   },
   "whatsappReply": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "This is an automated message. Questions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards, NL Red Cross / School Meals Programme",
@@ -18,6 +20,7 @@
     }
   },
   "whatsappPayment": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": true,
     "message": {
       "en": "Dear parent/carer, we are ready to send you your Albert Heijn grocery voucher on Whatsapp. Answer 'yes' to this message to receive your Albert Heijn grocery voucher.\nKind regards, NL Red Cross / School Meals Programme",
@@ -27,6 +30,7 @@
     }
   },
   "whatsappVoucher": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, with this message you receive:\n- Your Albert Heijn grocery voucher (the image with the barcode)\n- Instructions on how to use the Albert Heijn grocery voucher\n\nThe grocery voucher is worth €[[amount]]. You can use the grocery voucher in all Albert Heijn supermarkts in the Netherlands and Belgium. You can use the grocery voucher multiple times, as long as there is money left on it.\n\nIf you have any questions, please visit the website www.schoolmaaltijden.nl. You can also contact our Customer Service by telephone, text message or Whatsapp to 097 010 204 851 (open Mon-Fri 09.00-17.00) or by email to info@schoolmaaltijden.nl.\n\nKind regards, NL Red Cross / School Meals Programme",
@@ -36,6 +40,7 @@
     }
   },
   "visaDebitCardCreated": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, we have sent your grocery card by post. You will receive it within 3 weeks. The card is sent in a neutral looking envelope.\n\n- You will activate your card online via www.rodekruis.nl/boodschappenkaart-activeren and use it for the rest of the year.\n- For more information on how to activate the grocery card watch: www.schoolmaaltijden.nl/activatie\n- Every two weeks, we will put new money on your card: €[[1]].\n- You can only spend a maximum of €150 per calender month.\n- You can use the card in many shops selling food in the Netherlands.\n- The card works like normal debit cards. You will receive more information in the letter that comes with the card.\n\nQuestions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards,\nNL Red Cross / School Meals Programme",
@@ -45,6 +50,7 @@
     }
   },
   "visaLoad": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, we have put new money on your card: €[[1]] for the coming two weeks. You can only spend a maximum of €150 per calender month. \nBefore using the grocery card, please check the balance via www.rodekruis.nl/boodschappenkaart.\n\nQuestions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards,\nNL Red Cross / School Meals Programme",
@@ -54,6 +60,7 @@
     }
   },
   "jumboCardSent": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, we have put new money on your card: €[[1]] for the coming two weeks. You can only spend a maximum of €150 per calender month. \nBefore using the grocery card, please check the balance via www.rodekruis.nl/boodschappenkaart.\n\nQuestions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards,\nNL Red Cross / School Meals Programme",
@@ -63,6 +70,7 @@
     }
   },
   "reissueVisaCard": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, a new grocery card is sent to your address. You will receive it within three weeks. School Meals",
@@ -72,6 +80,7 @@
     }
   },
   "blockVisaCard": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, your grocery card is blocked. If you do not know why, please contact customer service: call or whatsapp 097 010 204 851. School Meals",
@@ -81,6 +90,7 @@
     }
   },
   "unblockVisaCard": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "Dear parent/carer, your grocery card is unblocked. You can use the card again. Questions? Call or whatsapp 097 010 204 851. School Meals",

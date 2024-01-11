@@ -1,5 +1,6 @@
 {
   "registered": {
+    "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
       "en": "This is a message from Dorcas Ukraine.\n\nWe have received your application for support. You will be informed if you're included in the program",
