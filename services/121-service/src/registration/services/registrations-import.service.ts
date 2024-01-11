@@ -769,15 +769,6 @@ export class RegistrationsImportService {
       id: programId,
     });
 
-    if (!program.allowEmptyPhoneNumber) {
-      const errorObj = {
-        column: GenericAttributes.phoneNumber,
-        error: 'PhoneNumber is not allowed to be empty',
-      };
-      errors.push(errorObj);
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
@@ -835,6 +826,16 @@ export class RegistrationsImportService {
         }
       }
       importRecord.phoneNumber = row.phoneNumber;
+
+      if (!program.allowEmptyPhoneNumber && row.phoneNumber.length <= 0) {
+        const errorObj = {
+          column: GenericAttributes.phoneNumber,
+          error: 'PhoneNumber is not allowed to be empty',
+        };
+        errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
+
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
