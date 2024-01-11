@@ -19,6 +19,24 @@
     "update-success": "Actualización correcta"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Completado",
+        "deleted": "Borrado",
+        "imported": "Importado",
+        "included": "Incluido",
+        "inclusionEnded": "Inclusión terminada",
+        "invited": "Invitado",
+        "noLongerEligible": "Ya no es elegible",
+        "paused": "Pausa",
+        "registered": "Registrado",
+        "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
+        "rejected": "Rechazado",
+        "selectedForValidation": "Seleccionado para validación",
+        "startedRegistration": "Registro iniciado",
+        "validated": "Validado"
+      }
+    },
     "users": {
       "status": {
         "active": "Activo",
@@ -190,18 +208,7 @@
           "label": "Exportar como CSV"
         },
         "pa": {
-          "deleted": "Borrado",
-          "imported": "Importado",
-          "included": "Incluido",
-          "inclusionEnded": "Inclusión terminada",
-          "invited": "Invitado",
-          "noLongerEligible": "Ya no es elegible",
-          "registered": "Registrado",
-          "rejected": "Rechazado",
-          "selectedForValidation": "Seleccionado para validación",
-          "startedRegistration": "Registro iniciado",
-          "targeted": "PA Dirigido",
-          "validated": "Validado"
+          "targeted": "PA Dirigido"
         },
         "state-explanation": {
           "deleted": "PAs que fueron eliminados. Esto puede incluir, por ejemplo, los PA <br> eliminados después de una importación incorrecta, así como los PA que han recibido pagos, ya no están incluidos y posteriormente se eliminan después de un tiempo.",
@@ -530,21 +537,6 @@
             "start-payout": "Comience a pagar ahora por {{paNr}}",
             "total-amount": "Importe total: {{cost}} * multiplicador de {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
-        },
-        "status": {
-          "completed": "Completado",
-          "imported": "Importado",
-          "included": "Incluido",
-          "inclusionEnded": "Fin de la inclusión",
-          "invited": "Invitado",
-          "noLongerEligible": "Ya no es elegible",
-          "paused": "Pausa",
-          "registered": "Registrado",
-          "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
-          "rejected": "Rechazado",
-          "selectedForValidation": "Seleccionado para validación",
-          "startedRegistration": "Creado",
-          "validated": "Validado"
         },
         "submit-warning": "Estás a punto de:",
         "submit-warning-people-affected": "Realice la acción {{actionLabel}} en <strong>{{applicableCount}}</strong> Personas afectadas.",

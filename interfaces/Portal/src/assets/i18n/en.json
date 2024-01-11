@@ -19,6 +19,24 @@
     "update-success": "Update successful"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Completed",
+        "deleted": "Deleted",
+        "imported": "Imported",
+        "included": "Included",
+        "inclusionEnded": "Inclusion ended",
+        "invited": "Invited",
+        "noLongerEligible": "No longer eligible",
+        "paused": "Paused",
+        "registered": "Registered",
+        "registeredWhileNoLongerEligible": "Registered while no longer eligible",
+        "rejected": "Rejected",
+        "selectedForValidation": "Selected for Validation",
+        "startedRegistration": "Created",
+        "validated": "Validated"
+      }
+    },
     "users": {
       "status": {
         "active": "Active",
@@ -190,18 +208,7 @@
           "label": "Export as CSV"
         },
         "pa": {
-          "deleted": "Deleted",
-          "imported": "Imported",
-          "included": "Included",
-          "inclusionEnded": "Inclusion Ended",
-          "invited": "Invited",
-          "noLongerEligible": "No longer eligible",
-          "registered": "Registered",
-          "rejected": "Rejected",
-          "selectedForValidation": "Selected for validation",
-          "startedRegistration": "Started Registration",
-          "targeted": "PA Targeted",
-          "validated": "Validated"
+          "targeted": "PA Targeted"
         },
         "state-explanation": {
           "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time.",
@@ -530,21 +537,6 @@
             "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
-        },
-        "status": {
-          "completed": "Completed",
-          "imported": "Imported",
-          "included": "Included",
-          "inclusionEnded": "Inclusion ended",
-          "invited": "Invited",
-          "noLongerEligible": "No longer eligible",
-          "paused": "Paused",
-          "registered": "Registered",
-          "registeredWhileNoLongerEligible": "Registered while no longer eligible",
-          "rejected": "Rejected",
-          "selectedForValidation": "Selected for Validation",
-          "startedRegistration": "Created",
-          "validated": "Validated"
         },
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "{{actionLabel}} for {{applicableCount}} People Affected.",

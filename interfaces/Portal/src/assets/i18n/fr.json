@@ -19,6 +19,24 @@
     "update-success": "Mise à jour réussie"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Terminé",
+        "deleted": "Supprimé",
+        "imported": "Importé",
+        "included": "Inclus",
+        "inclusionEnded": "Inclusion terminée",
+        "invited": "Invité",
+        "noLongerEligible": "N’est plus admissible",
+        "paused": "Pause",
+        "registered": "Recommandé",
+        "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
+        "rejected": "Rejeté",
+        "selectedForValidation": "Sélectionné pour validation",
+        "startedRegistration": "Début de l’inscription",
+        "validated": "Validé"
+      }
+    },
     "users": {
       "status": {
         "active": "Actif",
@@ -190,18 +208,7 @@
           "label": "Exporter au format CSV"
         },
         "pa": {
-          "deleted": "Supprimé",
-          "imported": "Importé",
-          "included": "Inclus",
-          "inclusionEnded": "Inclusion terminée",
-          "invited": "Invité",
-          "noLongerEligible": "N’est plus admissible",
-          "registered": "Recommandé",
-          "rejected": "Rejeté",
-          "selectedForValidation": "Sélectionné pour validation",
-          "startedRegistration": "Début de l’inscription",
-          "targeted": "PA ciblés",
-          "validated": "Validé"
+          "targeted": "PA ciblés"
         },
         "state-explanation": {
           "deleted": "PA qui ont été supprimés. Il peut s’agir, par exemple, de PA supprimés après <br> une importation incorrecte, ainsi que de PA qui ont reçu des paiements, qui ne sont plus inclus et qui sont ensuite supprimés après un certain temps.",
@@ -530,21 +537,6 @@
             "start-payout": "Commencez à payer maintenant pour {{paNr}}",
             "total-amount": "Montant total : {{cost}} * multiplicateur de {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
-        },
-        "status": {
-          "completed": "Terminé",
-          "imported": "Importé",
-          "included": "Inclus",
-          "inclusionEnded": "Fin de l’inclusion",
-          "invited": "Invité",
-          "noLongerEligible": "N’est plus admissible",
-          "paused": "Pause",
-          "registered": "Recommandé",
-          "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
-          "rejected": "Rejeté",
-          "selectedForValidation": "Sélectionné pour validation",
-          "startedRegistration": "Créé",
-          "validated": "Validé"
         },
         "submit-warning": "Vous êtes sur le point de :",
         "submit-warning-people-affected": "Effectuez l’action {{actionLabel}} sur <strong>{{applicableCount}}</strong> Personnes affectées.",
