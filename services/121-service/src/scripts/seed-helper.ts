@@ -357,7 +357,7 @@ export class SeedHelper {
     message: string,
     isWhatsappTemplate: boolean,
     isSendMessageTemplate: boolean,
-    label: {},
+    label: object,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;
