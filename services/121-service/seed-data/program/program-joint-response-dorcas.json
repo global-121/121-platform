@@ -408,5 +408,6 @@
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "et_AM"],
   "enableMaxPayments": true,
-  "enableScope": false
+  "enableScope": false,
+  "allowEmptyPhoneNumber": false
 }

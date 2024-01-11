@@ -768,6 +768,16 @@ export class RegistrationsImportService {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+
+    if (!program.allowEmptyPhoneNumber) {
+      const errorObj = {
+        column: GenericAttributes.phoneNumber,
+        error: 'PhoneNumber is not allowed to be empty',
+      };
+      errors.push(errorObj);
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
