@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Français",
   "common": {
+    "all": "Tout",
     "answer-is-required": "Une réponse est requise pour cette question.",
+    "apply": "Appliquer",
     "cancel": "Annuler",
     "confirm": "Es-tu sûr?",
     "export-error": "Quelque chose s’est mal passé avec l’exportation.",
@@ -17,6 +19,24 @@
     "update-success": "Mise à jour réussie"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Terminé",
+        "deleted": "Supprimé",
+        "imported": "Importé",
+        "included": "Inclus",
+        "inclusionEnded": "Inclusion terminée",
+        "invited": "Invité",
+        "noLongerEligible": "N’est plus admissible",
+        "paused": "Pause",
+        "registered": "Recommandé",
+        "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
+        "rejected": "Rejeté",
+        "selectedForValidation": "Sélectionné pour validation",
+        "startedRegistration": "Début de l’inscription",
+        "validated": "Validé"
+      }
+    },
     "users": {
       "status": {
         "active": "Actif",
@@ -188,18 +208,7 @@
           "label": "Exporter au format CSV"
         },
         "pa": {
-          "deleted": "Supprimé",
-          "imported": "Importé",
-          "included": "Inclus",
-          "inclusionEnded": "Inclusion terminée",
-          "invited": "Invité",
-          "noLongerEligible": "N’est plus admissible",
-          "registered": "Recommandé",
-          "rejected": "Rejeté",
-          "selectedForValidation": "Sélectionné pour validation",
-          "startedRegistration": "Début de l’inscription",
-          "targeted": "PA ciblés",
-          "validated": "Validé"
+          "targeted": "PA ciblés"
         },
         "state-explanation": {
           "deleted": "PA qui ont été supprimés. Il peut s’agir, par exemple, de PA supprimés après <br> une importation incorrecte, ainsi que de PA qui ont reçu des paiements, qui ne sont plus inclus et qui sont ensuite supprimés après un certain temps.",
@@ -331,19 +340,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Ajouter un champ personnalisé",
+          "available-languages": "Idiomas de plantilla disponibles",
           "delete-warning": "Vous êtes sur le point de supprimer les informations personnelles de ces personnes concernées. Cette action ne peut pas être annulée. Vous ne pouvez plus voir les paiements passés et vous ne pouvez pas leur faire de nouveaux paiements.",
           "message-checkbox": "Envoyez un message à ces personnes touchées",
           "message-preview": "Aperçu du message",
           "placeholder-pa-data": "Veuillez vous assurer que pour tous les champs personnalisés utilisés, les données sont disponibles pour toutes les personnes concernées sélectionnées.",
           "placeholder-typeahead-placeholder": "Sélectionner un champ",
+          "select-message-template": "Sélectionnez le modèle de message",
           "templated-explanation": "Le message suivant sera envoyé aux PA dans leur propre langue.",
           "templated-support": "Veuillez contacter l’équipe d’assistance 121 si vous souhaitez modifier ce modèle de message.",
-          "type-message": "Tapez message",
-          "type-message-tooltip": "Le message doit comporter plus de {{minLength}} caractère(s). Notez que si vous dépassez 160 caractères, la personne concernée peut recevoir le message sous forme de plusieurs textes, si elle dispose d’un téléphone polyvalent (non intelligent).",
           "type-custom-message": "Escribe un mensaje personalizado",
           "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
-          "available-languages": "Idiomas de plantilla disponibles",
-          "select-message-template": "Sélectionnez le modèle de message"
+          "type-message": "Tapez message",
+          "type-message-tooltip": "Le message doit comporter plus de {{minLength}} caractère(s). Notez que si vous dépassez 160 caractères, la personne concernée peut recevoir le message sous forme de plusieurs textes, si elle dispose d’un téléphone polyvalent (non intelligent)."
         },
         "actions": {
           "deletePa": "Supprimer PA",
@@ -455,12 +464,6 @@
           "btn-label": {
             "paStatus": "Statut"
           },
-          "common": {
-            "all-options": "Tout",
-            "apply-btn": "Appliquer",
-            "cancel-btn": "Annuler",
-            "filter-by": "Filtrer par :"
-          },
           "multiple-choice-hidden-options": "La liste ci-dessus n’affiche un statut que s’il est attribué à au moins une personne concernée"
         },
         "filter-placeholder": "Tapez value...",
@@ -535,21 +538,6 @@
             "total-amount": "Montant total : {{cost}} * multiplicateur de {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status": {
-          "completed": "Terminé",
-          "imported": "Importé",
-          "included": "Inclus",
-          "inclusionEnded": "Fin de l’inclusion",
-          "invited": "Invité",
-          "noLongerEligible": "N’est plus admissible",
-          "paused": "Pause",
-          "registered": "Recommandé",
-          "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
-          "rejected": "Rejeté",
-          "selectedForValidation": "Sélectionné pour validation",
-          "startedRegistration": "Créé",
-          "validated": "Validé"
-        },
         "submit-warning": "Vous êtes sur le point de :",
         "submit-warning-people-affected": "Effectuez l’action {{actionLabel}} sur <strong>{{applicableCount}}</strong> Personnes affectées.",
         "transaction": {
@@ -572,6 +560,7 @@
       "table-filter-row": {
         "apply-filter": "Appliquer le filtre",
         "clear-all": "Effacer tous les filtres",
+        "filter-by": "Filtrer par :",
         "filtered-results": "Destinataires filtrés",
         "remove-filter": "Supprimer le filtre",
         "select-column-to-filter": "Tapez ou sélectionnez la colonne à filtrer"

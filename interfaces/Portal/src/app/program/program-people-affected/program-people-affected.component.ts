@@ -532,7 +532,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       registrationProgramId: person.personAffectedSequence,
       registrationStatus: person.status,
       status: this.translate.instant(
-        'page.program.program-people-affected.status.' + person.status,
+        `entity.registration.status.${person.status}`,
       ),
       registrationCreated: person.registrationCreated
         ? formatDate(

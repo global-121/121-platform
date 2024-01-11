@@ -98,7 +98,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.imported,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.imported'),
+        label: this.translate.instant('entity.registration.status.imported'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.imported',
         ),
@@ -107,7 +107,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.invited,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.invited'),
+        label: this.translate.instant('entity.registration.status.invited'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.invited',
         ),
@@ -117,7 +117,7 @@ export class MetricsStatesComponent implements OnChanges {
         name: RegistrationStatus.noLongerEligible,
         enabled: true,
         label: this.translate.instant(
-          'page.program.metrics.pa.noLongerEligible',
+          'entity.registration.status.noLongerEligible',
         ),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.noLongerEligible',
@@ -128,7 +128,7 @@ export class MetricsStatesComponent implements OnChanges {
         name: RegistrationStatus.startedRegistration,
         enabled: true,
         label: this.translate.instant(
-          'page.program.metrics.pa.startedRegistration',
+          'entity.registration.status.startedRegistration',
         ),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.startedRegistration',
@@ -138,7 +138,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.registered,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.registered'),
+        label: this.translate.instant('entity.registration.status.registered'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.registered',
         ),
@@ -148,7 +148,7 @@ export class MetricsStatesComponent implements OnChanges {
         name: RegistrationStatus.selectedForValidation,
         enabled: this.program.validation,
         label: this.translate.instant(
-          'page.program.metrics.pa.selectedForValidation',
+          'entity.registration.status.selectedForValidation',
         ),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.selectedForValidation',
@@ -159,7 +159,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.validated,
         enabled: this.program.validation,
-        label: this.translate.instant('page.program.metrics.pa.validated'),
+        label: this.translate.instant('entity.registration.status.validated'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.validated',
         ),
@@ -168,7 +168,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.included,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.included'),
+        label: this.translate.instant('entity.registration.status.included'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.included',
         ),
@@ -177,7 +177,9 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.inclusionEnded,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.inclusionEnded'),
+        label: this.translate.instant(
+          'entity.registration.status.inclusionEnded',
+        ),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.inclusionEnded',
         ),
@@ -186,7 +188,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.rejected,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.rejected'),
+        label: this.translate.instant('entity.registration.status.rejected'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.rejected',
         ),
@@ -195,7 +197,7 @@ export class MetricsStatesComponent implements OnChanges {
       {
         name: RegistrationStatus.deleted,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.deleted'),
+        label: this.translate.instant('entity.registration.status.deleted'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.deleted',
         ),

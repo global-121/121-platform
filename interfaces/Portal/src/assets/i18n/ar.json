@@ -2,7 +2,9 @@
   "_dir": "rtl",
   "_languageName": "العربية",
   "common": {
+    "all": "كل",
     "answer-is-required": "مطلوب إجابة لهذا السؤال.",
+    "apply": "طبق",
     "cancel": "إلغاء الأمر",
     "confirm": "هل أنت متأكد؟",
     "export-error": "حدث خطأ ما في التصدير.",
@@ -17,6 +19,24 @@
     "update-success": "تم التحديث بنجاح"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "اكمال",
+        "deleted": "محذوف",
+        "imported": "مستورد",
+        "included": "متضمن",
+        "inclusionEnded": "انتهى التضمين",
+        "invited": "مدعو",
+        "noLongerEligible": "لم يعد مؤهلا",
+        "paused": "توقف",
+        "registered": "المسجله",
+        "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
+        "rejected": "نبيذ",
+        "selectedForValidation": "تم اختياره للتحقق من الصحة",
+        "startedRegistration": "بدأ التسجيل",
+        "validated": "التحقق"
+      }
+    },
     "users": {
       "status": {
         "active": "نشط",
@@ -188,18 +208,7 @@
           "label": "تصدير بتنسيق CSV"
         },
         "pa": {
-          "deleted": "محذوف",
-          "imported": "مستورد",
-          "included": "متضمن",
-          "inclusionEnded": "انتهى التضمين",
-          "invited": "مدعو",
-          "noLongerEligible": "لم يعد مؤهلا",
-          "registered": "المسجله",
-          "rejected": "نبيذ",
-          "selectedForValidation": "تم اختياره للتحقق من الصحة",
-          "startedRegistration": "بدأ التسجيل",
-          "targeted": "PA مستهدف",
-          "validated": "التحقق"
+          "targeted": "PA مستهدف"
         },
         "state-explanation": {
           "deleted": "PAs التي تم حذفها. <br> يمكن أن يشمل ذلك على سبيل المثال PAs المحذوفة بعد استيراد غير صحيح ، وكذلك PAs الذين تلقوا مدفوعات ، ولم يعد يتم تضمينهم ، ويتم حذفهم لاحقا بعد مرور بعض الوقت.",
@@ -331,19 +340,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "إضافة حقل مخصص",
+          "available-languages": "اللغات المتاحة للقالب",
           "delete-warning": "أنت على وشك حذف المعلومات الشخصية لهؤلاء الأشخاص المتأثرين. لا يمكن التراجع عن هذا الإجراء. لا يمكنك رؤية المدفوعات السابقة لهم بعد الآن ولا يمكنك إجراء مدفوعات جديدة لهم.",
           "message-checkbox": "إرسال رسالة إلى هؤلاء الأشخاص المتضررين",
           "message-preview": "معاينة الرسالة",
           "placeholder-pa-data": "يرجى التأكد من توفر البيانات لجميع الحقول المخصصة المستخدمة لجميع الأشخاص المتأثرين المحددين.",
           "placeholder-typeahead-placeholder": "حدد الحقل",
+          "select-message-template": "اختر قالب الرسالة",
           "templated-explanation": "سيتم إرسال الرسالة التالية إلى PAs بلغتهم الخاصة.",
           "templated-support": "الرجاء الاتصال بفريق الدعم 121 إذا كنت تريد تغيير هذه الرسالة النموذجية.",
-          "type-message": "اكتب رسالة",
-          "type-message-tooltip": "يجب أن تكون الرسالة أطول من {{minLength}} حرف (أحرف). لاحظ أنه إذا تجاوزت 160 حرفا ، فقد يتلقى الشخص المتأثر الرسالة كنصوص متعددة ، إذا كان لديه هاتف مميز (غير ذكي).",
           "type-custom-message": "اكتب رسالة مخصصة",
           "type-custom-message-tooltip": "يجب أن يكون طول الرسالة أكثر من {{minLength}} حرفًا. لاحظ أنه إذا تجاوزت الـ 160 حرفًا، قد يتلقى الشخص المتأثر الرسالة كنصوص متعددة، إذا كان لديهم هاتف غير ذكي.",
-          "available-languages": "اللغات المتاحة للقالب",
-          "select-message-template": "اختر قالب الرسالة"
+          "type-message": "اكتب رسالة",
+          "type-message-tooltip": "يجب أن تكون الرسالة أطول من {{minLength}} حرف (أحرف). لاحظ أنه إذا تجاوزت 160 حرفا ، فقد يتلقى الشخص المتأثر الرسالة كنصوص متعددة ، إذا كان لديه هاتف مميز (غير ذكي)."
         },
         "actions": {
           "deletePa": "حذف PA",
@@ -455,12 +464,6 @@
           "btn-label": {
             "paStatus": "حالة"
           },
-          "common": {
-            "all-options": "كل",
-            "apply-btn": "طبق",
-            "cancel-btn": "إلغاء الأمر",
-            "filter-by": "تصفية حسب:"
-          },
           "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
         },
         "filter-placeholder": "اكتب القيمة...",
@@ -535,21 +538,6 @@
             "total-amount": "المبلغ الإجمالي: {{cost}} * مضاعف {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status": {
-          "completed": "اكمال",
-          "imported": "مستورد",
-          "included": "متضمن",
-          "inclusionEnded": "انتهى الإدراج",
-          "invited": "مدعو",
-          "noLongerEligible": "لم يعد مؤهلا",
-          "paused": "توقف",
-          "registered": "المسجله",
-          "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
-          "rejected": "نبيذ",
-          "selectedForValidation": "تم اختياره للتحقق من الصحة",
-          "startedRegistration": "انشاء",
-          "validated": "التحقق"
-        },
         "submit-warning": "أنت على وشك القيام بما يلي:",
         "submit-warning-people-affected": "نفذ <strong>الإجراء {{actionLabel}} على {{applicableCount}}</strong> الأشخاص المتأثرين.",
         "transaction": {
@@ -572,6 +560,7 @@
       "table-filter-row": {
         "apply-filter": "تطبيق عامل التصفية",
         "clear-all": "مسح كل عوامل التصفية",
+        "filter-by": "تصفية حسب:",
         "filtered-results": "المستلمون الذين تمت تصفيتهم",
         "remove-filter": "إزالة الفلتر",
         "select-column-to-filter": "كتابة عمود أو تحديده لتصفيته"

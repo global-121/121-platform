@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Español",
   "common": {
+    "all": "Todo",
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
+    "apply": "Aplicar",
     "cancel": "Cancelar",
     "confirm": "¿Estás seguro?",
     "export-error": "Algo salió mal con la exportación.",
@@ -17,6 +19,24 @@
     "update-success": "Actualización correcta"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Completado",
+        "deleted": "Borrado",
+        "imported": "Importado",
+        "included": "Incluido",
+        "inclusionEnded": "Inclusión terminada",
+        "invited": "Invitado",
+        "noLongerEligible": "Ya no es elegible",
+        "paused": "Pausa",
+        "registered": "Registrado",
+        "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
+        "rejected": "Rechazado",
+        "selectedForValidation": "Seleccionado para validación",
+        "startedRegistration": "Registro iniciado",
+        "validated": "Validado"
+      }
+    },
     "users": {
       "status": {
         "active": "Activo",
@@ -188,18 +208,7 @@
           "label": "Exportar como CSV"
         },
         "pa": {
-          "deleted": "Borrado",
-          "imported": "Importado",
-          "included": "Incluido",
-          "inclusionEnded": "Inclusión terminada",
-          "invited": "Invitado",
-          "noLongerEligible": "Ya no es elegible",
-          "registered": "Registrado",
-          "rejected": "Rechazado",
-          "selectedForValidation": "Seleccionado para validación",
-          "startedRegistration": "Registro iniciado",
-          "targeted": "PA Dirigido",
-          "validated": "Validado"
+          "targeted": "PA Dirigido"
         },
         "state-explanation": {
           "deleted": "PAs que fueron eliminados. Esto puede incluir, por ejemplo, los PA <br> eliminados después de una importación incorrecta, así como los PA que han recibido pagos, ya no están incluidos y posteriormente se eliminan después de un tiempo.",
@@ -331,19 +340,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Agregar campo personalizado",
+          "available-languages": "Idiomas de plantilla disponibles",
           "delete-warning": "Está a punto de eliminar la información personal de estas Personas Afectadas. Esta acción no se puede deshacer. Ya no puede ver los pagos anteriores de ellos y no puede realizar nuevos pagos a ellos.",
           "message-checkbox": "Envía un mensaje a estas personas afectadas",
           "message-preview": "Vista previa del mensaje",
           "placeholder-pa-data": "Asegúrese de que para todos los campos personalizados utilizados, los datos estén disponibles para todas las personas afectadas seleccionadas.",
           "placeholder-typeahead-placeholder": "Seleccionar campo",
+          "select-message-template": "Selecciona la plantilla de mensaje",
           "templated-explanation": "El siguiente mensaje se enviará a los PA en su propio idioma.",
           "templated-support": "Póngase en contacto con el equipo de soporte del 121 si desea cambiar este mensaje con plantilla.",
-          "type-message": "Escriba el mensaje",
-          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente).",
           "type-custom-message": "Escribe un mensaje personalizado",
           "type-custom-message-tooltip": "El mensaje debe tener más de {{minLength}} carácter(es). Ten en cuenta que si superas los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono básico.",
-          "available-languages": "Idiomas de plantilla disponibles",
-          "select-message-template": "Selecciona la plantilla de mensaje"
+          "type-message": "Escriba el mensaje",
+          "type-message-tooltip": "El mensaje debe tener más de {{minLength}} caracteres. Tenga en cuenta que si supera los 160 caracteres, la persona afectada puede recibir el mensaje como varios textos, si tiene un teléfono con funciones (no inteligente)."
         },
         "actions": {
           "deletePa": "Eliminar PA",
@@ -455,12 +464,6 @@
           "btn-label": {
             "paStatus": "Estado"
           },
-          "common": {
-            "all-options": "Todo",
-            "apply-btn": "Aplicar",
-            "cancel-btn": "Cancelar",
-            "filter-by": "Filtrar por:"
-          },
           "multiple-choice-hidden-options": "La lista anterior solo muestra un estado si se asigna al menos a una persona afectada"
         },
         "filter-placeholder": "Escriba el valor...",
@@ -535,21 +538,6 @@
             "total-amount": "Importe total: {{cost}} * multiplicador de {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status": {
-          "completed": "Completado",
-          "imported": "Importado",
-          "included": "Incluido",
-          "inclusionEnded": "Fin de la inclusión",
-          "invited": "Invitado",
-          "noLongerEligible": "Ya no es elegible",
-          "paused": "Pausa",
-          "registered": "Registrado",
-          "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
-          "rejected": "Rechazado",
-          "selectedForValidation": "Seleccionado para validación",
-          "startedRegistration": "Creado",
-          "validated": "Validado"
-        },
         "submit-warning": "Estás a punto de:",
         "submit-warning-people-affected": "Realice la acción {{actionLabel}} en <strong>{{applicableCount}}</strong> Personas afectadas.",
         "transaction": {
@@ -572,6 +560,7 @@
       "table-filter-row": {
         "apply-filter": "Aplicar filtro",
         "clear-all": "Borrar todos los filtros",
+        "filter-by": "Filtrar por:",
         "filtered-results": "Destinatarios filtrados",
         "remove-filter": "Quitar el filtro",
         "select-column-to-filter": "Escriba o seleccione la columna que desea filtrar"
