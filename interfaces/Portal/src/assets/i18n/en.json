@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "English",
   "common": {
+    "all": "All",
     "answer-is-required": "An answer is required for this question.",
+    "apply": "Apply",
     "cancel": "Cancel",
     "confirm": "Are you sure?",
     "export-error": "Something went wrong with the export.",
@@ -455,12 +457,6 @@
           "btn-label": {
             "paStatus": "Status"
           },
-          "common": {
-            "all-options": "All",
-            "apply-btn": "Apply",
-            "cancel-btn": "Cancel",
-            "filter-by": "Filter by:"
-          },
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
@@ -572,6 +568,7 @@
       "table-filter-row": {
         "apply-filter": "Apply Filter",
         "clear-all": "Clear all filters",
+        "filter-by": "Filter by:",
         "filtered-results": "Filtered recipients",
         "remove-filter": "Remove filter",
         "select-column-to-filter": "Type or select column to filter"

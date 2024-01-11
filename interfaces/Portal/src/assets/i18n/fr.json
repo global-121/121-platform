@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Français",
   "common": {
+    "all": "Tout",
     "answer-is-required": "Une réponse est requise pour cette question.",
+    "apply": "Appliquer",
     "cancel": "Annuler",
     "confirm": "Es-tu sûr?",
     "export-error": "Quelque chose s’est mal passé avec l’exportation.",
@@ -455,12 +457,6 @@
           "btn-label": {
             "paStatus": "Statut"
           },
-          "common": {
-            "all-options": "Tout",
-            "apply-btn": "Appliquer",
-            "cancel-btn": "Annuler",
-            "filter-by": "Filtrer par :"
-          },
           "multiple-choice-hidden-options": "La liste ci-dessus n’affiche un statut que s’il est attribué à au moins une personne concernée"
         },
         "filter-placeholder": "Tapez value...",
@@ -572,6 +568,7 @@
       "table-filter-row": {
         "apply-filter": "Appliquer le filtre",
         "clear-all": "Effacer tous les filtres",
+        "filter-by": "Filtrer par :",
         "filtered-results": "Destinataires filtrés",
         "remove-filter": "Supprimer le filtre",
         "select-column-to-filter": "Tapez ou sélectionnez la colonne à filtrer"

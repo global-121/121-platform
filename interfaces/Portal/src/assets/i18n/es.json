@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Español",
   "common": {
+    "all": "Todo",
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
+    "apply": "Aplicar",
     "cancel": "Cancelar",
     "confirm": "¿Estás seguro?",
     "export-error": "Algo salió mal con la exportación.",
@@ -455,12 +457,6 @@
           "btn-label": {
             "paStatus": "Estado"
           },
-          "common": {
-            "all-options": "Todo",
-            "apply-btn": "Aplicar",
-            "cancel-btn": "Cancelar",
-            "filter-by": "Filtrar por:"
-          },
           "multiple-choice-hidden-options": "La lista anterior solo muestra un estado si se asigna al menos a una persona afectada"
         },
         "filter-placeholder": "Escriba el valor...",
@@ -572,6 +568,7 @@
       "table-filter-row": {
         "apply-filter": "Aplicar filtro",
         "clear-all": "Borrar todos los filtros",
+        "filter-by": "Filtrar por:",
         "filtered-results": "Destinatarios filtrados",
         "remove-filter": "Quitar el filtro",
         "select-column-to-filter": "Escriba o seleccione la columna que desea filtrar"

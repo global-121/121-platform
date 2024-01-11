@@ -2,7 +2,9 @@
   "_dir": "rtl",
   "_languageName": "العربية",
   "common": {
+    "all": "كل",
     "answer-is-required": "مطلوب إجابة لهذا السؤال.",
+    "apply": "طبق",
     "cancel": "إلغاء الأمر",
     "confirm": "هل أنت متأكد؟",
     "export-error": "حدث خطأ ما في التصدير.",
@@ -455,12 +457,6 @@
           "btn-label": {
             "paStatus": "حالة"
           },
-          "common": {
-            "all-options": "كل",
-            "apply-btn": "طبق",
-            "cancel-btn": "إلغاء الأمر",
-            "filter-by": "تصفية حسب:"
-          },
           "multiple-choice-hidden-options": "تعرض القائمة أعلاه حالة فقط إذا تم تعيينها لشخص واحد على الأقل متأثر"
         },
         "filter-placeholder": "اكتب القيمة...",
@@ -572,6 +568,7 @@
       "table-filter-row": {
         "apply-filter": "تطبيق عامل التصفية",
         "clear-all": "مسح كل عوامل التصفية",
+        "filter-by": "تصفية حسب:",
         "filtered-results": "المستلمون الذين تمت تصفيتهم",
         "remove-filter": "إزالة الفلتر",
         "select-column-to-filter": "كتابة عمود أو تحديده لتصفيته"

@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Nederlands",
   "common": {
+    "all": "Alle",
     "answer-is-required": "Op deze vraag is een antwoord nodig.",
+    "apply": "Toepassen",
     "cancel": "Annuleren",
     "confirm": "Weet je het zeker?",
     "export-error": "Er is iets misgegaan bij het exporteren",
@@ -455,12 +457,6 @@
           "btn-label": {
             "paStatus": "Status"
           },
-          "common": {
-            "all-options": "Alle",
-            "apply-btn": "Toepassen",
-            "cancel-btn": "Annuleren",
-            "filter-by": "Filter op:"
-          },
           "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
         },
         "filter-placeholder": "Type hier...",
@@ -572,6 +568,7 @@
       "table-filter-row": {
         "apply-filter": "Filter toepassen",
         "clear-all": "Wis alle filters",
+        "filter-by": "Filter op:",
         "filtered-results": "Gefilterde hulpvragers",
         "remove-filter": "Filter verwijderen",
         "select-column-to-filter": "Typ of selecteer kolom om te filteren"
