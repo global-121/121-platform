@@ -27,7 +27,7 @@ export async function postProgram(
 
 export async function patchProgram(
   programId: number,
-  programUpdate: Object,
+  programUpdate: object,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
