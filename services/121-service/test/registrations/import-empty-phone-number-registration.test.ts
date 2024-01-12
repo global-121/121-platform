@@ -9,19 +9,16 @@ import {
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { programIdOCW } from './pagination/pagination-data';
 
-describe('Import empty registration', () => {
+describe('Import registration', () => {
   let accessToken: string;
-  let programUpdate = {
-    allowEmptyPhoneNumber: true,
-  };
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
+    accessToken = await getAccessToken();
   });
 
-  it('should not import registrations', async () => {
+  it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
-    accessToken = await getAccessToken();
     registrationVisa.phoneNumber = '';
 
     // Act
@@ -43,10 +40,11 @@ describe('Import empty registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should import empty registrations', async () => {
+  it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
-    accessToken = await getAccessToken();
-
+    const programUpdate = {
+      allowEmptyPhoneNumber: true,
+    };
     await patchProgram(programIdOCW, programUpdate, accessToken);
 
     // Act
