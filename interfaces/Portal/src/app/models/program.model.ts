@@ -38,6 +38,7 @@ export class Program {
   fullnameNamingConvention: string[];
   paTableAttributes: Attribute[];
   filterableAttributes: FilterableAttributeGroup[];
+  allowEmptyPhoneNumber: boolean;
   monitoringDashboardUrl?: string;
   evaluationDashboardUrl?: string;
   budget?: number;
