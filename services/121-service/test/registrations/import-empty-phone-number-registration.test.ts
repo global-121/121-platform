@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { registrationVisaWithEmptyPhoneNumber } from '../../seed-data/mock/visa-card.data';
+import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { patchProgram } from '../helpers/program.helper';
 import {
@@ -22,18 +22,19 @@ describe('Import empty registration', () => {
   it('should not import registrations', async () => {
     // Arrange
     accessToken = await getAccessToken();
+    registrationVisa.phoneNumber = '';
 
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisaWithEmptyPhoneNumber],
+      [registrationVisa],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisaWithEmptyPhoneNumber.referenceId,
+      registrationVisa.referenceId,
       programIdOCW,
       accessToken,
     );
@@ -51,29 +52,27 @@ describe('Import empty registration', () => {
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisaWithEmptyPhoneNumber],
+      [registrationVisa],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisaWithEmptyPhoneNumber.referenceId,
+      registrationVisa.referenceId,
       programIdOCW,
       accessToken,
     );
     const registration = result.body.data[0];
-    for (const key in registrationVisaWithEmptyPhoneNumber) {
+    for (const key in registrationVisa) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
         expect(registration['financialServiceProvider']).toBe(
-          registrationVisaWithEmptyPhoneNumber[key],
+          registrationVisa[key],
         );
       } else {
         // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(
-          registrationVisaWithEmptyPhoneNumber[key],
-        );
+        expect(registration[key]).toBe(registrationVisa[key]);
       }
     }
   });
