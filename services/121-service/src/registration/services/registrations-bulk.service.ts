@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { And, In, IsNull, Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { NoteEntity } from '../../notes/note.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '../../notifications/latest-message.entity';
@@ -183,7 +183,7 @@ export class RegistrationsBulkService {
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getCustomMessageBaseQuery(),
+      this.getBaseQuery(),
     );
 
     if (!dryRun) {
@@ -220,7 +220,7 @@ export class RegistrationsBulkService {
         // TODO: Make this dynamic / a permission check
         true,
         false,
-        this.getCustomMessageBaseQuery(),
+        this.getBaseQuery(),
       );
 
     for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
@@ -232,7 +232,7 @@ export class RegistrationsBulkService {
           // TODO: Make this dynamic / a permission check
           true,
           false,
-          this.getCustomMessageBaseQuery(),
+          this.getBaseQuery(),
         );
       this.sendCustomTextMessage(
         registrationsForUpdate.data,
@@ -320,12 +320,6 @@ export class RegistrationsBulkService {
       );
     }
     return query;
-  }
-
-  private getCustomMessageBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.getBaseQuery().andWhere({
-      phoneNumber: And(Not(IsNull()), Not('')),
-    });
   }
 
   private async updateRegistrationStatusBatchFilter(

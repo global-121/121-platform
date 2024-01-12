@@ -7,6 +7,10 @@
 export function formatPhoneNumber(phoneNumber: string): string {
   // Strip all (possibly existing) prefixes
   const onlyNumbers = phoneNumber.replace(/\D/g, '');
+  // If result is empty, then do not add a "+"-prefix
+  if (!onlyNumbers) {
+    return onlyNumbers;
+  }
   return '+' + onlyNumbers;
 }
 
