@@ -152,13 +152,11 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
-      await this.deleteBatch(
-        paginateQuery,
-        programId,
-        allowedCurrentStatuses,
-      ).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
+      this.deleteBatch(paginateQuery, programId, allowedCurrentStatuses).catch(
+        (error) => {
+          this.azureLogService.logError(error, true);
+        },
+      );
     }
     return resultDto;
   }
