@@ -372,8 +372,9 @@
         },
         "bulk-action-response": {
           "close-popup": "Puede cerrar esta ventana emergente.",
-          "pa-moved-phase": "Es posible que las personas afectadas sean visibles en otra fase después de este cambio de estado.",
-          "response": "Se envió con éxito la solicitud a {{action}} para <strong>{{paNumber}}</strong> Personas afectadas.<strong></strong> <br><br>La operación puede tardar algún tiempo en procesarse. Inspeccione la tabla PA a continuación para ver el estado actualizado."
+          "pa-moved-phase": "Las personas afectadas podrían ser visibles en otra fase después de este cambio de estado. El cambio de estado puede tardar hasta un minuto en procesarse",
+          "message-send": "El envío de mensajes puede tardar algún tiempo en procesarse (240 por minuto).",
+          "response": "Solicitud enviada con éxito a <strong>{{action}}</strong> para <strong>{{paNumber}}</strong> personas afectadas.<br><br>Inspeccione la tabla de PA a continuación para conocer el estado actualizado."
         },
         "choose-action": "Elige acción...",
         "column": {

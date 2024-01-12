@@ -372,8 +372,9 @@
         },
         "bulk-action-response": {
           "close-popup": "Vous pouvez fermer cette fenêtre contextuelle.",
-          "pa-moved-phase": "Les personnes affectées peuvent être visibles dans une autre phase après ce changement de statut.",
-          "response": "Demande envoyée avec succès à {{action}} pour <strong>{{paNumber}}</strong> Personnes concernées.<strong></strong> <br><br>Le traitement de l’opération peut prendre un certain temps. Consultez la table PA ci-dessous pour connaître l’état à jour."
+          "pa-moved-phase": "Les personnes affectées pourraient être visibles dans une autre phase après ce changement de statut. Le changement de statut peut prendre jusqu'à une minute à traiter",
+          "message-send": "L'envoi de messages peut prendre un certain temps à traiter (240 par minute).",
+          "response": "Demande envoyée avec succès à <strong>{{action}}</strong> pour <strong>{{paNumber}}</strong> personnes affectées.<br><br>Inspectez le tableau PA ci-dessous pour le statut à jour."
         },
         "choose-action": "Choisissez l’action...",
         "column": {

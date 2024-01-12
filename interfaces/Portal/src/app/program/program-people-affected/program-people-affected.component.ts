@@ -918,7 +918,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             customBulkActionInput?.referenceId,
           );
         } else {
-          this.handleBulkActionResult(bulkActionResult);
+          this.handleBulkActionResult(bulkActionResult, customBulkActionInput);
         }
         this.isInProgress = false;
       })
@@ -987,7 +987,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return;
   }
 
-  private async handleBulkActionResult(bulkActionResult: BulkActionResult) {
+  private async handleBulkActionResult(
+    bulkActionResult: BulkActionResult,
+    customBulkActionInput: CustomBulkActionInput,
+  ) {
     const statusRelatedBulkActions = [
       BulkActionId.invite,
       BulkActionId.selectForValidation,
@@ -1010,11 +1013,20 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.bulk-action-response.pa-moved-phase',
         )
       : '';
+    const messageSend =
+      !!customBulkActionInput?.message ||
+      customBulkActionInput?.messageTemplateKey;
+    const messageSendText = messageSend
+      ? this.translate.instant(
+          'page.program.program-people-affected.bulk-action-response.message-send',
+        )
+      : '';
+
     const closePopupText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.close-popup',
     );
 
-    const bulkActionResponse = `<p>${responseText}</p><p>${paMovedPhaseText}</p><p>${closePopupText}</p>`;
+    const bulkActionResponse = `<p>${responseText}</p><p>${paMovedPhaseText}</p><p>${messageSendText}</p><p>${closePopupText}</p>`;
 
     await actionResult(
       this.alertController,
