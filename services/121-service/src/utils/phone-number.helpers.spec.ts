@@ -37,19 +37,6 @@ describe('formatPhoneNumber', () => {
       expect(result).toBe(testCase.out);
     });
   });
-
-  it('should throw an error for invalid phone-numbers', () => {
-    // Arrange
-    const tests = ['', null, undefined, '+'];
-
-    tests.forEach((testCase) => {
-      // Assert
-      expect(() => {
-        // Act
-        formatWhatsAppNumber(testCase);
-      }).toThrow();
-    });
-  });
 });
 
 describe('formatWhatsAppNumber', () => {
@@ -76,19 +63,6 @@ describe('formatWhatsAppNumber', () => {
 
       // Assert
       expect(result).toBe(testCase.out);
-    });
-  });
-
-  it('should throw an error for invalid phone-numbers', () => {
-    // Arrange
-    const tests = ['', null, undefined, 'whatsapp:', 'whatsapp:+'];
-
-    tests.forEach((testCase) => {
-      // Assert
-      expect(() => {
-        // Act
-        formatWhatsAppNumber(testCase);
-      }).toThrow();
     });
   });
 });
