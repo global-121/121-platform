@@ -5,18 +5,12 @@
  * @returns The formatted phone number, including "+"-prefix
  */
 export function formatPhoneNumber(phoneNumber: string): string {
-  if (!phoneNumber) {
-    throw new Error('No phone number provided');
-  }
-
   // Strip all (possibly existing) prefixes
   const onlyNumbers = phoneNumber.replace(/\D/g, '');
-
-  // What is left, could be invalid already
+  // If result is empty, then do not add a "+"-prefix
   if (!onlyNumbers) {
-    throw new Error('No valid phone number provided');
+    return onlyNumbers;
   }
-
   return '+' + onlyNumbers;
 }
 

@@ -54,6 +54,7 @@ const programsArray: Program[] = [
     languages: [LanguageEnum.en],
     enableMaxPayments: true,
     enableScope: true,
+    allowEmptyPhoneNumber: false,
     financialServiceProviders: [],
     aidworkerAssignments: [],
     fullnameNamingConvention: [],
