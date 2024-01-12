@@ -166,7 +166,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       valueToStore = Number(value);
     }
 
-    if (attribute === PersonDefaultAttributes.phoneNumber) {
+    if (
+      !this.program.allowEmptyPhoneNumber &&
+      attribute === PersonDefaultAttributes.phoneNumber
+    ) {
       if (!value || value === '') {
         this.showAttributeErrorAlert('not-empty', attribute);
         return;

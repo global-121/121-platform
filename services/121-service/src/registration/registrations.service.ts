@@ -415,7 +415,18 @@ export class RegistrationsService {
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[],
+    programId?: number,
   ): Promise<string | number | string[]> {
+    let allowEmptyPhoneNumber = false;
+
+    if (programId) {
+      allowEmptyPhoneNumber = (
+        await this.programRepository.findOneBy({
+          id: programId,
+        })
+      ).allowEmptyPhoneNumber;
+    }
+
     const answersTypeTel = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
@@ -430,7 +441,10 @@ export class RegistrationsService {
       answersTypeTel.push(question.name);
     }
     if (answersTypeTel.includes(customDataKey)) {
-      if (customDataKey === CustomDataAttributes.phoneNumber) {
+      if (
+        !allowEmptyPhoneNumber &&
+        customDataKey === CustomDataAttributes.phoneNumber
+      ) {
         // phoneNumber cannot be empty
         if (!customDataValue) {
           throw new HttpException(
@@ -895,7 +909,11 @@ export class RegistrationsService {
     value: string | number | string[],
     registration: RegistrationEntity,
   ): Promise<RegistrationEntity> {
-    value = await this.cleanCustomDataIfPhoneNr(attribute, value);
+    value = await this.cleanCustomDataIfPhoneNr(
+      attribute,
+      value,
+      registration.programId,
+    );
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = value;
