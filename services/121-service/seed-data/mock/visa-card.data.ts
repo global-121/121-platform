@@ -21,3 +21,19 @@ export const registrationVisa = {
   addressCity: 'Stad',
   [CustomDataAttributes.whatsappPhoneNumber]: '',
 };
+
+export const registrationVisaWithEmptyPhoneNumber = {
+  referenceId: '2982g82bdsf89sdsd',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  firstName: 'Jane',
+  lastName: 'Doe',
+  [CustomDataAttributes.phoneNumber]: '',
+  fspName: FspName.intersolveVisa,
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+  [CustomDataAttributes.whatsappPhoneNumber]: '',
+};
