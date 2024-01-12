@@ -825,16 +825,18 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
-      importRecord.phoneNumber = row.phoneNumber;
 
-      if (!program.allowEmptyPhoneNumber && row.phoneNumber.length <= 0) {
+      if (!program.allowEmptyPhoneNumber && !row.phoneNumber) {
         const errorObj = {
+          lineNumber: i + 1,
           column: GenericAttributes.phoneNumber,
+          value: row.phoneNumber,
           error: 'PhoneNumber is not allowed to be empty',
         };
         errors.push(errorObj);
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
+      importRecord.phoneNumber = row.phoneNumber;
 
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
