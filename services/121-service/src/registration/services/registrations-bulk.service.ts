@@ -538,7 +538,7 @@ export class RegistrationsBulkService {
       .createQueryBuilder('registration')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
-      .select('voucher.id as voucherId')
+      .select('voucher.id as "voucherId"')
       .andWhere({
         id: In(registrationsIds),
       })
