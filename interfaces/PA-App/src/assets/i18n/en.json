@@ -4,18 +4,26 @@
     "delete-data": "Delete my data",
     "logout": "Log out"
   },
-  "multiple-registration-mode": {
-    "toggle": "Multiple registrations mode"
-  },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
+  "multiple-registration-mode": {
+    "toggle": "Multiple registrations mode"
+  },
   "notification": {
     "error-reload": "Something went wrong, please reload the app.",
-    "wait-to-go-offline": "Please wait 30 seconds before using the app offline, so all app content is downloaded.",
-    "update-available": "Update available, please reload the app."
+    "update-available": "Update available, please reload the app.",
+    "wait-to-go-offline": "Please wait 30 seconds before using the app offline, so all app content is downloaded."
   },
   "personal": {
+    "batch": {
+      "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
+      "menu-text-offline": "At the moment you are offline.",
+      "menu-title": "Multiple registrations",
+      "toolbar-queue-button": "{{nrRegistrations}} registrations",
+      "upload-alert-header": "Uploading registrations.",
+      "upload-alert-message": "You are now online. Uploading {{nrRegistrations}} registrations."
+    },
     "consent-question": {
       "agree": "I agree",
       "answer": "I have read how my personal information will be stored securely. I understand that it is required to send my personal information to receive aid.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
@@ -29,11 +37,15 @@
       "please-confirm": "Below is an overview of your information. Please check and then tap send.",
       "submit-confirm": "Send my information"
     },
+    "next-pa": {
+      "new-pa": "Add another person affected",
+      "save-pa": "Save this person affected"
+    },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
       "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/WhatsApp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 48 hours.   <br><br>   This is the final message for now.",
-      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/WhatsApp on the phone number you provided. This SMS/WhatsApp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting.",
-      "offline-warning": "You are currently offline. Your registration cannot be stored. Please get online with your device, for example by connecting to Wifi, and click 'Try again'."
+      "offline-warning": "You are currently offline. Your registration cannot be stored. Please get online with your device, for example by connecting to Wifi, and click 'Try again'.",
+      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/WhatsApp on the phone number you provided. This SMS/WhatsApp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting."
     },
     "select-fsp": {
       "attributes": {
@@ -46,26 +58,26 @@
     },
     "select-language": {
       "introduction": {
+        "ar": "الرجاء اختيار لغتك",
         "en": "Please select your language.",
         "es": "Por favor seleccione su idioma",
-        "ar": "الرجاء اختيار لغتك",
         "fr": "Choisissez votre langue, s'il vous plaît.",
+        "in": "Pilih bahasa anda.",
         "nl": "Kies jouw taal.",
         "pt_BR": "Por favor, selecione seu idioma.",
-        "tl": "Pumili ng iyong wika.",
-        "in": "Pilih bahasa anda."
+        "tl": "Pumili ng iyong wika."
       },
-      "result": "Thank you, you have selected {{language}}.",
       "language": {
+        "ar": "عربى",
         "en": "English",
         "es": "Español",
-        "ar": "عربى",
         "fr": "Français",
+        "in": "Bahasa Indonesia",
         "nl": "Nederlands",
         "pt_BR": "Português",
-        "tl": "Tagalog",
-        "in": "Bahasa Indonesia"
-      }
+        "tl": "Tagalog"
+      },
+      "result": "Thank you, you have selected {{language}}."
     },
     "select-program": {
       "introduction": "You can use this app to apply for an aid program. Please select below.",
@@ -85,18 +97,6 @@
       "validation": {
         "phone-number": "We couldn't verify that phone-number. Please update and try again."
       }
-    },
-    "next-pa": {
-      "new-pa": "Add another person affected",
-      "save-pa": "Save this person affected"
-    },
-    "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} registrations",
-      "menu-title": "Multiple registrations",
-      "menu-text-offline": "At the moment you are offline.",
-      "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
-      "upload-alert-header": "Uploading registrations.",
-      "upload-alert-message": "You are now online. Uploading {{nrRegistrations}} registrations."
     }
   },
   "q-and-a-set": {

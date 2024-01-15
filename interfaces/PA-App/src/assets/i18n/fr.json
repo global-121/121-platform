@@ -4,18 +4,26 @@
     "delete-data": "Supprimez mes données",
     "logout": "Se déconnecter"
   },
-  "multiple-registration-mode": {
-    "toggle": "Mode d'enregistrements multiples"
-  },
   "connection": {
     "error-retry": "Une erreur s'est produite, voulez-vous réessayer"
   },
+  "multiple-registration-mode": {
+    "toggle": "Mode d'enregistrements multiples"
+  },
   "notification": {
     "error-reload": "Quelque chose s'est mal passé, veuillez recharger l'application.",
-    "wait-to-go-offline": "Veuillez attendre 30 secondes avant d'utiliser l'application hors ligne, afin que tout le contenu de l'application soit téléchargé.",
-    "update-available": "Mise à jour disponible, veuillez recharger l'application."
+    "update-available": "Mise à jour disponible, veuillez recharger l'application.",
+    "wait-to-go-offline": "Veuillez attendre 30 secondes avant d'utiliser l'application hors ligne, afin que tout le contenu de l'application soit téléchargé."
   },
   "personal": {
+    "batch": {
+      "menu-text": "Les inscriptions sont stockées dans votre navigateur. Lorsque la page Web est ouverte et que vous êtes en ligne, ils seront téléchargés automatiquement.",
+      "menu-text-offline": "Pour le moment, vous êtes hors ligne.",
+      "menu-title": "Enregistrements multiples",
+      "toolbar-queue-button": "{{nrRegistrations}} enregistrements",
+      "upload-alert-header": "Téléchargement des enregistrements.",
+      "upload-alert-message": "Vous êtes maintenant en ligne. Téléchargement de {{nrRegistrations}} enregistrements."
+    },
     "consent-question": {
       "agree": "Je suis d'accord",
       "answer": "J'ai lu/écouté comment mes informations personnelles seront sauvegardées en toute sécurité. Je comprends qu'il est nécessaire d'envoyer mes informations personnelles pour recevoir une aide financière. <br><br> Je comprends qui voit mes informations personnelles. <br><br> En appuyant sur <b>J'accepte</b>, je choisis de participer au programme d'aide. <br><br> En appuyant sur<b>Je ne suis pas d'accord</b>, je choisis de ne pas participer au programme d'aide.",
@@ -29,11 +37,15 @@
       "please-confirm": "Vous trouvez ci-dessous un récapitulatif de vos informations. Veuillez les vérifier. Après cliquez sur envoyer.",
       "submit-confirm": "Envoyez mes informations."
     },
+    "next-pa": {
+      "new-pa": "Ajouter une autre personne concernée",
+      "save-pa": "Sauver cette personne affectée"
+    },
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
       "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 48 heures. <br><br>   Ceci est le dernier message pour l'instant.",
-      "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous.",
-      "offline-warning": "Vous êtes actuellement hors ligne. Votre inscription ne peut pas être stockée. Veuillez vous connecter avec votre appareil, par exemple en vous connectant au Wi-Fi, puis cliquez sur \"Réessayer\"."
+      "offline-warning": "Vous êtes actuellement hors ligne. Votre inscription ne peut pas être stockée. Veuillez vous connecter avec votre appareil, par exemple en vous connectant au Wi-Fi, puis cliquez sur \"Réessayer\".",
+      "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous."
     },
     "select-fsp": {
       "attributes": {
@@ -65,18 +77,6 @@
       "validation": {
         "phone-number": "Nous ne pouvons pas vérifier ce numéro de téléphone. Veuillez mettre à jour et réessayez, s'il vous plaît."
       }
-    },
-    "next-pa": {
-      "new-pa": "Ajouter une autre personne concernée",
-      "save-pa": "Sauver cette personne affectée"
-    },
-    "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} enregistrements",
-      "menu-title": "Enregistrements multiples",
-      "menu-text-offline": "Pour le moment, vous êtes hors ligne.",
-      "menu-text": "Les inscriptions sont stockées dans votre navigateur. Lorsque la page Web est ouverte et que vous êtes en ligne, ils seront téléchargés automatiquement.",
-      "upload-alert-header": "Téléchargement des enregistrements.",
-      "upload-alert-message": "Vous êtes maintenant en ligne. Téléchargement de {{nrRegistrations}} enregistrements."
     }
   },
   "q-and-a-set": {
