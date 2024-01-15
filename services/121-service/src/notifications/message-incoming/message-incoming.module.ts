@@ -14,7 +14,9 @@ import { RegistrationEntity } from '../../registration/registration.entity';
 import { AzureLogService } from '../../shared/services/azure-log.service';
 import { UserModule } from '../../user/user.module';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
+import { QueueNameMessageCallBack } from '../enum/queue.names.enum';
 import { MessageTemplateModule } from '../message-template/message-template.module';
+import { MessageIncomingProcessor } from '../processors/message-incoming.processor';
 import { MessageStatusCallbackProcessor } from '../processors/message-status-callback.processor';
 import { QueueMessageModule } from '../queue-message/queue-message.module';
 import { TwilioMessageEntity } from '../twilio.entity';
@@ -42,7 +44,7 @@ import { MessageIncomingService } from './message-incoming.service';
     QueueMessageModule,
     MessageTemplateModule,
     BullModule.registerQueue({
-      name: 'messageStatusCallback',
+      name: QueueNameMessageCallBack.status,
       processors: [
         {
           path: 'src/notifications/processors/message-status-callback.processor.ts',
@@ -54,10 +56,24 @@ import { MessageIncomingService } from './message-incoming.service';
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: QueueNameMessageCallBack.incomingMessage,
+      processors: [
+        {
+          path: 'src/notifications/processors/message-incoming.processor.ts',
+          concurrency: 2,
+        },
+      ],
+      limiter: {
+        max: 10, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
   ],
   providers: [
     MessageIncomingService,
     MessageStatusCallbackProcessor,
+    MessageIncomingProcessor,
     AzureLogService,
   ],
   controllers: [MessageIncomingController],
