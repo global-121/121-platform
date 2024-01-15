@@ -230,7 +230,7 @@ export async function waitForMessagesToComplete(
   referenceIds: string[],
   accessToken: string,
   maxWaitTimeMs: number,
-  minimumNumberOfMessages = 0,
+  minimumNumberOfMessages = 1,
 ): Promise<void> {
   const startTime = Date.now();
   let allMessageUpdatesSuccessful = false;
@@ -251,7 +251,7 @@ export async function waitForMessagesToComplete(
       messageHistories.push(messages);
     }
 
-    // Check if all message histories are longer than minimumNumberOfMessages
+    // Check if all message histories are at least minimumNumberOfMessages
     const amountOfRegistrationWithMessages = messageHistories.filter(
       (messageHistory) =>
         messageHistory.filter(
@@ -262,7 +262,7 @@ export async function waitForMessagesToComplete(
               MessageStatus.failed,
               MessageStatus.sent, // sent is also a final status for SMS, how does this change the below comment for WhatsApp?
             ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
-        ).length > minimumNumberOfMessages,
+        ).length >= minimumNumberOfMessages,
     ).length;
 
     allMessageUpdatesSuccessful =

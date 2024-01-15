@@ -53,7 +53,7 @@ describe('send arbitrary messages to set of registrations', () => {
       [referenceIds[0]],
       accessToken,
       10_000,
-      1,
+      2,
     );
 
     const messageHistories = [];
