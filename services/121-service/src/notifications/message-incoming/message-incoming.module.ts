@@ -61,11 +61,11 @@ import { MessageIncomingService } from './message-incoming.service';
       processors: [
         {
           path: 'src/notifications/processors/message-incoming.processor.ts',
-          concurrency: 2,
+          concurrency: 4,
         },
       ],
       limiter: {
-        max: 10, // Max number of jobs processed
+        max: 50, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),
