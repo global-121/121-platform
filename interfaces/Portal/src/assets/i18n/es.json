@@ -347,7 +347,7 @@
         },
         "actions": {
           "deletePa": "Eliminar PA",
-          "doPayment": "Realizar el pago",
+          "doPayment": "Realizar el pago #{{paymentNr}}",
           "endInclusion": "Poner fin a la inclusión en el programa",
           "include": "Incluir en el programa",
           "invite": "Invitación para el registro",

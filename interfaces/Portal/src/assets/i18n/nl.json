@@ -347,7 +347,7 @@
         },
         "actions": {
           "deletePa": "Hulpvrager verwijderen",
-          "doPayment": "Doe betaling",
+          "doPayment": "Doe betaling #{{paymentNr}}",
           "endInclusion": "Beëindig deelname aan programma",
           "include": "Opnemen in programma",
           "invite": "Uitnodigen voor registratie",

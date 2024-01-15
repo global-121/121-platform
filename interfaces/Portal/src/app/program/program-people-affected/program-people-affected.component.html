@@ -26,6 +26,11 @@
             *ngIf="action.enabled"
             [value]="action.id"
             [disabled]="action.id === BulkActionEnum.divider"
+            [attr.data-payment-id]="
+              action.id === BulkActionEnum.doPayment
+                ? action.data?.paymentId
+                : null
+            "
           >
             {{ action.label }}
           </option>

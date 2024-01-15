@@ -347,7 +347,7 @@
         },
         "actions": {
           "deletePa": "حذف PA",
-          "doPayment": "هل الدفع",
+          "doPayment": "هل الدفع #{{paymentNr}}",
           "endInclusion": "إنهاء التضمين في البرنامج",
           "include": "تضمين في البرنامج",
           "invite": "دعوة للتسجيل",
