@@ -9,7 +9,7 @@ INSERT
 			"121-service".registration),
 		created,
 		"registrationStatus",
-		concat("referenceId", md5(random()::text)),
+		concat(md5(random()::text)),
 		"phoneNumber",
 		"preferredLanguage",
 		"inclusionScore",
