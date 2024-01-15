@@ -694,10 +694,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     if (this.action === BulkActionId.doPayment) {
-      const dropdownOptionLabel =
-        $event.target.options[$event.target.options.selectedIndex].text;
       this.submitPaymentProps.payment = Number(
-        dropdownOptionLabel.split('#')[1],
+        $event.target.selectedOptions[0].dataset.paymentId,
       );
     } else {
       this.submitPaymentProps.payment = null;

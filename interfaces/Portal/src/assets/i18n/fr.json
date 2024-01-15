@@ -356,7 +356,7 @@
         },
         "actions": {
           "deletePa": "Supprimer PA",
-          "doPayment": "Effectuer le paiement",
+          "doPayment": "Effectuer le paiement #{{paymentNr}}",
           "endInclusion": "Mettre fin à l’inclusion dans le programme",
           "include": "Inclure dans le programme",
           "invite": "Invitation à l’inscription",
@@ -381,8 +381,8 @@
         },
         "bulk-action-response": {
           "close-popup": "Vous pouvez fermer cette fenêtre contextuelle.",
-          "pa-moved-phase": "Les personnes affectées pourraient être visibles dans une autre phase après ce changement de statut. Le changement de statut peut prendre jusqu'à une minute à traiter",
           "message-send": "L'envoi de messages peut prendre un certain temps à traiter (240 par minute).",
+          "pa-moved-phase": "Les personnes affectées pourraient être visibles dans une autre phase après ce changement de statut. Le changement de statut peut prendre jusqu'à une minute à traiter",
           "response": "Demande envoyée avec succès à <strong>{{action}}</strong> pour <strong>{{paNumber}}</strong> personnes affectées.<br><br>Inspectez le tableau PA ci-dessous pour le statut à jour."
         },
         "choose-action": "Choisissez l’action...",

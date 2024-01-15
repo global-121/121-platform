@@ -356,7 +356,7 @@
         },
         "actions": {
           "deletePa": "Eliminar PA",
-          "doPayment": "Realizar el pago",
+          "doPayment": "Realizar el pago #{{paymentNr}}",
           "endInclusion": "Poner fin a la inclusión en el programa",
           "include": "Incluir en el programa",
           "invite": "Invitación para el registro",
@@ -381,8 +381,8 @@
         },
         "bulk-action-response": {
           "close-popup": "Puede cerrar esta ventana emergente.",
-          "pa-moved-phase": "Las personas afectadas podrían ser visibles en otra fase después de este cambio de estado. El cambio de estado puede tardar hasta un minuto en procesarse",
           "message-send": "El envío de mensajes puede tardar algún tiempo en procesarse (240 por minuto).",
+          "pa-moved-phase": "Las personas afectadas podrían ser visibles en otra fase después de este cambio de estado. El cambio de estado puede tardar hasta un minuto en procesarse",
           "response": "Solicitud enviada con éxito a <strong>{{action}}</strong> para <strong>{{paNumber}}</strong> personas afectadas.<br><br>Inspeccione la tabla de PA a continuación para conocer el estado actualizado."
         },
         "choose-action": "Elige acción...",

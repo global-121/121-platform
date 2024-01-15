@@ -34,6 +34,9 @@ export class BulkAction {
   phases: ProgramPhase[];
   showIfNoValidation: boolean;
   confirmConditions?: InputProps;
+  data?: {
+    [_key: string]: string | number;
+  };
 }
 
 export class BulkActionResult {
