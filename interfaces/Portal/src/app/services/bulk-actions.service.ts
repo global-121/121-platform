@@ -340,6 +340,9 @@ export class BulkActionsService {
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
         confirmConditions: {},
+        data: {
+          paymentId: paymentId,
+        },
       };
       paymentBulkActions.push(paymentBulkAction);
       paymentId--;

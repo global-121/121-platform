@@ -381,8 +381,8 @@
         },
         "bulk-action-response": {
           "close-popup": "You can close this popup.",
-          "pa-moved-phase": "People Affected might be visible in another phase after this status change. The status change can take up to a minute to process",
           "message-send": "Sending messages can take some time to process (240 per minute).",
+          "pa-moved-phase": "People Affected might be visible in another phase after this status change. The status change can take up to a minute to process",
           "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>Inspect the PA-table below for the up-to-date status."
         },
         "choose-action": "Choose action...",
