@@ -653,6 +653,13 @@ export class IntersolveVisaService
     }
     wallet.spentThisMonth = transactionInfo.spentThisMonth;
     wallet.lastExternalUpdate = new Date();
+    // Only update blocked if we get a proper response from Intersolve
+    if (
+      walletDetails?.data?.data?.blocked === true ||
+      walletDetails?.data?.data?.blocked === false
+    ) {
+      wallet.tokenBlocked = walletDetails.data.data.blocked;
+    }
     return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
 
