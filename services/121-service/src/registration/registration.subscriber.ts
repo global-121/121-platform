@@ -24,6 +24,9 @@ export class RegistrationSubscriber
   private async storeRegistrationStatusChange(
     registration: any,
   ): Promise<void> {
+    if (!registration || !registration.id) {
+      return;
+    }
     const registrationStatusRepo = AppDataSource.getRepository(
       RegistrationStatusChangeEntity,
     );

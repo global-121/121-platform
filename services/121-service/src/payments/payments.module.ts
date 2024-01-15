@@ -16,7 +16,6 @@ import { RegistrationStatusChangeEntity } from '../registration/registration-sta
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { InclusionScoreService } from '../registration/services/inclusion-score.service';
-import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
@@ -66,7 +65,6 @@ import { TransactionsModule } from './transactions/transactions.module';
   ],
   providers: [
     PaymentsService,
-    RegistrationsImportService,
     LookupService,
     InclusionScoreService,
     RegistrationScopedRepository,

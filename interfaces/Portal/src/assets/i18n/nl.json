@@ -381,8 +381,9 @@
         },
         "bulk-action-response": {
           "close-popup": "U kunt deze pop-up sluiten.",
-          "pa-moved-phase": "Hulpvragers kunnen zichtbaar zijn in een andere fase na deze statuswijziging.",
-          "response": "Verzoek succesvol verzonden naar <strong> {{action}} </strong> voor <strong> {{paNumber}} </strong> hulpvragers. <br> <br> Het verwerken van de actie kan enige tijd duren. Bekijk onderstaande tabel voor de actuele status."
+          "pa-moved-phase": "Getroffen personen kunnen zichtbaar zijn in een andere fase na deze statuswijziging. De statuswijziging kan tot een minuut duren om te verwerken",
+          "message-send": "Het verzenden van berichten kan enige tijd duren om te verwerken (240 per minuut).",
+          "response": "Verzoek succesvol verzonden naar <strong>{{action}}</strong> voor <strong>{{paNumber}}</strong> getroffen personen.<br><br>Bekijk de PA-tabel hieronder voor de meest actuele status."
         },
         "choose-action": "Kies actie...",
         "column": {

@@ -17,6 +17,7 @@ import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-vis
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -39,6 +40,7 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { RegistrationsBulkHelperService } from './services/registrations-bulk-helper.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
@@ -80,6 +82,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationsBulkService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
+    RegistrationsBulkHelperService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(ImageCodeExportVouchersEntity),
@@ -88,12 +91,14 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(NoteEntity),
+    createScopedRepositoryProvider(TransactionEntity),
   ],
   controllers: [RegistrationsController],
   exports: [
     RegistrationsService,
     RegistrationsBulkService,
     RegistrationsPaginationService,
+    RegistrationsImportService,
   ],
 })
 export class RegistrationsModule {}
