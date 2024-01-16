@@ -1,7 +1,9 @@
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserService } from '../../user/user.service';
+import { GenericAttributes } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationsImportService } from './registrations-import.service';
 
@@ -19,7 +21,7 @@ describe('RegistrationsImportService', () => {
       nameFirst: 'Test',
       nameLast: 'Test',
       phoneNumber: '31600000000',
-      fspName: 'Intersolve-voucher-paper',
+      fspName: FspName.intersolveVoucherPaper,
       whatsappPhoneNumber: '',
     },
   ];
@@ -75,7 +77,7 @@ describe('RegistrationsImportService', () => {
       ).rejects.toHaveProperty('response', [
         {
           lineNumber: 1,
-          column: 'phoneNumber',
+          column: GenericAttributes.phoneNumber,
           value: '',
           error: 'PhoneNumber is not allowed to be empty',
         },
