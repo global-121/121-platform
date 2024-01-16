@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Not, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -898,15 +899,54 @@ export class MetricsService {
       );
     }
 
+    const duplicateNames = registrationDataOptions
+      .map((r) => r.name)
+      .filter((value, index, self) => self.indexOf(value) !== index);
+
+    const generatedUniqueIds = [];
     for (const r of registrationDataOptions) {
+      let name = r.name;
+      if (duplicateNames.includes(r.name)) {
+        const uniqueSelectQueryId = uuid().replace(/-/g, '').toLowerCase();
+        name = `${uniqueSelectQueryId}_${r.name}`;
+        generatedUniqueIds.push({ originalName: r.name, newUniqueName: name });
+      }
       transactionQuery.select((subQuery) => {
         return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
-      }, r.name);
+      }, name);
     }
-    return await transactionQuery.getRawMany();
+    const rawResult = await transactionQuery.getRawMany();
+    return this.mapFspAttributesToOriginalName(rawResult, generatedUniqueIds);
+  }
+
+  private mapFspAttributesToOriginalName(
+    rows: any[],
+    generatedUniqueIdObjects: { newUniqueName: string; originalName: string }[],
+  ): any[] {
+    const generatedUniqueIds = generatedUniqueIdObjects.map(
+      (o) => o.newUniqueName,
+    );
+    const result = [];
+    for (const row of rows) {
+      const resultRow = {};
+      for (const [key, value] of Object.entries(row)) {
+        if (generatedUniqueIds.includes(key)) {
+          const name = generatedUniqueIdObjects.find(
+            (o) => o.newUniqueName === key,
+          ).originalName;
+          if (value !== null) {
+            resultRow[name] = value;
+          }
+        } else {
+          resultRow[key] = value;
+        }
+      }
+      result.push(resultRow);
+    }
+    return result;
   }
 
   private async getAdditionalFspExportFields(
