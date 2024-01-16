@@ -169,7 +169,7 @@
           "btn-text": "Exporter les modifications apportées aux données",
           "confirm-message": "Cela téléchargera un fichier Excel montrant toutes les modifications de données pour toutes les personnes affectées par ce programme.",
           "confirm-prompt": {
-            "choose-dates": "Vous pouvez également passer une date de début et/ou une date de fin pour filtrer les modifications de données.",
+            "choose-dates": "Vous pouvez également passer une date de début et/ou une date de fin pour filtrer les modifications de données. L'exportation est limitée à {{exportLimit}} modifications de données. Adaptez vos dates si nécessaire.",
             "confirm-btn": "Exportation",
             "date-from": "Date de début {{date}}",
             "date-to": "Date de fin {{date}}",

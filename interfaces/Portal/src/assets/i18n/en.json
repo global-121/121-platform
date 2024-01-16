@@ -169,7 +169,7 @@
           "btn-text": "Export data changes",
           "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program.",
           "confirm-prompt": {
-            "choose-dates": "Optionally pass a Start date and/or an End date to filter the data changes.",
+            "choose-dates": "Optionally pass a start date and/or an end date to filter the data changes. The export is limited to {{exportLimit}} data changes. Adapt your dates if needed.",
             "confirm-btn": "Export",
             "date-from": "Start date {{date}}",
             "date-to": "End date {{date}}",

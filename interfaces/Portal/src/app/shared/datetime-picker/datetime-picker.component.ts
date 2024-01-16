@@ -16,12 +16,14 @@ export interface DatetimeProps {
   styleUrls: ['./datetime-picker.component.scss'],
 })
 export class DatetimePickerComponent {
-  private locale: string;
+  public locale: string;
 
   @Input()
   public datetimeProps: DatetimeProps;
 
   public disableConfirmButton = false;
+  public exportLimit = 100000;
+
   openFromPopover = false;
   openToPopover = false;
 
