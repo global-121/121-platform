@@ -19,19 +19,13 @@ export class ExportSelectComponent implements AfterViewChecked {
 
   public isPopoverOpen = false;
 
-  private optionsPerPhase = {
-    [ProgramPhase.registrationValidation]: [
-      ExportType.filteredTable,
-      ExportType.allPeopleAffected,
-      ExportType.duplicates,
-      ExportType.selectedForValidation,
-      ExportType.paDataChanges,
-    ],
-    [ProgramPhase.inclusion]: [ExportType.filteredTable],
-    [ProgramPhase.payment]: [ExportType.filteredTable],
-  };
-
-  public options = [];
+  public options = [
+    ExportType.filteredTable,
+    ExportType.allPeopleAffected,
+    ExportType.duplicates,
+    ExportType.selectedForValidation,
+    ExportType.paDataChanges,
+  ];
 
   constructor() {}
 
@@ -39,8 +33,6 @@ export class ExportSelectComponent implements AfterViewChecked {
     if (!this.thisPhase) {
       return;
     }
-
-    this.options = this.optionsPerPhase[this.thisPhase];
 
     if (!this.showValidation) {
       this.options = this.options.filter(
