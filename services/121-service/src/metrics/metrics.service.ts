@@ -329,11 +329,6 @@ export class MetricsService {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
     for (const v of unusedVouchers) {
-      const registration =
-        await this.registrationsService.getRegistrationFromReferenceId(
-          v.referenceId,
-        );
-      v.name = await registration.getFullName();
       delete v.referenceId;
     }
 
