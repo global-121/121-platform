@@ -2,15 +2,21 @@
  * Format a phone number for use with Twilio as an international phone number
  *
  * @param phoneNumber - The phone number to format
- * @returns The formatted phone number, including "+"-prefix (unless empty or only-non-numeric input)
+ * @returns The formatted phone number, including "+"-prefix
  */
 export function formatPhoneNumber(phoneNumber: string): string {
+  if (!phoneNumber) {
+    throw new Error('No phone number provided');
+  }
+
   // Strip all (possibly existing) prefixes
   const onlyNumbers = phoneNumber.replace(/\D/g, '');
-  // If result is empty, then do not add a "+"-prefix
+
+  // What is left, could be invalid already
   if (!onlyNumbers) {
-    return onlyNumbers;
+    throw new Error('No valid phone number provided');
   }
+
   return '+' + onlyNumbers;
 }
 
