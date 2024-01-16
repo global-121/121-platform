@@ -457,10 +457,11 @@ export class MetricsService {
       .map((r) => r.name)
       .filter((r) => r !== CustomDataAttributes.phoneNumber);
 
+    const chunkSize = 40000;
     const paginateQuery = {
       path: 'registration',
       filter: filter,
-      limit: 5000,
+      limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
     };
