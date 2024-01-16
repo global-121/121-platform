@@ -466,7 +466,7 @@ export class MetricsService {
       select: defaultSelect.concat(registrationDataNamesProgram),
     };
 
-    // Get the data per 5000 registrations to prevent an out of memory error
+    // Get the data per batch registrations to prevent an out of memory error
     let data = [];
     let totalPages = 1; // higher than 1
     while (paginateQuery.page <= totalPages) {
