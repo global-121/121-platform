@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export class LanguageOption {
@@ -25,22 +24,14 @@ export class LanguageService {
 
   private availableLanguages: LanguageOption[];
 
-  private currentLanguage = new BehaviorSubject<string>(
-    this.DEFAULT_LANGUAGE_CODE,
-  );
-  public currentLanguage$ = this.currentLanguage.asObservable();
+  private currentLanguage: string = this.DEFAULT_LANGUAGE_CODE;
 
   constructor(private translate: TranslateService) {
     if (!this.translate) {
       return;
     }
 
-    this.translate.onLangChange.subscribe(
-      (event: { lang: string; translations: { [key: string]: string } }) => {
-        document.documentElement.lang = event.lang;
-        document.documentElement.dir = event.translations['_dir'];
-      },
-    );
+    this.setupLanguageSwitchForDOM();
 
     this.availableLanguages = this.loadLanguages();
 
@@ -60,6 +51,15 @@ export class LanguageService {
     }
 
     this.useLanguage(selectedLanguage);
+  }
+
+  private setupLanguageSwitchForDOM() {
+    this.translate.onLangChange.subscribe(
+      (event: { lang: string; translations: { [key: string]: string } }) => {
+        document.documentElement.lang = event.lang;
+        document.documentElement.dir = event.translations['_dir'];
+      },
+    );
   }
 
   private loadLanguages(): LanguageOption[] {
@@ -86,7 +86,7 @@ export class LanguageService {
         },
         error: (error) => {
           console.warn(`Translations-file for "${locale}" missing!`, error);
-          if (locale === this.currentLanguage.value) {
+          if (locale === this.currentLanguage) {
             this.useLanguage(this.DEFAULT_LANGUAGE_CODE);
             this.storeLanguage(this.DEFAULT_LANGUAGE_CODE);
           }
@@ -111,7 +111,7 @@ export class LanguageService {
   }
 
   private useLanguage(languageKey: string): void {
-    this.currentLanguage.next(languageKey);
+    this.currentLanguage = languageKey;
     this.translate.use(languageKey);
   }
 

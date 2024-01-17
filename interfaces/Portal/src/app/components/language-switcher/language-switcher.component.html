@@ -7,7 +7,7 @@
     ></ion-icon>
     <ion-select
       *ngIf="languages"
-      [value]="selectedLanguage | async"
+      [value]="selectedLanguage"
       interface="popover"
       (ionChange)="selectLanguage($event.detail.value)"
     >

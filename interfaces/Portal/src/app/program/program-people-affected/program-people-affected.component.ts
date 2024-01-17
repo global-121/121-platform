@@ -493,7 +493,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async getPaymentBulkActions(): Promise<BulkAction[]> {
-    // Add buaddPaymentBulkActionslk-action for 1st upcoming payment & past 5 payments
+    // Add PaymentBulkAction-action for 1st upcoming payment & past 5 payments
     // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
     const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,

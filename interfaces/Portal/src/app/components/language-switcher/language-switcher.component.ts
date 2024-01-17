@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import {
   LanguageOption,
   LanguageService,
@@ -17,9 +17,16 @@ import {
 export class LanguageSwitcherComponent implements OnInit {
   public languages: LanguageOption[] = [];
 
-  public selectedLanguage: Observable<string>;
+  public selectedLanguage: string;
 
-  constructor(private languageService: LanguageService) {}
+  constructor(
+    private languageService: LanguageService,
+    private translate: TranslateService,
+  ) {
+    this.translate.onLangChange.subscribe((event: { lang: string }) => {
+      this.selectedLanguage = event.lang;
+    });
+  }
 
   async ngOnInit(): Promise<void> {
     if (!this.languageService) {
@@ -27,7 +34,7 @@ export class LanguageSwitcherComponent implements OnInit {
     }
 
     this.languages = this.languageService.getLanguages();
-    this.selectedLanguage = this.languageService.currentLanguage$;
+    this.selectedLanguage = this.translate.currentLang;
   }
 
   public selectLanguage(lang: string): void {
