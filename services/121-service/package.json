@@ -73,6 +73,7 @@
     "twilio": "^4.20.0",
     "typeorm": "^0.3.17",
     "typescript": "^4.9.5",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -22,6 +23,7 @@ import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
+import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import {
   ExportDetailsQueryParamsDto,
   ExportType,
@@ -29,6 +31,7 @@ import {
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
+import { ExportFileFormat } from './enum/export-file-format.enum';
 import { MetricsService } from './metrics.service';
 
 @UseGuards(PermissionsGuard)
@@ -72,6 +75,13 @@ export class MetricsController {
     description: 'Not used for this endpoint',
     deprecated: true,
   })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    enum: ExportFileFormat,
+    description:
+      'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
+  })
   // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
@@ -84,6 +94,8 @@ export class MetricsController {
     @Query() queryParams: ExportDetailsQueryParamsDto,
     @User('id') userId: number,
     @Paginate() paginationQuery: PaginateQuery,
+    @Query('format') format: string = 'json', // default to 'json'
+    @Res() res,
   ): Promise<any> {
     if (
       queryParams.toDate &&
@@ -93,7 +105,7 @@ export class MetricsController {
       const errors = 'toDate must be greater than fromDate';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    return await this.metricsService.getExportList(
+    const result = await this.metricsService.getExportList(
       Number(programId),
       exportType as ExportType,
       userId,
@@ -103,6 +115,17 @@ export class MetricsController {
       queryParams.toDate,
       paginationQuery,
     );
+    if (result.data.length === 0) {
+      const errors = 'There is currently no data to export';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    switch (format as ExportFileFormat) {
+      case ExportFileFormat.xlsx:
+        return sendXlsxReponse(result.data, result.fileName, res);
+      default:
+        return result;
+    }
   }
 
   @Admin()
