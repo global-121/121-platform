@@ -6,6 +6,7 @@ export enum ProcessName {
 
 export enum QueueNameMessageCallBack {
   status = 'messageStatusCallback',
+  incomingMessage = 'incomingMessage',
 }
 
 export enum QueueNameCreateMessage {

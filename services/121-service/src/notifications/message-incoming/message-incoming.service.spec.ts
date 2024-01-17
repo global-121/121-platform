@@ -5,12 +5,16 @@ import {
   ProcessName,
   QueueNameMessageCallBack,
 } from '../enum/queue.names.enum';
-import { TwilioStatusCallbackDto } from '../twilio.dto';
+import {
+  TwilioIncomingCallbackDto,
+  TwilioStatusCallbackDto,
+} from '../twilio.dto';
 import { MessageIncomingService } from './message-incoming.service';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
   let messageStatusCallbackQueue: jest.Mocked<Queue>;
+  let messageIncommingQueue: jest.Mocked<Queue>;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(MessageIncomingService).compile();
@@ -18,6 +22,10 @@ describe('MessageIncomingService', () => {
     messageIncomingService = unit;
     messageStatusCallbackQueue = unitRef.get(
       getQueueName(QueueNameMessageCallBack.status),
+    );
+
+    messageIncommingQueue = unitRef.get(
+      getQueueName(QueueNameMessageCallBack.incomingMessage),
     );
   });
 
@@ -54,6 +62,23 @@ describe('MessageIncomingService', () => {
     expect(messageStatusCallbackQueue.add).toHaveBeenCalledWith(
       ProcessName.whatsapp,
       testCallbackData,
+    );
+  });
+
+  it('should add incoming WhatsApp to queue', async () => {
+    // Arrange
+    const testIncommingWhatsappData = new TwilioIncomingCallbackDto();
+
+    // Act
+    await messageIncomingService.addIncomingWhatsappToQueue(
+      testIncommingWhatsappData,
+    );
+
+    // Assert
+    expect(messageIncommingQueue.add).toHaveBeenCalledTimes(1);
+    expect(messageIncommingQueue.add).toHaveBeenCalledWith(
+      ProcessName.whatsapp,
+      testIncommingWhatsappData,
     );
   });
 });

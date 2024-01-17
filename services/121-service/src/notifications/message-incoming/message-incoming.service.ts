@@ -18,7 +18,10 @@ import {
   TemplatedMessages,
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import { ProcessName } from '../enum/queue.names.enum';
+import {
+  ProcessName,
+  QueueNameMessageCallBack,
+} from '../enum/queue.names.enum';
 import { MessageProcessType } from '../message-job.dto';
 import { MessageTemplateService } from '../message-template/message-template.service';
 import { QueueMessageService } from '../queue-message/queue-message.service';
@@ -55,8 +58,10 @@ export class MessageIncomingService {
   public constructor(
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    @InjectQueue('messageStatusCallback')
+    @InjectQueue(QueueNameMessageCallBack.status)
     private readonly messageStatusCallbackQueue: Queue,
+    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
+    private readonly incommingMessageQueue: Queue,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
@@ -117,6 +122,12 @@ export class MessageIncomingService {
       ProcessName.whatsapp,
       callbackData,
     );
+  }
+
+  public async addIncomingWhatsappToQueue(
+    callbackData: TwilioIncomingCallbackDto,
+  ): Promise<void> {
+    await this.incommingMessageQueue.add(ProcessName.whatsapp, callbackData);
   }
 
   public async processWhatsappStatusCallback(
@@ -349,7 +360,7 @@ export class MessageIncomingService {
     return value.replace('whatsapp:+', '');
   }
 
-  public async handleIncomingWhatsapp(
+  public async processIncomingWhatsapp(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
     if (!callbackData.From) {
