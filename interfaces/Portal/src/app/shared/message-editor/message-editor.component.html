@@ -74,7 +74,7 @@
               [checked]="checked"
               (ionChange)="checkboxChange($event.detail.checked)"
             >
-              {{ inputProps.checkbox }}
+              {{ inputProps.checkbox | translate }}
             </ion-checkbox>
           </p>
           <div
@@ -215,7 +215,7 @@
           labelPlacement="end"
           [checked]="checked"
           (ionChange)="checkboxChange($event.detail.checked)"
-          >{{ inputProps.checkbox }}
+          >{{ inputProps.checkbox | translate }}
         </ion-checkbox>
       </p>
       <div
