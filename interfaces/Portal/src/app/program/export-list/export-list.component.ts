@@ -210,7 +210,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
       )
       .then(
         (res) => {
-          let filename = this.toExportFileName(exportType);
+          const filename = this.toExportFileName(exportType);
           this.blobToDownload(res, filename);
 
           this.isInProgress = false;
