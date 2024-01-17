@@ -83,6 +83,7 @@ export class LanguageService {
       this.translate.getTranslation(locale).subscribe({
         next: (localeObject) => {
           languages.push(this.createLanguageOption(locale, localeObject));
+          languages.sort(this.sortLanguageOptions);
         },
         error: (error) => {
           console.warn(`Translations-file for "${locale}" missing!`, error);
@@ -95,6 +96,17 @@ export class LanguageService {
     }
 
     return languages;
+  }
+
+  private sortLanguageOptions(
+    a: LanguageOption,
+    b: LanguageOption,
+  ): -1 | 0 | 1 {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    if (a.code < b.code) return -1;
+    if (a.code > b.code) return 1;
+    return 0;
   }
 
   public getLanguages(): LanguageOption[] {
