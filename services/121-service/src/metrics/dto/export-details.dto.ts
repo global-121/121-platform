@@ -11,7 +11,6 @@ export enum ExportType {
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
-  exportTableView = 'export-table-view',
   cardBalances = 'card-balances',
   paDataChanges = 'pa-data-changes',
 }

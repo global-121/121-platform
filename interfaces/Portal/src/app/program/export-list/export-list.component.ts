@@ -56,7 +56,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public isPopoverButton = false;
 
-  public allPeopleAffectedOptions: {
+  public filterOptions: {
     limit: number;
     page: number;
     referenceId?: string;
@@ -107,23 +107,23 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.filterService.statusFilter$.pipe(
-      map((filter) => (this.allPeopleAffectedOptions.statuses = filter)),
+      map((filter) => (this.filterOptions.statuses = filter)),
     );
 
     const { itemsPerPage, currentPage } =
       this.registrationService.getPageMetadata();
-    this.allPeopleAffectedOptions.limit = itemsPerPage;
-    this.allPeopleAffectedOptions.page = currentPage + 1;
+    this.filterOptions.limit = itemsPerPage;
+    this.filterOptions.page = currentPage + 1;
 
-    this.allPeopleAffectedOptions.sort = this.registrationService.getSortBy();
+    this.filterOptions.sort = this.registrationService.getSortBy();
   }
 
   private onTextFilterChange = (filter: PaginationFilter[]) => {
-    this.allPeopleAffectedOptions.filters = filter;
+    this.filterOptions.filters = filter;
   };
 
   private onStatusFilterChange = (filter: RegistrationStatusEnum[]) => {
-    this.allPeopleAffectedOptions.statuses = filter;
+    this.filterOptions.statuses = filter;
   };
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -204,7 +204,9 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
         dateToAdjusted,
         Number(this.minPayment),
         Number(this.maxPayment),
-        this.allPeopleAffectedOptions,
+        this.exportType === ExportType.filteredTable
+          ? this.filterOptions
+          : null,
       )
       .then(
         (res) => {

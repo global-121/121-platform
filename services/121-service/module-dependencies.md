@@ -29,7 +29,6 @@ graph LR
   IntersolveVoucherModule-->MessageTemplateModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
-  MetricsModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->FspModule

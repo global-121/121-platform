@@ -27,7 +27,6 @@ export interface ExportWalletData {
   balance: number;
   cardStatusIntersolve?: IntersolveVisaWalletStatus;
   tokenBlocked?: boolean;
-  isCurrentWallet?: boolean;
   walletStatus: IntersolveVisaWalletStatus;
   cardStatus: IntersolveVisaCardStatus;
   explanation: string;

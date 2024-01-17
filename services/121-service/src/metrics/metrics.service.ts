@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Not, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -16,7 +17,6 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { ProgramService } from '../programs/programs.service';
 import { PaginationFilter } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
@@ -67,7 +67,6 @@ export class MetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
-    private readonly programService: ProgramService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly registrationChangeLogService: RegistrationChangeLogService,
@@ -330,11 +329,6 @@ export class MetricsService {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
     for (const v of unusedVouchers) {
-      const registration =
-        await this.registrationsService.getRegistrationFromReferenceId(
-          v.referenceId,
-        );
-      v.name = await registration.getFullName();
       delete v.referenceId;
     }
 
@@ -457,15 +451,16 @@ export class MetricsService {
       .map((r) => r.name)
       .filter((r) => r !== CustomDataAttributes.phoneNumber);
 
+    const chunkSize = 40000;
     const paginateQuery = {
       path: 'registration',
       filter: filter,
-      limit: 5000,
+      limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
     };
 
-    // Get the data per 5000 registrations to prevent an out of memory error
+    // Get the data per batch registrations to prevent an out of memory error
     let data = [];
     let totalPages = 1; // higher than 1
     while (paginateQuery.page <= totalPages) {
@@ -897,15 +892,54 @@ export class MetricsService {
       );
     }
 
+    const duplicateNames = registrationDataOptions
+      .map((r) => r.name)
+      .filter((value, index, self) => self.indexOf(value) !== index);
+
+    const generatedUniqueIds = [];
     for (const r of registrationDataOptions) {
+      let name = r.name;
+      if (duplicateNames.includes(r.name)) {
+        const uniqueSelectQueryId = uuid().replace(/-/g, '').toLowerCase();
+        name = `${uniqueSelectQueryId}_${r.name}`;
+        generatedUniqueIds.push({ originalName: r.name, newUniqueName: name });
+      }
       transactionQuery.select((subQuery) => {
         return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
-      }, r.name);
+      }, name);
     }
-    return await transactionQuery.getRawMany();
+    const rawResult = await transactionQuery.getRawMany();
+    return this.mapFspAttributesToOriginalName(rawResult, generatedUniqueIds);
+  }
+
+  private mapFspAttributesToOriginalName(
+    rows: any[],
+    generatedUniqueIdObjects: { newUniqueName: string; originalName: string }[],
+  ): any[] {
+    const generatedUniqueIds = generatedUniqueIdObjects.map(
+      (o) => o.newUniqueName,
+    );
+    const result = [];
+    for (const row of rows) {
+      const resultRow = {};
+      for (const [key, value] of Object.entries(row)) {
+        if (generatedUniqueIds.includes(key)) {
+          const name = generatedUniqueIdObjects.find(
+            (o) => o.newUniqueName === key,
+          ).originalName;
+          if (value !== null) {
+            resultRow[name] = value;
+          }
+        } else {
+          resultRow[key] = value;
+        }
+      }
+      result.push(resultRow);
+    }
+    return result;
   }
 
   private async getAdditionalFspExportFields(
