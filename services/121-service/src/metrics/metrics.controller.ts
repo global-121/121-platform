@@ -94,7 +94,7 @@ export class MetricsController {
     @Query() queryParams: ExportDetailsQueryParamsDto,
     @User('id') userId: number,
     @Paginate() paginationQuery: PaginateQuery,
-    @Query('format') format: string = 'json', // default to 'json'
+    @Query('format') format = 'json',
     @Res() res,
   ): Promise<any> {
     if (

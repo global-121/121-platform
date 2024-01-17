@@ -1,7 +1,11 @@
 import { Response } from 'express';
 import * as XLSX from 'xlsx';
 
-export function sendXlsxReponse(array: any[], filename: string, res: Response) {
+export function sendXlsxReponse(
+  array: any[],
+  filename: string,
+  res: Response,
+): void {
   const xls = arrayToXlsx(array);
   res.setHeader(
     'Content-Type',
