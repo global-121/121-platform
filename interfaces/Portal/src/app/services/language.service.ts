@@ -31,12 +31,7 @@ export class LanguageService {
       return;
     }
 
-    this.translate.onLangChange.subscribe(
-      (event: { lang: string; translations: { [key: string]: string } }) => {
-        document.documentElement.lang = event.lang;
-        document.documentElement.dir = event.translations['_dir'];
-      },
-    );
+    this.setupLanguageSwitchForDOM();
 
     this.availableLanguages = this.loadLanguages();
 
@@ -56,6 +51,15 @@ export class LanguageService {
     }
 
     this.useLanguage(selectedLanguage);
+  }
+
+  private setupLanguageSwitchForDOM() {
+    this.translate.onLangChange.subscribe(
+      (event: { lang: string; translations: { [key: string]: string } }) => {
+        document.documentElement.lang = event.lang;
+        document.documentElement.dir = event.translations['_dir'];
+      },
+    );
   }
 
   private loadLanguages(): LanguageOption[] {
