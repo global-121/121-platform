@@ -105,9 +105,20 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly description: JSON;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: false })
   @IsOptional()
+  @IsBoolean()
+  public readonly enableMaxPayments: boolean;
+
+  @ApiProperty({ example: false })
+  @IsOptional()
+  @IsBoolean()
   public readonly enableScope: boolean;
+
+  @ApiProperty({ example: false })
+  @IsOptional()
+  @IsBoolean()
+  public readonly allowEmptyPhoneNumber: boolean;
 
   @ApiProperty({ example: 100000 })
   @IsOptional()

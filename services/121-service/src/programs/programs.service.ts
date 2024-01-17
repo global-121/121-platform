@@ -172,6 +172,7 @@ export class ProgramService {
       languages: programEntity.languages,
       enableMaxPayments: programEntity.enableMaxPayments,
       enableScope: programEntity.enableScope,
+      allowEmptyPhoneNumber: programEntity.allowEmptyPhoneNumber,
     };
     if (programEntity.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
@@ -284,6 +285,7 @@ export class ProgramService {
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
     program.enableScope = programData.enableScope;
+    program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
     program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 

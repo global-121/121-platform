@@ -822,5 +822,6 @@
     "am_ET": "ከስደት ተመላሾች ወደ ኢትዮጵያ ሲመለሱ ኢኮኖሚያዊ እና ማህበራዊ ችግሮች ይገጥማቸዋል። ስለዚህ ይህ ፕሮግራም ከመካከለኛው ምስራቅ የተመለሱ ስደተኞችን መልሶ ለማቋቋም የገንዘብ ድጋፍ ለማድረግ የተነደፈ ነው።"
   },
   "fullnameNamingConvention": ["name"],
-  "languages": ["en", "am_ET"]
+  "languages": ["en", "am_ET"],
+  "allowEmptyPhoneNumber": false
 }

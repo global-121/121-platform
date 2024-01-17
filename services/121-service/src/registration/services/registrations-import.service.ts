@@ -747,6 +747,7 @@ export class RegistrationsImportService {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
@@ -803,7 +804,19 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
+
+      if (!program.allowEmptyPhoneNumber && !row.phoneNumber) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: GenericAttributes.phoneNumber,
+          value: row.phoneNumber,
+          error: 'PhoneNumber is not allowed to be empty',
+        };
+        errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
       importRecord.phoneNumber = row.phoneNumber;
+
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier

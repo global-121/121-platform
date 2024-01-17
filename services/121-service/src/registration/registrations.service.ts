@@ -406,6 +406,7 @@ export class RegistrationsService {
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
       customDataKey,
       customDataValueRaw,
+      registration.programId,
     );
     return await registration.saveData(customDataValue, {
       name: customDataKey,
@@ -415,7 +416,14 @@ export class RegistrationsService {
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[],
+    programId: number,
   ): Promise<string | number | string[]> {
+    const allowEmptyPhoneNumber = (
+      await this.programRepository.findOneBy({
+        id: programId,
+      })
+    )?.allowEmptyPhoneNumber;
+
     const answersTypeTel = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
@@ -430,7 +438,10 @@ export class RegistrationsService {
       answersTypeTel.push(question.name);
     }
     if (answersTypeTel.includes(customDataKey)) {
-      if (customDataKey === CustomDataAttributes.phoneNumber) {
+      if (
+        !allowEmptyPhoneNumber &&
+        customDataKey === CustomDataAttributes.phoneNumber
+      ) {
         // phoneNumber cannot be empty
         if (!customDataValue) {
           throw new HttpException(
@@ -895,7 +906,11 @@ export class RegistrationsService {
     value: string | number | string[],
     registration: RegistrationEntity,
   ): Promise<RegistrationEntity> {
-    value = await this.cleanCustomDataIfPhoneNr(attribute, value);
+    value = await this.cleanCustomDataIfPhoneNr(
+      attribute,
+      value,
+      registration.programId,
+    );
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = value;
@@ -1181,12 +1196,6 @@ export class RegistrationsService {
       }
     });
 
-    // Check if potential phonenumbers are correct and clean them
-    const newFspAttributes = {};
-    for (const [key, value] of Object.entries(newFspAttributesRaw)) {
-      newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(key, value);
-    }
-
     // Get registration by referenceId
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -1195,6 +1204,16 @@ export class RegistrationsService {
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
+    // Check if potential phonenumbers are correct and clean them
+    const newFspAttributes = {};
+    for (const [key, value] of Object.entries(newFspAttributesRaw)) {
+      newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(
+        key,
+        value,
+        registration.programId,
+      );
     }
 
     // Remove old attributes

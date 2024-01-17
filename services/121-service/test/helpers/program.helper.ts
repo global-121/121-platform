@@ -25,6 +25,17 @@ export async function postProgram(
     .send(program);
 }
 
+export async function patchProgram(
+  programId: number,
+  programUpdate: object,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}`)
+    .set('Cookie', [accessToken])
+    .send(programUpdate);
+}
+
 export async function getProgram(
   programId: number,
   accessToken: string,

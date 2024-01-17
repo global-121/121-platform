@@ -159,6 +159,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ nullable: true, default: null })
   public evaluationDashboardUrl: string;
 
+  @Column({ default: false })
+  public allowEmptyPhoneNumber: boolean;
+
   @OneToMany(
     () => MessageTemplateEntity,
     (messageTemplates) => messageTemplates.program,

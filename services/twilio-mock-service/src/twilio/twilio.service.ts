@@ -67,7 +67,10 @@ export class TwilioService {
     };
 
     // 1. First loop through different error rseponses and return early
-    if (twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailGeneric)) {
+    if (
+      !twilioMessagesCreateDto.To ||
+      twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailGeneric)
+    ) {
       response.status = TwilioStatus.failed;
       response.error_code = '1';
       response.error_message = 'Magic fail';

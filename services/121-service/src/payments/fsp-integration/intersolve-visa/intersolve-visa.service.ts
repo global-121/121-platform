@@ -512,9 +512,9 @@ export class IntersolveVisaService
     createDebitCardPayload.brand = 'VISA_CARD';
     createDebitCardPayload.firstName = paymentDetails.firstName;
     createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = formatPhoneNumber(
-      paymentDetails.phoneNumber,
-    );
+    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber
+      ? formatPhoneNumber(paymentDetails.phoneNumber)
+      : null;
     createDebitCardPayload.cardAddress = {
       address1: `${
         paymentDetails.addressStreet +
