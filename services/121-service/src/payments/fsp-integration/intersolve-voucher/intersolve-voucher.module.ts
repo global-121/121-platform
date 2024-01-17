@@ -24,6 +24,7 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { PaymentProcessorIntersolveVoucher } from './processors/intersolve-voucher.processor';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @Module({
@@ -48,7 +49,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
       name: QueueNamePayment.paymentIntersolveVoucher,
       processors: [
         {
-          path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
+          path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',
         },
       ],
       limiter: {
@@ -66,6 +67,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     CustomHttpService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
+    PaymentProcessorIntersolveVoucher,
   ],
   controllers: [IntersolveVoucherController],
   exports: [

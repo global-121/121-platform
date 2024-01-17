@@ -17,7 +17,7 @@ import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
-import { PaymentProcessorIntersolveVisa } from './processors/payment.processor';
+import { PaymentProcessorIntersolveVisa } from './processors/intersolve-visa.processor';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
@@ -32,7 +32,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
       name: QueueNamePayment.paymentIntersolveVisa,
       processors: [
         {
-          path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
+          path: 'src/payments/fsp-integration/intersolve-visa/processors/intersolve-visa.processor.ts',
         },
       ],
       limiter: {

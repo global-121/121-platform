@@ -11,7 +11,6 @@ export class PaymentProcessorIntersolveVoucher {
 
   @Process(ProcessName.sendPayment)
   async handleSendPayment(job: Job): Promise<void> {
-    console.log('job: ', job.data);
     await this.intersolveVoucherService.processQueuedPayment(job.data);
   }
 }

@@ -91,7 +91,6 @@ export class IntersolveVoucherService
     };
 
     for (const paymentInfo of paPaymentList) {
-      console.log('paymentInfo: ', paymentInfo);
       await this.paymentIntersolveVoucherQueue.add(ProcessName.sendPayment, {
         paymentInfo: paymentInfo,
         useWhatsapp: useWhatsapp,

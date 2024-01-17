@@ -3,7 +3,7 @@ import { Job } from 'bull';
 import { FspName } from '../../../../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../../../../registration/enum/language.enum';
 import { IntersolveVoucherService } from '../intersolve-voucher.service';
-import { PaymentProcessorIntersolveVoucher } from './payment.processor';
+import { PaymentProcessorIntersolveVoucher } from './intersolve-voucher.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
