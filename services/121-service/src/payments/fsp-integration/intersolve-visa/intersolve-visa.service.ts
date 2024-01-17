@@ -23,6 +23,7 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
+import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';
@@ -60,7 +61,6 @@ import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
-import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {

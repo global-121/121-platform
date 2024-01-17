@@ -1,4 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
@@ -11,6 +12,7 @@ import { RegistrationEntity } from '../../../registration/registration.entity';
 import { UserModule } from '../../../user/user.module';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { SoapService } from '../../../utils/soap/soap.service';
+import { QueueNamePayment } from '../../enum/queue.names.enum';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -42,6 +44,18 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     TransactionsModule,
     QueueMessageModule,
     MessageTemplateModule,
+    BullModule.registerQueue({
+      name: QueueNamePayment.paymentIntersolveVoucher,
+      processors: [
+        {
+          path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 5, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
   ],
   providers: [
     IntersolveVoucherService,

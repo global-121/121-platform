@@ -9,8 +9,8 @@ import { CustomHttpService } from '../../../shared/services/custom-http.service'
 import { UserModule } from '../../../user/user.module';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { QueueNamePayment } from '../../enum/queue.names.enum';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { QueueNamePayment } from './enum/queue.names.enum';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
