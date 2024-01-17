@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { TwilioService } from './twilio.service';
 
-@ApiTags('1. twilio')
+@ApiTags('twilio')
 @Controller()
 export class TwilioController {
   public constructor(private readonly twilioService: TwilioService) {}

@@ -5,7 +5,7 @@ export const PORT = process.env.NODE_ENV === 'development' ? 3001 : 8080;
 export const ROOT_URL =
   process.env.NODE_ENV === 'development'
     ? `http://localhost:${PORT}/`
-    : process.env.MOCK_TWILIO_URL;
+    : process.env.MOCK_SERVICE_URL;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
@@ -44,6 +44,7 @@ export const API_PATHS = {
   smsStatus: 'notifications/sms/status',
   whatsAppStatus: 'notifications/whatsapp/status',
   whatsAppIncoming: 'notifications/whatsapp/incoming',
+  safaricomCallback: 'payments/safaricom/transaction',
 };
 const rootApi121Service =
   process.env.NODE_ENV === 'development'

@@ -146,7 +146,7 @@ export class SafaricomService {
   }
 
   public async sendPaymentPerPa(
-    payload: any,
+    payload: SafaricomTransferPayload,
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
@@ -201,6 +201,7 @@ export class SafaricomService {
     safaricomPaymentResultData: any,
     attempt = 1,
   ): Promise<void> {
+    console.log('safaricomPaymentResultData: ', safaricomPaymentResultData);
     const safaricomDbRequest = await this.safaricomRequestRepository
       .createQueryBuilder('safaricom_request')
       .leftJoinAndSelect('safaricom_request.transaction', 'transaction')

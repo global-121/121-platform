@@ -5,6 +5,7 @@ import {
   SafaricomAuthResponseDto,
   SafaricomTransferResponseDto,
 } from './dto/safaricom-load-response.dto';
+import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 
 @Injectable()
 export class SafaricomApiService {
@@ -15,12 +16,17 @@ export class SafaricomApiService {
   public async authenticate(): Promise<string> {
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
-    const accessTokenUrl = `${process.env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
+    const accessTokenUrl = !!process.env.MOCK_SAFARICOM
+      ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/authenticate`
+      : `${process.env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
+    console.log('accessTokenUrl: ', accessTokenUrl);
 
     // Check expires_at
+    console.log('this.tokenSet: ', this.tokenSet);
+    this.tokenSet = null;
     if (this.tokenSet && this.tokenSet.expires_at > Date.now()) {
       // Return cached token
       return this.tokenSet.access_token;
@@ -33,6 +39,7 @@ export class SafaricomApiService {
           `${accessTokenUrl}`,
           headers,
         );
+        console.log('data: ', data);
 
         const datetime = new Date();
         // Cache tokenSet and expires_at
@@ -51,9 +58,11 @@ export class SafaricomApiService {
     }
   }
 
-  public async transfer(payload: any): Promise<any> {
+  public async transfer(payload: SafaricomTransferPayload): Promise<any> {
     try {
-      const paymentUrl = `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
+      const paymentUrl = !!process.env.MOCK_SAFARICOM
+        ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
+        : `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
       const headers = [
         {
           name: 'Authorization',
