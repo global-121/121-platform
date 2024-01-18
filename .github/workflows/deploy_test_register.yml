@@ -52,6 +52,10 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
+          envContentSecurityPolicy: >-
+            script-src 'self';
+            connect-src 'self' https://test.121.global;
+            form-action https://test.121.global;
         env:
           NG_ENV_NAME: 'test'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
