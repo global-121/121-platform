@@ -11,6 +11,25 @@ inputs:
     description: Base-64 encoded version of the favicon.ico file.
     required: false
     default: ''
+  envContentSecurityPolicyBase:
+    description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
+    required: false
+    default: >-
+      base-uri 'self';
+      default-src 'self';
+      img-src 'self' data:;
+      style-src 'self' 'unsafe-inline';
+      upgrade-insecure-requests;
+      block-all-mixed-content;
+  envContentSecurityPolicy:
+    description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
+    required: false
+    default: >-
+      script-src 'self';
+      connect-src 'self' https://*.121.global;
+      form-action https://*.121.global;
+      frame-src blob: 'self';
+      frame-ancestors 'self';
 
 outputs:
   build_version:
@@ -59,6 +78,15 @@ runs:
       working-directory: ${{ inputs.interfacePath }}
       run: |
         echo "${{ inputs.envIcon }}" | base64 --decode > www/favicon.ico
+
+    - name: Add/Override environment-specific Content-Security-Policy
+      if: ${{ inputs.envContentSecurityPolicy }} != ''
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        jq --arg csp "$(echo -n "${{ inputs.envContentSecurityPolicyBase }} ${{ inputs.envContentSecurityPolicy }}" | sed "s/'/\\'/g")" '.globalHeaders["Content-Security-Policy"]=$csp' staticwebapp.config.json > staticwebapp.config.override.json
+        mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
+        cat ./staticwebapp.config.json
 
     - name: Add VERSION to deployment
       id: version
