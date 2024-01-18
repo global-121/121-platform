@@ -422,14 +422,36 @@ export class PaymentsService {
 
         for (const fsp of fspAggregation) {
           if (fsp.fsp === FspName.intersolveVisa) {
-            const programs = await this.programRepository.find({
+            const programsWithVisa = await this.programRepository.find({
               where: {
                 financialServiceProviders: { fsp: FspName.intersolveVisa },
               },
             });
             const nrPending = await this.intersolveVisaService.getQueueProgress(
-              programs.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
+              programsWithVisa.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
             );
+            if (nrPending > 0) {
+              inProgress = true;
+              break; // if one fsp is in progress, then the whole payment is in progress
+            }
+          } else if (
+            fsp.fsp === FspName.intersolveVoucherPaper ||
+            fsp.fsp === FspName.intersolveVoucherWhatsapp
+          ) {
+            const programsWithVoucher = await this.programRepository.find({
+              where: {
+                financialServiceProviders: {
+                  fsp: In([
+                    FspName.intersolveVoucherWhatsapp,
+                    FspName.intersolveVoucherPaper,
+                  ]),
+                },
+              },
+            });
+            const nrPending =
+              await this.intersolveVoucherService.getQueueProgress(
+                programsWithVoucher.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
+              );
             if (nrPending > 0) {
               inProgress = true;
               break; // if one fsp is in progress, then the whole payment is in progress

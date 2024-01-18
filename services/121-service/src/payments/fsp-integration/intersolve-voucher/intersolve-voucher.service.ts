@@ -100,6 +100,17 @@ export class IntersolveVoucherService
     }
   }
 
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      const jobs = await this.paymentIntersolveVoucherQueue.getJobs([
+        'delayed',
+      ]);
+      return jobs.filter((j) => j.data.programId === programId).length;
+    } else {
+      return await this.paymentIntersolveVoucherQueue.getDelayedCount();
+    }
+  }
+
   public async processQueuedPayment(
     jobData: IntersolveVoucherJobDto,
   ): Promise<void> {
