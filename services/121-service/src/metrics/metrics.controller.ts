@@ -120,12 +120,10 @@ export class MetricsController {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    switch (format as ExportFileFormat) {
-      case ExportFileFormat.xlsx:
-        return sendXlsxReponse(result.data, result.fileName, res);
-      default:
-        return result;
+    if (format === ExportFileFormat.xlsx) {
+      return sendXlsxReponse(result.data, result.fileName, res);
     }
+    return res.send(result);
   }
 
   @Admin()
