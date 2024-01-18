@@ -352,11 +352,11 @@ This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
 - [ ] Define the date/time of the release. (Notify the dev-team for a code-freeze.)
-- [ ] Define what code gets released. ("_Is the current `master`-branch working?_")
+- [ ] Define what code gets released. ("_Is the current `main`-branch working?_")
 - [ ] Define the `version`(-number) for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
-  - [ ] Commit changes to `master`-branch on GitHub.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
+  - [ ] Commit changes to `main`-branch on GitHub.
+- [ ] Create a `release`-branch ("`release/<version>`") from current `main`-branch and push this branch to GitHub
 - [ ] Given current setup of automatic deployments on release:  
        Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
@@ -380,7 +380,7 @@ This follows the same process as a regular release + deployment. With some small
 - Push this branch directly to the main/upstream repository, not to a personal fork.
 - Create a new release (see above) and publish it.
 - Use the [manual deployment-workflows](.github/workflows/) to deploy to production
-- After the hotfix-release, apply the same fix to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
+- After the hotfix-release, apply the same fix to the main-branch in a regular PR (by creating a PR from the hotfix-branch to `main`-branch)
 
 ---
 
@@ -396,7 +396,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
-- PR's to the branch `master` are automatically deployed to an individual preview-environment.
+- PR's to the branch `main` are automatically deployed to an individual preview-environment.
 - When merged, a separate deployment is done to the test-environment; for that interface only.
 
 ### To "staging/production" environment(s)
@@ -421,7 +421,7 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 - [ ] Create the necessary Azure resources
 - [ ] Configure the service configurations based on [`.env.example`](./services/.env.example)
 - [ ] Create the necessary build/deploy-workflow files
-- [ ] Merge these new files into the `master`-branch
+- [ ] Merge these new files into the `main`-branch
 - [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
 
 #### On next deployments

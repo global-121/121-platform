@@ -18,6 +18,7 @@ on:
   push:
     branches:
       - master
+      - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
       - 'interfaces/Portal/**'
@@ -27,6 +28,7 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - master
+      - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
       - 'interfaces/Portal/**'
