@@ -96,5 +96,6 @@ jobs:
         env:
           SKIP_DEPLOY_ON_MISSING_SECRETS: true
         with:
+          app_location: '${{ env.workingDirectory }}/www'
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
           action: 'close'
