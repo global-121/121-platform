@@ -22,10 +22,7 @@ export class SafaricomApiService {
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
-    console.log('accessTokenUrl: ', accessTokenUrl);
 
-    // Check expires_at
-    console.log('this.tokenSet: ', this.tokenSet);
     this.tokenSet = null;
     if (this.tokenSet && this.tokenSet.expires_at > Date.now()) {
       // Return cached token
@@ -39,7 +36,6 @@ export class SafaricomApiService {
           `${accessTokenUrl}`,
           headers,
         );
-        console.log('data: ', data);
 
         const datetime = new Date();
         // Cache tokenSet and expires_at
