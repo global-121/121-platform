@@ -17,3 +17,10 @@ export class SafaricomTransferPayload {
   public requestResult?: JSON;
   public paymentResult?: JSON;
 }
+
+export class SafaricomTransferResponseBodyDto {
+  public ConversationID: string;
+  public OriginatorConversationID: string;
+  public ResponseCode: string;
+  public ResponseDescription: string;
+}

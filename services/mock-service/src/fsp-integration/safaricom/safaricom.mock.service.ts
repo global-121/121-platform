@@ -2,12 +2,19 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { API_PATHS, EXTERNAL_API } from '../../config';
-import { SafaricomTransferPayload } from './safaricom.dto';
+import {
+  SafaricomTransferPayload,
+  SafaricomTransferResponseBodyDto,
+} from './safaricom.dto';
 
+enum MockScenario {
+  success = 'success',
+  otherFailure = 'other-failure',
+  noResponse = 'no-response',
+}
 @Injectable()
 export class SafaricomMockService {
   public async authenticate(): Promise<object> {
-    console.log('authenticate: ');
     return {
       access_token: 'mock_access_token',
       expires_in: 3600,
@@ -16,33 +23,35 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<object> {
-    const response = {
+  ): Promise<SafaricomTransferResponseBodyDto> {
+    const mockScenario: MockScenario = MockScenario.success;
+
+    const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
       OriginatorConversationID: transferDto.OriginatorConversationID,
-      ResponseCode: '0', // means success
-      ResponseDescription: 'Accept the service request successfully.',
+      ResponseCode: mockScenario === MockScenario.success ? '0' : null,
+      ResponseDescription:
+        mockScenario === MockScenario.success
+          ? 'Accept the service request successfully.'
+          : 'Mock error message',
     };
-    console.log('response: ', response);
 
-    // TODO: trigger callback
-    this.sendStatusCallback(transferDto);
+    this.sendStatusCallback(transferResponse, mockScenario);
 
-    return response;
+    return transferResponse;
   }
 
   private async sendStatusCallback(
-    transferDto: SafaricomTransferPayload,
+    transferResponse: SafaricomTransferResponseBodyDto,
+    mockScenario: MockScenario,
   ): Promise<void> {
-    const mockScenario: string = 'success'; // Set 'success' / 'other-failure' / 'no-response' to test the corresponding scenario
-
     const successStatus = {
       Result: {
         ResultType: 0,
         ResultCode: 0,
         ResultDesc: 'The service request is processed successfully.',
-        OriginatorConversationID: transferDto.OriginatorConversationID,
-        ConversationID: 'AG_20191219_00005797af5d7d75f652',
+        OriginatorConversationID: transferResponse.OriginatorConversationID,
+        ConversationID: transferResponse.ConversationID,
         TransactionID: 'NLJ41HAY6Q',
         ResultParameters: {
           ResultParameter: [
@@ -94,8 +103,8 @@ export class SafaricomMockService {
         ResultType: 0,
         ResultCode: 2001,
         ResultDesc: 'The initiator information is invalid.',
-        OriginatorConversationID: transferDto.OriginatorConversationID,
-        ConversationID: 'AG_20191219_00006c6fddb15123addf',
+        OriginatorConversationID: transferResponse.OriginatorConversationID,
+        ConversationID: transferResponse.ConversationID,
         TransactionID: 'NLJ0000000',
         ReferenceData: {
           ReferenceItem: {
@@ -109,20 +118,18 @@ export class SafaricomMockService {
 
     // Switch between mock scenarios
     let Status;
-    if (mockScenario === 'success') {
+    if (mockScenario === MockScenario.success) {
       Status = successStatus;
-    } else if (mockScenario === 'other-failure') {
+    } else if (mockScenario === MockScenario.otherFailure) {
       Status = otherFailureStatus;
-    } else if (mockScenario === 'no-response') {
+    } else if (mockScenario === MockScenario.noResponse) {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // await setTimeout(30);
     const response = {
       Result: Status.Result,
     };
-    console.log('response: ', response);
     const httpService = new HttpService();
     const path = API_PATHS.safaricomCallback;
     const urlExternal = `${process.env.EXTERNAL_121_SERVICE_URL}api/${path}`;

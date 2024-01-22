@@ -1,8 +1,8 @@
 export class SafaricomTransferResponseDto {
-  public data: SafaricomLoadBodyDto;
+  public data: SafaricomTransferResponseBodyDto;
 }
 
-class SafaricomLoadBodyDto {
+class SafaricomTransferResponseBodyDto {
   public ConversationID: string;
   public OriginatorConversationID: string;
   public ResponseCode: string;
