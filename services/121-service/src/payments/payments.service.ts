@@ -456,6 +456,38 @@ export class PaymentsService {
               inProgress = true;
               break; // if one fsp is in progress, then the whole payment is in progress
             }
+          } else if (fsp.fsp === FspName.safaricom) {
+            const programsWithSafaricom = await this.programRepository.find({
+              where: {
+                financialServiceProviders: { fsp: FspName.safaricom },
+              },
+            });
+            const nrPending = await this.safaricomService.getQueueProgress(
+              programsWithSafaricom.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
+            );
+            if (nrPending > 0) {
+              inProgress = true;
+              break; // if one fsp is in progress, then the whole payment is in progress
+            }
+          } else if (fsp.fsp === FspName.commercialBankEthiopia) {
+            const programsWithCommercialBankEthiopia =
+              await this.programRepository.find({
+                where: {
+                  financialServiceProviders: {
+                    fsp: FspName.commercialBankEthiopia,
+                  },
+                },
+              });
+            const nrPending =
+              await this.commercialBankEthiopiaService.getQueueProgress(
+                programsWithCommercialBankEthiopia.length > 1
+                  ? programId
+                  : null, // only make query program-specific if there are multiple programs using this fsp
+              );
+            if (nrPending > 0) {
+              inProgress = true;
+              break; // if one fsp is in progress, then the whole payment is in progress
+            }
           }
           // for fsp's without queue, do nothing, so inProgress remains false
         }

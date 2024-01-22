@@ -53,6 +53,15 @@ export class SafaricomService {
     }
   }
 
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      const jobs = await this.paymentSafaricomQueue.getJobs(['delayed']);
+      return jobs.filter((j) => j.data.programId === programId).length;
+    } else {
+      return await this.paymentSafaricomQueue.getDelayedCount();
+    }
+  }
+
   public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
     await this.safaricomApiService.authenticate();
     const resultUser = jobData.userInfo.find(

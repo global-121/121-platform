@@ -103,6 +103,15 @@ export class CommercialBankEthiopiaService
     return fspTransactionResult;
   }
 
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      const jobs = await this.commercialBankEthiopiaQueue.getJobs(['delayed']);
+      return jobs.filter((j) => j.data.programId === programId).length;
+    } else {
+      return await this.commercialBankEthiopiaQueue.getDelayedCount();
+    }
+  }
+
   async processQueuedPayment(
     data: CommercialBankEthiopiaJobDto,
   ): Promise<void> {
