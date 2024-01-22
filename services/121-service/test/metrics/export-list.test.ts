@@ -136,4 +136,26 @@ describe('Metric export list', () => {
       createExportObject(registrationScopedGoesPv),
     );
   });
+
+  it('should export in excel format', async () => {
+    // Arrange
+    const testScope = DebugScope.Zeeland;
+    accessToken = await getAccessTokenScoped(testScope);
+
+    const getRegistrationsResponse = await getServer()
+      .get(`/programs/${PvProgramId}/metrics/export-list/all-people-affected`)
+      .set('Cookie', [accessToken])
+      .responseType('blob')
+      .query({
+        format: 'xlsx',
+      })
+      .send();
+
+    // Assert check if an excel is returned
+    expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
+    expect(getRegistrationsResponse.header['content-type']).toBe(
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    expect(Buffer.isBuffer(getRegistrationsResponse.body)).toBe(true);
+  });
 });
