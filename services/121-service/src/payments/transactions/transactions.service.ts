@@ -345,4 +345,37 @@ export class TransactionsService {
       await this.storeTransactionUpdateStatus(transaction, programId, payment);
     }
   }
+
+  public async updateWaitingTransactionToError(
+    payment: number,
+    regisrationId: number,
+    status: StatusEnum,
+    transactionStep: number,
+    messageSid?: string,
+    errorMessage?: string,
+  ): Promise<void> {
+    const foundTransaction = await this.transactionScopedRepository.findOne({
+      where: {
+        payment,
+        registrationId: regisrationId,
+        transactionStep,
+        status: StatusEnum.waiting,
+      },
+    });
+    if (foundTransaction) {
+      if (status === StatusEnum.waiting && messageSid) {
+        await this.twilioMessageRepository.update(
+          { sid: messageSid },
+          {
+            transactionId: foundTransaction.id,
+          },
+        );
+      }
+      if (status === StatusEnum.error) {
+        foundTransaction.status = status;
+        foundTransaction.errorMessage = errorMessage;
+        await this.transactionScopedRepository.save(foundTransaction);
+      }
+    }
+  }
 }

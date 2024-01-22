@@ -155,17 +155,25 @@ export class MessageService {
     const transactionStep = 1;
     const status = messageSid ? StatusEnum.waiting : StatusEnum.error;
 
-    await this.intersolveVoucherService.storeTransactionResult(
-      messageJobDto.customData.payment,
-      messageJobDto.customData.amount,
-      messageJobDto.registrationId,
-      transactionStep,
-      status,
-      errorMessage,
-      messageJobDto.programId,
-      messageSid,
-      messageJobDto.customData.intersolveVoucherId,
-    );
+    if (status === StatusEnum.error) {
+      await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
+        messageJobDto.customData.payment,
+        messageJobDto.registrationId,
+        status,
+        transactionStep,
+        null,
+        errorMessage,
+      );
+    } else {
+      await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
+        messageJobDto.customData.payment,
+        messageJobDto.registrationId,
+        status,
+        transactionStep,
+        messageSid,
+        null,
+      );
+    }
   }
 
   private async processWhatsappPendingVoucher(
@@ -194,6 +202,8 @@ export class MessageService {
       );
     const transactionStep = 2;
     const status = StatusEnum.success;
+
+    console.log('store pending voucher: ', messageJobDto.customData);
 
     await this.intersolveVoucherService.storeTransactionResult(
       messageJobDto.customData.payment,

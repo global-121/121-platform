@@ -97,20 +97,18 @@ export class IntersolveVoucherService
       }
 
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
-      if (paResult.status !== StatusEnum.waiting) {
-        const registration = await this.registrationScopedRepository.findOne({
-          where: { referenceId: paResult.referenceId },
-        });
-        await this.storeTransactionResult(
-          payment,
-          paymentInfo.transactionAmount,
-          registration.id,
-          1,
-          paResult.status,
-          paResult.message,
-          registration.programId,
-        );
-      }
+      const registration = await this.registrationScopedRepository.findOne({
+        where: { referenceId: paResult.referenceId },
+      });
+      await this.storeTransactionResult(
+        payment,
+        paymentInfo.transactionAmount,
+        registration.id,
+        1,
+        paResult.status,
+        paResult.message,
+        registration.programId,
+      );
     }
   }
 
@@ -413,6 +411,24 @@ export class IntersolveVoucherService
             ')'
           : null,
     });
+  }
+
+  public async updateTransactionBasedTwilioMessageCreate(
+    payment: number,
+    regisrationId: number,
+    status: StatusEnum,
+    transactionStep: number,
+    messageSid?: string,
+    errorMessage?: string,
+  ): Promise<void> {
+    await this.transactionsService.updateWaitingTransactionToError(
+      payment,
+      regisrationId,
+      status,
+      transactionStep,
+      messageSid,
+      errorMessage,
+    );
   }
 
   public async exportVouchers(
