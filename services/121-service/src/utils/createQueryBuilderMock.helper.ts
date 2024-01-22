@@ -12,7 +12,7 @@ export function generateMockCreateQueryBuilder(
   dbQueryResult: any[],
   options: any = {},
 ): QueryBuilderMock {
-  let mock: QueryBuilderMock = {
+  const mock: QueryBuilderMock = {
     where: () => mock,
     andWhere: () => mock,
   };
