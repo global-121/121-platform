@@ -66,15 +66,8 @@ describe('CommercialBankEthiopiaService', () => {
       { name: 'username', value: '1234' },
       { name: 'password', value: '1234' },
     ];
-    const createQueryBuilder: any = generateMockCreateQueryBuilder(
-      dbQueryResult,
-      {
-        includeSelect: true,
-        includeAddSelect: true,
-        includeLeftJoin: true,
-        // Not setting useGetMany to true will default to using getRawMany
-      },
-    );
+    const createQueryBuilder: any =
+      generateMockCreateQueryBuilder(dbQueryResult);
 
     jest
       .spyOn(commercialBankEthiopiaService as any, 'getRegistrationData')
