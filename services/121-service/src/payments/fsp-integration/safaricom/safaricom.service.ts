@@ -201,7 +201,6 @@ export class SafaricomService {
     safaricomPaymentResultData: any,
     attempt = 1,
   ): Promise<void> {
-    console.log('safaricomPaymentResultData: ', safaricomPaymentResultData);
     const safaricomDbRequest = await this.safaricomRequestRepository
       .createQueryBuilder('safaricom_request')
       .leftJoinAndSelect('safaricom_request.transaction', 'transaction')
