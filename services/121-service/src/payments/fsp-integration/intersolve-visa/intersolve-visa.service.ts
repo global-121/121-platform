@@ -176,6 +176,41 @@ export class IntersolveVisaService
     }
   }
 
+  private async getTransactionAmountPerRegistration(
+    paymentDetailsData: PaymentDetailsDto,
+    maxAmount: number,
+  ): Promise<number> {
+    const wallet = await this.getWalletByReferenceId(
+      paymentDetailsData.referenceId,
+    );
+    // Check if there's a wallet to check spendThisMonth & balance
+    if (wallet) {
+      const details = await this.getWalletDetails(wallet);
+      const calculatedAmount = 150 - details.spentThisMonth - details.balance;
+      return Math.min(calculatedAmount, maxAmount);
+    } else {
+      // No wallet found, return the maxAmount because this is the first payment
+      console.log('No Visa Wallet found');
+      return maxAmount;
+    }
+  }
+
+  private async getWalletByReferenceId(
+    referenceId: string,
+  ): Promise<IntersolveVisaWalletEntity> {
+    const registration = await this.registrationScopedRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+    const visaCustomer = await this.getCustomerEntity(registration.id);
+    // No Visa Customer found probably means that this is the first payment so there will also be no Wallet
+    if (!visaCustomer) {
+      console.log('No Visa Customer found');
+      return null;
+    }
+    visaCustomer.visaWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
+    return visaCustomer.visaWallets[0];
+  }
+
   public async getQueueProgress(programId?: number): Promise<number> {
     if (programId) {
       const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
@@ -191,6 +226,14 @@ export class IntersolveVisaService
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
+
+    // Calculate the amount that should be paid out, taking the transactionAmount as a MAX value.
+    const newTransactionAmount = await this.getTransactionAmountPerRegistration(
+      paymentDetailsData,
+      paymentDetailsData.transactionAmount,
+    );
+    console.log('newTransactionAmount: ', newTransactionAmount);
+    paymentDetailsData.transactionAmount = newTransactionAmount;
 
     const paymentRequestResultPerPa = await this.sendPaymentToPa(
       paymentDetailsData,
@@ -439,6 +482,7 @@ export class IntersolveVisaService
   private async getCustomerEntity(
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
+    console.log('registrationId: ', registrationId);
     return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
       where: { registrationId: registrationId },
