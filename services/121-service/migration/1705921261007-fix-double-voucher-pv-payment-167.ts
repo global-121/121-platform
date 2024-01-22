@@ -109,5 +109,7 @@ export class FixDoubleVoucherPvPayment1671705921261007
     console.timeEnd('FixDoubleVoucherPvPayment1671705921261007');
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }
