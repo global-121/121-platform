@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
@@ -54,14 +55,15 @@ describe('IntersolveVoucherService', () => {
       { name: 'password', value: '1234' },
       { name: 'username', value: '1234' },
     ];
-    const createQueryBuilder: any = {
-      select: () => createQueryBuilder,
-      addSelect: () => createQueryBuilder,
-      where: () => createQueryBuilder,
-      andWhere: () => createQueryBuilder,
-      leftJoin: () => createQueryBuilder,
-      getRawMany: () => dbQueryResult,
-    };
+    const createQueryBuilder: any = generateMockCreateQueryBuilder(
+      dbQueryResult,
+      {
+        includeSelect: true,
+        includeAddSelect: true,
+        includeLeftJoin: true,
+        // Not setting useGetMany to true will default to using getRawMany
+      },
+    );
 
     jest
       .spyOn(
