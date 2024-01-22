@@ -633,18 +633,17 @@ export class IntersolveVisaService
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
     );
-    if (walletDetails?.data?.data) {
-      wallet.balance = walletDetails.data.data.balances?.find(
+    const walletData = walletDetails?.data?.data;
+    if (walletData.balances) {
+      wallet.balance = walletData.balances.find(
         (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
       )?.quantity?.value;
+    }
+    if (walletData.status) {
       wallet.walletStatus = walletDetails.data.data.status;
-      // Only update blocked if we get a proper response from Intersolve
-      if (
-        walletDetails.data.data.blocked === true ||
-        walletDetails.data.data.blocked === false
-      ) {
-        wallet.tokenBlocked = walletDetails.data.data.blocked;
-      }
+    }
+    if (walletData.blocked === true || walletData.blocked === false) {
+      wallet.tokenBlocked = walletDetails.data.data.blocked;
     }
 
     const cardDetails = await this.intersolveVisaApiService.getCard(
@@ -658,11 +657,13 @@ export class IntersolveVisaService
       wallet.tokenCode,
       this.getTwoMonthAgo(),
     );
-    if (transactionInfo) {
+    if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
-      wallet.spentThisMonth = transactionInfo.spentThisMonth;
-      wallet.lastExternalUpdate = new Date();
     }
+    if (transactionInfo.spentThisMonth) {
+      wallet.spentThisMonth = transactionInfo.spentThisMonth;
+    }
+    wallet.lastExternalUpdate = new Date();
 
     return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
