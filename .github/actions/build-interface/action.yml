@@ -5,7 +5,7 @@ description: 'Builds an Angular interface.'
 
 inputs:
   interfacePath:
-    description: Location of the interface code.
+    description: Location of the interface's code. (relative to the repository-root)
     required: true
   envIcon:
     description: Base-64 encoded version of the favicon.ico file.
@@ -58,6 +58,13 @@ runs:
       run: |
         echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
 
+    - name: Add environment-specific icon
+      if: ${{ inputs.envIcon }} != ''
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        echo "${{ inputs.envIcon }}" | base64 --decode > src/favicon.ico
+
     - name: Build
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
@@ -71,13 +78,6 @@ runs:
         NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
         NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-
-    - name: Add environment-specific icon
-      if: ${{ inputs.envIcon }} != ''
-      shell: bash
-      working-directory: ${{ inputs.interfacePath }}
-      run: |
-        echo "${{ inputs.envIcon }}" | base64 --decode > www/favicon.ico
 
     - name: Add/Override environment-specific Content-Security-Policy
       if: ${{ inputs.envContentSecurityPolicy }} != ''

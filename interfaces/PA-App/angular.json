@@ -29,6 +29,7 @@
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
               },
+              "src/favicon.ico",
               "src/manifest.json"
             ],
             "styles": [
@@ -72,6 +73,7 @@
                   "input": "node_modules/ionicons/dist/ionicons/svg",
                   "output": "./svg"
                 },
+                "src/favicon.ico",
                 "src/manifest.json"
               ],
               "optimization": {
