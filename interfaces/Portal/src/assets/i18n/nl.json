@@ -102,7 +102,11 @@
           "invalid-email": "Voer een geldig e-mailadres in."
         },
         "password": {
-          "label": "Wachtwoord"
+          "label": "Wachtwoord",
+          "toggle": {
+            "hide": "Verberg wachtwoord",
+            "show": "Toon wachtwoord"
+          }
         },
         "submit": {
           "label": "Inloggen"
