@@ -20,12 +20,14 @@ import {
 import {
   awaitChangePaStatus,
   importRegistrations,
+  issueNewVisaCard,
   updateRegistration,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import {
   registrationOCW2,
   registrationOCW3,
+  registrationOCW4,
 } from '../registrations/pagination/pagination-data';
 
 describe('Do payment to 1 PA', () => {
@@ -449,10 +451,14 @@ describe('Do payment to 1 PA', () => {
       registrationOCW3.lastName = 'success';
       registrationOCW3.paymentAmountMultiplier = 3;
 
+      registrationOCW4.lastName = 'mock-current-balance-0-mock-spent-6000';
+      registrationOCW4.paymentAmountMultiplier = 3;
+
       const registrations = [
         registrationVisa,
         registrationOCW2,
         registrationOCW3,
+        registrationOCW4,
       ];
 
       const referenceIds = registrations.map((r) => r.referenceId);
@@ -483,6 +489,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
         paymentNrVisa,
       );
+
+      // Reissue card so both cards have a spend of 6000
+      await issueNewVisaCard(
+        programIdVisa,
+        registrationOCW4.referenceId,
+        accessToken,
+      );
+      await waitFor(2_000);
 
       await doPayment(
         programIdVisa,
@@ -519,20 +533,32 @@ describe('Do payment to 1 PA', () => {
         registrationOCW3.referenceId,
         accessToken,
       );
+      const transactionsResponse4 = await getTransactions(
+        programIdVisa,
+        paymentNumberAmountTest,
+        registrationOCW4.referenceId,
+        accessToken,
+      );
 
       // Assert
+      // 150 - (13000 /100) - (1000/ 100) = 10
       expect(transactionsResponse1.body[0].amount).toBe(10);
       expect(transactionsResponse1.text).toContain(StatusEnum.success);
 
-      // Assert
+      // 150 - (14000 /100) - (1000/ 100) = 0  - a transaction of 0 is created
       expect(transactionsResponse2.body[0].amount).toBe(0);
       expect(transactionsResponse2.text).toContain(StatusEnum.success);
 
-      // Assert
+      // should be able to payout the full amoung
       expect(transactionsResponse3.body[0].amount).toBe(
         amountVisa * registrationOCW3.paymentAmountMultiplier,
       );
       expect(transactionsResponse3.text).toContain(StatusEnum.success);
+
+      // Kyc requirement - 60 spend * 2 cards = 30 left for transaction
+      // 150 - (6000 * 2  /100) - 0  = 30
+      expect(transactionsResponse4.body[0].amount).toBe(30);
+      expect(transactionsResponse4.text).toContain(StatusEnum.success);
     });
   });
   // TODO: We skipped testing successful retry after:
