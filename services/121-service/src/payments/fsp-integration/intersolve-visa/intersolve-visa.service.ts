@@ -19,7 +19,6 @@ import { RegistrationDataScopedQueryService } from '../../../utils/registration-
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
-  FspTransactionResultDto,
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
@@ -177,40 +176,17 @@ export class IntersolveVisaService
   }
 
   private async getTransactionAmountPerRegistration(
-    paymentDetailsData: PaymentDetailsDto,
     maxAmount: number,
+    wallet: IntersolveVisaWalletEntity,
   ): Promise<number> {
-    const wallet = await this.getWalletByReferenceId(
-      paymentDetailsData.referenceId,
-    );
-    // If there's a wallet, get the details and calculate the amount that can be paid out
-    if (wallet) {
-      const details = await this.getWalletDetails(wallet);
-      const calculatedAmount = 150 - details.spentThisMonth - details.balance;
-      if (calculatedAmount > 0) {
-        return Math.min(calculatedAmount, maxAmount);
-      } else {
-        return 0;
-      }
+    const details = await this.getWalletDetails(wallet);
+    const calculatedAmount =
+      (150 * 100 - details.spentThisMonth - details.balance) / 100;
+    if (calculatedAmount > 0) {
+      return Math.min(calculatedAmount, maxAmount);
     } else {
-      // No wallet found, return the maxAmount because this is the first payment for this PA
-      return maxAmount;
+      return 0;
     }
-  }
-
-  private async getWalletByReferenceId(
-    referenceId: string,
-  ): Promise<IntersolveVisaWalletEntity> {
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: referenceId },
-    });
-    const visaCustomer = await this.getCustomerEntity(registration.id);
-    // No Visa Customer found probably means that this is the first payment so there will also be no Wallet
-    if (!visaCustomer) {
-      return null;
-    }
-    visaCustomer.visaWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
-    return visaCustomer.visaWallets[0];
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
@@ -225,24 +201,12 @@ export class IntersolveVisaService
   public async processQueuedPayment(
     paymentDetailsData: PaymentDetailsDto,
   ): Promise<void> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.intersolveVisa;
-
-    // Calculate the amount that should be paid out, taking the transactionAmount as a MAX value.
-    const newTransactionAmount = await this.getTransactionAmountPerRegistration(
-      paymentDetailsData,
-      paymentDetailsData.transactionAmount,
-    );
-    paymentDetailsData.transactionAmount = newTransactionAmount;
-
     const paymentRequestResultPerPa = await this.sendPaymentToPa(
       paymentDetailsData,
       paymentDetailsData.paymentNr,
       paymentDetailsData.transactionAmount,
       paymentDetailsData.bulkSize,
     );
-    fspTransactionResult.paList.push(paymentRequestResultPerPa);
     await this.transactionsService.storeTransactionUpdateStatus(
       paymentRequestResultPerPa,
       paymentDetailsData.programId,
@@ -447,11 +411,17 @@ export class IntersolveVisaService
       }
     } else {
       // If yes, load balance
+      // Calculate the amount that should be paid out, taking the original calculatedAmount as MAX value.
+      const topupAmount = await this.getTransactionAmountPerRegistration(
+        calculatedAmount,
+        visaCustomer.visaWallets[0],
+      );
+      paTransactionResult.calculatedAmount = topupAmount;
       // If calculatedAmount is larger than 0, call Intersolve
-      if (calculatedAmount > 0) {
+      if (topupAmount > 0) {
         const loadBalanceResult = await this.loadBalanceVisaCard(
           visaCustomer.visaWallets[0].tokenCode,
-          calculatedAmount,
+          topupAmount,
           registration.referenceId,
           paymentNr,
         );
@@ -467,7 +437,7 @@ export class IntersolveVisaService
               )}`
             : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
       } else {
-        // If calculatedAmount is 0, DON'T call Intersolve. Create an successfull transaction
+        // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
         paTransactionResult.status = StatusEnum.success;
         paTransactionResult.message = null;
       }
@@ -477,7 +447,7 @@ export class IntersolveVisaService
 
       transactionNotifications.push(
         this.buildNotificationObjectLoadBalance(
-          calculatedAmount,
+          topupAmount,
           bulkSizeCompletePayment,
         ),
       );
@@ -490,7 +460,6 @@ export class IntersolveVisaService
   private async getCustomerEntity(
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
-    console.log('registrationId: ', registrationId);
     return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
       where: { registrationId: registrationId },
