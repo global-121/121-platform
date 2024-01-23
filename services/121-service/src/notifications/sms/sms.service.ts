@@ -24,7 +24,7 @@ export class SmsService {
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
   ): Promise<void> {
-    const to = formatPhoneNumber(recipientPhoneNr);
+    const to = recipientPhoneNr ? formatPhoneNumber(recipientPhoneNr) : null;
 
     let messageToStore;
     try {

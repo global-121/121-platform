@@ -3,7 +3,6 @@ import {
   IsEnum,
   IsIn,
   IsInt,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -28,7 +27,6 @@ const fspArray = Object.values(FspName).map((item) => String(item));
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   public phoneNumber: string;
 

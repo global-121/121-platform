@@ -56,7 +56,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public isPopoverButton = false;
 
-  public allPeopleAffectedOptions: {
+  public filterOptions: {
     limit: number;
     page: number;
     referenceId?: string;
@@ -107,23 +107,23 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.filterService.statusFilter$.pipe(
-      map((filter) => (this.allPeopleAffectedOptions.statuses = filter)),
+      map((filter) => (this.filterOptions.statuses = filter)),
     );
 
     const { itemsPerPage, currentPage } =
       this.registrationService.getPageMetadata();
-    this.allPeopleAffectedOptions.limit = itemsPerPage;
-    this.allPeopleAffectedOptions.page = currentPage + 1;
+    this.filterOptions.limit = itemsPerPage;
+    this.filterOptions.page = currentPage + 1;
 
-    this.allPeopleAffectedOptions.sort = this.registrationService.getSortBy();
+    this.filterOptions.sort = this.registrationService.getSortBy();
   }
 
   private onTextFilterChange = (filter: PaginationFilter[]) => {
-    this.allPeopleAffectedOptions.filters = filter;
+    this.filterOptions.filters = filter;
   };
 
   private onStatusFilterChange = (filter: RegistrationStatusEnum[]) => {
-    this.allPeopleAffectedOptions.statuses = filter;
+    this.filterOptions.statuses = filter;
   };
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -204,30 +204,48 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
         dateToAdjusted,
         Number(this.minPayment),
         Number(this.maxPayment),
-        this.allPeopleAffectedOptions,
+        this.exportType === ExportType.filteredTable
+          ? this.filterOptions
+          : null,
       )
       .then(
         (res) => {
+          const filename = this.toExportFileName(exportType);
+          this.blobToDownload(res, filename);
+
           this.isInProgress = false;
-          if (!res.data || res.data.length === 0) {
-            actionResult(
-              this.alertController,
-              this.translate,
-              this.translate.instant('page.program.export-list.no-data'),
-            );
-            return;
-          }
           this.updateHeaderAndMessage();
         },
         (err) => {
           this.isInProgress = false;
           console.log('err: ', err);
+
+          const translateKey =
+            err.status === 404
+              ? 'page.program.export-list.no-data'
+              : 'common.export-error';
+
           actionResult(
             this.alertController,
             this.translate,
-            this.translate.instant('common.export-error'),
+            this.translate.instant(translateKey),
           );
         },
       );
+  }
+
+  private blobToDownload(blob: Blob, filename: string) {
+    const downloadURL = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadURL;
+    link.download = filename;
+    link.click();
+  }
+
+  private toExportFileName(excelFileName: string): string {
+    const date = new Date();
+    return `${excelFileName}-${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}.xlsx`;
   }
 }

@@ -33,6 +33,9 @@ export class TableFilterRowComponent {
   @Input()
   public filteredCount: number;
 
+  @Input()
+  public showValidation: boolean;
+
   @ViewChild('statusTableFilter')
   public statusTableFilter: StatusTableFilterComponent;
 

@@ -6,6 +6,7 @@ import {
   registrationScopedGoesPv,
   registrationScopedUtrechtPv,
 } from '../fixtures/scoped-registrations';
+import { patchProgram } from '../helpers/program.helper';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
@@ -111,5 +112,65 @@ describe('Import a registration', () => {
     );
     const registrationsResult = result.body.data;
     expect(registrationsResult).toHaveLength(0);
+  });
+
+  it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+    registrationVisa.phoneNumber = '';
+
+    // Act
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programIdOCW,
+      accessToken,
+    );
+
+    const registration = result.body.data;
+    expect(registration).toHaveLength(0);
+  });
+
+  it('should import registrations with empty phoneNumber, when program allows this', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+    const programUpdate = {
+      allowEmptyPhoneNumber: true,
+    };
+    await patchProgram(programIdOCW, programUpdate, accessToken);
+
+    // Act
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const result = await searchRegistrationByReferenceId(
+      registrationVisa.referenceId,
+      programIdOCW,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    for (const key in registrationVisa) {
+      if (key === 'fspName') {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(registration['financialServiceProvider']).toBe(
+          registrationVisa[key],
+        );
+      } else {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(registration[key]).toBe(registrationVisa[key]);
+      }
+    }
   });
 });

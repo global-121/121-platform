@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "English",
   "common": {
+    "all": "All",
     "answer-is-required": "An answer is required for this question.",
+    "apply": "Apply",
     "cancel": "Cancel",
     "confirm": "Are you sure?",
     "export-error": "Something went wrong with the export.",
@@ -17,6 +19,24 @@
     "update-success": "Update successful"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Completed",
+        "deleted": "Deleted",
+        "imported": "Imported",
+        "included": "Included",
+        "inclusionEnded": "Inclusion ended",
+        "invited": "Invited",
+        "noLongerEligible": "No longer eligible",
+        "paused": "Paused",
+        "registered": "Registered",
+        "registeredWhileNoLongerEligible": "Registered while no longer eligible",
+        "rejected": "Rejected",
+        "selectedForValidation": "Selected for Validation",
+        "startedRegistration": "Created",
+        "validated": "Validated"
+      }
+    },
     "users": {
       "status": {
         "active": "Active",
@@ -149,7 +169,7 @@
           "btn-text": "Export data changes",
           "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program.",
           "confirm-prompt": {
-            "choose-dates": "Optionally pass a Start date and/or an End date to filter the data changes.",
+            "choose-dates": "Optionally pass a start date and/or an end date to filter the data changes. The export is limited to {{exportLimit}} data changes. Adapt your dates if needed.",
             "confirm-btn": "Export",
             "date-from": "Start date {{date}}",
             "date-to": "End date {{date}}",
@@ -188,18 +208,7 @@
           "label": "Export as CSV"
         },
         "pa": {
-          "deleted": "Deleted",
-          "imported": "Imported",
-          "included": "Included",
-          "inclusionEnded": "Inclusion Ended",
-          "invited": "Invited",
-          "noLongerEligible": "No longer eligible",
-          "registered": "Registered",
-          "rejected": "Rejected",
-          "selectedForValidation": "Selected for validation",
-          "startedRegistration": "Started Registration",
-          "targeted": "PA Targeted",
-          "validated": "Validated"
+          "targeted": "PA Targeted"
         },
         "state-explanation": {
           "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time.",
@@ -331,19 +340,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Add personalized field",
+          "available-languages": "Available template languages",
           "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
           "message-checkbox": "Send a message to these People Affected",
           "message-preview": "Message preview",
           "placeholder-pa-data": "Please make sure that for all used personalized fields, the data is available for all selected People Affected.",
           "placeholder-typeahead-placeholder": "Select field",
+          "select-message-template": "Select message template",
           "templated-explanation": "The following message will be sent to PAs in their own language.",
           "templated-support": "Please contact the 121 support team if you want to change this templated message.",
-          "type-message": "Type message",
-          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
           "type-custom-message": "Type custom message",
           "type-custom-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.",
-          "available-languages": "Available template languages",
-          "select-message-template": "Select message template"
+          "type-message": "Type message",
+          "type-message-tooltip": "The message needs to be longer than {{minLength}} character(s). Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone."
         },
         "actions": {
           "deletePa": "Delete PA",
@@ -372,8 +381,9 @@
         },
         "bulk-action-response": {
           "close-popup": "You can close this popup.",
-          "pa-moved-phase": "People Affected might be visible in another phase after this status change.",
-          "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>The operation can take some time to process. Inspect the PA-table below for the up-to-date status."
+          "message-send": "Sending messages can take some time to process (240 per minute).",
+          "pa-moved-phase": "People Affected might be visible in another phase after this status change. The status change can take up to a minute to process",
+          "response": "Successfully sent request to <strong>{{action}}</strong> for <strong>{{paNumber}}</strong> People Affected.<br><br>Inspect the PA-table below for the up-to-date status."
         },
         "choose-action": "Choose action...",
         "column": {
@@ -455,12 +465,6 @@
           "btn-label": {
             "paStatus": "Status"
           },
-          "common": {
-            "all-options": "All",
-            "apply-btn": "Apply",
-            "cancel-btn": "Cancel",
-            "filter-by": "Filter by:"
-          },
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
@@ -535,21 +539,6 @@
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status": {
-          "completed": "Completed",
-          "imported": "Imported",
-          "included": "Included",
-          "inclusionEnded": "Inclusion ended",
-          "invited": "Invited",
-          "noLongerEligible": "No longer eligible",
-          "paused": "Paused",
-          "registered": "Registered",
-          "registeredWhileNoLongerEligible": "Registered while no longer eligible",
-          "rejected": "Rejected",
-          "selectedForValidation": "Selected for Validation",
-          "startedRegistration": "Created",
-          "validated": "Validated"
-        },
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "{{actionLabel}} for {{applicableCount}} People Affected.",
         "transaction": {
@@ -572,6 +561,7 @@
       "table-filter-row": {
         "apply-filter": "Apply Filter",
         "clear-all": "Clear all filters",
+        "filter-by": "Filter by:",
         "filtered-results": "Filtered recipients",
         "remove-filter": "Remove filter",
         "select-column-to-filter": "Type or select column to filter"

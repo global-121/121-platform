@@ -24,7 +24,7 @@
     <p
       [innerHtml]="
         'page.program.export-list.pa-data-changes.confirm-prompt.choose-dates'
-          | translate
+          | translate: { exportLimit: exportLimit | number: '1.0-0' }
       "
     ></p>
     <ion-col size="6">

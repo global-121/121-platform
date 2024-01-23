@@ -269,13 +269,17 @@ export class CreateProgramDto {
   @IsArray()
   public readonly languages: JSON;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: false })
   @IsBoolean()
   public readonly enableMaxPayments: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: false })
   @IsBoolean()
   public readonly enableScope: boolean;
+
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  public readonly allowEmptyPhoneNumber: boolean;
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

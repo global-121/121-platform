@@ -118,7 +118,9 @@ export class TwilioIncomingCallbackDto {
   public WaId: string;
 
   @ApiProperty({
-    example: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
+    example: formatWhatsAppNumber(
+      process.env.TWILIO_WHATSAPP_NUMBER || '31600000000',
+    ),
   })
   @IsString()
   @IsOptional()

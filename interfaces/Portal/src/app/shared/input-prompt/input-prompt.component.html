@@ -34,7 +34,7 @@
 
   <div
     *ngIf="inputProps?.explanation"
-    [innerHTML]="inputProps?.explanation"
+    [innerHTML]="inputProps?.explanation | translate"
     class="ion-margin-vertical"
   ></div>
 

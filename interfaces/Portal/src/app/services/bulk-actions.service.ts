@@ -53,17 +53,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.invite,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.invite',
-      ),
+      label: 'page.program.program-people-affected.actions.invite',
       permissions: [Permission.RegistrationStatusInvitedUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
+        checkbox:
           'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
         checkboxChecked: true,
         inputRequired: true,
         inputConstraint: {
@@ -75,9 +72,8 @@ export class BulkActionsService {
     {
       id: BulkActionId.markNoLongerEligible,
       enabled: false,
-      label: this.translate.instant(
+      label:
         'page.program.program-people-affected.actions.markNoLongerEligible',
-      ),
       permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
@@ -88,9 +84,7 @@ export class BulkActionsService {
     {
       id: BulkActionId.selectForValidation,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.selectForValidation',
-      ),
+      label: 'page.program.program-people-affected.actions.selectForValidation',
       permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
@@ -101,17 +95,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.include,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.include',
-      ),
+      label: 'page.program.program-people-affected.actions.include',
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
+        checkbox:
           'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
         checkboxChecked: false,
         inputRequired: true,
         inputConstraint: {
@@ -123,17 +114,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.reject,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.reject',
-      ),
+      label: 'page.program.program-people-affected.actions.reject',
       permissions: [Permission.RegistrationStatusRejectedUPDATE],
       phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
+        checkbox:
           'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
         checkboxChecked: true,
         inputRequired: true,
         inputConstraint: {
@@ -145,17 +133,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.endInclusion,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.endInclusion',
-      ),
+      label: 'page.program.program-people-affected.actions.endInclusion',
       permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
+        checkbox:
           'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
         checkboxChecked: true,
         inputRequired: true,
         inputConstraint: {
@@ -167,17 +152,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.pause,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.pause',
-      ),
+      label: 'page.program.program-people-affected.actions.pause',
       permissions: [Permission.RegistrationStatusPausedUPDATE],
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
-        checkbox: this.translate.instant(
+        checkbox:
           'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
         checkboxChecked: false,
         inputRequired: true,
         inputConstraint: {
@@ -189,9 +171,7 @@ export class BulkActionsService {
     {
       id: BulkActionId.sendMessage,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.sendMessage',
-      ),
+      label: 'page.program.program-people-affected.actions.sendMessage',
       permissions: [Permission.RegistrationNotificationCREATE],
       phases: [
         ProgramPhase.registrationValidation,
@@ -211,17 +191,14 @@ export class BulkActionsService {
     {
       id: BulkActionId.deletePa,
       enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.deletePa',
-      ),
+      label: 'page.program.program-people-affected.actions.deletePa',
       permissions: [Permission.RegistrationDELETE],
       phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
-        explanation: this.translate.instant(
+        explanation:
           'page.program.program-people-affected.action-inputs.delete-warning',
-        ),
       },
     },
     {
@@ -371,7 +348,7 @@ export class BulkActionsService {
       return;
     }
 
-    const actionLabel = action.label;
+    const actionLabel = this.translate.instant(action.label);
     const numberOfPeopleWarning = this.translate.instant(
       'page.program.program-people-affected.submit-warning-people-affected',
       {

@@ -81,18 +81,6 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.20.7#readme>
 
-### Updating dependencies
-
-Most (development-)dependencies in this repository are monitored by the GitHub [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) service, to keep them up-to-date.  
-The configuration of these updates is in [`.github/dependabot.yml`](../.github/dependabot.yml).  
-Unfortunately most individual dependencies are 'linked' to related dependencies that need to stay 'in sync'.
-
-To update all Angular and ESLint related dependencies together, run (in each individual interface's directory):
-
-    npm run upgrade:angular
-
-All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands.
-
 ### Continuous Integration (CI)
 
 Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  

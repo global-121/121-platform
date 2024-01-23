@@ -86,10 +86,20 @@ Feature: Edit information on Person Affected
   Scenario: Update 'phonenumber' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
-    Given an input-field for the  is shown
+    Given an input-field for the is shown
     When the user changes the phonenumber to a non-existent phone-number and presses the update-button
     Then the update-button changes into a progress indicator
     And a feedback message saying the value is invalid appears
+    And the progress indicator changes into the update-button again
+
+  Scenario: Update 'phonenumber' answer with empty value
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the is shown
+    Given that the program-'setting' "allowEmptyPhoneNumber" is set to true
+    When the user empties out the input-field and presses the update-button
+    Then the update-button changes into a progress indicator
+    And a feedback message saying the value is updated
     And the progress indicator changes into the update-button again
 
   Scenario: Update 'date' answer with invalid value

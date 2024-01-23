@@ -18,6 +18,7 @@ on:
   push:
     branches:
       - master
+      - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
       - 'interfaces/Portal/**'
@@ -27,6 +28,7 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - master
+      - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
       - 'interfaces/Portal/**'
@@ -52,7 +54,7 @@ jobs:
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
         env:
           NG_ENV_NAME: 'test'
-          NG_LOCALES: 'en,ar,fr,nl,es'
+          NG_LOCALES: 'ar,en,es,fr,nl'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''

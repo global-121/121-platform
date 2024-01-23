@@ -40,7 +40,7 @@ export class MessageIncomingController {
   public async handleIncomingWhatsapp(
     @Body() callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    return await this.messageIncomingService.handleIncomingWhatsapp(
+    return await this.messageIncomingService.addIncomingWhatsappToQueue(
       callbackData,
     );
   }

@@ -283,8 +283,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             'registration-details.activity-overview.activities.status.description',
             {
               status: this.translate.instant(
-                'page.program.program-people-affected.status.' +
-                  statusChange.status,
+                `entity.registration.status.${statusChange.status}`,
               ),
             },
           ),

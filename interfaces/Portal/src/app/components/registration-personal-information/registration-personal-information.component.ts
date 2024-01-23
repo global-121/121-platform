@@ -111,7 +111,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       this.personalInfoTable.push({
         label: this.getLabel('status', {
           status: this.translate.instant(
-            'page.program.program-people-affected.status.' + statusKey,
+            `entity.registration.status.${statusKey}`,
           ),
         }),
         value: this.currentStatus?.date

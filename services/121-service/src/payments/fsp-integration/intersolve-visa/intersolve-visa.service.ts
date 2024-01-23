@@ -512,9 +512,9 @@ export class IntersolveVisaService
     createDebitCardPayload.brand = 'VISA_CARD';
     createDebitCardPayload.firstName = paymentDetails.firstName;
     createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = formatPhoneNumber(
-      paymentDetails.phoneNumber,
-    );
+    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber
+      ? formatPhoneNumber(paymentDetails.phoneNumber)
+      : null;
     createDebitCardPayload.cardAddress = {
       address1: `${
         paymentDetails.addressStreet +
@@ -633,13 +633,22 @@ export class IntersolveVisaService
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
     );
+    const walletData = walletDetails?.data?.data;
+    if (walletData.balances) {
+      wallet.balance = walletData.balances.find(
+        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
+      )?.quantity?.value;
+    }
+    if (walletData.status) {
+      wallet.walletStatus = walletDetails.data.data.status;
+    }
+    if (walletData.blocked === true || walletData.blocked === false) {
+      wallet.tokenBlocked = walletDetails.data.data.blocked;
+    }
+
     const cardDetails = await this.intersolveVisaApiService.getCard(
       wallet.tokenCode,
     );
-    wallet.balance = walletDetails.data.data.balances.find(
-      (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-    ).quantity.value;
-    wallet.walletStatus = walletDetails.data.data.status;
     if (cardDetails?.data?.data?.status) {
       wallet.cardStatus = cardDetails.data.data.status;
     }
@@ -651,8 +660,11 @@ export class IntersolveVisaService
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
     }
-    wallet.spentThisMonth = transactionInfo.spentThisMonth;
+    if (transactionInfo.spentThisMonth) {
+      wallet.spentThisMonth = transactionInfo.spentThisMonth;
+    }
     wallet.lastExternalUpdate = new Date();
+
     return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
 

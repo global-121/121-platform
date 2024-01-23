@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { And, In, IsNull, Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { NoteEntity } from '../../notes/note.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '../../notifications/latest-message.entity';
@@ -17,6 +17,7 @@ import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whats
 import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../../people-affected/person-affected-app-data.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
@@ -32,6 +33,7 @@ import {
 } from '../registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationsService } from '../registrations.service';
+import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 
 @Injectable()
@@ -60,8 +62,11 @@ export class RegistrationsBulkService {
     private readonly queueMessageService: QueueMessageService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly registrationsBulkHelperService: RegistrationsBulkHelperService,
     @Inject(getScopedRepositoryProviderName(SafaricomRequestEntity))
     private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     @Inject(getScopedRepositoryProviderName(ImageCodeExportVouchersEntity))
     private readonly imageCodeExportVouchersScopedRepo: ScopedRepository<ImageCodeExportVouchersEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
@@ -83,6 +88,7 @@ export class RegistrationsBulkService {
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
+    const includeSendingMessage = !!message || !!messageTemplateKey;
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
         programId,
@@ -92,7 +98,8 @@ export class RegistrationsBulkService {
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
       false,
-      false,
+      includeSendingMessage,
+      true,
       usedPlaceholders,
     );
 
@@ -110,13 +117,10 @@ export class RegistrationsBulkService {
         programId,
         registrationStatus,
         usedPlaceholders,
+        allowedCurrentStatuses,
         message,
         messageTemplateKey,
         messageContentType,
-        this.getStatusUpdateBaseQuery(
-          allowedCurrentStatuses,
-          registrationStatus,
-        ),
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -131,7 +135,12 @@ export class RegistrationsBulkService {
     programId: number,
     dryRun: boolean,
   ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(paginateQuery);
+    paginateQuery = this.setQueryPropertiesBulkAction(
+      paginateQuery,
+      false,
+      false,
+      true,
+    );
 
     const allowedCurrentStatuses = this.getAllowedCurrentStatusesForNewStatus(
       RegistrationStatusEnum.deleted,
@@ -143,17 +152,11 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
-      const registrationForDelete =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          false,
-          true,
-          this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
-        );
-      this.deleteBatch(registrationForDelete.data).catch((error) => {
-        this.azureLogService.logError(error, true);
-      });
+      this.deleteBatch(paginateQuery, programId, allowedCurrentStatuses).catch(
+        (error) => {
+          this.azureLogService.logError(error, true);
+        },
+      );
     }
     return resultDto;
   }
@@ -178,17 +181,18 @@ export class RegistrationsBulkService {
       paginateQuery,
       false,
       true,
+      false,
       usedPlaceholders,
     );
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
-      this.getCustomMessageBaseQuery(),
+      this.getBaseQuery(),
     );
 
     if (!dryRun) {
       const chunkSize = 10000;
-      this.sendMessagesChunked(
+      this.sendMessagesBatch(
         paginateQuery,
         programId,
         message,
@@ -203,7 +207,7 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  private async sendMessagesChunked(
+  private async sendMessagesBatch(
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
@@ -220,7 +224,7 @@ export class RegistrationsBulkService {
         // TODO: Make this dynamic / a permission check
         true,
         false,
-        this.getCustomMessageBaseQuery(),
+        this.getBaseQuery(),
       );
 
     for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
@@ -232,9 +236,9 @@ export class RegistrationsBulkService {
           // TODO: Make this dynamic / a permission check
           true,
           false,
-          this.getCustomMessageBaseQuery(),
+          this.getBaseQuery(),
         );
-      this.sendCustomTextMessage(
+      this.sendCustomTextMessagePerChunk(
         registrationsForUpdate.data,
         message,
         bulkSize,
@@ -287,6 +291,7 @@ export class RegistrationsBulkService {
     query: PaginateQuery,
     includePaymentMultiplier = false,
     includeSendMessageProperties = false,
+    includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
   ): PaginateQuery {
     query.select = ['referenceId'];
@@ -302,6 +307,12 @@ export class RegistrationsBulkService {
     if (usedPlaceholders?.length > 0) {
       query.select = [...query.select, ...usedPlaceholders];
     }
+    if (includeStatusChangeProperties) {
+      query.select.push('id');
+      query.select.push('status');
+    }
+    // Remove duplicates from select
+    query.select = [...new Set(query.select)];
     query.page = null;
     return query;
   }
@@ -322,72 +333,88 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private getCustomMessageBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.getBaseQuery().andWhere({
-      phoneNumber: And(Not(IsNull()), Not('')),
-    });
-  }
-
   private async updateRegistrationStatusBatchFilter(
-    query: PaginateQuery,
+    paginateQuery: PaginateQuery,
     programId: number,
     registrationStatus: RegistrationStatusEnum,
     usedPlaceholders: string[],
+    allowedCurrentStatuses: RegistrationStatusEnum[],
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
-    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<void> {
-    const registrationForUpdate =
+    const chunkSize = 10000;
+    paginateQuery.limit = chunkSize;
+    const registrationForUpdateMeta =
       await this.registrationsPaginationService.getPaginate(
-        query,
+        paginateQuery,
         programId,
         true,
-        true,
-        queryBuilder,
+        false,
+        this.getStatusUpdateBaseQuery(
+          allowedCurrentStatuses,
+          registrationStatus,
+        ),
       );
 
-    await this.updateRegistrationStatusBatch(
-      registrationForUpdate.data,
-      registrationStatus,
-      {
-        message,
-        messageTemplateKey,
-        messageContentType,
-        bulkSize: registrationForUpdate.meta.totalItems,
-      },
-      usedPlaceholders,
-    );
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+    });
+
+    for (let i = 0; i < registrationForUpdateMeta.meta.totalPages; i++) {
+      const registrationsForUpdate =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          true,
+          false,
+          this.getStatusUpdateBaseQuery(
+            allowedCurrentStatuses,
+            registrationStatus,
+          ),
+        );
+      await this.updateRegistrationStatusChunk(
+        registrationsForUpdate.data,
+        registrationStatus,
+        program.tryWhatsAppFirst,
+        {
+          message,
+          messageTemplateKey,
+          messageContentType,
+          bulkSize: registrationsForUpdate.meta.totalItems,
+        },
+        usedPlaceholders,
+      );
+    }
   }
 
-  private async updateRegistrationStatusBatch(
+  private async updateRegistrationStatusChunk(
     registrations: RegistrationViewEntity[],
     registrationStatus: RegistrationStatusEnum,
+    tryWhatsAppFirst: boolean,
     messageSizeType?: MessageSizeTypeDto,
     usedPlaceholders?: string[],
   ): Promise<void> {
-    let programId;
-    let program;
-    for (const registration of registrations) {
-      const updatedRegistration =
-        await this.registrationsService.setRegistrationStatus(
-          registration.referenceId,
-          registrationStatus,
-        );
+    const filteredRegistrations = registrations;
+    await this.registrationScopedRepository.updateUnscoped(
+      {
+        id: In(filteredRegistrations.map((r) => r.id)),
+      },
+      { registrationStatus },
+    );
+
+    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
+      filteredRegistrations.map((r) => r.id),
+      registrationStatus,
+    );
+    for (const registration of filteredRegistrations) {
       if (
         (messageSizeType?.message || messageSizeType?.messageTemplateKey) &&
-        updatedRegistration
+        registration
       ) {
-        if (updatedRegistration.programId !== programId) {
-          // avoid a query per PA if not necessary
-          programId = updatedRegistration.programId;
-          program = await this.programRepository.findOne({
-            where: { id: programId },
-          });
-        }
         const messageProcessType =
           registrationStatus === RegistrationStatusEnum.invited &&
-          program.tryWhatsAppFirst
+          tryWhatsAppFirst
             ? MessageProcessType.tryWhatsapp
             : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         const placeholderData = {};
@@ -398,7 +425,7 @@ export class RegistrationsBulkService {
         }
         try {
           await this.queueMessageService.addMessageToQueue(
-            updatedRegistration,
+            registration,
             messageSizeType.message,
             messageSizeType.messageTemplateKey,
             messageSizeType.messageContentType,
@@ -419,101 +446,141 @@ export class RegistrationsBulkService {
   }
 
   private async deleteBatch(
-    registrations: RegistrationViewEntity[],
+    paginateQuery: PaginateQuery,
+    programId: number,
+    allowedCurrentStatuses: RegistrationStatusEnum[],
   ): Promise<void> {
-    // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
-    await this.checkAllowedStatusChangeOrThrow(
-      registrations.map((r) => r.referenceId),
-      RegistrationStatusEnum.deleted,
-    );
-    await this.updateRegistrationStatusBatch(
-      registrations,
-      RegistrationStatusEnum.deleted,
-    );
+    const chunkSize = 10000;
+    paginateQuery.limit = chunkSize;
+    const registrationForDeleteMeta =
+      await this.registrationsPaginationService.getPaginate(
+        paginateQuery,
+        programId,
+        true,
+        false,
+        this.getStatusUpdateBaseQuery(
+          allowedCurrentStatuses,
+          RegistrationStatusEnum.deleted,
+        ),
+      );
 
-    for await (const registrationViewEntity of registrations) {
-      const registration =
-        await this.registrationsService.getRegistrationFromReferenceId(
-          registrationViewEntity.referenceId,
-          ['user'],
-        );
-
-      // Delete all data for this registration
-      await this.noteScopedRepository.deleteUnscoped({
-        registrationId: registration.id,
-      });
-      await this.registrationDataScopedRepository.deleteUnscoped({
-        registrationId: registration.id,
-      });
-      if (registration.user) {
-        await this.personAffectedAppDataRepository.delete({
-          user: { id: registration.user.id },
-        });
-      }
-      await this.twilioMessageScopedRepository.deleteUnscoped({
-        registrationId: registration.id,
-      });
-      await this.latestMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.twilioMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.whatsappPendingMessageRepository.delete({
-        registrationId: registration.id,
-      });
-      await this.tryWhatsappRepository.delete({
-        registrationId: registration.id,
-      });
-
-      // anonymize some data for this registration
-      registration.phoneNumber = null;
-      await this.registrationScopedRepository.save(registration);
-
-      // FSP-specific
-      // intersolve-voucher
-      const voucherImages = await this.imageCodeExportVouchersScopedRepo.find({
-        where: { registrationId: registration.id },
-        relations: ['voucher'],
-      });
-      const vouchersToUpdate = [];
-      for await (const voucherImage of voucherImages) {
-        const voucher = await this.intersolveVoucherScopedRepo.findOne({
-          where: { id: voucherImage.voucher.id },
-        });
-        voucher.whatsappPhoneNumber = null;
-        vouchersToUpdate.push(voucher);
-      }
-      await this.intersolveVoucherScopedRepo.save(vouchersToUpdate);
-      //safaricom
-      const safaricomRequests =
-        await this.safaricomRequestScopedRepository.find({
-          where: { transaction: { registration: { id: registration.id } } },
-          relations: ['transaction', 'transaction.registration'],
-        });
-      const requestsToUpdate = [];
-      for (const request of safaricomRequests) {
-        request.requestResult = JSON.parse(
-          JSON.stringify(request.requestResult).replace(request.partyB, ''),
-        );
-        request.paymentResult = JSON.parse(
-          JSON.stringify(request.paymentResult).replace(request.partyB, ''),
-        );
-        request.transaction.customData = JSON.parse(
-          JSON.stringify(request.transaction.customData).replace(
-            request.partyB,
-            '',
+    for (let i = 0; i < registrationForDeleteMeta.meta.totalPages; i++) {
+      const registrationsForDelete =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          true,
+          false,
+          this.getStatusUpdateBaseQuery(
+            allowedCurrentStatuses,
+            RegistrationStatusEnum.deleted,
           ),
         );
-        request.partyB = '';
-        requestsToUpdate.push(request);
-      }
-      await this.safaricomRequestScopedRepository.save(requestsToUpdate);
-      // TODO: at_notification + belcash_request
+
+      await this.deleteRegistrationsChunk(registrationsForDelete.data);
     }
   }
 
-  private async sendCustomTextMessage(
+  private async deleteRegistrationsChunk(
+    registrationsForDelete: RegistrationViewEntity[],
+  ): Promise<void> {
+    await this.updateRegistrationStatusChunk(
+      registrationsForDelete,
+      RegistrationStatusEnum.deleted,
+      false,
+    );
+    const registrationsIds = registrationsForDelete.map((r) => r.id);
+
+    await this.noteScopedRepository.deleteUnscoped({
+      registrationId: In(registrationsIds),
+    });
+
+    await this.registrationDataScopedRepository.deleteUnscoped({
+      registrationId: In(registrationsIds),
+    });
+
+    const userIdsQueryResult = await this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.user', 'user')
+      .select('user.id as userId')
+      .andWhere({ id: In(registrationsIds) })
+      .andWhere('user.id IS NOT NULL')
+      .getRawMany();
+    const userIds = userIdsQueryResult.map((u) => u.userId);
+    await this.personAffectedAppDataRepository.delete({
+      user: { id: In(userIds) },
+    });
+
+    await this.latestMessageRepository.delete({
+      registrationId: In(registrationsIds),
+    });
+    await this.twilioMessageScopedRepository.deleteUnscoped({
+      registrationId: In(registrationsIds),
+    });
+    await this.whatsappPendingMessageRepository.delete({
+      registrationId: In(registrationsIds),
+    });
+    await this.tryWhatsappRepository.delete({
+      registrationId: In(registrationsIds),
+    });
+    await this.registrationScopedRepository.updateUnscoped(
+      { id: In(registrationsIds) },
+      { phoneNumber: null },
+    );
+
+    const voucherImageQueryResult = await this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.images', 'images')
+      .leftJoin('images.voucher', 'voucher')
+      .select('voucher.id as "voucherId"')
+      .andWhere({
+        id: In(registrationsIds),
+      })
+      .getRawMany();
+    const voucherIds = voucherImageQueryResult.map((v) => v.voucherId);
+    await this.intersolveVoucherScopedRepo.updateUnscoped(
+      { id: In(voucherIds) },
+      { whatsappPhoneNumber: null },
+    );
+
+    const transactionIdsQueryResult = await this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.transactions', 'transactions')
+      .select('transactions.id as "transactionId"')
+      .andWhere({
+        id: In(registrationsIds),
+      })
+      .getRawMany();
+    const transactionIds = transactionIdsQueryResult.map(
+      (t) => t.transactionId,
+    );
+    const transactionsRelatedToSafaricomQueryResult =
+      await this.safaricomRequestScopedRepository
+        .createQueryBuilder('safaricom_request')
+        .select('"transactionId"')
+        .andWhere({
+          transactionId: In(transactionIds),
+        })
+        .getRawMany();
+    const transactionIdsRelatedToSafaricom =
+      transactionsRelatedToSafaricomQueryResult.map((t) => t.transactionId);
+
+    await this.safaricomRequestScopedRepository
+      .createQueryBuilder('safaricom_request')
+      .delete()
+      .from(SafaricomRequestEntity)
+      .where('transactionId IN  (:...transactionIds)', {
+        transactionIds: transactionIds,
+      })
+      .execute();
+
+    await this.transactionScopedRepository.updateUnscoped(
+      { id: In(transactionIdsRelatedToSafaricom) },
+      { customData: JSON.parse('{}') },
+    );
+  }
+
+  private async sendCustomTextMessagePerChunk(
     registrations: RegistrationViewEntity[],
     message: string,
     bulkSize: number,
@@ -545,34 +612,6 @@ export class RegistrationsBulkService {
     return allStatuses.filter((currentStatus) =>
       this.registrationsService.canChangeStatus(currentStatus, newStatus),
     );
-  }
-
-  private async checkAllowedStatusChangeOrThrow(
-    referenceIds: string[],
-    registrationStatus: RegistrationStatusEnum,
-  ): Promise<void> {
-    const errors = [];
-    for (const referenceId of referenceIds) {
-      const registrationToUpdate =
-        await this.registrationScopedRepository.findOne({
-          where: { referenceId: referenceId },
-        });
-      if (!registrationToUpdate) {
-        errors.push(`Registration '${referenceId}' is not found`);
-      } else if (
-        !this.registrationsService.canChangeStatus(
-          registrationToUpdate.registrationStatus,
-          registrationStatus,
-        )
-      ) {
-        errors.push(
-          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
-        );
-      }
-    }
-    if (errors.length > 0) {
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
   }
 
   private async validateTemplateKey(

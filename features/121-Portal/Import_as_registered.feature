@@ -30,16 +30,24 @@ Feature: Import registrations as registered
     And it has "X" rows
     And the input of each cell is valid
     When the user clicks "OK" to confirm the import
-    Then it shows the number "X" of successfully imported "phoneNumbers"
+    Then it shows the number "X" of successfully imported registrations
     And the PA-table in the Portal shows "X" new rows of PAs
     And they have status "Registered"
     And all other columns are filled as if a real registration was done
     And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula
-    And no SMS is sent to the PA unlike a real registration
+    And no SMS is sent to the PA unlike a registration through the PA-app
     And in the AW-app the validation data for these PAs can be downloaded
 
   Scenario: Unsuccessfully import registrations via CSV
-    Given an invalid import CSV file (wrong column names, disallowed values, registrations outside the scope of the user, etc.)
+    Given an invalid import CSV file because of
+    - wrong file format/extension
+    - wrong column names
+    - disallowed values
+    - registrations outside the scope of the user
+    - empty phonenumber while the program disallows that
+    - duplicate referenceIds in import-file
+    - referenceId already exists
+    - etc.
     When the user selects this file and clicks "OK" to confirm the import
     Then feedback is given that something went wrong and it gives details on where the error is, mainly if in a generic column
     And there is no input validation on the dynamic columns

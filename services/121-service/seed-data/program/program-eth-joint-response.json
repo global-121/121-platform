@@ -88,5 +88,6 @@
   "fullnameNamingConvention": ["fullname"],
   "languages": ["en"],
   "enableMaxPayments": true,
-  "enableScope": false
+  "enableScope": false,
+  "allowEmptyPhoneNumber": false
 }

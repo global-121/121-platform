@@ -905,5 +905,6 @@
     "nl": "[beschrijving van het programma]"
   },
   "fullnameNamingConvention": ["name", "middlename", "firstname"],
-  "languages": ["ar", "en", "es", "fr", "nl"]
+  "languages": ["ar", "en", "es", "fr", "nl"],
+  "allowEmptyPhoneNumber": false
 }

@@ -46,7 +46,7 @@ describe('formatPhoneNumber', () => {
       // Assert
       expect(() => {
         // Act
-        formatWhatsAppNumber(testCase);
+        formatPhoneNumber(testCase);
       }).toThrow();
     });
   });

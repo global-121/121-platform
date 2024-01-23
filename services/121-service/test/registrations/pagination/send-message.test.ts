@@ -53,6 +53,7 @@ describe('send arbitrary messages to set of registrations', () => {
       [referenceIds[0]],
       accessToken,
       10_000,
+      2,
     );
 
     const messageHistories = [];
@@ -71,8 +72,9 @@ describe('send arbitrary messages to set of registrations', () => {
     // Assert
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
-    expect(messageHistoryPa1.length).toBe(1);
+    expect(messageHistoryPa1.length).toBe(2);
     expect(messageHistoryPa1[0].status).toBeDefined();
     expect(messageHistoryPa2.length).toBe(0);
+    expect(messageHistoryPa1[0].body).toEqual(message);
   });
 });

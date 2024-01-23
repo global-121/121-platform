@@ -38,9 +38,9 @@ import {
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
+import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -64,12 +64,11 @@ export class RegistrationsImportService {
 
   public constructor(
     private readonly lookupService: LookupService,
+    private readonly registrationsBulkHelperService: RegistrationsBulkHelperService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly userService: UserService,
-    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
-    private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {}
@@ -168,8 +167,8 @@ export class RegistrationsImportService {
       }
     }
     // Save registration status changes seperately without the registration.subscriber for better performance
-    await this.saveBulkRegistrationStatusChanges(
-      savedRegistrations,
+    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
+      savedRegistrations.map((r) => r.id),
       RegistrationStatusEnum.imported,
     );
     // Save registration data in bulk for performance
@@ -334,8 +333,8 @@ export class RegistrationsImportService {
     }
 
     // Save registration status changes seperately without the registration.subscriber for better performance
-    await this.saveBulkRegistrationStatusChanges(
-      savedRegistrations,
+    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
+      savedRegistrations.map((r) => r.id),
       RegistrationStatusEnum.registered,
     );
 
@@ -377,26 +376,6 @@ export class RegistrationsImportService {
       }
     }
     return { aggregateImportResult: { countImported } };
-  }
-
-  private async saveBulkRegistrationStatusChanges(
-    savedRegistrations: RegistrationEntity[],
-    registrationStatus: RegistrationStatusEnum,
-  ): Promise<void> {
-    const registrationStatusChanges: RegistrationStatusChangeEntity[] = [];
-    for await (const registration of savedRegistrations) {
-      const registrationStatusChange = new RegistrationStatusChangeEntity();
-      registrationStatusChange.registration = registration;
-      registrationStatusChange.registrationStatus = registrationStatus;
-      registrationStatusChanges.push(registrationStatusChange);
-    }
-
-    await this.registrationStatusChangeScopedRepository.save(
-      registrationStatusChanges,
-      {
-        chunk: 5000,
-      },
-    );
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {
@@ -768,6 +747,7 @@ export class RegistrationsImportService {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
@@ -824,7 +804,19 @@ export class RegistrationsImportService {
           importRecord.referenceId = row.referenceId;
         }
       }
+
+      if (!program.allowEmptyPhoneNumber && !row.phoneNumber) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: GenericAttributes.phoneNumber,
+          value: row.phoneNumber,
+          error: 'PhoneNumber is not allowed to be empty',
+        };
+        errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
       importRecord.phoneNumber = row.phoneNumber;
+
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier

@@ -117,10 +117,8 @@ describe('Export registration change log', () => {
     );
 
     // Assert
-    const body = response.body;
-    expect(response.statusCode).toBe(HttpStatus.OK);
-    const data = body.data;
-    expect(data.length).toBe(0);
+    // If not data is found the server throws a 404
+    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
   it('should give a 400 on to date is larger than from date', async () => {

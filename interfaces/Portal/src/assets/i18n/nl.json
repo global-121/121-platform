@@ -2,7 +2,9 @@
   "_dir": "ltr",
   "_languageName": "Nederlands",
   "common": {
+    "all": "Alle",
     "answer-is-required": "Op deze vraag is een antwoord nodig.",
+    "apply": "Toepassen",
     "cancel": "Annuleren",
     "confirm": "Weet je het zeker?",
     "export-error": "Er is iets misgegaan bij het exporteren",
@@ -17,6 +19,24 @@
     "update-success": "Update succesvol"
   },
   "entity": {
+    "registration": {
+      "status": {
+        "completed": "Voltooid",
+        "deleted": "Verwijderd",
+        "imported": "Geïmporteerd",
+        "included": "Actief",
+        "inclusionEnded": "Beëindigd",
+        "invited": "Uitgenodigd",
+        "noLongerEligible": "Komt niet meer in aanmerking",
+        "paused": "Gepauzeerd",
+        "registered": "Geregistreerd",
+        "registeredWhileNoLongerEligible": "Geregistreerd maar komt niet meer in aanmerking",
+        "rejected": "Afgewezen",
+        "selectedForValidation": "Geselecteerd voor validatie",
+        "startedRegistration": "Registratie gestart",
+        "validated": "Gevalideerd"
+      }
+    },
     "users": {
       "status": {
         "active": "Actief",
@@ -149,7 +169,7 @@
           "btn-text": "Gegevenswijzigingen exporteren",
           "confirm-message": "Hiermee download je een Excel-bestand met alle gegevenswijzigingen voor alle mensen die betrokken zijn bij dit programma.",
           "confirm-prompt": {
-            "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren.",
+            "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren. De export is beperkt tot {{exportLimit}} gegevenswijzigingen. Pas uw datums aan indien nodig.",
             "confirm-btn": "Exporteren",
             "date-from": "Startdatum {{date}}",
             "date-to": "Einddatum {{date}}",
@@ -188,18 +208,7 @@
           "label": "Exporteren als CSV"
         },
         "pa": {
-          "deleted": "Verwijderd",
-          "imported": "Geïmporteerd",
-          "included": "Actief",
-          "inclusionEnded": "Beëindigd",
-          "invited": "Uitgenodigd",
-          "noLongerEligible": "Komt niet meer in aanmerking",
-          "registered": "Geregistreerd",
-          "rejected": "Afgewezen",
-          "selectedForValidation": "Geselecteerd voor validatie",
-          "startedRegistration": "Registratie gestart",
-          "targeted": "Doel registraties",
-          "validated": "Gevalideerd"
+          "targeted": "Doel registraties"
         },
         "state-explanation": {
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
@@ -331,19 +340,19 @@
       "program-people-affected": {
         "action-inputs": {
           "add-placeholder": "Persoonlijk veld toevoegen",
+          "available-languages": "Beschikbare talen",
           "delete-warning": "U staat op het punt de persoonlijke gegevens van deze hulpvragers te verwijderen. Deze actie kan niet ongedaan gemaakt worden. U kunt eerdere betalingen aan hen niet meer zien en u kunt geen nieuwe betalingen aan hen doen.",
           "message-checkbox": "Stuur een bericht naar deze hulpvragers",
           "message-preview": "Voorbeeld van bericht",
           "placeholder-pa-data": "Zorg ervoor dat voor alle gebruikte persoonlijke velden, de gegevens beschikbaar zijn voor alle geselecteerde hulpvragers.",
           "placeholder-typeahead-placeholder": "Selecteer veld",
+          "select-message-template": "Select bericht template",
           "templated-explanation": "Het volgende bericht wordt naar de hulpvragers gestuurd in hun eigen taal.",
           "templated-support": "Neem contact op met het 121 supportteam als je dit standaardbericht wilt wijzigen.",
-          "type-message": "Typ bericht",
-          "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben.",
           "type-custom-message": "Typ aangepast bericht",
           "type-custom-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Let op: als je meer dan 160 tekens gebruikt, kan de betrokken persoon het bericht als meerdere teksten ontvangen, als ze een eenvoudige mobiele telefoon hebben.",
-          "available-languages": "Beschikbare talen",
-          "select-message-template": "Select bericht template"
+          "type-message": "Typ bericht",
+          "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben."
         },
         "actions": {
           "deletePa": "Hulpvrager verwijderen",
@@ -372,8 +381,9 @@
         },
         "bulk-action-response": {
           "close-popup": "U kunt deze pop-up sluiten.",
-          "pa-moved-phase": "Hulpvragers kunnen zichtbaar zijn in een andere fase na deze statuswijziging.",
-          "response": "Verzoek succesvol verzonden naar <strong> {{action}} </strong> voor <strong> {{paNumber}} </strong> hulpvragers. <br> <br> Het verwerken van de actie kan enige tijd duren. Bekijk onderstaande tabel voor de actuele status."
+          "message-send": "Het verzenden van berichten kan enige tijd duren om te verwerken (240 per minuut).",
+          "pa-moved-phase": "Getroffen personen kunnen zichtbaar zijn in een andere fase na deze statuswijziging. De statuswijziging kan tot een minuut duren om te verwerken",
+          "response": "Verzoek succesvol verzonden naar <strong>{{action}}</strong> voor <strong>{{paNumber}}</strong> getroffen personen.<br><br>Bekijk de PA-tabel hieronder voor de meest actuele status."
         },
         "choose-action": "Kies actie...",
         "column": {
@@ -455,12 +465,6 @@
           "btn-label": {
             "paStatus": "Status"
           },
-          "common": {
-            "all-options": "Alle",
-            "apply-btn": "Toepassen",
-            "cancel-btn": "Annuleren",
-            "filter-by": "Filter op:"
-          },
           "multiple-choice-hidden-options": "Bovenstaande lijst toont alleen een status als deze is toegewezen aan ten minste één hulpvrager"
         },
         "filter-placeholder": "Type hier...",
@@ -535,21 +539,6 @@
             "total-amount": "Totaalbedrag: {{cost}} * vermenigvuldigingsfactor van {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status": {
-          "completed": "Voltooid",
-          "imported": "Geïmporteerd",
-          "included": "Actief",
-          "inclusionEnded": "Beëindigd",
-          "invited": "Uitgenodigd",
-          "noLongerEligible": "Komt niet meer in aanmerking",
-          "paused": "Gepauzeerd",
-          "registered": "Geregistreerd",
-          "registeredWhileNoLongerEligible": "Geregistreerd terwijl niet langer in aanmerking komend",
-          "rejected": "Afgewezen",
-          "selectedForValidation": "Geselecteerd voor validatie",
-          "startedRegistration": "Aangemaakt",
-          "validated": "Gevalideerd"
-        },
         "submit-warning": "Je staat op het punt om:",
         "submit-warning-people-affected": "Voer actie <strong>{{actionLabel}}</strong> uit voor {{applicableCount}} hulpvragers.",
         "transaction": {
@@ -572,6 +561,7 @@
       "table-filter-row": {
         "apply-filter": "Filter toepassen",
         "clear-all": "Wis alle filters",
+        "filter-by": "Filter op:",
         "filtered-results": "Gefilterde hulpvragers",
         "remove-filter": "Filter verwijderen",
         "select-column-to-filter": "Typ of selecteer kolom om te filteren"

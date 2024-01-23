@@ -180,18 +180,16 @@ export class PaymentsService {
     }
 
     const registrationsForPayment =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
+      await this.getRegistrationsForPaymentChunked(
         programId,
-        true,
-        true,
-        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+        payment,
+        paginateQuery,
       );
 
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
     // This loop is pretty fast: with 100.000 registrations it takes ~12ms
-    for (const registration of registrationsForPayment.data) {
+    for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
     }
@@ -200,7 +198,7 @@ export class PaymentsService {
       sumPaymentAmountMultiplier: totalMultiplierSum,
     };
 
-    const referenceIds = registrationsForPayment.data.map(
+    const referenceIds = registrationsForPayment.map(
       (registration) => registration.referenceId,
     );
 
@@ -211,7 +209,7 @@ export class PaymentsService {
         payment,
         amount,
         referenceIds,
-        registrationsForPayment.meta.totalItems,
+        registrationsForPayment.length,
       )
         .catch((e) => {
           this.azureLogService.logError(e, true);
@@ -226,6 +224,36 @@ export class PaymentsService {
     }
 
     return bulkActionResultPaymentDto;
+  }
+
+  private async getRegistrationsForPaymentChunked(
+    programId: number,
+    payment: number,
+    paginateQuery: PaginateQuery,
+  ): Promise<RegistrationViewEntity[]> {
+    const chunkSize = 50000;
+    paginateQuery.limit = chunkSize;
+    paginateQuery.page = 1;
+    let totalPages = 1;
+
+    let allRegistrations: RegistrationViewEntity[] = [];
+
+    for (let i = 0; i < totalPages; i++) {
+      const registrationsForPayment =
+        await this.registrationsPaginationService.getPaginate(
+          paginateQuery,
+          programId,
+          true,
+          false,
+          this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+        );
+      totalPages = registrationsForPayment.meta.totalPages;
+      paginateQuery.page = paginateQuery.page + 1;
+      allRegistrations = allRegistrations.concat(
+        ...registrationsForPayment.data,
+      );
+    }
+    return allRegistrations;
   }
 
   private getPaymentBaseQuery(
