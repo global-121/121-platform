@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.109.2...main)
 
-- Renamed `master` branch to `main`
+- Renamed `master`-branch to `main`.
 
 ## [1.109.2](https://github.com/global-121/121-platform/compare/v1.109.1...v1.109.2) - 2024-01-22
 
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Doing a paymennt blocked by translation-issue in Portal
+- Doing a payment blocked by translation-issue in Portal
 
 ## [1.109.0](https://github.com/global-121/121-platform/compare/v1.108.3...v1.109.0) - 2024-01-11
 
