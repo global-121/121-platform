@@ -89,7 +89,23 @@ export class IntersolveVisaService
     private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 
-  public async getTransactionInfo(
+  public async getSpentThisMonthByCustomer(
+    visaCustomer: IntersolveVisaCustomerEntity,
+  ): Promise<number> {
+    const dateFrom = this.getTwoMonthAgo();
+    let spentThisMonth = 0;
+
+    for (const wallet of visaCustomer.visaWallets) {
+      const walletTransactionInfo = await this.getTransactionInfoByWallet(
+        wallet.tokenCode,
+        dateFrom,
+      );
+      spentThisMonth += walletTransactionInfo.spentThisMonth;
+    }
+    return spentThisMonth;
+  }
+
+  public async getTransactionInfoByWallet(
     tokenCode: string,
     dateFrom?: Date,
   ): Promise<TransactionInfoVisa> {
@@ -178,8 +194,9 @@ export class IntersolveVisaService
   private async getTransactionAmountPerRegistration(
     maxAmount: number,
     wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
   ): Promise<number> {
-    const details = await this.getWalletDetails(wallet);
+    const details = await this.getWalletDetails(wallet, customer);
     const calculatedAmount =
       (150 * 100 - details.spentThisMonth - details.balance) / 100;
     if (calculatedAmount > 0) {
@@ -415,6 +432,7 @@ export class IntersolveVisaService
       const topupAmount = await this.getTransactionAmountPerRegistration(
         calculatedAmount,
         visaCustomer.visaWallets[0],
+        visaCustomer,
       );
       paTransactionResult.calculatedAmount = topupAmount;
       // If calculatedAmount is larger than 0, call Intersolve
@@ -650,6 +668,7 @@ export class IntersolveVisaService
 
   private async getWalletDetails(
     wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
   ): Promise<IntersolveVisaWalletEntity> {
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
@@ -674,15 +693,18 @@ export class IntersolveVisaService
       wallet.cardStatus = cardDetails.data.data.status;
     }
 
-    const transactionInfo = await this.getTransactionInfo(
+    // Get spenThisMonth across all wallets of customer
+    const spentThisMonth = await this.getSpentThisMonthByCustomer(customer);
+    if (spentThisMonth) {
+      wallet.spentThisMonth = spentThisMonth;
+    }
+    // Get lastUsedDate still per wallets
+    const transactionInfo = await this.getTransactionInfoByWallet(
       wallet.tokenCode,
       this.getTwoMonthAgo(),
     );
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
-    }
-    if (transactionInfo.spentThisMonth) {
-      wallet.spentThisMonth = transactionInfo.spentThisMonth;
     }
     wallet.lastExternalUpdate = new Date();
 
@@ -706,7 +728,7 @@ export class IntersolveVisaService
     walletsResponse.wallets = [];
 
     for await (let wallet of visaCustomer.visaWallets) {
-      wallet = await this.getWalletDetails(wallet);
+      wallet = await this.getWalletDetails(wallet, visaCustomer);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -1211,9 +1233,11 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletScopedRepo.find();
+    const wallets = await this.intersolveVisaWalletScopedRepo.find({
+      relations: ['intersolveVisaCustomer'],
+    });
     for (const wallet of wallets) {
-      await this.getWalletDetails(wallet);
+      await this.getWalletDetails(wallet, wallet.intersolveVisaCustomer);
     }
   }
 
