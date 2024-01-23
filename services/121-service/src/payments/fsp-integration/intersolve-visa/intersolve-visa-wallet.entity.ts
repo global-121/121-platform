@@ -1,6 +1,7 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
+import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
@@ -65,6 +66,9 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   public intersolveVisaCustomer: IntersolveVisaCustomerEntity;
 
   public calculateTopUpAmount(): number {
-    return (150 * 100 - this.spentThisMonth - this.balance) / 100;
+    return (
+      (maximumAmountOfSpentCentPerMonth - this.spentThisMonth - this.balance) /
+      100
+    );
   }
 }
