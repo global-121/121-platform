@@ -1230,11 +1230,14 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletScopedRepo.find({
-      relations: ['intersolveVisaCustomer'],
-    });
-    for (const wallet of wallets) {
-      await this.getWalletDetails(wallet, wallet.intersolveVisaCustomer);
+    const customerWithWallets =
+      await this.intersolveVisaCustomerScopedRepo.find({
+        relations: ['visaWallets'],
+      });
+    for (const customer of customerWithWallets) {
+      for (const wallet of customer.visaWallets) {
+        await this.getWalletDetails(wallet, customer);
+      }
     }
   }
 
