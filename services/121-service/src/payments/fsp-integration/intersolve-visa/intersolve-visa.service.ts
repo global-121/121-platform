@@ -179,9 +179,8 @@ export class IntersolveVisaService
     maxAmount: number,
     wallet: IntersolveVisaWalletEntity,
   ): Promise<number> {
-    const details = await this.getWalletDetails(wallet);
-    const calculatedAmount =
-      (150 * 100 - details.spentThisMonth - details.balance) / 100;
+    const updatedWallet = await this.getWalletDetails(wallet);
+    const calculatedAmount = updatedWallet.calculateTopUpAmount();
     if (calculatedAmount > 0) {
       return Math.min(calculatedAmount, maxAmount);
     } else {
