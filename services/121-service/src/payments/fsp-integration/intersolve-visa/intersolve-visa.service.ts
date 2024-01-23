@@ -194,7 +194,6 @@ export class IntersolveVisaService
       }
     } else {
       // No wallet found, return the maxAmount because this is the first payment for this PA
-      console.log('No Visa Wallet found');
       return maxAmount;
     }
   }
@@ -208,7 +207,6 @@ export class IntersolveVisaService
     const visaCustomer = await this.getCustomerEntity(registration.id);
     // No Visa Customer found probably means that this is the first payment so there will also be no Wallet
     if (!visaCustomer) {
-      console.log('No Visa Customer found');
       return null;
     }
     visaCustomer.visaWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
@@ -236,7 +234,6 @@ export class IntersolveVisaService
       paymentDetailsData,
       paymentDetailsData.transactionAmount,
     );
-    console.log('newTransactionAmount: ', newTransactionAmount);
     paymentDetailsData.transactionAmount = newTransactionAmount;
 
     const paymentRequestResultPerPa = await this.sendPaymentToPa(
