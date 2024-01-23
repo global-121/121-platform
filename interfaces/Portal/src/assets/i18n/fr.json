@@ -102,7 +102,11 @@
           "invalid-email": "Veuillez saisir une adresse e-mail valide."
         },
         "password": {
-          "label": "Mot de passe"
+          "label": "Mot de passe",
+          "toggle": {
+            "hide": "Masquer le mot de passe",
+            "show": "Afficher le mot de passe"
+          }
         },
         "submit": {
           "label": "S'identifier"

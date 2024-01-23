@@ -102,7 +102,11 @@
           "invalid-email": "Introduzca una dirección de correo electrónico válida."
         },
         "password": {
-          "label": "Contraseña"
+          "label": "Contraseña",
+          "toggle": {
+            "hide": "Ocultar contraseña",
+            "show": "Mostrar contraseña"
+          }
         },
         "submit": {
           "label": "Inicia sesión"

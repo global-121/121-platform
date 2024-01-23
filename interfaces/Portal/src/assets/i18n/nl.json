@@ -102,7 +102,11 @@
           "invalid-email": "Voer een geldig e-mailadres in."
         },
         "password": {
-          "label": "Wachtwoord"
+          "label": "Wachtwoord",
+          "toggle": {
+            "hide": "Verberg wachtwoord",
+            "show": "Toon wachtwoord"
+          }
         },
         "submit": {
           "label": "Inloggen"
@@ -147,26 +151,26 @@
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers"
         },
         "card-balances": {
-          "btn-text": "Export Visakaart gebruik",
+          "btn-text": "Exporteer Visakaart gebruik",
           "confirm-message": "Hiermee download je een Excel-bestand met het saldo van elke kaart.<br /><br />Belangrijke opmerking: De kaartsaldi die kunnen worden gedownload zijn niet in real-time. Het rapport bevat de datum en tijd van de laatste externe update van elke kaart."
         },
         "duplicates": {
           "basedOn": "Het controleren van duplicaten wordt gebaseerd op: {{duplicateAttributes}}",
-          "btn-text": "Dubbele personen exporteren",
+          "btn-text": "Exporteer dubbele personen",
           "canTakeFewMinutes": "Dit kan enkele minuten duren.",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload van alle gedupliceerde hulpvragers."
         },
         "filtered-table": {
-          "btn-text": "Gefilterde weergave exporteren",
+          "btn-text": "Exporteer gefilterde weergave",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload waarin het filter is toegepast op alle hulpvragers."
         },
         "included": {
-          "btn-text": "Export actieve hulpvragers",
+          "btn-text": "Exporteer actieve hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle actieve hulpvragers."
         },
         "no-data": "Er zijn momenteel geen gegevens te downloaden",
         "pa-data-changes": {
-          "btn-text": "Gegevenswijzigingen exporteren",
+          "btn-text": "Exporteer gegevenswijzigingen",
           "confirm-message": "Hiermee download je een Excel-bestand met alle gegevenswijzigingen voor alle mensen die betrokken zijn bij dit programma.",
           "confirm-prompt": {
             "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren. De export is beperkt tot {{exportLimit}} gegevenswijzigingen. Pas uw datums aan indien nodig.",
@@ -177,23 +181,23 @@
           }
         },
         "payment": {
-          "btn-text": "Rapport exporteren",
+          "btn-text": "Exporteer rapport",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die bij deze betaling zijn inbegrepen."
         },
         "select-btn-text": "Exporteren",
         "selected-for-validation": {
-          "btn-text": "Export: geselecteerd voor validatie",
+          "btn-text": "Exporteer: geselecteerd voor validatie",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die zijn geselecteerd voor validatie, dat kan worden gebruikt voor validatiebezoeken."
         },
         "timestamp": "Laatste export is gedaan op: {{dateTime}}",
         "unused-vouchers": {
-          "btn-text": "Lijst van ongebruikte vouchers exporteren",
+          "btn-text": "Exporteer: lijst van ongebruikte vouchers",
           "confirm-message": "Hiermee download je een Excel-bestand met alle ongebruikte voucher(s). <br /> <br /> Belangrijke opmerking: de ongebruikte vouchers die kunnen worden gedownload, zijn niet in realtime. Het rapport bevat de datum en tijd van de laatste externe update van elke voucher."
         }
       },
       "import-fsp-reconciliation": {
         "btn-text": "Importeer verrekinngs data",
-        "confirm-message": "Importeer verrekinngs data",
+        "confirm-message": "Importeer verrekenings data",
         "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener.",
         "import-result": {
           "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong>. De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verrekening komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet succesvol zijn in de verrekening, als mislukte betalingen worden beschouwd.",
