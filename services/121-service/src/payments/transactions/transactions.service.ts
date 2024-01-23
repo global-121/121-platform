@@ -346,7 +346,7 @@ export class TransactionsService {
     }
   }
 
-  public async updateWaitingTransactionToError(
+  public async updateWaitingTransaction(
     payment: number,
     regisrationId: number,
     status: StatusEnum,

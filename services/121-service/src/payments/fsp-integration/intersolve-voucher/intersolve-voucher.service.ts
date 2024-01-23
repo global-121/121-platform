@@ -421,7 +421,7 @@ export class IntersolveVoucherService
     messageSid?: string,
     errorMessage?: string,
   ): Promise<void> {
-    await this.transactionsService.updateWaitingTransactionToError(
+    await this.transactionsService.updateWaitingTransaction(
       payment,
       regisrationId,
       status,
