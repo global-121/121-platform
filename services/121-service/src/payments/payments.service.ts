@@ -54,6 +54,15 @@ export class PaymentsService {
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
+  private fspWithQueueServiceMapping = {
+    [FspName.intersolveVisa]: this.intersolveVisaService,
+    [FspName.intersolveVoucherPaper]: this.intersolveVoucherService,
+    [FspName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
+    [FspName.safaricom]: this.safaricomService,
+    [FspName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
+    // Add more FSP mappings if they work queue-based
+  };
+
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,
@@ -397,12 +406,14 @@ export class PaymentsService {
     programId: number,
     payment?: number,
   ): Promise<boolean> {
+    // check progress based on actions-table first
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
     if (actionsInProgress) {
       return true;
     }
 
+    // if not in progress, then also check progress from queue
     // get all FSPs in payment
     const fspAggregation = await this.aggregateTransactionsByDimension(
       'fsp',
@@ -450,16 +461,7 @@ export class PaymentsService {
     fsp: string,
     programId: number,
   ): Promise<boolean> {
-    const fspServiceMapping = {
-      [FspName.intersolveVisa]: this.intersolveVisaService,
-      [FspName.intersolveVoucherPaper]: this.intersolveVoucherService,
-      [FspName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
-      [FspName.safaricom]: this.safaricomService,
-      [FspName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
-      // Add more mappings as necessary
-    };
-
-    const service = fspServiceMapping[fsp];
+    const service = this.fspWithQueueServiceMapping[fsp];
     // If no specific service for the FSP, assume no queue progress to check
     if (!service) {
       return false;
