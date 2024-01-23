@@ -183,13 +183,17 @@ export class IntersolveVisaService
     const wallet = await this.getWalletByReferenceId(
       paymentDetailsData.referenceId,
     );
-    // Check if there's a wallet to check spendThisMonth & balance
+    // If there's a wallet, get the details and calculate the amount that can be paid out
     if (wallet) {
       const details = await this.getWalletDetails(wallet);
       const calculatedAmount = 150 - details.spentThisMonth - details.balance;
-      return Math.min(calculatedAmount, maxAmount);
+      if (calculatedAmount > 0) {
+        return Math.min(calculatedAmount, maxAmount);
+      } else {
+        return 0;
+      }
     } else {
-      // No wallet found, return the maxAmount because this is the first payment
+      // No wallet found, return the maxAmount because this is the first payment for this PA
       console.log('No Visa Wallet found');
       return maxAmount;
     }
@@ -446,23 +450,30 @@ export class IntersolveVisaService
       }
     } else {
       // If yes, load balance
-      const loadBalanceResult = await this.loadBalanceVisaCard(
-        visaCustomer.visaWallets[0].tokenCode,
-        calculatedAmount,
-        registration.referenceId,
-        paymentNr,
-      );
+      // If calculatedAmount is larger than 0, call Intersolve
+      if (calculatedAmount > 0) {
+        const loadBalanceResult = await this.loadBalanceVisaCard(
+          visaCustomer.visaWallets[0].tokenCode,
+          calculatedAmount,
+          registration.referenceId,
+          paymentNr,
+        );
 
-      paTransactionResult.status = loadBalanceResult.data?.success
-        ? StatusEnum.success
-        : StatusEnum.error;
-      paTransactionResult.message = loadBalanceResult.data?.success
-        ? null
-        : loadBalanceResult.data?.errors?.length
-          ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
-              loadBalanceResult.data?.errors,
-            )}`
-          : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+        paTransactionResult.status = loadBalanceResult.data?.success
+          ? StatusEnum.success
+          : StatusEnum.error;
+        paTransactionResult.message = loadBalanceResult.data?.success
+          ? null
+          : loadBalanceResult.data?.errors?.length
+            ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
+                loadBalanceResult.data?.errors,
+              )}`
+            : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      } else {
+        // If calculatedAmount is 0, DON'T call Intersolve. Create an successfull transaction
+        paTransactionResult.status = StatusEnum.success;
+        paTransactionResult.message = null;
+      }
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
