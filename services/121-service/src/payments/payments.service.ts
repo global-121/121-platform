@@ -381,12 +381,46 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
-  // TODO: refactor this to use 1 query + include payment-id in action-table
   public async checkPaymentInProgressAndThrow(
     programId: number,
     payment?: number,
   ): Promise<void> {
-    let inProgress = false;
+    if (await this.isPaymentInProgress(programId, payment)) {
+      throw new HttpException(
+        { errors: 'Payment is already in progress' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async isPaymentInProgress(
+    programId: number,
+    payment?: number,
+  ): Promise<boolean> {
+    const actionsInProgress =
+      await this.checkPaymentActionInProgress(programId);
+    if (actionsInProgress) {
+      return true;
+    }
+
+    // get all FSPs in payment
+    const fspAggregation = await this.aggregateTransactionsByDimension(
+      'fsp',
+      programId,
+      payment,
+    );
+    for (const fsp of fspAggregation) {
+      if (await this.checkFspQueueProgress(fsp.fsp, programId)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private async checkPaymentActionInProgress(
+    programId: number,
+  ): Promise<boolean> {
     const latestPaymentStartedAction =
       await this.actionService.getLatestActions(
         programId,
@@ -394,7 +428,7 @@ export class PaymentsService {
       );
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
-      return;
+      return false;
     }
 
     const latestPaymentFinishedAction =
@@ -404,101 +438,40 @@ export class PaymentsService {
       );
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {
-      inProgress = true;
-    } else {
-      // If started and finished, then compare timestamps
-      const startTimestamp = new Date(latestPaymentStartedAction?.created);
-      const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
-      if (finishTimestamp < startTimestamp) {
-        // If latest finished-timestamp before latest start-timstamp, then in progress
-        inProgress = true;
-      } else {
-        // get all FSPs in payment
-        const fspAggregation = await this.aggregateTransactionsByDimension(
-          'fsp',
-          programId,
-          payment,
-        );
+      return true;
+    }
+    // If started and finished, then compare timestamps
+    const startTimestamp = new Date(latestPaymentStartedAction?.created);
+    const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
+    return finishTimestamp < startTimestamp;
+  }
 
-        for (const fsp of fspAggregation) {
-          if (fsp.fsp === FspName.intersolveVisa) {
-            const programsWithVisa = await this.programRepository.find({
-              where: {
-                financialServiceProviders: { fsp: FspName.intersolveVisa },
-              },
-            });
-            const nrPending = await this.intersolveVisaService.getQueueProgress(
-              programsWithVisa.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
-            );
-            if (nrPending > 0) {
-              inProgress = true;
-              break; // if one fsp is in progress, then the whole payment is in progress
-            }
-          } else if (
-            fsp.fsp === FspName.intersolveVoucherPaper ||
-            fsp.fsp === FspName.intersolveVoucherWhatsapp
-          ) {
-            const programsWithVoucher = await this.programRepository.find({
-              where: {
-                financialServiceProviders: {
-                  fsp: In([
-                    FspName.intersolveVoucherWhatsapp,
-                    FspName.intersolveVoucherPaper,
-                  ]),
-                },
-              },
-            });
-            const nrPending =
-              await this.intersolveVoucherService.getQueueProgress(
-                programsWithVoucher.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
-              );
-            if (nrPending > 0) {
-              inProgress = true;
-              break; // if one fsp is in progress, then the whole payment is in progress
-            }
-          } else if (fsp.fsp === FspName.safaricom) {
-            const programsWithSafaricom = await this.programRepository.find({
-              where: {
-                financialServiceProviders: { fsp: FspName.safaricom },
-              },
-            });
-            const nrPending = await this.safaricomService.getQueueProgress(
-              programsWithSafaricom.length > 1 ? programId : null, // only make query program-specific if there are multiple programs using this fsp
-            );
-            if (nrPending > 0) {
-              inProgress = true;
-              break; // if one fsp is in progress, then the whole payment is in progress
-            }
-          } else if (fsp.fsp === FspName.commercialBankEthiopia) {
-            const programsWithCommercialBankEthiopia =
-              await this.programRepository.find({
-                where: {
-                  financialServiceProviders: {
-                    fsp: FspName.commercialBankEthiopia,
-                  },
-                },
-              });
-            const nrPending =
-              await this.commercialBankEthiopiaService.getQueueProgress(
-                programsWithCommercialBankEthiopia.length > 1
-                  ? programId
-                  : null, // only make query program-specific if there are multiple programs using this fsp
-              );
-            if (nrPending > 0) {
-              inProgress = true;
-              break; // if one fsp is in progress, then the whole payment is in progress
-            }
-          }
-          // for fsp's without queue, do nothing, so inProgress remains false
-        }
-      }
+  private async checkFspQueueProgress(
+    fsp: string,
+    programId: number,
+  ): Promise<boolean> {
+    const fspServiceMapping = {
+      [FspName.intersolveVisa]: this.intersolveVisaService,
+      [FspName.intersolveVoucherPaper]: this.intersolveVoucherService,
+      [FspName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
+      [FspName.safaricom]: this.safaricomService,
+      [FspName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
+      // Add more mappings as necessary
+    };
+
+    const service = fspServiceMapping[fsp];
+    // If no specific service for the FSP, assume no queue progress to check
+    if (!service) {
+      return false;
     }
 
-    if (inProgress) {
-      const errors = 'Payment is already in progress';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-    return;
+    const programsWithFsp = await this.programRepository.find({
+      where: { financialServiceProviders: { fsp: fsp } },
+    });
+    const nrPending = await service.getQueueProgress(
+      programsWithFsp.length > 1 ? programId : null,
+    );
+    return nrPending > 0;
   }
 
   private splitPaListByFsp(
