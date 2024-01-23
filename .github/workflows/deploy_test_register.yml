@@ -17,7 +17,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_register.yml'
@@ -27,7 +26,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_register.yml'
