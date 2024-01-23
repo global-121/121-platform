@@ -63,4 +63,8 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
   )
   public intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+
+  public calculateTopUpAmount(): number {
+    return (150 * 100 - this.spentThisMonth - this.balance) / 100;
+  }
 }

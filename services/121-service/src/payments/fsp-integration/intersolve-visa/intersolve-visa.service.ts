@@ -196,9 +196,8 @@ export class IntersolveVisaService
     wallet: IntersolveVisaWalletEntity,
     customer: IntersolveVisaCustomerEntity,
   ): Promise<number> {
-    const details = await this.getWalletDetails(wallet, customer);
-    const calculatedAmount =
-      (150 * 100 - details.spentThisMonth - details.balance) / 100;
+    const updatedWallet = await this.getWalletDetails(wallet, customer);
+    const calculatedAmount = updatedWallet.calculateTopUpAmount();
     if (calculatedAmount > 0) {
       return Math.min(calculatedAmount, maxAmount);
     } else {
