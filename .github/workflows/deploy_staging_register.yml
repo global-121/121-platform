@@ -30,6 +30,10 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
+          envContentSecurityPolicy: >-
+            script-src 'self' https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            connect-src 'self' https://staging.121.global;
+            form-action https://staging.121.global;
         env:
           NG_ENV_NAME: 'staging'
           NG_URL_121_SERVICE_API: 'https://staging.121.global/api'

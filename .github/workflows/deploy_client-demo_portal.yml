@@ -31,6 +31,12 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFCPkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAABERAAAAABEREREREQAAERERERERAAAREREREREAABEREREREQAAAAAREQAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAPw/AAD8PwAA/D8AAPw/AADAAwAAwAMAAMADAADAAwAA/D8AAPw/AAD8PwAA/D8AAP//AAD//wAA'
+          envContentSecurityPolicy: >-
+            script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            connect-src 'self' https://demo.121.global;
+            form-action https://demo.121.global;
+            frame-src blob: 'self' https://app.powerbi.com;
+            frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'Demo'
           NG_LOCALES: 'ar,en,es,fr,nl'

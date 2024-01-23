@@ -5,12 +5,31 @@ description: 'Builds an Angular interface.'
 
 inputs:
   interfacePath:
-    description: Location of the interface code.
+    description: Location of the interface's code. (relative to the repository-root)
     required: true
   envIcon:
     description: Base-64 encoded version of the favicon.ico file.
     required: false
     default: ''
+  envContentSecurityPolicyBase:
+    description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
+    required: false
+    default: >-
+      base-uri 'self';
+      default-src 'self';
+      img-src 'self' data:;
+      style-src 'self' 'unsafe-inline';
+      upgrade-insecure-requests;
+      block-all-mixed-content;
+  envContentSecurityPolicy:
+    description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
+    required: false
+    default: >-
+      script-src 'self';
+      connect-src 'self' https://*.121.global;
+      form-action https://*.121.global;
+      frame-src blob: 'self';
+      frame-ancestors 'self';
 
 outputs:
   build_version:
@@ -39,6 +58,13 @@ runs:
       run: |
         echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
 
+    - name: Add environment-specific icon
+      if: ${{ inputs.envIcon }} != ''
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        echo "${{ inputs.envIcon }}" | base64 --decode > src/favicon.ico
+
     - name: Build
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
@@ -53,12 +79,14 @@ runs:
         NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
-    - name: Add environment-specific icon
-      if: ${{ inputs.envIcon }} != ''
+    - name: Add/Override environment-specific Content-Security-Policy
+      if: ${{ inputs.envContentSecurityPolicy }} != ''
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        echo "${{ inputs.envIcon }}" | base64 --decode > www/favicon.ico
+        jq --arg csp "$(echo -n "${{ inputs.envContentSecurityPolicyBase }} ${{ inputs.envContentSecurityPolicy }}" | sed "s/'/\\'/g")" '.globalHeaders["Content-Security-Policy"]=$csp' staticwebapp.config.json > staticwebapp.config.override.json
+        mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
+        cat ./staticwebapp.config.json
 
     - name: Add VERSION to deployment
       id: version

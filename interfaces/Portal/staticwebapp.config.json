@@ -37,6 +37,6 @@
     }
   },
   "globalHeaders": {
-    "Content-Security-Policy": "frame-ancestors 'self' localhost:* 127.0.0.1:*  https://flex.twilio.com"
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
   }
 }

@@ -35,5 +35,8 @@
     "404": {
       "redirect": "/"
     }
+  },
+  "globalHeaders": {
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
   }
 }
