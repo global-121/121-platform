@@ -27,6 +27,10 @@ export class LanguageService {
   private currentLanguage: string = this.DEFAULT_LANGUAGE_CODE;
 
   constructor(private translate: TranslateService) {
+    this.setup();
+  }
+
+  public setup(): void {
     if (!this.translate) {
       return;
     }
