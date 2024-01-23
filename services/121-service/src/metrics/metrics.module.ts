@@ -10,7 +10,6 @@ import { TransactionsModule } from '../payments/transactions/transactions.module
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { ProgramModule } from '../programs/programs.module';
 import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import {
@@ -32,7 +31,6 @@ import { MetricsService } from './metrics.service';
       FspQuestionEntity,
       ProgramEntity,
     ]),
-    ProgramModule,
     UserModule,
     RegistrationsModule,
     ActionModule,

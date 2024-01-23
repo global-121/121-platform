@@ -15,7 +15,7 @@ export const AllowedFilterOperatorsNumber = [
 
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
-    maxLimit: 10000,
+    maxLimit: 40000,
     sortableColumns: [
       'id',
       'registrationCreated',

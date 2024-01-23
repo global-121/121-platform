@@ -169,7 +169,7 @@
           "btn-text": "Exportar cambios de datos",
           "confirm-message": "Esto descargará un archivo de Excel que muestra todos los cambios de datos para todas las personas afectadas por este programa.",
           "confirm-prompt": {
-            "choose-dates": "Opcionalmente, pase una fecha de inicio y/o una fecha de finalización para filtrar los cambios de datos.",
+            "choose-dates": "Opcionalmente, pase una fecha de inicio y/o una fecha de finalización para filtrar los cambios de datos. La exportación está limitada a {{exportLimit}} cambios de datos. Adapte sus fechas si es necesario.",
             "confirm-btn": "Exportar",
             "date-from": "Fecha de inicio {{date}}",
             "date-to": "Fecha de finalización: {{date}}",

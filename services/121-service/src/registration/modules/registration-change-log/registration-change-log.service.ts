@@ -28,6 +28,7 @@ export class RegistrationChangeLogService {
     fromDate?: any,
     toDate?: any,
   ): Promise<any[]> {
+    const exportLimit = 100000;
     const dataChanges = await this.registrationChangeLogScopedRepository.find({
       where: {
         registration: { programId: programId },
@@ -37,6 +38,8 @@ export class RegistrationChangeLogService {
         ),
       },
       relations: ['registration', 'user'],
+      order: { created: 'DESC' },
+      take: exportLimit,
     });
     return await Promise.all(
       dataChanges.map(async (dataChange) => {

@@ -169,7 +169,7 @@
           "btn-text": "Gegevenswijzigingen exporteren",
           "confirm-message": "Hiermee download je een Excel-bestand met alle gegevenswijzigingen voor alle mensen die betrokken zijn bij dit programma.",
           "confirm-prompt": {
-            "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren.",
+            "choose-dates": "Geef optioneel een begindatum en/of een einddatum door om de export te filteren. De export is beperkt tot {{exportLimit}} gegevenswijzigingen. Pas uw datums aan indien nodig.",
             "confirm-btn": "Exporteren",
             "date-from": "Startdatum {{date}}",
             "date-to": "Einddatum {{date}}",

@@ -203,16 +203,24 @@ export class PaymentsService {
     );
 
     if (!dryRun && referenceIds.length > 0) {
-      this.initiatePayment(
+      void this.initiatePayment(
         userId,
         programId,
         payment,
         amount,
         referenceIds,
         registrationsForPayment.length,
-      ).catch((e) => {
-        this.azureLogService.logError(e, true);
-      });
+      )
+        .catch((e) => {
+          this.azureLogService.logError(e, true);
+        })
+        .finally(() => {
+          void this.actionService.saveAction(
+            userId,
+            programId,
+            AdditionalActionType.paymentFinished,
+          );
+        });
     }
 
     return bulkActionResultPaymentDto;
@@ -295,12 +303,7 @@ export class PaymentsService {
         bulkSize,
       );
 
-      const result = await this.payout(
-        paPaymentDataList,
-        programId,
-        payment,
-        userId,
-      );
+      const result = await this.payout(paPaymentDataList, programId, payment);
 
       paymentTransactionResult += result;
     }
@@ -334,9 +337,17 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    this.payout(paPaymentDataList, programId, payment, userId).catch((e) => {
-      this.azureLogService.logError(e, true);
-    });
+    void this.payout(paPaymentDataList, programId, payment)
+      .catch((e) => {
+        this.azureLogService.logError(e, true);
+      })
+      .finally(() => {
+        void this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentFinished,
+        );
+      });
 
     return {
       totalFilterCount: paPaymentDataList.length,
@@ -362,21 +373,10 @@ export class PaymentsService {
     paPaymentDataList: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    userId: number,
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    void this.makePaymentRequest(paLists, programId, payment)
-      .catch((e) => {
-        this.azureLogService.logError(e, true);
-      })
-      .finally(() => {
-        void this.actionService.saveAction(
-          userId,
-          programId,
-          AdditionalActionType.paymentFinished,
-        );
-      });
+    await this.makePaymentRequest(paLists, programId, payment);
 
     return paPaymentDataList.length;
   }

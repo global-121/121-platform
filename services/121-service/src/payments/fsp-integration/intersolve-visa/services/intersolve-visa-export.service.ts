@@ -31,13 +31,13 @@ export class IntersolveVisaExportService {
         'wallet.cardStatus as "cardStatus"',
         'wallet.walletStatus as "walletStatus"',
         'wallet."tokenBlocked" as "tokenBlocked"',
-        `CASE WHEN wallet.id = ${this.getLatestWalletsSubquery(
-          'customer',
-        )} THEN true ELSE false END as "isCurrentWallet"`,
       ])
       .andWhere('registration."programId" = :programId', { programId })
+      .orderBy({
+        'registration."registrationProgramId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
+        'wallet."created"': 'DESC',
+      })
       .getRawMany();
-
     const mappedWallets = this.mapToDto(wallets, programId);
     return mappedWallets;
   }
@@ -46,20 +46,25 @@ export class IntersolveVisaExportService {
     wallets: ExportWalletData[],
     programId: number,
   ): ExportCardsDto[] {
+    let previousRegistrationProgramId = null;
     const exportWalletData = [];
     for (const wallet of wallets) {
+      const isCurrentWallet =
+        previousRegistrationProgramId === wallet.paId ? false : true;
+
       const statusInfo =
         this.intersolveVisaStatusMappingService.determine121StatusInfo(
           wallet.tokenBlocked,
           wallet.walletStatus,
           wallet.cardStatus,
-          wallet.isCurrentWallet,
+          isCurrentWallet,
           {
             programId,
             tokenCode: wallet.cardNumber,
             referenceId: wallet.referenceId,
           },
         );
+
       exportWalletData.push({
         paId: wallet.paId,
         referenceId: wallet.referenceId,
@@ -71,22 +76,10 @@ export class IntersolveVisaExportService {
         balance: wallet.balance / 100,
         explanation: statusInfo.explanation,
         spentThisMonth: wallet.spentThisMonth / 100,
+        isCurrentWallet: isCurrentWallet,
       });
+      previousRegistrationProgramId = wallet.paId;
     }
     return exportWalletData;
-  }
-
-  private getLatestWalletsSubquery(alias: string): any {
-    const subQuery = this.intersolveVisaWalletScopedRepository
-      .createQueryBuilder('sub_wallet')
-      .select('sub_wallet.id')
-      .leftJoin('sub_wallet.intersolveVisaCustomer', 'sub_customer')
-      .andWhere(`sub_customer.id = ${alias}.id`)
-      .orderBy('sub_wallet.created', 'DESC')
-      .addOrderBy('sub_wallet.id', 'DESC')
-      .limit(1)
-      .getQuery();
-
-    return `(${subQuery})`;
   }
 }
