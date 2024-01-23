@@ -349,7 +349,7 @@ export class IntersolveVisaApiMockService {
     const match = tokenCode.match(/mock-current-balance-(\d+)/);
     let currentBalance;
     try {
-      currentBalance = match ? parseInt(match[1], 10) : 0;
+      currentBalance = match ? parseInt(match[1], 10) : 2200;
     } catch (error) {
       currentBalance = 2200;
     }
