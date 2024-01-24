@@ -31,6 +31,7 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envContentSecurityPolicy: >-
+            img-src 'self' data: ;
             script-src 'self' https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             connect-src 'self' https://staging.121.global;
             form-action https://staging.121.global;
