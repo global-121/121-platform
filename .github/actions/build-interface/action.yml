@@ -19,6 +19,7 @@ inputs:
       default-src 'self';
       img-src 'self' data:;
       style-src 'self' 'unsafe-inline';
+      object-src 'none';
       upgrade-insecure-requests;
       block-all-mixed-content;
   envContentSecurityPolicy:
