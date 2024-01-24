@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Double voucher PV data migration and bugfix
+- Double voucher PV data migration and bug-fix
 
 ## [1.109.1](https://github.com/global-121/121-platform/compare/v1.109.0...v1.109.1) - 2024-01-16
 
