@@ -259,8 +259,6 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.text).toContain('CREATE DEBIT CARD ERROR');
     });
 
-    // TODO: Fix this test after Intersolve has implemented the 'Active/Inactive' status on the card
-    // UPDATE: I changed this test already, as we are using MOCK anyway, so not sure what above comment is about
     it('should successfully load balance Visa Debit', async () => {
       registrationVisa.lastName = 'succeed';
       // Arrange
@@ -549,7 +547,7 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse2.body[0].amount).toBe(0);
       expect(transactionsResponse2.text).toContain(StatusEnum.success);
 
-      // should be able to payout the full amoung
+      // should be able to payout the full amount
       expect(transactionsResponse3.body[0].amount).toBe(
         amountVisa * registrationOCW3.paymentAmountMultiplier,
       );
