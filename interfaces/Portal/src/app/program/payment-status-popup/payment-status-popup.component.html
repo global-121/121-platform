@@ -95,7 +95,7 @@
       }}
     </ion-button>
     <ion-button
-      *ngIf="sanitizedIimageUrl"
+      *ngIf="sanitizedImageUrl"
       (click)="printVoucher()"
     >
       <ion-icon
@@ -109,10 +109,10 @@
       }}
     </ion-button>
   </div>
-  <div *ngIf="sanitizedIimageUrl">
+  <div *ngIf="sanitizedImageUrl">
     <iframe
       id="voucherIframe"
-      [src]="sanitizedIimageUrl"
+      [src]="sanitizedImageUrl"
       style="width: 100%; height: 450px; border: 0"
     ></iframe>
   </div>
