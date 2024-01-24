@@ -4,7 +4,6 @@ import { environment } from '../../environments/environment';
 
 export class LanguageOption {
   code: string;
-  dir: string;
   name: string;
 }
 
@@ -13,38 +12,37 @@ export class LanguageOption {
 })
 export class LanguageService {
   private DEFAULT_LANGUAGE_CODE = 'en';
-  private DEFAULT_LANGUAGE_DIR = 'ltr';
-  private DEFAULT_LANGUAGE_NAME = 'English';
   private USER_PREFERENCE_KEY = 'selectedLanguage';
 
-  private allLocales = environment.locales
+  // These locale/language codes should match the filenames in: `src/assets/i18n/<code>.json`
+  private SUPPORTED_LANGUAGES = {
+    ar: 'العربية',
+    en: 'English',
+    es: 'Español',
+    fr: 'Français',
+    nl: 'Nederlands',
+  };
+
+  private enabledLocales = environment.locales
     .trim()
     .toLowerCase()
     .split(/\s*,\s*/);
 
-  private availableLanguages: LanguageOption[];
-
-  private currentLanguage: string = this.DEFAULT_LANGUAGE_CODE;
-
   constructor(private translate: TranslateService) {
-    this.setup();
-  }
-
-  public setup(): void {
     if (!this.translate) {
       return;
     }
 
     this.setupLanguageSwitchForDOM();
+  }
 
-    this.availableLanguages = this.loadLanguages();
-
+  public setup(): void {
     let selectedLanguage = this.getStoredLanguage();
 
     if (!selectedLanguage) {
       // Start with the users' preferred language
       const browserLanguage = this.translate.getBrowserLang();
-      if (browserLanguage && this.allLocales.includes(browserLanguage)) {
+      if (browserLanguage && this.enabledLocales.includes(browserLanguage)) {
         selectedLanguage = browserLanguage;
       }
     }
@@ -54,7 +52,7 @@ export class LanguageService {
       selectedLanguage = this.DEFAULT_LANGUAGE_CODE;
     }
 
-    this.useLanguage(selectedLanguage);
+    this.translate.use(selectedLanguage);
   }
 
   private setupLanguageSwitchForDOM() {
@@ -66,38 +64,24 @@ export class LanguageService {
     );
   }
 
-  private loadLanguages(): LanguageOption[] {
-    if (!this.translate) {
-      return [];
-    }
-
-    if (!this.allLocales || this.allLocales.length === 0) {
+  public getLanguages(): LanguageOption[] {
+    if (!this.enabledLocales || this.enabledLocales.length === 0) {
       return [
-        this.createLanguageOption(this.DEFAULT_LANGUAGE_CODE, {
-          _dir: this.DEFAULT_LANGUAGE_DIR,
-          _languageName: this.DEFAULT_LANGUAGE_NAME,
-        }),
+        {
+          code: this.DEFAULT_LANGUAGE_CODE,
+          name: this.SUPPORTED_LANGUAGES[this.DEFAULT_LANGUAGE_CODE],
+        },
       ];
     }
 
-    const languages = [];
+    const languages = this.enabledLocales.map((locale) => {
+      return {
+        code: locale,
+        name: this.SUPPORTED_LANGUAGES[locale],
+      };
+    });
 
-    // Filter out locales that are missing the translation file
-    for (const locale of this.allLocales) {
-      this.translate.getTranslation(locale).subscribe({
-        next: (localeObject) => {
-          languages.push(this.createLanguageOption(locale, localeObject));
-          languages.sort(this.sortLanguageOptions);
-        },
-        error: (error) => {
-          console.warn(`Translations-file for "${locale}" missing!`, error);
-          if (locale === this.currentLanguage) {
-            this.useLanguage(this.DEFAULT_LANGUAGE_CODE);
-            this.storeLanguage(this.DEFAULT_LANGUAGE_CODE);
-          }
-        },
-      });
-    }
+    languages.sort(this.sortLanguageOptions);
 
     return languages;
   }
@@ -113,40 +97,9 @@ export class LanguageService {
     return 0;
   }
 
-  public getLanguages(): LanguageOption[] {
-    if (!this.availableLanguages) {
-      this.availableLanguages = this.loadLanguages();
-    }
-
-    return this.availableLanguages;
-  }
-
   public changeLanguage(languageKey: string): void {
     this.storeLanguage(languageKey);
     window.location.reload();
-  }
-
-  private useLanguage(languageKey: string): void {
-    this.currentLanguage = languageKey;
-    this.translate.use(languageKey);
-  }
-
-  private createLanguageOption(
-    locale: string,
-    localeObject: Extract<
-      { _dir: string; _languageName: string },
-      { [key: string]: string }
-    >,
-  ): {
-    code: string;
-    dir: string;
-    name: string;
-  } {
-    return {
-      code: locale,
-      dir: localeObject['_dir'],
-      name: localeObject['_languageName'],
-    };
   }
 
   private storeLanguage(languageKey: string): void {
