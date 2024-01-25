@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RedisModule } from '../../../payments/redis.module';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
@@ -40,6 +41,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
         duration: 1000, // per duration in milliseconds
       },
     }),
+    RedisModule,
   ],
   providers: [
     IntersolveVisaService,

@@ -3,6 +3,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import crypto from 'crypto';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -68,6 +69,8 @@ export class IntersolveVoucherService
     private readonly messageTemplateService: MessageTemplateService,
     @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
+    @Inject('REDIS_CLIENT')
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
@@ -91,23 +94,44 @@ export class IntersolveVoucherService
     };
 
     for (const paymentInfo of paPaymentList) {
-      await this.paymentIntersolveVoucherQueue.add(ProcessName.sendPayment, {
-        paymentInfo: paymentInfo,
-        useWhatsapp: useWhatsapp,
-        payment: payment,
-        credentials: credentials,
+      const job = await this.paymentIntersolveVoucherQueue.add(
+        ProcessName.sendPayment,
+        {
+          paymentInfo: paymentInfo,
+          useWhatsapp: useWhatsapp,
+          payment: payment,
+          credentials: credentials,
+        },
+      );
+      console.log('jobId', job.id);
+      await this.redisClient.sadd(`program:${programId}:jobs`, job.id);
+
+      // Listen for job completion and remove it from the Redis set
+      await this.paymentIntersolveVoucherQueue.on('completed', async (job) => {
+        console.log(`Job completed: ${job.id}`);
+        await this.redisClient.srem(
+          `program:${job.data.programId}:jobs`,
+          job.id,
+        );
       });
     }
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
+    console.log('VOUCHER');
     if (programId) {
-      const jobs = await this.paymentIntersolveVoucherQueue.getJobs([
-        'delayed',
-      ]);
-      return jobs.filter((j) => j.data.programId === programId).length;
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(`program:${programId}:jobs`);
+      console.log('programVoucher id:', programId);
+      console.log('programVoucher count:', count);
+      return count;
     } else {
-      return await this.paymentIntersolveVoucherQueue.getDelayedCount();
+      console.log('no programVoucher');
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.paymentIntersolveVoucherQueue.getDelayedCount();
+      return delayedCount;
     }
   }
 

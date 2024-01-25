@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RedisModule } from '../../../payments/redis.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -24,7 +25,6 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
-import { PaymentProcessorIntersolveVoucher } from './processors/intersolve-voucher.processor';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @Module({
@@ -57,6 +57,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
         duration: 1000, // per duration in milliseconds
       },
     }),
+    RedisModule,
   ],
   providers: [
     IntersolveVoucherService,
@@ -67,7 +68,6 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     CustomHttpService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
-    PaymentProcessorIntersolveVoucher,
   ],
   controllers: [IntersolveVoucherController],
   exports: [
@@ -75,6 +75,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     IntersolveVoucherApiService,
     IntersolveVoucherMockService,
     IntersolveVoucherCronService,
+    BullModule,
   ],
 })
 export class IntersolveVoucherModule {}

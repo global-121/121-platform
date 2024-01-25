@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisModule } from '../../../payments/redis.module';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { AzureLoggerMiddleware } from '../../../shared/middleware/azure-logger.middleware';
@@ -37,6 +38,7 @@ import { SafaricomService } from './safaricom.service';
         duration: 1000, // per duration in milliseconds
       },
     }),
+    RedisModule,
   ],
   providers: [
     SafaricomService,

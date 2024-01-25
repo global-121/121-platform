@@ -1,6 +1,13 @@
 import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Scope,
+} from '@nestjs/common';
 import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -71,7 +78,7 @@ import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
@@ -88,6 +95,8 @@ export class IntersolveVisaService
     private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
     private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
+    @Inject('REDIS_CLIENT')
+    private readonly redisClient: Redis,
   ) {}
 
   public async getTransactionInfo(
@@ -169,19 +178,39 @@ export class IntersolveVisaService
       paymentDetails.programId = programId;
       paymentDetails.paymentNr = paymentNr;
       paymentDetails.bulkSize = paymentList[0].bulkSize;
-      await this.paymentIntersolveVisaQueue.add(
+      const job = await this.paymentIntersolveVisaQueue.add(
         ProcessName.sendPayment,
         paymentDetails,
       );
+      console.log('jobId', job.id);
+      await this.redisClient.sadd(`program:${programId}:jobs`, job.id);
+
+      // Listen for job completion and remove it from the Redis set
+      await this.paymentIntersolveVisaQueue.on('completed', async (job) => {
+        console.log(`Job completed: ${job.id}`);
+        await this.redisClient.srem(
+          `program:${job.data.programId}:jobs`,
+          job.id,
+        );
+      });
     }
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
+    console.log('VISA');
     if (programId) {
-      const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
-      return jobs.filter((j) => j.data.programId === programId).length;
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(`program:${programId}:jobs`);
+      console.log('programVisa id:', programId);
+      console.log('programVisa count:', count);
+      return count;
     } else {
-      return await this.paymentIntersolveVisaQueue.getDelayedCount();
+      console.log('no programVisa');
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.paymentIntersolveVisaQueue.getDelayedCount();
+      return delayedCount;
     }
   }
 

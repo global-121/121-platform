@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 // import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../../config';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
@@ -33,6 +34,8 @@ export class SafaricomService {
     private readonly transactionsService: TransactionsService,
     @InjectQueue(QueueNamePayment.paymentSafaricom)
     private readonly paymentSafaricomQueue: Queue,
+    @Inject('REDIS_CLIENT')
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
@@ -44,21 +47,43 @@ export class SafaricomService {
     const userInfo = await this.getUserInfo(referenceIds);
 
     for (const paPaymentData of paymentList) {
-      await this.paymentSafaricomQueue.add(ProcessName.sendPayment, {
-        userInfo: userInfo,
-        paPaymentData: paPaymentData,
-        programId: programId,
-        paymentNr: paymentNr,
+      const job = await this.paymentSafaricomQueue.add(
+        ProcessName.sendPayment,
+        {
+          userInfo: userInfo,
+          paPaymentData: paPaymentData,
+          programId: programId,
+          paymentNr: paymentNr,
+        },
+      );
+      console.log('jobId', job.id);
+      await this.redisClient.sadd(`program:${programId}:jobs`, job.id);
+
+      // Listen for job completion and remove it from the Redis set
+      await this.paymentSafaricomQueue.on('completed', async (job) => {
+        console.log(`Job completed: ${job.id}`);
+        await this.redisClient.srem(
+          `program:${job.data.programId}:jobs`,
+          job.id,
+        );
       });
     }
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
+    console.log('Safaricom');
     if (programId) {
-      const jobs = await this.paymentSafaricomQueue.getJobs(['delayed']);
-      return jobs.filter((j) => j.data.programId === programId).length;
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(`program:${programId}:jobs`);
+      console.log('programSafaricom id:', programId);
+      console.log('programSafaricom count:', count);
+      return count;
     } else {
-      return await this.paymentSafaricomQueue.getDelayedCount();
+      console.log('no programSafaricom');
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount = await this.paymentSafaricomQueue.getDelayedCount();
+      return delayedCount;
     }
   }
 

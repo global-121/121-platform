@@ -71,8 +71,10 @@ import { TransactionsModule } from './transactions/transactions.module';
     AzureLogService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
+    IntersolveVisaModule,
+    IntersolveVoucherModule,
   ],
   controllers: [PaymentsController],
-  exports: [PaymentsService],
+  exports: [PaymentsService, IntersolveVisaModule, IntersolveVoucherModule],
 })
 export class PaymentsModule {}

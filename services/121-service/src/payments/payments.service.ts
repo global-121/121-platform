@@ -471,7 +471,7 @@ export class PaymentsService {
       where: { financialServiceProviders: { fsp: fsp } },
     });
     const nrPending = await service.getQueueProgress(
-      programsWithFsp.length > 1 ? programId : null,
+      programsWithFsp.length > 0 ? programId : null,
     );
     return nrPending > 0;
   }
