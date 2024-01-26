@@ -6,6 +6,7 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   MessageTemplateModule-->ProgramAttributesModule
+  CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule

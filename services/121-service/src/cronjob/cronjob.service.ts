@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
 import { CustomHttpService } from '../shared/services/custom-http.service';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
@@ -8,6 +9,8 @@ import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
+
+  constructor(private exchangeRateService: ExchangeRateService) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   public async cronCancelByRefposIntersolve(): Promise<void> {
@@ -75,5 +78,13 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
 
     console.info('CronjobService - Complete: cronSendWhatsappReminders');
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  public async getDailyExchangeRates(): Promise<void> {
+    console.info('CronjobService - Started: getDailyExchangeRates');
+
+    const currencies = await this.exchangeRateService.getAllProgramCurrencies();
+    console.log('currencies: ', currencies);
   }
 }
