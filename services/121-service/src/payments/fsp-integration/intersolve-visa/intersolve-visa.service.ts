@@ -89,20 +89,23 @@ export class IntersolveVisaService
     private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 
-  public async getSpentThisMonthByCustomer(
+  public async getTransactionInfoByCustomer(
     visaCustomer: IntersolveVisaCustomerEntity,
-  ): Promise<number> {
+  ): Promise<{ tokenCode: number; transactionInfo: TransactionInfoVisa }[]> {
     const dateFrom = this.getTwoMonthAgo();
-    let spentThisMonth = 0;
+    const transactionInfoByCustomer = [];
 
     for (const wallet of visaCustomer.visaWallets) {
       const walletTransactionInfo = await this.getTransactionInfoByWallet(
         wallet.tokenCode,
         dateFrom,
       );
-      spentThisMonth += walletTransactionInfo.spentThisMonth;
+      transactionInfoByCustomer.push({
+        tokenCode: wallet.tokenCode,
+        transactionInfo: walletTransactionInfo,
+      });
     }
-    return spentThisMonth;
+    return transactionInfoByCustomer;
   }
 
   public async getTransactionInfoByWallet(
@@ -715,33 +718,33 @@ export class IntersolveVisaService
     }
 
     // Get spentThisMonth across all wallets of customer
+    let transactionInfoByCustomer;
     try {
-      const spentThisMonth = await this.getSpentThisMonthByCustomer(customer);
-      if (spentThisMonth) {
-        wallet.spentThisMonth = spentThisMonth;
-      }
+      transactionInfoByCustomer =
+        await this.getTransactionInfoByCustomer(customer);
     } catch (error) {
       if (usedInPayment) {
         throw error;
       }
     }
 
+    if (transactionInfoByCustomer.length) {
+      wallet.spentThisMonth = transactionInfoByCustomer
+        .map((w) => w.transactionInfo.spentThisMonth)
+        .reduce((sum, current) => sum + current, 0);
+    }
+
     if (!usedInPayment) {
       // The below properties are not needed in payment amount calculation
       // Get lastUsedDate is still per wallet, unlike spentThisMonth above
-      // TODO: we now get transactions twice for the same wallet (above and here), this can be optimized
-      try {
-        const transactionInfo = await this.getTransactionInfoByWallet(
-          wallet.tokenCode,
-          this.getTwoMonthAgo(),
-        );
-        if (transactionInfo?.lastUsedDate) {
-          wallet.lastUsedDate = transactionInfo.lastUsedDate;
-        }
-        wallet.lastExternalUpdate = new Date();
-      } catch (error) {
-        // In this case we do not throw the error, the lastUsedDate will simly not be updated
+      // If above API-call failed, then this code will simply not update lastUsedDate which is fine
+      const transactionInfoPerWallet = transactionInfoByCustomer?.find(
+        (w) => w.tokenCode === wallet.tokenCode,
+      )?.transactionInfo;
+      if (transactionInfoPerWallet?.lastUsedDate) {
+        wallet.lastUsedDate = transactionInfoPerWallet.lastUsedDate;
       }
+      wallet.lastExternalUpdate = new Date();
 
       const cardDetails = await this.intersolveVisaApiService.getCard(
         wallet.tokenCode,
