@@ -227,7 +227,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     }
 
     const queryDuplicateImageCodeExportVoucher = readSqlFile(
-      '../../src/scripts/sql/mock-imagecode-export-voucher.sql',
+      '../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
