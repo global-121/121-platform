@@ -52,7 +52,7 @@ export class CronjobService {
     console.info('CronjobService - Complete: cronCacheUnusedVouchers');
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_4AM)
+  @Cron(CronExpression.EVERY_DAY_AT_6AM)
   public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
     console.info('CronjobService - Started: updateVisaDebitWalletDetailsCron');
 
