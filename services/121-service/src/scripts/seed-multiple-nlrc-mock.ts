@@ -292,6 +292,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     );
     await this.dataSource.query(queryUpdateLatestTransaction);
     console.log(`**Done updating latest transactions**`);
+
+    const queryUnusedVouchers = readSqlFile(
+      '../../src/scripts/sql/mock-unused-vouchers.sql',
+    );
+    console.log(`**CREATING MOCK DATA unused vouchers**`);
+    await this.dataSource.query(queryUnusedVouchers);
   }
 
   private async multiplyMessages(powerNr: number): Promise<void> {
