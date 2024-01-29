@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
@@ -16,6 +17,7 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -53,6 +55,8 @@ export class CommercialBankEthiopiaService
     private readonly commercialBankEthiopiaQueue: Queue,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
@@ -95,20 +99,26 @@ export class CommercialBankEthiopiaService
         payload: payload,
         credentials: credentials,
       };
-      await this.commercialBankEthiopiaQueue.add(
+      const job = await this.commercialBankEthiopiaQueue.add(
         ProcessName.sendPayment,
         jobData,
       );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
     return fspTransactionResult;
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
     if (programId) {
-      const jobs = await this.commercialBankEthiopiaQueue.getJobs(['delayed']);
-      return jobs.filter((j) => j.data.programId === programId).length;
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(getRedisSetName(programId));
+      return count;
     } else {
-      return await this.commercialBankEthiopiaQueue.getDelayedCount();
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.commercialBankEthiopiaQueue.getDelayedCount();
+      return delayedCount;
     }
   }
 

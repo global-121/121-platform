@@ -28,6 +28,7 @@ import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { ImageCodeService } from '../../imagecode/image-code.service';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -69,7 +70,7 @@ export class IntersolveVoucherService
     private readonly messageTemplateService: MessageTemplateService,
     @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
-    @Inject('REDIS_CLIENT')
+    @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
@@ -101,32 +102,19 @@ export class IntersolveVoucherService
           useWhatsapp: useWhatsapp,
           payment: payment,
           credentials: credentials,
+          programId: programId,
         },
       );
-      console.log('jobId', job.id);
-      await this.redisClient.sadd(`program:${programId}:jobs`, job.id);
-
-      // Listen for job completion and remove it from the Redis set
-      await this.paymentIntersolveVoucherQueue.on('completed', async (job) => {
-        console.log(`Job completed: ${job.id}`);
-        await this.redisClient.srem(
-          `program:${job.data.programId}:jobs`,
-          job.id,
-        );
-      });
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
-    console.log('VOUCHER');
     if (programId) {
       // Get the count of job IDs in the Redis set for the program
-      const count = await this.redisClient.scard(`program:${programId}:jobs`);
-      console.log('programVoucher id:', programId);
-      console.log('programVoucher count:', count);
+      const count = await this.redisClient.scard(getRedisSetName(programId));
       return count;
     } else {
-      console.log('no programVoucher');
       // If no programId is provided, use Bull's method to get the total delayed count
       // This requires an instance of the Bull queue
       const delayedCount =

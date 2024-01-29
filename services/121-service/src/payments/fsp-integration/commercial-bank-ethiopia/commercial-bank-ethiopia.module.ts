@@ -10,6 +10,7 @@ import { UserModule } from '../../../user/user.module';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { QueueNamePayment } from '../../enum/queue.names.enum';
+import { RedisModule } from '../../redis.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
@@ -42,6 +43,7 @@ import { PaymentProcessorCommercialBankEthiopia } from './processors/commercial-
         duration: 1000, // per duration in milliseconds
       },
     }),
+    RedisModule,
   ],
   providers: [
     CommercialBankEthiopiaService,

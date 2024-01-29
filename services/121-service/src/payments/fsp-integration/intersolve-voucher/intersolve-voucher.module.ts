@@ -25,6 +25,7 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { PaymentProcessorIntersolveVoucher } from './processors/intersolve-voucher.processor';
 import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @Module({
@@ -68,6 +69,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     CustomHttpService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
+    PaymentProcessorIntersolveVoucher,
   ],
   controllers: [IntersolveVoucherController],
   exports: [
@@ -75,7 +77,6 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     IntersolveVoucherApiService,
     IntersolveVoucherMockService,
     IntersolveVoucherCronService,
-    BullModule,
   ],
 })
 export class IntersolveVoucherModule {}
