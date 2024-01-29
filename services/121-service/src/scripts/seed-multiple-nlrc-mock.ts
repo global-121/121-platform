@@ -48,7 +48,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     const min = 1;
     const maxPowerNrRegistrations = 17;
     const maxPowerNrMessages = 6;
-    const maxNrPayments = 30;
+    const maxNrPayments = 30; //
     if (
       isNaN(powerNrRegistrations) ||
       powerNrRegistrations < min ||
@@ -227,7 +227,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     }
 
     const queryDuplicateImageCodeExportVoucher = readSqlFile(
-      '../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
+      '../../src/scripts/sql/mock-imagecode-export-voucher.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
