@@ -38,8 +38,8 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
     powerNrMessagesString?: string,
-    mockPv: boolean = true,
-    mockOcw: boolean = true,
+    mockPv = true,
+    mockOcw = true,
   ): Promise<void> {
     const powerNrRegistrations = Number(powerNrRegistrationsString) || 2;
     const nrPayments = Number(nrPaymentsString) || 2;
