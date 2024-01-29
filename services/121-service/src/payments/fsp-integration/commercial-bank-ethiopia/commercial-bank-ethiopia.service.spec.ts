@@ -90,6 +90,13 @@ describe('CommercialBankEthiopiaService', () => {
       )
       .mockImplementation(() => createQueryBuilder) as any;
 
+    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+      data: {
+        id: 1,
+        programId: 3,
+      },
+    });
+
     // Act
     await commercialBankEthiopiaService.sendPayment(
       sendPaymentData,

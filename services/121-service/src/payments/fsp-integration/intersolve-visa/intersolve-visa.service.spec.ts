@@ -6,6 +6,8 @@ import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
+const programId = 3;
+const paymentNr = 5;
 const sendPaymentData = [
   {
     transactionAmount: 22,
@@ -26,7 +28,7 @@ const paymentDetailsResult: PaymentDetailsDto = {
   lastName: 'mock-fail-create-debit-card',
   paymentNr: 5,
   phoneNumber: '14155238886',
-  programId: 3,
+  programId: programId,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
   transactionAmount: 22,
 };
@@ -44,8 +46,6 @@ const mockPaPaymentDetails = [
     transactionAmount: 22,
   },
 ] as PaymentDetailsDto[];
-const programId = 3;
-const paymentNr = 5;
 
 describe('IntersolveVisaService', () => {
   let intersolveVisaService: IntersolveVisaService;
@@ -68,6 +68,13 @@ describe('IntersolveVisaService', () => {
     jest
       .spyOn(intersolveVisaService as any, 'getPaPaymentDetails')
       .mockResolvedValue(mockPaPaymentDetails);
+
+    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+      data: {
+        id: 1,
+        programId: 3,
+      },
+    });
 
     // Act
     await intersolveVisaService.sendPayment(

@@ -53,6 +53,13 @@ describe('SafaricomService', () => {
       .spyOn(safaricomService as any, 'getUserInfo')
       .mockImplementation(() => paymentDetailsResult.userInfo);
 
+    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+      data: {
+        id: 1,
+        programId: 3,
+      },
+    });
+
     // Act
     await safaricomService.sendPayment(sendPaymentData, programId, paymentNr);
 

@@ -26,6 +26,7 @@ const paymentDetailsResult: IntersolveVoucherJobDto = {
   useWhatsapp: true,
   payment: paymentNr,
   credentials: mockCredentials,
+  programId: programId,
 };
 
 describe('IntersolveVoucherService', () => {
@@ -64,6 +65,13 @@ describe('IntersolveVoucherService', () => {
         'createQueryBuilder',
       )
       .mockImplementation(() => createQueryBuilder) as any;
+
+    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+      data: {
+        id: 1,
+        programId: 3,
+      },
+    });
 
     // Act
     await intersolveVoucherService.sendPayment(
