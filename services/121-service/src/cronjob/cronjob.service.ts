@@ -80,13 +80,12 @@ export class CronjobService {
     console.info('CronjobService - Complete: cronSendWhatsappReminders');
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_6AM)
   public async getDailyExchangeRates(): Promise<void> {
     console.info('CronjobService - Started: getDailyExchangeRates');
 
-    // TODO: Should call exchangeRateService.getAndStoreProgramsExchangeRates via HTTP? (see other cronjob functions)
-    const currencies = await this.exchangeRateService.getAndStoreProgramsExchangeRates();
-    const response = await this.exchangeRateService.retrieveExchangeRate();
+    await this.exchangeRateService.getAndStoreProgramsExchangeRates();
+
     console.info('CronjobService - Complete: getDailyExchangeRates');
   }
 }

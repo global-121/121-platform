@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { ExchangeRateEntity } from './exchange-rate.entity';
 import { CustomHttpService } from '../shared/services/custom-http.service';
+import { ExchangeRateEntity } from './exchange-rate.entity';
 
 @Injectable()
 export class ExchangeRateService {
@@ -15,49 +15,36 @@ export class ExchangeRateService {
     private readonly httpService: CustomHttpService,
   ) {}
 
-  // Public interface for ExchangeRateService:
-  // - getAndStoreProgramsExchangeRates
-  // nothing else => Tijs gets the data directly from the database (for now)
-
   public async getAndStoreProgramsExchangeRates(): Promise<void> {
-    // Get all currencies used in programs (except EUR)
-    // For currency found
-    //   Call API to get today's exchange rate
-    //   Store retrieved exchange rate
+    const currencies = await this.getAllProgramCurrencies();
 
+    for (const currency of currencies) {
+      const rate = await this.retrieveExchangeRate(currency);
+      await this.createExchangeRate(currency, Number(rate));
+    }
   }
 
-  public async retrieveExchangeRate(): Promise<void> {
-    // Test function to try to retrieve an exchange rate via the external API
-    // https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=EUR&quote=USD&data_type=general_currency_pair&start_date=2024-01-23&end_date=2024-01-24
-    // Tijs indicated to take "average_bid" from the response
+  private async retrieveExchangeRate(currency: string): Promise<string> {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    now.setDate(now.getDate() - 1);
+    const yesterday = now.toISOString().split('T')[0];
+
+    const dataKey = 'data';
+    const responseKey = 'response';
+    const averageBidKey = 'average_bid';
 
     try {
-      const exchangeRateUrl = `http://localhost`;
-      //const exchangeRateUrl = `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=EUR&quote=USD&data_type=general_currency_pair&start_date=2024-01-23&end_date=2024-01-24`;
+      const exchangeRateUrl = `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
+      const data = await this.httpService.get(exchangeRateUrl);
 
-      // const headers = [
-      //   {
-      //     name: 'Authorization',
-      //     value: `Bearer ${this.tokenSet.access_token}`,
-      //   },
-      // ];
-
-      const { data } =
-        await this.httpService.post<any>(
-          `${exchangeRateUrl}`,
-          ``,
-        );
-
-      return data;
+      return data[dataKey][responseKey][0][averageBidKey];
     } catch (error) {
       console.log(error, 'transfer');
       console.error('Failed to make ExchangeRate API call');
       return error.response.data;
     }
-
   }
-
 
   private async createExchangeRate(
     currency: string,
