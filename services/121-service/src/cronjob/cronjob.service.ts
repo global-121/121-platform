@@ -84,7 +84,9 @@ export class CronjobService {
   public async getDailyExchangeRates(): Promise<void> {
     console.info('CronjobService - Started: getDailyExchangeRates');
 
-    const currencies = await this.exchangeRateService.getAllProgramCurrencies();
-    console.log('currencies: ', currencies);
+    // TODO: Should call exchangeRateService.getAndStoreProgramsExchangeRates via HTTP? (see other cronjob functions)
+    const currencies = await this.exchangeRateService.getAndStoreProgramsExchangeRates();
+    const response = await this.exchangeRateService.retrieveExchangeRate();
+    console.info('CronjobService - Complete: getDailyExchangeRates');
   }
 }
