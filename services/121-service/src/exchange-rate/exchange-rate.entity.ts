@@ -8,4 +8,7 @@ export class ExchangeRateEntity extends Base121Entity {
 
   @Column({ type: 'real' })
   public euroExchangeRate: number;
+
+  @Column({ nullable: true })
+  public closeTime: string;
 }
