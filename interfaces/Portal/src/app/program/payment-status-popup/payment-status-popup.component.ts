@@ -1,5 +1,5 @@
 import { formatCurrency, formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,7 +38,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public payoutDetails: PayoutDetails;
   public voucherButtons: boolean;
   public imageUrl: string;
-  public sanitizedIimageUrl: string;
+  public sanitizedImageUrl: string;
   public imageFileName: string;
 
   public singlePaymentPayout: string;
@@ -50,7 +50,7 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private sanitizer: DomSanitizer,
+    private domSanitizer: DomSanitizer,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -71,9 +71,10 @@ export class PaymentStatusPopupComponent implements OnInit {
       this.titleMoneyIcon = await this.getMoneyTitle();
 
       if (this.imageUrl) {
-        this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          this.imageUrl,
-        ) as string;
+        this.sanitizedImageUrl =
+          this.domSanitizer.bypassSecurityTrustResourceUrl(
+            this.domSanitizer.sanitize(SecurityContext.URL, this.imageUrl),
+          ) as string;
         this.imageFileName = `voucher-program-${this.payoutDetails.programId}-payment-${this.payoutDetails.payment}-PA-${this.payoutDetails.paNr}.png`;
       }
     }

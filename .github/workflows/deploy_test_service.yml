@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/deploy_test_service.yml'
       - 'services/121-service/**'

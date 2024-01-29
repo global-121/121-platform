@@ -5,15 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.109.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.109.2...main)
 
----
+## [1.110.0](https://github.com/global-121/121-platform/compare/v1.109.2...v1.110.0) - 2024-01-26
+
+- Renamed `master`-branch to `main`.
+- Limit Visa topup dependend on current balance and spent
+- Support PA with empty phonenumber
+- Improve performance of registration status change
+- Improve performance of incoming message handling
+- End inclusion from pause state
+
+## [1.109.2](https://github.com/global-121/121-platform/compare/v1.109.1...v1.109.2) - 2024-01-22
+
+### Fixed
+
+- Double voucher PV data migration and bug-fix
 
 ## [1.109.1](https://github.com/global-121/121-platform/compare/v1.109.0...v1.109.1) - 2024-01-16
 
 ### Fixed
 
-- Doing a paymennt blocked by translation-issue in Portal
+- Doing a payment blocked by translation-issue in Portal
 
 ## [1.109.0](https://github.com/global-121/121-platform/compare/v1.108.3...v1.109.0) - 2024-01-11
 

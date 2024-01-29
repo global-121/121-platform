@@ -468,6 +468,8 @@ export class ProgramsServiceApiService {
     },
   ): Promise<any> {
     let params = new HttpParams();
+    const xlsxFormat = 'xlsx';
+    params = params.append('format', xlsxFormat);
     if (fromDate) {
       params = params.append('fromDate', fromDate);
     }
@@ -530,13 +532,10 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         `/programs/${programId}/metrics/export-list/${type}`,
         false,
-        false,
+        true,
         params,
       )
       .then((response) => {
-        if (response.data && response.data.length > 0) {
-          arrayToXlsx(response.data, response.fileName);
-        }
         return response;
       });
   }
