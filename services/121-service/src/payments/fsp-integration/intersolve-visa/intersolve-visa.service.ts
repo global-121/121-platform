@@ -673,15 +673,15 @@ export class IntersolveVisaService
       wallet.tokenCode,
     );
     const walletData = walletDetails?.data?.data;
-    if (walletData.balances) {
+    if (walletData?.balances) {
       wallet.balance = walletData.balances.find(
         (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
       )?.quantity?.value;
     }
-    if (walletData.status) {
+    if (walletData?.status) {
       wallet.walletStatus = walletDetails.data.data.status;
     }
-    if (walletData.blocked === true || walletData.blocked === false) {
+    if (walletData?.blocked === true || walletData?.blocked === false) {
       wallet.tokenBlocked = walletDetails.data.data.blocked;
     }
 
