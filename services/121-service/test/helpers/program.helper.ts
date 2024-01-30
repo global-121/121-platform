@@ -170,9 +170,9 @@ export async function waitForPaymentTransactionsToComplete(
   payment = 1,
 ): Promise<void> {
   const startTime = Date.now();
-  let allTransactionsSuccessful = false;
+  let allTransactionsComplete = false;
 
-  while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsSuccessful) {
+  while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsComplete) {
     // Get payment transactions
     const paymentTransactions = await getTransactions(
       programId,
@@ -181,8 +181,8 @@ export async function waitForPaymentTransactionsToComplete(
       accessToken,
     );
 
-    // Check if all transactions have a status of "success"
-    allTransactionsSuccessful = paymentReferenceIds.every((referenceId) => {
+    // Check if all transactions have a "complete" status
+    allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
       const transaction = paymentTransactions.body.find(
         (txn) => txn.referenceId === referenceId,
       );
@@ -190,12 +190,12 @@ export async function waitForPaymentTransactionsToComplete(
     });
 
     // If not all transactions are successful, wait for a short interval before checking again
-    if (!allTransactionsSuccessful) {
+    if (!allTransactionsComplete) {
       await waitFor(1000); // Wait for 1 second (adjust as needed)
     }
   }
 
-  if (!allTransactionsSuccessful) {
+  if (!allTransactionsComplete) {
     throw new Error(`Timeout waiting for payment transactions to complete`);
   }
 }

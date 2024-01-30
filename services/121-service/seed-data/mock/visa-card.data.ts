@@ -4,7 +4,7 @@ import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
 export const programIdVisa = 3;
 export const paymentNrVisa = 1;
-export const amountVisa = 22;
+export const amountVisa = 25;
 
 export const registrationVisa = {
   referenceId: '2982g82bdsf89sdsd',
