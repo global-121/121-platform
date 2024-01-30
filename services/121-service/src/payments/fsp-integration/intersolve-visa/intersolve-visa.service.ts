@@ -456,11 +456,13 @@ export class IntersolveVisaService
         paTransactionResult.status = StatusEnum.error;
         let errorMessage = 'Unknown';
         if (error?.response?.errors) {
-          errorMessage = error.response.errors;
+          errorMessage = error.response.errors?.length
+            ? this.intersolveErrorToMessage(error.response.errors)
+            : error.response.errors;
         } else {
-          console.error('Error in TOPUP:', error);
+          console.error('Error in CALCULATE TOPUP AMOUNT:', error);
         }
-        paTransactionResult.message = `CALCULATE TOPUP AMOUNT ERROR: ${error.response.errors}`;
+        paTransactionResult.message = `CALCULATE TOPUP AMOUNT ERROR: ${errorMessage}`;
         paTransactionResult.customData = {
           intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
         };

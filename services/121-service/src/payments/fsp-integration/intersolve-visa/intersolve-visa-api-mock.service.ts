@@ -48,28 +48,7 @@ export class IntersolveVisaApiMockService {
       ? payload.individual.lastName.toLowerCase()
       : '';
 
-    if (lastName.includes('mock-fail-create-wallet')) {
-      // pass different holderId to be later used again in mock issue-token call
-      res.data.data.id = 'mock-fail-create-wallet';
-    } else if (lastName.includes('mock-fail-link-customer-wallet')) {
-      // pass different holderId to be later used again
-      res.data.data.id = 'mock-fail-link-customer-wallet';
-    } else if (lastName.includes('mock-fail-create-debit-card')) {
-      // pass different holderId to be later used again
-      res.data.data.id = 'mock-fail-create-debit-card';
-    } else if (lastName.includes('mock-fail-load-balance')) {
-      // pass different holderId to be later used again
-      res.data.data.id = 'mock-fail-load-balance';
-    } else if (lastName.includes('mock-fail-get-card')) {
-      // pass different holderId to be later used again
-      res.data.data.id = lastName;
-    } else if (lastName.includes('mock-spent')) {
-      // pass different holderId to be later used again
-      res.data.data.id = lastName;
-    } else if (lastName.includes('mock-current-balance')) {
-      // pass different holderId to be later used again
-      res.data.data.id = lastName;
-    } else if (lastName.includes('mock-fail-create-customer')) {
+    if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
         code: 'NOT_FOUND',
@@ -78,6 +57,19 @@ export class IntersolveVisaApiMockService {
       });
       res.status = 404;
       res.statusText = 'NOT_FOUND';
+    }
+    // in all below cases,pass different holderId to use in follow-up API-call (which does not take lastName as input)
+    if (
+      lastName.includes('mock-fail-create-wallet') ||
+      lastName.includes('mock-fail-link-customer-wallet') ||
+      lastName.includes('mock-fail-create-debit-card') ||
+      lastName.includes('mock-fail-load-balance') ||
+      lastName.includes('mock-fail-get-wallet') ||
+      lastName.includes('mock-fail-get-card') ||
+      lastName.includes('mock-spent') ||
+      lastName.includes('mock-current-balance')
+    ) {
+      res.data.data.id = lastName;
     }
     return res;
   }
@@ -187,32 +179,6 @@ export class IntersolveVisaApiMockService {
       },
     ];
 
-    // uuid is need to not run into unqiue constraint on token code
-    if (holderId.toLowerCase().includes('mock-fail-link-customer-wallet')) {
-      // pass different token to be later used again in mock link-customer-wallet call
-      response.data.data.token.code = `${uuid()}mock-fail-link-customer-wallet`;
-    }
-    if (holderId.toLowerCase().includes('mock-fail-create-debit-card')) {
-      // pass different token to be later used again in mock create-debit-card call
-      response.data.data.token.code = `${uuid()}mock-fail-create-debit-card`;
-    }
-    if (holderId.toLowerCase().includes('mock-fail-load-balance')) {
-      // pass different token to be later used again in mock load-balance call
-      response.data.data.token.code = `${uuid()}mock-fail-load-balance`;
-    }
-    if (holderId.toLowerCase().includes('mock-fail-get-card')) {
-      // pass different token to be later used again in mock get card call
-      response.data.data.token.code = `${uuid()}${holderId}`;
-    }
-    if (holderId.toLowerCase().includes('mock-spent')) {
-      // pass different token to be later used again in mock get transactions call
-      response.data.data.token.code = `${uuid()}${holderId}`;
-    }
-    if (holderId.toLowerCase().includes('mock-current-balance')) {
-      // pass different token to be later used again
-      response.data.data.token.code = `${uuid()}${holderId}`;
-    }
-
     if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {
       response.data.success = false;
       response.data.errors = [];
@@ -223,6 +189,19 @@ export class IntersolveVisaApiMockService {
       });
       response.status = 404;
       response.statusText = 'NOT_FOUND';
+    }
+    // in all below cases,pass different tokenCode to use in follow-up API-call (which does not take holderId as input)
+    // uuid is needed to not run into unqiue constraint on token code
+    if (
+      holderId.toLowerCase().includes('mock-fail-link-customer-wallet') ||
+      holderId.toLowerCase().includes('mock-fail-create-debit-card') ||
+      holderId.toLowerCase().includes('mock-fail-load-balance') ||
+      holderId.toLowerCase().includes('mock-fail-get-wallet') ||
+      holderId.toLowerCase().includes('mock-fail-get-card') ||
+      holderId.toLowerCase().includes('mock-spent') ||
+      holderId.toLowerCase().includes('mock-current-balance')
+    ) {
+      response.data.data.token.code = `${uuid()}${holderId}`;
     }
 
     return response;
@@ -378,6 +357,17 @@ export class IntersolveVisaApiMockService {
         ],
       },
     };
+
+    if (tokenCode.toLowerCase().includes('mock-fail-get-wallet')) {
+      response.data.success = false;
+      response.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that the get wallet call failed',
+      });
+      response.status = 404;
+      response.statusText = 'NOT FOUND';
+    }
     return response;
   }
 
