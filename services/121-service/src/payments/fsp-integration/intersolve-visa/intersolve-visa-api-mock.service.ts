@@ -328,9 +328,9 @@ export class IntersolveVisaApiMockService {
     const match = tokenCode.match(/mock-current-balance-(\d+)/);
     let currentBalance;
     try {
-      currentBalance = match ? parseInt(match[1], 10) : 2200;
+      currentBalance = match ? parseInt(match[1], 10) : 2500;
     } catch (error) {
-      currentBalance = 2200;
+      currentBalance = 2500;
     }
     const response = new IntersolveGetWalletResponseDto();
     response.status = 200;
@@ -532,7 +532,7 @@ export class IntersolveVisaApiMockService {
           {
             quantity: {
               assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
-              value: 2200,
+              value: 2500,
               reserved: 0,
             },
             discountBudgetValue: 0,
