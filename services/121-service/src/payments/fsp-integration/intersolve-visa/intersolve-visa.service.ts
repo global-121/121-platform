@@ -121,7 +121,7 @@ export class IntersolveVisaService
             transactionDetails.data?.errors ||
             'Get transactions API-call failed',
         },
-        transactionDetails.status || HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
     }
     const walletTransactions = transactionDetails.data.data;
@@ -712,7 +712,7 @@ export class IntersolveVisaService
     if (!walletDetails.data?.success) {
       throw new HttpException(
         { errors: walletDetails.data?.errors || 'Get wallet API-call failed' },
-        walletDetails.status || HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
     }
 
@@ -720,7 +720,7 @@ export class IntersolveVisaService
     if (walletData?.balances) {
       wallet.balance = walletData.balances.find(
         (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      )?.quantity?.value;
+      ).quantity.value;
     }
     if (walletData?.status) {
       wallet.walletStatus = walletDetails.data.data.status;
