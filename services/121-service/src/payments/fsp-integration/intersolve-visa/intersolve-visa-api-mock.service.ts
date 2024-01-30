@@ -66,6 +66,9 @@ export class IntersolveVisaApiMockService {
     } else if (lastName.includes('mock-spent')) {
       // pass different holderId to be later used again
       res.data.data.id = lastName;
+    } else if (lastName.includes('mock-current-balance')) {
+      // pass different holderId to be later used again
+      res.data.data.id = lastName;
     } else if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
@@ -205,6 +208,10 @@ export class IntersolveVisaApiMockService {
       // pass different token to be later used again in mock get transactions call
       response.data.data.token.code = `${uuid()}${holderId}`;
     }
+    if (holderId.toLowerCase().includes('mock-current-balance')) {
+      // pass different token to be later used again
+      response.data.data.token.code = `${uuid()}${holderId}`;
+    }
 
     if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {
       response.data.success = false;
@@ -337,8 +344,15 @@ export class IntersolveVisaApiMockService {
   }
 
   public async getWalletMock(
-    _tokenCode: string,
+    tokenCode: string,
   ): Promise<IntersolveGetWalletResponseDto> {
+    const match = tokenCode.match(/mock-current-balance-(\d+)/);
+    let currentBalance;
+    try {
+      currentBalance = match ? parseInt(match[1], 10) : 2200;
+    } catch (error) {
+      currentBalance = 2200;
+    }
     const response = new IntersolveGetWalletResponseDto();
     response.status = 200;
     response.data = {
@@ -353,7 +367,7 @@ export class IntersolveVisaApiMockService {
           {
             quantity: {
               assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
-              value: 2200,
+              value: currentBalance,
               reserved: 0,
             },
             discountBudgetValue: 0,
@@ -435,11 +449,19 @@ export class IntersolveVisaApiMockService {
       ],
     };
     if (tokenCode.toLowerCase().includes('mock-spent')) {
+      // gets the numberic values from the token code after the mock-spent- string
+      const match = tokenCode.match(/mock-spent-(\d+)/);
+      let spentAmount;
+      try {
+        spentAmount = match ? parseInt(match[1], 10) : 0;
+      } catch (error) {
+        spentAmount = 200;
+      }
       response.data.data.push({
         id: 1,
         quantity: {
           assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
-          value: -200,
+          value: -spentAmount,
         },
         createdAt: new Date(
           new Date().setDate(new Date().getDate() - 1),

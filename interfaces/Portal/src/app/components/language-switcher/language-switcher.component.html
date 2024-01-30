@@ -1,4 +1,4 @@
-<ion-list>
+<ion-list *ngIf="languages.length">
   <ion-item lines="none">
     <ion-icon
       name="globe-outline"
@@ -6,7 +6,6 @@
       style="margin-inline-end: 0.5em"
     ></ion-icon>
     <ion-select
-      *ngIf="languages"
       [value]="selectedLanguage"
       interface="popover"
       (ionChange)="selectLanguage($event.detail.value)"

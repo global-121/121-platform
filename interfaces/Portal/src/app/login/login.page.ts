@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 
@@ -27,10 +28,17 @@ export class LoginPage {
   public emptyPassword = false;
 
   public inputType: 'password' | 'text' = 'password';
-  public labelShow = 'Show password';
-  public labelHide = 'Hide password';
+  public labelShow = this.translate.instant(
+    'page.login.form.password.toggle.show',
+  );
+  public labelHide = this.translate.instant(
+    'page.login.form.password.toggle.hide',
+  );
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private translate: TranslateService,
+  ) {}
 
   ionViewWillLeave(): void {
     this.systemNotification.closeToast();

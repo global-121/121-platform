@@ -196,20 +196,17 @@ describe('MessageService', () => {
       );
 
       expect(
-        intersolveVoucherService.storeTransactionResult,
+        intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
       ).toHaveBeenCalledTimes(1);
       expect(
-        intersolveVoucherService.storeTransactionResult,
+        intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
       ).toHaveBeenCalledWith(
         testMessageJob.customData.payment,
-        testMessageJob.customData.amount,
         testMessageJob.registrationId,
-        1,
         StatusEnum.waiting,
-        undefined,
-        testMessageJob.programId,
+        1,
         testMessageID,
-        testMessageJob.customData.intersolveVoucherId,
+        null,
       );
     });
   });
