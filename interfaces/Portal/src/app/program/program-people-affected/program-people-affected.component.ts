@@ -967,7 +967,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       );
       const conditionsToSelectText = this.translate.instant(
         `page.program.program-people-affected.bulk-action-conditions.${this.action}`,
-        { action: this.getCurrentBulkAction().label },
+        { action: this.translate.instant(this.getCurrentBulkAction().label) },
       );
 
       const text = `${nobodyToSelectTest}\n${conditionsToSelectText}`;
@@ -1001,7 +1001,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const responseText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.response',
       {
-        action: this.getCurrentBulkAction().label,
+        action: this.translate.instant(this.getCurrentBulkAction().label),
         paNumber: bulkActionResult.applicableCount,
       },
     );
