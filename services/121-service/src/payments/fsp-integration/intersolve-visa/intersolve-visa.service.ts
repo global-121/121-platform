@@ -91,7 +91,7 @@ export class IntersolveVisaService
 
   public async getTransactionInfoByCustomer(
     visaCustomer: IntersolveVisaCustomerEntity,
-  ): Promise<{ tokenCode: number; transactionInfo: TransactionInfoVisa }[]> {
+  ): Promise<{ tokenCode: string; transactionInfo: TransactionInfoVisa }[]> {
     const dateFrom = this.getTwoMonthAgo();
     const transactionInfoByCustomer = [];
 
@@ -209,7 +209,11 @@ export class IntersolveVisaService
     wallet: IntersolveVisaWalletEntity,
     customer: IntersolveVisaCustomerEntity,
   ): Promise<number> {
-    const updatedWallet = await this.getWalletDetails(wallet, customer, true);
+    const updatedWallet = await this.getUpdateWalletDetails(
+      wallet,
+      customer,
+      true,
+    );
     const calculatedAmount = updatedWallet.calculateTopUpAmount();
     if (calculatedAmount > 0) {
       return Math.min(calculatedAmount, maxAmount);
@@ -450,6 +454,12 @@ export class IntersolveVisaService
         );
       } catch (error) {
         paTransactionResult.status = StatusEnum.error;
+        let errorMessage = 'Unknown';
+        if (error?.response?.errors) {
+          errorMessage = error.response.errors;
+        } else {
+          console.error('Error in TOPUP:', error);
+        }
         paTransactionResult.message = `CALCULATE TOPUP AMOUNT ERROR: ${error.response.errors}`;
         paTransactionResult.customData = {
           intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
@@ -689,15 +699,15 @@ export class IntersolveVisaService
     return allMessages;
   }
 
-  private async getWalletDetails(
+  private async getUpdateWalletDetails(
     wallet: IntersolveVisaWalletEntity,
     customer: IntersolveVisaCustomerEntity,
-    usedInPayment: boolean,
+    getPaymentDetailsOnly: boolean,
   ): Promise<IntersolveVisaWalletEntity> {
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
     );
-    if (!walletDetails.data?.success && usedInPayment) {
+    if (!walletDetails.data?.success) {
       throw new HttpException(
         { errors: walletDetails.data?.errors || 'Get wallet API-call failed' },
         walletDetails.status || HttpStatus.NOT_FOUND,
@@ -718,15 +728,8 @@ export class IntersolveVisaService
     }
 
     // Get spentThisMonth across all wallets of customer
-    let transactionInfoByCustomer;
-    try {
-      transactionInfoByCustomer =
-        await this.getTransactionInfoByCustomer(customer);
-    } catch (error) {
-      if (usedInPayment) {
-        throw error;
-      }
-    }
+    const transactionInfoByCustomer =
+      await this.getTransactionInfoByCustomer(customer);
 
     if (transactionInfoByCustomer.length) {
       wallet.spentThisMonth = transactionInfoByCustomer
@@ -734,7 +737,7 @@ export class IntersolveVisaService
         .reduce((sum, current) => sum + current, 0);
     }
 
-    if (!usedInPayment) {
+    if (!getPaymentDetailsOnly) {
       // The below properties are not needed in payment amount calculation
       // Get lastUsedDate is still per wallet, unlike spentThisMonth above
       // If above API-call failed, then this code will simply not update lastUsedDate which is fine
@@ -774,7 +777,7 @@ export class IntersolveVisaService
     walletsResponse.wallets = [];
 
     for await (let wallet of visaCustomer.visaWallets) {
-      wallet = await this.getWalletDetails(wallet, visaCustomer, false);
+      wallet = await this.getUpdateWalletDetails(wallet, visaCustomer, false);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -1283,7 +1286,7 @@ export class IntersolveVisaService
       });
     for (const customer of customerWithWallets) {
       for (const wallet of customer.visaWallets) {
-        await this.getWalletDetails(wallet, customer, false);
+        await this.getUpdateWalletDetails(wallet, customer, false);
       }
     }
   }
