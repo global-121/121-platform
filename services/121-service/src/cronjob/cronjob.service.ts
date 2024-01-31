@@ -18,8 +18,8 @@ export class CronjobService {
     // and tries to cancel them
     console.info('CronjobService - Started: cancelByRefposIntersolve');
 
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cancel`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -34,8 +34,8 @@ export class CronjobService {
       'CronjobService - Started: validateCommercialBankEthiopiaAccountEnquiries',
     );
 
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -49,8 +49,8 @@ export class CronjobService {
   public async cronCacheUnusedVouchers(): Promise<void> {
     console.info('CronjobService - Started: cronCacheUnusedVouchers');
 
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cache-unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -62,9 +62,9 @@ export class CronjobService {
   public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
     console.info('CronjobService - Started: updateVisaDebitWalletDetailsCron');
 
-    const programIdVisa = 3;
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
+    const programIdVisa = 3;
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa/wallets`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.patch(url, {}, headers);
@@ -76,8 +76,8 @@ export class CronjobService {
   public async cronSendWhatsappReminders(): Promise<void> {
     console.info('CronjobService - Started: cronSendWhatsappReminders');
 
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
