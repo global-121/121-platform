@@ -5,6 +5,7 @@ import { GuardsService } from '../guards/guards.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomHttpService } from '../shared/services/custom-http.service';
 import { UserModule } from '../user/user.module';
+import { ExchangeRateApiService } from './exchange-rate.api.service';
 import { ExchangeRateEntity } from './exchange-rate.entity';
 import { ExchangeRateService } from './exchange-rate.service';
 
@@ -14,8 +15,13 @@ import { ExchangeRateService } from './exchange-rate.service';
     UserModule,
     HttpModule,
   ],
-  providers: [GuardsService, ExchangeRateService, CustomHttpService],
+  providers: [
+    GuardsService,
+    ExchangeRateService,
+    CustomHttpService,
+    ExchangeRateApiService,
+  ],
   controllers: [],
-  exports: [ExchangeRateService],
+  exports: [ExchangeRateService, ExchangeRateApiService],
 })
 export class ExchangeRateModule {}
