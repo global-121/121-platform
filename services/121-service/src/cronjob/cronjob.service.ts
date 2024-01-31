@@ -14,75 +14,49 @@ export class CronjobService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   public async cronCancelByRefposIntersolve(): Promise<void> {
-    // This function periodically checks if some of the IssueCard calls failed.
-    // and tries to cancel them
-    console.info('CronjobService - Started: cancelByRefposIntersolve');
-
+    // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cancel`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
-
-    console.info('CronjobService - Complete: cancelByRefposIntersolve');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
-    // This function periodically validate PA`s bank account numbers.
-    console.info(
-      'CronjobService - Started: validateCommercialBankEthiopiaAccountEnquiries',
-    );
-
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
-
-    console.info(
-      'CronjobService - Complete: validateCommercialBankEthiopiaAccountEnquiries',
-    );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   public async cronCacheUnusedVouchers(): Promise<void> {
-    console.info('CronjobService - Started: cronCacheUnusedVouchers');
-
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cache-unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
-
-    console.info('CronjobService - Complete: cronCacheUnusedVouchers');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
-    console.info('CronjobService - Started: updateVisaDebitWalletDetailsCron');
-
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa/wallets`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.patch(url, {}, headers);
-
-    console.info('CronjobService - Complete: updateVisaDebitWalletDetailsCron');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
   public async cronSendWhatsappReminders(): Promise<void> {
-    console.info('CronjobService - Started: cronSendWhatsappReminders');
-
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
-
-    console.info('CronjobService - Complete: cronSendWhatsappReminders');
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM)

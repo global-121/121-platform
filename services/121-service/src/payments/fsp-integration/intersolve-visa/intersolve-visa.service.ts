@@ -19,7 +19,6 @@ import { RegistrationDataScopedQueryService } from '../../../utils/registration-
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
-  FspTransactionResultDto,
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
@@ -90,7 +89,23 @@ export class IntersolveVisaService
     private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
   ) {}
 
-  public async getTransactionInfo(
+  public async getSpentThisMonthByCustomer(
+    visaCustomer: IntersolveVisaCustomerEntity,
+  ): Promise<number> {
+    const dateFrom = this.getTwoMonthAgo();
+    let spentThisMonth = 0;
+
+    for (const wallet of visaCustomer.visaWallets) {
+      const walletTransactionInfo = await this.getTransactionInfoByWallet(
+        wallet.tokenCode,
+        dateFrom,
+      );
+      spentThisMonth += walletTransactionInfo.spentThisMonth;
+    }
+    return spentThisMonth;
+  }
+
+  public async getTransactionInfoByWallet(
     tokenCode: string,
     dateFrom?: Date,
   ): Promise<TransactionInfoVisa> {
@@ -176,6 +191,20 @@ export class IntersolveVisaService
     }
   }
 
+  private async getTransactionAmountPerRegistration(
+    maxAmount: number,
+    wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
+  ): Promise<number> {
+    const updatedWallet = await this.getWalletDetails(wallet, customer);
+    const calculatedAmount = updatedWallet.calculateTopUpAmount();
+    if (calculatedAmount > 0) {
+      return Math.min(calculatedAmount, maxAmount);
+    } else {
+      return 0;
+    }
+  }
+
   public async getQueueProgress(programId?: number): Promise<number> {
     if (programId) {
       const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
@@ -188,17 +217,12 @@ export class IntersolveVisaService
   public async processQueuedPayment(
     paymentDetailsData: PaymentDetailsDto,
   ): Promise<void> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.intersolveVisa;
-
     const paymentRequestResultPerPa = await this.sendPaymentToPa(
       paymentDetailsData,
       paymentDetailsData.paymentNr,
       paymentDetailsData.transactionAmount,
       paymentDetailsData.bulkSize,
     );
-    fspTransactionResult.paList.push(paymentRequestResultPerPa);
     await this.transactionsService.storeTransactionUpdateStatus(
       paymentRequestResultPerPa,
       paymentDetailsData.programId,
@@ -403,30 +427,44 @@ export class IntersolveVisaService
       }
     } else {
       // If yes, load balance
-      const loadBalanceResult = await this.loadBalanceVisaCard(
-        visaCustomer.visaWallets[0].tokenCode,
+      // Calculate the amount that should be paid out, taking the original calculatedAmount as MAX value.
+      const topupAmount = await this.getTransactionAmountPerRegistration(
         calculatedAmount,
-        registration.referenceId,
-        paymentNr,
+        visaCustomer.visaWallets[0],
+        visaCustomer,
       );
+      paTransactionResult.calculatedAmount = topupAmount;
+      // If calculatedAmount is larger than 0, call Intersolve
+      if (topupAmount > 0) {
+        const loadBalanceResult = await this.loadBalanceVisaCard(
+          visaCustomer.visaWallets[0].tokenCode,
+          topupAmount,
+          registration.referenceId,
+          paymentNr,
+        );
 
-      paTransactionResult.status = loadBalanceResult.data?.success
-        ? StatusEnum.success
-        : StatusEnum.error;
-      paTransactionResult.message = loadBalanceResult.data?.success
-        ? null
-        : loadBalanceResult.data?.errors?.length
-          ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
-              loadBalanceResult.data?.errors,
-            )}`
-          : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+        paTransactionResult.status = loadBalanceResult.data?.success
+          ? StatusEnum.success
+          : StatusEnum.error;
+        paTransactionResult.message = loadBalanceResult.data?.success
+          ? null
+          : loadBalanceResult.data?.errors?.length
+            ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
+                loadBalanceResult.data?.errors,
+              )}`
+            : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      } else {
+        // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
+        paTransactionResult.status = StatusEnum.success;
+        paTransactionResult.message = null;
+      }
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
 
       transactionNotifications.push(
         this.buildNotificationObjectLoadBalance(
-          calculatedAmount,
+          topupAmount,
           bulkSizeCompletePayment,
         ),
       );
@@ -629,6 +667,7 @@ export class IntersolveVisaService
 
   private async getWalletDetails(
     wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
   ): Promise<IntersolveVisaWalletEntity> {
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
@@ -653,15 +692,18 @@ export class IntersolveVisaService
       wallet.cardStatus = cardDetails.data.data.status;
     }
 
-    const transactionInfo = await this.getTransactionInfo(
+    // Get spenThisMonth across all wallets of customer
+    const spentThisMonth = await this.getSpentThisMonthByCustomer(customer);
+    if (spentThisMonth) {
+      wallet.spentThisMonth = spentThisMonth;
+    }
+    // Get lastUsedDate still per wallets
+    const transactionInfo = await this.getTransactionInfoByWallet(
       wallet.tokenCode,
       this.getTwoMonthAgo(),
     );
     if (transactionInfo.lastUsedDate) {
       wallet.lastUsedDate = transactionInfo.lastUsedDate;
-    }
-    if (transactionInfo.spentThisMonth) {
-      wallet.spentThisMonth = transactionInfo.spentThisMonth;
     }
     wallet.lastExternalUpdate = new Date();
 
@@ -685,7 +727,7 @@ export class IntersolveVisaService
     walletsResponse.wallets = [];
 
     for await (let wallet of visaCustomer.visaWallets) {
-      wallet = await this.getWalletDetails(wallet);
+      wallet = await this.getWalletDetails(wallet, visaCustomer);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -715,8 +757,6 @@ export class IntersolveVisaService
       walletDetailsResponse.intersolveVisaCardStatus = wallet.cardStatus;
       walletDetailsResponse.intersolveVisaWalletStatus = wallet.walletStatus;
 
-      // 150 is the KYC required maxiumum one can spend per month
-      // 15000 is in cents
       walletDetailsResponse.maxToSpendPerMonth =
         maximumAmountOfSpentCentPerMonth;
 
@@ -1190,9 +1230,14 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletScopedRepo.find();
-    for (const wallet of wallets) {
-      await this.getWalletDetails(wallet);
+    const customerWithWallets =
+      await this.intersolveVisaCustomerScopedRepo.find({
+        relations: ['visaWallets'],
+      });
+    for (const customer of customerWithWallets) {
+      for (const wallet of customer.visaWallets) {
+        await this.getWalletDetails(wallet, customer);
+      }
     }
   }
 

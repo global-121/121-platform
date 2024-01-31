@@ -73,6 +73,12 @@ export class CommercialBankEthiopiaController {
     'financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
   )
   public async validateAllPas(): Promise<void> {
-    return this.commercialBankEthiopiaService.validateAllPas();
+    console.info(
+      'CronjobService - Started: validateCommercialBankEthiopiaAccountEnquiries',
+    );
+    await this.commercialBankEthiopiaService.validateAllPas();
+    console.info(
+      'CronjobService - Complete: validateCommercialBankEthiopiaAccountEnquiries',
+    );
   }
 }

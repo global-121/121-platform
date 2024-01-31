@@ -165,6 +165,8 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/wallets',
   )
   public async updateVisaDebitWalletDetails(): Promise<void> {
+    console.info('CronjobService - Started: updateVisaDebitWalletDetailsCron');
     await this.intersolveVisaService.updateVisaDebitWalletDetails();
+    console.info('CronjobService - Complete: updateVisaDebitWalletDetailsCron');
   }
 }
