@@ -3,6 +3,7 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 ,en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-link-customer-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+,en,1,,Test,mock-fail-get-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_OK,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_BLOCKED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_EXPIRED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
@@ -11,7 +12,9 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 ,en,1,,Test,mock-fail-get-card-CARD_CLOSED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-debit-card,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-load-balance,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-,en,1,,Test,mock-spent,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+,en,1,,Test,mock-spent-4000,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+,en,1,,Test,mock-current-balance-14000,14155238876,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+,en,1,,Test,mock-current-balance-8000-mock-spent-7000,14155238856,Intersolve-visa,14155238886,Straat,1,A,1234AB,
 ,en,1,,Test,succeed,14155238886,Intersolve-voucher-whatsapp,14155238886,,,,,
 ,en,1,,Test,succeed,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag

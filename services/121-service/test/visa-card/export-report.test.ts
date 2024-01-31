@@ -16,7 +16,7 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 describe('Export Visa debit card report', () => {
   const programId = 3;
   const payment = 1;
-  const amount = 22;
+  const amount = 25;
 
   const registrationVisa = {
     referenceId: '2982g82bdsf89sdsd',
@@ -88,7 +88,7 @@ describe('Export Visa debit card report', () => {
     expect(exportResult.body.data[0].cardStatus121).toBe(
       WalletCardStatus121.Active,
     );
-    expect(exportResult.body.data[0].balance).toBe(22);
+    expect(exportResult.body.data[0].balance).toBe(25);
     expect(exportResult.body.data[0].registrationStatus).toBe(
       RegistrationStatusEnum.included,
     );

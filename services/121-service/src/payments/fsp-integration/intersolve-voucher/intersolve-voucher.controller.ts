@@ -175,7 +175,9 @@ export class IntersolveVoucherController {
   @ApiResponse({ status: 201, description: 'Vouchers canceled by refpos' })
   @Post('/financial-service-providers/intersolve-voucher/cancel')
   public async cancelByRefPos(): Promise<void> {
+    console.info('CronjobService - Started: cancelByRefposIntersolve');
     await this.intersolveVoucherCronService.cancelByRefposIntersolve();
+    console.info('CronjobService - Complete: cancelByRefposIntersolve');
   }
 
   @Admin()
@@ -185,7 +187,9 @@ export class IntersolveVoucherController {
   @ApiResponse({ status: 201, description: 'Cached unused vouchers' })
   @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
   public async cacheUnusedVouchers(): Promise<void> {
+    console.info('CronjobService - Started: cronCacheUnusedVouchers');
     await this.intersolveVoucherCronService.cacheUnusedVouchers();
+    console.info('CronjobService - Complete: cronCacheUnusedVouchers');
   }
 
   @Admin()
@@ -195,6 +199,8 @@ export class IntersolveVoucherController {
   @ApiResponse({ status: 201, description: 'Sent WhatsApp reminders' })
   @Post('/financial-service-providers/intersolve-voucher/send-reminders')
   public async sendWhatsappReminders(): Promise<void> {
+    console.info('CronjobService - Started: cronSendWhatsappReminders');
     await this.intersolveVoucherCronService.sendWhatsappReminders();
+    console.info('CronjobService - Complete: cronSendWhatsappReminders');
   }
 }

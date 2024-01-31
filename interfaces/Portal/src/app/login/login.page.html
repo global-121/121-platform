@@ -80,10 +80,12 @@
                   name="email"
                   [(ngModel)]="email"
                   ngDefaultControl
-                  pattern="[a-zA-Z0-9.-_-]+@[a-z0-9.-]+\.[a-z0-9]+"
+                  pattern=".+@.+\.[a-z]+"
                   minlength="4"
                   class="ion-margin-vertical"
-                  [ngClass]="{ 'invalid-border': showLoginFail.email || invalidEmail}"
+                  [ngClass]="{
+                    'invalid-border': showLoginFail.email || invalidEmail
+                  }"
                   (ionBlur)="onEmailBlur()"
                   fill="outline"
                 ></ion-input>
@@ -92,14 +94,15 @@
                 <ion-text
                   *ngIf="invalidEmail"
                   color="danger"
-                  ><small
-                    ><strong
-                      >{{
-                      'page.login.form.error-messages.invalid-email'|translate
-                      }}</strong
-                    ></small
-                  ></ion-text
                 >
+                  <small>
+                    <strong>
+                      {{
+                      'page.login.form.error-messages.invalid-email'|translate
+                      }}
+                    </strong>
+                  </small>
+                </ion-text>
               </div>
             </div>
             <div
@@ -142,7 +145,7 @@
                     (click)="toggleInputType()"
                     [title]="isPassword() ? this.labelShow : this.labelHide"
                     [attr.aria-label]="isPassword() ? this.labelShow : this.labelHide"
-                    style="position: absolute; right: 0"
+                    style="position: absolute; inset-inline-end: 0"
                     class="ion-align-self-center"
                   >
                     <ion-icon
@@ -164,14 +167,15 @@
                 <ion-text
                   *ngIf="emptyPassword"
                   color="danger"
-                  ><small
-                    ><strong
-                      >{{
-                      'page.login.form.error-messages.empty-password'|translate
-                      }}</strong
-                    ></small
-                  ></ion-text
                 >
+                  <small>
+                    <strong>
+                      {{
+                      'page.login.form.error-messages.empty-password'|translate
+                      }}
+                    </strong>
+                  </small>
+                </ion-text>
               </div>
             </div>
 

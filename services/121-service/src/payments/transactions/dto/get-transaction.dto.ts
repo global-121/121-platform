@@ -59,7 +59,7 @@ export class TransactionReturnDto {
   public referenceId: string;
   @ApiProperty({ example: StatusEnum.success, type: 'string' })
   public status: string;
-  @ApiProperty({ example: 22, type: 'number' })
+  @ApiProperty({ example: 25, type: 'number' })
   public amount: number;
   @ApiProperty({ example: null, type: 'string', required: false })
   public errorMessage: string;

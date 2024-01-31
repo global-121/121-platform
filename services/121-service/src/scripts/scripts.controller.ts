@@ -50,8 +50,21 @@ export class ScriptsController {
     description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all messages (2^x, e.g. 4=16 messages per PA)`,
   })
   @ApiQuery({
+    name: 'mockPv',
+    required: false,
+    example: true,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock PV program`,
+  })
+  @ApiQuery({
+    name: 'mockOcw',
+    required: false,
+    example: true,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock OCW program`,
+  })
+  @ApiQuery({
     name: 'isApiTests',
     required: false,
+    example: 'false',
     description: `Only for API tests`,
   })
   @ApiOperation({ summary: 'Reset instance database' })
@@ -63,6 +76,8 @@ export class ScriptsController {
     mockPowerNumberRegistrations: number,
     @Query('mockNumberPayments') mockNumberPayments: number,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: number,
+    @Query('mockPv') mockPv: boolean,
+    @Query('mockOcw') mockOcw: boolean,
     @Query('isApiTests') isApiTests: boolean,
     @Res() res,
   ): Promise<string> {
@@ -114,11 +129,19 @@ export class ScriptsController {
           'Not a known program (seed dummy only works in development and test)',
         );
     }
+    const booleanMockPv = mockPv
+      ? JSON.parse(mockPv as unknown as string)
+      : true;
+    const booleanMockOcw = mockOcw
+      ? JSON.parse(mockOcw as unknown as string)
+      : true;
     await seed.run(
       isApiTests,
       mockPowerNumberRegistrations,
       mockNumberPayments,
       mockPowerNumberMessages,
+      booleanMockPv,
+      booleanMockOcw,
     );
     return res
       .status(HttpStatus.ACCEPTED)

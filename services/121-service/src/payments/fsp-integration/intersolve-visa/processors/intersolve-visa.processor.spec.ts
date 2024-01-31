@@ -19,7 +19,7 @@ const mockPaymentJob = {
   id: 11,
   fspName: 'Intersolve-visa',
   paymentAddress: '14155238886',
-  transactionAmount: 22,
+  transactionAmount: 25,
   transactionId: 38,
   programId: 3,
   paymentNr: 3,

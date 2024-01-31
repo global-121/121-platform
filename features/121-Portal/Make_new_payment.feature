@@ -164,10 +164,20 @@ Feature: Make a new payment
     When executing the next payment for this PA
     Then the transaction of this payment for this PA will show as "failed" with an error message that the card is "inactive"
 
-  Scenario: Unsuccessfully send payment instructions balance too high with Financial Service Provider "Intersolve-visa"
+  Scenario: Limit top-up (calculated amount > 0) with Financial Service Provider "Intersolve-visa"
     Given 1 PA with correct registration data for payment has status "included"
-    When executing a payment for a PA with amount 999 euros
-    Then the payment fails because of a BALANCE_TOO_HIGH error
+    And the PA has already received a payment with Financial Service Provider "Intersolve-visa"
+    When executing a payment for a PA with amount 140 euros
+    Then the service will check what the maximum amount is that can be topped up
+    And the payment instructions will be successfully sent with either the calculated amount or the maximum amount (whichever is lower)
+
+  Scenario: Limit top-up (calculated amount =< 0) with Financial Service Provider "Intersolve-visa"
+    Given 1 PA with correct registration data for payment has status "included"
+    And the PA has already received a payment with Financial Service Provider "Intersolve-visa"
+    When executing a payment for a PA with amount 140 euros
+    Then the service will check what the maximum amount is that can be topped up
+    And no API call will be made to Intersolve
+    And a succesfull transaction will be created with amount 0
 
   Scenario: Successfully retry payment after correcting registration data for PA with Financial Service Provider "Intersolve-visa"
     # TODO: Test with other types of missing data? (phone number, lastName, ...)

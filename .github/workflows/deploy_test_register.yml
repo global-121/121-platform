@@ -17,7 +17,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_register.yml'
@@ -27,7 +26,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_register.yml'
@@ -52,6 +50,11 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
+          envContentSecurityPolicy: >-
+            img-src 'self' data: ;
+            script-src 'self';
+            connect-src 'self' https://test.121.global;
+            form-action https://test.121.global;
         env:
           NG_ENV_NAME: 'test'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
@@ -92,5 +95,6 @@ jobs:
         env:
           SKIP_DEPLOY_ON_MISSING_SECRETS: true
         with:
+          app_location: '${{ env.workingDirectory }}/www'
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
           action: 'close'

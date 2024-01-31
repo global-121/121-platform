@@ -1,6 +1,5 @@
 {
   "_dir": "ltr",
-  "_languageName": "Français",
   "common": {
     "all": "Tout",
     "answer-is-required": "Une réponse est requise pour cette question.",
@@ -102,7 +101,11 @@
           "invalid-email": "Veuillez saisir une adresse e-mail valide."
         },
         "password": {
-          "label": "Mot de passe"
+          "label": "Mot de passe",
+          "toggle": {
+            "hide": "Masquer le mot de passe",
+            "show": "Afficher le mot de passe"
+          }
         },
         "submit": {
           "label": "S'identifier"

@@ -20,7 +20,6 @@ import { RegistrationDataScopedQueryService } from '../../../utils/registration-
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
-  FspTransactionResultDto,
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
@@ -94,12 +93,41 @@ export class IntersolveVisaService
     private readonly redisClient: Redis,
   ) {}
 
-  public async getTransactionInfo(
+  public async getTransactionInfoByCustomer(
+    visaCustomer: IntersolveVisaCustomerEntity,
+  ): Promise<{ tokenCode: string; transactionInfo: TransactionInfoVisa }[]> {
+    const dateFrom = this.getTwoMonthAgo();
+    const transactionInfoByCustomer = [];
+
+    for (const wallet of visaCustomer.visaWallets) {
+      const walletTransactionInfo = await this.getTransactionInfoByWallet(
+        wallet.tokenCode,
+        dateFrom,
+      );
+      transactionInfoByCustomer.push({
+        tokenCode: wallet.tokenCode,
+        transactionInfo: walletTransactionInfo,
+      });
+    }
+    return transactionInfoByCustomer;
+  }
+
+  public async getTransactionInfoByWallet(
     tokenCode: string,
     dateFrom?: Date,
   ): Promise<TransactionInfoVisa> {
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
+    if (!transactionDetails.data?.success) {
+      throw new HttpException(
+        {
+          errors:
+            transactionDetails.data?.errors ||
+            'Get transactions API-call failed',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
+      );
+    }
     const walletTransactions = transactionDetails.data.data;
     // Filter out all transactions that are not reservations
     // reservation is the type that is used for payments in a shop
@@ -182,6 +210,24 @@ export class IntersolveVisaService
     }
   }
 
+  private async getTransactionAmountPerRegistration(
+    maxAmount: number,
+    wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
+  ): Promise<number> {
+    const updatedWallet = await this.getUpdateWalletDetails(
+      wallet,
+      customer,
+      true,
+    );
+    const calculatedAmount = updatedWallet.calculateTopUpAmount();
+    if (calculatedAmount > 0) {
+      return Math.min(calculatedAmount, maxAmount);
+    } else {
+      return 0;
+    }
+  }
+
   public async getQueueProgress(programId?: number): Promise<number> {
     if (programId) {
       // Get the count of job IDs in the Redis set for the program
@@ -199,17 +245,12 @@ export class IntersolveVisaService
   public async processQueuedPayment(
     paymentDetailsData: PaymentDetailsDto,
   ): Promise<void> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.intersolveVisa;
-
     const paymentRequestResultPerPa = await this.sendPaymentToPa(
       paymentDetailsData,
       paymentDetailsData.paymentNr,
       paymentDetailsData.transactionAmount,
       paymentDetailsData.bulkSize,
     );
-    fspTransactionResult.paList.push(paymentRequestResultPerPa);
     await this.transactionsService.storeTransactionUpdateStatus(
       paymentRequestResultPerPa,
       paymentDetailsData.programId,
@@ -414,30 +455,63 @@ export class IntersolveVisaService
       }
     } else {
       // If yes, load balance
-      const loadBalanceResult = await this.loadBalanceVisaCard(
-        visaCustomer.visaWallets[0].tokenCode,
-        calculatedAmount,
-        registration.referenceId,
-        paymentNr,
-      );
+      // Calculate the amount that should be paid out, taking the original calculatedAmount as MAX value.
+      let topupAmount;
+      try {
+        topupAmount = await this.getTransactionAmountPerRegistration(
+          calculatedAmount,
+          visaCustomer.visaWallets[0],
+          visaCustomer,
+        );
+      } catch (error) {
+        paTransactionResult.status = StatusEnum.error;
+        let errorMessage = 'Unknown';
+        if (error?.response?.errors) {
+          errorMessage = error.response.errors?.length
+            ? this.intersolveErrorToMessage(error.response.errors)
+            : error.response.errors;
+        } else {
+          console.error('Error in CALCULATE TOPUP AMOUNT:', error);
+        }
+        paTransactionResult.message = `CALCULATE TOPUP AMOUNT ERROR: ${errorMessage}`;
+        paTransactionResult.customData = {
+          intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+        };
+        return paTransactionResult;
+      }
 
-      paTransactionResult.status = loadBalanceResult.data?.success
-        ? StatusEnum.success
-        : StatusEnum.error;
-      paTransactionResult.message = loadBalanceResult.data?.success
-        ? null
-        : loadBalanceResult.data?.errors?.length
-          ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
-              loadBalanceResult.data?.errors,
-            )}`
-          : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      paTransactionResult.calculatedAmount = topupAmount;
+      // If calculatedAmount is larger than 0, call Intersolve
+      if (topupAmount > 0) {
+        const loadBalanceResult = await this.loadBalanceVisaCard(
+          visaCustomer.visaWallets[0].tokenCode,
+          topupAmount,
+          registration.referenceId,
+          paymentNr,
+        );
+
+        paTransactionResult.status = loadBalanceResult.data?.success
+          ? StatusEnum.success
+          : StatusEnum.error;
+        paTransactionResult.message = loadBalanceResult.data?.success
+          ? null
+          : loadBalanceResult.data?.errors?.length
+            ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
+                loadBalanceResult.data?.errors,
+              )}`
+            : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      } else {
+        // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
+        paTransactionResult.status = StatusEnum.success;
+        paTransactionResult.message = null;
+      }
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
 
       transactionNotifications.push(
         this.buildNotificationObjectLoadBalance(
-          calculatedAmount,
+          topupAmount,
           bulkSizeCompletePayment,
         ),
       );
@@ -638,43 +712,63 @@ export class IntersolveVisaService
     return allMessages;
   }
 
-  private async getWalletDetails(
+  private async getUpdateWalletDetails(
     wallet: IntersolveVisaWalletEntity,
+    customer: IntersolveVisaCustomerEntity,
+    getPaymentDetailsOnly: boolean,
   ): Promise<IntersolveVisaWalletEntity> {
     const walletDetails = await this.intersolveVisaApiService.getWallet(
       wallet.tokenCode,
     );
+    if (!walletDetails.data?.success) {
+      throw new HttpException(
+        { errors: walletDetails.data?.errors || 'Get wallet API-call failed' },
+        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
+      );
+    }
+
     const walletData = walletDetails?.data?.data;
-    if (walletData.balances) {
+    if (walletData?.balances) {
       wallet.balance = walletData.balances.find(
         (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      )?.quantity?.value;
+      ).quantity.value;
     }
-    if (walletData.status) {
+    if (walletData?.status) {
       wallet.walletStatus = walletDetails.data.data.status;
     }
-    if (walletData.blocked === true || walletData.blocked === false) {
+    if (walletData?.blocked === true || walletData?.blocked === false) {
       wallet.tokenBlocked = walletDetails.data.data.blocked;
     }
 
-    const cardDetails = await this.intersolveVisaApiService.getCard(
-      wallet.tokenCode,
-    );
-    if (cardDetails?.data?.data?.status) {
-      wallet.cardStatus = cardDetails.data.data.status;
+    // Get spentThisMonth across all wallets of customer
+    const transactionInfoByCustomer =
+      await this.getTransactionInfoByCustomer(customer);
+
+    if (transactionInfoByCustomer.length) {
+      wallet.spentThisMonth = transactionInfoByCustomer
+        .map((w) => w.transactionInfo.spentThisMonth)
+        .reduce((sum, current) => sum + current, 0);
     }
 
-    const transactionInfo = await this.getTransactionInfo(
-      wallet.tokenCode,
-      this.getTwoMonthAgo(),
-    );
-    if (transactionInfo.lastUsedDate) {
-      wallet.lastUsedDate = transactionInfo.lastUsedDate;
+    if (!getPaymentDetailsOnly) {
+      // The below properties are not needed in payment amount calculation
+      // Get lastUsedDate is still per wallet, unlike spentThisMonth above
+      // If above API-call failed, then this code will simply not update lastUsedDate which is fine
+      const transactionInfoPerWallet = transactionInfoByCustomer?.find(
+        (w) => w.tokenCode === wallet.tokenCode,
+      )?.transactionInfo;
+      if (transactionInfoPerWallet?.lastUsedDate) {
+        wallet.lastUsedDate = transactionInfoPerWallet.lastUsedDate;
+      }
+      wallet.lastExternalUpdate = new Date();
+
+      const cardDetails = await this.intersolveVisaApiService.getCard(
+        wallet.tokenCode,
+      );
+      if (cardDetails?.data?.data?.status) {
+        wallet.cardStatus = cardDetails.data.data.status;
+      }
     }
-    if (transactionInfo.spentThisMonth) {
-      wallet.spentThisMonth = transactionInfo.spentThisMonth;
-    }
-    wallet.lastExternalUpdate = new Date();
 
     return await this.intersolveVisaWalletScopedRepo.save(wallet);
   }
@@ -696,7 +790,7 @@ export class IntersolveVisaService
     walletsResponse.wallets = [];
 
     for await (let wallet of visaCustomer.visaWallets) {
-      wallet = await this.getWalletDetails(wallet);
+      wallet = await this.getUpdateWalletDetails(wallet, visaCustomer, false);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -726,8 +820,6 @@ export class IntersolveVisaService
       walletDetailsResponse.intersolveVisaCardStatus = wallet.cardStatus;
       walletDetailsResponse.intersolveVisaWalletStatus = wallet.walletStatus;
 
-      // 150 is the KYC required maxiumum one can spend per month
-      // 15000 is in cents
       walletDetailsResponse.maxToSpendPerMonth =
         maximumAmountOfSpentCentPerMonth;
 
@@ -1201,9 +1293,14 @@ export class IntersolveVisaService
 
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletScopedRepo.find();
-    for (const wallet of wallets) {
-      await this.getWalletDetails(wallet);
+    const customerWithWallets =
+      await this.intersolveVisaCustomerScopedRepo.find({
+        relations: ['visaWallets'],
+      });
+    for (const customer of customerWithWallets) {
+      for (const wallet of customer.visaWallets) {
+        await this.getUpdateWalletDetails(wallet, customer, false);
+      }
     }
   }
 

@@ -17,7 +17,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
@@ -27,7 +26,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - master
       - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
@@ -52,6 +50,12 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
+          envContentSecurityPolicy: >-
+            script-src 'self';
+            connect-src 'self' https://test.121.global;
+            form-action https://test.121.global;
+            frame-src blob: 'self' https://app.powerbi.com;
+            frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'test'
           NG_LOCALES: 'ar,en,es,fr,nl'
@@ -93,5 +97,6 @@ jobs:
         env:
           SKIP_DEPLOY_ON_MISSING_SECRETS: true
         with:
+          app_location: '${{ env.workingDirectory }}/www'
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
           action: 'close'

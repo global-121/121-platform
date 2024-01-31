@@ -51,7 +51,7 @@
     "@nestjs/typeorm": "^10.0.1",
     "@types/express": "^4.17.21",
     "africastalking": "^0.5.5",
-    "applicationinsights": "^2.9.0",
+    "applicationinsights": "^2.9.2",
     "bull": "^4.11.4",
     "bwip-js": "^2.0.11",
     "class-transformer": "^0.5.1",
@@ -77,7 +77,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@automock/adapters.nestjs": "^2.0.0",
+    "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.0",
     "@types/cookie-parser": "^1.4.6",
     "@types/jest": "^29.5.11",
@@ -94,7 +94,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
     "jest-ci-spec-reporter": "^1.0.3",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.4",
     "prettier-plugin-organize-imports": "^3.2.4",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",

@@ -12,6 +12,9 @@ export class AppComponent {
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
   ) {
+    // Initialize storage of preferred language
+    this.languageService.setup();
+
     if (this.loggingService.appInsightsEnabled) {
       this.loggingService.logPageView();
     }

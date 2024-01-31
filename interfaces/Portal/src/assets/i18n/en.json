@@ -1,6 +1,5 @@
 {
   "_dir": "ltr",
-  "_languageName": "English",
   "common": {
     "all": "All",
     "answer-is-required": "An answer is required for this question.",
@@ -102,7 +101,11 @@
           "invalid-email": "Please enter a valid email address."
         },
         "password": {
-          "label": "Password"
+          "label": "Password",
+          "toggle": {
+            "hide": "Hide password",
+            "show": "Show password"
+          }
         },
         "submit": {
           "label": "Log in"
