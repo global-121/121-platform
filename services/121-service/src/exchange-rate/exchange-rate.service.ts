@@ -10,7 +10,7 @@ export class ExchangeRateService {
   @InjectRepository(ExchangeRateEntity)
   private exchangeRateRepository: Repository<ExchangeRateEntity>;
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  public programRepository: Repository<ProgramEntity>;
 
   public constructor(
     private readonly exchangeRateApiService: ExchangeRateApiService,
@@ -26,7 +26,7 @@ export class ExchangeRateService {
     }
   }
 
-  private async createExchangeRate(
+  public async createExchangeRate(
     currency: string,
     euroExchangeRate: number,
     closeTime: string,
@@ -39,7 +39,7 @@ export class ExchangeRateService {
     await this.exchangeRateRepository.save(exchangeRate);
   }
 
-  private async getAllProgramCurrencies(): Promise<string[]> {
+  public async getAllProgramCurrencies(): Promise<string[]> {
     const euroCode = 'EUR';
 
     return (
