@@ -105,14 +105,13 @@ export class PaymentsService {
     return payments;
   }
 
-  private async aggregateTransactionsByDimension(
-    dimension: string,
+  private async aggregateTransactionsByStatus(
     programId: number,
     payment: number,
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
-      .select([dimension, 'COUNT(*) as count'])
+      .select(['status', 'COUNT(*) as count'])
       .from(
         '(' +
           this.transactionService
@@ -126,7 +125,7 @@ export class PaymentsService {
           .getLastTransactionsQuery(programId, payment)
           .getParameters(),
       )
-      .groupBy(dimension)
+      .groupBy('status')
       .getRawMany();
   }
 
@@ -135,8 +134,7 @@ export class PaymentsService {
     payment: number,
   ): Promise<PaymentReturnDto> {
     // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
-    const statusAggregation = await this.aggregateTransactionsByDimension(
-      'status',
+    const statusAggregation = await this.aggregateTransactionsByStatus(
       programId,
       payment,
     );
@@ -414,14 +412,11 @@ export class PaymentsService {
     }
 
     // if not in progress, then also check progress from queue
-    // get all FSPs in payment
-    const fspAggregation = await this.aggregateTransactionsByDimension(
-      'fsp',
-      programId,
-      payment,
-    );
-    for (const fsp of fspAggregation) {
-      if (await this.checkFspQueueProgress(fsp.fsp, programId)) {
+    // get all FSPs in program
+    const program = await this.checkProgram(programId);
+
+    for (const fspEntity of program.financialServiceProviders) {
+      if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
         return true;
       }
     }
