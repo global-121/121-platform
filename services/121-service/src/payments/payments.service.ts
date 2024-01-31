@@ -141,7 +141,7 @@ export class PaymentsService {
 
     let paymentInProgress = false;
     try {
-      await this.checkPaymentInProgressAndThrow(programId, payment);
+      await this.checkPaymentInProgressAndThrow(programId);
     } catch (error) {
       paymentInProgress = true;
     }
@@ -169,7 +169,7 @@ export class PaymentsService {
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
     if (!dryRun) {
-      await this.checkPaymentInProgressAndThrow(programId, payment);
+      await this.checkPaymentInProgressAndThrow(programId);
     }
 
     const paginateQuery =
@@ -323,9 +323,9 @@ export class PaymentsService {
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<BulkActionResultDto> {
-    await this.checkPaymentInProgressAndThrow(programId, payment);
+    await this.checkPaymentInProgressAndThrow(programId);
 
-    await this.checkProgram(programId);
+    await this.getProgramWithFspOrThrow(programId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
@@ -363,7 +363,9 @@ export class PaymentsService {
     };
   }
 
-  private async checkProgram(programId: number): Promise<ProgramEntity> {
+  private async getProgramWithFspOrThrow(
+    programId: number,
+  ): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: programId },
       relations: ['financialServiceProviders'],
@@ -390,9 +392,8 @@ export class PaymentsService {
 
   public async checkPaymentInProgressAndThrow(
     programId: number,
-    payment?: number,
   ): Promise<void> {
-    if (await this.isPaymentInProgress(programId, payment)) {
+    if (await this.isPaymentInProgress(programId)) {
       throw new HttpException(
         { errors: 'Payment is already in progress' },
         HttpStatus.BAD_REQUEST,
@@ -400,10 +401,7 @@ export class PaymentsService {
     }
   }
 
-  private async isPaymentInProgress(
-    programId: number,
-    payment?: number,
-  ): Promise<boolean> {
+  private async isPaymentInProgress(programId: number): Promise<boolean> {
     // check progress based on actions-table first
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
@@ -413,7 +411,7 @@ export class PaymentsService {
 
     // if not in progress, then also check progress from queue
     // get all FSPs in program
-    const program = await this.checkProgram(programId);
+    const program = await this.getProgramWithFspOrThrow(programId);
 
     for (const fspEntity of program.financialServiceProviders) {
       if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
