@@ -19,6 +19,7 @@ export class CronjobService {
     console.info('CronjobService - Started: cancelByRefposIntersolve');
 
     const accessToken = await this.axiosCallsService.getAccessToken();
+    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cancel`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -34,6 +35,7 @@ export class CronjobService {
     );
 
     const accessToken = await this.axiosCallsService.getAccessToken();
+    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -48,6 +50,7 @@ export class CronjobService {
     console.info('CronjobService - Started: cronCacheUnusedVouchers');
 
     const accessToken = await this.axiosCallsService.getAccessToken();
+    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cache-unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
@@ -61,6 +64,7 @@ export class CronjobService {
 
     const programIdVisa = 3;
     const accessToken = await this.axiosCallsService.getAccessToken();
+    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa/wallets`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.patch(url, {}, headers);
@@ -73,6 +77,7 @@ export class CronjobService {
     console.info('CronjobService - Started: cronSendWhatsappReminders');
 
     const accessToken = await this.axiosCallsService.getAccessToken();
+    // Calling via API/HTTP instead of directly the Service so scoping functionality works and possibly some other reasons currently forgotten
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.post(url, {}, headers);
