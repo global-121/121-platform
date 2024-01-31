@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 
-@Entity('commercial-bank-ethiopia-account-enquiries')
+@Entity('commercial_bank_ethiopia_account_enquiries')
 export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity {
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
