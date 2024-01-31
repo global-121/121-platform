@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs';
 import path from 'path';
 import { DataSource } from 'typeorm';
+import { registrationAHWhatsapp } from '../../seed-data/mock/registration-pv.data';
 import {
   amountVisa,
   registrationVisa,
@@ -37,6 +38,8 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
     powerNrMessagesString?: string,
+    mockPv = true,
+    mockOcw = true,
   ): Promise<void> {
     const powerNrRegistrations = Number(powerNrRegistrationsString) || 2;
     const nrPayments = Number(nrPaymentsString) || 2;
@@ -45,7 +48,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     const min = 1;
     const maxPowerNrRegistrations = 17;
     const maxPowerNrMessages = 6;
-    const maxNrPayments = 30;
+    const maxNrPayments = 30; //
     if (
       isNaN(powerNrRegistrations) ||
       powerNrRegistrations < min ||
@@ -86,49 +89,65 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await seedMultiple.run(isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message
-    // TODO: this uses helper functions from the API-test folder, move this to a shared location
-    const programIdVisa = 3;
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    await this.seedMockHelper.changePhase(
-      programIdVisa,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await this.seedMockHelper.changePhase(
-      programIdVisa,
-      ProgramPhase.inclusion,
-      accessToken,
-    );
-    await this.seedMockHelper.changePhase(
-      programIdVisa,
-      ProgramPhase.payment,
-      accessToken,
-    );
-    await this.seedMockHelper.importRegistrations(
-      programIdVisa,
-      [registrationVisa],
-      accessToken,
-    );
-    await this.seedMockHelper.awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    await this.seedMockHelper.doPayment(
-      programIdVisa,
-      1,
-      amountVisa,
-      [registrationVisa.referenceId],
-      accessToken,
-    );
-    await waitFor(3_000);
+    if (mockOcw) {
+      const programIdOcw = 3;
+      await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
+    }
+    if (mockPv) {
+      const programIdPV = 2;
+      await this.seedRegistrationForProgram(
+        programIdPV,
+        registrationAHWhatsapp,
+      );
+    }
+
+    await waitFor(4_000);
 
     // Blow up data given the parameters
     await this.multiplyRegistrations(powerNrRegistrations);
     await this.multiplyTransactions(nrPayments);
     await this.multiplyMessages(powerNrMessages);
     await this.updateSequenceNumbers();
+  }
+
+  private async seedRegistrationForProgram(
+    programId: number,
+    registration: any,
+  ): Promise<void> {
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    await this.seedMockHelper.changePhase(
+      programId,
+      ProgramPhase.registrationValidation,
+      accessToken,
+    );
+    await this.seedMockHelper.changePhase(
+      programId,
+      ProgramPhase.inclusion,
+      accessToken,
+    );
+    await this.seedMockHelper.changePhase(
+      programId,
+      ProgramPhase.payment,
+      accessToken,
+    );
+    await this.seedMockHelper.importRegistrations(
+      programId,
+      [registration],
+      accessToken,
+    );
+    await this.seedMockHelper.awaitChangePaStatus(
+      programId,
+      [registration.referenceId],
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
+    await this.seedMockHelper.doPayment(
+      programId,
+      1,
+      amountVisa,
+      [registration.referenceId],
+      accessToken,
+    );
   }
 
   private async multiplyRegistrations(powerNr: number): Promise<void> {
@@ -196,6 +215,33 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       );
       await this.dataSource.query(queryVisaWalletsOnePerRegistration);
     }
+
+    const queryDuplicateVouchers = readSqlFile(
+      '../../src/scripts/sql/mock-intersolve-voucher.sql',
+    );
+    for (let i = 1; i <= powerNr; i++) {
+      console.log(
+        `**CREATING MOCK DATA match AH vouchers registrations: duplication ${i} of ${powerNr}**`,
+      );
+      await this.dataSource.query(queryDuplicateVouchers);
+    }
+
+    const queryDuplicateImageCodeExportVoucher = readSqlFile(
+      '../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
+    );
+    for (let i = 1; i <= powerNr; i++) {
+      console.log(
+        `**CREATING MOCK DATA match imagecode export vouchers to registrations: duplication ${i} of ${powerNr}**`,
+      );
+      await this.dataSource.query(queryDuplicateImageCodeExportVoucher);
+    }
+
+    console.log(`**Updating voucher attributes**`);
+    const queryUpdateVoucherAttributes = readSqlFile(
+      '../../src/scripts/sql/mock-intersolve-voucher-attributes.sql',
+    );
+    await this.dataSource.query(queryUpdateVoucherAttributes);
+    console.log(`**Done updating voucher attributes**`);
   }
 
   private async multiplyTransactions(nr: number): Promise<void> {
@@ -204,11 +250,31 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     const queryTransactions = readSqlFile(
       '../../src/scripts/sql/mock-payment-transactions.sql',
     );
+    const queryVoucherPerPayment = readSqlFile(
+      '../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
+    );
+    const queryImageCodeExportVoucherPerPayment = readSqlFile(
+      '../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
+    );
     for (let i = 1; i <= nr; i++) {
       console.log(
-        `**CREATING MOCK DATA payment ${i + 1} of ${nr + 1} payments**`,
+        `**CREATING MOCK DATA transactions payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
       );
       await this.dataSource.query(queryTransactions, [i + 1, i]);
+      console.log(
+        `**CREATING MOCK DATA vouchers payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
+      );
+      await this.dataSource.query(queryVoucherPerPayment, [i + 1, 1]);
+      console.log(
+        `**CREATING MOCK DATA imagecode payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
+      );
+      await this.dataSource.query(queryImageCodeExportVoucherPerPayment);
     }
 
     console.log(`**Updating payment count**`);
@@ -226,6 +292,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     );
     await this.dataSource.query(queryUpdateLatestTransaction);
     console.log(`**Done updating latest transactions**`);
+
+    const queryUnusedVouchers = readSqlFile(
+      '../../src/scripts/sql/mock-unused-vouchers.sql',
+    );
+    console.log(`**CREATING MOCK DATA unused vouchers**`);
+    await this.dataSource.query(queryUnusedVouchers);
   }
 
   private async multiplyMessages(powerNr: number): Promise<void> {
