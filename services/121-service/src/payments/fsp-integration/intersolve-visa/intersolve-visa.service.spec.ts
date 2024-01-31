@@ -8,7 +8,7 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 
 const sendPaymentData = [
   {
-    transactionAmount: 22,
+    transactionAmount: 25,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
     fspName: 'Intersolve-visa',
@@ -28,7 +28,7 @@ const paymentDetailsResult: PaymentDetailsDto = {
   phoneNumber: '14155238886',
   programId: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-  transactionAmount: 22,
+  transactionAmount: 25,
 };
 const mockPaPaymentDetails = [
   {
@@ -41,7 +41,7 @@ const mockPaPaymentDetails = [
     addressHouseNumberAddition: 'A',
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
-    transactionAmount: 22,
+    transactionAmount: 25,
   },
 ] as PaymentDetailsDto[];
 const programId = 3;
