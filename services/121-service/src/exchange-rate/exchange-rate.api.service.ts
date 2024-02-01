@@ -24,7 +24,6 @@ export class ExchangeRateApiService {
         responseKey
       ][0];
 
-      console.log(data);
       return { rate: data[averageBidKey], closeTime: data[closeTimeKey] };
     } catch (error) {
       console.log(error, 'transfer');
