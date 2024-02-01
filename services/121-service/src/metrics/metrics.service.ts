@@ -1365,37 +1365,29 @@ export class MetricsService {
       })
     ).targetNrRegistrations;
 
-    const registrations = await this.registrationScopedRepository.find({
+    const includedPeople = await this.registrationScopedRepository.count({
       where: {
         program: { id: programId },
         registrationStatus: RegistrationStatusEnum.included,
       },
     });
 
-    const includedPeople = registrations.filter(
-      (r) => r.registrationStatus === RegistrationStatusEnum.included,
-    ).length;
-
-    // Use this method to get only the latest attempt per PA per payment
-    const transactionsQuery = this.transactionsService.getLastTransactionsQuery(
-      programId,
-      null,
-      null,
-      StatusEnum.success,
-    );
-
-    const { spentMoney } = await this.dataSource
-      .createQueryBuilder()
-      .select('SUM(amount)', 'spentMoney')
-      .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
-      .setParameters(transactionsQuery.getParameters())
+    const result = await this.transactionScopedRepository
+      .createQueryBuilder('transaction')
+      .select('SUM(transaction.amount)', 'spentMoney')
+      .innerJoin('transaction.latestTransaction', 'lt')
+      .andWhere('transaction."programId" = :programId', {
+        programId: programId,
+      })
       .getRawOne();
+    const spentMoney = result.spentMoney;
 
     const totalBudget = (
       await this.programRepository.findOneBy({
         id: programId,
       })
     ).budget;
+
     return {
       programId,
       targetedPeople,
