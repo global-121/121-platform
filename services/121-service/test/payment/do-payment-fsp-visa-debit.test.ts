@@ -259,6 +259,68 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.text).toContain('CREATE DEBIT CARD ERROR');
     });
 
+    it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
+      registrationVisa.lastName = 'mock-fail-get-wallet';
+      // Arrange
+      await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+      await awaitChangePaStatus(
+        programIdVisa,
+        [registrationVisa.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationVisa.referenceId];
+
+      // Act
+      // do (successful) payment 1
+      await doPayment(
+        programIdVisa,
+        paymentNrVisa,
+        amountVisa,
+        paymentReferenceIds,
+        accessToken,
+      );
+      await waitForPaymentTransactionsToComplete(
+        programIdVisa,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+      );
+
+      // do payment 2
+      const doPaymentResponse = await doPayment(
+        programIdVisa,
+        paymentNrVisa + 1,
+        amountVisa,
+        paymentReferenceIds,
+        accessToken,
+      );
+      await waitForPaymentTransactionsToComplete(
+        programIdVisa,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+        paymentNrVisa + 1,
+      );
+      const transactionsResponse = await getTransactions(
+        programIdVisa,
+        paymentNrVisa + 1,
+        registrationVisa.referenceId,
+        accessToken,
+      );
+
+      // Assert
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(transactionsResponse.text).toContain(
+        'CALCULATE TOPUP AMOUNT ERROR',
+      );
+    });
+
     it('should successfully load balance Visa Debit', async () => {
       registrationVisa.lastName = 'succeed';
       // Arrange
@@ -436,7 +498,6 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.text).toContain(StatusEnum.success);
     });
 
-    // Should payout different amounts based on current balance and spend
     it('should payout different amounts based on current balance and spend', async () => {
       const paymentNumberAmountTest = 2;
       // Arrange

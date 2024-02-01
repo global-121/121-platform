@@ -61,6 +61,11 @@ export class IntersolveJumboService
     }
   }
 
+  public async getQueueProgress(_programId: number): Promise<number> {
+    // TODO: When this is implemented, remove the '_' from the variable. This is a temporary solution to avoid the linter error.
+    throw new Error('Method not implemented.');
+  }
+
   private async getPaPaymentDetails(
     paPaymentArray: PaPaymentDataDto[],
   ): Promise<PreOrderInfoDto[]> {

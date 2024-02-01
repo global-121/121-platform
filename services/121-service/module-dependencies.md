@@ -17,6 +17,7 @@ graph LR
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
   IntersolveVisaModule-->QueueMessageModule
+  IntersolveVisaModule-->RedisModule
   RegistrationsModule-->RegistrationChangeLogModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
@@ -28,6 +29,7 @@ graph LR
   IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
+  IntersolveVoucherModule-->RedisModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->RegistrationsModule
@@ -50,8 +52,10 @@ graph LR
   VodacashModule-->TransactionsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
+  SafaricomModule-->RedisModule
   PaymentsModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
+  CommercialBankEthiopiaModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   MetricsModule-->TransactionsModule
