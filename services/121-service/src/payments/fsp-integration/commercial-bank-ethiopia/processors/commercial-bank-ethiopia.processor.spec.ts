@@ -1,8 +1,9 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
+import { FspName } from '../../../../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../../../../registration/enum/language.enum';
-import { IntersolveVisaService } from '../intersolve-visa.service';
-import { PaymentProcessorIntersolveVisa } from './payment.processor';
+import { CommercialBankEthiopiaService } from '../commercial-bank-ethiopia.service';
+import { PaymentProcessorCommercialBankEthiopia } from './commercial-bank-ethiopia.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
@@ -17,9 +18,9 @@ const mockPaymentJob = {
   addressPostalCode: '1234AB',
   addressCity: 'Den Haag',
   id: 11,
-  fspName: 'Intersolve-visa',
+  fspName: FspName.commercialBankEthiopia,
   paymentAddress: '14155238886',
-  transactionAmount: 25,
+  transactionAmount: 22,
   transactionId: 38,
   programId: 3,
   paymentNr: 3,
@@ -28,27 +29,31 @@ const testJob = { data: mockPaymentJob } as Job;
 
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
-  let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
-  let paymentProcessor: PaymentProcessorIntersolveVisa;
+  let commercialBankEthiopiaService: jest.Mocked<CommercialBankEthiopiaService>;
+  let paymentProcessor: PaymentProcessorCommercialBankEthiopia;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(PaymentProcessorIntersolveVisa)
-      .mock(IntersolveVisaService)
-      .using(intersolveVisaService)
+    const { unit, unitRef } = TestBed.create(
+      PaymentProcessorCommercialBankEthiopia,
+    )
+      .mock(CommercialBankEthiopiaService)
+      .using(commercialBankEthiopiaService)
       .compile();
 
     paymentProcessor = unit;
-    intersolveVisaService = unitRef.get(IntersolveVisaService);
+    commercialBankEthiopiaService = unitRef.get(CommercialBankEthiopiaService);
   });
 
   it('should call sendQueuePayment', async () => {
     // Arrannge
-    intersolveVisaService.processQueuedPayment.mockResolvedValue(null);
+    commercialBankEthiopiaService.processQueuedPayment.mockResolvedValue(null);
 
     // Act
     await paymentProcessor.handleSendPayment(testJob);
 
     // Assert
-    expect(intersolveVisaService.processQueuedPayment).toHaveBeenCalledTimes(1);
+    expect(
+      commercialBankEthiopiaService.processQueuedPayment,
+    ).toHaveBeenCalledTimes(1);
   });
 });

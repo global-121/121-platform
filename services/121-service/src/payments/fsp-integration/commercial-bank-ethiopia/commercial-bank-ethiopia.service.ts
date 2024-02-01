@@ -1,5 +1,8 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
@@ -13,11 +16,14 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
+import { CommercialBankEthiopiaJobDto } from './dto/commercial-bank-ethiopia-job.dto';
 import {
   CommercialBankEthiopiaRegistrationData,
   CommercialBankEthiopiaTransferPayload,
@@ -45,8 +51,12 @@ export class CommercialBankEthiopiaService
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
+    @InjectQueue(QueueNamePayment.paymentCommercialBankEthiopia)
+    private readonly commercialBankEthiopiaQueue: Queue,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
@@ -82,20 +92,50 @@ export class CommercialBankEthiopiaService
         program,
       );
 
-      const paymentRequestResultPerPa = await this.sendPaymentPerPa(
-        payload,
-        paPayment.referenceId,
-        credentials,
+      const jobData: CommercialBankEthiopiaJobDto = {
+        paPaymentData: paPayment,
+        paymentNr: paymentNr,
+        programId: programId,
+        payload: payload,
+        credentials: credentials,
+      };
+      const job = await this.commercialBankEthiopiaQueue.add(
+        ProcessName.sendPayment,
+        jobData,
       );
-      fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      // Storing the per payment so you can continiously seed updates of transactions in Portal
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        programId,
-        paymentNr,
-      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
     return fspTransactionResult;
+  }
+
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(getRedisSetName(programId));
+      return count;
+    } else {
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.commercialBankEthiopiaQueue.getDelayedCount();
+      return delayedCount;
+    }
+  }
+
+  async processQueuedPayment(
+    data: CommercialBankEthiopiaJobDto,
+  ): Promise<void> {
+    const paymentRequestResultPerPa = await this.sendPaymentPerPa(
+      data.payload,
+      data.paPaymentData.referenceId,
+      data.credentials,
+    );
+    // Storing the per payment so you can continiously seed updates of transactions in Portal
+    await this.transactionsService.storeTransactionUpdateStatus(
+      paymentRequestResultPerPa,
+      data.programId,
+      data.paymentNr,
+    );
   }
 
   public async getPaRegistrationData(

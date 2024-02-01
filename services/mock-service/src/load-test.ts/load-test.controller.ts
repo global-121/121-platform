@@ -6,7 +6,7 @@ import { LoadTestService } from './load-test.service';
 export class LoadTestController {
   public constructor(private readonly loadTestService: LoadTestService) {}
 
-  @ApiTags('2. load-test')
+  @ApiTags('load-test')
   @ApiOperation({
     summary:
       'Load test "import registrations" (Not actually related to Twilio, to be moved)',

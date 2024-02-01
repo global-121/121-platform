@@ -1,6 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -22,6 +23,8 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
+import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';
@@ -59,7 +62,6 @@ import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
-import { ProcessName, QueueNamePayment } from './enum/queue.names.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
@@ -87,6 +89,8 @@ export class IntersolveVisaService
     private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
     private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
 
   public async getTransactionInfoByCustomer(
@@ -197,10 +201,12 @@ export class IntersolveVisaService
       paymentDetails.programId = programId;
       paymentDetails.paymentNr = paymentNr;
       paymentDetails.bulkSize = paymentList[0].bulkSize;
-      await this.paymentIntersolveVisaQueue.add(
+      paymentDetails.programId = programId;
+      const job = await this.paymentIntersolveVisaQueue.add(
         ProcessName.sendPayment,
         paymentDetails,
       );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }
 
@@ -224,10 +230,15 @@ export class IntersolveVisaService
 
   public async getQueueProgress(programId?: number): Promise<number> {
     if (programId) {
-      const jobs = await this.paymentIntersolveVisaQueue.getJobs(['delayed']);
-      return jobs.filter((j) => j.data.programId === programId).length;
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(getRedisSetName(programId));
+      return count;
     } else {
-      return await this.paymentIntersolveVisaQueue.getDelayedCount();
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.paymentIntersolveVisaQueue.getDelayedCount();
+      return delayedCount;
     }
   }
 
