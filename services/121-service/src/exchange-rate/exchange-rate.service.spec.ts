@@ -14,7 +14,6 @@ const mockExchangeRateApiService = {
 
 describe('ExchangeRateService', () => {
   let exchangeRateService: ExchangeRateService;
-  let mockProgramRepository: Repository<ProgramEntity>;
   let mockExchangeRateRepository: jest.Mocked<Repository<ExchangeRateEntity>>;
 
   beforeEach(async () => {
@@ -47,9 +46,6 @@ describe('ExchangeRateService', () => {
 
     exchangeRateService =
       moduleRef.get<ExchangeRateService>(ExchangeRateService);
-    mockProgramRepository = moduleRef.get<Repository<ProgramEntity>>(
-      getRepositoryToken(ProgramEntity),
-    );
     mockExchangeRateRepository = moduleRef.get(
       getRepositoryToken(ExchangeRateEntity),
     );
