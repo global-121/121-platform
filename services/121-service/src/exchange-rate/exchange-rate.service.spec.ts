@@ -1,66 +1,83 @@
-import { TestBed } from '@automock/jest';
+import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProgramEntity } from '../programs/program.entity';
 import { generateMockCreateQueryBuilder } from '../utils/createQueryBuilderMock.helper';
+import { ExchangeRateApiService } from './exchange-rate.api.service';
 import { ExchangeRateEntity } from './exchange-rate.entity';
 import { ExchangeRateService } from './exchange-rate.service';
 
+// Mock for ExchangeRateApiService
+const mockExchangeRateApiService = {
+  retrieveExchangeRate: jest.fn(),
+};
+
 describe('ExchangeRateService', () => {
   let exchangeRateService: ExchangeRateService;
-  let mockExchangeRateRepository: Repository<ExchangeRateEntity>;
+  let mockProgramRepository: Repository<ProgramEntity>;
+  let mockExchangeRateRepository: jest.Mocked<Repository<ExchangeRateEntity>>;
 
   beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(ExchangeRateService).compile();
-    exchangeRateService = unit;
+    const moduleRef = await Test.createTestingModule({
+      providers: [
+        ExchangeRateService,
+        {
+          provide: getRepositoryToken(ExchangeRateEntity),
+          useValue: {
+            save: jest.fn().mockResolvedValue(new ExchangeRateEntity()),
+          },
+        },
+        {
+          provide: getRepositoryToken(ProgramEntity),
+          useValue: {
+            createQueryBuilder: jest.fn(() =>
+              generateMockCreateQueryBuilder([
+                { program_currency: 'GBP' },
+                { program_currency: 'USD' },
+              ]),
+            ),
+          },
+        },
+        {
+          provide: ExchangeRateApiService,
+          useValue: mockExchangeRateApiService,
+        },
+      ],
+    }).compile();
 
-    mockExchangeRateRepository = unitRef.get(
-      getRepositoryToken(ExchangeRateEntity) as any,
+    exchangeRateService =
+      moduleRef.get<ExchangeRateService>(ExchangeRateService);
+    mockProgramRepository = moduleRef.get<Repository<ProgramEntity>>(
+      getRepositoryToken(ProgramEntity),
+    );
+    mockExchangeRateRepository = moduleRef.get(
+      getRepositoryToken(ExchangeRateEntity),
     );
   });
 
-  describe('getAllProgramCurrencies', () => {
-    it('should get all program currencies besdes EUR', async () => {
-      const mockQueryBuilder = generateMockCreateQueryBuilder([
-        {
-          program_currency: 'GBP',
-        },
-        {
-          program_currency: 'USD',
-        },
-      ]);
+  it('should create and save an ExchangeRateEntity', async () => {
+    const currency = 'USD';
+    const euroExchangeRate = 1.2;
+    const closeTime = '2024-01-31';
 
-      jest
-        .spyOn(
-          exchangeRateService.programRepository as any,
-          'createQueryBuilder',
-        )
-        .mockImplementation(() => mockQueryBuilder) as any;
+    await exchangeRateService.createExchangeRate(
+      currency,
+      euroExchangeRate,
+      closeTime,
+    );
 
-      const result: string[] =
-        await exchangeRateService.getAllProgramCurrencies();
-      expect(result).not.toContain('EUR');
-    });
-  });
-
-  describe('createExchangeRate', () => {
-    it('should create and save an ExchangeRateEntity', async () => {
-      const currency = 'USD';
-      const euroExchangeRate = 1.2;
-      const closeTime = '2024-01-31';
-
-      await exchangeRateService.createExchangeRate(
+    expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({
         currency,
         euroExchangeRate,
         closeTime,
-      );
+      }),
+    );
+  });
 
-      expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          currency,
-          euroExchangeRate,
-          closeTime,
-        }),
-      );
-    });
+  it('should get all program currencies besides EUR', async () => {
+    const result = await exchangeRateService.getAllProgramCurrencies();
+    expect(result).toEqual(['GBP', 'USD']);
+    expect(result).not.toContain('EUR');
   });
 });
