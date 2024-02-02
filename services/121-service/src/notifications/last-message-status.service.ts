@@ -14,7 +14,7 @@ export class LastMessageStatusService {
   ): Promise<void> {
     // If registraitonId is null, it means that the message is not related to a registration
     // and therefore we don't need to update the latest message status
-    // This is the case when we get message from an unkown number
+    // This is the case when we get message from an unknown number
     if (!message.registrationId) {
       return;
     }
