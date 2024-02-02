@@ -1,0 +1,9 @@
+{
+  "fsp": "Excel",
+  "fspDisplayNamePaApp": {
+    "en": "Excel"
+  },
+  "fspDisplayNamePortal": "Excel",
+  "integrationType": "csv",
+  "questions": []
+}
