@@ -96,6 +96,28 @@ export class PvScoped1706711131062 implements MigrationInterface {
           );
         `);
 
+      // Update old district values to align with new ones
+      await queryRunner.query(`
+          update
+          "121-service"."registration_data" rdp
+          set
+          value = case
+            when rdp.value = 'het Rode Kruis Amsterdam-Amstelland' then 'Amsterdam-Amstelland'
+            when rdp.value = 'het Rode Kruis Gelderland' then 'Gelderland'
+            when rdp.value = 'het Rode Kruis Haaglanden' then 'Haaglanden'
+            when rdp.value = 'het Rode Kruis Hollands Midden' then 'Hollands Midden'
+            when rdp.value = 'het Rode Kruis IJsselland' then 'IJsselland'
+            when rdp.value = 'Ijsselland' then 'IJsselland'
+            when rdp.value = 'het Rode Kruis Rotterdam Rijnmond' then 'Rotterdam-Rijnmond'
+            when rdp.value = 'Rotterdam Rijnmond' then 'Rotterdam-Rijnmond'
+            when rdp.value = 'het Rode Kruis Utrecht Gooi' then 'Utrecht Gooi'
+            when rdp.value = 'Gooi en Utrecht' then 'Utrecht Gooi'
+            when rdp.value = 'District Utrecht Gooi' then 'Utrecht Gooi'
+            else value
+          end
+          WHERE rdp."programCustomAttributeId" = ${idCustomAttributeDistrict};
+          `);
+
       // Update custom attribute values of Partner Organization
       await queryRunner.query(`
           update
