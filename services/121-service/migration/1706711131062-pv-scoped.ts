@@ -15,6 +15,7 @@ export class PvScoped1706711131062 implements MigrationInterface {
           set "enableScope" = true
           where "id" = 2;
         `);
+
       const idCustomAttributePartnerOrganizationResult =
         await queryRunner.query(`
       select
@@ -39,10 +40,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
           where
             name = 'district' and "programId" = 2;
         `);
-      console.log(
-        '🚀 ~ PvScoped1706711131062 ~ up ~ idCustomAttributeDistrictResult:',
-        idCustomAttributeDistrictResult,
-      );
       const idCustomAttributeDistrict = idCustomAttributeDistrictResult[0].id;
       console.log(
         '🚀 ~ PvScoped1706711131062 ~ up ~ idCustomAttributeDistrict:',
@@ -58,27 +55,27 @@ export class PvScoped1706711131062 implements MigrationInterface {
           ${idCustomAttributeDistrict},
         CASE
             WHEN rdp.value = 'AMS_LOA' THEN 'Amsterdam-Amstelland'
-            WHEN rdp.value = 'FLEX' THEN 'Unkown'
+            WHEN rdp.value = 'FLEX' THEN 'Unknown'
             WHEN rdp.value = 'UTR_Toevlucht' THEN 'Utrecht Gooi'
             WHEN rdp.value = 'AMS_ACO_GEZ' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'AMS_Stap Verder' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'ACO' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'AMS_HopeGivers' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'ROT_HopeGivers' THEN 'Rotterdam Rijnmond'
-            WHEN rdp.value = 'VLAAR_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'Aalsmeer_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'SCHIED_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'ZWAN_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'CAPE a/d IJSSEL_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'HILVER_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'UITH_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'ALMERE_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'GELD_HopeGivers' THEN 'Unkown'
-            WHEN rdp.value = 'AMS_TESTPARTNER' THEN 'Unkown'
+            WHEN rdp.value = 'VLAAR_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'Aalsmeer_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'SCHIED_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'ZWAN_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'CAPE a/d IJSSEL_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'HILVER_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'UITH_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'ALMERE_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'GELD_HopeGivers' THEN 'Unknown'
+            WHEN rdp.value = 'AMS_TESTPARTNER' THEN 'Unknown'
             WHEN rdp.value = 'VK_Letopelkaar' THEN 'VK'
-            WHEN rdp.value = 'DH_IMWU' THEN 'Unkown'
-            WHEN rdp.value = 'DH_FILMIS' THEN 'Unkown'
-            WHEN rdp.value = 'DU_IMWU' THEN 'Unkown'
+            WHEN rdp.value = 'DH_IMWU' THEN 'Unknown'
+            WHEN rdp.value = 'DH_FILMIS' THEN 'Unknown'
+            WHEN rdp.value = 'DU_IMWU' THEN 'Unknown'
             WHEN rdp.value = 'AMS_OiA_SP' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'AMS_OIA' THEN 'Amsterdam-Amstelland'
             WHEN rdp.value = 'AMS_IOM' THEN 'Amsterdam-Amstelland'
