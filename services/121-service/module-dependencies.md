@@ -57,7 +57,6 @@ graph LR
   CommercialBankEthiopiaModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
-  MetricsModule-->TransactionsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationChangeLogModule
