@@ -1,3 +1,0 @@
-# Twilio-mock service
-
-TODO

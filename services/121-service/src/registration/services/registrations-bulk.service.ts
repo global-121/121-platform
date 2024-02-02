@@ -16,7 +16,6 @@ import { TryWhatsappEntity } from '../../notifications/whatsapp/try-whatsapp.ent
 import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../../payments/fsp-integration/safaricom/safaricom-request.entity';
-import { ImageCodeExportVouchersEntity } from '../../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../../people-affected/person-affected-app-data.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -46,9 +45,6 @@ export class RegistrationsBulkService {
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(PersonAffectedAppDataEntity)
   private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
-  //  Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(LatestMessageEntity)
   private readonly latestMessageRepository: Repository<LatestMessageEntity>;
   // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
@@ -67,8 +63,6 @@ export class RegistrationsBulkService {
     private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    @Inject(getScopedRepositoryProviderName(ImageCodeExportVouchersEntity))
-    private readonly imageCodeExportVouchersScopedRepo: ScopedRepository<ImageCodeExportVouchersEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))

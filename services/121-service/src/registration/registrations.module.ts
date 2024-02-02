@@ -16,7 +16,6 @@ import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
@@ -58,7 +57,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       RegistrationEntity,
       LatestMessageEntity,
       PersonAffectedAppDataEntity,
-      TwilioMessageEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
     ]),
@@ -85,7 +83,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationsBulkHelperService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
-    createScopedRepositoryProvider(ImageCodeExportVouchersEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(RegistrationChangeLogEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),

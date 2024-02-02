@@ -54,6 +54,18 @@ export class RegistrationScopedBaseRepository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
+  public async count(options?: FindManyOptions<T>): Promise<number> {
+    if (!this.request?.scope || this.request.scope === '') {
+      return this.repository.count(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      [],
+      this.request.scope,
+    );
+    return this.repository.count(scopedOptions);
+  }
+
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
     if (!this.request?.scope || this.request.scope === '') {
       return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));

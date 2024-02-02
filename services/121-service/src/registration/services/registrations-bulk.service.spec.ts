@@ -2,6 +2,7 @@ import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
+import { generateMockCreateQueryBuilder } from '../../utils/createQueryBuilderMock.helper';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
@@ -49,11 +50,12 @@ describe('RegistrationBulkService', () => {
       });
 
     const dbQueryResult = null;
-    const createQueryBuilder: any = {
-      where: () => createQueryBuilder,
-      andWhere: () => createQueryBuilder,
-      getMany: () => dbQueryResult,
-    };
+    const createQueryBuilder: any = generateMockCreateQueryBuilder(
+      dbQueryResult,
+      {
+        useGetMany: true,
+      },
+    );
 
     const registrationViewScopedRepository = unitRef.get(
       RegistrationViewScopedRepository,

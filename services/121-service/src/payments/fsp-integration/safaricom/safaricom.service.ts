@@ -1,25 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 // import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
+import { InjectQueue } from '@nestjs/bull';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../../config';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../../payments/dto/payment-transaction-result.dto';
+import { PaTransactionResultDto } from '../../../payments/dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
+import { SafaricomJobDto } from './dto/safaricom-job.dto';
 import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 import { SafaricomRequestEntity } from './safaricom-request.entity';
 import { SafaricomApiService } from './safaricom.api.service';
 
 @Injectable()
-export class SafaricomService {
+export class SafaricomService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
   @InjectRepository(TransactionEntity)
@@ -30,53 +36,77 @@ export class SafaricomService {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly transactionsService: TransactionsService,
+    @InjectQueue(QueueNamePayment.paymentSafaricom)
+    private readonly paymentSafaricomQueue: Queue,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-  ): Promise<FspTransactionResultDto> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.safaricom;
-
+  ): Promise<void> {
     const referenceIds = paymentList.map((payment) => payment.referenceId);
     const userInfo = await this.getUserInfo(referenceIds);
 
-    for (const payment of paymentList) {
-      await this.safaricomApiService.authenticate();
-      const resultUser = userInfo.find(
-        (user) => user.referenceId == payment.referenceId,
+    for (const paPaymentData of paymentList) {
+      const job = await this.paymentSafaricomQueue.add(
+        ProcessName.sendPayment,
+        {
+          userInfo: userInfo,
+          paPaymentData: paPaymentData,
+          programId: programId,
+          paymentNr: paymentNr,
+        },
       );
-
-      const payload = this.createPayloadPerPa(
-        payment,
-        programId,
-        paymentNr,
-        resultUser,
-      );
-
-      const paymentRequestResultPerPa = await this.sendPaymentPerPa(
-        payload,
-        payment.referenceId,
-      );
-      fspTransactionResult.paList.push(paymentRequestResultPerPa);
-      // Storing the per payment so you can continiously seed updates of transactions in Portal
-      const transaction =
-        await this.transactionsService.storeTransactionUpdateStatus(
-          paymentRequestResultPerPa,
-          programId,
-          paymentNr,
-        );
-
-      await this.processSafaricomRequest(
-        payload,
-        paymentRequestResultPerPa,
-        transaction,
-      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
-    return fspTransactionResult;
+  }
+
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(getRedisSetName(programId));
+      return count;
+    } else {
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount = await this.paymentSafaricomQueue.getDelayedCount();
+      return delayedCount;
+    }
+  }
+
+  public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
+    await this.safaricomApiService.authenticate();
+    const resultUser = jobData.userInfo.find(
+      (user) => user.referenceId == jobData.paPaymentData.referenceId,
+    );
+
+    const payload = this.createPayloadPerPa(
+      jobData.paPaymentData,
+      jobData.programId,
+      jobData.paymentNr,
+      resultUser,
+    );
+
+    const paymentRequestResultPerPa = await this.sendPaymentPerPa(
+      payload,
+      jobData.paPaymentData.referenceId,
+    );
+    // Storing the per payment so you can continiously seed updates of transactions in Portal
+    const transaction =
+      await this.transactionsService.storeTransactionUpdateStatus(
+        paymentRequestResultPerPa,
+        jobData.programId,
+        jobData.paymentNr,
+      );
+
+    await this.processSafaricomRequest(
+      payload,
+      paymentRequestResultPerPa,
+      transaction,
+    );
   }
 
   public async getUserInfo(
@@ -140,7 +170,7 @@ export class SafaricomService {
   }
 
   public async sendPaymentPerPa(
-    payload: any,
+    payload: SafaricomTransferPayload,
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
