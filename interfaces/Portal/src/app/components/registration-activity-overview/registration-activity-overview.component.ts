@@ -20,6 +20,7 @@ import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { AddNotePopupComponent } from '../add-note-popup/add-note-popup.component';
+import { MessageStatusMapping } from '../../models/message.model';
 
 class ActivityOverviewItem {
   type: string;
@@ -34,6 +35,7 @@ class ActivityOverviewItem {
   hasWaiting?: boolean;
   chipText?: string;
   subLabel?: string;
+  status?: string;
 }
 
 enum ActivityOverviewType {
@@ -83,6 +85,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     ActivityOverviewType.status,
   ];
   public canUpdatePersonalData: boolean;
+  public chipStatus = MessageStatusMapping;
 
   private canViewRegistration: boolean;
   private canViewPersonalData: boolean;
@@ -267,6 +270,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
           date: new Date(message.created),
           description: message.body,
+          status: message.status
         });
       }
     }

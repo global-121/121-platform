@@ -10,3 +10,22 @@
   overflow-wrap: anywhere; // prevent long user generated description from breaking layout
   white-space: pre-wrap; // keep line breaks from text-area
 }
+
+ion-chip {
+  width: 120px;
+  cursor: default;
+  pointer-events: none;
+
+  &.chip-delivered,
+  &.chip-read,
+  &.chip-sent {
+    background-color: var(--ion-color-primary-contrast);
+    color: black;
+    border: 1px solid black;
+  }
+  &.chip-failed {
+    background-color: var(--ion-color-primary-contrast);
+    color: var(--ion-color-danger);
+    border: 1px solid var(--ion-color-danger);
+  }
+}
