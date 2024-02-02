@@ -117,6 +117,15 @@
                       }}
                     </small>
                   </ion-note>
+                </ion-row>
+              </ion-row>
+              <div>
+                <ion-text
+                  class="activity-overview--item--description"
+                  [innerHTML]="item.description"
+                ></ion-text>
+              </div>
+              <div>
                   <!-- messages-->
                   <ion-chip *ngIf="item.type === 'message'"
                   class="ion-justify-content-center"
@@ -126,13 +135,6 @@
                       chipStatus[item.status] | translate
                   }}</ion-chip
                 >
-                </ion-row>
-              </ion-row>
-              <div>
-                <ion-text
-                  class="activity-overview--item--description"
-                  [innerHTML]="item.description"
-                ></ion-text>
               </div>
             </ion-col>
 
