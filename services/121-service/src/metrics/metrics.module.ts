@@ -6,7 +6,6 @@ import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-vis
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { TransactionsModule } from '../payments/transactions/transactions.module';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -35,7 +34,6 @@ import { MetricsService } from './metrics.service';
     RegistrationsModule,
     ActionModule,
     PaymentsModule,
-    TransactionsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
     RegistrationChangeLogModule,

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, In, Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -13,7 +13,6 @@ import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve
 import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { TransactionsService } from '../payments/transactions/transactions.service';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -65,14 +64,12 @@ export class MetricsService {
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionService,
     private readonly paymentsService: PaymentsService,
-    private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly dataSource: DataSource,
   ) {}
 
   public async getExportList(
@@ -1365,37 +1362,29 @@ export class MetricsService {
       })
     ).targetNrRegistrations;
 
-    const registrations = await this.registrationScopedRepository.find({
+    const includedPeople = await this.registrationScopedRepository.count({
       where: {
         program: { id: programId },
         registrationStatus: RegistrationStatusEnum.included,
       },
     });
 
-    const includedPeople = registrations.filter(
-      (r) => r.registrationStatus === RegistrationStatusEnum.included,
-    ).length;
-
-    // Use this method to get only the latest attempt per PA per payment
-    const transactionsQuery = this.transactionsService.getLastTransactionsQuery(
-      programId,
-      null,
-      null,
-      StatusEnum.success,
-    );
-
-    const { spentMoney } = await this.dataSource
-      .createQueryBuilder()
-      .select('SUM(amount)', 'spentMoney')
-      .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
-      .setParameters(transactionsQuery.getParameters())
+    const result = await this.transactionScopedRepository
+      .createQueryBuilder('transaction')
+      .select('SUM(transaction.amount)', 'spentMoney')
+      .innerJoin('transaction.latestTransaction', 'lt')
+      .andWhere('transaction."programId" = :programId', {
+        programId: programId,
+      })
       .getRawOne();
+    const spentMoney = result.spentMoney;
 
     const totalBudget = (
       await this.programRepository.findOneBy({
         id: programId,
       })
     ).budget;
+
     return {
       programId,
       targetedPeople,

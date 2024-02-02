@@ -102,7 +102,7 @@ describe('Get and update registration change log', () => {
     expect(body.length).toBe(0);
   });
 
-  it('should return empty array for unkown referenceId', async () => {
+  it('should return empty array for unknown referenceId', async () => {
     // Arrange
     const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
 

@@ -6,6 +6,7 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   MessageTemplateModule-->ProgramAttributesModule
+  CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -57,7 +58,6 @@ graph LR
   CommercialBankEthiopiaModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
-  MetricsModule-->TransactionsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationChangeLogModule
