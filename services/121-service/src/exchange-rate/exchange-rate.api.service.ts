@@ -26,10 +26,8 @@ export class ExchangeRateApiService {
 
       return { rate: data[averageBidKey], closeTime: data[closeTimeKey] };
     } catch (error) {
-      console.log(error, 'transfer');
-      console.error('Failed to make ExchangeRate API call');
       throw new HttpException(
-        'Failed to make ExchangeRate API call',
+        `Failed to make ExchangeRate API call: ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

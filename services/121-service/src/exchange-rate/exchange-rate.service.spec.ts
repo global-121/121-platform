@@ -51,29 +51,44 @@ describe('ExchangeRateService', () => {
     );
   });
 
-  it('should create and save an ExchangeRateEntity', async () => {
-    const currency = 'USD';
-    const euroExchangeRate = 1.2;
-    const closeTime = '2024-01-31';
+  it('should call retrieveExchangeRate and save ExchangeRateEntity', async () => {
+    const USD_currency = 'USD';
+    const GBP_currency = 'GBP';
+    const USD_euroExchangeRate = 1.2;
+    const GBP_euroExchangeRate = 1.5;
+    const USD_closeTime = '2024-01-31';
+    const GBP_closeTime = '2024-01-30';
 
-    await exchangeRateService.createExchangeRate(
-      currency,
-      euroExchangeRate,
-      closeTime,
-    );
+    // This assumes that the query in getAllProgramCurrencies is correct.
+    // To test the actual query we should write an API test
+    jest
+      .spyOn(exchangeRateService, 'getAllProgramCurrencies' as any)
+      .mockResolvedValue([USD_currency, GBP_currency]);
+
+    mockExchangeRateApiService.retrieveExchangeRate.mockResolvedValueOnce({
+      rate: USD_euroExchangeRate.toString(),
+      closeTime: USD_closeTime,
+    });
+    mockExchangeRateApiService.retrieveExchangeRate.mockResolvedValue({
+      rate: GBP_euroExchangeRate.toString(),
+      closeTime: GBP_closeTime,
+    });
+
+    await exchangeRateService.getAndStoreProgramsExchangeRates();
 
     expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({
-        currency,
-        euroExchangeRate,
-        closeTime,
+        currency: USD_currency,
+        euroExchangeRate: USD_euroExchangeRate,
+        closeTime: USD_closeTime,
       }),
     );
-  });
-
-  it('should get all program currencies besides EUR', async () => {
-    const result = await exchangeRateService.getAllProgramCurrencies();
-    expect(result).toEqual(['GBP', 'USD']);
-    expect(result).not.toContain('EUR');
+    expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currency: GBP_currency,
+        euroExchangeRate: GBP_euroExchangeRate,
+        closeTime: GBP_closeTime,
+      }),
+    );
   });
 });

@@ -26,7 +26,7 @@ export class ExchangeRateService {
     }
   }
 
-  public async createExchangeRate(
+  private async createExchangeRate(
     currency: string,
     euroExchangeRate: number,
     closeTime: string,
@@ -39,7 +39,7 @@ export class ExchangeRateService {
     await this.exchangeRateRepository.save(exchangeRate);
   }
 
-  public async getAllProgramCurrencies(): Promise<string[]> {
+  private async getAllProgramCurrencies(): Promise<string[]> {
     const euroCode = 'EUR';
 
     return (
