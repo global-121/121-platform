@@ -5,7 +5,7 @@ export class VisaCardToWallet1678278494087 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT "FK_70d1231a6094f1151ec92303a83"`,
+      `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT IF EXISTS "FK_70d1231a6094f1151ec92303a83"`,
     );
     await queryRunner.query(
       `CREATE TABLE "121-service"."intersolve_visa_wallet" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "tokenCode" character varying, "type" character varying, "tokenBlocked" boolean, "status" character varying, "cardUrl" character varying, "controlToken" character varying, CONSTRAINT "UQ_9517f2566788e1ebf763ba4d1fa" UNIQUE ("tokenCode"), CONSTRAINT "PK_d1081a09d40748cfcd636832cdd" PRIMARY KEY ("id"))`,
