@@ -45,14 +45,17 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
           notifications,
         )) {
           for (const [key, text] of Object.entries(messages)) {
-            const messageTemplate = new MessageTemplateEntity();
-            messageTemplate.programId = program['id'];
-            messageTemplate.language = language;
-            messageTemplate.type = key;
-            messageTemplate.message = text;
-            messageTemplate.isWhatsappTemplate =
-              whatsAppMessageTemplateNames.includes(key);
-            await messageTemplateRepository.save(messageTemplate);
+            const messageTemplate = {
+              programId: program['id'],
+              language: language,
+              type: key,
+              message: text,
+              isWhatsappTemplate: whatsAppMessageTemplateNames.includes(key),
+            };
+            await queryRunner.query(
+              `INSERT INTO "121-service"."message_template"("type", "language", "message", "isWhatsappTemplate", "programId") VALUES ($1, $2, $3, $4, $5)`,
+              [messageTemplate.type, messageTemplate.language, messageTemplate.message, messageTemplate.isWhatsappTemplate, messageTemplate.programId]
+            );
           }
         }
       }
