@@ -105,7 +105,7 @@ export class ExcelService
       },
       programId,
       true,
-      false,
+      true,
     );
 
     const excelFspInstructions = registrations.data.map((registration) => {
