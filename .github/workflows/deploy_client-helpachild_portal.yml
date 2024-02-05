@@ -30,7 +30,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: ''
+          envIcon: 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAaVBMVEXPADrPADnOADjRDUTXKlrRCUDbP2vzwtD76e7qjqjQBD3UG0/wrb/iaIrtoLb////53ubPADj98vXfVHrrl6731N3TGUzgW4D0xdL42eLiY4b1ytbYMF/77PD65uzcRW/kcZHohKDmepjETAPtAAAAjklEQVR4AUxOgwHAMBCMalztcP8da739R26ijJI/US74V/EI84Mwip9mkmZxDhRJec2UIqzqBmg70dFrPUDbD+PUzws7R1gGNF3Xy+g50gWoal/NyfOHaYlxDDUjL5kKsOWXl3wARk0+aE7mM2QW3xXaF1ncmbay3v1lNiWlZTI1oryQWZ8dvoxjsg0TAADfXAfcXRXoKAAAAABJRU5ErkJggg=='
           envContentSecurityPolicy: >-
             script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             connect-src 'self' https://helpachild.121.global;
