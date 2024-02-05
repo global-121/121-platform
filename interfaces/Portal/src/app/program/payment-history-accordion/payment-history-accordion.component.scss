@@ -67,3 +67,9 @@ ion-item::part(native) {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+.chip {
+  pointer-events: none;
+  background-color: var(--fiveten-neutral-100);
+  height: 27px;
+}
