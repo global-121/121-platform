@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { AppDataSource } from '../../../../appdatasource';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { RegistrationEntity } from '../../../registration/registration.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
@@ -17,8 +19,12 @@ import { ExcelFspInstructions } from './dto/excel-fsp-instructions.dto';
 export class ExcelService
   implements FinancialServiceProviderIntegrationInterface
 {
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
+
   public constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async getQueueProgress(_programId: number): Promise<number> {
@@ -52,64 +58,66 @@ export class ExcelService
   }
 
   public async getFspInstructions(
-    registration: RegistrationEntity,
-    transaction: TransactionReturnDto,
-  ): Promise<ExcelFspInstructions> {
-    // Fetch only necessary data with a single query
-    const registrationRepo = AppDataSource.getRepository(RegistrationEntity);
-    const registrationData = await registrationRepo
-      .createQueryBuilder('registration')
-      .leftJoinAndSelect('registration.program', 'program')
-      .leftJoin('program.programQuestions', 'programQuestions')
+    transactions: TransactionReturnDto[],
+    programId: number,
+  ): Promise<ExcelFspInstructions[]> {
+    const programFspConfig = await this.programRepository
+      .createQueryBuilder('program')
+      .leftJoinAndSelect('program.programQuestions', 'programQuestions')
+      .leftJoinAndSelect(
+        'program.programCustomAttributes',
+        'programCustomAttributes',
+      )
       .leftJoinAndSelect(
         'program.programFspConfiguration',
         'programFspConfiguration',
         'programFspConfiguration.name = :configName',
-        { configName: 'columnsToBeExported' },
+        { configName: FspConfigurationEnum.columnsToExport },
       )
-      .select([
-        'registration.phoneNumber',
-        'program.ngo',
-        'programFspConfiguration.value',
-        'programQuestions',
-      ])
-      .where('registration.id = :registrationId', {
-        registrationId: registration.id,
+      .andWhere('program.id = :programId', {
+        programId: programId,
       })
       .getOne();
 
-    console.log(registrationData.program.programFspConfiguration);
-    if (!registrationData) {
-      throw new Error('Registration data not found.');
+    if (!programFspConfig) {
+      throw new Error('Program FSP config not found.');
     }
 
-    // Check if columnsToBeExported is defined
-    const fspConfigValue =
-      registrationData.program.programFspConfiguration[0]?.value;
-
-    let programColumns;
-    if (fspConfigValue) {
-      programColumns = JSON.parse(fspConfigValue);
+    let exportColumns: string[];
+    const columnsToExportConfig =
+      programFspConfig.programFspConfiguration[0]?.value;
+    if (columnsToExportConfig) {
+      exportColumns = JSON.parse(columnsToExportConfig);
     } else {
-      // Default to using all program question names if columnsToBeExported is not specified
-      programColumns = registrationData.program.programQuestions.map(
-        (q) => q.name,
-      );
+      // Default to using all program questions & attributes names if columnsToExport is not specified
+      // So generic fields must be specified in the programFspConfiguration
+      exportColumns = programFspConfig.programQuestions
+        .map((q) => q.name)
+        .concat(programFspConfig.programCustomAttributes.map((q) => q.name));
     }
 
-    const excelFspInstructions = new ExcelFspInstructions();
-    // Assuming ExcelFspInstructions can accept dynamic keys
-    for (const col of programColumns) {
-      // Fetch and assign question values to excelFspInstructions
-      // Implement logic to assign values based on registrationData and col
-      excelFspInstructions[col] =
-        await registration.getRegistrationDataValueByName(col);
-    }
+    const referenceIds = transactions.map((t) => t.referenceId);
+    const registrations = await this.registrationsPaginationService.getPaginate(
+      {
+        select: exportColumns.concat(['referenceId']), //add referenceId to join transaction amount later
+        filter: { referenceId: `$in:${referenceIds.join(',')}` },
+        path: '',
+      },
+      programId,
+      true,
+      false,
+    );
 
-    // Populate other known fields
-    excelFspInstructions.phoneNumber = registrationData.phoneNumber;
-    excelFspInstructions.amount = transaction.amount;
-    excelFspInstructions.reference = registrationData.program.ngo;
+    const excelFspInstructions = registrations.data.map((registration) => {
+      const fspInstructions = new ExcelFspInstructions();
+      for (const col of exportColumns) {
+        fspInstructions[col] = registration[col];
+      }
+      fspInstructions.amount = transactions.find(
+        (t) => t.referenceId === registration.referenceId,
+      ).amount;
+      return fspInstructions;
+    });
 
     return excelFspInstructions;
   }

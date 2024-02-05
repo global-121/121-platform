@@ -1,6 +1,4 @@
 export class ExcelFspInstructions {
-  public name: string;
-  public phoneNumber: string;
   public amount: number;
-  public reference: string;
+  // Other fields are added dynamically based on program fsp configuration
 }

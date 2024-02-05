@@ -788,8 +788,8 @@ export class PaymentsService {
   }
 
   public async getFspInstructions(
-    programId,
-    payment,
+    programId: number,
+    payment: number,
     userId: number,
   ): Promise<FspInstructions> {
     const paymentTransactions =
@@ -800,12 +800,15 @@ export class PaymentsService {
         null,
       );
 
-    const csvInstructions = [];
+    let csvInstructions = [];
     let xmlInstructions: string;
 
     let fileType: ExportFileType;
 
-    for await (const transaction of paymentTransactions) {
+    // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
+    for await (const transaction of paymentTransactions.filter(
+      (t) => t.fsp !== FspName.excel,
+    )) {
       const registration = await this.registrationScopedRepository.findOne({
         where: { referenceId: transaction.referenceId },
         relations: ['fsp'],
@@ -851,16 +854,18 @@ export class PaymentsService {
           fileType = ExportFileType.xml;
         }
       }
-      if (registration.fsp.fsp === FspName.excel) {
-        const instruction = await this.excelService.getFspInstructions(
-          registration,
-          transaction,
-        );
-        csvInstructions.push(instruction);
-        if (!fileType) {
-          fileType = ExportFileType.csv;
-        }
-      }
+    }
+
+    // It is assumed the Excel FPS is not combined with other non-api FSPs above, and they are overwritten
+    const excelTransactions = paymentTransactions.filter(
+      (t) => t.fsp === FspName.excel,
+    );
+    if (excelTransactions.length) {
+      csvInstructions = await this.excelService.getFspInstructions(
+        excelTransactions,
+        programId,
+      );
+      fileType = ExportFileType.excel;
     }
 
     await this.actionService.saveAction(
