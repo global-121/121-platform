@@ -30,6 +30,9 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
   @Input()
   private hasFspWithReconciliation: boolean;
 
+  @Input()
+  public paymentInProgress: boolean;
+
   public disabled: boolean;
   public isInProgress = false;
 
@@ -85,7 +88,12 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
   }
 
   private btnEnabled() {
-    return this.payment > 0 && this.payment <= this.lastPaymentId;
+    return (
+      this.payment > 0 &&
+      this.payment <= this.lastPaymentId &&
+      // only disable last payment if in progress
+      (!this.paymentInProgress || this.payment < this.lastPaymentId)
+    );
   }
 
   public async getExportFspInstructions() {
