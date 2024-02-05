@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.109.2...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.111.1...main)
+
+---
+
+## [1.111.1](https://github.com/global-121/121-platform/compare/v1.111.0...v1.111.1) - 2024-02-02
+
+- Fix failing migration script on test/staging
+
+## [1.111.0](https://github.com/global-121/121-platform/compare/v1.110.1...v1.111.0) - 2024-02-02
+
+- Renamed 'twilio-mock-service' to 'mock-service' and MOCK_TWILIO_URL to MOCK_SERVICE_URL
+- Migration to enable scope for NLRC PV program and set scope of all current PAs
+- Queue payments for Intersolve Voucher, Safaricom and CBE
+- Final performance improvements for facilitating 100,000 PAs
+- Store exchange rates daily
+
+## [1.110.1](https://github.com/global-121/121-platform/compare/v1.110.0...v1.110.1) - 2024-01-30
+
+- Fix error handling and unneeded API-calls on Limit Visa topup
+- Missing translation keys on status change result alerts
 
 ## [1.110.0](https://github.com/global-121/121-platform/compare/v1.109.2...v1.110.0) - 2024-01-26
 

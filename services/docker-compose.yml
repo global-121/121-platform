@@ -27,13 +27,13 @@ services:
     ports:
       - '6379:6379'
 
-  twilio-mock-service:
+  mock-service:
     env_file: .env
     build:
-      context: twilio-mock-service
+      context: mock-service
       target: production
     init: true
-    container_name: twilio-mock-service
+    container_name: mock-service
     ports:
       - '3001:3001'
     stdin_open: true

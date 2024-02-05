@@ -3,6 +3,7 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 ,en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-link-customer-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+,en,1,,Test,mock-fail-get-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_OK,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_BLOCKED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-get-card-CARD_EXPIRED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag

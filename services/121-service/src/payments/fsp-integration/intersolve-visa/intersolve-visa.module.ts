@@ -3,21 +3,22 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
+import { RedisModule } from '../../../payments/redis.module';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserModule } from '../../../user/user.module';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { QueueNamePayment } from '../../enum/queue.names.enum';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { QueueNamePayment } from './enum/queue.names.enum';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
-import { PaymentProcessorIntersolveVisa } from './processors/payment.processor';
+import { PaymentProcessorIntersolveVisa } from './processors/intersolve-visa.processor';
 import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
@@ -32,14 +33,22 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
       name: QueueNamePayment.paymentIntersolveVisa,
       processors: [
         {
-          path: 'src/payments/fsp-integration/intersolve-visa/processors/payment.processor.ts',
+          path: 'src/payments/fsp-integration/intersolve-visa/processors/intersolve-visa.processor.ts',
         },
       ],
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
+      defaultJobOptions: {
+        attempts: 2,
+        backoff: {
+          type: 'fixed',
+          delay: 3000,
+        },
+      },
     }),
+    RedisModule,
   ],
   providers: [
     IntersolveVisaService,
@@ -61,7 +70,6 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
     IntersolveVisaExportService,
-    BullModule,
   ],
 })
 export class IntersolveVisaModule {}

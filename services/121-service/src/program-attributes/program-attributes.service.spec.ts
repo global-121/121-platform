@@ -7,6 +7,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { QuestionType } from '../registration/enum/custom-data-attributes';
+import { generateMockCreateQueryBuilder } from '../utils/createQueryBuilderMock.helper';
 import { ProgramAttributesService } from './program-attributes.service';
 
 describe('ProgramAttributesService', () => {
@@ -64,11 +65,12 @@ describe('ProgramAttributesService', () => {
           label: 'label for test name #1',
         },
       ];
-      const createQueryBuilder: any = {
-        where: () => createQueryBuilder,
-        andWhere: () => createQueryBuilder,
-        getMany: () => dbQueryResult,
-      };
+      const createQueryBuilder: any = generateMockCreateQueryBuilder(
+        dbQueryResult,
+        {
+          useGetMany: true,
+        },
+      );
 
       jest
         .spyOn(programCustomAttributeRepository, 'createQueryBuilder')

@@ -159,7 +159,7 @@ export class RegistrationDataTypeValidator
     } else if (type === CustomAttributeType.boolean) {
       isValid = typeof value == 'boolean' || this.valueIsBool(value);
     } else {
-      this.message = `Type '${type}' is unkown'`;
+      this.message = `Type '${type}' is unknown'`;
       return false;
     }
     this.createErrorMessageType(type, value, attribute);

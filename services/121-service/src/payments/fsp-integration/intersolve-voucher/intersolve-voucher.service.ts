@@ -1,6 +1,9 @@
+import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
 import crypto from 'crypto';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
@@ -23,11 +26,14 @@ import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
+import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { ImageCodeService } from '../../imagecode/image-code.service';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
+import { IntersolveVoucherJobDto } from './dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherJobName } from './dto/job-details.dto';
 import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
@@ -62,6 +68,10 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
+    @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
+    private readonly paymentIntersolveVoucherQueue: Queue,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
 
   public async sendPayment(
@@ -85,31 +95,60 @@ export class IntersolveVoucherService
     };
 
     for (const paymentInfo of paPaymentList) {
-      const paResult = await this.sendIndividualPayment(
-        paymentInfo,
-        useWhatsapp,
-        paymentInfo.transactionAmount,
-        payment,
-        credentials,
+      const job = await this.paymentIntersolveVoucherQueue.add(
+        ProcessName.sendPayment,
+        {
+          paymentInfo: paymentInfo,
+          useWhatsapp: useWhatsapp,
+          payment: payment,
+          credentials: credentials,
+          programId: programId,
+        },
       );
-      if (!paResult) {
-        continue;
-      }
-
-      // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
-      const registration = await this.registrationScopedRepository.findOne({
-        where: { referenceId: paResult.referenceId },
-      });
-      await this.storeTransactionResult(
-        payment,
-        paymentInfo.transactionAmount,
-        registration.id,
-        1,
-        paResult.status,
-        paResult.message,
-        registration.programId,
-      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
+  }
+
+  public async getQueueProgress(programId?: number): Promise<number> {
+    if (programId) {
+      // Get the count of job IDs in the Redis set for the program
+      const count = await this.redisClient.scard(getRedisSetName(programId));
+      return count;
+    } else {
+      // If no programId is provided, use Bull's method to get the total delayed count
+      // This requires an instance of the Bull queue
+      const delayedCount =
+        await this.paymentIntersolveVoucherQueue.getDelayedCount();
+      return delayedCount;
+    }
+  }
+
+  public async processQueuedPayment(
+    jobData: IntersolveVoucherJobDto,
+  ): Promise<void> {
+    const paResult = await this.sendIndividualPayment(
+      jobData.paymentInfo,
+      jobData.useWhatsapp,
+      jobData.paymentInfo.transactionAmount,
+      jobData.payment,
+      jobData.credentials,
+    );
+    if (!paResult) {
+      return;
+    }
+
+    const registration = await this.registrationScopedRepository.findOne({
+      where: { referenceId: paResult.referenceId },
+    });
+    await this.storeTransactionResult(
+      jobData.payment,
+      jobData.paymentInfo.transactionAmount,
+      registration.id,
+      1,
+      paResult.status,
+      paResult.message,
+      registration.programId,
+    );
   }
 
   public async sendIndividualPayment(

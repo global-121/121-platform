@@ -46,6 +46,11 @@ export class UkrPoshtaService
     return fspTransactionResult;
   }
 
+  public async getQueueProgress(_programId: number): Promise<number> {
+    // TODO: When this is implemented, remove the '_' from the variable. This is a temporary solution to avoid the linter error.
+    throw new Error('Method not implemented.');
+  }
+
   public async getFspInstructions(
     registration: RegistrationEntity,
     transaction: TransactionReturnDto,
