@@ -61,7 +61,7 @@ export class ExcelService
     transactions: TransactionReturnDto[],
     programId: number,
   ): Promise<ExcelFspInstructions[]> {
-    const programFspConfig = await this.programRepository
+    const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestions')
       .leftJoinAndSelect(
@@ -79,23 +79,19 @@ export class ExcelService
       })
       .getOne();
 
-    if (!programFspConfig) {
-      throw new Error('Program FSP config not found.');
-    }
-
     let exportColumns: string[];
     const columnsToExportConfig =
-      programFspConfig.programFspConfiguration[0]?.value;
+      programWithConfig.programFspConfiguration[0]?.value;
     if (columnsToExportConfig) {
       exportColumns = JSON.parse(columnsToExportConfig);
     } else {
       // Default to using all program questions & attributes names if columnsToExport is not specified
       // So generic fields must be specified in the programFspConfiguration
-      exportColumns = programFspConfig.programQuestions
+      exportColumns = programWithConfig.programQuestions
         .map((q) => q.name)
-        .concat(programFspConfig.programCustomAttributes.map((q) => q.name));
+        .concat(programWithConfig.programCustomAttributes.map((q) => q.name));
     }
-
+    exportColumns = [...new Set(exportColumns)]; // remove duplicates
     const referenceIds = transactions.map((t) => t.referenceId);
     const registrations = await this.registrationsPaginationService.getPaginate(
       {
