@@ -6,11 +6,12 @@ export interface QueryBuilderMock {
   leftJoin: () => QueryBuilderMock;
   getMany?: () => any;
   getRawMany?: () => any;
+  distinct?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
   dbQueryResult: any[],
-  options: any = {},
+  options: { useGetMany?: boolean } = {},
 ): QueryBuilderMock {
   const mock: QueryBuilderMock = {
     select: () => mock,
@@ -18,6 +19,7 @@ export function generateMockCreateQueryBuilder(
     where: () => mock,
     andWhere: () => mock,
     leftJoin: () => mock,
+    distinct: () => mock,
   };
 
   if (options.useGetMany) {
