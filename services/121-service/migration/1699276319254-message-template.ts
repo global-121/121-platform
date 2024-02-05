@@ -54,7 +54,13 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
             };
             await queryRunner.query(
               `INSERT INTO "121-service"."message_template"("type", "language", "message", "isWhatsappTemplate", "programId") VALUES ($1, $2, $3, $4, $5)`,
-              [messageTemplate.type, messageTemplate.language, messageTemplate.message, messageTemplate.isWhatsappTemplate, messageTemplate.programId]
+              [
+                messageTemplate.type,
+                messageTemplate.language,
+                messageTemplate.message,
+                messageTemplate.isWhatsappTemplate,
+                messageTemplate.programId,
+              ],
             );
           }
         }
