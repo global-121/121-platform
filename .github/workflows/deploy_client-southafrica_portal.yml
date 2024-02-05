@@ -1,0 +1,64 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [South Africa] Interface: Portal'
+
+env:
+  workingDirectory: interfaces/Portal
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Job
+    runs-on: ubuntu-latest
+    environment: 'client-southafrica'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
+        with:
+          interfacePath: ${{ env.workingDirectory }}
+          envIcon: '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'
+          envContentSecurityPolicy: >-
+            script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            connect-src 'self' https://southafrica.121.global;
+            form-action https://southafrica.121.global;
+        env:
+          NG_ENV_NAME: 'South Africa'
+          NG_LOCALES: 'en'
+          NG_URL_121_SERVICE_API: 'https://southafrica.121.global/api'
+          NG_AI_IKEY: '88aa2b5e-041d-4a33-b7c0-d55e85a28c6d'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=88aa2b5e-041d-4a33-b7c0-d55e85a28c6d;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
+      - name: Deploy to Azure Static Web App
+        id: deploy_to_aswa
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          config_file_location: '${{ env.workingDirectory }}/'
+          app_location: '${{ env.workingDirectory }}/www'
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY

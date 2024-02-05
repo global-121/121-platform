@@ -27,7 +27,7 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //     and "programId" = 2;
     //     `);
     //   const idCustomAttributePartnerOrganization =
-    //     idCustomAttributePartnerOrganizationResult[0].id;
+    //     idCustomAttributePartnerOrganizationResult[0]?.id;
     //   console.log(
     //     '🚀 ~ PvScoped1706711131062 ~ up ~ idCustomAttributePartnerOrganization:',
     //     idCustomAttributePartnerOrganization,
@@ -40,20 +40,21 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //       where
     //         name = 'district' and "programId" = 2;
     //     `);
-    //   const idCustomAttributeDistrict = idCustomAttributeDistrictResult[0].id;
+    //   const idCustomAttributeDistrict = idCustomAttributeDistrictResult[0]?.id;
     //   console.log(
     //     '🚀 ~ PvScoped1706711131062 ~ up ~ idCustomAttributeDistrict:',
     //     idCustomAttributeDistrict,
     //   );
-    //   // Update custom attribute values of District
-    //   // Does not update values that are already updated
-    //   await queryRunner.query(`
+    //   if (idCustomAttributeDistrict && idCustomAttributePartnerOrganization) {
+    //     // Update custom attribute values of District
+    //     // Does not update values that are already updated
+    //     await queryRunner.query(`
     //     INSERT INTO "121-service"."registration_data" ("registrationId", "programCustomAttributeId", "value")
     //     SELECT
-    //       rdp."registrationId",
-    //       ${idCustomAttributeDistrict},
+    //     rdp."registrationId",
+    //     ${idCustomAttributeDistrict},
     //     CASE
-    //         WHEN rdp.value = 'AMS_LOA' THEN 'Amsterdam-Amstelland'
+    //     WHEN rdp.value = 'AMS_LOA' THEN 'Amsterdam-Amstelland'
     //         WHEN rdp.value = 'FLEX' THEN 'Unknown'
     //         WHEN rdp.value = 'UTR_Toevlucht' THEN 'Utrecht Gooi'
     //         WHEN rdp.value = 'AMS_ACO_GEZ' THEN 'Amsterdam-Amstelland'
@@ -92,10 +93,10 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //         FROM "121-service"."registration_data" rd2
     //         WHERE rd2."registrationId" = rdp."registrationId"
     //         AND rd2."programCustomAttributeId" = ${idCustomAttributeDistrict}
-    //       );
-    //     `);
-    //   // Update old district values to align with new ones
-    //   await queryRunner.query(`
+    //         );
+    //         `);
+    //     // Update old district values to align with new ones
+    //     await queryRunner.query(`
     //       update
     //       "121-service"."registration_data" rdp
     //       set
@@ -112,15 +113,15 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //         when rdp.value = 'Gooi en Utrecht' then 'Utrecht Gooi'
     //         when rdp.value = 'District Utrecht Gooi' then 'Utrecht Gooi'
     //         else value
-    //       end
-    //       WHERE rdp."programCustomAttributeId" = ${idCustomAttributeDistrict};
-    //       `);
-    //   // Update custom attribute values of Partner Organization
-    //   await queryRunner.query(`
-    //       update
-    //       "121-service"."registration_data" rdp
-    //       set
-    //       value = case
+    //         end
+    //         WHERE rdp."programCustomAttributeId" = ${idCustomAttributeDistrict};
+    //         `);
+    //     // Update custom attribute values of Partner Organization
+    //     await queryRunner.query(`
+    //         update
+    //         "121-service"."registration_data" rdp
+    //         set
+    //         value = case
     //         when rdp.value = 'AMS_LOA' then 'LOS'
     //         when rdp.value = 'FLEX' then 'FLEX'
     //         when rdp.value = 'UTR_Toevlucht' then 'Stichting Toevlucht'
@@ -152,40 +153,41 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //         when rdp.value = 'ROT_Distr' then 'het Rode Kruis'
     //         when rdp.value = 'GELD_Bindkracht10' then 'Bindkracht10 Nijmegen'
     //         else value
-    //       end
+    //         end
     //       WHERE rdp."programCustomAttributeId" = ${idCustomAttributePartnerOrganization};
     //       `);
-    //   // Update scope to <partner organization>.<district> in lower case only numeric and alphabetic characters
-    //   await queryRunner.query(`
+    //     // Update scope to <partner organization>.<district> in lower case only numeric and alphabetic characters
+    //     await queryRunner.query(`
     //       update
     //           "121-service".registration
     //         set
-    //           "scope" = subquery.new_value
+    //         "scope" = subquery.new_value
     //         from
-    //           (
+    //         (
     //           select
-    //             rddi."registrationId",
-    //             concat(REGEXP_REPLACE(LOWER(rddi.value),
-    //             '[^a-z0-9]',
-    //             '',
-    //             'g'),
-    //             '.',
-    //             REGEXP_REPLACE(LOWER(rdpo.value),
-    //             '[^a-z0-9]',
-    //             '',
-    //             'g')) as new_value
+    //           rddi."registrationId",
+    //           concat(REGEXP_REPLACE(LOWER(rddi.value),
+    //           '[^a-z0-9]',
+    //           '',
+    //           'g'),
+    //           '.',
+    //           REGEXP_REPLACE(LOWER(rdpo.value),
+    //           '[^a-z0-9]',
+    //           '',
+    //           'g')) as new_value
     //           from
-    //             "121-service".registration_data rddi
+    //           "121-service".registration_data rddi
     //           left join "121-service".registration_data rdpo
     //           on
     //             rddi."registrationId" = rdpo."registrationId"
-    //           where
+    //             where
     //             rddi."programCustomAttributeId" = ${idCustomAttributeDistrict}
     //             and rdpo."programCustomAttributeId" = ${idCustomAttributePartnerOrganization}
     //         ) as subquery
     //         where
     //           "121-service".registration.id = subquery."registrationId";
-    //       `);
+    //           `);
+    //   }
     // }
   }
 
