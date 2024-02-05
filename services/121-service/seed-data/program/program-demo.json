@@ -47,6 +47,15 @@
     },
     {
       "fsp": "Africas-talking"
+    },
+    {
+      "fsp": "Excel",
+      "configuration": [
+        {
+          "name": "columnsToExport",
+          "value": "[\"name\", \"birthdate\", \"documentid\"]"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 870,

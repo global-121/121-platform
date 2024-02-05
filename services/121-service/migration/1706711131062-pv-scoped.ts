@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class PvScoped1706711131062 implements MigrationInterface {
   // comment out after use, as this will fail locally as 'district' is not in seed data
-  public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(_queryRunner: QueryRunner): Promise<void> {
     // const instances = await queryRunner.query(`
     //   select
     //     id
@@ -16,7 +16,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //       set "enableScope" = true
     //       where "id" = 2;
     //     `);
-
     //   const idCustomAttributePartnerOrganizationResult =
     //     await queryRunner.query(`
     //   select
@@ -46,7 +45,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //     '🚀 ~ PvScoped1706711131062 ~ up ~ idCustomAttributeDistrict:',
     //     idCustomAttributeDistrict,
     //   );
-
     //   // Update custom attribute values of District
     //   // Does not update values that are already updated
     //   await queryRunner.query(`
@@ -96,7 +94,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //         AND rd2."programCustomAttributeId" = ${idCustomAttributeDistrict}
     //       );
     //     `);
-
     //   // Update old district values to align with new ones
     //   await queryRunner.query(`
     //       update
@@ -118,7 +115,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //       end
     //       WHERE rdp."programCustomAttributeId" = ${idCustomAttributeDistrict};
     //       `);
-
     //   // Update custom attribute values of Partner Organization
     //   await queryRunner.query(`
     //       update
@@ -159,7 +155,6 @@ export class PvScoped1706711131062 implements MigrationInterface {
     //       end
     //       WHERE rdp."programCustomAttributeId" = ${idCustomAttributePartnerOrganization};
     //       `);
-
     //   // Update scope to <partner organization>.<district> in lower case only numeric and alphabetic characters
     //   await queryRunner.query(`
     //       update

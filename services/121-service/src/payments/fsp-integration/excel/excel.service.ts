@@ -1,16 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { AppDataSource } from '../../../../appdatasource';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { StatusEnum } from '../../../shared/enum/status.enum';
+import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from '../../dto/payment-transaction-result.dto';
 import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
+import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { ExcelFspInstructions } from './dto/excel-fsp-instructions.dto';
 
 @Injectable()
-export class ExcelService {
-  public constructor() {}
+export class ExcelService
+  implements FinancialServiceProviderIntegrationInterface
+{
+  public constructor(
+    private readonly transactionsService: TransactionsService,
+  ) {}
 
   public async getQueueProgress(_programId: number): Promise<number> {
     // TODO: When this is implemented, remove the '_' from the variable. This is a temporary solution to avoid the linter error.
     throw new Error('Method not implemented.');
+  }
+
+  public async sendPayment(
+    paPaymentList: PaPaymentDataDto[],
+    programId: number,
+    paymentNr: number,
+  ): Promise<FspTransactionResultDto> {
+    const fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.paList = [];
+    fspTransactionResult.fspName = FspName.excel;
+    for (const paPayment of paPaymentList) {
+      const transactionResult = new PaTransactionResultDto();
+      transactionResult.calculatedAmount = paPayment.transactionAmount;
+      transactionResult.fspName = FspName.excel;
+      transactionResult.referenceId = paPayment.referenceId;
+      transactionResult.status = StatusEnum.success; // TODO: change this to 'waiting' once reconciliation is implemented
+      fspTransactionResult.paList.push(transactionResult);
+    }
+    await this.transactionsService.storeAllTransactions(
+      fspTransactionResult,
+      programId,
+      paymentNr,
+    );
+
+    return fspTransactionResult;
   }
 
   public async getFspInstructions(

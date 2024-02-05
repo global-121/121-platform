@@ -65,7 +65,7 @@
       "fsp": "Excel",
       "configuration": [
         {
-          "name": "columnsToBeExported",
+          "name": "columnsToExport",
           "value": "[\"name\", \"dob\", \"house\"]"
         }
       ]

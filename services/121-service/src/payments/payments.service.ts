@@ -485,6 +485,7 @@ export class PaymentsService {
     const vodacashPaPayment = [];
     const safaricomPaPayment = [];
     const commercialBankEthiopiaPaPayment = [];
+    const excelPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
@@ -508,6 +509,8 @@ export class PaymentsService {
         safaricomPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.commercialBankEthiopia) {
         commercialBankEthiopiaPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.excel) {
+        excelPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -525,6 +528,7 @@ export class PaymentsService {
       vodacashPaPayment,
       safaricomPaPayment,
       commercialBankEthiopiaPaPayment,
+      excelPaPayment,
     };
   }
 
@@ -617,6 +621,14 @@ export class PaymentsService {
     if (paLists.commercialBankEthiopiaPaPayment.length) {
       await this.commercialBankEthiopiaService.sendPayment(
         paLists.commercialBankEthiopiaPaPayment,
+        programId,
+        payment,
+      );
+    }
+
+    if (paLists.excelPaPayment.length) {
+      await this.excelService.sendPayment(
+        paLists.excelPaPayment,
         programId,
         payment,
       );

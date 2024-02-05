@@ -20,5 +20,5 @@ export enum FspName {
 export const FspConfigurationMapping: { [key in FspName]?: any } = {
   'Intersolve-voucher-whatsapp': ['password', 'username'],
   'Intersolve-voucher-paper': ['password', 'username'],
-  'Excel': ['columnsToBeExported'],
+  Excel: ['columnsToExport'],
 };
