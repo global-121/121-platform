@@ -37,6 +37,7 @@ import { AfricasTalkingService } from './fsp-integration/africas-talking/africas
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { ExcelService } from './fsp-integration/excel/excel.service';
 import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -79,6 +80,7 @@ export class PaymentsService {
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
+    private readonly excelService: ExcelService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -835,6 +837,16 @@ export class PaymentsService {
         );
         if (!fileType) {
           fileType = ExportFileType.xml;
+        }
+      }
+      if (registration.fsp.fsp === FspName.excel) {
+        const instruction = await this.excelService.getFspInstructions(
+          registration,
+          transaction,
+        );
+        csvInstructions.push(instruction);
+        if (!fileType) {
+          fileType = ExportFileType.csv;
         }
       }
     }

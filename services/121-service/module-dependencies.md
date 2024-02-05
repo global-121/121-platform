@@ -52,6 +52,8 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
+  PaymentsModule-->ExcelModule
+  ExcelModule-->TransactionsModule
   PaymentsModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
   CommercialBankEthiopiaModule-->RedisModule
