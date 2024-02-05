@@ -30,9 +30,7 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
       'whatsappPayment',
     ];
     const programsRepository = manager.getRepository(ProgramEntity);
-    const messageTemplateRepository = manager.getRepository(
-      MessageTemplateEntity,
-    );
+
     const programsQb = programsRepository
       .createQueryBuilder('program')
       .select(['id', 'notifications']);
