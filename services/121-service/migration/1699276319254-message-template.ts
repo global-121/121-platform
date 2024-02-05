@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { MessageTemplateEntity } from '../src/notifications/message-template/message-template.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
 
 export class MessageTemplate1699276319254 implements MigrationInterface {
