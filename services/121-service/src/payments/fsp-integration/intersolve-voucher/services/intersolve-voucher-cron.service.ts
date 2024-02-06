@@ -74,6 +74,11 @@ export class IntersolveVoucherCronService {
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
 
+    // Instance has no intersolve voucher configuration
+    if (config.length === 0) {
+      return;
+    }
+
     const credentials: { username: string; password: string } = {
       username: config.find((c) => c.name === FspConfigurationEnum.username)
         ?.value,
