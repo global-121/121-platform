@@ -1,9 +1,9 @@
 {
   "fsp": "Excel",
   "fspDisplayNamePaApp": {
-    "en": "Excel"
+    "en": "Excel Payment Instructions"
   },
-  "fspDisplayNamePortal": "Excel",
+  "fspDisplayNamePortal": "Excel Payment Instructions",
   "integrationType": "csv",
   "questions": []
 }
