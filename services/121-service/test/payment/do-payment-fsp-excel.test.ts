@@ -1,3 +1,8 @@
+import programTest from '../../seed-data/program/program-test.json';
+import {
+  FspConfigurationEnum,
+  FspName,
+} from '../../src/fsp/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -24,11 +29,9 @@ import {
   registrationWesteros2,
 } from '../registrations/pagination/pagination-data';
 
-import programTest from '../../seed-data/program/program-test.json';
-
-describe('Do payment with filter', () => {
+describe('Download FSP instructions', () => {
   let accessToken: string;
-  // Payment infor
+  // Payment info
   const amount = 10;
   const paymentNr = 1;
 
@@ -41,7 +44,7 @@ describe('Do payment with filter', () => {
     (registration) => registration.phoneNumber,
   );
 
-  const registraitonsProgramWithValidation = [registrationPV5];
+  const registrationsProgramWithValidation = [registrationPV5];
   const refrenceIdsWithValidation = [registrationPV5.referenceId];
 
   beforeAll(async () => {
@@ -65,26 +68,6 @@ describe('Do payment with filter', () => {
       accessToken,
     );
 
-    ////////////////////////////
-    // Setup Validation program
-    ////////////////////////////
-    await changePhase(
-      programIdWithValidation,
-      ProgramPhase.payment,
-      accessToken,
-    );
-    await importRegistrations(
-      programIdWithValidation,
-      registraitonsProgramWithValidation,
-      accessToken,
-    );
-    await awaitChangePaStatus(
-      programIdWithValidation,
-      refrenceIdsWithValidation,
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-
     await doPayment(programIdWesteros, paymentNr, amount, [], accessToken);
 
     await waitForPaymentTransactionsToComplete(
@@ -95,7 +78,29 @@ describe('Do payment with filter', () => {
       [StatusEnum.success],
     );
 
-    // Create some extra mock data to see if the right amount of transactions are created
+    ////////////////////////////
+    // Setup Validation program
+    ////////////////////////////
+
+    // Do more tests with multiple programs, to include data isolation in tests
+    // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
+    await changePhase(
+      programIdWithValidation,
+      ProgramPhase.payment,
+      accessToken,
+    );
+    await importRegistrations(
+      programIdWithValidation,
+      registrationsProgramWithValidation,
+      accessToken,
+    );
+    await awaitChangePaStatus(
+      programIdWithValidation,
+      refrenceIdsWithValidation,
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
+
     await doPayment(
       programIdWithValidation,
       paymentNr,
@@ -112,11 +117,13 @@ describe('Do payment with filter', () => {
     );
   });
 
-  it('get fsp instruction with Excel/generic fsp return all specific columns that are set in "columnsToExport"', async () => {
+  it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
     // Arrange
     const configValue = programTest.financialServiceProviders
-      .find((fsp) => fsp.fsp === 'Excel')
-      .configuration.find((c) => c.name === 'columnsToExport');
+      .find((fsp) => fsp.fsp === FspName.excel)
+      .configuration.find(
+        (c) => c.name === FspConfigurationEnum.columnsToExport,
+      );
     const columns = JSON.parse(configValue.value).concat(['amount']);
 
     // Act
@@ -168,7 +175,7 @@ describe('Do payment with filter', () => {
     expect(columnsInFspInstructions.sort()).toEqual(columns.sort());
   });
 
-  it('get fsp instruction with Excel/generic fsp return all columns when "columnsToExport" is not set', async () => {
+  it('Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
     // Arrange
     const programAttributeColumns = programTest.programCustomAttributes.map(
       (pa) => pa.name,
@@ -182,7 +189,7 @@ describe('Do payment with filter', () => {
 
     const fspConfig = await getFspConfiguration(programIdWesteros, accessToken);
     const columnsToExport = fspConfig.body.find(
-      (c) => c.name === 'columnsToExport',
+      (c) => c.name === FspConfigurationEnum.columnsToExport,
     );
     await deleteFspConfiguration(
       programIdWesteros,
