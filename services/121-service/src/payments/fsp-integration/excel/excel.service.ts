@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationViewScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -25,6 +27,7 @@ export class ExcelService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async getQueueProgress(_programId: number): Promise<number> {
@@ -60,7 +63,39 @@ export class ExcelService
   public async getFspInstructions(
     transactions: TransactionReturnDto[],
     programId: number,
+    payment: number,
   ): Promise<ExcelFspInstructions[]> {
+    const exportColumns = await this.getExportColumnsForProgram(programId);
+    // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
+    const qb = this.getQueryBuilderForExportColumns(programId, payment);
+
+    const registrations =
+      await this.registrationsPaginationService.getRegistrationsChunked(
+        programId,
+        {
+          select: exportColumns, //add referenceId to join transaction amount later
+          path: '',
+        },
+        400000,
+        qb,
+      );
+
+    // # of transactions and registrations should be the same or throw
+    // in theory this should never happen
+    if (transactions.length !== registrations.length) {
+      throw new Error(
+        `Number of transactions (${transactions.length}) and registrations (${registrations.length}) do not match`,
+      );
+    }
+
+    return this.joinRegistrationsAndTransactions(
+      registrations,
+      transactions,
+      exportColumns,
+    );
+  }
+
+  private async getExportColumnsForProgram(programId: number) {
     const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestions')
@@ -91,30 +126,62 @@ export class ExcelService
         .map((q) => q.name)
         .concat(programWithConfig.programCustomAttributes.map((q) => q.name));
     }
+    exportColumns = exportColumns.concat(['referenceId']); // add referenceId to join transaction amount later
     exportColumns = [...new Set(exportColumns)]; // remove duplicates
-    const referenceIds = transactions.map((t) => t.referenceId);
-    const registrations = await this.registrationsPaginationService.getPaginate(
-      {
-        select: exportColumns.concat(['referenceId']), //add referenceId to join transaction amount later
-        filter: { referenceId: `$in:${referenceIds.join(',')}` },
-        path: '',
-      },
-      programId,
-      true,
-      true,
-    );
+    return exportColumns;
+  }
 
-    const excelFspInstructions = registrations.data.map((registration) => {
+  private joinRegistrationsAndTransactions(
+    orderedRegistrations: RegistrationViewEntity[],
+    transactions: TransactionReturnDto[],
+    exportColumns: string[],
+  ): ExcelFspInstructions[] {
+    // This method joins the registrations and transactions arrays based on the referenceId.
+    // Both arrays are assumed to be sorted by referenceId. This allows us to use a two-pointer
+    // technique to join the arrays, which is more efficient than using a nested loop or the find method.
+    const transactionsOrdered = transactions.sort((a, b) =>
+      a.referenceId.localeCompare(b.referenceId),
+    );
+    let j = 0;
+    const excelFspInstructions = orderedRegistrations.map((registration) => {
       const fspInstructions = new ExcelFspInstructions();
       for (const col of exportColumns) {
         fspInstructions[col] = registration[col];
       }
-      fspInstructions.amount = transactions.find(
-        (t) => t.referenceId === registration.referenceId,
-      ).amount;
+
+      // As both arrays are sorted by referenceId, corresponding transactions for a registration
+      // will always be at the current position or ahead in the transactions array.
+      // This way performance is O(n) instead of O(n^2)
+      while (
+        transactionsOrdered[j] &&
+        transactionsOrdered[j].referenceId < registration.referenceId
+      ) {
+        j++;
+      }
+
+      if (
+        transactionsOrdered[j] &&
+        transactionsOrdered[j].referenceId === registration.referenceId
+      ) {
+        fspInstructions.amount = transactionsOrdered[j].amount;
+      }
+
       return fspInstructions;
     });
-
     return excelFspInstructions;
+  }
+
+  private getQueryBuilderForExportColumns(programId: number, payment: number) {
+    return this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .innerJoin('registration.latestTransactions', 'latestTransaction')
+      .innerJoin('latestTransaction.transaction', 'transaction')
+      .innerJoin('transaction.financialServiceProvider', 'fsp')
+      .andWhere('registration.programId = :programId', { programId })
+      .andWhere('transaction.payment = :payment', { payment })
+      .andWhere('fsp.fsp = :fsp', {
+        fsp: FspName.excel,
+      })
+      .orderBy('registration.referenceId', 'ASC');
   }
 }

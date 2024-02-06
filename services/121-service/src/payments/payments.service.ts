@@ -241,28 +241,13 @@ export class PaymentsService {
     paginateQuery: PaginateQuery,
   ): Promise<RegistrationViewEntity[]> {
     const chunkSize = 50000;
-    paginateQuery.limit = chunkSize;
-    paginateQuery.page = 1;
-    let totalPages = 1;
 
-    let allRegistrations: RegistrationViewEntity[] = [];
-
-    for (let i = 0; i < totalPages; i++) {
-      const registrationsForPayment =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
-        );
-      totalPages = registrationsForPayment.meta.totalPages;
-      paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(
-        ...registrationsForPayment.data,
-      );
-    }
-    return allRegistrations;
+    return await this.registrationsPaginationService.getRegistrationsChunked(
+      programId,
+      paginateQuery,
+      chunkSize,
+      this.getPaymentBaseQuery(payment),
+    );
   }
 
   private getPaymentBaseQuery(
@@ -864,6 +849,7 @@ export class PaymentsService {
       csvInstructions = await this.excelService.getFspInstructions(
         excelTransactions,
         programId,
+        payment,
       );
       fileType = ExportFileType.excel;
     }
