@@ -80,6 +80,7 @@ export class TransactionsService {
         'transaction.customData as "customData"',
         'fsp.fspDisplayNamePortal as "fspName"',
         'fsp.fsp as "fsp"',
+        'fsp.integrationType as "fspIntegrationType"',
       ])
       .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin('transaction.registration', 'r')

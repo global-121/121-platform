@@ -777,13 +777,21 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<FspInstructions> {
-    const paymentTransactions =
+    const exportPaymentTransactions = (
       await this.transactionService.getLastTransactions(
         programId,
         payment,
         null,
         null,
+      )
+    ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
+
+    if (exportPaymentTransactions.length === 0) {
+      throw new HttpException(
+        'No transactions found for this payment with FSPs that require to download payment instructions.',
+        HttpStatus.NOT_FOUND,
       );
+    }
 
     let csvInstructions = [];
     let xmlInstructions: string;
@@ -791,7 +799,7 @@ export class PaymentsService {
     let fileType: ExportFileType;
 
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
-    for await (const transaction of paymentTransactions.filter(
+    for await (const transaction of exportPaymentTransactions.filter(
       (t) => t.fsp !== FspName.excel,
     )) {
       const registration = await this.registrationScopedRepository.findOne({
@@ -842,7 +850,7 @@ export class PaymentsService {
     }
 
     // It is assumed the Excel FPS is not combined with other non-api FSPs above, and they are overwritten
-    const excelTransactions = paymentTransactions.filter(
+    const excelTransactions = exportPaymentTransactions.filter(
       (t) => t.fsp === FspName.excel,
     );
     if (excelTransactions.length) {
