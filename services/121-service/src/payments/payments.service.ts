@@ -798,6 +798,7 @@ export class PaymentsService {
 
     let fileType: ExportFileType;
 
+    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
       (t) => t.fsp !== FspName.excel,
@@ -849,7 +850,7 @@ export class PaymentsService {
       }
     }
 
-    // It is assumed the Excel FPS is not combined with other non-api FSPs above, and they are overwritten
+    // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
       (t) => t.fsp === FspName.excel,
     );
