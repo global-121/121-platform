@@ -5,6 +5,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { ActionType } from '../../models/actions.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LatestActionService } from '../../services/latest-action.service';
 import { actionResult } from '../../shared/action-result';
 import { downloadAsCsv } from '../../shared/array-to-csv';
@@ -46,6 +47,7 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
     private alertController: AlertController,
     private authService: AuthService,
     private latestActionService: LatestActionService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -131,7 +133,9 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
           actionResult(
             this.alertController,
             this.translate,
-            this.translate.instant('common.export-error'),
+            this.translate.instant('common.error-with-message', {
+              error: this.errorHandlerService.formatErrors(err),
+            }),
           );
         },
       );

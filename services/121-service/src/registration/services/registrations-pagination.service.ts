@@ -160,6 +160,33 @@ export class RegistrationsPaginationService {
     return result;
   }
 
+  public async getRegistrationsChunked(
+    programId: number,
+    paginateQuery: PaginateQuery,
+    chunkSize: number,
+    baseQuery?: ScopedQueryBuilder<RegistrationViewEntity>,
+  ): Promise<RegistrationViewEntity[]> {
+    paginateQuery.limit = chunkSize;
+    paginateQuery.page = 1;
+    let totalPages = 1;
+
+    let allRegistrations: RegistrationViewEntity[] = [];
+
+    for (let i = 0; i < totalPages; i++) {
+      const registrations = await this.getPaginate(
+        paginateQuery,
+        programId,
+        true,
+        false,
+        baseQuery ? baseQuery.clone() : null, // We need to create a seperate querybuilder object twice or it will be modified twice
+      );
+      totalPages = registrations.meta.totalPages;
+      paginateQuery.page = paginateQuery.page + 1;
+      allRegistrations = allRegistrations.concat(...registrations.data);
+    }
+    return allRegistrations;
+  }
+
   public async throwIfNoPermissionsForQuery(
     userId: number,
     programId: number,

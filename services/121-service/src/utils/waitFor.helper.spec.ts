@@ -3,7 +3,7 @@ import { waitFor, waitForRandomDelay } from './waitFor.helper';
 describe('waitFor helpers', () => {
   it('waitFor - should wait for the specified time', async () => {
     // Arrange
-    const testTime = 123;
+    const testTime = 122;
     const start = Date.now();
 
     // Act

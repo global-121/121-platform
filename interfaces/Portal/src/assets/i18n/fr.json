@@ -6,6 +6,7 @@
     "apply": "Appliquer",
     "cancel": "Annuler",
     "confirm": "Es-tu sûr?",
+    "error-with-message": "Quelque chose s’est mal passé : {{error}}",
     "export-error": "Quelque chose s’est mal passé avec l’exportation.",
     "import-error": "Quelque chose s’est mal passé avec l’importation.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "Veuillez réessayer. Si le problème persiste, contactez le support technique.",
     "unknown-error": "Quelque chose s’est mal passé. L’erreur est inconnue.",
     "update": "Mettre à jour",
-    "update-error": "Quelque chose s’est mal passé : {{error}}",
     "update-success": "Mise à jour réussie"
   },
   "entity": {

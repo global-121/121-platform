@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationViewScopedRepository } from '../../../registration/registration-scoped.repository';
 import { RegistrationsModule } from '../../../registration/registrations.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { ExcelService } from './excel.service';
@@ -14,7 +15,7 @@ import { ExcelService } from './excel.service';
     TransactionsModule,
     RegistrationsModule,
   ],
-  providers: [ExcelService, LookupService],
+  providers: [ExcelService, LookupService, RegistrationViewScopedRepository],
   controllers: [],
   exports: [ExcelService],
 })

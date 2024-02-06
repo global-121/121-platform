@@ -6,6 +6,7 @@
     "apply": "Toepassen",
     "cancel": "Annuleren",
     "confirm": "Weet je het zeker?",
+    "error-with-message": "Er is iets misgegaan: {{error}}",
     "export-error": "Er is iets misgegaan bij het exporteren",
     "import-error": "Er is iets misgegaan bij het importeren.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "Probeer het opnieuw. Neem contact op met 121 technische ondersteuning als het probleem zich blijft voordoen.",
     "unknown-error": "Er is iets misgegaan. Fout is onbekend.",
     "update": "Update",
-    "update-error": "Er is iets misgegaan: {{error}}",
     "update-success": "Update succesvol"
   },
   "entity": {

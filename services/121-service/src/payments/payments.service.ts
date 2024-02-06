@@ -241,28 +241,13 @@ export class PaymentsService {
     paginateQuery: PaginateQuery,
   ): Promise<RegistrationViewEntity[]> {
     const chunkSize = 50000;
-    paginateQuery.limit = chunkSize;
-    paginateQuery.page = 1;
-    let totalPages = 1;
 
-    let allRegistrations: RegistrationViewEntity[] = [];
-
-    for (let i = 0; i < totalPages; i++) {
-      const registrationsForPayment =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
-        );
-      totalPages = registrationsForPayment.meta.totalPages;
-      paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(
-        ...registrationsForPayment.data,
-      );
-    }
-    return allRegistrations;
+    return await this.registrationsPaginationService.getRegistrationsChunked(
+      programId,
+      paginateQuery,
+      chunkSize,
+      this.getPaymentBaseQuery(payment),
+    );
   }
 
   private getPaymentBaseQuery(
@@ -792,13 +777,21 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<FspInstructions> {
-    const paymentTransactions =
+    const exportPaymentTransactions = (
       await this.transactionService.getLastTransactions(
         programId,
         payment,
         null,
         null,
+      )
+    ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
+
+    if (exportPaymentTransactions.length === 0) {
+      throw new HttpException(
+        'No transactions found for this payment with FSPs that require to download payment instructions.',
+        HttpStatus.NOT_FOUND,
       );
+    }
 
     let csvInstructions = [];
     let xmlInstructions: string;
@@ -806,7 +799,7 @@ export class PaymentsService {
     let fileType: ExportFileType;
 
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
-    for await (const transaction of paymentTransactions.filter(
+    for await (const transaction of exportPaymentTransactions.filter(
       (t) => t.fsp !== FspName.excel,
     )) {
       const registration = await this.registrationScopedRepository.findOne({
@@ -857,13 +850,14 @@ export class PaymentsService {
     }
 
     // It is assumed the Excel FPS is not combined with other non-api FSPs above, and they are overwritten
-    const excelTransactions = paymentTransactions.filter(
+    const excelTransactions = exportPaymentTransactions.filter(
       (t) => t.fsp === FspName.excel,
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(
         excelTransactions,
         programId,
+        payment,
       );
       fileType = ExportFileType.excel;
     }
