@@ -8,7 +8,11 @@ export class UpdateProgramFspConfigurationDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'test_account' })
+  @ApiProperty({
+    example: 'test_account',
+    description:
+      'Should be string (for e.g. name=username) or array of strings (for e.g. name=columnsToExport)',
+  })
   @IsNotEmpty()
   value: string;
 }
