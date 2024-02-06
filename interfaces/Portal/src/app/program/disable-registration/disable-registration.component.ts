@@ -77,7 +77,7 @@ export class DisableRegistrationComponent implements OnInit {
           actionResult(
             this.alertController,
             this.translate,
-            this.translate.instant('common.update-error', {
+            this.translate.instant('common.error-with-message', {
               error: errorMessage,
             }),
           );

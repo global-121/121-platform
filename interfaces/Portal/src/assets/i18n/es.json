@@ -6,6 +6,7 @@
     "apply": "Aplicar",
     "cancel": "Cancelar",
     "confirm": "¿Estás seguro?",
+    "error-with-message": "Algo salió mal: {{error}}",
     "export-error": "Algo salió mal con la exportación.",
     "import-error": "Algo salió mal con la importación.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "Por favor, inténtelo de nuevo. Si el problema persiste, póngase en contacto con el soporte técnico.",
     "unknown-error": "Algo salió mal. Se desconoce el error.",
     "update": "Actualizar",
-    "update-error": "Algo salió mal: {{error}}",
     "update-success": "Actualización correcta"
   },
   "entity": {
