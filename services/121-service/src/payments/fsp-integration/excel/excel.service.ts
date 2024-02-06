@@ -69,19 +69,19 @@ export class ExcelService
     // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
     const qb = this.getQueryBuilderForExportColumns(programId, payment);
 
+    const chunkSize = 400000;
     const registrations =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
         {
-          select: exportColumns, //add referenceId to join transaction amount later
+          select: [...new Set(exportColumns.concat(['referenceId']))], // add referenceId (and deduplicate) to join transaction amount later
           path: '',
         },
-        400000,
+        chunkSize,
         qb,
       );
 
     // # of transactions and registrations should be the same or throw
-    // in theory this should never happen
     if (transactions.length !== registrations.length) {
       throw new Error(
         `Number of transactions (${transactions.length}) and registrations (${registrations.length}) do not match`,
@@ -126,8 +126,6 @@ export class ExcelService
         .map((q) => q.name)
         .concat(programWithConfig.programCustomAttributes.map((q) => q.name));
     }
-    exportColumns = exportColumns.concat(['referenceId']); // add referenceId to join transaction amount later
-    exportColumns = [...new Set(exportColumns)]; // remove duplicates
     return exportColumns;
   }
 
