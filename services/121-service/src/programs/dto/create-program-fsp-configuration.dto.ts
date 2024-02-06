@@ -15,6 +15,5 @@ export class CreateProgramFspConfigurationDto {
 
   @ApiProperty({ example: 'test_account' })
   @IsNotEmpty()
-  @IsString()
   value: string;
 }
