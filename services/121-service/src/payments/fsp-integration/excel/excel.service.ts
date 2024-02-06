@@ -6,6 +6,7 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationViewScopedRepository } from '../../../registration/registration-scoped.repository';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
+import { ScopedQueryBuilder } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
@@ -95,7 +96,9 @@ export class ExcelService
     );
   }
 
-  private async getExportColumnsForProgram(programId: number) {
+  private async getExportColumnsForProgram(
+    programId: number,
+  ): Promise<string[]> {
     const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestions')
@@ -169,7 +172,10 @@ export class ExcelService
     return excelFspInstructions;
   }
 
-  private getQueryBuilderForExportColumns(programId: number, payment: number) {
+  private getQueryBuilderForExportColumns(
+    programId: number,
+    payment: number,
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .innerJoin('registration.latestTransactions', 'latestTransaction')

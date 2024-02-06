@@ -173,18 +173,16 @@ export class RegistrationsPaginationService {
     let allRegistrations: RegistrationViewEntity[] = [];
 
     for (let i = 0; i < totalPages; i++) {
-      const registrationsForPayment = await this.getPaginate(
+      const registrations = await this.getPaginate(
         paginateQuery,
         programId,
         true,
         false,
         baseQuery ? baseQuery.clone() : null, // We need to create a seperate querybuilder object twice or it will be modified twice
       );
-      totalPages = registrationsForPayment.meta.totalPages;
+      totalPages = registrations.meta.totalPages;
       paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(
-        ...registrationsForPayment.data,
-      );
+      allRegistrations = allRegistrations.concat(...registrations.data);
     }
     return allRegistrations;
   }
