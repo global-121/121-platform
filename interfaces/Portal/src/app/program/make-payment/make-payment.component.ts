@@ -89,8 +89,6 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    await this.getFspIntegrationType();
-
     this.amountInput = this.program.fixedTransferValue;
     this.totalIncluded = this.applicableCount;
     this.totalTransferAmounts = this.sumPaymentAmountMultiplier;
@@ -180,10 +178,23 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     ];
   }
 
-  async getFspIntegrationType() {
-    // Theoretically a program could contain multiple FSP's with different integrationTypes, in practice this does not happen yet
-    this.fspIntegrationType =
-      this.program.financialServiceProviders[0].integrationType;
+  async getFspIntegrationType(fspsInPayment: string[]) {
+    // In case of multiple FSPs default integrationType to API, but overwrite if any FSP has a different integration type
+    // This variable is only used to return different UX copy on doPayment result
+    this.fspIntegrationType = FspIntegrationType.api;
+    for (const fsp of fspsInPayment) {
+      const programFsp = this.program.financialServiceProviders.find(
+        (f) => f.fsp === fsp,
+      );
+      if (
+        [FspIntegrationType.csv, FspIntegrationType.xml].includes(
+          programFsp.integrationType,
+        )
+      ) {
+        this.fspIntegrationType = programFsp.integrationType;
+        return;
+      }
+    }
   }
 
   private getPaymentResultText(nrPa: number): string {
@@ -221,6 +232,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     let message = '';
 
     if (response) {
+      this.getFspIntegrationType(response.fspsInPayment);
       message += this.getPaymentResultText(response.applicableCount);
     }
     actionResult(this.alertController, this.translate, message, true);

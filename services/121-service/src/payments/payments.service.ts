@@ -185,7 +185,11 @@ export class PaymentsService {
       );
 
     if (!amount) {
-      return { ...bulkActionResultDto, sumPaymentAmountMultiplier: 0 };
+      return {
+        ...bulkActionResultDto,
+        sumPaymentAmountMultiplier: 0,
+        fspsInPayment: [],
+      };
     }
 
     const registrationsForPayment =
@@ -197,14 +201,22 @@ export class PaymentsService {
 
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    // This loop is pretty fast: with 100.000 registrations it takes ~12ms
+    const fspsInPayment = [];
+    // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
+      if (
+        !dryRun && // This is only needed in actual doPayment call
+        !fspsInPayment.includes(registration.financialServiceProvider)
+      ) {
+        fspsInPayment.push(registration.financialServiceProvider);
+      }
     }
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
+      fspsInPayment: fspsInPayment,
     };
 
     const referenceIds = registrationsForPayment.map(
