@@ -8,7 +8,6 @@ import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { FspIntegrationType } from '../../models/fsp.model';
 import {
   FilterOperatorEnum,
   FilterService,
@@ -16,6 +15,10 @@ import {
 } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
+import {
+  getFspIntegrationType,
+  getPaymentResultText,
+} from '../../shared/payment-result';
 import { PaymentUtils } from '../../shared/payment.utils';
 
 @Component({
@@ -41,7 +44,6 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   public program: Program;
   public totalIncluded: number;
   public totalTransferAmounts: number;
-  private fspIntegrationType: FspIntegrationType;
 
   public amountInput: number;
   public totalAmountMessage: string;
@@ -178,62 +180,20 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
     ];
   }
 
-  async getFspIntegrationType(fspsInPayment: string[]) {
-    // In case of multiple FSPs default integrationType to API, but overwrite if any FSP has a different integration type
-    // This variable is only used to return different UX copy on doPayment result
-    this.fspIntegrationType = FspIntegrationType.api;
-    for (const fsp of fspsInPayment) {
-      const programFsp = this.program.financialServiceProviders.find(
-        (f) => f.fsp === fsp,
-      );
-      if (
-        [FspIntegrationType.csv, FspIntegrationType.xml].includes(
-          programFsp.integrationType,
-        )
-      ) {
-        this.fspIntegrationType = programFsp.integrationType;
-        return;
-      }
-    }
-  }
-
-  private getPaymentResultText(nrPa: number): string {
-    let message = '';
-
-    switch (this.fspIntegrationType) {
-      case FspIntegrationType.xml:
-        message += this.translate.instant(
-          'page.program.program-payout.result.xml',
-          { nrPa: `<strong>${nrPa}</strong>` },
-        );
-        break;
-
-      case FspIntegrationType.csv:
-        message += this.translate.instant(
-          'page.program.program-payout.result.csv',
-          { nrPa: `<strong>${nrPa}</strong>` },
-        );
-        break;
-
-      case FspIntegrationType.api:
-      default:
-        message += this.translate.instant(
-          'page.program.program-payout.result.api',
-          { nrPa: `<strong>${nrPa}</strong>` },
-        );
-        break;
-    }
-
-    return message;
-  }
-
   private onPaymentSuccess(response) {
     this.resetProgress();
     let message = '';
 
     if (response) {
-      this.getFspIntegrationType(response.fspsInPayment);
-      message += this.getPaymentResultText(response.applicableCount);
+      const fspIntegrationType = getFspIntegrationType(
+        response.fspsInPayment,
+        this.program,
+      );
+      message += getPaymentResultText(
+        response.applicableCount,
+        fspIntegrationType,
+        this.translate,
+      );
     }
     actionResult(this.alertController, this.translate, message, true);
   }

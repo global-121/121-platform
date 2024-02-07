@@ -167,6 +167,7 @@ export class PaymentHistoryAccordionComponent {
         singlePayoutDetails: doSinglePaymentDetails,
         voucherButtons,
         imageUrl: voucherUrl,
+        program: this.program,
       },
     });
     modal.onDidDismiss().then(() => {
