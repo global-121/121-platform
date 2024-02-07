@@ -1,10 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../base.entity';
+import { Base121AuditedEntity } from '../base-audited.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { UserEntity } from '../user/user.entity';
 
 @Entity('note')
-export class NoteEntity extends Base121Entity {
+export class NoteEntity extends Base121AuditedEntity {
   @ManyToOne(() => RegistrationEntity, (registration) => registration.notes)
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
@@ -14,8 +14,6 @@ export class NoteEntity extends Base121Entity {
   @ManyToOne(() => UserEntity, (user) => user.notes)
   @JoinColumn({ name: 'userId' })
   public user: UserEntity;
-  @Column()
-  public userId: number;
 
   @Column({ nullable: false })
   public text: string;
