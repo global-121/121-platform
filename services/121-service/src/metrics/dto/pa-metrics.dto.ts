@@ -11,7 +11,6 @@ export interface PaMetrics {
   [RegistrationStatusEnum.startedRegistration]: number;
   [RegistrationStatusEnum.registered]: number;
   [RegistrationStatusEnum.registeredWhileNoLongerEligible]?: number;
-  [RegistrationStatusEnum.selectedForValidation]?: number;
   [RegistrationStatusEnum.validated]: number;
   [RegistrationStatusEnum.included]: number;
   [RegistrationStatusEnum.inclusionEnded]: number;

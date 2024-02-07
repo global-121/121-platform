@@ -991,7 +991,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ) {
     const statusRelatedBulkActions = [
       BulkActionId.invite,
-      BulkActionId.selectForValidation,
       BulkActionId.include,
       BulkActionId.endInclusion,
       BulkActionId.reject,

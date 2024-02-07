@@ -14,6 +14,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import {
   CreateProgramCustomAttributeDto,
@@ -137,24 +138,30 @@ export class CreateProgramDto {
         type: CustomAttributeType.text,
         label: { en: 'Name partner organization' },
         export: [
-          'all-people-affected',
-          'included',
-          'selected-for-validation',
-          'payment',
+          ExportType.allPeopleAffected,
+          ExportType.included,
+          ExportType.payment,
         ],
-        phases: ['registrationValidation', 'inclusion', 'payment'],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.payment,
+        ],
       },
       {
         name: 'exampleBoolean',
         type: CustomAttributeType.boolean,
         label: { en: 'Example boolean' },
         export: [
-          'all-people-affected',
-          'included',
-          'selected-for-validation',
-          'payment',
+          ExportType.allPeopleAffected,
+          ExportType.included,
+          ExportType.payment,
         ],
-        phases: ['registrationValidation', 'inclusion', 'payment'],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.payment,
+        ],
       },
     ],
   })
@@ -175,7 +182,7 @@ export class CreateProgramDto {
         questionType: 'standard',
         options: null,
         persistence: true,
-        export: ['all-people-affected', 'included', 'selected-for-validation'],
+        export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
         phases: [],
         editableInPortal: false,
@@ -192,7 +199,7 @@ export class CreateProgramDto {
         questionType: 'standard',
         options: null,
         persistence: true,
-        export: ['all-people-affected', 'included', 'selected-for-validation'],
+        export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
         phases: [],
         editableInPortal: false,

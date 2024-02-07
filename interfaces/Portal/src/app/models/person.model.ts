@@ -97,15 +97,14 @@ export const PA_STATUS_ORDER = [
   { id: 2, value: RegistrationStatus.imported },
   { id: 3, value: RegistrationStatus.invited },
   { id: 4, value: RegistrationStatus.registered },
-  { id: 5, value: RegistrationStatus.selectedForValidation },
-  { id: 6, value: RegistrationStatus.validated },
-  { id: 7, value: RegistrationStatus.included },
-  { id: 8, value: RegistrationStatus.inclusionEnded },
-  { id: 9, value: RegistrationStatus.rejected },
-  { id: 10, value: RegistrationStatus.paused },
-  { id: 11, value: RegistrationStatus.noLongerEligible },
-  { id: 12, value: RegistrationStatus.registeredWhileNoLongerEligible },
-  { id: 13, value: RegistrationStatus.completed },
+  { id: 5, value: RegistrationStatus.validated },
+  { id: 6, value: RegistrationStatus.included },
+  { id: 7, value: RegistrationStatus.inclusionEnded },
+  { id: 8, value: RegistrationStatus.rejected },
+  { id: 9, value: RegistrationStatus.paused },
+  { id: 10, value: RegistrationStatus.noLongerEligible },
+  { id: 11, value: RegistrationStatus.registeredWhileNoLongerEligible },
+  { id: 12, value: RegistrationStatus.completed },
 ];
 
 export enum PersonDefaultAttributes {

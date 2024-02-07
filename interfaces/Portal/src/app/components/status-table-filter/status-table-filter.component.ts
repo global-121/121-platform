@@ -34,7 +34,6 @@ export class StatusTableFilterComponent {
       RegistrationStatus.imported,
       RegistrationStatus.invited,
       RegistrationStatus.startedRegistration,
-      RegistrationStatus.selectedForValidation,
       RegistrationStatus.registered,
       RegistrationStatus.noLongerEligible,
       RegistrationStatus.registeredWhileNoLongerEligible,
@@ -42,7 +41,6 @@ export class StatusTableFilterComponent {
     [ProgramPhase.inclusion]: [
       RegistrationStatus.validated,
       RegistrationStatus.registered,
-      RegistrationStatus.selectedForValidation,
       RegistrationStatus.rejected,
       RegistrationStatus.inclusionEnded,
       RegistrationStatus.paused,

@@ -31,7 +31,6 @@
         "registered": "Geregistreerd",
         "registeredWhileNoLongerEligible": "Geregistreerd maar komt niet meer in aanmerking",
         "rejected": "Afgewezen",
-        "selectedForValidation": "Geselecteerd voor validatie",
         "startedRegistration": "Registratie gestart",
         "validated": "Gevalideerd"
       }
@@ -184,10 +183,6 @@
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die bij deze betaling zijn inbegrepen."
         },
         "select-btn-text": "Exporteren",
-        "selected-for-validation": {
-          "btn-text": "Exporteer: geselecteerd voor validatie",
-          "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers die zijn geselecteerd voor validatie, dat kan worden gebruikt voor validatiebezoeken."
-        },
         "timestamp": "Laatste export is gedaan op: {{dateTime}}",
         "unused-vouchers": {
           "btn-text": "Exporteer: lijst van ongebruikte vouchers",
@@ -222,7 +217,6 @@
           "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
           "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
           "rejected": "Hulpvragers die zijn afgewezen. <br> Ze zullen geen betalingen (meer) ontvangen voor de volgende betalings-/uitbetalingsronde.",
-          "selectedForValidation": "Hulpvragers die geselecteerd zijn voor validatie.",
           "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
           "validated": "Hulpvragers die zijn gevalideerd."
         },
@@ -367,7 +361,6 @@
           "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
           "reject": "Afwijzen uit programma",
-          "selectForValidation": "Selecteer voor validatie",
           "sendMessage": "Stuur bericht"
         },
         "apply-action": "Actie toepassen",
@@ -381,7 +374,6 @@
           "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
           "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
-          "selectForValidation": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {

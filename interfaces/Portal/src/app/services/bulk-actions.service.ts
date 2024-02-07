@@ -82,17 +82,6 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.selectForValidation,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.selectForValidation',
-      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: false,
-      confirmConditions: {
-        provideInput: false,
-      },
-    },
-    {
       id: BulkActionId.markAsValidated,
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsValidated',
@@ -240,12 +229,6 @@ export class BulkActionsService {
         );
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
-          programId,
-          dryRun,
-          filters,
-        );
-      case BulkActionId.selectForValidation:
-        return await this.programsService.selectForValidation(
           programId,
           dryRun,
           filters,

@@ -402,10 +402,6 @@ export class RegistrationsController {
         permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
         messageContentType = MessageContentType.invited;
         break;
-      case RegistrationStatusEnum.selectedForValidation:
-        permission =
-          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE;
-        break;
       case RegistrationStatusEnum.noLongerEligible:
         permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
         break;

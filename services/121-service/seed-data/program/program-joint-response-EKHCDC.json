@@ -45,7 +45,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -70,7 +70,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር"
@@ -92,7 +92,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር"
@@ -114,7 +114,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Age",
         "et_AM": "እድሜ"
@@ -151,7 +151,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Gender",
         "et_AM": "ጾታ"
@@ -173,7 +173,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many female?",
         "et_AM": "ሴት አባላት"
@@ -195,7 +195,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many male?",
         "et_AM": "ወንድ አባላት"
@@ -217,7 +217,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት"
@@ -239,7 +239,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች"
@@ -261,7 +261,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች"
@@ -283,7 +283,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ"
@@ -305,7 +305,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ"
@@ -327,7 +327,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ"
@@ -349,7 +349,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ"
@@ -371,7 +371,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ"
@@ -393,7 +393,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ"

@@ -199,19 +199,12 @@ export class RegistrationsService {
           currentStatus,
         );
         break;
-      case RegistrationStatusEnum.selectedForValidation:
-        result = [RegistrationStatusEnum.registered].includes(currentStatus);
-        break;
       case RegistrationStatusEnum.validated:
-        result = [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ].includes(currentStatus);
+        result = [RegistrationStatusEnum.registered].includes(currentStatus);
         break;
       case RegistrationStatusEnum.included:
         result = [
           RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
@@ -229,7 +222,6 @@ export class RegistrationsService {
       case RegistrationStatusEnum.rejected:
         result = [
           RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.included,
           RegistrationStatusEnum.noLongerEligible,
@@ -243,7 +235,6 @@ export class RegistrationsService {
           RegistrationStatusEnum.imported,
           RegistrationStatusEnum.startedRegistration,
           RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
@@ -841,8 +832,6 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.startedRegistrationDate;
       case RegistrationStatusEnum.registered:
         return RegistrationStatusTimestampField.registeredDate;
-      case RegistrationStatusEnum.selectedForValidation:
-        return RegistrationStatusTimestampField.selectedForValidationDate;
       case RegistrationStatusEnum.validated:
         return RegistrationStatusTimestampField.validationDate;
       case RegistrationStatusEnum.included:
@@ -1269,10 +1258,7 @@ export class RegistrationsService {
       .leftJoinAndSelect('registration.data', 'data')
       .leftJoinAndSelect('data.programQuestion', 'programQuestion')
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ],
+        registrationStatuses: [RegistrationStatusEnum.registered],
       })
       .andWhere('data.programQuestionId is not null')
       .getMany();
@@ -1325,10 +1311,7 @@ export class RegistrationsService {
       .leftJoin('registration.program', 'program')
       .andWhere('registration.fsp IS NOT NULL')
       .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ],
+        registrationStatuses: [RegistrationStatusEnum.registered],
       })
       .getMany();
 

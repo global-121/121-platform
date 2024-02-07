@@ -90,9 +90,6 @@ export class MetricsService {
       case ExportType.included: {
         return this.getInclusionList(programId);
       }
-      case ExportType.selectedForValidation: {
-        return this.getSelectedForValidationList(programId);
-      }
       case ExportType.payment: {
         return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
@@ -139,21 +136,6 @@ export class MetricsService {
     );
     const response = {
       fileName: 'inclusion-list',
-      data: data,
-    };
-    return response;
-  }
-
-  private async getSelectedForValidationList(
-    programId: number,
-  ): Promise<FileDto> {
-    const data = await this.getRegistrationsList(
-      programId,
-      ExportType.selectedForValidation,
-      RegistrationStatusEnum.selectedForValidation,
-    );
-    const response = {
-      fileName: ExportType.selectedForValidation,
       data: data,
     };
     return response;
@@ -1001,16 +983,6 @@ export class MetricsService {
           programId,
           registrations,
           RegistrationStatusEnum.registered,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.selectedForValidation]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.selectedForValidation,
           payment,
           month,
           year,

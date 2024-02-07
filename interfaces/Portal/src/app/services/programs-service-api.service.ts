@@ -689,19 +689,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  selectForValidation(
-    programId: number | string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.selectedForValidation,
-      programId,
-      dryRun,
-      filters,
-    );
-  }
-
   markAsValidated(
     programId: number | string,
     dryRun = false,

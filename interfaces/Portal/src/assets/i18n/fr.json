@@ -31,7 +31,6 @@
         "registered": "Recommandé",
         "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
         "rejected": "Rejeté",
-        "selectedForValidation": "Sélectionné pour validation",
         "startedRegistration": "Début de l’inscription",
         "validated": "Validé"
       }
@@ -184,10 +183,6 @@
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes touchées incluses dans ce paiement."
         },
         "select-btn-text": "Exporter",
-        "selected-for-validation": {
-          "btn-text": "Liste d’exportation : sélectionnée pour validation",
-          "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées sélectionnées pour la validation, à utiliser pour les visites de validation."
-        },
         "timestamp": "Dernière exportation effectuée le : {{dateTime}}",
         "unused-vouchers": {
           "btn-text": "Exporter la liste des bons d’achat non utilisés",
@@ -222,7 +217,6 @@
           "noLongerEligible": "PA qui ont été marqués comme « n’étant plus éligibles ». <br> Il s’agit de PA personnes qui ont été invitées mais qui ne se sont pas encore inscrites et qui ne sont plus éligibles.",
           "registered": "PA qui ont terminé l’enregistrement dans l’application PA.",
           "rejected": "PA qui ont été rejetés. <br> Ils ne recevront pas (plus) de paiements pour le prochain tour de paiement/versement.",
-          "selectedForValidation": "PA qui ont été sélectionnés pour la validation.",
           "startedRegistration": "PA qui ont commencé à s’inscrire dans l’application PA.",
           "validated": "PA qui ont été validés."
         },
@@ -366,7 +360,6 @@
           "markNoLongerEligible": "Marquer comme n’étant plus éligible",
           "pause": "Pause PAs",
           "reject": "Rejeter du programme",
-          "selectForValidation": "Sélectionner pour validation",
           "sendMessage": "Envoyer un message aux PA"
         },
         "apply-action": "Appliquer l’action",
@@ -379,7 +372,6 @@
           "markNoLongerEligible": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions dont le statut <i>est Importé</i> ou <i>Invité.</i>",
           "pause": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux enregistrements dont le statut <i>est Inclus</i>.",
           "reject": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions dont le statut <i>est Enregistré,</i> <i>Sélectionné pour validation</i>, <i>Validé</i>, <i>Inclus</i>, N’est plus éligible ou <i>Enregistré alors qu’il n’est plus éligible</i>. <i></i>",
-          "selectForValidation": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux enregistrements dont le statut <i>est Enregistré.</i>",
           "sendMessage": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions auxquelles un numéro de téléphone est associé."
         },
         "bulk-action-response": {

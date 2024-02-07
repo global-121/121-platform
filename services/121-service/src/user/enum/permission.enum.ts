@@ -65,7 +65,6 @@ export enum PermissionEnum {
   RegistrationPersonalUPDATE = 'registration:personal.update',
 
   // Registration(s) - Status
-  RegistrationStatusSelectedForValidationUPDATE = 'registration:status:selectedForValidation.update',
   RegistrationStatusMarkAsValidatedUPDATE = 'registration:status:markAsValidated.update',
   RegistrationStatusNoLongerEligibleUPDATE = 'registration:status:noLongerEligible.update',
   RegistrationStatusIncludedUPDATE = 'registration:status:included.update',
