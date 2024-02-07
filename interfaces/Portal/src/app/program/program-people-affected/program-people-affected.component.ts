@@ -997,6 +997,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       BulkActionId.reject,
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
+      BulkActionId.markAsValidated,
     ];
     const responseText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.response',

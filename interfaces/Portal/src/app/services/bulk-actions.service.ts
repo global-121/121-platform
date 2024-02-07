@@ -93,6 +93,17 @@ export class BulkActionsService {
       },
     },
     {
+      id: BulkActionId.markAsValidated,
+      enabled: false,
+      label: 'page.program.program-people-affected.actions.markAsValidated',
+      permissions: [Permission.RegistrationStatusMarkAsValidatedUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
+      },
+    },
+    {
       id: BulkActionId.include,
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
@@ -289,6 +300,12 @@ export class BulkActionsService {
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
+          programId,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.markAsValidated:
+        return await this.programsService.markAsValidated(
           programId,
           dryRun,
           filters,

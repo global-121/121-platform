@@ -367,7 +367,8 @@
           "pause": "Pause PAs",
           "reject": "Reject from program",
           "selectForValidation": "Select for validation",
-          "sendMessage": "Send Message to PAs"
+          "sendMessage": "Send Message to PAs",
+          "markAsValidated": "Mark as validated"
         },
         "apply-action": "Apply action",
         "bulk-action-conditions": {
@@ -380,6 +381,7 @@
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
           "selectForValidation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them."
         },
         "bulk-action-response": {

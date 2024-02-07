@@ -367,7 +367,8 @@
           "pause": "Pauzeer hulpvragers",
           "reject": "Afwijzen uit programma",
           "selectForValidation": "Selecteer voor validatie",
-          "sendMessage": "Stuur bericht"
+          "sendMessage": "Stuur bericht",
+          "markAsValidated": "Markeer als gevalideerd"
         },
         "apply-action": "Actie toepassen",
         "bulk-action-conditions": {
@@ -380,6 +381,7 @@
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
           "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
           "selectForValidation": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
+          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {

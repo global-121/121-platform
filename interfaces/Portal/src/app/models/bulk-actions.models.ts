@@ -16,6 +16,7 @@ export enum BulkActionId {
   divider = 'divider',
   doPayment = 'doPayment',
   pause = 'pause',
+  markAsValidated = 'markAsValidated',
 }
 
 export const BulkActionRegistrationStatusMap = {

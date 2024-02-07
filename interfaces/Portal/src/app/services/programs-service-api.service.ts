@@ -702,6 +702,19 @@ export class ProgramsServiceApiService {
     );
   }
 
+  markAsValidated(
+    programId: number | string,
+    dryRun = false,
+    filters?: PaginationFilter[],
+  ): Promise<any> {
+    return this.updatePaStatus(
+      RegistrationStatus.validated,
+      programId,
+      dryRun,
+      filters,
+    );
+  }
+
   markNoLongerEligible(
     programId: number | string,
     dryRun = false,
