@@ -41,6 +41,7 @@ export const nameConstraintQuestionsArray = [
   'completedDate',
   'lastMessageStatus',
   'lastMessageType',
+  'declinedDate',
 ];
 
 export const NameConstraintQuestions = formatArray(
