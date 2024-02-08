@@ -13,8 +13,8 @@ import { MessageHistoryItemComponent } from '../message-history-item/message-his
 
 @Component({
   selector: 'app-new-message-history-popup',
-  templateUrl: './new-message-history-popup.component.html',
-  styleUrls: ['./new-message-history-popup.component.scss'],
+  templateUrl: './message-history-popup.component.html',
+  styleUrls: ['./message-history-popup.component.scss'],
   standalone: true,
   imports: [
     IonicModule,
@@ -23,7 +23,7 @@ import { MessageHistoryItemComponent } from '../message-history-item/message-his
     MessageHistoryItemComponent,
   ],
 })
-export class NewMessageHistoryPopupComponent implements OnInit {
+export class MessageHistoryPopupComponent implements OnInit {
   @Input()
   public referenceId: string;
 

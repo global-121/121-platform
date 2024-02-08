@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HeaderComponent } from '../components/header/header.component';
 import { LanguageSwitcherComponent } from '../components/language-switcher/language-switcher.component';
-import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
 import { SelectTypeaheadComponent } from '../components/select-typeahead/select-typeahead.component';
@@ -61,7 +60,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdatePropertyItemComponent,
     StatusTableFilterComponent,
     ProgramCardComponent,
-    MessageHistoryPopupComponent,
     DatetimePickerComponent,
     TableFilterRowComponent,
     MessageEditorComponent,
@@ -109,7 +107,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UserStateComponent,
     StatusTableFilterComponent,
     ProgramCardComponent,
-    MessageHistoryPopupComponent,
     TableFilterRowComponent,
     LanguageSwitcherComponent,
     ExportSelectComponent,
