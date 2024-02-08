@@ -21,6 +21,7 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { AddNotePopupComponent } from '../add-note-popup/add-note-popup.component';
 import { MessageStatusMapping } from '../../models/message.model';
+import { MessageHistoryItemComponent } from 'src/app/program/message-history-item/message-history-item.component';
 
 class ActivityOverviewItem {
   type: string;
@@ -54,6 +55,7 @@ enum ActivityOverviewType {
     TranslateModule,
     PaymentHistoryAccordionComponent,
     AddNotePopupComponent,
+    MessageHistoryItemComponent,
   ],
   selector: 'app-registration-activity-overview',
   templateUrl: './registration-activity-overview.component.html',

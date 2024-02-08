@@ -90,7 +90,7 @@
       >
         <ion-grid>
           <!-- Other tabs -->
-          <ion-row *ngIf="item.type !== 'payment'">
+          <ion-row *ngIf="item.type !== 'payment' && item.type !== 'message'">
             <div class="ion-padding-horizontal">
               <div style="height: 100%; display: flex; align-items: center">
                 <ion-icon
@@ -170,6 +170,20 @@
               ></app-payment-history-accordion>
             </ion-accordion-group>
           </div>
+
+          <!-- messages -->
+          <div
+            *ngIf="item.type === 'message'"
+            style="width: 100%"
+          >
+          <app-message-history-item
+          [message]="item.messageDetail"
+          [person]="person"
+          [program]="program"
+        ></app-message-history-item>
+
+        </div>
+
         </ion-grid>
       </ion-item>
     </ion-list>
