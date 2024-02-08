@@ -25,7 +25,9 @@ export class TransactionUserid1707311400291 implements MigrationInterface {
     );
     // Update all transactions with the user id
     await queryRunner.query(
-      `UPDATE "121-service"."transaction" SET "userId" = ${adminUser[0].id}`,
+      `UPDATE "121-service"."transaction" SET "userId" = ${
+        adminUser[0]?.id ? adminUser[0].id : 1
+      }`,
     );
     // Alter userId to be non-null
     await queryRunner.query(
