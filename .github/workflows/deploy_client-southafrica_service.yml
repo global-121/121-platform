@@ -1,0 +1,53 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# Also, see: https://github.com/Azure/actions-workflow-samples
+
+name: 'Deploy [South Africa] 121-service'
+
+env:
+  AZURE_WEBAPP_NAME: '121-southafrica'
+  AZURE_WEBAPP_PACKAGE_PATH: services/121-service
+
+defaults:
+  run:
+    working-directory: services/121-service
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    environment: 'client-southafrica'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Service
+        id: build
+        uses: ./.github/actions/build-service
+        with:
+          servicePath: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Deploy to Azure App Service
+        id: deploy_to_aas
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/artifact.zip'
+          type: zip
+          clean: true
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
