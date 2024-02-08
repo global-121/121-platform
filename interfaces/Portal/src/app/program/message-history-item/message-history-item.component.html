@@ -1,97 +1,62 @@
 <ion-item
-style="
-  font-size: 14px;
-  --padding-start: 0;
-  --padding-end: 0;
-  --inner-padding-end: 0;
-"
+  style="
+    font-size: 14px;
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+  "
 >
-<ion-grid>
-  <ion-row>
-    <div class="ion-padding-horizontal">
-      <div style="height: 100%; display: flex; align-items: center">
-        <!--ion-icon
-          [name]="getIconName(item.type)"
-          size="large"
-          [attr.aria-hidden]="true"
-        ></ion-icon-->
-        ICON
+  <ion-grid>
+    <ion-row>
+      <div class="ion-padding-horizontal">
+        <div style="height: 100%; display: flex; align-items: center">
+          <!-- TODO: icon v-align top-->
+          <ion-icon
+            class="money-icon ion-no-padding"
+            name="mail-outline"
+            size="large"
+            [attr.aria-hidden]="true"
+          ></ion-icon>
+        </div>
       </div>
-    </div>
-    <ion-col>
-      <ion-row class="ion-justify-content-between">
-        <ion-row>
-          <ion-label class="ion-margin-end">
-            subLabel
-            <!--strong
-              >{{ item.label | uppercase
-              }}<span *ngIf="item.subLabel"> - </span>
-              {{ item.subLabel }}</strong
-            --->
-          </ion-label>
-          <ion-note>
-            <!--small>
-              {{
-                item.date | date: DateFormat.dayAndTimeReverse : locale
-              }}
-            </small-->
-            DATE
-          </ion-note>
+      <ion-col>
+        <ion-row class="ion-justify-content-between">
+          <ion-row>
+            <ion-label class="ion-margin-end">
+              <strong
+                >{{ message.contentType | uppercase
+                }}<span *ngIf="message.type"> - </span>
+                {{ message.type }}</strong
+              >
+            </ion-label>
+            <ion-chip
+              class="ion-justify-content-center"
+              [ngClass]="'chip-' + chipStatus[message.status]"
+              >{{
+                'page.program.program-people-affected.message-history-popup.chip-status.' +
+                  chipStatus[message.status] | translate
+              }}</ion-chip
+            >
+          </ion-row>
         </ion-row>
-      </ion-row>
-      <div>
-        <!--ion-text
-          class="activity-overview--item--description"
-          [innerHTML]="item.description"
-        ></ion-text-->
-        description
-      </div>
-      <div>
-          <!--ion-chip *ngIf="item.type === 'message'"
-          class="ion-justify-content-center"
-          [ngClass]="'chip-' + chipStatus[item.status]"
-          >{{
-            'page.program.program-people-affected.message-history-popup.chip-status.' +
-              chipStatus[item.status] | translate
-          }}</ion-chip
-        -->
-        message
-      </div>
-    </ion-col>
-
-    <!--ion-label
-      *ngIf="item.chipText"
-      class="ion-text-right ion-float-right"
-      ><ion-chip class="chip">
-        <b>
-          {{ item.chipText }}
-        </b>
-      </ion-chip>
-    </ion-label-->
-    label
-  </ion-row>
-
-
-</ion-grid>
+        <div>
+          <ion-note>
+            <small>
+              <!-- TODO: figure out the locale issue
+            {{
+              message.created | date: DateFormat.dayAndTimeReverse : locale
+            }} -->
+              {{ message.created | date: DateFormat.dayAndTimeReverse }}
+            </small>
+          </ion-note>
+        </div>
+        <div>
+          <ion-text
+            class="activity-overview--item--description"
+            [innerHTML]="message.body"
+          ></ion-text>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-item>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

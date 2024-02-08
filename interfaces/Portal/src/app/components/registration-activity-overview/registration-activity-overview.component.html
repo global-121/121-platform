@@ -126,8 +126,9 @@
                 ></ion-text>
               </div>
               <div>
-                  <!-- messages-->
-                  <ion-chip *ngIf="item.type === 'message'"
+                <!-- messages-->
+                <ion-chip
+                  *ngIf="item.type === 'message'"
                   class="ion-justify-content-center"
                   [ngClass]="'chip-' + chipStatus[item.status]"
                   >{{
@@ -176,14 +177,12 @@
             *ngIf="item.type === 'message'"
             style="width: 100%"
           >
-          <app-message-history-item
-          [message]="item.messageDetail"
-          [person]="person"
-          [program]="program"
-        ></app-message-history-item>
-
-        </div>
-
+            <app-message-history-item
+              [message]="item.messageSource"
+              [person]="person"
+              [program]="program"
+            ></app-message-history-item>
+          </div>
         </ion-grid>
       </ion-item>
     </ion-list>

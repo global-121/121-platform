@@ -47,7 +47,6 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 //import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
-import { NewMessageHistoryPopupComponent } from '../new-message-history-popup/new-message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { AnswerType } from '../../models/fsp.model';
 import {
@@ -70,6 +69,7 @@ import { TableService } from '../../services/table.service';
 import { actionResult } from '../../shared/action-result';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
+import { NewMessageHistoryPopupComponent } from '../new-message-history-popup/new-message-history-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
 import { TableFilterRowComponent } from '../table-filter-row/table-filter-row.component';
 

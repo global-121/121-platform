@@ -32,60 +32,11 @@
       *ngFor="let message of messageHistory; let i = index"
       class="ion-margin-bottom ion-padding-horizontal"
     >
-    <app-message-history-item
-    [message]="message"
-    [person]="person"
-    [program]="program"
-  ></app-message-history-item>
-  </div>
-  </ion-list>
-</ion-content>
-
-
-
-
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      {{
-        'page.program.program-people-affected.payment-history-popup.title'
-          | translate
-      }}
-    </ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button
-        (click)="closeModal()"
-        [attr.title]="'common.cancel' | translate"
-        [attr.aria-label]="'common.cancel' | translate"
-      >
-        <ion-icon
-          name="close"
-          slot="icon-only"
-          aria-hidden="true"
-        ></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content
-  class="ion-padding"
-  lines="full"
->
-  <h2>{{ paDisplayName }}</h2>
-
-  <ion-accordion-group [multiple]="true">
-    <ng-container *ngFor="let paymentRow of paymentRows">
-      <app-payment-history-accordion
-        [paymentRow]="paymentRow"
-        [enableSinglePayment]="enableSinglePayment(paymentRow)"
+      <app-message-history-item
+        [message]="message"
         [person]="person"
         [program]="program"
-        [paymentRows]="enableSinglePayment(paymentRow)"
-        [canViewVouchers]="canViewVouchers"
-        [canDoSinglePayment]="canDoSinglePayment"
-        [lastPaymentId]="lastPaymentId"
-      ></app-payment-history-accordion>
-    </ng-container>
-  </ion-accordion-group>
-</ion-content> -->
+      ></app-message-history-item>
+    </div>
+  </ion-list>
+</ion-content>
