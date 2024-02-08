@@ -44,7 +44,6 @@ import {
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
@@ -548,7 +547,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             person.preferredLanguage,
           )
         : '',
-      phoneNumber: formatPhoneNumber(person.phoneNumber),
+      phoneNumber: person.phoneNumber,
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
@@ -599,7 +598,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         value = false;
       }
       if (paTableAttribute.type === AnswerType.PhoneNumber) {
-        value = formatPhoneNumber(value);
+        value = value;
       }
       personRow[paTableAttribute.name] = value;
     }
