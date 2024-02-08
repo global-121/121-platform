@@ -926,6 +926,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         if (error.error?.error) {
           err = error.error?.error;
         }
+        if (error.error?.errors) {
+          err = error.error.errors;
+        }
         actionResult(
           this.alertController,
           this.translate,
