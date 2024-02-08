@@ -5,7 +5,7 @@ export class TransactionUserid1707311400291 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD "userId" integer NOT NULL`,
+      `ALTER TABLE "121-service"."transaction" ADD "userId" integer`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_b2e3f7568dafa9e86ae03910111"`,
@@ -26,6 +26,10 @@ export class TransactionUserid1707311400291 implements MigrationInterface {
     // Update all transactions with the user id
     await queryRunner.query(
       `UPDATE "121-service"."transaction" SET "userId" = ${adminUser[0].id}`,
+    );
+    // Alter userId to be non-null
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ALTER COLUMN "userId" SET NOT NULL`,
     );
   }
 
