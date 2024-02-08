@@ -6,5 +6,6 @@ export class PaPaymentDataDto {
   public fspName: FspName;
   public transactionAmount: number;
   public bulkSize: number;
+  public userId: number;
   public transactionId?: number;
 }

@@ -11,6 +11,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -39,14 +40,20 @@ export class VodacashService
         date: new Date(),
         calculatedAmount: payment.transactionAmount,
         status: StatusEnum.waiting,
+        userId: payment.userId,
         message: null,
+      };
+
+      const transactionRelationDetails: TransactionRelationDetailsDto = {
+        programId: programId,
+        paymentNr: paymentNr,
+        userId: payment.userId,
       };
 
       // Storing the per payment so you can continiously seed updates of transactions in Portal
       await this.transactionsService.storeTransactionUpdateStatus(
         paTransactionResult,
-        programId,
-        paymentNr,
+        transactionRelationDetails,
       );
     }
     return fspTransactionResult;

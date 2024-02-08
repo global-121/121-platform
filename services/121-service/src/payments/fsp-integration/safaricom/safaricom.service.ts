@@ -13,6 +13,7 @@ import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
@@ -58,6 +59,7 @@ export class SafaricomService
           paPaymentData: paPaymentData,
           programId: programId,
           paymentNr: paymentNr,
+          userId: paPaymentData.userId,
         },
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -94,12 +96,17 @@ export class SafaricomService
       payload,
       jobData.paPaymentData.referenceId,
     );
+
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
+      programId: jobData.programId,
+      paymentNr: jobData.paymentNr,
+      userId: jobData.userId,
+    };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     const transaction =
       await this.transactionsService.storeTransactionUpdateStatus(
         paymentRequestResultPerPa,
-        jobData.programId,
-        jobData.paymentNr,
+        transactionRelationDetails,
       );
 
     await this.processSafaricomRequest(
@@ -109,6 +116,7 @@ export class SafaricomService
     );
   }
 
+  // TODO refactor this to a different name RegistrationInfo?
   public async getUserInfo(
     referenceIds: string[],
   ): Promise<{ id: string; referenceId: string; value: string }[]> {

@@ -18,6 +18,7 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../dto/transaction-relation-details.dto';
 import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
@@ -165,12 +166,11 @@ export class TransactionsService {
 
   public async storeTransactionUpdateStatus(
     transactionResponse: PaTransactionResultDto,
-    programId: number,
-    payment: number,
+    relationDetails: TransactionRelationDetailsDto,
     transactionStep?: number,
   ): Promise<TransactionEntity> {
     const program = await this.programRepository.findOneBy({
-      id: programId,
+      id: relationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: transactionResponse.fspName },
@@ -185,7 +185,8 @@ export class TransactionsService {
     transaction.registration = registration;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
-    transaction.payment = payment;
+    transaction.payment = relationDetails.paymentNr;
+    transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
@@ -336,13 +337,15 @@ export class TransactionsService {
 
   public async storeAllTransactions(
     transactionResults: any,
-    programId: number,
-    payment: number,
+    transactionRelationDetails: TransactionRelationDetailsDto,
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
     for (const transaction of transactionResults.paList) {
-      await this.storeTransactionUpdateStatus(transaction, programId, payment);
+      await this.storeTransactionUpdateStatus(
+        transaction,
+        transactionRelationDetails,
+      );
     }
   }
 

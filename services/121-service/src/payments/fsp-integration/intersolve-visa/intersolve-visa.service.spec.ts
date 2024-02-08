@@ -31,6 +31,7 @@ const paymentDetailsResult: PaymentDetailsDto = {
   programId: programId,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
   transactionAmount: 25,
+  userId: 1,
 };
 const mockPaPaymentDetails = [
   {

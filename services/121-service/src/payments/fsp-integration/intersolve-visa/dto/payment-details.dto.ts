@@ -12,4 +12,5 @@ export class PaymentDetailsDto {
   public programId: number;
   public paymentNr: number;
   public bulkSize: number;
+  public userId: number;
 }
