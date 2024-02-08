@@ -29,7 +29,10 @@ export class SeedProgramEth implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programPilotEth);
+    const program = await this.seedHelper.addProgram(
+      programPilotEth,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATE *****
     await this.seedHelper.addMessageTemplates(messageTemplatePilotEth, program);

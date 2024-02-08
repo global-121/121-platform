@@ -25,7 +25,10 @@ export class SeedProgramValidation implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programValidation);
+    const program = await this.seedHelper.addProgram(
+      programValidation,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

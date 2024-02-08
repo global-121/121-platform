@@ -14,6 +14,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { AnswerTypes } from '../registration/enum/custom-data-attributes';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
@@ -153,7 +154,10 @@ export class SeedHelper {
     await instanceRepository.save(instance);
   }
 
-  public async addProgram(programExample: any): Promise<ProgramEntity> {
+  public async addProgram(
+    programExample: any,
+    isApiTests: boolean,
+  ): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
     const fspRepository = this.dataSource.getRepository(
       FinancialServiceProviderEntity,
@@ -168,6 +172,11 @@ export class SeedHelper {
 
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
+
+    if (DEBUG && !isApiTests) {
+      program.phase = ProgramPhase.payment;
+      program.published = true;
+    }
 
     const programReturn = await programRepository.save(program);
 

@@ -25,7 +25,10 @@ export class SeedProgramLbn implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programPilotLbn);
+    const program = await this.seedHelper.addProgram(
+      programPilotLbn,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATE *****
     await this.seedHelper.addMessageTemplates(messageTemplatePilotLbn, program);

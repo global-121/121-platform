@@ -33,8 +33,10 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityBaringo =
-      await this.seedHelper.addProgram(programBaringo);
+    const programEntityBaringo = await this.seedHelper.addProgram(
+      programBaringo,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -54,8 +56,10 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTurkana =
-      await this.seedHelper.addProgram(programTurkana);
+    const programEntityTurkana = await this.seedHelper.addProgram(
+      programTurkana,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -71,8 +75,10 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityWestPokot =
-      await this.seedHelper.addProgram(programWestPokot);
+    const programEntityWestPokot = await this.seedHelper.addProgram(
+      programWestPokot,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
