@@ -38,39 +38,45 @@ export class RemoveSelectForValidation1707311790028
       update "121-service"."fsp_attribute" set export = '[]' where export::text = '["selected-for-validation"]';
       `);
 
-    // Add the new permission
+    // Add the new permissions
     const permissionsRepository =
       queryRunner.manager.getRepository(PermissionEntity);
-    const newPermission =
-      'registration:status:markAsValidated.update' as PermissionEnum;
-    const permission = new PermissionEntity();
-    permission.name = newPermission;
-    let permissionEntity = await permissionsRepository.findOne({
-      where: { name: newPermission },
-    });
-    if (!permissionEntity) {
-      permissionEntity = await permissionsRepository.save(permission);
-    }
+    const newPermissions = [
+      'registration:status:markAsValidated.update',
+      'registration:status:markAsDeclined.update',
+    ];
 
-    // Loop over all existing roles, if it has the closes permission, also add the new permission
-    const closestPermission =
-      'registration:status:selectedForValidation.update' as PermissionEnum;
-    const userRoleRepository =
-      queryRunner.manager.getRepository(UserRoleEntity);
-    const userRoles = await userRoleRepository.find({
-      relations: ['permissions'],
-    });
-    for (const role of userRoles) {
-      const rolePermissions = role.permissions.map(
-        (p) => p.name as PermissionEnum,
-      );
-      if (
-        (rolePermissions.includes(closestPermission) ||
-          role.role === 'partner') && // specifically also add to NLRC partner role
-        !rolePermissions.includes(newPermission)
-      ) {
-        role.permissions.push(permissionEntity);
-        await userRoleRepository.save(role);
+    for (const newPermission of newPermissions) {
+      const name = newPermission as PermissionEnum;
+      const permission = new PermissionEntity();
+      permission.name = name;
+      let permissionEntity = await permissionsRepository.findOne({
+        where: { name: name },
+      });
+      if (!permissionEntity) {
+        permissionEntity = await permissionsRepository.save(permission);
+      }
+
+      // Loop over all existing roles, if it has the closes permission, also add the new permission
+      const closestPermission =
+        'registration:status:selectedForValidation.update' as PermissionEnum;
+      const userRoleRepository =
+        queryRunner.manager.getRepository(UserRoleEntity);
+      const userRoles = await userRoleRepository.find({
+        relations: ['permissions'],
+      });
+      for (const role of userRoles) {
+        const rolePermissions = role.permissions.map(
+          (p) => p.name as PermissionEnum,
+        );
+        if (
+          (rolePermissions.includes(closestPermission) ||
+            role.role === 'partner') && // specifically also add to NLRC partner role
+          !rolePermissions.includes(name)
+        ) {
+          role.permissions.push(permissionEntity);
+          await userRoleRepository.save(role);
+        }
       }
     }
 

@@ -16,6 +16,7 @@ export enum BulkActionId {
   doPayment = 'doPayment',
   pause = 'pause',
   markAsValidated = 'markAsValidated',
+  markAsDeclined = 'markAsDeclined',
 }
 
 export const BulkActionRegistrationStatusMap = {

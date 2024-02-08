@@ -16,6 +16,7 @@ export class PeopleMetrics {
   [RegistrationStatus.startedRegistration]: number;
   [RegistrationStatus.registered]: number;
   [RegistrationStatus.validated]: number;
+  [RegistrationStatus.declined]: number;
   [RegistrationStatus.included]: number;
   [RegistrationStatus.inclusionEnded]: number;
   [RegistrationStatus.rejected]: number;

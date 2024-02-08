@@ -408,6 +408,9 @@ export class RegistrationsController {
       case RegistrationStatusEnum.validated:
         permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
         break;
+      case RegistrationStatusEnum.declined:
+        permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
+        break;
     }
     if (!permission) {
       const errors = `The status ${registrationStatus} is unknown or cannot be changed to via API`;

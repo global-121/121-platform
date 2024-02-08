@@ -93,6 +93,17 @@ export class BulkActionsService {
       },
     },
     {
+      id: BulkActionId.markAsDeclined,
+      enabled: false,
+      label: 'page.program.program-people-affected.actions.markAsDeclined',
+      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
+      },
+    },
+    {
       id: BulkActionId.include,
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
@@ -289,6 +300,12 @@ export class BulkActionsService {
         );
       case BulkActionId.markAsValidated:
         return await this.programsService.markAsValidated(
+          programId,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.markAsDeclined:
+        return await this.programsService.markAsDeclined(
           programId,
           dryRun,
           filters,

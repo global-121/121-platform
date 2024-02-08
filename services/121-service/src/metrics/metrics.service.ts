@@ -997,6 +997,15 @@ export class MetricsService {
           month,
           year,
         ),
+      [RegistrationStatusEnum.declined]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.declined,
+          payment,
+          month,
+          year,
+        ),
       [RegistrationStatusEnum.included]:
         await this.getTimestampsPerStatusAndTimePeriod(
           programId,

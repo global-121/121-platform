@@ -1000,6 +1000,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
       BulkActionId.markAsValidated,
+      BulkActionId.markAsDeclined,
     ];
     const responseText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.response',
