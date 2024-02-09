@@ -43,6 +43,7 @@
             >
           </ion-row>
         </ion-row>
+        <ion-row>
         <div>
           <ion-note>
             <small>
@@ -52,6 +53,20 @@
             </small>
           </ion-note>
         </div>
+      </ion-row>
+        <ion-row *ngIf="message.errorCode">
+          <ion-note>
+            {{
+              'page.program.program-people-affected.message-history-popup.status-line.code'
+                | translate
+            }}<a
+              [href]="errorCodeUrl + message.errorCode"
+              target="_blank"
+              rel="external noopener noreferrer"
+              >{{ message.errorCode }}</a
+            ></ion-note
+          >
+        </ion-row>
         <div>
           <ion-text
             class="activity-overview--item--description"
