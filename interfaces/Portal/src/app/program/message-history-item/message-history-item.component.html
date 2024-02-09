@@ -1,4 +1,5 @@
 <ion-item
+  [lines]="lines"
   style="
     font-size: 14px;
     --padding-start: 0;
@@ -9,8 +10,7 @@
   <ion-grid>
     <ion-row>
       <div class="ion-padding-horizontal">
-        <div style="height: 100%; display: flex; align-items: center">
-          <!-- TODO: icon v-align top-->
+        <div style="height: 100%; display: flex">
           <ion-icon
             class="money-icon ion-no-padding"
             name="mail-outline"
@@ -24,29 +24,28 @@
           <ion-row>
             <ion-label class="ion-margin-end">
               <strong
-                >{{ message.contentType | uppercase
+                >{{
+                  'page.program.program-people-affected.message-history-popup.content-type.' +
+                    message.contentType | translate
                 }}<span *ngIf="message.type"> - </span>
-                {{ message.type }}</strong
+                {{
+                  'page.program.program-people-affected.message-history-popup.type.' +
+                    message.type | translate
+                }}</strong
               >
             </ion-label>
-            <ion-chip
-              class="ion-justify-content-center"
-              [ngClass]="'chip-' + chipStatus[message.status]"
-              >{{
-                'page.program.program-people-affected.message-history-popup.chip-status.' +
-                  chipStatus[message.status] | translate
-              }}</ion-chip
-            >
+            <ion-chip [ngClass]="'chip-' + chipStatus[message.status]">{{
+              'page.program.program-people-affected.message-history-popup.chip-status.' +
+                chipStatus[message.status] | translate
+            }}</ion-chip>
           </ion-row>
         </ion-row>
         <div>
           <ion-note>
             <small>
-              <!-- TODO: figure out the locale issue
-            {{
-              message.created | date: DateFormat.dayAndTimeReverse : locale
-            }} -->
-              {{ message.created | date: DateFormat.dayAndTimeReverse }}
+              {{
+                message.created | date: DateFormat.dayAndTimeReverse : locale
+              }}
             </small>
           </ion-note>
         </div>
