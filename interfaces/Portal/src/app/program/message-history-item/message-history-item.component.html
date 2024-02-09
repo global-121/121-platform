@@ -44,16 +44,16 @@
           </ion-row>
         </ion-row>
         <ion-row>
-        <div>
-          <ion-note>
-            <small>
-              {{
-                message.created | date: DateFormat.dayAndTimeReverse : locale
-              }}
-            </small>
-          </ion-note>
-        </div>
-      </ion-row>
+          <div>
+            <ion-note>
+              <small>
+                {{
+                  message.created | date: DateFormat.dayAndTimeReverse : locale
+                }}
+              </small>
+            </ion-note>
+          </div>
+        </ion-row>
         <ion-row *ngIf="message.errorCode">
           <ion-note>
             {{
