@@ -36,10 +36,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   public paChoice: string;
   public noPeopleAffectedFound = false;
 
-  private validatableStatuses = [
-    RegistrationStatusEnum.registered,
-    RegistrationStatusEnum.selectedForValidation,
-  ];
+  private validatableStatuses = [RegistrationStatusEnum.registered];
 
   public phoneNumberInput = {
     value: '',

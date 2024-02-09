@@ -921,6 +921,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         if (error.error?.error) {
           err = error.error?.error;
         }
+        if (error.error?.errors) {
+          err = error.error.errors;
+        }
         actionResult(
           this.alertController,
           this.translate,
@@ -986,12 +989,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ) {
     const statusRelatedBulkActions = [
       BulkActionId.invite,
-      BulkActionId.selectForValidation,
       BulkActionId.include,
       BulkActionId.endInclusion,
       BulkActionId.reject,
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
+      BulkActionId.markAsValidated,
+      BulkActionId.markAsDeclined,
     ];
     const responseText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.response',

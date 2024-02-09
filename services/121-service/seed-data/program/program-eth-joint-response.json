@@ -41,7 +41,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -73,7 +73,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,

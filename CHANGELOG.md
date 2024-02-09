@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.111.1...main)
 
+### Removed
+
+- Removed 'selected for validation' status/bulk-action/export
+
 ---
 
 ## [1.111.1](https://github.com/global-121/121-platform/compare/v1.111.0...v1.111.1) - 2024-02-02

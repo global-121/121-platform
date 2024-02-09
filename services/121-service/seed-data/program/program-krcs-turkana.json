@@ -42,7 +42,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
@@ -76,7 +76,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Gender"
       },
@@ -96,7 +96,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Age"
       },
@@ -141,7 +141,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Marital status of beneficiary"
       },
@@ -174,7 +174,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Registration Type"
       },
@@ -194,7 +194,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "ID number (MPESA)"
       },
@@ -214,7 +214,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Name of Alternate"
       },
@@ -234,7 +234,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total household size"
       },
@@ -254,7 +254,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total household <5"
       },
@@ -274,7 +274,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total household >60"
       },
@@ -307,7 +307,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Receiving other Social Assistance?"
       },
@@ -327,7 +327,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "County"
       },
@@ -347,7 +347,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Sub County"
       },
@@ -367,7 +367,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Ward"
       },
@@ -387,7 +387,7 @@
       "pattern": null,
       "phases": ["registrationValidation"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Location"
       },
@@ -407,7 +407,7 @@
       "pattern": null,
       "phases": ["registrationValidation"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Sub location"
       },
@@ -427,7 +427,7 @@
       "pattern": null,
       "phases": ["registrationValidation"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Village"
       },
@@ -447,7 +447,7 @@
       "pattern": null,
       "phases": ["registrationValidation"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Nearest school"
       },
@@ -480,7 +480,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Area type"
       },
@@ -537,7 +537,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What are the main livelihood sources for the household?"
       },
@@ -557,7 +557,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other, specify"
       },
@@ -577,7 +577,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many males 0 - 5 years?"
       },
@@ -597,7 +597,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many females 0 - 5 years?"
       },
@@ -617,7 +617,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many males 6 - 12 years?"
       },
@@ -637,7 +637,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many females 6 - 12 years?"
       },
@@ -657,7 +657,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many males 13 - 24 years?"
       },
@@ -677,7 +677,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many females 13 - 24 years?"
       },
@@ -697,7 +697,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many males 25 - 59 years?"
       },
@@ -717,7 +717,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many females 25 - 59 years?"
       },
@@ -737,7 +737,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many males over 60 years?"
       },
@@ -757,7 +757,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many females over 60 years?"
       },
@@ -777,7 +777,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total males in household"
       },
@@ -797,7 +797,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Total females in household"
       },
@@ -830,7 +830,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Do you have household members living with disability?"
       },
@@ -850,7 +850,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -883,7 +883,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Do you have household members living with chronic illness?"
       },
@@ -903,7 +903,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -936,7 +936,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Do you have any pregnant or lactating woman in your household?"
       },
@@ -956,7 +956,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -976,7 +976,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many habitable ROOMS does this dwelling unit contain?"
       },
@@ -1009,7 +1009,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
       },
@@ -1054,7 +1054,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If owner occupied, state whether:"
       },
@@ -1074,7 +1074,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other, specify"
       },
@@ -1137,7 +1137,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If rented or provided, stated whether:"
       },
@@ -1157,7 +1157,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other, specify"
       },
@@ -1232,7 +1232,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the main construction material used for the ROOF?"
       },
@@ -1252,7 +1252,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other ROOFING material state"
       },
@@ -1333,7 +1333,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the main construction material used for the WALL?"
       },
@@ -1353,7 +1353,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other type of WALL state"
       },
@@ -1404,7 +1404,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the main construction material used for the FLOOR?"
       },
@@ -1424,7 +1424,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other type of FLOOR state"
       },
@@ -1475,7 +1475,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "The dwelling unit is at RISK of:"
       },
@@ -1495,7 +1495,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other type of RISK, specify"
       },
@@ -1606,7 +1606,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the main source of WATER?"
       },
@@ -1626,7 +1626,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Any other source of WATER, specify"
       },
@@ -1659,7 +1659,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own pigs?"
       },
@@ -1679,7 +1679,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -1712,7 +1712,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own chicken?"
       },
@@ -1787,7 +1787,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
       },
@@ -1807,7 +1807,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If any other HUMAN WASTER Disposal mode, specify"
       },
@@ -1876,7 +1876,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the MAIN type of COOKING Fuel?"
       },
@@ -1896,7 +1896,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Specify other type of COOKING Fuel"
       },
@@ -1965,7 +1965,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What is the MAIN type of LIGHTING?"
       },
@@ -1985,7 +1985,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Specify other type of LIGHTING"
       },
@@ -2054,7 +2054,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household OWN any of the following ITEMS?"
       },
@@ -2087,7 +2087,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own exotic cattle?"
       },
@@ -2107,7 +2107,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2140,7 +2140,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own indigenous cattle?"
       },
@@ -2160,7 +2160,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2193,7 +2193,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own sheep?"
       },
@@ -2213,7 +2213,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2246,7 +2246,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own goats?"
       },
@@ -2266,7 +2266,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2299,7 +2299,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own camels?"
       },
@@ -2319,7 +2319,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2352,7 +2352,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Does your household own donkeys?"
       },
@@ -2372,7 +2372,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2392,7 +2392,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, how many?"
       },
@@ -2412,7 +2412,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
       },
@@ -2432,7 +2432,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
       },
@@ -2477,7 +2477,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Currently, the CONDITIONS of your household are?"
       },
@@ -2510,7 +2510,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Did anyone reduce or skip meals?"
       },
@@ -2530,7 +2530,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Receiving benefits from any National Safety Net Programmes?"
       },
@@ -2550,7 +2550,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If Yes, Name the PROGRAMME and AGENCY"
       },
@@ -2589,7 +2589,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "What type of BENEFIT do you receive?"
       },
@@ -2609,7 +2609,7 @@
       "pattern": null,
       "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If other, specify"
       },
@@ -2629,7 +2629,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
       },
@@ -2649,7 +2649,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If in-kind specify the kind of benefit"
       },
@@ -2682,7 +2682,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Do you have any feedback on response we are currently carrying out?"
       },
@@ -2702,7 +2702,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "If yes, share your feedback on response process"
       },
@@ -2747,7 +2747,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Who in your family decides on how to spend the money?"
       },
@@ -2780,7 +2780,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Are there posibility of conflicts in the households over who receives Cash?"
       },
@@ -2813,7 +2813,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
       },
@@ -2833,7 +2833,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Kindly elaborate"
       },
@@ -2853,7 +2853,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "GPS location"
       },

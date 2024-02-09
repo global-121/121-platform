@@ -14,7 +14,7 @@
       "placeholder": {
         "en": "Please type your bank account number"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "phases": ["registrationValidation", "inclusion", "payment"],
       "options": null,

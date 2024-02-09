@@ -10,12 +10,12 @@ export class RegistrationResponse {
   public invitedDate: Date | null;
   public noLongerEligibleDate: Date | null;
   public registeredDate: Date | null;
-  public selectedForValidationDate: Date | null;
   public validationDate: Date | null;
   public inclusionDate: Date | null;
   public inclusionEndDate: Date | null;
   public rejectionDate: Date | null;
   public deletedDate: Date | null;
+  public declinedDate: Date | null;
 
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
