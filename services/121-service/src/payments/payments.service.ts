@@ -32,6 +32,7 @@ import { RegistrationsBulkService } from './../registration/services/registratio
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
@@ -158,7 +159,6 @@ export class PaymentsService {
       nrError:
         statusAggregation.find((row) => row.status === StatusEnum.error)
           ?.count || 0,
-      paymentInProgress: paymentInProgress,
     };
   }
 
@@ -398,6 +398,14 @@ export class PaymentsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  public async getProgramPaymentsStatus(
+    programId: number,
+  ): Promise<ProgramPaymentsStatusDto> {
+    return {
+      inProgress: await this.isPaymentInProgress(programId),
+    };
   }
 
   private async isPaymentInProgress(programId: number): Promise<boolean> {
