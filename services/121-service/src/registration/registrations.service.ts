@@ -821,7 +821,7 @@ export class RegistrationsService {
     return registrationObject;
   }
 
-  public getDateColumPerStatus(
+  public getDateFieldPerStatus(
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
     switch (filterStatus) {

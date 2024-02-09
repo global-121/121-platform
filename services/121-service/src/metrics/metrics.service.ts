@@ -1096,11 +1096,11 @@ export class MetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<number> {
-    const dateColumn =
-      this.registrationsService.getDateColumPerStatus(filterStatus);
+    const dateField =
+      this.registrationsService.getDateFieldPerStatus(filterStatus);
 
     let filteredRegistrations = registrations.filter(
-      (registration) => !!registration[dateColumn],
+      (registration) => !!registration[dateField],
     );
 
     if (
@@ -1115,8 +1115,8 @@ export class MetricsService {
     if (month >= 0 && year) {
       filteredRegistrations = filteredRegistrations.filter((registration) => {
         const yearMonth = new Date(
-          registration[dateColumn].getFullYear(),
-          registration[dateColumn].getUTCMonth(),
+          registration[dateField].getFullYear(),
+          registration[dateField].getUTCMonth(),
           1,
         );
         const yearMonthCondition = new Date(year, month, 1);
@@ -1137,8 +1137,8 @@ export class MetricsService {
       const endDate = payments.find((i) => i.payment === payment).paymentDate;
       filteredRegistrations = filteredRegistrations.filter(
         (registration) =>
-          registration[dateColumn] > beginDate &&
-          registration[dateColumn] <= endDate,
+          registration[dateField] > beginDate &&
+          registration[dateField] <= endDate,
       );
     }
     return filteredRegistrations.length;
