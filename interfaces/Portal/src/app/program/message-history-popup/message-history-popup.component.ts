@@ -10,7 +10,7 @@ import { Message, MessageStatusMapping } from '../../models/message.model';
 import { MessageHistoryItemComponent } from '../message-history-item/message-history-item.component';
 
 @Component({
-  selector: 'app-new-message-history-popup',
+  selector: 'app-message-history-popup',
   templateUrl: './message-history-popup.component.html',
   styleUrls: ['./message-history-popup.component.scss'],
   standalone: true,
