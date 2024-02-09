@@ -21,7 +21,7 @@
     "registration": {
       "status": {
         "completed": "Voltooid",
-        "declined": "Afgewezen",
+        "declined": "Geweigerd",
         "deleted": "Verwijderd",
         "imported": "Geïmporteerd",
         "included": "Actief",
@@ -358,7 +358,7 @@
           "endInclusion": "Beëindig deelname aan programma",
           "include": "Opnemen in programma",
           "invite": "Uitnodigen voor registratie",
-          "markAsDeclined": "Markeer als afgewezen",
+          "markAsDeclined": "Markeer als geweigerd",
           "markAsValidated": "Markeer als gevalideerd",
           "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
