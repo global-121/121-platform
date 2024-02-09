@@ -176,7 +176,7 @@ export class MetricsComponent implements OnInit {
   private renderAidWorkerMetrics() {
     const group = MetricGroup.aidworkers;
     let nrOfFieldValidationUsers = 0;
-    for (const assignment of this.program.aidworkerAssignments) {
+    for (const assignment of this.program.aidworkerAssignments || []) {
       for (const role of assignment.roles) {
         if (role.role === UserRole.FieldValidation) {
           nrOfFieldValidationUsers = nrOfFieldValidationUsers + 1;

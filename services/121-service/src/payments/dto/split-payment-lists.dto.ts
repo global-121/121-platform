@@ -10,4 +10,5 @@ export class SplitPaymentListDto {
   public belcashPaPayment?: object[];
   public safaricomPaPayment?: object[];
   public commercialBankEthiopiaPaPayment?: object[];
+  public excelPaPayment?: object[];
 }

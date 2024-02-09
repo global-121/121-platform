@@ -19,6 +19,8 @@ export function createExpectedValueObject(
 
 export const programIdPV = 2;
 export const programIdOCW = 3;
+export const programIdWesteros = 2;
+export const programIdWithValidation = 3;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
@@ -139,3 +141,31 @@ export const expectedAttributes = [
   'name',
   'paymentCount',
 ];
+
+export const registrationWesteros1 = {
+  referenceId: 'westeros123456789',
+  preferredLanguage: 'en',
+  name: 'John Snow',
+  dob: '283-12-31',
+  house: 'stark',
+  dragon: 1,
+  knowsNothing: true,
+  phoneNumber: '14155235554',
+  fspName: 'Excel',
+  whatsappPhoneNumber: '14155235554',
+  motto: 'Winter is coming',
+};
+
+export const registrationWesteros2 = {
+  referenceId: 'westeros987654321',
+  preferredLanguage: 'en',
+  name: 'Arya Stark',
+  dob: '288-12-31',
+  house: 'stark',
+  dragon: 0,
+  knowsNothing: false,
+  phoneNumber: '14155235555',
+  fspName: 'Excel',
+  whatsappPhoneNumber: '14155235555',
+  motto: 'A girl has no name',
+};

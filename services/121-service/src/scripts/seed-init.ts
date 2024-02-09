@@ -6,6 +6,7 @@ import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 import fspBob from '../../seed-data/fsp/fsp-bob.json';
 import fspCommercialBankEthiopia from '../../seed-data/fsp/fsp-commercial-bank-ethiopia.json';
+import fspExcel from '../../seed-data/fsp/fsp-excel.json';
 import fspIntersolveJumboPhysical from '../../seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
 import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
@@ -129,6 +130,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
@@ -160,6 +163,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
@@ -308,6 +313,7 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspUkrPoshta);
     await this.seedHelper.addFsp(fspSafaricom);
     await this.seedHelper.addFsp(fspCommercialBankEthiopia);
+    await this.seedHelper.addFsp(fspExcel);
   }
 }
 

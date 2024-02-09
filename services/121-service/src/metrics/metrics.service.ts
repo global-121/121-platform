@@ -439,22 +439,13 @@ export class MetricsService {
       select: defaultSelect.concat(registrationDataNamesProgram),
     };
 
-    // Get the data per batch registrations to prevent an out of memory error
-    let data = [];
-    let totalPages = 1; // higher than 1
-    while (paginateQuery.page <= totalPages) {
-      const paginateResult =
-        await this.registrationsPaginationsService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          queryBuilder.clone(),
-        );
-      data = data.concat(paginateResult.data);
-      paginateQuery.page = paginateResult.meta.currentPage + 1;
-      totalPages = paginateResult.meta.totalPages;
-    }
+    const data =
+      await this.registrationsPaginationsService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        chunkSize,
+        queryBuilder,
+      );
     return data;
   }
 
@@ -1096,11 +1087,11 @@ export class MetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<number> {
-    const dateColumn =
-      this.registrationsService.getDateColumPerStatus(filterStatus);
+    const dateField =
+      this.registrationsService.getDateFieldPerStatus(filterStatus);
 
     let filteredRegistrations = registrations.filter(
-      (registration) => !!registration[dateColumn],
+      (registration) => !!registration[dateField],
     );
 
     if (
@@ -1115,8 +1106,8 @@ export class MetricsService {
     if (month >= 0 && year) {
       filteredRegistrations = filteredRegistrations.filter((registration) => {
         const yearMonth = new Date(
-          registration[dateColumn].getFullYear(),
-          registration[dateColumn].getUTCMonth(),
+          registration[dateField].getFullYear(),
+          registration[dateField].getUTCMonth(),
           1,
         );
         const yearMonthCondition = new Date(year, month, 1);
@@ -1137,8 +1128,8 @@ export class MetricsService {
       const endDate = payments.find((i) => i.payment === payment).paymentDate;
       filteredRegistrations = filteredRegistrations.filter(
         (registration) =>
-          registration[dateColumn] > beginDate &&
-          registration[dateColumn] <= endDate,
+          registration[dateField] > beginDate &&
+          registration[dateField] <= endDate,
       );
     }
     return filteredRegistrations.length;

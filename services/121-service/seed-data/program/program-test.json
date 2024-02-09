@@ -60,6 +60,15 @@
     },
     {
       "fsp": "VodaCash"
+    },
+    {
+      "fsp": "Excel",
+      "configuration": [
+        {
+          "name": "columnsToExport",
+          "value": "[\"name\", \"dob\", \"house\", \"phoneNumber\"]"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 250,

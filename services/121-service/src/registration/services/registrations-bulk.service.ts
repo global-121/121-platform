@@ -283,14 +283,15 @@ export class RegistrationsBulkService {
 
   public setQueryPropertiesBulkAction(
     query: PaginateQuery,
-    includePaymentMultiplier = false,
+    includePaymentAttributes = false,
     includeSendMessageProperties = false,
     includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
   ): PaginateQuery {
     query.select = ['referenceId'];
-    if (includePaymentMultiplier) {
+    if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
+      query.select.push('financialServiceProvider');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');

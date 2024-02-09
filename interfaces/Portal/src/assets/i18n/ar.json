@@ -6,6 +6,7 @@
     "apply": "طبق",
     "cancel": "إلغاء الأمر",
     "confirm": "هل أنت متأكد؟",
+    "error-with-message": "حدث خطأ ما: {{error}}",
     "export-error": "حدث خطأ ما في التصدير.",
     "import-error": "حدث خطأ ما في الاستيراد.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "يرجى المحاولة مرة أخرى. إذا استمرت المشكلة، اتصل بالدعم التقني.",
     "unknown-error": "حدث خطأ ما. الخطأ غير معروف.",
     "update": "تحديث",
-    "update-error": "حدث خطأ ما: {{error}}",
     "update-success": "تم التحديث بنجاح"
   },
   "entity": {

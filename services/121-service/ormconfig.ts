@@ -16,6 +16,9 @@ export const ORMConfig: DataSourceOptions = {
   migrationsRun: false,
   dropSchema: false,
   synchronize: false,
+  // UNCOMMENT the following lines to enable query-logging for debugging
+  // logging: ['query'],
+  // logger: 'advanced-console',
   ssl:
     process.env.NODE_ENV === 'development'
       ? null
