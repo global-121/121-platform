@@ -12,5 +12,6 @@ export const createRedisClient = (): Redis => {
     port: Number(process.env.REDIS_PORT),
     password: process.env.REDIS_PASSWORD,
     tls: process.env.REDIS_PASSWORD ? {} : null,
+    keyPrefix: process.env.REDIS_KEY_PREFIX,
   });
 };
