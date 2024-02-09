@@ -21,6 +21,7 @@ import {
 import { TransactionRelationDetailsDto } from '../dto/transaction-relation-details.dto';
 import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
+  AuditedTransactionReturnDto,
   GetTransactionDto,
   GetTransactionOutputDto,
   TransactionReturnDto,
@@ -48,6 +49,29 @@ export class TransactionsService {
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
   ) {}
+
+  public async getAuditedTransactions(
+    programId: number,
+    payment?: number,
+    referenceId?: string,
+  ): Promise<AuditedTransactionReturnDto[]> {
+    const query = this.getLastTransactionsQuery(programId, payment, referenceId)
+      .leftJoin('transaction.user', 'user')
+      .addSelect('user.id', 'userId')
+      .addSelect('user.username', 'username');
+    const rawResult = await query.getRawMany();
+    const result = rawResult.map((row) => {
+      const { userId, username, ...rest } = row;
+      return {
+        ...rest,
+        user: {
+          id: userId,
+          username,
+        },
+      };
+    });
+    return result;
+  }
 
   public async getLastTransactions(
     programId: number,

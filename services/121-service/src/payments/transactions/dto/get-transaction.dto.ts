@@ -8,6 +8,7 @@ import {
   Length,
 } from 'class-validator';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { UserOwnerDto } from '../../../user/dto/user-owner.dto';
 import { IntersolveVoucherPayoutStatus } from '../../fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 
 export class GetTransactionDto {
@@ -69,6 +70,11 @@ export class TransactionReturnDto {
   public fspName: string;
   @ApiProperty({ example: 'Intersolve-visa', type: 'string' })
   public fsp: string;
+}
+
+export class AuditedTransactionReturnDto extends TransactionReturnDto {
+  @ApiProperty({ type: () => UserOwnerDto })
+  public user: UserOwnerDto;
 }
 
 export class PaymentReturnDto {
