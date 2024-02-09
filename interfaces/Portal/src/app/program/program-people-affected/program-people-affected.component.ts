@@ -47,7 +47,6 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { AnswerType } from '../../models/fsp.model';
 import {
   MessageStatus,
   MessageStatusMapping,
@@ -596,9 +595,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
       if (value === 'false') {
         value = false;
-      }
-      if (paTableAttribute.type === AnswerType.PhoneNumber) {
-        value = value;
       }
       personRow[paTableAttribute.name] = value;
     }
