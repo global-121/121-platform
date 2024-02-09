@@ -23,7 +23,7 @@ export class MessageHistoryItemComponent {
   @Input()
   public lines = 'none';
 
-  public chipStatus = MessageStatusMapping;
+  public chipMessageStatusMapping = MessageStatusMapping;
   public locale: string;
 
   constructor(public translate: TranslateService) {

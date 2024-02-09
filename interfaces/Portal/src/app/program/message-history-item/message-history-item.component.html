@@ -34,10 +34,13 @@
                 }}</strong
               >
             </ion-label>
-            <ion-chip [ngClass]="'chip-' + chipStatus[message.status]">{{
-              'page.program.program-people-affected.message-history-popup.chip-status.' +
-                chipStatus[message.status] | translate
-            }}</ion-chip>
+            <ion-chip
+              [ngClass]="'chip-' + chipMessageStatusMapping[message.status]"
+              >{{
+                'page.program.program-people-affected.message-history-popup.chip-status.' +
+                  chipMessageStatusMapping[message.status] | translate
+              }}</ion-chip
+            >
           </ion-row>
         </ion-row>
         <div>
