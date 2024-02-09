@@ -409,7 +409,7 @@ export class RegistrationsController {
         permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
         break;
       case RegistrationStatusEnum.declined:
-        permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
+        permission = PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE;
         break;
     }
     if (!permission) {

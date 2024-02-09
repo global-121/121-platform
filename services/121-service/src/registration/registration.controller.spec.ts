@@ -1,58 +1,107 @@
 import { TestBed } from '@automock/jest';
 import { PaginateQuery } from 'nestjs-paginate';
-import { UserService } from '../user/user.service';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationsController } from './registrations.controller';
-import { RegistrationsService } from './registrations.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 describe('RegistrationController', () => {
   let registrationController: RegistrationsController;
-  let registrationsService: jest.Mocked<RegistrationsService>;
   let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
   let registrationsBulkService: jest.Mocked<RegistrationsBulkService>;
-  let userService: jest.Mocked<UserService>;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(RegistrationsController).compile();
 
     registrationController = unit;
-    registrationsService = unitRef.get(RegistrationsService);
     registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,
     );
     registrationsBulkService = unitRef.get(RegistrationsBulkService);
-    userService = unitRef.get(UserService);
 
     jest
       .spyOn(registrationsPaginationService, 'userHasPermissionForProgram')
-      .mockResolvedValue(true);
+      .mockResolvedValue(false)
+      .mockResolvedValueOnce(true) // update-status permission check
+      .mockResolvedValueOnce(false); // send-message permission check
+
+    jest
+      .spyOn(registrationsPaginationService, 'throwIfNoPermissionsForQuery')
+      .mockResolvedValue(null); // do not throw
+
+    jest
+      .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
+      .mockResolvedValue({
+        totalFilterCount: 1,
+        applicableCount: 1,
+        nonApplicableCount: 0,
+      });
   });
 
-  it('should throw exception when user does not have permission to send a message', async () => {
+  describe('Change registation status with right status-change permission', () => {
     const paginateQuery: PaginateQuery = {
-      path: '1',
-    };
-    const statusUpdateDto: RegistrationStatusPatchDto = {
-      status: RegistrationStatusEnum.validated,
-      message: null,
-      messageTemplateKey: null,
+      path: '',
     };
     const userId = 1;
     const programId = 1;
     const queryParams = {
-      dryRun: false,
+      dryRun: true,
     };
-    const patchResult = await registrationController.patchRegistrationsStatus(
-      paginateQuery,
-      statusUpdateDto,
-      userId,
-      programId,
-      queryParams,
-    );
 
-    expect(patchResult).toThrow();
+    it('should throw exception when user includes a message, but does not have permission for that', async () => {
+      const statusUpdateDto: RegistrationStatusPatchDto = {
+        status: RegistrationStatusEnum.validated,
+        message: 'message that should not be there',
+        messageTemplateKey: null,
+      };
+
+      await expect(
+        registrationController.patchRegistrationsStatus(
+          paginateQuery,
+          statusUpdateDto,
+          userId,
+          programId,
+          queryParams,
+        ),
+      ).rejects.toHaveProperty('status', 403); // Forbidden
+    });
+
+    it('should throw exception when user includes a messageTemplatKey, but does not have permission for that', async () => {
+      const statusUpdateDto: RegistrationStatusPatchDto = {
+        status: RegistrationStatusEnum.validated,
+        message: null,
+        messageTemplateKey: RegistrationStatusEnum.validated,
+      };
+
+      await expect(
+        registrationController.patchRegistrationsStatus(
+          paginateQuery,
+          statusUpdateDto,
+          userId,
+          programId,
+          queryParams,
+        ),
+      ).rejects.toHaveProperty('status', 403); // Forbidden
+    });
+
+    it('should not throw exception when user does not include a message', async () => {
+      const statusUpdateDto: RegistrationStatusPatchDto = {
+        status: RegistrationStatusEnum.validated,
+        message: null,
+        messageTemplateKey: null,
+      };
+
+      const patchRegistrationsStatusResulit =
+        await registrationController.patchRegistrationsStatus(
+          paginateQuery,
+          statusUpdateDto,
+          userId,
+          programId,
+          queryParams,
+        );
+
+      expect(patchRegistrationsStatusResulit).toBeDefined(); // not throwing exception
+    });
   });
 });
