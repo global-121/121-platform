@@ -419,9 +419,17 @@ export class PaymentsService {
     // if not in progress, then also check progress from queue
     // get all FSPs in program
     const program = await this.getProgramWithFspOrThrow(programId);
+    console.log(
+      '🚀 ~ PaymentsService ~ isPaymentInProgress ~ programId:',
+      programId,
+    );
 
     for (const fspEntity of program.financialServiceProviders) {
       if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
+        console.log(
+          '🚀 ~ PaymentsService ~ isPaymentInProgress ~ fsp:',
+          fspEntity.fsp,
+        );
         return true;
       }
     }

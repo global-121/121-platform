@@ -307,6 +307,27 @@ export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
 ): Promise<void> {
+  await seedIncludedRegistrations(registrations, programId);
+  const accessToken = await getAccessToken();
+
+  await doPayment(programId, 1, 25, [], accessToken, {
+    'filter.status': '$in:included',
+  });
+
+  const registrationReferenceIds = registrations.map((r) => r.referenceId);
+
+  await waitForPaymentTransactionsToComplete(
+    programId,
+    registrationReferenceIds,
+    accessToken,
+    30_000,
+  );
+}
+
+export async function seedIncludedRegistrations(
+  registrations: any[],
+  programId: number,
+): Promise<void> {
   const accessToken = await getAccessToken();
 
   await changePhase(
@@ -325,18 +346,5 @@ export async function seedPaidRegistrations(
     registrations.map((r) => r.referenceId),
     RegistrationStatusEnum.included,
     accessToken,
-  );
-
-  await doPayment(programId, 1, 25, [], accessToken, {
-    'filter.status': '$in:included',
-  });
-
-  const registrationReferenceIds = registrations.map((r) => r.referenceId);
-
-  await waitForPaymentTransactionsToComplete(
-    programId,
-    registrationReferenceIds,
-    accessToken,
-    30_000,
   );
 }
