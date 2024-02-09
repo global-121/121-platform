@@ -373,7 +373,7 @@
           "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>, <i>Geselecteerd voor validatie</i>, <i>Gevalideerd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
           "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i>.",
           "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
-          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
+          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> of <i>Geweigerd</i>.",
           "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
           "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
