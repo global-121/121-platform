@@ -200,8 +200,10 @@ export class MessageService {
       status,
       errorMessage,
       messageJobDto.programId,
-      messageSid,
-      messageJobDto.customData.intersolveVoucherId,
+      {
+        messageSid,
+        intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
+      },
     );
   }
 

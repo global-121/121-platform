@@ -10,6 +10,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { BelcashRequestEntity } from './belcash-request.entity';
@@ -53,6 +54,7 @@ export class BelcashService
         payment.transactionAmount,
         program.currency,
         program.id,
+        payment.userId,
       );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -61,11 +63,16 @@ export class BelcashService
         authorizationToken,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
+
+      const transactionRelationDetails: TransactionRelationDetailsDto = {
+        programId,
+        paymentNr: paymentNr,
+        userId: payment.userId,
+      };
       // Storing the per payment so you can continiously seed updates of transactions in Portal
       await this.transactionsService.storeTransactionUpdateStatus(
         paymentRequestResultPerPa,
-        programId,
-        paymentNr,
+        transactionRelationDetails,
       );
     }
 
@@ -83,6 +90,7 @@ export class BelcashService
     amount: number,
     currency: string,
     programId: number,
+    userId: number,
   ): BelcashTransferPayload {
     const payload = {
       amount: amount,
@@ -91,10 +99,10 @@ export class BelcashService
       description: `121 program: payment ${paymentNr}`,
       tracenumber: `referenceId-${
         paymentData.referenceId
-      }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
+      }_program-${programId}_payment-${paymentNr}_user-${userId}_timestamp-${+new Date()}`,
       referenceid: `referenceId-${
         paymentData.referenceId
-      }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
+      }_program-${programId}_payment-${paymentNr}_user-${userId}_timestamp-${+new Date()}`,
       notifyto: true,
       notifyfrom: false,
     };
@@ -158,6 +166,9 @@ export class BelcashService
         const payment = Number(
           matchingString.split('_')[2].replace('payment-', ''),
         );
+        const userId = Number(
+          matchingString.split('_')[3].replace('user-', ''),
+        );
 
         const paTransactionResult = new PaTransactionResultDto();
         paTransactionResult.fspName = FspName.belcash;
@@ -170,10 +181,15 @@ export class BelcashService
         paTransactionResult.message = belcashRequest.status;
         paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
 
+        const transactionRelationDetails: TransactionRelationDetailsDto = {
+          programId,
+          paymentNr: payment,
+          userId,
+        };
+
         await this.transactionsService.storeTransactionUpdateStatus(
           paTransactionResult,
-          programId,
-          payment,
+          transactionRelationDetails,
         );
       }
     }

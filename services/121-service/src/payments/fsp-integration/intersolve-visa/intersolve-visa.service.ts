@@ -23,6 +23,7 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
@@ -251,10 +252,15 @@ export class IntersolveVisaService
       paymentDetailsData.transactionAmount,
       paymentDetailsData.bulkSize,
     );
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
+      programId: paymentDetailsData.programId,
+      paymentNr: paymentDetailsData.paymentNr,
+      userId: paymentDetailsData.userId,
+    };
+
     await this.transactionsService.storeTransactionUpdateStatus(
       paymentRequestResultPerPa,
-      paymentDetailsData.programId,
-      paymentDetailsData.paymentNr,
+      transactionRelationDetails,
     );
   }
 

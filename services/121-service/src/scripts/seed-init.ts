@@ -15,7 +15,9 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
+import { DEBUG } from '../config';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
+import { createRedisClient } from '../payments/redis-client';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -30,6 +32,8 @@ export class SeedInit implements InterfaceScript {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
+    // @Inject(REDIS_CLIENT)
+    // private readonly redisClient: Redis,
   ) {}
 
   private readonly seedHelper = new SeedHelper(
@@ -38,16 +42,27 @@ export class SeedInit implements InterfaceScript {
   );
 
   public async run(isApiTests?: boolean): Promise<void> {
-    if (isApiTests !== undefined && isApiTests.toString() === 'true') {
+    if (isApiTests) {
       await this.truncateAll();
     } else {
       await this.dropAll();
       await this.runAllMigrations();
     }
+    await this.clearRedisData();
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
     await this.seedFsp();
+  }
+
+  private async clearRedisData(): Promise<void> {
+    if (process.env.REDIS_PREFIX && DEBUG) {
+      const redisClient = createRedisClient();
+      const keys = await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+      if (keys.length > 0) {
+        await redisClient.del(keys);
+      }
+    }
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {

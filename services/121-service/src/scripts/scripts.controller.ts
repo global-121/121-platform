@@ -135,6 +135,8 @@ export class ScriptsController {
     const booleanMockOcw = mockOcw
       ? JSON.parse(mockOcw as unknown as string)
       : true;
+
+    isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
     await seed.run(
       isApiTests,
       mockPowerNumberRegistrations,

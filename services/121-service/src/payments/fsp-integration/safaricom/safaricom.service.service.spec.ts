@@ -9,6 +9,7 @@ import { SafaricomService } from './safaricom.service';
 
 const programId = 3;
 const paymentNr = 5;
+const userId = 1;
 
 const sendPaymentData = [
   {
@@ -31,6 +32,7 @@ const paymentDetailsResult: SafaricomJobDto = {
   paPaymentData: sendPaymentData[0],
   programId: programId,
   paymentNr: paymentNr,
+  userId: userId,
 };
 
 describe('SafaricomService', () => {

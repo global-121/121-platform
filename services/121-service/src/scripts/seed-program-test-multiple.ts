@@ -33,7 +33,10 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityDemo = await this.seedHelper.addProgram(programDemo);
+    const programEntityDemo = await this.seedHelper.addProgram(
+      programDemo,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -53,7 +56,10 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTest = await this.seedHelper.addProgram(programTest);
+    const programEntityTest = await this.seedHelper.addProgram(
+      programTest,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -69,8 +75,10 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     // ******************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityValidation =
-      await this.seedHelper.addProgram(programValidation);
+    const programEntityValidation = await this.seedHelper.addProgram(
+      programValidation,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

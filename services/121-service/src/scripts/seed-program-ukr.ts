@@ -25,7 +25,10 @@ export class SeedProgramUkr implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programPilotUkr);
+    const program = await this.seedHelper.addProgram(
+      programPilotUkr,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(messageTemplatePilotUkr, program);

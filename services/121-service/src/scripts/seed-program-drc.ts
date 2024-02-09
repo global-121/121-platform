@@ -24,7 +24,7 @@ export class SeedProgramDrc implements InterfaceScript {
     await seedInit.run(isApiTests);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programDrc);
+    const program = await this.seedHelper.addProgram(programDrc, isApiTests);
 
     // ***** CREATE MESSAGE TEMPLATE *****
     await this.seedHelper.addMessageTemplates(messageTemplateDrc, program);

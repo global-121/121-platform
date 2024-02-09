@@ -1,11 +1,12 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../base.entity';
+
+import { Base121AuditedEntity } from '../base-audited.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 
 @Entity('action')
-export class ActionEntity extends Base121Entity {
+export class ActionEntity extends Base121AuditedEntity {
   @Column()
   public actionType: ActionType;
 

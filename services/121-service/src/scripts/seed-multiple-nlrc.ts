@@ -44,7 +44,10 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityPV = await this.seedHelper.addProgram(programPV);
+    const programEntityPV = await this.seedHelper.addProgram(
+      programPV,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -60,7 +63,10 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityOCW = await this.seedHelper.addProgram(programOCW);
+    const programEntityOCW = await this.seedHelper.addProgram(
+      programOCW,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

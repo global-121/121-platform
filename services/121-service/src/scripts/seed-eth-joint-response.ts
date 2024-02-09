@@ -33,7 +33,10 @@ export class SeedEthJointResponse implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityAne = await this.seedHelper.addProgram(programAne);
+    const programEntityAne = await this.seedHelper.addProgram(
+      programAne,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -53,7 +56,10 @@ export class SeedEthJointResponse implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityDorcas = await this.seedHelper.addProgram(programDorcas);
+    const programEntityDorcas = await this.seedHelper.addProgram(
+      programDorcas,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -69,7 +75,10 @@ export class SeedEthJointResponse implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityEKHCDC = await this.seedHelper.addProgram(programEKHCDC);
+    const programEntityEKHCDC = await this.seedHelper.addProgram(
+      programEKHCDC,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

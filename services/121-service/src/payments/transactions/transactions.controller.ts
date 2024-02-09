@@ -10,9 +10,9 @@ import { Permissions } from '../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../guards/permissions.guard';
 import { PermissionEnum } from '../../user/enum/permission.enum';
 import {
+  AuditedTransactionReturnDto,
   GetTransactionDto,
   GetTransactionOutputDto,
-  TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
@@ -41,15 +41,15 @@ export class TransactionsController {
   @ApiResponse({
     status: 200,
     description: 'Retrieved transactions',
-    type: [TransactionReturnDto],
+    type: [AuditedTransactionReturnDto],
   })
   @Get('programs/:programId/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('referenceId') referenceId: string,
     @Query('payment') payment: number,
-  ): Promise<TransactionReturnDto[]> {
-    return await this.transactionsService.getLastTransactions(
+  ): Promise<AuditedTransactionReturnDto[]> {
+    return await this.transactionsService.getAuditedTransactions(
       Number(programId),
       Number(payment),
       referenceId,
