@@ -245,7 +245,9 @@ export class SeedHelper {
         );
       }
     }
-    const value = process.env[fspConfig.value];
+    const value = process.env[fspConfig.value]
+      ? process.env[fspConfig.value]
+      : fspConfig.value;
     const fspConfigEntity = new ProgramFspConfigurationEntity();
     fspConfigEntity.name = fspConfig.name;
     fspConfigEntity.value = value;

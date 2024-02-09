@@ -228,9 +228,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.inProgress[attribute] = false;
         console.log('error: ', error);
         if (error && error.error) {
-          const errorMessage = this.translate.instant('common.update-error', {
-            error: this.errorHandlerService.formatErrors(error),
-          });
+          const errorMessage = this.translate.instant(
+            'common.error-with-message',
+            {
+              error: this.errorHandlerService.formatErrors(error),
+            },
+          );
           actionResult(this.alertController, this.translate, errorMessage);
         }
       });
@@ -242,7 +245,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ) {
     const errorKeyPrefix =
       'page.program.program-people-affected.edit-person-affected-popup.properties';
-    const errorMessage = this.translate.instant('common.update-error', {
+    const errorMessage = this.translate.instant('common.error-with-message', {
       error: this.translate.instant(`${errorKeyPrefix}.error.${errorType}`),
     });
     actionResult(this.alertController, this.translate, errorMessage);

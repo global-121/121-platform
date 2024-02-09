@@ -45,4 +45,5 @@ export class BulkActionResult {
   public readonly applicableCount: number;
   public readonly nonApplicableCount: number;
   public readonly sumPaymentAmountMultiplier?: number;
+  public readonly fspsInPayment?: string[];
 }
