@@ -13,6 +13,11 @@ describe('RegistrationController', () => {
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(RegistrationsController).compile();
+    const patchRegistrationsStatusResult = {
+      totalFilterCount: 1,
+      applicableCount: 1,
+      nonApplicableCount: 0,
+    };
 
     registrationController = unit;
     registrationsPaginationService = unitRef.get(
@@ -32,11 +37,7 @@ describe('RegistrationController', () => {
 
     jest
       .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
-      .mockResolvedValue({
-        totalFilterCount: 1,
-        applicableCount: 1,
-        nonApplicableCount: 0,
-      });
+      .mockResolvedValue(patchRegistrationsStatusResult);
   });
 
   describe('Change registation status with right status-change permission', () => {
@@ -92,7 +93,7 @@ describe('RegistrationController', () => {
         messageTemplateKey: null,
       };
 
-      const patchRegistrationsStatusResulit =
+      const patchRegistrationsStatusResult =
         await registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
@@ -101,7 +102,7 @@ describe('RegistrationController', () => {
           queryParams,
         );
 
-      expect(patchRegistrationsStatusResulit).toBeDefined(); // not throwing exception
+      expect(patchRegistrationsStatusResult).toBe(patchRegistrationsStatusResult)
     });
   });
 });
