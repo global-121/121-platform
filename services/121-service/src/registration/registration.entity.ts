@@ -28,6 +28,7 @@ import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { IntersolveVisaCustomerEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -196,6 +197,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
+        entityClass: LatestTransactionEntity,
+        columnName: 'registration',
+      },
+      {
         entityClass: TransactionEntity,
         columnName: 'registration',
       },
@@ -208,10 +213,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
-        entityClass: TwilioMessageEntity,
-        columnName: 'registration',
-      },
-      {
         entityClass: WhatsappPendingMessageEntity,
         columnName: 'registration',
       },
@@ -220,15 +221,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
-        entityClass: LatestTransactionEntity,
-        columnName: 'registration',
-      },
-      {
         entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
         columnName: 'registration',
       },
       {
         entityClass: NoteEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: IntersolveVisaCustomerEntity,
         columnName: 'registration',
       },
     ]);

@@ -1,4 +1,5 @@
 import {
+  BeforeRemove,
   Column,
   Entity,
   Index,
@@ -6,12 +7,12 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
+import { CascadeDeleteEntity } from '../../../base.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 
 @Entity('intersolve_visa_customer')
-export class IntersolveVisaCustomerEntity extends Base121Entity {
+export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @Index()
   @Column({ nullable: true })
   public holderId: string;
@@ -27,4 +28,14 @@ export class IntersolveVisaCustomerEntity extends Base121Entity {
     (visaWallets) => visaWallets.intersolveVisaCustomer,
   )
   public visaWallets: IntersolveVisaWalletEntity[];
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: IntersolveVisaWalletEntity,
+        columnName: 'intersolveVisaCustomer',
+      },
+    ]);
+  }
 }
