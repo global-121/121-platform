@@ -5,13 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.111.1...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.112.0...main)
+
+---
+
+## [1.112.0](https://github.com/global-121/121-platform/compare/v1.111.1...v1.112.0)- 2024-02-12
+
+### Added
+
+- Manual generic FSP 'Excel Payment Instructions'
+- Bulk actions 'Mark as validated' and 'Mark as declined'
 
 ### Removed
 
 - Removed 'selected for validation' status/bulk-action/export
-
----
 
 ## [1.111.1](https://github.com/global-121/121-platform/compare/v1.111.0...v1.111.1) - 2024-02-02
 
@@ -70,8 +77,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Editing financial attributes requires a separate permission now
 - Voucher images removed from database
 
----
-
 ## [1.108.3](https://github.com/global-121/121-platform/compare/v1.108.2...v1.108.3) - 2023-12-29
 
 ### Fixed
@@ -121,8 +126,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Included code of migration-scripts in scope of CI/test-pipeline. See [`.eslintrc.js`](services/121-service/.eslintrc.js)
 
----
-
 ## [1.106.2](https://github.com/global-121/121-platform/compare/v1.106.1...v1.106.2) - 2023-11-29
 
 ## Fixed
@@ -151,8 +154,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CORS configuration should be handled via the Azure Portal for each App Service instance.
   See: A step in the "How to set up a new instance"-guide in the wiki.
-
----
 
 ## [1.105.9](https://github.com/global-121/121-platform/compare/v1.105.8...v1.105.9) - 2023-11-15
 
@@ -943,8 +944,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Users can be an "admin" (instead of have specific Permissions)
 - Added admin validation to certain endpoints
 
----
-
 ## [1.67.3](https://github.com/global-121/121-platform/compare/v1.67.2...v1.67.3) - 2022-10-27
 
 ### Added
@@ -1503,8 +1502,6 @@ Hotfix for query-complexity.
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
----
-
 ## v[1.0.0](https://github.com/global-121/121-platform/compare/v0.21.1...v1.0.0) - 2021-03-18
 
 This version contains a working version of the full system, including:
@@ -1515,8 +1512,6 @@ This version contains a working version of the full system, including:
 - Including/Rejecting PAs based on pre-set conditions of manually by HO
 - Initiating pay-outs using multiple financial service providers (FSP)
 - Publishing "Information as Aid" using a stand-alone web-app
-
----
 
 ## [0.21.2](https://github.com/global-121/121-platform/compare/v0.21.1...v0.21.2) - 2021-03-17
 
