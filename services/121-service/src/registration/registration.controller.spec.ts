@@ -102,7 +102,9 @@ describe('RegistrationController', () => {
           queryParams,
         );
 
-      expect(patchRegistrationsStatusResult).toBe(patchRegistrationsStatusResult)
+      expect(patchRegistrationsStatusResult).toBe(
+        patchRegistrationsStatusResult,
+      );
     });
   });
 });
