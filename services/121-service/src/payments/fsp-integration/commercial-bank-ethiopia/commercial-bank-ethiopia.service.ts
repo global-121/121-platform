@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -449,8 +449,10 @@ export class CommercialBankEthiopiaService
       .getRawMany();
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === 'username')?.value,
-      password: config.find((c) => c.name === 'password')?.value,
+      username: config.find((c) => c.name === FspConfigurationEnum.username)
+        ?.value,
+      password: config.find((c) => c.name === FspConfigurationEnum.password)
+        ?.value,
     };
 
     return credentials;

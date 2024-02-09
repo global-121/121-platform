@@ -6,6 +6,7 @@
     "apply": "Apply",
     "cancel": "Cancel",
     "confirm": "Are you sure?",
+    "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
     "import-error": "Something went wrong with the import.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
     "unknown-error": "Something went wrong. Error is unknown.",
     "update": "Update",
-    "update-error": "Something went wrong: {{error}}",
     "update-success": "Update successful"
   },
   "entity": {

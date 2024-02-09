@@ -26,6 +26,6 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;
 
-  @Column({ select: false })
+  @Column()
   public value: string;
 }

@@ -15,7 +15,12 @@ import {
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
+import { Program } from '../../models/program.model';
 import { actionResult } from '../../shared/action-result';
+import {
+  getFspIntegrationType,
+  getPaymentResultText,
+} from '../../shared/payment-result';
 import { StatusEnum } from './../../models/status.enum';
 
 @Component({
@@ -45,6 +50,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public singlePayoutDetails: SinglePayoutDetails;
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
+  private program: Program;
 
   public isInProgress = false;
 
@@ -230,11 +236,14 @@ export class PaymentStatusPopupComponent implements OnInit {
         let message = '';
 
         if (response) {
-          message += this.translate.instant(
-            'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
-            {
-              nrPa: `<strong>${response.applicableCount}</strong>`,
-            },
+          const fspIntegrationType = getFspIntegrationType(
+            response.fspsInPayment,
+            this.program,
+          );
+          message += getPaymentResultText(
+            response.applicableCount,
+            fspIntegrationType,
+            this.translate,
           );
         }
         actionResult(this.alertController, this.translate, message, true);

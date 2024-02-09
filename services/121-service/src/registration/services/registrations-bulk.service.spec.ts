@@ -17,7 +17,6 @@ describe('RegistrationBulkService', () => {
 
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: QueueMessageService;
-  // let messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(

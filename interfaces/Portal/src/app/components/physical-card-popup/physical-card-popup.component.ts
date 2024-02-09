@@ -118,7 +118,7 @@ export class PhysicalCardPopupComponent implements OnInit {
                 'registration-details.physical-cards-overview.action-result.unpause-success',
               );
         } else if (response.status === 405) {
-          message = this.translate.instant('common.update-error', {
+          message = this.translate.instant('common.error-with-message', {
             error: response.data?.code,
           });
         } else {
@@ -129,9 +129,12 @@ export class PhysicalCardPopupComponent implements OnInit {
       .catch((error) => {
         console.log('error: ', error);
         if (error && error.error) {
-          const errorMessage = this.translate.instant('common.update-error', {
-            error: this.errorHandlerService.formatErrors(error),
-          });
+          const errorMessage = this.translate.instant(
+            'common.error-with-message',
+            {
+              error: this.errorHandlerService.formatErrors(error),
+            },
+          );
           actionResult(
             this.alertController,
             this.translate,
