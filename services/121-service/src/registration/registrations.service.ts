@@ -200,7 +200,10 @@ export class RegistrationsService {
         );
         break;
       case RegistrationStatusEnum.validated:
-        result = [RegistrationStatusEnum.registered].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.declined,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.declined:
         result = [RegistrationStatusEnum.registered].includes(currentStatus);

@@ -373,7 +373,7 @@
           "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
           "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
           "markAsDeclined": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
-          "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i> or <i>Validated</i>.",
           "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
