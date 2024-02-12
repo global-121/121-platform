@@ -8,10 +8,6 @@ import {
   PayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
-import {
-  IntersolvePayoutStatus,
-  TransactionCustomData,
-} from 'src/app/models/transaction-custom-data';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
@@ -21,7 +17,6 @@ import {
   getFspIntegrationType,
   getPaymentResultText,
 } from '../../shared/payment-result';
-import { StatusEnum } from './../../models/status.enum';
 
 @Component({
   selector: 'app-payment-status-popup',
@@ -29,10 +24,7 @@ import { StatusEnum } from './../../models/status.enum';
   styleUrls: ['./payment-status-popup.component.scss'],
 })
 export class PaymentStatusPopupComponent implements OnInit {
-  public titleMessageIcon: string;
-  public moneyTime: Date | string = new Date();
-  public titleMoneyIcon: string;
-  public titleError: string;
+  public titleTransaction: string;
   public titleSinglePayment: string;
 
   private locale: string;
@@ -73,8 +65,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       );
     }
     if (this.payoutDetails) {
-      this.titleMessageIcon = await this.getMessageTitle();
-      this.titleMoneyIcon = await this.getMoneyTitle();
+      this.titleTransaction = await this.getTitle();
 
       if (this.imageUrl) {
         this.sanitizedImageUrl =
@@ -90,14 +81,11 @@ export class PaymentStatusPopupComponent implements OnInit {
     this.modalController.dismiss();
   }
 
-  public async getMessageTitle() {
-    const intersolveMessageTime = await this.getTransactionTime(
-      TransactionCustomData.intersolvePayoutStatus,
-      IntersolvePayoutStatus.initialMessage,
-    );
+  public async getTitle() {
+    const intersolveMessageTime = await this.getTransactionTime();
     if (intersolveMessageTime) {
       return this.translate.instant(
-        'page.program.program-people-affected.payment-status-popup.message-title',
+        'page.program.program-people-affected.payment-status-popup.status-title',
         {
           payment: this.payoutDetails.payment,
           timestamp: intersolveMessageTime,
@@ -106,68 +94,24 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
   }
 
-  public async getMoneyTitle() {
-    const intersolveMoneyTime = await this.getTransactionTime(
-      TransactionCustomData.intersolvePayoutStatus,
-      IntersolvePayoutStatus.voucherSent,
-    );
-    if (intersolveMoneyTime) {
-      this.moneyTime = intersolveMoneyTime;
-
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-status-popup.money-title',
-        {
-          payment: this.payoutDetails.payment,
-          timestamp: intersolveMoneyTime,
-        },
-      );
-    }
-    const otherMoneyTime = await this.getTransactionTime('', '');
-    if (otherMoneyTime) {
-      this.moneyTime = otherMoneyTime;
-
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-status-popup.money-title',
-        {
-          payment: this.payoutDetails.payment,
-          timestamp: otherMoneyTime,
-        },
-      );
-    }
-    if (this.titleMessageIcon) {
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-status-popup.money-title',
-        { payment: this.payoutDetails.payment, timestamp: '' },
-      );
-    }
-
-    return '';
-  }
-
-  public async getTransactionTime(
-    customKey: string,
-    customValue: string,
-  ): Promise<string | null> {
-    const transaction = await this.programsService.getTransaction(
-      this.payoutDetails.referenceId,
-      this.payoutDetails.programId,
-      this.payoutDetails.payment,
-      customKey,
-      customValue,
-    );
+  public async getTransactionTime(): Promise<string | null> {
+    const transaction = (
+      await this.programsService.getTransactions(
+        this.payoutDetails.programId,
+        this.payoutDetails.referenceId,
+        this.payoutDetails.payment,
+      )
+    )[0];
 
     if (!transaction) {
       return null;
     }
 
-    if (transaction.status === StatusEnum.success) {
-      return formatDate(
-        transaction.paymentDate,
-        DateFormat.dayAndTime,
-        this.locale,
-      );
-    }
-    return null;
+    return formatDate(
+      transaction.paymentDate,
+      DateFormat.dayAndTime,
+      this.locale,
+    );
   }
 
   public updateTotalAmountMessage(): void {

@@ -7,7 +7,6 @@ import {
 } from '../models/payment.model';
 import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
-import { IntersolvePayoutStatus } from '../models/transaction-custom-data';
 import { Transaction } from '../models/transaction.model';
 import {
   FilterOperatorEnum,
@@ -24,8 +23,6 @@ export class PaymentUtils {
       paymentIndex: index,
       text: transaction.paymentDate,
       transaction,
-      hasMessageIcon: this.enableMessageSentIcon(transaction),
-      hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       amount: transaction.amount,
       currency: program?.currency,
       fsp: transaction.fsp as FspName,
@@ -84,25 +81,6 @@ export class PaymentUtils {
       noFuturePayment &&
       onlyLast5Payments &&
       noPaymentInProgress
-    );
-  }
-
-  static enableMessageSentIcon(transaction: Transaction): boolean {
-    return (
-      transaction.customData &&
-      [
-        IntersolvePayoutStatus.initialMessage,
-        IntersolvePayoutStatus.voucherSent,
-      ].includes(transaction.customData.IntersolvePayoutStatus)
-    );
-  }
-
-  static enableMoneySentIconTable(transaction: Transaction): boolean {
-    return (
-      (!transaction.customData.IntersolvePayoutStatus ||
-        transaction.customData.IntersolvePayoutStatus ===
-          IntersolvePayoutStatus.voucherSent) &&
-      transaction.status === StatusEnum.success
     );
   }
 

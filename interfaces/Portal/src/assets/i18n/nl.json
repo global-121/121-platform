@@ -529,15 +529,14 @@
           "error-message": "Foutmelding",
           "fix-error": "Onderneem de nodige actie om deze fout op te lossen. Gebruik vervolgens de onderstaande knop om de betaling voor deze hulpvrager opnieuw uit te voeren.",
           "get-balance": "Huidige saldo van voucher opvragen",
-          "message-title": "Bericht verzonden betaling #{{payment}}: {{timestamp}}",
-          "money-title": "Voucher verzonden betaling #{{payment}}: {{timestamp}}",
           "print-voucher": "Voucher afdrukken",
           "retry": "Probeer de betaling voor deze hulpvrager opnieuw",
           "single-payment": {
             "intro": "Betaling voor 1 hulpvrager",
             "start-payout": "Start uitbetaling nu voor {{paNr}}",
             "total-amount": "Totaalbedrag: {{cost}} * vermenigvuldigingsfactor van {{multiplier}} = <strong>{{totalCost}}</strong>"
-          }
+          },
+          "status-title": "Betaling #{{payment}}: {{timestamp}}"
         },
         "submit-warning": "Je staat op het punt om:",
         "submit-warning-people-affected": "Voer actie <strong>{{actionLabel}}</strong> uit voor {{applicableCount}} hulpvragers.",
