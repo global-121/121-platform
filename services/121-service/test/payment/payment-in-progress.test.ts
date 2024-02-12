@@ -18,8 +18,6 @@ describe('Test payment in progress', () => {
   const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
 
-  const payment = 1;
-
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     await seedIncludedRegistrations(registrationsOCW, OcwProgramId);
@@ -32,16 +30,9 @@ describe('Test payment in progress', () => {
     const paymentNr = 1;
 
     // We do a payment here and wait for it to complete
-    const result = await doPayment(
-      PvProgramId,
-      paymentNr,
-      25,
-      [],
-      accessToken,
-      {
-        'filter.status': '$in:included',
-      },
-    );
+    await doPayment(PvProgramId, paymentNr, 25, [], accessToken, {
+      'filter.status': '$in:included',
+    });
     await waitForPaymentTransactionsToComplete(
       programIdPV,
       registrationsPV.map((r) => r.referenceId),
