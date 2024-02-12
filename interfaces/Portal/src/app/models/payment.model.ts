@@ -29,6 +29,7 @@ export class PaymentRowDetail {
   fsp?: FspName;
   status?: string;
   paymentDate?: string;
+  user?: any;
 }
 
 export class PayoutDetails {
