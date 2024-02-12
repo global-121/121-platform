@@ -22,8 +22,6 @@ import { TransactionRelationDetailsDto } from '../dto/transaction-relation-detai
 import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   AuditedTransactionReturnDto,
-  GetTransactionDto,
-  GetTransactionOutputDto,
   TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
@@ -132,61 +130,6 @@ export class TransactionsService {
       );
     }
     return transactionQuery;
-  }
-
-  public async getTransaction(
-    programId: number,
-    input: GetTransactionDto,
-  ): Promise<GetTransactionOutputDto> {
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: input.referenceId },
-    });
-
-    const transactions = await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .select([
-        'transaction.created AS "paymentDate"',
-        'payment',
-        'c."referenceId"',
-        'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-      ])
-      .leftJoin('transaction.registration', 'c')
-      .andWhere('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .andWhere('transaction.payment = :paymentId', {
-        paymentId: input.payment,
-      })
-      .andWhere('transaction.registration.id = :registrationId', {
-        registrationId: registration.id,
-      })
-      .orderBy('transaction.created', 'DESC')
-      .getRawMany();
-
-    if (transactions.length === 0) {
-      return null;
-    }
-    if (input.customDataKey) {
-      for (const transaction of transactions) {
-        if (
-          transaction.customData[input.customDataKey] === input.customDataValue
-        ) {
-          return transaction;
-        }
-      }
-      return null;
-    }
-    for (const transaction of transactions) {
-      if (
-        !transaction.customData ||
-        Object.keys(transaction.customData).length === 0
-      ) {
-        return transaction;
-      }
-    }
   }
 
   public async storeTransactionUpdateStatus(

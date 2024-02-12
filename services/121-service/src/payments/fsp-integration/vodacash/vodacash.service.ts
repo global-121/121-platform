@@ -169,11 +169,12 @@ export class VodacashService
     paTransactionResult.fspName = FspName.vodacash;
     paTransactionResult.status = StatusEnum.error;
     paTransactionResult.calculatedAmount = (
-      await this.transactionsService.getTransaction(programId, {
-        referenceId: registration.referenceId,
-        payment: payment,
-      })
-    ).amount;
+      await this.transactionsService.getLastTransactions(
+        programId,
+        payment,
+        registration.referenceId,
+      )
+    )[0].amount;
     if (record) {
       // Vodacash reconciliation data only contains successful records
       paTransactionResult.status = StatusEnum.success;

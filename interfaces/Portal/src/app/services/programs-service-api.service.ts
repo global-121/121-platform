@@ -214,9 +214,13 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     referenceId: string,
+    payment?: number,
   ): Promise<Transaction[]> {
     let params = new HttpParams();
     params = params.append('referenceId', referenceId);
+    if (payment) {
+      params = params.append('payment', payment);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/transactions`,
@@ -287,31 +291,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message-history/${referenceId}`,
-    );
-  }
-
-  getTransaction(
-    referenceId: string,
-    programId: number,
-    payment: number,
-    customDataKey: string,
-    customDataValue: string,
-  ): Promise<any | Transaction> {
-    let params = new HttpParams();
-    params = params.append('referenceId', referenceId);
-    params = params.append('payment', payment);
-    if (customDataKey) {
-      params = params.append('customDataKey', customDataKey);
-    }
-    if (customDataValue) {
-      params = params.append('customDataValue', customDataValue);
-    }
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/transactions/one`,
-      false,
-      false,
-      params,
     );
   }
 
