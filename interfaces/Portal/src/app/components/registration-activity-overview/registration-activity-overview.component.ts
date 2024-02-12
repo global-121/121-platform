@@ -221,6 +221,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         }
 
         paymentRowValue.status = transaction.status;
+
+        paymentRowValue.user = transaction.user;
       }
       if (
         paymentRowValue.transaction ||

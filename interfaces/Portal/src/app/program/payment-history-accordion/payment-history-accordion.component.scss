@@ -4,10 +4,15 @@
 }
 
 ion-chip {
-  height: 20px;
-  font-size: 14px;
   opacity: 1;
   margin: 0;
+  font-size: 0.8em;
+  min-height: 1em;
+
+  &.user-chip {
+    pointer-events: none;
+    background-color: var(--fiveten-neutral-100);
+  }
 
   &.success {
     --background: var(--ion-color-status-successful);
@@ -61,9 +66,4 @@ ion-item::part(native) {
 
 .min-height {
   min-height: 40px;
-}
-
-.mx-auto {
-  margin-top: auto;
-  margin-bottom: auto;
 }
