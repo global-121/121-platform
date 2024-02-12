@@ -654,7 +654,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     );
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentHistoryPopupComponent,
-      cssClass: 'payment-history-popup',
       componentProps: {
         referenceId: person.referenceId,
         program: this.program,
