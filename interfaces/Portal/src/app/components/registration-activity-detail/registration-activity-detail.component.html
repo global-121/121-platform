@@ -1,0 +1,59 @@
+<div class="activity-detail">
+  <div class="activity-detail--icon ion-padding">
+    <ion-icon
+      [name]="getIconName(activity.type)"
+      size="large"
+      [attr.aria-hidden]="true"
+    ></ion-icon>
+  </div>
+  <div class="activity-detail--content ion-padding-vertical">
+    <div
+      class="activity-detail--header layout-flex-row ion-align-items-center ion-justify-content-between"
+    >
+      <div class="activity-detail--header-start">
+        <div>
+          <strong class="ion-text-uppercase">
+            {{ activity.label }}
+            <span *ngIf="activity.subLabel"> - {{ activity.subLabel }} </span>
+          </strong>
+
+          <span class="activity-detail--status">
+            <ion-chip
+              color="error"
+              class="chip ion-no-margin"
+            >
+              status
+            </ion-chip>
+          </span>
+        </div>
+        <div>
+          <small>
+            <time
+              [attr.datetime]="activity.date"
+              class=""
+            >
+              {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
+            </time>
+          </small>
+        </div>
+      </div>
+      <div class="activity-detail--header-end ion-justify-content-end">
+        <div
+          *ngIf="activity.chipText"
+          class="activity-detail--actor"
+        >
+          <ion-chip class="chip">
+            {{ activity.chipText }}
+          </ion-chip>
+        </div>
+        <div class="activity-detail--actions">
+          <!-- open/close body toggle button -->
+        </div>
+      </div>
+    </div>
+    <div class="activity-detail--body ion-padding-vertical">
+      <div [innerHTML]="activity.description"></div>
+      <!-- <pre>{{ activity | json }}</pre> -->
+    </div>
+  </div>
+</div>

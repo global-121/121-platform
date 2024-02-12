@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.activity-detail {
+  display: flex;
+  align-items: start;
+}
+
+.activity-detail--icon {
+  flex: 0 0 auto;
+}
+
+.activity-detail--content {
+  flex: 1 1 100%;
+}
