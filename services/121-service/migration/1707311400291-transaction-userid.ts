@@ -21,7 +21,7 @@ export class TransactionUserid1707311400291 implements MigrationInterface {
     );
     // Select user with lowest id where admin = true
     const adminUser = await queryRunner.query(
-      `SELECT * FROM "121-service"."user" WHERE admin = true ORDER BY id LIMIT 1`,
+      `SELECT * FROM "121-service"."user" WHERE admin = true AND username LIKE '%admin%' ORDER BY id LIMIT 1`,
     );
     // Update all transactions with the user id
     await queryRunner.query(
