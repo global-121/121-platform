@@ -1,6 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
+import { ExportType } from '../../src/metrics/dto/export-details.dto';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { postProgramQuestion } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from '../registrations/pagination/pagination-data';
@@ -14,9 +16,13 @@ describe('Create program', () => {
     scoring: {},
     persistence: true,
     pattern: 'string',
-    phases: ['registrationValidation', 'inclusion', 'payment'],
+    phases: [
+      ProgramPhase.registrationValidation,
+      ProgramPhase.inclusion,
+      ProgramPhase.payment,
+    ],
     editableInPortal: true,
-    export: ['all-people-affected', 'included', 'selected-for-validation'],
+    export: [ExportType.allPeopleAffected, ExportType.included],
     shortLabel: {
       en: 'Last Name',
     },

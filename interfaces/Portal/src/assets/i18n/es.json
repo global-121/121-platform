@@ -6,6 +6,7 @@
     "apply": "Aplicar",
     "cancel": "Cancelar",
     "confirm": "¿Estás seguro?",
+    "error-with-message": "Algo salió mal: {{error}}",
     "export-error": "Algo salió mal con la exportación.",
     "import-error": "Algo salió mal con la importación.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "Por favor, inténtelo de nuevo. Si el problema persiste, póngase en contacto con el soporte técnico.",
     "unknown-error": "Algo salió mal. Se desconoce el error.",
     "update": "Actualizar",
-    "update-error": "Algo salió mal: {{error}}",
     "update-success": "Actualización correcta"
   },
   "entity": {
@@ -31,7 +31,6 @@
         "registered": "Registrado",
         "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
         "rejected": "Rechazado",
-        "selectedForValidation": "Seleccionado para validación",
         "startedRegistration": "Registro iniciado",
         "validated": "Validado"
       }
@@ -184,10 +183,6 @@
           "confirm-message": "Esto descargará un archivo Excel con todas las personas afectadas incluidas en este pago."
         },
         "select-btn-text": "Exportar",
-        "selected-for-validation": {
-          "btn-text": "Lista de exportación: seleccionada para validación",
-          "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas seleccionadas para la validación, que se utilizará para las visitas de validación."
-        },
         "timestamp": "La última exportación se ha realizado el: {{dateTime}}",
         "unused-vouchers": {
           "btn-text": "Exportar lista de vales no utilizados",
@@ -222,7 +217,6 @@
           "noLongerEligible": "PA que fueron marcados como 'ya no elegibles'. <br> Se trata de PA personas que fueron invitadas pero que aún no se han registrado y, mientras tanto, ya no son elegibles.",
           "registered": "PA que terminaron de registrarse en la aplicación PA.",
           "rejected": "PA que fueron rechazados. <br> No recibirán ningún (más) pago para la próxima ronda de pago/pago.",
-          "selectedForValidation": "PA que fueron seleccionados para su validación.",
           "startedRegistration": "PAs que iniciaron el registro en la aplicación PA.",
           "validated": "PA que fueron validados."
         },
@@ -366,7 +360,6 @@
           "markNoLongerEligible": "Marcar como ya no apto",
           "pause": "Pausa PAs",
           "reject": "Rechazar del programa",
-          "selectForValidation": "Seleccionar para validación",
           "sendMessage": "Enviar mensaje a PAs"
         },
         "apply-action": "Aplicar acción",
@@ -379,7 +372,6 @@
           "markNoLongerEligible": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Importado</i> o <i>Invitado</i>.",
           "pause": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Incluido</i>.",
           "reject": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado Registrado, <i>Seleccionado para validación</i>, <i>Validado</i><i>,</i> <i>Incluido</i>, Ya no elegible o <i>Registrado mientras ya no es elegible</i>. <i></i>",
-          "selectForValidation": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Registrado.</i>",
           "sendMessage": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros que tienen un número de teléfono asociado."
         },
         "bulk-action-response": {

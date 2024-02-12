@@ -6,7 +6,6 @@ import { ProgramPhase } from './program.model';
 export enum BulkActionId {
   chooseAction = '',
   invite = 'invite',
-  selectForValidation = 'selectForValidation',
   include = 'include',
   endInclusion = 'endInclusion',
   reject = 'reject',
@@ -16,6 +15,8 @@ export enum BulkActionId {
   divider = 'divider',
   doPayment = 'doPayment',
   pause = 'pause',
+  markAsValidated = 'markAsValidated',
+  markAsDeclined = 'markAsDeclined',
 }
 
 export const BulkActionRegistrationStatusMap = {
@@ -44,4 +45,5 @@ export class BulkActionResult {
   public readonly applicableCount: number;
   public readonly nonApplicableCount: number;
   public readonly sumPaymentAmountMultiplier?: number;
+  public readonly fspsInPayment?: string[];
 }

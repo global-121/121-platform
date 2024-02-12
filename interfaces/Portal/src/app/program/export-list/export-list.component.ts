@@ -23,6 +23,7 @@ import {
 import { LatestActionService } from '../../services/latest-action.service';
 import { RegistrationsService } from '../../services/registrations.service';
 import { actionResult } from '../../shared/action-result';
+import { toExportFileName } from '../../shared/array-to-xlsx';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { DatetimeProps } from '../../shared/datetime-picker/datetime-picker.component';
 
@@ -210,7 +211,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
       )
       .then(
         (res) => {
-          const filename = this.toExportFileName(exportType);
+          const filename = toExportFileName(exportType);
           this.blobToDownload(res, filename);
 
           this.isInProgress = false;
@@ -240,12 +241,5 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
     link.href = downloadURL;
     link.download = filename;
     link.click();
-  }
-
-  private toExportFileName(excelFileName: string): string {
-    const date = new Date();
-    return `${excelFileName}-${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()}.xlsx`;
   }
 }

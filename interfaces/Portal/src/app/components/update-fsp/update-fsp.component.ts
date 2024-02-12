@@ -95,9 +95,12 @@ export class UpdateFspComponent implements OnInit {
           this.inProgress = false;
           console.log('error: ', error);
           if (error && error.error) {
-            const errorMessage = this.translate.instant('common.update-error', {
-              error: this.errorHandlerService.formatErrors(error),
-            });
+            const errorMessage = this.translate.instant(
+              'common.error-with-message',
+              {
+                error: this.errorHandlerService.formatErrors(error),
+              },
+            );
             actionResult(this.alertController, this.translate, errorMessage);
           }
         },

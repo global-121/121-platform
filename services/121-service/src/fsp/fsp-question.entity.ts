@@ -9,6 +9,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { ExportType } from '../metrics/dto/export-details.dto';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { NameConstraintQuestions } from '../shared/const';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
@@ -35,7 +36,7 @@ export class FspQuestionEntity extends Base121Entity {
   public options: JSON;
 
   @Column('json', {
-    default: ['all-people-affected', 'included', 'selected-for-validation'],
+    default: [ExportType.allPeopleAffected, ExportType.included],
   })
   @ApiProperty({ example: [] })
   public export: JSON;

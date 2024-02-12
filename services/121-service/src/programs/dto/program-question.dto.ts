@@ -51,11 +51,7 @@ class BaseProgramQuestionDto {
   @IsOptional()
   public readonly editableInPortal: boolean;
   @ApiProperty({
-    example: [
-      ExportType.allPeopleAffected,
-      ExportType.included,
-      ExportType.selectedForValidation,
-    ],
+    example: [ExportType.allPeopleAffected, ExportType.included],
     required: false,
   })
   @IsOptional()

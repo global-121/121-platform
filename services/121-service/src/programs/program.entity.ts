@@ -188,10 +188,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'program',
       },
       {
-        entityClass: TransactionEntity,
-        columnName: 'program',
-      },
-      {
         entityClass: RegistrationEntity,
         columnName: 'program',
       },

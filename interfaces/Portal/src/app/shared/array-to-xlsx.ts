@@ -9,7 +9,7 @@ export function arrayToXlsx(array: any[], filename: string): void {
   XLSX.writeFile(workbook, toExportFileName(filename));
 }
 
-function toExportFileName(excelFileName: string): string {
+export function toExportFileName(excelFileName: string): string {
   const date = new Date();
   return `${excelFileName}-${date.getFullYear()}-${
     date.getMonth() + 1

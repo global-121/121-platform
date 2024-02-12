@@ -47,6 +47,15 @@
     },
     {
       "fsp": "Africas-talking"
+    },
+    {
+      "fsp": "Excel",
+      "configuration": [
+        {
+          "name": "columnsToExport",
+          "value": "[\"name\", \"birthdate\", \"documentid\"]"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 870,
@@ -74,7 +83,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -99,7 +108,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -124,7 +133,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -180,7 +189,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -205,7 +214,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -230,7 +239,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"],
@@ -277,7 +286,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -302,7 +311,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -327,7 +336,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -354,7 +363,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -379,7 +388,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -447,7 +456,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "returnee": 2,
         "displaced": 2,
@@ -538,7 +547,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "widowed": 1,
         "married": 0,
@@ -558,110 +567,6 @@
       }
     },
     {
-      "name": "specialcharacteristics",
-      "label": {
-        "ar": "",
-        "en": "14. What are special characteristics of the head of your household (if any)?",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      },
-      "answerType": "multi-select",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "olderalone",
-          "label": {
-            "ar": "",
-            "en": "Older person living alone",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "elderlycharge",
-          "label": {
-            "ar": "",
-            "en": "Elderly person in charge of a household",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "pregnantbrestfeeding",
-          "label": {
-            "ar": "",
-            "en": "Pregnant/breastfeeding woman",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "womancharge",
-          "label": {
-            "ar": "",
-            "en": "Woman in charge of a household",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "childcharge",
-          "label": {
-            "ar": "",
-            "en": "Child/adolescent in charge of a household",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "girlmother",
-          "label": {
-            "ar": "",
-            "en": "Girl/adolescent < 18 pregnant or mother",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        },
-        {
-          "option": "none",
-          "label": {
-            "ar": "",
-            "en": "None",
-            "es": "",
-            "fr": "",
-            "nl": ""
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {
-        "olderalone": 0,
-        "elderlycharge": 1,
-        "pregnantbrestfeeding": 2,
-        "womancharge": 1,
-        "childcharge": 3,
-        "girlmother": 4,
-        "none": 0
-      },
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Special characteristics",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
-    },
-    {
       "name": "pregnant",
       "label": {
         "ar": "",
@@ -674,7 +579,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -701,7 +606,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -728,7 +633,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -755,7 +660,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -782,7 +687,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -809,7 +714,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -836,7 +741,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -884,7 +789,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,

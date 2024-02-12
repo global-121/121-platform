@@ -56,6 +56,7 @@
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
       [hasFspWithReconciliation]="hasFspWithReconciliation"
+      [paymentInProgress]="paymentInProgress"
     ></app-export-fsp-instructions>
     <app-import-fsp-reconciliation
       *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
@@ -114,6 +115,34 @@
       <strong>{{ lastPaymentResults.error }}</strong>
     </p>
     <ion-row
+      *ngIf="canMakePayment"
+      class="ion-align-items-center"
+    >
+      <div
+        *ngIf="paymentInProgress"
+        class="ion-align-items-center"
+        style="display: flex"
+      >
+        <ion-note>
+          {{ 'page.program.program-payout.in-progress' | translate }}
+        </ion-note>
+        <ion-button
+          size="small"
+          fill="clear"
+          [title]="'common.update' | translate"
+          [attr.aria-label]="'common.update' | translate"
+          (click)="refresh()"
+        >
+          <ion-icon
+            name="refresh"
+            size="small"
+            slot="icon-only"
+            aria-hidden="true"
+          ></ion-icon>
+        </ion-button>
+      </div>
+    </ion-row>
+    <ion-row
       *ngIf="canMakePayment && lastPaymentResults?.error > 0"
       class="ion-align-items-center"
     >
@@ -138,29 +167,6 @@
             | translate: { number: lastPaymentResults?.error }
         }}
       </app-confirm-prompt>
-      <div
-        *ngIf="paymentInProgress"
-        class="ion-margin-start ion-align-items-center"
-        style="display: flex"
-      >
-        <ion-note>
-          {{ 'page.program.program-payout.in-progress' | translate }}
-        </ion-note>
-        <ion-button
-          size="small"
-          fill="clear"
-          [title]="'common.update' | translate"
-          [attr.aria-label]="'common.update' | translate"
-          (click)="refresh()"
-        >
-          <ion-icon
-            name="refresh"
-            size="small"
-            slot="icon-only"
-            aria-hidden="true"
-          ></ion-icon>
-        </ion-button>
-      </div>
     </ion-row>
   </ion-col>
 </ion-row>

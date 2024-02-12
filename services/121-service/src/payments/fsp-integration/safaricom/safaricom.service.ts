@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-// import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
 import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';

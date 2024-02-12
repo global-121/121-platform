@@ -14,7 +14,7 @@
       "placeholder": {
         "en": "+243000000000"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null,
       "shortLabel": {

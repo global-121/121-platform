@@ -3,7 +3,6 @@ export enum RegistrationStatusEnum {
   invited = 'invited',
   startedRegistration = 'startedRegistration',
   registered = 'registered',
-  selectedForValidation = 'selectedForValidation',
   validated = 'validated',
   included = 'included',
   rejected = 'rejected',

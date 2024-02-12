@@ -58,11 +58,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   public persistence: boolean;
 
   @Column('json', {
-    default: [
-      ExportType.allPeopleAffected,
-      ExportType.included,
-      ExportType.selectedForValidation,
-    ],
+    default: [ExportType.allPeopleAffected, ExportType.included],
   })
   @ApiProperty({ example: [] })
   public export: JSON;

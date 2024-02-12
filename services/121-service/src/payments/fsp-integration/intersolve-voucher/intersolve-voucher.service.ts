@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessType } from '../../../notifications/message-job.dto';
@@ -92,8 +92,10 @@ export class IntersolveVoucherService
       .getRawMany();
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === 'username')?.value,
-      password: config.find((c) => c.name === 'password')?.value,
+      username: config.find((c) => c.name === FspConfigurationEnum.username)
+        ?.value,
+      password: config.find((c) => c.name === FspConfigurationEnum.password)
+        ?.value,
     };
 
     for (const paymentInfo of paPaymentList) {

@@ -38,6 +38,7 @@ import { AfricasTalkingService } from './fsp-integration/africas-talking/africas
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { ExcelService } from './fsp-integration/excel/excel.service';
 import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -80,6 +81,7 @@ export class PaymentsService {
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
+    private readonly excelService: ExcelService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -184,7 +186,11 @@ export class PaymentsService {
       );
 
     if (!amount) {
-      return { ...bulkActionResultDto, sumPaymentAmountMultiplier: 0 };
+      return {
+        ...bulkActionResultDto,
+        sumPaymentAmountMultiplier: 0,
+        fspsInPayment: [],
+      };
     }
 
     const registrationsForPayment =
@@ -196,14 +202,22 @@ export class PaymentsService {
 
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    // This loop is pretty fast: with 100.000 registrations it takes ~12ms
+    const fspsInPayment = [];
+    // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
+      if (
+        !dryRun && // This is only needed in actual doPayment call
+        !fspsInPayment.includes(registration.financialServiceProvider)
+      ) {
+        fspsInPayment.push(registration.financialServiceProvider);
+      }
     }
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
+      fspsInPayment: fspsInPayment,
     };
 
     const referenceIds = registrationsForPayment.map(
@@ -240,28 +254,13 @@ export class PaymentsService {
     paginateQuery: PaginateQuery,
   ): Promise<RegistrationViewEntity[]> {
     const chunkSize = 50000;
-    paginateQuery.limit = chunkSize;
-    paginateQuery.page = 1;
-    let totalPages = 1;
 
-    let allRegistrations: RegistrationViewEntity[] = [];
-
-    for (let i = 0; i < totalPages; i++) {
-      const registrationsForPayment =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
-        );
-      totalPages = registrationsForPayment.meta.totalPages;
-      paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(
-        ...registrationsForPayment.data,
-      );
-    }
-    return allRegistrations;
+    return await this.registrationsPaginationService.getRegistrationsChunked(
+      programId,
+      paginateQuery,
+      chunkSize,
+      this.getPaymentBaseQuery(payment),
+    );
   }
 
   private getPaymentBaseQuery(
@@ -486,6 +485,7 @@ export class PaymentsService {
     const vodacashPaPayment = [];
     const safaricomPaPayment = [];
     const commercialBankEthiopiaPaPayment = [];
+    const excelPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
@@ -509,6 +509,8 @@ export class PaymentsService {
         safaricomPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.commercialBankEthiopia) {
         commercialBankEthiopiaPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.excel) {
+        excelPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -526,6 +528,7 @@ export class PaymentsService {
       vodacashPaPayment,
       safaricomPaPayment,
       commercialBankEthiopiaPaPayment,
+      excelPaPayment,
     };
   }
 
@@ -618,6 +621,14 @@ export class PaymentsService {
     if (paLists.commercialBankEthiopiaPaPayment.length) {
       await this.commercialBankEthiopiaService.sendPayment(
         paLists.commercialBankEthiopiaPaPayment,
+        programId,
+        payment,
+      );
+    }
+
+    if (paLists.excelPaPayment.length) {
+      await this.excelService.sendPayment(
+        paLists.excelPaPayment,
         programId,
         payment,
       );
@@ -785,24 +796,36 @@ export class PaymentsService {
   }
 
   public async getFspInstructions(
-    programId,
-    payment,
+    programId: number,
+    payment: number,
     userId: number,
   ): Promise<FspInstructions> {
-    const paymentTransactions =
+    const exportPaymentTransactions = (
       await this.transactionService.getLastTransactions(
         programId,
         payment,
         null,
         null,
-      );
+      )
+    ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
 
-    const csvInstructions = [];
+    if (exportPaymentTransactions.length === 0) {
+      throw new HttpException(
+        'No transactions found for this payment with FSPs that require to download payment instructions.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    let csvInstructions = [];
     let xmlInstructions: string;
 
     let fileType: ExportFileType;
 
-    for await (const transaction of paymentTransactions) {
+    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
+    // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
+    for await (const transaction of exportPaymentTransactions.filter(
+      (t) => t.fsp !== FspName.excel,
+    )) {
       const registration = await this.registrationScopedRepository.findOne({
         where: { referenceId: transaction.referenceId },
         relations: ['fsp'],
@@ -848,6 +871,19 @@ export class PaymentsService {
           fileType = ExportFileType.xml;
         }
       }
+    }
+
+    // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
+    const excelTransactions = exportPaymentTransactions.filter(
+      (t) => t.fsp === FspName.excel,
+    );
+    if (excelTransactions.length) {
+      csvInstructions = await this.excelService.getFspInstructions(
+        excelTransactions,
+        programId,
+        payment,
+      );
+      fileType = ExportFileType.excel;
     }
 
     await this.actionService.saveAction(

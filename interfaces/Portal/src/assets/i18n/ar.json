@@ -6,6 +6,7 @@
     "apply": "طبق",
     "cancel": "إلغاء الأمر",
     "confirm": "هل أنت متأكد؟",
+    "error-with-message": "حدث خطأ ما: {{error}}",
     "export-error": "حدث خطأ ما في التصدير.",
     "import-error": "حدث خطأ ما في الاستيراد.",
     "ok": "OK",
@@ -14,7 +15,6 @@
     "try-again-contact-support": "يرجى المحاولة مرة أخرى. إذا استمرت المشكلة، اتصل بالدعم التقني.",
     "unknown-error": "حدث خطأ ما. الخطأ غير معروف.",
     "update": "تحديث",
-    "update-error": "حدث خطأ ما: {{error}}",
     "update-success": "تم التحديث بنجاح"
   },
   "entity": {
@@ -31,7 +31,6 @@
         "registered": "المسجله",
         "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
         "rejected": "نبيذ",
-        "selectedForValidation": "تم اختياره للتحقق من الصحة",
         "startedRegistration": "بدأ التسجيل",
         "validated": "التحقق"
       }
@@ -184,10 +183,6 @@
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تضمين جميع الأشخاص المتأثرين في هذه الدفعة."
         },
         "select-btn-text": "يصدّر",
-        "selected-for-validation": {
-          "btn-text": "قائمة التصدير: محددة للتحقق من الصحة",
-          "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع تحديد جميع الأشخاص المتأثرين للتحقق من الصحة ، لاستخدامه في زيارات التحقق من الصحة."
-        },
         "timestamp": "آخر تصدير تم في: {{dateTime}}",
         "unused-vouchers": {
           "btn-text": "تصدير قائمة القسائم غير المستخدمة",
@@ -222,7 +217,6 @@
           "noLongerEligible": "PAs التي تم وضع علامة عليها على أنها \"لم تعد مؤهلة\". <br> هؤلاء هم PAs الذين تمت دعوتهم ولكنهم لم يسجلوا بعد وفي الوقت نفسه لم يعودوا مؤهلين.",
           "registered": "PAs التي أنهت التسجيل في تطبيق PA.",
           "rejected": "PAs التي تم رفضها. <br> لن يتلقوا أي مدفوعات (أكثر) لجولة الدفع / الدفع التالية.",
-          "selectedForValidation": "PAs التي تم اختيارها للتحقق من الصحة.",
           "startedRegistration": "PAs التي بدأت التسجيل في تطبيق PA.",
           "validated": "PAs التي تم التحقق من صحتها."
         },
@@ -366,7 +360,6 @@
           "markNoLongerEligible": "وضع علامة كغير مؤهل",
           "pause": "وقفة PA ثانية",
           "reject": "رفض من البرنامج",
-          "selectForValidation": "حدد للتحقق من الصحة",
           "sendMessage": "إرسال رسالة إلى PA"
         },
         "apply-action": "تطبيق الإجراء",
@@ -379,7 +372,6 @@
           "markNoLongerEligible": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مستورد</i> أو <i>مدعو</i>.",
           "pause": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مضمنة</i>.",
           "reject": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل</i> أو <i>محدد للتحقق</i> من <i>الصحة أو تم التحقق من صحته</i> أو <i>تضمينه</i> أو لم يعد مؤهلا أو <i>مسجلا بينما لم يعد مؤهلا</i>. <i></i>",
-          "selectForValidation": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل.</i>",
           "sendMessage": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات التي لها رقم هاتف مرتبط بها."
         },
         "bulk-action-response": {

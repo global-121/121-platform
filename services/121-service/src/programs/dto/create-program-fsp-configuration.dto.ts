@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { FspConfigurationEnum } from '../../fsp/enum/fsp-name.enum';
 
 export class CreateProgramFspConfigurationDto {
   @ApiProperty({ example: 1 })
@@ -7,13 +8,16 @@ export class CreateProgramFspConfigurationDto {
   @IsNotEmpty()
   fspId: number;
 
-  @ApiProperty({ example: 'username' })
+  @ApiProperty({ example: FspConfigurationEnum.username })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'test_account' })
+  @ApiProperty({
+    example: 'test_account',
+    description:
+      'Should be string (for e.g. name=username) or array of strings (for e.g. name=columnsToExport)',
+  })
   @IsNotEmpty()
-  @IsString()
   value: string;
 }
