@@ -54,8 +54,12 @@ export class QueueSeedHelperService {
     const redisClient = createRedisClient();
     // Prefix is needed here because .keys does not take into account the prefix of the redis client
     const keys = await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
-
-    await redisClient.del(...keys);
+    if (keys.length) {
+      const keysWithoutPrefix = keys.map((key) =>
+        key.replace(process.env.REDIS_PREFIX + ':', ''),
+      );
+      await redisClient.del(...keysWithoutPrefix);
+    }
 
     await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
   }
