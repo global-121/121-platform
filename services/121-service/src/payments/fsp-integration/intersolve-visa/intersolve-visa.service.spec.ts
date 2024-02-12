@@ -45,6 +45,7 @@ const mockPaPaymentDetails = [
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
     transactionAmount: 25,
+    userId: 1,
   },
 ] as PaymentDetailsDto[];
 

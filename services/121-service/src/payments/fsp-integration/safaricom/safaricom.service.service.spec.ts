@@ -18,6 +18,7 @@ const sendPaymentData = [
     paymentAddress: '14155238886',
     fspName: FspName.safaricom,
     bulkSize: 1,
+    userId: userId,
   },
 ] as PaPaymentDataDto[];
 
