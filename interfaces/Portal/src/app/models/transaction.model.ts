@@ -18,7 +18,6 @@ export class Transaction {
     | any;
   fspName: string;
   fsp: FspName;
-  user: any;
 }
 
 export class PaymentSummary {

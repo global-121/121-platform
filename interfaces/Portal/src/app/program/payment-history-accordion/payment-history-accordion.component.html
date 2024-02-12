@@ -1,15 +1,23 @@
 <!-- Accordion -->
 <ng-container *ngIf="!enableSinglePayment">
-  <ion-accordion>
+  <ion-accordion class="ion-no-padding">
     <ion-item
       slot="header"
-      [lines]="lines"
+      lines="none"
       style="font-size: 14px; --padding-start: 0"
-      [class.ion-padding-bottom]="addSeparatinggMargin()"
     >
+      <!--Toggle icon-->
+      <ion-icon
+        name="chevron-down-outline"
+        class="ion-accordion-toggle-icon"
+        size="small"
+        slot="end"
+      >
+      </ion-icon>
+
       <ion-grid class="ion-no-padding">
         <ion-row>
-          <div class="ion-padding-horizontal ion-no-margin">
+          <div class="ion-padding-horizontal mx-auto">
             <!-- Money Icon -->
             <ion-icon
               class="money-icon ion-no-padding"
@@ -18,10 +26,11 @@
               [attr.aria-hidden]="true"
             ></ion-icon>
           </div>
-          <ion-col>
+          <ion-col class="padding">
             <ion-row class="ion-justify-content-between ion-align-items-center">
-              <ion-row class="ion-align-items-center">
-                <ion-label class="ion-margin-end">
+              <ion-row>
+                <!-- Transfer index -->
+                <ion-label class="ion-margin-end ion-text-uppercase">
                   <strong>
                     {{
                       'registration-details.payment-history.transfer'
@@ -29,7 +38,24 @@
                     }}
                   </strong>
                 </ion-label>
-                <!-- Transfer status -->
+
+                <!-- Transaction Date -->
+                <ion-note class="date">
+                  <small>
+                    {{
+                      paymentRow.sentDate
+                        | date: DateFormat.dayAndTimeReverse : locale
+                    }}
+                  </small>
+                </ion-note>
+              </ion-row>
+            </ion-row>
+
+            <ion-row
+              class="ion-justify-content-start ion-align-items-center min-height"
+            >
+              <!-- Transfer status -->
+              <ng-container>
                 <ion-chip
                   [disabled]="true"
                   *ngIf="paymentRow.transaction?.status"
@@ -37,79 +63,52 @@
                   [class.failed]="paymentRow.transaction?.status === 'error'"
                   [class.waiting]="paymentRow.transaction?.status === 'waiting'"
                 >
-                  {{
-                    'page.program.program-payout.last-payment.' +
-                      paymentRow.transaction?.status | translate
-                  }}
+                  <ion-label>
+                    {{
+                      'page.program.program-payout.last-payment.' +
+                        paymentRow.transaction?.status | translate
+                    }}
+                  </ion-label>
                 </ion-chip>
-              </ion-row>
-              <div>
-                <ion-chip class="chip">
-                  <b>
-                    {{ paymentRow?.user?.username }}
-                  </b>
-                </ion-chip>
-              </div>
-            </ion-row>
-            <ion-row>
-              <!-- Transaction Date -->
-              <ion-note class="date">
-                <small>
-                  {{
-                    paymentRow.sentDate
-                      | date: DateFormat.dayAndTimeReverse : locale
+              </ng-container>
+
+              <!-- Open voucher button -->
+              <ng-container>
+                <ion-button
+                  class="open-voucher-button"
+                  fill="clear"
+                  size="small"
+                  *ngIf="
+                    paymentRow.transaction &&
+                    !hasErrorCheck(paymentRow) &&
+                    hasVoucherSupportCheck(paymentRow.transaction.fsp)
+                  "
+                  (click)="rowClick(paymentRow)"
+                  >{{
+                    'page.program.program-people-affected.transaction.open-voucher'
+                      | translate
                   }}
-                </small>
-              </ion-note>
-            </ion-row>
-            <ion-row class="ion-justify-content-end ion-align-items-center">
+                </ion-button>
+              </ng-container>
+
+              <!-- Retry payment button -->
+              <ng-container>
+                <ion-button
+                  class="send-payment-button"
+                  shape="round"
+                  fill="outline"
+                  size="small"
+                  *ngIf="hasErrorCheck(paymentRow)"
+                  (click)="rowClick(paymentRow)"
+                >
+                  {{
+                    'page.program.program-people-affected.transaction.retry'
+                      | translate
+                  }}
+                </ion-button>
+              </ng-container>
             </ion-row>
           </ion-col>
-        </ion-row>
-        <ion-row class="ion-justify-content-end">
-          <!-- Open voucher button -->
-          <ion-button
-            class="ion-margin-start"
-            color="primary"
-            shape="round"
-            fill="outline"
-            size="small"
-            *ngIf="
-              paymentRow.transaction &&
-              !hasErrorCheck(paymentRow) &&
-              hasVoucherSupportCheck(paymentRow.transaction.fsp)
-            "
-            (click)="rowClick(paymentRow)"
-            >{{
-              'page.program.program-people-affected.transaction.open-voucher'
-                | translate
-            }}
-          </ion-button>
-
-          <!-- Retry payment button -->
-          <ion-button
-            class="ion-margin-start"
-            color="primary"
-            shape="round"
-            fill="outline"
-            size="small"
-            *ngIf="hasErrorCheck(paymentRow)"
-            (click)="rowClick(paymentRow)"
-          >
-            {{
-              'page.program.program-people-affected.transaction.retry'
-                | translate
-            }}
-          </ion-button>
-        </ion-row>
-        <!--Toggle icon-->
-        <ion-row class="ion-justify-content-center">
-          <ion-icon
-            name="chevron-down-outline"
-            class="ion-accordion-toggle-icon"
-            size="small"
-          >
-          </ion-icon>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -231,12 +230,12 @@
 <ng-container *ngIf="enableSinglePayment">
   <ion-item
     slot="header"
-    [lines]="lines"
+    lines="none"
     style="font-size: 14px; --padding-start: 0"
   >
     <ion-grid class="ion-no-padding">
       <ion-row>
-        <div class="ion-padding-horizontal ion-no-margin">
+        <div class="ion-padding-horizontal">
           <!-- Money Icon -->
           <ion-icon
             class="money-icon ion-no-padding"
@@ -249,7 +248,7 @@
           <ion-row class="ion-justify-content-between ion-align-items-center">
             <ion-row>
               <!-- Transfer index -->
-              <ion-label class="ion-margin-end">
+              <ion-label class="ion-margin-end ion-text-uppercase">
                 <strong>
                   {{
                     'registration-details.payment-history.transfer'
@@ -257,26 +256,29 @@
                   }}
                 </strong>
               </ion-label>
-              <!-- Single payment Transfer status -->
-              <ion-chip
-                [disabled]="true"
-                *ngIf="enableSinglePayment"
-                [ngClass]="'waiting'"
-              >
-                {{
-                  'page.program.program-people-affected.transaction.not-yet-sent'
-                    | translate
-                }}
-              </ion-chip>
             </ion-row>
           </ion-row>
 
           <ion-row
-            class="ion-justify-content-end ion-align-items-center ion-padding-top"
+            class="ion-justify-content-start ion-align-items-center min-height"
           >
+            <!-- Single payment Transfer status -->
+            <ion-chip
+              [disabled]="true"
+              *ngIf="enableSinglePayment"
+              [ngClass]="'waiting'"
+            >
+              <ion-label>
+                {{
+                  'page.program.program-people-affected.transaction.not-yet-sent'
+                    | translate
+                }}
+              </ion-label>
+            </ion-chip>
+
             <!-- Single payment send again button -->
             <ion-button
-              color="primary"
+              class="send-payment-button"
               shape="round"
               fill="outline"
               size="small"

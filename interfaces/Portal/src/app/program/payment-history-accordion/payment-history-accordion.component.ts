@@ -49,9 +49,6 @@ export class PaymentHistoryAccordionComponent {
   @Input()
   private lastPaymentId: number;
 
-  @Input()
-  public lines = 'none';
-
   constructor(
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
@@ -180,9 +177,5 @@ export class PaymentHistoryAccordionComponent {
       }
     });
     await modal.present();
-  }
-
-  public addSeparatinggMargin(): boolean {
-    return this.lines === 'full';
   }
 }
