@@ -308,8 +308,8 @@ export class PaymentsService {
         chunk,
         amount,
         programId,
-        bulkSize,
         userId,
+        bulkSize,
       );
 
       const result = await this.payout(paPaymentDataList, programId, payment);

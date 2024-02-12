@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 export const REDIS_CLIENT = 'REDIS_CLIENT';
 
 export const getRedisSetName = (programId: number): string => {
-  return `program:${programId}:jobs`;
+  return `${process.env.REDIS_PREFIX}:program:${programId}:jobs`;
 };
 
 export const createRedisClient = (): Redis => {
@@ -12,5 +12,6 @@ export const createRedisClient = (): Redis => {
     port: Number(process.env.REDIS_PORT),
     password: process.env.REDIS_PASSWORD,
     tls: process.env.REDIS_PASSWORD ? {} : null,
+    keyPrefix: `${process.env.REDIS_PREFIX}:`,
   });
 };

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import messageTemplateDemo from '../../seed-data/message-template/message-template-demo.json';
 import messageTemplateTest from '../../seed-data/message-template/message-template-test.json';
@@ -7,27 +6,14 @@ import messageTemplateValidation from '../../seed-data/message-template/message-
 import programDemo from '../../seed-data/program/program-demo.json';
 import programTest from '../../seed-data/program/program-test.json';
 import programValidation from '../../seed-data/program/program-validation.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedTestMultipleProgram implements InterfaceScript {
-  public constructor(
-    private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
-  ) {}
-
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
+  public constructor(private readonly seedHelper: SeedHelper) {}
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
-    await seedInit.run(isApiTests);
-
     // ************************
     // ***** Program Demo *****
     // ************************

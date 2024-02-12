@@ -7,7 +7,6 @@ import {
   amountVisa,
   registrationVisa,
 } from '../../seed-data/mock/visa-card.data';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
@@ -25,19 +24,18 @@ const readSqlFile = (filepath: string): string => {
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
-  private axiosCallsService = new AxiosCallsService();
   public constructor(
     private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
+    private readonly seedMockHelper: SeedMockHelper,
+    private axiosCallsService: AxiosCallsService,
+    private seedMultipleNLRC: SeedMultipleNLRC,
   ) {}
-
-  private readonly seedMockHelper = new SeedMockHelper();
 
   public async run(
     isApiTests?: boolean,
-    powerNrRegistrationsString?: string,
-    nrPaymentsString?: string,
-    powerNrMessagesString?: string,
+    powerNrRegistrationsString?: number,
+    nrPaymentsString?: number,
+    powerNrMessagesString?: number,
     mockPv = true,
     mockOcw = true,
   ): Promise<void> {
@@ -82,11 +80,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // ************************
 
     // Set up instance and program
-    const seedMultiple = new SeedMultipleNLRC(
-      this.dataSource,
-      this.messageTemplateService,
-    );
-    await seedMultiple.run(isApiTests);
+    await this.seedMultipleNLRC.run(isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
@@ -141,13 +135,15 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       RegistrationStatusEnum.included,
       accessToken,
     );
-    await this.seedMockHelper.doPayment(
+
+    const result = await this.seedMockHelper.doPayment(
       programId,
       1,
       amountVisa,
       [registration.referenceId],
       accessToken,
     );
+    console.log('🚀 ~ SeedMultipleNLRCMockData ~ result:', result.data);
   }
 
   private async multiplyRegistrations(powerNr: number): Promise<void> {
