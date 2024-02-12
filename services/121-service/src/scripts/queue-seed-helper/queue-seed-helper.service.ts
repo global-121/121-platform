@@ -32,6 +32,8 @@ export class QueueSeedHelperService {
   ) {}
 
   async emptyAllQueues(): Promise<void> {
+    // Bull queues involve complex data structures and Bull maintains various metadata for job management.
+    // Therefore the data of the Bull queue and the ioredis queue are deleted seperately
     const bullQueues = [
       this.paymentIntersolveVisa,
       this.paymentIntersolveVoucher,
