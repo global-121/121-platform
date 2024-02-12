@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 export const REDIS_CLIENT = 'REDIS_CLIENT';
 
 export const getRedisSetName = (programId: number): string => {
-  return `${process.env.REDIS_PREFIX}:program:${programId}:jobs`;
+  return `program:${programId}:jobs`;
 };
 
 export const createRedisClient = (): Redis => {
