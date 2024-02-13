@@ -13,6 +13,18 @@
 /* Ionic Overrides/Fixes */
 @import 'styles/_ionic-overrides.css';
 
+/**
+ * Utilities:
+ *
+ * Single-purpose, Standalone classes
+ */
+@import 'styles/utilities/_layout.css';
+
+/**
+ * Third-party Components:
+ * **************************************************************************
+ */
+
 /* NGX Datatable CSS */
 @import 'styles/ngx-datatable/_ngx-datatable.component.scss';
 @import 'styles/ngx-datatable/_icons.css';
@@ -64,11 +76,6 @@
       color: var(--ion-color-medium);
     }
   }
-}
-
-.horizontal-scroll-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 ion-button {
@@ -177,10 +184,6 @@ ion-button {
   margin: 0 4px 0 0;
   padding: 0;
   width: 48px;
-}
-
-.full-height {
-  height: 100%;
 }
 
 #portal-title {
@@ -418,13 +421,4 @@ ion-input.custom-border {
 
 .export-select-popover {
   min-width: 250px;
-}
-
-.layout-flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.full-width {
-  width: 100%;
 }

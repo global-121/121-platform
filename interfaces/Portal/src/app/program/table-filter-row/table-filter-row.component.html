@@ -1,15 +1,15 @@
 <div
   style="width: 100%"
-  class="layout-flex-row ion-align-items-center ion-justify-content-between"
+  class="util--flex-row ion-align-items-center ion-justify-content-between"
 >
   <div
-    class="tfr--create-filters layout-flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
+    class="tfr--create-filters util--flex-row ion-align-items-center ion-justify-content-between ion-margin-top"
     [ngClass]="{
       'is-loading': isLoading
     }"
   >
     <div
-      class="layout-flex-row ion-align-items-center"
+      class="util--flex-row ion-align-items-center"
       style="flex-basis: 80%"
     >
       <span>
@@ -67,7 +67,7 @@
 
     <div
       style="border-left: 1px solid var(--fiveten-neutral-200)"
-      class="layout-flex-row ion-align-items-center ion-padding-horizontal"
+      class="util--flex-row ion-align-items-center ion-padding-horizontal"
     >
       <ion-label class="ion-text-nowrap">
         {{ 'page.program.table-filter-row.filter-by' | translate }}
@@ -97,7 +97,7 @@
 </div>
 
 <div
-  class="tfr--active-filters layout-flex-row ion-justify-content-between ion-align-items-center"
+  class="tfr--active-filters util--flex-row ion-justify-content-between ion-align-items-center"
   [ngClass]="{
     'is-loading': isLoading
   }"
