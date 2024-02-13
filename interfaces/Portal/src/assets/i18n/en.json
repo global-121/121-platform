@@ -21,6 +21,7 @@
     "registration": {
       "status": {
         "completed": "Completed",
+        "declined": "Declined",
         "deleted": "Deleted",
         "imported": "Imported",
         "included": "Included",
@@ -31,7 +32,6 @@
         "registered": "Registered",
         "registeredWhileNoLongerEligible": "Registered while no longer eligible",
         "rejected": "Rejected",
-        "selectedForValidation": "Selected for Validation",
         "startedRegistration": "Created",
         "validated": "Validated"
       }
@@ -184,10 +184,6 @@
           "confirm-message": "This will download an Excel file with all People Affected included in this payment."
         },
         "select-btn-text": "Export",
-        "selected-for-validation": {
-          "btn-text": "Export list: selected for validation",
-          "confirm-message": "This will download an Excel file with all People Affected selected for validation, to be used for Validation visits."
-        },
         "timestamp": "Latest export has been done on: {{dateTime}}",
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
@@ -222,7 +218,6 @@
           "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
           "registered": "PAs that finished registration in the PA-app.",
           "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "selectedForValidation": "PAs that were selected for validation.",
           "startedRegistration": "PAs that started registration in the PA-app.",
           "validated": "PAs that were validated."
         },
@@ -363,10 +358,11 @@
           "endInclusion": "End inclusion in program",
           "include": "Include in program",
           "invite": "Invite for registration",
+          "markAsDeclined": "Mark as declined",
+          "markAsValidated": "Mark as validated",
           "markNoLongerEligible": "Mark as no longer eligible",
           "pause": "Pause PAs",
           "reject": "Reject from program",
-          "selectForValidation": "Select for validation",
           "sendMessage": "Send Message to PAs"
         },
         "apply-action": "Apply action",
@@ -376,10 +372,11 @@
           "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
           "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
           "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
+          "markAsDeclined": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
+          "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i> or <i>Validated</i>.",
           "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
-          "selectForValidation": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them."
         },
         "bulk-action-response": {

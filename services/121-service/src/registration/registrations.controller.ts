@@ -402,27 +402,42 @@ export class RegistrationsController {
         permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
         messageContentType = MessageContentType.invited;
         break;
-      case RegistrationStatusEnum.selectedForValidation:
-        permission =
-          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE;
-        break;
       case RegistrationStatusEnum.noLongerEligible:
         permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
+        break;
+      case RegistrationStatusEnum.validated:
+        permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
+        break;
+      case RegistrationStatusEnum.declined:
+        permission = PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE;
         break;
     }
     if (!permission) {
       const errors = `The status ${registrationStatus} is unknown or cannot be changed to via API`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    const hasPermission =
+    const hasPermissionToUpdateStatus =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         programId,
         permission,
       );
-    if (!hasPermission) {
-      const errors = `User does not have permission to update registration status to included`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    if (!hasPermissionToUpdateStatus) {
+      const errors = `User does not have permission to update registration status to ${registrationStatus}`;
+      throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
+    }
+
+    if (statusUpdateDto.message || statusUpdateDto.messageTemplateKey) {
+      const hasPermissionToSendMessage =
+        await this.registrationsPaginateService.userHasPermissionForProgram(
+          userId,
+          programId,
+          PermissionEnum.RegistrationNotificationCREATE,
+        );
+      if (!hasPermissionToSendMessage) {
+        const errors = `User does not have permission to send messages`;
+        throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
+      }
     }
 
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(

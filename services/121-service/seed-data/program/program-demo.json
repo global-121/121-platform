@@ -83,7 +83,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -108,7 +108,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -133,7 +133,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -189,7 +189,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -214,7 +214,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -239,7 +239,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"],
@@ -286,7 +286,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -311,7 +311,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -336,7 +336,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -363,7 +363,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -388,7 +388,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -456,7 +456,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "returnee": 2,
         "displaced": 2,
@@ -547,7 +547,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "widowed": 1,
         "married": 0,
@@ -579,7 +579,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -606,7 +606,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -633,7 +633,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -660,7 +660,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -687,7 +687,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -714,7 +714,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -741,7 +741,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -789,7 +789,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,

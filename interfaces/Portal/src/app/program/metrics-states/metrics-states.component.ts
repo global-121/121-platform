@@ -145,18 +145,6 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[RegistrationStatus.registered],
       },
       {
-        name: RegistrationStatus.selectedForValidation,
-        enabled: this.program.validation,
-        label: this.translate.instant(
-          'entity.registration.status.selectedForValidation',
-        ),
-        explanation: this.translate.instant(
-          'page.program.metrics.state-explanation.selectedForValidation',
-        ),
-        toDate:
-          this.programMetrics.pa[RegistrationStatus.selectedForValidation],
-      },
-      {
         name: RegistrationStatus.validated,
         enabled: this.program.validation,
         label: this.translate.instant('entity.registration.status.validated'),
@@ -164,6 +152,15 @@ export class MetricsStatesComponent implements OnChanges {
           'page.program.metrics.state-explanation.validated',
         ),
         toDate: this.programMetrics.pa[RegistrationStatus.validated],
+      },
+      {
+        name: RegistrationStatus.declined,
+        enabled: this.program.validation,
+        label: this.translate.instant('entity.registration.status.declined'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.declined',
+        ),
+        toDate: this.programMetrics.pa[RegistrationStatus.declined],
       },
       {
         name: RegistrationStatus.included,

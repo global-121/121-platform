@@ -23,7 +23,6 @@ export class ExportSelectComponent implements AfterViewChecked {
     ExportType.filteredTable,
     ExportType.allPeopleAffected,
     ExportType.duplicates,
-    ExportType.selectedForValidation,
     ExportType.paDataChanges,
   ];
 
@@ -32,12 +31,6 @@ export class ExportSelectComponent implements AfterViewChecked {
   ngAfterViewChecked(): void {
     if (!this.thisPhase) {
       return;
-    }
-
-    if (!this.showValidation) {
-      this.options = this.options.filter(
-        (o) => o !== ExportType.selectedForValidation,
-      );
     }
   }
 

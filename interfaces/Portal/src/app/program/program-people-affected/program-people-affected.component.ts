@@ -44,11 +44,9 @@ import {
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { AnswerType } from '../../models/fsp.model';
 import {
   MessageStatus,
   MessageStatusMapping,
@@ -548,7 +546,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             person.preferredLanguage,
           )
         : '',
-      phoneNumber: formatPhoneNumber(person.phoneNumber),
+      phoneNumber: person.phoneNumber,
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
@@ -597,9 +595,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       }
       if (value === 'false') {
         value = false;
-      }
-      if (paTableAttribute.type === AnswerType.PhoneNumber) {
-        value = formatPhoneNumber(value);
       }
       personRow[paTableAttribute.name] = value;
     }
@@ -926,6 +921,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         if (error.error?.error) {
           err = error.error?.error;
         }
+        if (error.error?.errors) {
+          err = error.error.errors;
+        }
         actionResult(
           this.alertController,
           this.translate,
@@ -991,12 +989,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   ) {
     const statusRelatedBulkActions = [
       BulkActionId.invite,
-      BulkActionId.selectForValidation,
       BulkActionId.include,
       BulkActionId.endInclusion,
       BulkActionId.reject,
       BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
+      BulkActionId.markAsValidated,
+      BulkActionId.markAsDeclined,
     ];
     const responseText = this.translate.instant(
       'page.program.program-people-affected.bulk-action-response.response',

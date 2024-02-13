@@ -1,6 +1,6 @@
 {
   "published": false,
-  "validation": false,
+  "validation": true,
   "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
@@ -61,12 +61,7 @@
       },
       "name": "namePartnerOrganization",
       "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
+      "export": ["all-people-affected", "included", "payment"],
       "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
@@ -88,7 +83,7 @@
       "pattern": null,
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": false,

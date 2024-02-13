@@ -3,7 +3,6 @@ export enum RegistrationStatusEnum {
   invited = 'invited',
   startedRegistration = 'startedRegistration',
   registered = 'registered',
-  selectedForValidation = 'selectedForValidation',
   validated = 'validated',
   included = 'included',
   rejected = 'rejected',
@@ -13,6 +12,7 @@ export enum RegistrationStatusEnum {
   deleted = 'deleted',
   completed = 'completed',
   paused = 'paused',
+  declined = 'declined',
 }
 
 export enum RegistrationStatusTimestampField {
@@ -26,10 +26,10 @@ export enum RegistrationStatusTimestampField {
   validationDate = 'validationDate',
   inclusionDate = 'inclusionDate',
   inclusionEndDate = 'inclusionEndDate',
-  selectedForValidationDate = 'selectedForValidationDate',
   deleteDate = 'deleteDate',
   completedDate = 'completedDate',
   pausedDate = 'pausedDate',
+  declinedDate = 'declinedDate',
 }
 
 export enum RegistrationStatusDateMap {
@@ -37,7 +37,6 @@ export enum RegistrationStatusDateMap {
   invited = RegistrationStatusTimestampField.invitedDate,
   startedRegistration = RegistrationStatusTimestampField.startedRegistrationDate,
   registered = RegistrationStatusTimestampField.registeredDate,
-  selectedForValidation = RegistrationStatusTimestampField.selectedForValidationDate,
   validated = RegistrationStatusTimestampField.validationDate,
   included = RegistrationStatusTimestampField.inclusionDate,
   rejected = RegistrationStatusTimestampField.rejectionDate,
@@ -47,4 +46,5 @@ export enum RegistrationStatusDateMap {
   deleted = RegistrationStatusTimestampField.deleteDate,
   completed = RegistrationStatusTimestampField.completedDate,
   paused = RegistrationStatusTimestampField.pausedDate,
+  declined = RegistrationStatusTimestampField.declinedDate,
 }

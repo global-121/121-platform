@@ -26,7 +26,7 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Oblast"
       }
@@ -65,7 +65,7 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Raion"
       }
@@ -78,7 +78,7 @@
         "ru": "Улица, где вы проживаете в данный момент"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Street"
       }
@@ -91,7 +91,7 @@
         "ru": "Номер дома"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "House"
       }
@@ -104,7 +104,7 @@
         "ru": "Номер квартиры"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "Apt / Office"
       }
@@ -116,7 +116,7 @@
         "uk": "Ваш поштовий індекс",
         "ru": "Укажите, пожалуйста, ваш почтовый индекс"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "shortLabel": {
@@ -131,7 +131,7 @@
         "ru": "Населённый пункт, где вы сейчас проживаете"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "shortLabel": {
         "en": "City"
       }
@@ -143,7 +143,7 @@
         "uk": "Прізвище заявителя/людини, яка буде отримувати переказ від Укр Пошти",
         "ru": "Фамилия заявителя/человека, который будет получать перевод от укр. Почты"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "shortLabel": {
@@ -157,7 +157,7 @@
         "uk": "Ім'я заявителя",
         "ru": "Имя заявителя"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "shortLabel": {
@@ -171,7 +171,7 @@
         "uk": "По-батькові заявителя",
         "ru": "Отчество заявителя"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "shortLabel": {
@@ -185,7 +185,7 @@
         "uk": "Ідентифікаційний код",
         "ru": "Идентификационный код"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "duplicateCheck": true,
@@ -200,7 +200,7 @@
         "uk": "Номер телефону",
         "ru": "Номер телефона"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null,
       "shortLabel": {

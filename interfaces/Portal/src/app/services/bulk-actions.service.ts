@@ -82,10 +82,21 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.selectForValidation,
+      id: BulkActionId.markAsValidated,
       enabled: false,
-      label: 'page.program.program-people-affected.actions.selectForValidation',
-      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
+      label: 'page.program.program-people-affected.actions.markAsValidated',
+      permissions: [Permission.RegistrationStatusMarkAsValidatedUPDATE],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
+      },
+    },
+    {
+      id: BulkActionId.markAsDeclined,
+      enabled: false,
+      label: 'page.program.program-people-affected.actions.markAsDeclined',
+      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
       confirmConditions: {
@@ -233,12 +244,6 @@ export class BulkActionsService {
           dryRun,
           filters,
         );
-      case BulkActionId.selectForValidation:
-        return await this.programsService.selectForValidation(
-          programId,
-          dryRun,
-          filters,
-        );
       case BulkActionId.include:
         return await this.programsService.include(
           programId,
@@ -289,6 +294,18 @@ export class BulkActionsService {
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
+          programId,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.markAsValidated:
+        return await this.programsService.markAsValidated(
+          programId,
+          dryRun,
+          filters,
+        );
+      case BulkActionId.markAsDeclined:
+        return await this.programsService.markAsDeclined(
           programId,
           dryRun,
           filters,
