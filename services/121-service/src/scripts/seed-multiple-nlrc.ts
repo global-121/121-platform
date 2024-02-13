@@ -5,28 +5,19 @@ import messageTemplateOCW from '../../seed-data/message-template/message-templat
 import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import programPV from '../../seed-data/program/program-nlrc-pv.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { DebugScope } from './enum/debug-scope.enum';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedMultipleNLRC implements InterfaceScript {
   public constructor(
     private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
+    private readonly seedHelper: SeedHelper,
   ) {}
-
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
 
   public async run(isApiTests?: boolean): Promise<void> {
     const debugScopes = Object.values(DebugScope);
-    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
-    await seedInit.run(isApiTests);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -44,7 +35,10 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityPV = await this.seedHelper.addProgram(programPV);
+    const programEntityPV = await this.seedHelper.addProgram(
+      programPV,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -60,7 +54,10 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityOCW = await this.seedHelper.addProgram(programOCW);
+    const programEntityOCW = await this.seedHelper.addProgram(
+      programOCW,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

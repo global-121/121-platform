@@ -529,15 +529,14 @@
           "error-message": "Error message",
           "fix-error": "Please take the necessary action to fix this error. Then use the button below to retry payment for this Person Affected.",
           "get-balance": "Get current balance of voucher",
-          "message-title": "Message sent payment #{{payment}}: {{timestamp}}",
-          "money-title": "Voucher sent payment #{{payment}}: {{timestamp}}",
           "print-voucher": "Print voucher",
           "retry": "Retry payment for this PA",
           "single-payment": {
             "intro": "Do payment for 1 PA only",
             "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
-          }
+          },
+          "status-title": "Payment #{{payment}}: {{timestamp}}"
         },
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "{{actionLabel}} for {{applicableCount}} People Affected.",

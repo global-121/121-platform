@@ -1,34 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
 import { FspIntegrationType } from '../../../fsp/enum/fsp-integration-type.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { IntersolveVoucherPayoutStatus } from '../../fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
-
-export class GetTransactionDto {
-  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
-  @Length(5, 200)
-  public readonly referenceId: string;
-  @ApiProperty({ example: 1 })
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  public readonly payment: number;
-  @ApiProperty({ example: 'IntersolvePayoutStatus' })
-  @IsOptional()
-  @IsString()
-  public readonly customDataKey?: string;
-  @ApiProperty({ example: IntersolveVoucherPayoutStatus.InitialMessage })
-  @IsOptional()
-  @IsString()
-  public readonly customDataValue?: string;
-}
+import { UserOwnerDto } from '../../../user/dto/user-owner.dto';
 
 export class GetTransactionOutputDto {
   @ApiProperty({ example: new Date() })
@@ -72,6 +45,11 @@ export class TransactionReturnDto {
   public fsp: string;
   @ApiProperty({ example: FspIntegrationType.api, type: 'string' })
   public fspIntegrationType: string;
+}
+
+export class AuditedTransactionReturnDto extends TransactionReturnDto {
+  @ApiProperty({ type: () => UserOwnerDto })
+  public user: UserOwnerDto;
 }
 
 export class PaymentReturnDto {

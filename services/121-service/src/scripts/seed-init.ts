@@ -16,13 +16,13 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
+import { QueueSeedHelperService } from './queue-seed-helper/queue-seed-helper.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 
@@ -30,25 +30,34 @@ import { SeedHelper } from './seed-helper';
 export class SeedInit implements InterfaceScript {
   public constructor(
     private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
+    private readonly seedHelper: SeedHelper,
+    private readonly queueSeedHelper: QueueSeedHelperService,
+    // @Inject(REDIS_CLIENT)
+    // private readonly redisClient: Redis,
   ) {}
 
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
-
   public async run(isApiTests?: boolean): Promise<void> {
-    if (isApiTests !== undefined && isApiTests.toString() === 'true') {
+    if (isApiTests) {
       await this.truncateAll();
     } else {
       await this.dropAll();
+
       await this.runAllMigrations();
     }
+    await this.clearRedisData();
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
     await this.seedFsp();
+  }
+
+  private async clearRedisData(): Promise<void> {
+    if (
+      process.env.REDIS_PREFIX &&
+      ['development', 'test'].includes(process.env.NODE_ENV)
+    ) {
+      await this.queueSeedHelper.emptyAllQueues();
+    }
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {

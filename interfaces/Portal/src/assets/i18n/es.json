@@ -524,8 +524,6 @@
           "error-message": "Mensaje de error",
           "fix-error": "Tome las medidas necesarias para corregir este error. A continuación, utilice el botón de abajo para volver a intentar el pago de esta persona afectada.",
           "get-balance": "Obtener el saldo actual del cupón",
-          "message-title": "Mensaje enviado #{{payment}} de pago: {{timestamp}}",
-          "money-title": "Comprobante de pago enviado #{{payment}}: {{timestamp}}",
           "print-voucher": "Imprimir comprobante",
           "retry": "Vuelva a intentar el pago de este PA",
           "single-payment": {

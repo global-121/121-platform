@@ -9,16 +9,18 @@ import { SafaricomService } from './safaricom.service';
 
 const programId = 3;
 const paymentNr = 5;
+const userId = 1;
 
-const sendPaymentData = [
+const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
     fspName: FspName.safaricom,
     bulkSize: 1,
+    userId: userId,
   },
-] as PaPaymentDataDto[];
+];
 
 const paymentDetailsResult: SafaricomJobDto = {
   userInfo: [
@@ -31,6 +33,7 @@ const paymentDetailsResult: SafaricomJobDto = {
   paPaymentData: sendPaymentData[0],
   programId: programId,
   paymentNr: paymentNr,
+  userId: userId,
 };
 
 describe('SafaricomService', () => {

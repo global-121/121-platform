@@ -17,6 +17,7 @@ import {
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { PermissionEnum } from '../../../user/enum/permission.enum';
+import { RegistrationChangeLogReturnDto } from './dto/registration-change-log-return.dto';
 import { RegistrationChangeLogService } from './registration-change-log.service';
 
 @UseGuards(PermissionsGuard)
@@ -34,6 +35,7 @@ export class RegistrationChangeLogController {
     status: 200,
     description:
       'Get changelog for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+    type: [RegistrationChangeLogReturnDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -41,7 +43,7 @@ export class RegistrationChangeLogController {
   public async getChangeLog(
     @Param() params,
     @Query() queryParams,
-  ): Promise<any> {
+  ): Promise<RegistrationChangeLogReturnDto[]> {
     if (!queryParams.referenceId) {
       throw new HttpException(
         'ReferenceId is required',
