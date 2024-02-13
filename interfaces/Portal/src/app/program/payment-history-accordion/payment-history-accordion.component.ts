@@ -119,7 +119,7 @@ export class PaymentHistoryAccordionComponent {
           },
         );
     }
-    if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
+    if (paymentRow.transaction) {
       paymentDetails = {
         programId: this.program.id,
         payment: paymentRow.paymentIndex,
@@ -143,23 +143,11 @@ export class PaymentHistoryAccordionComponent {
         referenceId: this.person.referenceId,
       };
     }
-    const titleError = hasError
-      ? `${paymentRow.paymentIndex}: ${paymentRow.text}`
-      : null;
-    const titleMessageIcon = paymentRow.hasMessageIcon
-      ? `${paymentRow.paymentIndex}: `
-      : null;
-    const titleMoneyIcon = paymentRow.hasMoneyIconTable
-      ? `${paymentRow.paymentIndex}: `
-      : null;
     const titleSinglePayment = isSinglePayment ? paymentRow.text : null;
 
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
-        titleMessageIcon,
-        titleMoneyIcon,
-        titleError,
         titleSinglePayment,
         content,
         showRetryButton,

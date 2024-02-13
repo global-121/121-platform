@@ -34,6 +34,7 @@ import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto'
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
+import { TransactionRelationDetailsDto } from './dto/transaction-relation-details.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
@@ -298,6 +299,7 @@ export class PaymentsService {
         chunk,
         amount,
         programId,
+        userId,
         bulkSize,
       );
 
@@ -321,6 +323,7 @@ export class PaymentsService {
     const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
       payment,
+      userId,
       referenceIdsDto?.referenceIds,
     );
 
@@ -424,18 +427,17 @@ export class PaymentsService {
   private async checkPaymentActionInProgress(
     programId: number,
   ): Promise<boolean> {
-    const latestPaymentStartedAction =
-      await this.actionService.getLatestActions(
-        programId,
-        AdditionalActionType.paymentStarted,
-      );
+    const latestPaymentStartedAction = await this.actionService.getLatestAction(
+      programId,
+      AdditionalActionType.paymentStarted,
+    );
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
     }
 
     const latestPaymentFinishedAction =
-      await this.actionService.getLatestActions(
+      await this.actionService.getLatestAction(
         programId,
         AdditionalActionType.paymentFinished,
       );
@@ -716,24 +718,25 @@ export class PaymentsService {
   private async getPaymentListForRetry(
     programId: number,
     payment: number,
+    userId: number,
     referenceIds?: string[],
   ): Promise<PaPaymentDataDto[]> {
     let q = this.getPaymentRegistrationsQuery(programId);
     q = this.failedTransactionForRegistrationAndPayment(q, payment);
 
     // If referenceIds passed, only retry those
+    let rawResult;
     if (referenceIds && referenceIds.length > 0) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
         referenceIds: referenceIds,
       });
-      const result = await q.getRawMany();
-      for (const row of result) {
+      rawResult = await q.getRawMany();
+      for (const row of rawResult) {
         if (!row.transactionId) {
           const errors = `No failed transaction found for registration with referenceId ${row.referenceId}.`;
           throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
         }
       }
-      return result;
     } else {
       // If no referenceIds passed, retry all failed transactions for this payment
       // .. get all failed referenceIds for this payment
@@ -753,15 +756,21 @@ export class PaymentsService {
       q.andWhere('"referenceId" IN (:...failedReferenceIds)', {
         failedReferenceIds,
       });
-      const result = await q.getRawMany();
-      return result;
+      rawResult = await q.getRawMany();
     }
+    const result: PaPaymentDataDto[] = [];
+    for (const row of rawResult) {
+      row['userId'] = userId;
+      result.push(row);
+    }
+    return result;
   }
 
   private async getPaymentList(
     referenceIds: string[],
     amount: number,
     programId: number,
+    userId: number,
     bulkSize: number,
   ): Promise<PaPaymentDataDto[]> {
     const q = this.getPaymentRegistrationsQuery(programId);
@@ -773,6 +782,7 @@ export class PaymentsService {
     const paPaymentDataList: PaPaymentDataDto[] = [];
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
+        userId: userId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
@@ -928,10 +938,15 @@ export class PaymentsService {
           continue;
         }
 
+        const transactionRelationDetails: TransactionRelationDetailsDto = {
+          programId,
+          paymentNr: payment,
+          userId,
+        };
+
         await this.transactionService.storeTransactionUpdateStatus(
           paTransactionResult,
-          programId,
-          payment,
+          transactionRelationDetails,
         );
         countPaymentSuccess += Number(
           paTransactionResult.status === StatusEnum.success,

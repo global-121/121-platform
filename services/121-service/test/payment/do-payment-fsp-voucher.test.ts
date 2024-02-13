@@ -6,6 +6,7 @@ import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
+import { adminOwnerDto } from '../fixtures/user-owner';
 import {
   changePhase,
   doPayment,
@@ -106,6 +107,7 @@ describe('Do payment to 1 PA', () => {
       );
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
+      expect(getTransactionsBody[0].user).toMatchObject(adminOwnerDto);
     });
   });
 });

@@ -21,7 +21,8 @@ INSERT
 		FROM
 			"121-service"."transaction"),
 		amount,
-		updated
+		updated,
+    "userId"
 	FROM
 		"121-service"."transaction"
 	WHERE

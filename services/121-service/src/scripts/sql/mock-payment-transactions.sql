@@ -11,7 +11,8 @@ INSERT INTO "121-service"."transaction"
   "financialServiceProviderId",
   "registrationId",
   amount,
-  updated
+  updated,
+  "userId"
 )
 SELECT
   id + (
@@ -28,7 +29,8 @@ SELECT
   "financialServiceProviderId",
   "registrationId",
   amount,
-  updated
+  updated,
+  "userId"
 FROM
   "121-service"."transaction"
 WHERE

@@ -18,10 +18,10 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../dto/transaction-relation-details.dto';
 import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
-  GetTransactionDto,
-  GetTransactionOutputDto,
+  AuditedTransactionReturnDto,
   TransactionReturnDto,
 } from './dto/get-transaction.dto';
 import { LatestTransactionEntity } from './latest-transaction.entity';
@@ -47,6 +47,29 @@ export class TransactionsService {
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
   ) {}
+
+  public async getAuditedTransactions(
+    programId: number,
+    payment?: number,
+    referenceId?: string,
+  ): Promise<AuditedTransactionReturnDto[]> {
+    const query = this.getLastTransactionsQuery(programId, payment, referenceId)
+      .leftJoin('transaction.user', 'user')
+      .addSelect('user.id', 'userId')
+      .addSelect('user.username', 'username');
+    const rawResult = await query.getRawMany();
+    const result = rawResult.map((row) => {
+      const { userId, username, ...rest } = row;
+      return {
+        ...rest,
+        user: {
+          id: userId,
+          username,
+        },
+      };
+    });
+    return result;
+  }
 
   public async getLastTransactions(
     programId: number,
@@ -109,69 +132,13 @@ export class TransactionsService {
     return transactionQuery;
   }
 
-  public async getTransaction(
-    programId: number,
-    input: GetTransactionDto,
-  ): Promise<GetTransactionOutputDto> {
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: input.referenceId },
-    });
-
-    const transactions = await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .select([
-        'transaction.created AS "paymentDate"',
-        'payment',
-        'c."referenceId"',
-        'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-      ])
-      .leftJoin('transaction.registration', 'c')
-      .andWhere('transaction.program.id = :programId', {
-        programId: programId,
-      })
-      .andWhere('transaction.payment = :paymentId', {
-        paymentId: input.payment,
-      })
-      .andWhere('transaction.registration.id = :registrationId', {
-        registrationId: registration.id,
-      })
-      .orderBy('transaction.created', 'DESC')
-      .getRawMany();
-
-    if (transactions.length === 0) {
-      return null;
-    }
-    if (input.customDataKey) {
-      for (const transaction of transactions) {
-        if (
-          transaction.customData[input.customDataKey] === input.customDataValue
-        ) {
-          return transaction;
-        }
-      }
-      return null;
-    }
-    for (const transaction of transactions) {
-      if (
-        !transaction.customData ||
-        Object.keys(transaction.customData).length === 0
-      ) {
-        return transaction;
-      }
-    }
-  }
-
   public async storeTransactionUpdateStatus(
     transactionResponse: PaTransactionResultDto,
-    programId: number,
-    payment: number,
+    relationDetails: TransactionRelationDetailsDto,
     transactionStep?: number,
   ): Promise<TransactionEntity> {
     const program = await this.programRepository.findOneBy({
-      id: programId,
+      id: relationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: transactionResponse.fspName },
@@ -186,7 +153,8 @@ export class TransactionsService {
     transaction.registration = registration;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
-    transaction.payment = payment;
+    transaction.payment = relationDetails.paymentNr;
+    transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
@@ -337,13 +305,15 @@ export class TransactionsService {
 
   public async storeAllTransactions(
     transactionResults: any,
-    programId: number,
-    payment: number,
+    transactionRelationDetails: TransactionRelationDetailsDto,
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
     for (const transaction of transactionResults.paList) {
-      await this.storeTransactionUpdateStatus(transaction, programId, payment);
+      await this.storeTransactionUpdateStatus(
+        transaction,
+        transactionRelationDetails,
+      );
     }
   }
 

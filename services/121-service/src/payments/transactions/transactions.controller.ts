@@ -9,11 +9,7 @@ import {
 import { Permissions } from '../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../guards/permissions.guard';
 import { PermissionEnum } from '../../user/enum/permission.enum';
-import {
-  GetTransactionDto,
-  GetTransactionOutputDto,
-  TransactionReturnDto,
-} from './dto/get-transaction.dto';
+import { AuditedTransactionReturnDto } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
 @UseGuards(PermissionsGuard)
@@ -41,42 +37,18 @@ export class TransactionsController {
   @ApiResponse({
     status: 200,
     description: 'Retrieved transactions',
-    type: [TransactionReturnDto],
+    type: [AuditedTransactionReturnDto],
   })
   @Get('programs/:programId/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('referenceId') referenceId: string,
     @Query('payment') payment: number,
-  ): Promise<TransactionReturnDto[]> {
-    return await this.transactionsService.getLastTransactions(
+  ): Promise<AuditedTransactionReturnDto[]> {
+    return await this.transactionsService.getAuditedTransactions(
       Number(programId),
       Number(payment),
       referenceId,
-    );
-  }
-
-  // TODO: REFACTOR combine this endpoint with GET /payments/transactions (or remove the need for this one altogether)
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ summary: '[SCOPED] Get a single transaction' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
-  @ApiQuery({ name: 'customDataKey', required: false, type: 'string' })
-  @ApiQuery({ name: 'customDataValue', required: false, type: 'string' })
-  @ApiResponse({
-    status: 200,
-    description: 'Retrieved single transaction',
-    type: GetTransactionOutputDto,
-  })
-  @Get('programs/:programId/transactions/one')
-  public async getTransaction(
-    @Param() params,
-    @Query() queryParams: GetTransactionDto,
-  ): Promise<GetTransactionOutputDto> {
-    return await this.transactionsService.getTransaction(
-      params.programId,
-      queryParams,
     );
   }
 }

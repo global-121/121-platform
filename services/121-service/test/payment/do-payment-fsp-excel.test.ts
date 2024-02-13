@@ -189,12 +189,12 @@ describe('Download FSP instructions', () => {
       .concat(['amount']);
 
     const fspConfig = await getFspConfiguration(programIdWesteros, accessToken);
-    const columnsToExport = fspConfig.body.find(
+    const columnsToExportFspConfigRecord = fspConfig.body.find(
       (c) => c.name === FspConfigurationEnum.columnsToExport,
     );
     await deleteFspConfiguration(
       programIdWesteros,
-      columnsToExport.id,
+      columnsToExportFspConfigRecord.id,
       accessToken,
     );
 

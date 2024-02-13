@@ -6,14 +6,19 @@ import {
   ManyToOne,
   OneToOne,
 } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
+import { Base121AuditedEntity } from '../../base-audited.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { UserEntity } from '../../user/user.entity';
 import { LatestTransactionEntity } from './latest-transaction.entity';
 
 @Entity('transaction')
-export class TransactionEntity extends Base121Entity {
+export class TransactionEntity extends Base121AuditedEntity {
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'userId' })
+  public user: UserEntity;
+
   @Column({ nullable: true, type: 'real' })
   public amount: number;
 

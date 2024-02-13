@@ -56,7 +56,13 @@ export class IntersolveJumboService
         batch[0].bulkSize,
       );
       for (const paResult of batchResult) {
-        await this.storeTransactionResult(paResult, payment, 1, programId);
+        await this.storeTransactionResult(
+          paResult,
+          payment,
+          1,
+          programId,
+          paPaymentArray[0].userId,
+        );
       }
     }
   }
@@ -259,11 +265,11 @@ export class IntersolveJumboService
     paymentNr: number,
     transactionStep: number,
     programId: number,
+    userId: number,
   ): Promise<void> {
     await this.transactionsService.storeTransactionUpdateStatus(
       paTransactionResult,
-      programId,
-      paymentNr,
+      { programId, paymentNr, userId },
       transactionStep,
     );
   }

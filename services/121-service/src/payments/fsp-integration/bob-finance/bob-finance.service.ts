@@ -9,6 +9,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -39,10 +40,15 @@ export class BobFinanceService
       transactionResult.status = StatusEnum.success;
       fspTransactionResult.paList.push(transactionResult);
     }
-    await this.transactionsService.storeAllTransactions(
-      fspTransactionResult,
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
       programId,
       paymentNr,
+      userId: paymentList[0].userId,
+    };
+
+    await this.transactionsService.storeAllTransactions(
+      fspTransactionResult,
+      transactionRelationDetails,
     );
 
     return fspTransactionResult;

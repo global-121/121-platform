@@ -16,6 +16,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
@@ -98,6 +99,7 @@ export class CommercialBankEthiopiaService
         programId: programId,
         payload: payload,
         credentials: credentials,
+        userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
         ProcessName.sendPayment,
@@ -130,11 +132,16 @@ export class CommercialBankEthiopiaService
       data.paPaymentData.referenceId,
       data.credentials,
     );
+
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
+      programId: data.programId,
+      paymentNr: data.paymentNr,
+      userId: data.userId,
+    };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(
       paymentRequestResultPerPa,
-      data.programId,
-      data.paymentNr,
+      transactionRelationDetails,
     );
   }
 

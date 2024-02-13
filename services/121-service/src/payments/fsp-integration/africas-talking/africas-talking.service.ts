@@ -8,6 +8,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
@@ -47,10 +48,16 @@ export class AfricasTalkingService
         await this.africasTalkingApiService.sendPaymentPerPa(payload);
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
-    await this.transactionsService.storeAllTransactions(
-      fspTransactionResult,
+
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
       programId,
       paymentNr,
+      userId: paymentList[0].userId,
+    };
+
+    await this.transactionsService.storeAllTransactions(
+      fspTransactionResult,
+      transactionRelationDetails,
     );
 
     return fspTransactionResult;

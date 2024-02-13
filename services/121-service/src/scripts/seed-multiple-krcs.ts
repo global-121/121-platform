@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import instanceKRCS from '../../seed-data/instance/instance-krcs.json';
 import messageTemplateBaringo from '../../seed-data/message-template/message-template-krcs-baringo.json';
 import messageTemplateTurkana from '../../seed-data/message-template/message-template-krcs-turkana.json';
@@ -7,34 +6,23 @@ import messageTemplateWestPokot from '../../seed-data/message-template/message-t
 import programBaringo from '../../seed-data/program/program-krcs-baringo.json';
 import programTurkana from '../../seed-data/program/program-krcs-turkana.json';
 import programWestPokot from '../../seed-data/program/program-krcs-westpokot.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedMultipleKRCS implements InterfaceScript {
-  public constructor(
-    private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
-  ) {}
-
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
+  public constructor(private readonly seedHelper: SeedHelper) {}
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
-    await seedInit.run(isApiTests);
-
     // ************************
     // ***** Program Baringo *****
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityBaringo =
-      await this.seedHelper.addProgram(programBaringo);
+    const programEntityBaringo = await this.seedHelper.addProgram(
+      programBaringo,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -54,8 +42,10 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityTurkana =
-      await this.seedHelper.addProgram(programTurkana);
+    const programEntityTurkana = await this.seedHelper.addProgram(
+      programTurkana,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
@@ -71,8 +61,10 @@ export class SeedMultipleKRCS implements InterfaceScript {
     // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityWestPokot =
-      await this.seedHelper.addProgram(programWestPokot);
+    const programEntityWestPokot = await this.seedHelper.addProgram(
+      programWestPokot,
+      isApiTests,
+    );
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(

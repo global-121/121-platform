@@ -524,8 +524,6 @@
           "error-message": "Message d'erreur",
           "fix-error": "Veuillez prendre les mesures nécessaires pour corriger cette erreur. Utilisez ensuite le bouton ci-dessous pour réessayer de payer pour cette personne concernée.",
           "get-balance": "Obtenir le solde actuel du bon d’achat",
-          "message-title": "Message envoyé #{{payment}} de paiement : {{timestamp}}",
-          "money-title": "Bon d’achat envoyé #{{payment}} de paiement : {{timestamp}}",
           "print-voucher": "Imprimer le bon d’achat",
           "retry": "Réessayer le paiement pour ce PA",
           "single-payment": {

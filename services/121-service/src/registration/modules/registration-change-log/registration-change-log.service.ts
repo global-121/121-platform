@@ -2,7 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Between } from 'typeorm';
 import { ScopedRepository } from '../../../scoped.repository';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { RegistrationChangeLogReturnDto } from './dto/registration-change-log-return.dto';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
+import { RegistrationChangeLogMapper } from './utils/registration-change-log.mapper';
 
 @Injectable()
 export class RegistrationChangeLogService {
@@ -14,13 +16,16 @@ export class RegistrationChangeLogService {
   public async getChangeLogByReferenceId(
     referenceId: string,
     programId: number,
-  ): Promise<RegistrationChangeLogEntity[]> {
-    return await this.registrationChangeLogScopedRepository.find({
+  ): Promise<RegistrationChangeLogReturnDto[]> {
+    const entities = await this.registrationChangeLogScopedRepository.find({
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },
       relations: ['user'],
     });
+    return RegistrationChangeLogMapper.toRegistrationChangeLogReturnDtos(
+      entities,
+    );
   }
 
   public async exportChangeLog(

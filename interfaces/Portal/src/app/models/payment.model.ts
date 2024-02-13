@@ -23,8 +23,6 @@ export class PaymentRowDetail {
   paymentIndex?: number;
   amount?: number;
   currency?: string;
-  hasMessageIcon?: boolean;
-  hasMoneyIconTable?: boolean;
   transaction?: Transaction;
   errorMessage?: string;
   waiting?: boolean;

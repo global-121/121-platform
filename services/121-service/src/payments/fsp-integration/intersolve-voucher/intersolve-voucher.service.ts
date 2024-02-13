@@ -24,6 +24,7 @@ import { StatusEnum } from '../../../shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
@@ -33,6 +34,7 @@ import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
+import { IntersolveStoreVoucherOptionsDto } from './dto/intersolve-store-voucher-options.dto';
 import { IntersolveVoucherJobDto } from './dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherJobName } from './dto/job-details.dto';
 import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
@@ -150,6 +152,9 @@ export class IntersolveVoucherService
       paResult.status,
       paResult.message,
       registration.programId,
+      {
+        userId: jobData.paymentInfo.userId,
+      },
     );
   }
 
@@ -718,13 +723,12 @@ export class IntersolveVoucherService
     status: StatusEnum,
     errorMessage: string,
     programId: number,
-    messageSid?: string,
-    intersolveVoucherId?: number,
+    options: IntersolveStoreVoucherOptionsDto,
   ): Promise<void> {
-    if (intersolveVoucherId) {
+    if (options.intersolveVoucherId) {
       const intersolveVoucher =
         await this.intersolveVoucherScopedRepository.findOne({
-          where: { id: intersolveVoucherId },
+          where: { id: options.intersolveVoucherId },
         });
       intersolveVoucher.send = true;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
@@ -735,14 +739,38 @@ export class IntersolveVoucherService
       transactionStep,
       status,
       errorMessage,
-      messageSid,
+      options.messageSid,
     );
+
+    let userId: number;
+    if (transactionStep === 2) {
+      userId = await this.getUserIdForTransactionStep2(registrationId, payment);
+    } else {
+      userId = options.userId;
+    }
+
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
+      programId,
+      paymentNr: payment,
+      userId: userId,
+    };
+
     await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
-      programId,
-      payment,
-      transactionStep,
+      transactionRelationDetails,
     );
+  }
+
+  private async getUserIdForTransactionStep2(
+    registrationId: number,
+    payment: number,
+  ): Promise<number> {
+    const transaction = await this.transactionRepository.findOne({
+      where: { registrationId: registrationId, payment: payment },
+      order: { created: 'DESC' },
+      select: ['userId'],
+    });
+    return transaction.userId;
   }
 
   public async createTransactionResult(

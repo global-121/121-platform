@@ -1,5 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { PaPaymentDataDto } from '../../../payments/dto/pa-payment-data.dto';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
@@ -8,15 +9,16 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 
 const programId = 3;
 const paymentNr = 5;
-const sendPaymentData = [
+const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 25,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: 'Intersolve-visa',
+    fspName: FspName.intersolveVisa,
     bulkSize: 1,
+    userId: 1,
   },
-] as PaPaymentDataDto[];
+];
 const paymentDetailsResult: PaymentDetailsDto = {
   addressCity: 'Den Haag',
   addressHouseNumber: '1',
@@ -31,8 +33,9 @@ const paymentDetailsResult: PaymentDetailsDto = {
   programId: programId,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
   transactionAmount: 25,
+  userId: 1,
 };
-const mockPaPaymentDetails = [
+const mockPaPaymentDetails: PaymentDetailsDto[] = [
   {
     referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
     phoneNumber: '14155238886',
@@ -44,8 +47,12 @@ const mockPaPaymentDetails = [
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
     transactionAmount: 25,
+    userId: 1,
+    programId: programId,
+    paymentNr: paymentNr,
+    bulkSize: 1,
   },
-] as PaymentDetailsDto[];
+];
 
 describe('IntersolveVisaService', () => {
   let intersolveVisaService: IntersolveVisaService;
