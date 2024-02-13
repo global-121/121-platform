@@ -3,31 +3,21 @@ import { DataSource } from 'typeorm';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
 import messageTemplatePilotEth from '../../seed-data/message-template/message-template-pilot-zoa-eth.json';
 import programPilotEth from '../../seed-data/program/program-pilot-zoa-eth.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {
   public constructor(
+    private readonly seedHelper: SeedHelper,
     private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
-
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
-    await seedInit.run(isApiTests);
-
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(
       programPilotEth,

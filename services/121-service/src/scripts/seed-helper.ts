@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
 import { DEBUG } from '../config';
@@ -20,6 +20,7 @@ import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 
+@Injectable()
 export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
