@@ -1,0 +1,35 @@
+/**
+  * Custom Fonts
+  *
+*/
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans'),
+    url('assets/fonts/open-sans/OpenSans-Regular-webfont.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans SemiBold'),
+    url('assets/fonts/open-sans/OpenSans-SemiBold-webfont.woff2')
+      format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src:
+    local('Open Sans Bold'),
+    url('assets/fonts/open-sans/OpenSans-Bold-webfont.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: optional;
+}
