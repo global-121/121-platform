@@ -427,18 +427,17 @@ export class PaymentsService {
   private async checkPaymentActionInProgress(
     programId: number,
   ): Promise<boolean> {
-    const latestPaymentStartedAction =
-      await this.actionService.getLatestActions(
-        programId,
-        AdditionalActionType.paymentStarted,
-      );
+    const latestPaymentStartedAction = await this.actionService.getLatestAction(
+      programId,
+      AdditionalActionType.paymentStarted,
+    );
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
     }
 
     const latestPaymentFinishedAction =
-      await this.actionService.getLatestActions(
+      await this.actionService.getLatestAction(
         programId,
         AdditionalActionType.paymentFinished,
       );

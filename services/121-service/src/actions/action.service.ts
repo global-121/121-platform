@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { ActionEntity, ActionType } from './action.entity';
+import { ActionReturnDto } from './dto/action-return.dto';
+import { ActionMapper } from './utils/action.mapper';
 
 @Injectable()
 export class ActionService {
@@ -13,6 +15,19 @@ export class ActionService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+
+  public async postAction(
+    userId: number,
+    programId: number,
+    actionType: ActionType,
+  ): Promise<ActionReturnDto> {
+    const savedAction = await this.saveAction(userId, programId, actionType);
+    const actionWithRelations = await this.actionRepository.findOne({
+      where: { id: savedAction.id },
+      relations: ['user'],
+    });
+    return ActionMapper.entityToActionReturnDto(actionWithRelations);
+  }
 
   public async saveAction(
     userId: number,
@@ -31,19 +46,22 @@ export class ActionService {
     });
     action.program = program;
 
-    const newAction = await this.actionRepository.save(action);
-    return newAction;
+    return await this.actionRepository.save(action);
   }
 
-  public async getLatestActions(
+  public async getLatestAction(
     programId: number,
     actionType: ActionType,
-  ): Promise<ActionEntity> {
+  ): Promise<ActionReturnDto> {
     const action = await this.actionRepository.findOne({
       where: { program: { id: programId }, actionType: actionType },
+      relations: ['user'],
       order: { created: 'DESC' },
     });
+    if (action && action.user) {
+      return ActionMapper.entityToActionReturnDto(action);
+    }
 
-    return action;
+    return null;
   }
 }

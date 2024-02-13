@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { registrationVisa } from '../../../seed-data/mock/visa-card.data';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
+import { adminOwnerDto } from '../../fixtures/user-owner';
 import {
   deleteRegistrations,
   getRegistrationChangeLog,
@@ -66,7 +67,7 @@ describe('Get and update registration change log', () => {
 
     const checkingMap1 = {
       registrationId: 1,
-      userId: 1,
+      user: adminOwnerDto,
       fieldName: 'phoneNumber',
       oldValue: registrationVisa.phoneNumber,
       newValue: data.phoneNumber,
