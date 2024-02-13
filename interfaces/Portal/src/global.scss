@@ -234,13 +234,6 @@ ion-button {
     var(--ion-color-primary);
 }
 
-.text-bold {
-  font-weight: bold;
-}
-
-.ml-auto {
-  margin-inline-start: auto;
-}
 .select-popover {
   &::part(content) {
     --width: fit-content;
