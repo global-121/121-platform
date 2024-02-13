@@ -21,6 +21,12 @@
 @import 'styles/utilities/_layout.css';
 
 /**
+ * (CSS-Only) Components:
+ * **************************************************************************
+ */
+@import 'styles/components/badge.css';
+
+/**
  * Third-party Components:
  * **************************************************************************
  */
@@ -33,8 +39,6 @@
 @import 'styles/ngx-datatable/_bootstrap-overrides.scss';
 
 /////////////////////////////////////////////////////////////////////////////
-// Custom components styles
-@import 'styles/components/badge.css';
 
 // Custom Fonts
 @font-face {
