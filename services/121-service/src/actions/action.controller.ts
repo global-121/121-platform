@@ -34,10 +34,6 @@ export class ActionController {
 
   @Permissions(PermissionEnum.ActionREAD)
   @ApiOperation({ summary: 'Get latest action of given action-type ' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returned latest action for given program-id and action-type.',
-  })
   @ApiParam({
     name: 'programId',
     required: true,
@@ -45,6 +41,7 @@ export class ActionController {
   })
   @ApiResponse({
     status: 200,
+    description: 'Returned latest action for given program-id and action-type.',
     type: ActionReturnDto,
   })
   @ApiQuery({ name: 'actionType', required: true, type: 'string' })
@@ -62,7 +59,11 @@ export class ActionController {
   // TODO: this endpoint is not used currently, remove it?
   @Permissions(PermissionEnum.ActionCREATE)
   @ApiOperation({ summary: 'Save action by id' })
-  @ApiResponse({ status: 201, description: 'Action saved' })
+  @ApiResponse({
+    status: 201,
+    description: 'Action saved',
+    type: ActionReturnDto,
+  })
   @ApiParam({
     name: 'programId',
     required: true,
