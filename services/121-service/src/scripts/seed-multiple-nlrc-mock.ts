@@ -192,25 +192,17 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       await this.dataSource.query(queryMessagesOnePerRegistration);
     }
 
-    const queryVisaCustomerOnePerRegistration = readSqlFile(
+    const queryAllVisaCustomers = readSqlFile(
       '../../src/scripts/sql/mock-visa-customers.sql',
     );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match Visa customers to registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryVisaCustomerOnePerRegistration);
-    }
+    console.log(`**CREATING MOCK DATA match Visa customers to registrations**`);
+    await this.dataSource.query(queryAllVisaCustomers);
 
-    const queryVisaWalletsOnePerRegistration = readSqlFile(
+    const queryAllVisaWallets = readSqlFile(
       '../../src/scripts/sql/mock-visa-wallets.sql',
     );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match Visa wallets to registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryVisaWalletsOnePerRegistration);
-    }
+    console.log(`**CREATING MOCK DATA match Visa wallets to registrations**`);
+    await this.dataSource.query(queryAllVisaWallets);
 
     const queryDuplicateVouchers = readSqlFile(
       '../../src/scripts/sql/mock-intersolve-voucher.sql',
