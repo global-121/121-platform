@@ -11,11 +11,11 @@
 @import '~@ionic/angular/css/flex-utils.css';
 
 /* NGX Datatable CSS */
-@import 'assets/styles/ngx-datatable/_ngx-datatable.component.scss';
-@import 'assets/styles/ngx-datatable/_icons.css';
-@import 'assets/styles/ngx-datatable/_bootstrap.scss';
+@import 'styles/ngx-datatable/_ngx-datatable.component.scss';
+@import 'styles/ngx-datatable/_icons.css';
+@import 'styles/ngx-datatable/_bootstrap.scss';
 // Custom overrides only:
-@import 'assets/styles/ngx-datatable/_bootstrap-overrides.scss';
+@import 'styles/ngx-datatable/_bootstrap-overrides.scss';
 
 // Custom components styles
 @import 'styles/components/badge.css';
