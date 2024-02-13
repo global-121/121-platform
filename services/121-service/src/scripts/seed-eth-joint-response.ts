@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import instanceEthJointResponse from '../../seed-data/instance/instance-eth-joint-response.json';
 import messageTemplateAne from '../../seed-data/message-template/message-template-joint-response-ANE.json';
 import messageTemplateDorcas from '../../seed-data/message-template/message-template-joint-response-dorcas.json';
@@ -7,27 +6,14 @@ import messageTemplateEKHCDC from '../../seed-data/message-template/message-temp
 import programAne from '../../seed-data/program/program-joint-response-ANE.json';
 import programDorcas from '../../seed-data/program/program-joint-response-dorcas.json';
 import programEKHCDC from '../../seed-data/program/program-joint-response-EKHCDC.json';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedEthJointResponse implements InterfaceScript {
-  public constructor(
-    private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
-  ) {}
-
-  private readonly seedHelper = new SeedHelper(
-    this.dataSource,
-    this.messageTemplateService,
-  );
+  public constructor(private seedHelper: SeedHelper) {}
 
   public async run(isApiTests?: boolean): Promise<void> {
-    const seedInit = new SeedInit(this.dataSource, this.messageTemplateService);
-    await seedInit.run(isApiTests);
-
     // ************************
     // ***** Program Ane *****
     // ************************

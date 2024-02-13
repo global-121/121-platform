@@ -1,16 +1,15 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { DataSource } from 'typeorm';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
 import { SeedEthJointResponse } from './seed-eth-joint-response';
+import SeedInit from './seed-init';
 import { SeedMultipleKRCS } from './seed-multiple-krcs';
 import { SeedMultipleNLRC } from './seed-multiple-nlrc';
+import { SeedMultipleNLRCMockData } from './seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedTestProgram } from './seed-program-test';
-import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
 export class SecretDto {
@@ -25,8 +24,17 @@ export class SecretDto {
 @Controller('scripts')
 export class ScriptsController {
   public constructor(
-    private dataSource: DataSource,
-    private readonly messageTemplateService: MessageTemplateService,
+    private readonly seedMultipleKrcs: SeedMultipleKRCS,
+    private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
+    private readonly seedMultipleNlrc: SeedMultipleNLRC,
+    private readonly seedDemoProgram: SeedDemoProgram,
+    private readonly seedProgramDrc: SeedProgramDrc,
+    private readonly seedEthJointRepose: SeedEthJointResponse,
+    private readonly seedProgramNlrcPv: SeedNLProgramPV,
+    private readonly seedProgramTestMultiple: SeedMultipleNLRCMockData,
+    private readonly seedProgramTest: SeedTestProgram,
+    private readonly seedProgramValidation: SeedProgramValidation,
+    private readonly seedInit: SeedInit,
   ) {}
 
   @ApiQuery({
@@ -84,43 +92,52 @@ export class ScriptsController {
     if (body.secret !== process.env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
-    let seed;
+
+    isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
+
+    // If script is in seed enum and does not inculde mock data
+    if (
+      Object.values(SeedScript).includes(script) &&
+      script != SeedScript.nlrcMultipleMock
+    ) {
+      await this.seedInit.run(isApiTests);
+    }
     if (script == SeedScript.demo) {
-      seed = new SeedDemoProgram(this.dataSource, this.messageTemplateService);
+      await this.seedDemoProgram.run(isApiTests);
     } else if (script == SeedScript.test) {
-      seed = new SeedTestProgram(this.dataSource, this.messageTemplateService);
+      await this.seedProgramTest.run(isApiTests);
     } else if (script == SeedScript.testMultiple) {
-      seed = new SeedTestMultipleProgram(
-        this.dataSource,
-        this.messageTemplateService,
-      );
+      await this.seedProgramTestMultiple.run(isApiTests);
     } else if (script == SeedScript.nlrcMultiple) {
-      seed = new SeedMultipleNLRC(this.dataSource, this.messageTemplateService);
+      await this.seedMultipleNlrc.run(isApiTests);
     } else if (script == SeedScript.nlrcPV) {
-      seed = new SeedNLProgramPV(this.dataSource, this.messageTemplateService);
+      await this.seedProgramNlrcPv.run(isApiTests);
     } else if (script == SeedScript.DRC) {
-      seed = new SeedProgramDrc(this.dataSource, this.messageTemplateService);
+      await this.seedProgramDrc.run(isApiTests);
     } else if (script == SeedScript.validation) {
-      seed = new SeedProgramValidation(
-        this.dataSource,
-        this.messageTemplateService,
-      );
+      await this.seedProgramValidation.run(isApiTests);
     } else if (script == SeedScript.ethJointResponse) {
-      seed = new SeedEthJointResponse(
-        this.dataSource,
-        this.messageTemplateService,
-      );
+      await this.seedEthJointRepose.run(isApiTests);
     } else if (script == SeedScript.krcsMultiple) {
-      seed = new SeedMultipleKRCS(this.dataSource, this.messageTemplateService);
+      await this.seedMultipleKrcs.run(isApiTests);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
       ['development', 'test'].includes(process.env.NODE_ENV)
     ) {
-      const module = await import('./seed-multiple-nlrc-mock');
-      const SeedMultipleNLRCMockData = module.SeedMultipleNLRCMockData;
-      seed = new SeedMultipleNLRCMockData(
-        this.dataSource,
-        this.messageTemplateService,
+      const booleanMockPv = mockPv
+        ? JSON.parse(mockPv as unknown as string)
+        : true;
+      const booleanMockOcw = mockOcw
+        ? JSON.parse(mockOcw as unknown as string)
+        : true;
+      await this.seedInit.run(isApiTests);
+      await this.seedMultipleNlrcMockData.run(
+        isApiTests,
+        mockPowerNumberRegistrations,
+        mockNumberPayments,
+        mockPowerNumberMessages,
+        booleanMockPv,
+        booleanMockOcw,
       );
     } else {
       return res
@@ -129,22 +146,6 @@ export class ScriptsController {
           'Not a known program (seed dummy only works in development and test)',
         );
     }
-    const booleanMockPv = mockPv
-      ? JSON.parse(mockPv as unknown as string)
-      : true;
-    const booleanMockOcw = mockOcw
-      ? JSON.parse(mockOcw as unknown as string)
-      : true;
-
-    isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
-    await seed.run(
-      isApiTests,
-      mockPowerNumberRegistrations,
-      mockNumberPayments,
-      mockPowerNumberMessages,
-      booleanMockPv,
-      booleanMockOcw,
-    );
     return res
       .status(HttpStatus.ACCEPTED)
       .send('Request received. Database should be reset.');

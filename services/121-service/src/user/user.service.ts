@@ -429,7 +429,17 @@ export class UserService {
 
     await this.assignmentRepository.remove(user.programAssignments);
 
-    return await this.userRepository.remove(user);
+    try {
+      return await this.userRepository.remove(user);
+    } catch (e) {
+      if (e.code === '23503') {
+        throw new HttpException(
+          'User cannot be removed because it is related to other entities for logging purposes',
+          HttpStatus.CONFLICT,
+        );
+      }
+      throw e;
+    }
   }
 
   public async findById(id: number): Promise<UserEntity> {
