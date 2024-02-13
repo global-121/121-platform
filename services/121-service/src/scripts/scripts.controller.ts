@@ -10,6 +10,7 @@ import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import { SeedTestProgram } from './seed-program-test';
+import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
 export class SecretDto {
@@ -31,7 +32,7 @@ export class ScriptsController {
     private readonly seedProgramDrc: SeedProgramDrc,
     private readonly seedEthJointRepose: SeedEthJointResponse,
     private readonly seedProgramNlrcPv: SeedNLProgramPV,
-    private readonly seedProgramTestMultiple: SeedMultipleNLRCMockData,
+    private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
     private readonly seedProgramTest: SeedTestProgram,
     private readonly seedProgramValidation: SeedProgramValidation,
     private readonly seedInit: SeedInit,

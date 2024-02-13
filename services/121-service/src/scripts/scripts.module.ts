@@ -18,6 +18,7 @@ import SeedProgramEth from './seed-program-eth';
 import SeedProgramLbn from './seed-program-lbn';
 import { SeedNLProgramPV } from './seed-program-nlrc-pv';
 import SeedTestProgram from './seed-program-test';
+import SeedTestMultipleProgram from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
 
@@ -42,6 +43,7 @@ import { SeedProgramValidation } from './seed-program-validation';
     SeedMultipleNLRCMockData,
     SeedProgramDrc,
     SeedTestProgram,
+    SeedTestMultipleProgram,
     SeedMockHelper,
     AxiosCallsService,
   ],
