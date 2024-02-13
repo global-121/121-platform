@@ -112,6 +112,11 @@ describe('Registrations - [Scoped]', () => {
     const referenceIdsTransactions = transactionsResponse.body.map(
       (t) => t.referenceId,
     );
+
+    for (const transaction of transactionsResponse.body) {
+      expect(transaction.user.username).toContain(testScope);
+    }
+
     // Also check if the right referenceIds are in the transactions
     expect(referenceIdsTransactions.sort()).toEqual(
       registrationsPvFirst2ReferenceIds.sort(),
