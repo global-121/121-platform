@@ -11,15 +11,16 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
 const programId = 3;
 const paymentNr = 5;
 const mockCredentials = { username: '1234', password: '1234' };
-const sendPaymentData = [
+const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
     fspName: FspName.intersolveVoucherWhatsapp,
     bulkSize: 1,
+    userId: 1,
   },
-] as PaPaymentDataDto[];
+];
 
 const paymentDetailsResult: IntersolveVoucherJobDto = {
   paymentInfo: sendPaymentData[0],

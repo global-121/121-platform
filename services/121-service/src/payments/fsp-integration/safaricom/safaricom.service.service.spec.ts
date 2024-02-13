@@ -11,7 +11,7 @@ const programId = 3;
 const paymentNr = 5;
 const userId = 1;
 
-const sendPaymentData = [
+const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
@@ -20,7 +20,7 @@ const sendPaymentData = [
     bulkSize: 1,
     userId: userId,
   },
-] as PaPaymentDataDto[];
+];
 
 const paymentDetailsResult: SafaricomJobDto = {
   userInfo: [
