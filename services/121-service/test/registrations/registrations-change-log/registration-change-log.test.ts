@@ -66,7 +66,10 @@ describe('Get and update registration change log', () => {
 
     const checkingMap1 = {
       registrationId: 1,
-      userId: 1,
+      user: {
+        id: 1,
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      },
       fieldName: 'phoneNumber',
       oldValue: registrationVisa.phoneNumber,
       newValue: data.phoneNumber,
