@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserOwnerDto } from '../../user/dto/user-owner.dto';
 import { UserType } from '../../user/user-type-enum';
