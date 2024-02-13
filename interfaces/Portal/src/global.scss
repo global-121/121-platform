@@ -328,28 +328,6 @@ ion-input.custom-border {
   margin-inline-end: 1em;
 }
 
-/*
-  Component: User-Status-Badge (chip)
-*/
-.user-status-badge {
-  margin: 0;
-  min-height: auto;
-  padding-inline: 0.75em;
-  padding-block: 0.375em;
-  font-size: 0.75em;
-  opacity: 1;
-
-  &.active {
-    --color: var(--ion-color-status-successful-text);
-    --background: var(--fiveten-success-200);
-  }
-
-  &.inactive {
-    --color: var(--ion-color-medium);
-    --background: var(--ion-color-light-shade);
-  }
-}
-
 .rolesDropdown {
   --box-shadow: none;
   ion-list {

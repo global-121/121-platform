@@ -53,19 +53,18 @@
       ngx-datatable-cell-template
     >
       <ng-container>
-        <ion-chip
-          [disabled]="true"
-          class="user-status-badge"
-          [class.active]="row.active === true"
-          [class.inactive]="row.active === false"
+        <span
+          class="badge"
+          [class.user-active]="row.active === true"
+          [class.user-inactive]="row.active === false"
         >
-          <strong *ngIf="row?.active === true">
+          <ng-container *ngIf="row?.active === true">
             {{ 'entity.users.status.active' | translate }}
-          </strong>
+          </ng-container>
           <strong *ngIf="row?.active === false">
             {{ 'entity.users.status.inactive' | translate }}
           </strong>
-        </ion-chip>
+        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>

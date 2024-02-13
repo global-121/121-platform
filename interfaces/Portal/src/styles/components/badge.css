@@ -23,7 +23,8 @@
 .badge.message-delivered,
 .badge.message-read,
 .badge.message-sent,
-.badge.payment-success {
+.badge.payment-success,
+.badge.user-active {
   background-color: var(--ion-color-status-successful);
   color: var(--ion-color-status-successful-text);
 }
@@ -38,4 +39,9 @@
 .badge.payment-waiting {
   background-color: var(--ion-color-status-waiting);
   color: var(--ion-color-status-waiting-text);
+}
+
+.badge.user-inactive {
+  --color: var(--ion-color-medium);
+  --background: var(--ion-color-light-shade);
 }
