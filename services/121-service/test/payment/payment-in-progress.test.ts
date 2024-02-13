@@ -24,16 +24,6 @@ describe('Test payment in progress', () => {
     await seedIncludedRegistrations(registrationsPV, PvProgramId);
   });
 
-  afterEach(async () => {
-    const accessToken = await getAccessToken();
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationsPV.map((r) => r.referenceId),
-      accessToken,
-      30_000,
-    );
-  });
-
   it('payment should not be in progress after payment', async () => {
     const accessToken = await getAccessToken();
     // Arrange
