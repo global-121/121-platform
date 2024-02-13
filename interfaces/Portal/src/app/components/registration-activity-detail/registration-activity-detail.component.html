@@ -17,14 +17,7 @@
             <span *ngIf="activity.subLabel"> - {{ activity.subLabel }} </span>
           </strong>
 
-          <span class="activity-detail--status">
-            <ion-chip
-              color="error"
-              class="chip ion-no-margin"
-            >
-              status
-            </ion-chip>
-          </span>
+          <span class="activity-detail--status badge"> Status </span>
         </div>
         <div>
           <small>
@@ -38,14 +31,12 @@
         </div>
       </div>
       <div class="activity-detail--header-end ion-justify-content-end">
-        <div
+        <span
           *ngIf="activity.chipText"
-          class="activity-detail--actor"
+          class="activity-detail--actor badge"
         >
-          <ion-chip class="chip">
-            {{ activity.chipText }}
-          </ion-chip>
-        </div>
+          {{ activity.chipText }}
+        </span>
         <div class="activity-detail--actions">
           <!-- open/close body toggle button -->
         </div>
