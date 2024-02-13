@@ -18,8 +18,9 @@ import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { User } from '../user/user.decorator';
-import { ActionEntity, ActionType } from './action.entity';
+import { ActionType } from './action.entity';
 import { ActionService } from './action.service';
+import { ActionReturnDto } from './dto/action-return.dto';
 import { ActionDto } from './dto/action.dto';
 
 @UseGuards(PermissionsGuard)
@@ -42,13 +43,17 @@ export class ActionController {
     required: true,
     type: 'integer',
   })
+  @ApiResponse({
+    status: 200,
+    type: ActionReturnDto,
+  })
   @ApiQuery({ name: 'actionType', required: true, type: 'string' })
   @Get('programs/:programId/actions')
   public async getLatestAction(
     @Param('programId') programId,
     @Query('actionType') actionType: ActionType,
-  ): Promise<ActionEntity> {
-    return await this.actionService.getLatestActions(
+  ): Promise<ActionReturnDto> {
+    return await this.actionService.getLatestAction(
       Number(programId),
       actionType,
     );
@@ -68,8 +73,8 @@ export class ActionController {
     @User('id') userId: number,
     @Body() actionData: ActionDto,
     @Param('programId') programId,
-  ): Promise<ActionEntity> {
-    return await this.actionService.saveAction(
+  ): Promise<ActionReturnDto> {
+    return await this.actionService.postAction(
       userId,
       Number(programId),
       actionData.actionType,
