@@ -110,14 +110,9 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   }
 
   private async getPaymentInProgress(): Promise<boolean> {
-    const lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      this.programId,
-    );
-    const paymentSummary = await this.programsService.getPaymentSummary(
-      this.programId,
-      lastPaymentId,
-    );
-    return paymentSummary.paymentInProgress;
+    const programsPaymentStatus =
+      await this.programsService.getProgramPaymentsStatus(this.programId);
+    return programsPaymentStatus.inProgress;
   }
 
   private setPaymentAmountMultiplier(): void {

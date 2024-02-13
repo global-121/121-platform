@@ -106,11 +106,18 @@ export class ProgramPayoutComponent implements OnInit {
 
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
+    this.getPaymentInProgress();
     this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
     this.showCbeValidationButton = this.checkShowCbeValidation();
+  }
+
+  private async getPaymentInProgress(): Promise<void> {
+    const programPaymentsStatus =
+      await this.programsService.getProgramPaymentsStatus(this.programId);
+    this.paymentInProgress = programPaymentsStatus.inProgress;
   }
 
   private checkCanViewPayment(): boolean {
@@ -174,7 +181,6 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
       this.lastPaymentId,
     );
-    this.paymentInProgress = paymentSummary.paymentInProgress;
 
     return {
       error: paymentSummary?.nrError || 0,
