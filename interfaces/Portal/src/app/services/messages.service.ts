@@ -7,14 +7,6 @@ import {
 } from '../models/message.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
-export class CustomBulkActionInput {
-  message?: string;
-  payment?: number;
-  paymentAmount?: number;
-  referenceId?: string;
-  messageTemplateKey?: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
