@@ -370,17 +370,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         : change.fieldName;
   }
 
-  public getIconName(type: RegistrationActivityType): string {
-    const map = {
-      [RegistrationActivityType.message]: 'mail-outline',
-      [RegistrationActivityType.changeData]: 'document-text-outline',
-      [RegistrationActivityType.payment]: 'cash-outline',
-      [RegistrationActivityType.status]: 'reload-circle-outline',
-      [RegistrationActivityType.note]: 'clipboard-outline',
-    };
-    return map[type];
-  }
-
   private loadPermissions() {
     this.canViewRegistration = this.authService.hasAllPermissions(
       this.program.id,
