@@ -489,7 +489,6 @@
           "left": "over"
         },
         "message-history-popup": {
-          "accordion-header": "Tekst van het bericht",
           "chip-status": {
             "delivered": "Afgeleverd",
             "failed": "Mislukt",

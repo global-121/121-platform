@@ -484,7 +484,6 @@
           "left": "restante"
         },
         "message-history-popup": {
-          "accordion-header": "Texto del mensaje",
           "chip-status": {
             "delivered": "Entregado",
             "failed": "Fracasado",
