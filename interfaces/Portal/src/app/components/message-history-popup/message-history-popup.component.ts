@@ -70,6 +70,7 @@ export class MessageHistoryPopupComponent implements OnInit {
       date: new Date(message.created),
       description: message.body,
       activityStatus: message.messageStatus,
+      messageErrorCode: message.errorCode || null,
     }));
   }
   public async loadMore(historyLength) {
