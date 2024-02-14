@@ -13,6 +13,7 @@ import { StatusEnum } from 'src/app/models/status.enum';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
+import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
@@ -88,6 +89,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private enumService: EnumService,
     private modalController: ModalController,
     private messagesService: MessagesService,
+    private registrationActivityService: RegistrationActivityService,
   ) {
     this.locale = this.translate.currentLang || environment.defaultLocale;
   }
@@ -249,16 +251,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       );
 
       for (const message of messageHistory) {
-        this.activityOverview.push({
-          type: RegistrationActivityType.message,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.message.label',
-          ),
-          date: new Date(message.created),
-          description: message.body,
-          activityStatus: message.messageStatus,
-          messageErrorCode: message.errorCode || null,
-        });
+        this.activityOverview.push(
+          this.registrationActivityService.createMessageActivity(message),
+        );
       }
     }
 

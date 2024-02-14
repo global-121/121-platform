@@ -27,11 +27,16 @@ export class MessagesService {
       await this.programsService.retrieveMsgHistory(programId, referenceId)
     ).map((message) => ({
       ...message,
-      body:
-        message.body ||
-        this.translate.instant('entity.message.body-image-placeholder'),
+      body: this.getMessageBody(message),
       messageStatus: this.getMessageStatus(message.status),
     }));
+  }
+
+  private getMessageBody(message: Message): string {
+    if (!message.body && !!message.mediaurl) {
+      return this.translate.instant('entity.message.body-image-placeholder');
+    }
+    return message.body ? message.body : '';
   }
 
   private getMessageStatus(twilioStatus: TwilioStatus): MessageStatus {

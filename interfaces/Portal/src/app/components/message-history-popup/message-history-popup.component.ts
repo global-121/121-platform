@@ -1,12 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
-import {
-  RegistrationActivity,
-  RegistrationActivityType,
-} from '../../models/registration-activity.model';
+import { RegistrationActivity } from '../../models/registration-activity.model';
 import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
@@ -32,6 +30,7 @@ export class MessageHistoryPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private messageServices: MessagesService,
     private modalController: ModalController,
+    private registrationActivityService: RegistrationActivityService,
     private translate: TranslateService,
   ) {
     this.locale = this.translate.currentLang || environment.defaultLocale;
@@ -58,16 +57,9 @@ export class MessageHistoryPopupComponent implements OnInit {
         this.programId,
         this.referenceId,
       )
-    ).map((message) => ({
-      type: RegistrationActivityType.message,
-      label: this.translate.instant(
-        'registration-details.activity-overview.activities.message.label',
-      ),
-      date: new Date(message.created),
-      description: message.body,
-      activityStatus: message.messageStatus,
-      messageErrorCode: message.errorCode || null,
-    }));
+    ).map((message) => {
+      return this.registrationActivityService.createMessageActivity(message);
+    });
   }
 
   public closeModal() {
