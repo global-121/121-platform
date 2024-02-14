@@ -340,15 +340,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         this.person.referenceId,
       );
       for (const note of notes) {
-        this.activityOverview.push({
-          type: RegistrationActivityType.note,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.note.label',
-          ),
-          date: new Date(note.created),
-          description: note.text,
-          user: note.username,
-        });
+        this.activityOverview.push(
+          this.registrationActivityService.createNoteActivity(note),
+        );
       }
     }
 
