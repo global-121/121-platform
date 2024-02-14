@@ -4,11 +4,12 @@
       color="secondary"
       style="font-weight: 600"
     >
-      {{
-        'page.program.program-people-affected.message-history-popup.message-title'
-          | translate
-          | uppercase
-      }}
+      <span class="ion-text-uppercase">
+        {{
+          'page.program.program-people-affected.message-history-popup.message-title'
+            | translate
+        }}
+      </span>
       - {{ person?.personAffectedSequence }} - {{ person?.name }}
     </ion-title>
     <ion-buttons slot="end">

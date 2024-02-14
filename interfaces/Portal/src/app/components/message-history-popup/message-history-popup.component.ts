@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
 import {
@@ -24,12 +23,8 @@ export class MessageHistoryPopupComponent implements OnInit {
   public programId: number;
 
   public person: Person;
-  public DateFormat = DateFormat;
   public messageHistory: RegistrationActivity[];
-  public historySize = 5;
-  public trimBodyLength = 20;
-  public imageString = '(image)';
-  public rowIndex: number;
+
   public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
   public locale: string;
 
@@ -56,6 +51,7 @@ export class MessageHistoryPopupComponent implements OnInit {
     );
     this.person = res.data[0];
   }
+
   private async getMessageHistory() {
     this.messageHistory = (
       await this.messageServices.getMessageHistory(
@@ -72,16 +68,6 @@ export class MessageHistoryPopupComponent implements OnInit {
       activityStatus: message.messageStatus,
       messageErrorCode: message.errorCode || null,
     }));
-  }
-  public async loadMore(historyLength) {
-    this.historySize = historyLength;
-  }
-  public openMessageDetails(index) {
-    if (index === this.rowIndex) {
-      this.rowIndex = null;
-    } else {
-      this.rowIndex = index;
-    }
   }
 
   public closeModal() {
