@@ -495,7 +495,6 @@
           "left": "remaining"
         },
         "message-history-popup": {
-          "accordion-header": "Message text",
           "content-type": {
             "custom": "Custom message",
             "default-reply": "Default reply",
