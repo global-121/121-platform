@@ -2,9 +2,9 @@
 
 .badge {
   --font-size: 0.875rem;
-  --vertical-padding: 0.1rem;
+  --vertical-padding: 0.1875rem;
   --horizontal-padding: 0.75rem;
-  --height: 1em + (var(--vertical-padding) * 2);
+  --height: var(--font-size) + (var(--vertical-padding) * 2);
   --border-radius: calc(var(--height) * 0.5);
 
   display: inline-block;
@@ -12,6 +12,7 @@
   font-family: var(--ion-font-family);
   font-weight: 600;
   height: var(--height);
+  line-height: var(--font-size);
   padding: var(--vertical-padding) var(--horizontal-padding);
   border-radius: var(--border-radius);
 
