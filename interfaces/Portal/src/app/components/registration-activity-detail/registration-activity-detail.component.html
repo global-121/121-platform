@@ -53,7 +53,10 @@
       </div>
     </div>
     <div class="activity-detail--body ion-padding-top">
-      <div [innerHTML]="activity.description"></div>
+      <div
+        [innerHTML]="activity.description"
+        style="white-space: pre-wrap"
+      ></div>
       <div
         *ngIf="activity.messageErrorCode"
         class="util--half-margin-top"
