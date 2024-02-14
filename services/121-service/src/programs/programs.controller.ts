@@ -12,6 +12,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiOperation,
   ApiParam,
@@ -50,6 +51,7 @@ export class ProgramController {
     private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
+  @UseGuards(AuthGuard('azure-ad'))
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
