@@ -242,7 +242,7 @@
           "declined": "PA's die tijdens de validatie zijn geweigerd.",
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
-          "included": "Nieuwe hulpvragers die zijn opgenomen. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
+          "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
           "inclusionEnded": "Hulpvragers waarvoor de opname is beëindigd. <br> Zij ontvangen geen (meer) betalingen voor de volgende betalings-/uitbetalingsronde.",
           "invited": "Hulpvragers die zijn uitgenodigd (na import).",
           "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
@@ -352,7 +352,7 @@
             "generic": "Er is iets misgegaan met de betaling. Neem contact op met 121 technische ondersteuning."
           },
           "make-payment": "Betaling doen: {{nr}}",
-          "number-included": "Hulpvragers inbegrepen: {{number}}"
+          "number-included": "Actieve hulpvragers: {{number}}"
         },
         "open": "Open",
         "payment-nr": "Betaling #{{number}}",
@@ -383,30 +383,30 @@
           "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben."
         },
         "actions": {
-          "deletePa": "Hulpvrager verwijderen",
+          "deletePa": "Verwijder hulpvrager(s)",
           "doPayment": "Doe betaling #{{paymentNr}}",
           "endInclusion": "Beëindig deelname aan programma",
-          "include": "Opnemen in programma",
+          "include": "Activeer hulpvrager(s)",
           "invite": "Uitnodigen voor registratie",
           "markAsDeclined": "Markeer als geweigerd",
           "markAsValidated": "Markeer als gevalideerd",
           "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
-          "reject": "Afwijzen uit programma",
+          "reject": "Afwijzen voor programma",
           "sendMessage": "Stuur bericht"
         },
         "apply-action": "Actie toepassen",
         "bulk-action-conditions": {
-          "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i> actief </i> hebben.",
+          "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i>Actief</i> hebben.",
           "doPayment": "Let op: De actie <strong>{{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
-          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Actief </i> of <i> Voltooid </i> .",
+          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> of <i>Voltooid</i> .",
           "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>, <i>Geselecteerd voor validatie</i>, <i>Gevalideerd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
-          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i>.",
-          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
-          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> of <i>Geweigerd</i>.",
-          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i>.",
-          "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
-          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
+          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Niet meer in aanmerking</i>.",
+          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>.",
+          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> of <i>Geweigerd</i>.",
+          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Uitgenodigd</i>.",
+          "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> .",
+          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> , <i>Geselecteerd voor validatie</i> , <i>Gevalideerd</i> , <i>Actief</i> , <i>Niet meer in aanmerking komend</i> , of <i>Geregistreerd terwijl niet langer in aanmerking komend</i> .",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {
