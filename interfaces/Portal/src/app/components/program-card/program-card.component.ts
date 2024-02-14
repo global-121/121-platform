@@ -23,7 +23,6 @@ export class ProgramCardComponent implements OnInit {
   programStats: ProgramStats;
 
   public DateFormat = DateFormat;
-  public progress = 0;
   public phase: Phase;
 
   private programPhases: Phase[];
@@ -45,6 +44,5 @@ export class ProgramCardComponent implements OnInit {
     );
 
     this.phase = this.programPhases.find((p) => p.name === this.program.phase);
-    this.progress = this.phase.id / this.programPhases.length;
   }
 }
