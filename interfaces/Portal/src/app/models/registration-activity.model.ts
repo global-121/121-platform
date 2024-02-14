@@ -16,6 +16,7 @@ export class RegistrationActivity {
   chipText?: string;
   subLabel?: string;
   activityStatus?: string;
+  messageErrorCode?: string;
 }
 
 export enum RegistrationActivityType {
