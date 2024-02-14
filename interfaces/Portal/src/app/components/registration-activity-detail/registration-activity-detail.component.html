@@ -65,10 +65,8 @@
         class="util--half-margin-top"
       >
         <ion-note>
-          {{
-            'page.program.program-people-affected.message-history-popup.status-line.code'
-              | translate
-          }}<a
+          {{ 'entity.message.error-code-prefix' | translate }}
+          <a
             [href]="errorCodeUrl + activity.messageErrorCode"
             target="_blank"
             rel="external noopener noreferrer"

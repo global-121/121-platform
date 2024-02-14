@@ -20,6 +20,7 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(صورة)",
+      "error-code-prefix": "رمز الخطأ تويليو:",
       "status": {
         "delivered": "تسليم",
         "failed": "فشل",
@@ -507,9 +508,6 @@
             "rejected": "رفض"
           },
           "message-title": "سجل الرسائل",
-          "status-line": {
-            "code": "رمز الخطأ تويليو: "
-          },
           "type": {
             "sms": "الرسائل القصيرة",
             "whatsapp": "واتس اب"

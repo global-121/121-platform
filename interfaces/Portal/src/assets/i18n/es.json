@@ -20,6 +20,7 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(imagen)",
+      "error-code-prefix": "Código de error de Twilio:",
       "status": {
         "delivered": "Entregado",
         "failed": "Fracasado",
@@ -507,9 +508,6 @@
             "rejected": "Rechazo"
           },
           "message-title": "Historial de mensajes",
-          "status-line": {
-            "code": "Código de error de Twilio: "
-          },
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp (en inglés)"
