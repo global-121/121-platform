@@ -512,7 +512,7 @@
             "registered": "Registratie",
             "rejected": "Afwijzing"
           },
-          "message-title": "Bericht Geschiedenis",
+          "message-title": "Berichtengeschiedenis",
           "type": {
             "sms": "SMS",
             "whatsapp": "WhatsApp"
