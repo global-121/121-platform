@@ -50,13 +50,11 @@ import {
 } from './enum/registration-status.enum';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from './registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
+import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,

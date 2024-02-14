@@ -30,14 +30,12 @@ import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.enti
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from './registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from './registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkHelperService } from './services/registrations-bulk-helper.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';

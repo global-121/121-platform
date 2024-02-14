@@ -27,11 +27,9 @@ import {
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from '../registration/registration-scoped.repository';
 import { RegistrationsService } from '../registration/registrations.service';
+import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '../registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { ScopedRepository } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';

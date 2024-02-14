@@ -5,7 +5,7 @@ import { QueueMessageService } from '../../notifications/queue-message/queue-mes
 import { generateMockCreateQueryBuilder } from '../../utils/createQueryBuilderMock.helper';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
 import { RegistrationsBulkService } from './registrations-bulk.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 

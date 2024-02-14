@@ -12,7 +12,7 @@ import { RegistrationDataOptions } from '../../../registration/dto/registration-
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { ErrorEnum } from '../../../registration/errors/registration-data.error';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { formatPhoneNumber } from '../../../utils/phone-number.helpers';

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
-import { RegistrationScopedRepository } from '../registration-scoped.repository';
 import { RegistrationEntity } from '../registration.entity';
+import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 
 @Injectable()

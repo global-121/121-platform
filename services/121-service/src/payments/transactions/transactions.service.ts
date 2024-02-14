@@ -9,8 +9,8 @@ import { QueueMessageService } from '../../notifications/queue-message/queue-mes
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
-import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';

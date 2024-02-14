@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { RedisModule } from '../../../payments/redis.module';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserModule } from '../../../user/user.module';
