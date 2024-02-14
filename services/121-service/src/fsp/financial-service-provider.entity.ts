@@ -28,6 +28,13 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public integrationType: FspIntegrationType;
 
   @Column({ default: false })
+  @ApiProperty({
+    example: false,
+    description: 'Only relevant for integrationType=csv/xml',
+  })
+  public hasReconciliation: boolean;
+
+  @Column({ default: false })
   @ApiProperty({ example: false })
   public notifyOnTransaction: boolean;
 

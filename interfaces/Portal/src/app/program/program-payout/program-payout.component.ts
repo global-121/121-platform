@@ -88,13 +88,11 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.financialServiceProviders,
       [FspIntegrationType.csv, FspIntegrationType.xml],
     );
-    this.hasFspWithReconciliation = this.checkFspIntegrationType(
-      this.program.financialServiceProviders,
-      [FspIntegrationType.xml],
-    );
     this.fspIdsWithReconciliation = this.program.financialServiceProviders
-      .filter((fsp) => fsp.integrationType === FspIntegrationType.xml)
+      .filter((fsp) => fsp.hasReconciliation)
       .map((fsp) => fsp.id);
+    this.hasFspWithReconciliation = this.fspIdsWithReconciliation.length > 0;
+
     this.canMakePayment = this.checkCanMakePayment();
     this.canViewPayment = this.checkCanViewPayment();
     this.canMakeExport = this.checkCanMakeExport();

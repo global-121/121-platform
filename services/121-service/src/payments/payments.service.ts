@@ -831,8 +831,8 @@ export class PaymentsService {
       });
 
       if (
-        // For fsp's with reconciliation upload (= xml at the moment) only export waiting transactions
-        registration.fsp.integrationType === FspIntegrationType.xml &&
+        // For fsp's with reconciliation upload only export waiting transactions
+        registration.fsp.hasReconciliation &&
         transaction.status !== StatusEnum.waiting
       ) {
         continue;
