@@ -18,6 +18,9 @@
     "update-success": "Mise à jour réussie"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(l’image)"
+    },
     "registration": {
       "status": {
         "completed": "Terminé",
@@ -503,7 +506,6 @@
             "registered": "Inscription",
             "rejected": "Rejet"
           },
-          "image-string": "(l’image)",
           "message-title": "Historique des messages",
           "status-line": {
             "code": "Code d’erreur Twilio : "

@@ -29,9 +29,7 @@ export class MessagesService {
       ...message,
       body:
         message.body ||
-        this.translate.instant(
-          'page.program.program-people-affected.message-history-popup.image-string',
-        ),
+        this.translate.instant('entity.message.body-image-placeholder'),
       messageStatus: this.getMessageStatus(message.status),
     }));
   }

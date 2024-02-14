@@ -18,6 +18,9 @@
     "update-success": "تم التحديث بنجاح"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(صورة)"
+    },
     "registration": {
       "status": {
         "completed": "اكمال",
@@ -503,7 +506,6 @@
             "registered": "تسجيل",
             "rejected": "رفض"
           },
-          "image-string": "(صورة)",
           "message-title": "سجل الرسائل",
           "status-line": {
             "code": "رمز الخطأ تويليو: "

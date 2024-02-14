@@ -18,6 +18,9 @@
     "update-success": "Update succesvol"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(afbeelding)"
+    },
     "registration": {
       "status": {
         "completed": "Voltooid",
@@ -508,7 +511,6 @@
             "registered": "Registratie",
             "rejected": "Afwijzing"
           },
-          "image-string": "(afbeelding)",
           "message-title": "Bericht Geschiedenis",
           "status-line": {
             "code": "Twilio foutcode: "

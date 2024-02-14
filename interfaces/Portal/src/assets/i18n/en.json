@@ -27,6 +27,9 @@
     "update-success": "Update successful"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(image)"
+    },
     "registration": {
       "status": {
         "completed": "Completed",
@@ -510,7 +513,6 @@
             "registered": "Registration",
             "rejected": "Rejection"
           },
-          "image-string": "(image)",
           "message-title": "Message History",
           "status-line": {
             "code": "Twilio error code: "
