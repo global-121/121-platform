@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DateFormat } from 'src/app/enums/date-format.enum';
 import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import {
@@ -57,10 +56,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public statusChanges: RegistrationStatusChange[];
 
   public locale: string;
-  public DateFormat = DateFormat;
   public firstPaymentToShow = 1;
   public activityOverview: RegistrationActivity[];
-  public activityOverviewFilter: string = null;
+  public activityOverviewFilter: string | null = null;
   public activityOverviewButtons = [
     null,
     RegistrationActivityType.payment,
