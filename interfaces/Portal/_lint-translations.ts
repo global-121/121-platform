@@ -11,6 +11,7 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { BulkActionId } from 'src/app/models/bulk-actions.models';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
+import { MessageStatus } from './src/app/models/message.model';
 
 // ----------------------------------------------------------------------------
 // Configuration
@@ -30,6 +31,7 @@ const ruleConfig: IRulesConfig = {
   misprintCoefficient: 0.9,
   ignoredKeys: [
     // Plain string or RegExp
+    `common.badge.message.${anyValueFrom(MessageStatus)}`,
     `entity.registration.status.(${anyValueFrom(RegistrationStatus)})`,
     'page.program.program-people-affected.column.(.*)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.error.(not-an-integer|not-empty|too-low)',
