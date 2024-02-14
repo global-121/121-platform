@@ -1,4 +1,4 @@
-import { DatePipe, JsonPipe, NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { IonChip, IonIcon } from '@ionic/angular/standalone';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './registration-activity-detail.component.html',
   styleUrls: ['./registration-activity-detail.component.css'],
   standalone: true,
-  imports: [NgIf, DatePipe, IonIcon, IonChip, JsonPipe, TranslateModule],
+  imports: [NgIf, DatePipe, IonIcon, IonChip, TranslateModule],
 })
 export class RegistrationActivityDetailComponent {
   @Input()

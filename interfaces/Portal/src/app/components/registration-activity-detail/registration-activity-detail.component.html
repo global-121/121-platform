@@ -1,4 +1,4 @@
-<div class="activity-detail ion-padding">
+<article class="activity-detail ion-padding">
   <div class="activity-detail--icon ion-padding-end">
     <ion-icon
       [name]="getIconName(activity.type)"
@@ -14,7 +14,7 @@
         <div>
           <strong>
             {{ activity.label }}
-            <span *ngIf="activity.subLabel"> - {{ activity.subLabel }} </span>
+            <span *ngIf="activity.subLabel"> - {{ activity.subLabel }}</span>
           </strong>
 
           <span
@@ -35,10 +35,7 @@
         </div>
         <div>
           <small>
-            <time
-              [attr.datetime]="activity.date"
-              class=""
-            >
+            <time [attr.datetime]="activity.date">
               {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
             </time>
           </small>
@@ -53,9 +50,6 @@
         >
           {{ activity.chipText }}
         </span>
-        <div class="activity-detail--actions">
-          <!-- open/close body toggle button -->
-        </div>
       </div>
     </div>
     <div class="activity-detail--body ion-padding-top">
@@ -74,7 +68,6 @@
           ></ion-note
         >
       </div>
-      <!-- <pre>{{ activity | json }}</pre> -->
     </div>
   </div>
-</div>
+</article>
