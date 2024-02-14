@@ -221,6 +221,7 @@
           "targeted": "PA Targeted"
         },
         "state-explanation": {
+          "declined": "PAs that were declined during validataion.",
           "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time.",
           "imported": "PAs that were imported, based on phone-number.",
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",

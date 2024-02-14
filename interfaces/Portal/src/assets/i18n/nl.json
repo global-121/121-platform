@@ -221,6 +221,7 @@
           "targeted": "Doel registraties"
         },
         "state-explanation": {
+          "declined": "PA's die tijdens de validatie zijn geweigerd.",
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
           "included": "Nieuwe hulpvragers die zijn opgenomen. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",

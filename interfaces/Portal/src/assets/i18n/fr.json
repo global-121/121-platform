@@ -220,6 +220,7 @@
           "targeted": "PA ciblés"
         },
         "state-explanation": {
+          "declined": "AP refusées lors de la validation.",
           "deleted": "PA qui ont été supprimés. Il peut s’agir, par exemple, de PA supprimés après <br> une importation incorrecte, ainsi que de PA qui ont reçu des paiements, qui ne sont plus inclus et qui sont ensuite supprimés après un certain temps.",
           "imported": "PA qui ont été importés, en fonction du numéro de téléphone.",
           "included": "PA qui ont été inclus. <br> Ils recevront les paiements à partir du prochain tour de paiement/versement.",

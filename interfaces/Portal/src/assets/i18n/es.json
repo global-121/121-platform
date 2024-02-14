@@ -220,6 +220,7 @@
           "targeted": "PA Dirigido"
         },
         "state-explanation": {
+          "declined": "PA que fueron rechazadas durante la validación.",
           "deleted": "PAs que fueron eliminados. Esto puede incluir, por ejemplo, los PA <br> eliminados después de una importación incorrecta, así como los PA que han recibido pagos, ya no están incluidos y posteriormente se eliminan después de un tiempo.",
           "imported": "PA que fueron importados, según el número de teléfono.",
           "included": "PA que se incluyeron. <br> Recibirán pagos a partir de la siguiente ronda de pagos.",
