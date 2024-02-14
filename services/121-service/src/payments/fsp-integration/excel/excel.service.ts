@@ -50,7 +50,7 @@ export class ExcelService
       transactionResult.calculatedAmount = paPayment.transactionAmount;
       transactionResult.fspName = FspName.excel;
       transactionResult.referenceId = paPayment.referenceId;
-      transactionResult.status = StatusEnum.success; // TODO: change this to 'waiting' once reconciliation is implemented
+      transactionResult.status = StatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
     }
     const transactionRelationDetails: TransactionRelationDetailsDto = {
