@@ -67,6 +67,10 @@
         {
           "name": "columnsToExport",
           "value": "[\"name\", \"dob\", \"house\", \"phoneNumber\"]"
+        },
+        {
+          "name": "columnToMatch",
+          "value": "[\"phoneNumber\"]"
         }
       ]
     }
