@@ -291,8 +291,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         );
 
         const booleanLabel = {
-          true: 'Yes',
-          false: 'No',
+          true: this.translate.instant(
+            'page.program.program-people-affected.column.custom-attribute-true',
+          ),
+          false: this.translate.instant(
+            'page.program.program-people-affected.column.custom-attribute-false',
+          ),
         };
 
         let oldValue = change.oldValue ? change.oldValue : '-';
