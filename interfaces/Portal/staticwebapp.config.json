@@ -24,6 +24,11 @@
       "headers": {
         "Cache-Control": "must-revalidate, no-transform, max-age=2592000"
       }
+    },
+    {
+      "route": "/.well-known/change-password",
+      "redirect": "/user",
+      "statusCode": 302
     }
   ],
   "trailingSlash": "auto",
