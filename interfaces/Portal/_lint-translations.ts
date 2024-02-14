@@ -31,7 +31,7 @@ const ruleConfig: IRulesConfig = {
   misprintCoefficient: 0.9,
   ignoredKeys: [
     // Plain string or RegExp
-    `badge.message.${anyValueFrom(MessageStatus)}`,
+    `entity.message.status.${anyValueFrom(MessageStatus)}`,
     `entity.registration.status.(${anyValueFrom(RegistrationStatus)})`,
     'page.program.program-people-affected.column.(.*)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.error.(not-an-integer|not-empty|too-low)',
