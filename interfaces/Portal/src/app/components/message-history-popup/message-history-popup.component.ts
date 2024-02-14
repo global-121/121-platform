@@ -1,9 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from '../../../environments/environment';
-import { Message } from '../../models/message.model';
 import { Person } from '../../models/person.model';
+import {
+  RegistrationActivity,
+  RegistrationActivityType,
+} from '../../models/registration-activity.model';
 import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
@@ -21,18 +25,22 @@ export class MessageHistoryPopupComponent implements OnInit {
 
   public person: Person;
   public DateFormat = DateFormat;
-  public messageHistory: Message[];
+  public activityOverview: RegistrationActivity[];
   public historySize = 5;
   public trimBodyLength = 20;
   public imageString = '(image)';
   public rowIndex: number;
   public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
+  public locale: string;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private messageServices: MessagesService,
     private modalController: ModalController,
-  ) {}
+    private translate: TranslateService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     await this.getPersonData();
@@ -49,10 +57,20 @@ export class MessageHistoryPopupComponent implements OnInit {
     this.person = res.data[0];
   }
   private async getMessageHistory() {
-    this.messageHistory = await this.messageServices.getMessageHistory(
-      this.programId,
-      this.referenceId,
-    );
+    this.activityOverview = (
+      await this.messageServices.getMessageHistory(
+        this.programId,
+        this.referenceId,
+      )
+    ).map((message) => ({
+      type: RegistrationActivityType.message,
+      label: this.translate.instant(
+        'registration-details.activity-overview.activities.message.label',
+      ),
+      date: new Date(message.created),
+      description: message.body,
+      activityStatus: message.messageStatus,
+    }));
   }
   public async loadMore(historyLength) {
     this.historySize = historyLength;
