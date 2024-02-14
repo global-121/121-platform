@@ -15,6 +15,7 @@ export class RegistrationActivity {
   hasWaiting?: boolean;
   chipText?: string;
   subLabel?: string;
+  activityStatus?: string;
 }
 
 export enum RegistrationActivityType {

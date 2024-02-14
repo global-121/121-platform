@@ -4,6 +4,15 @@
     "all": "All",
     "answer-is-required": "An answer is required for this question.",
     "apply": "Apply",
+    "badge": {
+      "message": {
+        "delivered": "Delivered",
+        "failed": "Failed",
+        "read": "Read",
+        "sent": "Sent"
+      }
+    },
+
     "cancel": "Cancel",
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
@@ -487,12 +496,6 @@
         },
         "message-history-popup": {
           "accordion-header": "Message text",
-          "chip-status": {
-            "delivered": "Delivered",
-            "failed": "Failed",
-            "read": "Read",
-            "sent": "Sent"
-          },
           "content-type": {
             "custom": "Custom message",
             "default-reply": "Default reply",

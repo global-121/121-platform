@@ -17,7 +17,16 @@
             <span *ngIf="activity.subLabel"> - {{ activity.subLabel }} </span>
           </strong>
 
-          <span class="activity-detail--status badge"> Status </span>
+          <span
+            *ngIf="activity.activityStatus"
+            class="activity-detail--status badge"
+            [class]="activity.type + '-' + activity.activityStatus"
+          >
+            {{
+              'common.badge.' + activity.type + '.' + activity.activityStatus
+                | translate
+            }}
+          </span>
         </div>
         <div>
           <small>

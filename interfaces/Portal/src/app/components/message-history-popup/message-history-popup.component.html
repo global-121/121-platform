@@ -65,10 +65,9 @@
             <ion-row class="ion-justify-content-end">
               <ion-chip
                 class="ion-justify-content-center"
-                [ngClass]="'chip-' + chipStatus[message.status]"
+                [ngClass]="'chip-' + message.messageStatus"
                 >{{
-                  'page.program.program-people-affected.message-history-popup.chip-status.' +
-                    chipStatus[message.status] | translate
+                  'common.badge.message.' + message.messageStatus | translate
                 }}</ion-chip
               >
             </ion-row>
