@@ -42,11 +42,10 @@
   </ng-container>
 </ion-row>
 
-<ion-card>
-  <ion-item
-    color="light"
-    lines="full"
-  >
+<div
+  style="border: 1px solid var(--fiveten-neutral-100); border-radius: 0.25rem"
+>
+  <div style="background-color: var(--fiveten-neutral-100)">
     <ion-row style="width: 100%">
       <ion-col
         [size]="12"
@@ -76,15 +75,15 @@
         </div>
       </ion-col>
     </ion-row>
-  </ion-item>
-  <ion-card-content class="ion-no-padding">
+  </div>
+  <div class="ion-no-padding">
     <ng-container
       *ngFor="let item of getFilteredActivityOverview()"
       style="outline: 1px dashed hotpink"
     >
       <div
         *ngIf="item.type === 'payment'"
-        style="border-top: 1px solid var(--fiveten-neutral-300)"
+        style="border-top: 1px solid var(--fiveten-neutral-100)"
       >
         <!-- Accordion -->
         <ion-accordion-group [multiple]="true">
@@ -105,8 +104,8 @@
         *ngIf="item.type !== 'payment'"
         [activity]="item"
         [locale]="locale"
-        style="border-top: 1px solid var(--fiveten-neutral-300)"
+        style="border-top: 1px solid var(--fiveten-neutral-100)"
       ></app-registration-activity-detail>
     </ng-container>
-  </ion-card-content>
-</ion-card>
+  </div>
+</div>

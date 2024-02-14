@@ -27,16 +27,11 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list>
-    <ion-item
-      *ngFor="let activity of activityOverview"
-      lines="none"
-    >
-      <app-registration-activity-detail
-        [activity]="activity"
-        [locale]="locale"
-        style="border-bottom: 1px solid var(--fiveten-neutral-300)"
-      ></app-registration-activity-detail>
-    </ion-item>
-  </ion-list>
+  <div *ngFor="let activity of activityOverview">
+    <app-registration-activity-detail
+      [activity]="activity"
+      [locale]="locale"
+      style="border-bottom: 1px solid var(--fiveten-neutral-300)"
+    ></app-registration-activity-detail>
+  </div>
 </ion-content>

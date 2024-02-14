@@ -1,12 +1,12 @@
-<div class="activity-detail">
-  <div class="activity-detail--icon ion-padding">
+<div class="activity-detail ion-padding">
+  <div class="activity-detail--icon ion-padding-end">
     <ion-icon
       [name]="getIconName(activity.type)"
       size="large"
       [attr.aria-hidden]="true"
     ></ion-icon>
   </div>
-  <div class="activity-detail--content ion-padding-vertical">
+  <div class="activity-detail--content">
     <div
       class="activity-detail--header util--flex-row ion-align-items-center ion-justify-content-between"
     >
@@ -53,7 +53,7 @@
         </div>
       </div>
     </div>
-    <div class="activity-detail--body ion-padding-vertical">
+    <div class="activity-detail--body ion-padding-top">
       <div [innerHTML]="activity.description"></div>
       <!-- <pre>{{ activity | json }}</pre> -->
     </div>
