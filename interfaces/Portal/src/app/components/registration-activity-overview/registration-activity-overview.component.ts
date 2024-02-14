@@ -22,6 +22,7 @@ import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EnumService } from '../../services/enum.service';
+import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { AddNotePopupComponent } from '../add-note-popup/add-note-popup.component';
@@ -86,6 +87,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private translatableString: TranslatableStringService,
     private enumService: EnumService,
     private modalController: ModalController,
+    private messagesService: MessagesService,
   ) {
     this.locale = this.translate.currentLang || environment.defaultLocale;
   }
@@ -241,7 +243,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewMessageHistory) {
-      const messageHistory = await this.programsService.retrieveMsgHistory(
+      const messageHistory = await this.messagesService.getMessageHistory(
         this.program.id,
         this.person.referenceId,
       );
@@ -254,6 +256,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
           date: new Date(message.created),
           description: message.body,
+          activityStatus: message.messageStatus,
         });
       }
     }

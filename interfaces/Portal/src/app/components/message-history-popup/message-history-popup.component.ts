@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from '../../../environments/environment';
-import { Message, MessageStatusMapping } from '../../models/message.model';
+import { Message } from '../../models/message.model';
 import { Person } from '../../models/person.model';
+import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
@@ -25,11 +26,11 @@ export class MessageHistoryPopupComponent implements OnInit {
   public trimBodyLength = 20;
   public imageString = '(image)';
   public rowIndex: number;
-  public chipStatus = MessageStatusMapping;
   public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private messageServices: MessagesService,
     private modalController: ModalController,
   ) {}
 
@@ -48,7 +49,7 @@ export class MessageHistoryPopupComponent implements OnInit {
     this.person = res.data[0];
   }
   private async getMessageHistory() {
-    this.messageHistory = await this.programsService.retrieveMsgHistory(
+    this.messageHistory = await this.messageServices.getMessageHistory(
       this.programId,
       this.referenceId,
     );
