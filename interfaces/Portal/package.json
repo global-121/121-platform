@@ -42,6 +42,8 @@
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
     "@angular/service-worker": "^16.2.12",
+    "@azure/msal-angular": "^3.0.12",
+    "@azure/msal-browser": "^3.9.0",
     "@ionic/angular": "^7.6.5",
     "@microsoft/applicationinsights-web": "^2.8.16",
     "@ngx-translate/core": "^14.0.0",

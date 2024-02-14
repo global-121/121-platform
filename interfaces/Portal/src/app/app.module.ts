@@ -1,9 +1,26 @@
 import { LOCATION_INITIALIZED } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {
+  MsalBroadcastService,
+  MsalGuard,
+  MsalInterceptor,
+  MsalModule,
+  MsalRedirectComponent,
+  MsalService,
+} from '@azure/msal-angular';
+import {
+  BrowserCacheLocation,
+  InteractionType,
+  PublicClientApplication,
+} from '@azure/msal-browser';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import {
   TranslateLoader,
@@ -73,6 +90,38 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.useServiceWorker && environment.production,
     }),
+    MsalModule.forRoot(
+      new PublicClientApplication({
+        // MSAL Configuration
+        auth: {
+          clientId: '0ecd91af-2c7a-4363-a0b8-284bd5261eac',
+          authority:
+            'https://login.microsoftonline.com/dfffb37a-55a4-4919-9c93-7028d115eac2',
+          redirectUri: 'http://localhost:4200',
+        },
+        cache: {
+          cacheLocation: BrowserCacheLocation.LocalStorage,
+          storeAuthStateInCookie: true, // set to true for IE 11
+        },
+        system: {
+          loggerOptions: {
+            loggerCallback: () => {},
+            piiLoggingEnabled: false,
+          },
+        },
+      }),
+      {
+        interactionType: InteractionType.Redirect, // MSAL Guard Configuration
+      },
+      {
+        protectedResourceMap: new Map([
+          ['https://graph.microsoft.com/v1.0/me', ['user.read']],
+          ['https://api.myapplication.com/users/*', ['customscope.read']],
+          ['http://localhost:4200/about/', null],
+        ]),
+        interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
+      },
+    ),
   ],
   exports: [TranslateModule],
   providers: [
@@ -88,7 +137,15 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     ErrorHandlerService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true,
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService,
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, MsalRedirectComponent],
 })
 export class AppModule {}
