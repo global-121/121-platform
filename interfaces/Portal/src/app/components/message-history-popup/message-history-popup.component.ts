@@ -25,7 +25,7 @@ export class MessageHistoryPopupComponent implements OnInit {
 
   public person: Person;
   public DateFormat = DateFormat;
-  public activityOverview: RegistrationActivity[];
+  public messageHistory: RegistrationActivity[];
   public historySize = 5;
   public trimBodyLength = 20;
   public imageString = '(image)';
@@ -57,7 +57,7 @@ export class MessageHistoryPopupComponent implements OnInit {
     this.person = res.data[0];
   }
   private async getMessageHistory() {
-    this.activityOverview = (
+    this.messageHistory = (
       await this.messageServices.getMessageHistory(
         this.programId,
         this.referenceId,

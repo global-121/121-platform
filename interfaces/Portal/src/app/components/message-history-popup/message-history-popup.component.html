@@ -27,9 +27,9 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div *ngFor="let activity of activityOverview">
+  <div *ngFor="let message of messageHistory">
     <app-registration-activity-detail
-      [activity]="activity"
+      [activity]="message"
       [locale]="locale"
       style="border-bottom: 1px solid var(--fiveten-neutral-300)"
     ></app-registration-activity-detail>
