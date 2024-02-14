@@ -53,7 +53,7 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": "[\"name\", \"birthdate\", \"documentid\"]"
+          "value": ["name", "birthdate", "documentid"]
         },
         {
           "name": "columnToMatch",

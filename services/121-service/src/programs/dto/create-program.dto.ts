@@ -26,6 +26,11 @@ export class SetFspDto {
   @ApiProperty()
   @IsEnum(FspName)
   fsp: FspName;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  configuration: { name: string; value: string }[];
 }
 
 export class CreateProgramDto {
@@ -106,7 +111,8 @@ export class CreateProgramDto {
         fsp: FspName.intersolveVoucherPaper,
       },
     ],
-    description: 'Use the GET /fsp endpoint to find valid fspNames.',
+    description:
+      'Use the GET /financial-service-providers endpoint to find valid fspNames.',
   })
   @IsArray()
   @ValidateNested()

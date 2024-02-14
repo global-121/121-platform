@@ -23,6 +23,7 @@ import {
   UpdateProgramQuestionDto,
 } from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
+import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
@@ -46,6 +47,7 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
+    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async findOne(
@@ -128,6 +130,7 @@ export class ProgramService {
         (fsp) => {
           return {
             fsp: fsp.fsp as FspName,
+            configuration: fsp.configuration,
           };
         },
       ),
@@ -302,8 +305,9 @@ export class ProgramService {
       ProgramCustomAttributeEntity,
     );
 
+    let savedProgram;
     try {
-      const savedProgram = await programRepository.save(program);
+      savedProgram = await programRepository.save(program);
 
       savedProgram.programCustomAttributes = [];
       for (const customAttribute of programData.programCustomAttributes) {
@@ -349,6 +353,22 @@ export class ProgramService {
     } finally {
       await queryRunner.release();
     }
+
+    // Loop through FSPs again to store config, which can only be done after program is saved
+    for (const fspItem of programData.financialServiceProviders) {
+      if (fspItem.configuration && fspItem.configuration?.length > 0) {
+        for (const config of fspItem.configuration) {
+          await this.programFspConfigurationService.create(newProgram.id, {
+            fspId: savedProgram.financialServiceProviders.find(
+              (f) => f.fsp === fspItem.fsp,
+            ).id,
+            name: config.name,
+            value: config.value,
+          });
+        }
+      }
+    }
+
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: null,
