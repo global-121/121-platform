@@ -1,13 +1,5 @@
 {
   "_dir": "ltr",
-  "badge": {
-    "message": {
-      "delivered": "Afgeleverd",
-      "failed": "Mislukt",
-      "read": "Gelezen",
-      "sent": "Verstuurd"
-    }
-  },
   "common": {
     "all": "Alle",
     "answer-is-required": "Op deze vraag is een antwoord nodig.",
@@ -27,7 +19,13 @@
   },
   "entity": {
     "message": {
-      "body-image-placeholder": "(afbeelding)"
+      "body-image-placeholder": "(afbeelding)",
+      "status": {
+        "delivered": "Afgeleverd",
+        "failed": "Mislukt",
+        "read": "Gelezen",
+        "sent": "Verstuurd"
+      }
     },
     "registration": {
       "status": {

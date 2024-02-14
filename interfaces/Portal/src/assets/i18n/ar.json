@@ -1,13 +1,5 @@
 {
   "_dir": "rtl",
-  "badge": {
-    "message": {
-      "delivered": "تسليم",
-      "failed": "فشل",
-      "read": "قرأ",
-      "sent": "ارسال"
-    }
-  },
   "common": {
     "all": "كل",
     "answer-is-required": "مطلوب إجابة لهذا السؤال.",
@@ -27,7 +19,13 @@
   },
   "entity": {
     "message": {
-      "body-image-placeholder": "(صورة)"
+      "body-image-placeholder": "(صورة)",
+      "status": {
+        "delivered": "تسليم",
+        "failed": "فشل",
+        "read": "قرأ",
+        "sent": "ارسال"
+      }
     },
     "registration": {
       "status": {

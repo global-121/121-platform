@@ -1,13 +1,5 @@
 {
   "_dir": "ltr",
-  "badge": {
-    "message": {
-      "delivered": "Entregado",
-      "failed": "Fracasado",
-      "read": "Leer",
-      "sent": "Enviado"
-    }
-  },
   "common": {
     "all": "Todo",
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
@@ -27,7 +19,13 @@
   },
   "entity": {
     "message": {
-      "body-image-placeholder": "(imagen)"
+      "body-image-placeholder": "(imagen)",
+      "status": {
+        "delivered": "Entregado",
+        "failed": "Fracasado",
+        "read": "Leer",
+        "sent": "Enviado"
+      }
     },
     "registration": {
       "status": {
