@@ -1,0 +1,15 @@
+/**
+ * Utilities: Typography
+ *
+ */
+
+/**
+ * Overflow-Ellipsis
+ *
+ * Make sure to define a width or a max-width manually, depending on the context
+ */
+.util--overflow-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

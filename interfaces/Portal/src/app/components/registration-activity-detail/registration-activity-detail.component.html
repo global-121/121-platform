@@ -42,7 +42,9 @@
       <div class="activity-detail--header-end ion-justify-content-end">
         <span
           *ngIf="activity.chipText"
-          class="activity-detail--actor badge"
+          class="activity-detail--user badge util--overflow-ellipsis"
+          style="max-width: 20em"
+          [attr.title]="activity.chipText"
         >
           {{ activity.chipText }}
         </span>
