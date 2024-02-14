@@ -192,6 +192,11 @@ export class ProgramService {
       .addOrderBy('programQuestion.id', 'ASC')
       .getMany();
     const programsCount = programs.length;
+    for (const program of programs) {
+      delete program.monitoringDashboardUrl;
+      delete program.evaluationDashboardUrl;
+    }
+
     return { programs, programsCount };
   }
 
