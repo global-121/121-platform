@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 
 const config = {
   credentials: {
     tenantID: 'dfffb37a-55a4-4919-9c93-7028d115eac2',
-    clientID: '0ecd91af-2c7a-4363-a0b8-284bd5261eac',
-    audience: '0ecd91af-2c7a-4363-a0b8-284bd5261eac',
+    clientID: '81329ff8-25f7-47b4-b4ae-ae12d17a47a4',
+    audience: '81329ff8-25f7-47b4-b4ae-ae12d17a47a4',
   },
   metadata: {
     authority: 'login.microsoftonline.com',
@@ -14,7 +14,8 @@ const config = {
     version: 'v2.0',
   },
   settings: {
-    validateIssuer: true,
+    // TODO: Probably should be set to true in production
+    validateIssuer: false,
     passReqToCallback: false,
     loggingLevel: 'info',
   },
@@ -41,8 +42,12 @@ export class AzureAdStrategy extends PassportStrategy(
   }
 
   async validate(profile: any): Promise<any> {
-    // Implement user validation and extraction of necessary user information from profile
-    // Example: Extract and store user details in a session
+    console.log('profile: ', profile);
+    if (!profile) {
+      throw new UnauthorizedException();
+    }
+    // TODO: Find user by email and return the ID
+    profile.id = 1;
     return profile;
   }
 }

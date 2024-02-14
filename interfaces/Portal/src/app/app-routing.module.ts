@@ -5,11 +5,11 @@ import { AppRoutes } from './app-routes.enum';
 import { ProgramPhase } from './models/program.model';
 
 const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: AppRoutes.home,
-  },
+  // {
+  //   path: '',
+  //   pathMatch: 'full',
+  //   redirectTo: AppRoutes.home,
+  // },
   {
     path: AppRoutes.login,
     loadChildren: () =>

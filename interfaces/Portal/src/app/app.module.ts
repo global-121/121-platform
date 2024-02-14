@@ -13,12 +13,12 @@ import {
   MsalGuard,
   MsalInterceptor,
   MsalModule,
-  MsalRedirectComponent,
   MsalService,
 } from '@azure/msal-angular';
 import {
   BrowserCacheLocation,
   InteractionType,
+  LogLevel,
   PublicClientApplication,
 } from '@azure/msal-browser';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -94,10 +94,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       new PublicClientApplication({
         // MSAL Configuration
         auth: {
-          clientId: '0ecd91af-2c7a-4363-a0b8-284bd5261eac',
+          clientId: '81329ff8-25f7-47b4-b4ae-ae12d17a47a4',
           authority:
-            'https://login.microsoftonline.com/dfffb37a-55a4-4919-9c93-7028d115eac2',
-          redirectUri: 'http://localhost:4200',
+            'https://dfffb37a-55a4-4919-9c93-7028d115eac2.ciamlogin.com/dfffb37a-55a4-4919-9c93-7028d115eac2/v2.0',
+          redirectUri: 'http://localhost:8888/home',
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -105,8 +105,16 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
         system: {
           loggerOptions: {
-            loggerCallback: () => {},
-            piiLoggingEnabled: false,
+            loggerCallback: (level, message, containsPii) => {
+              console.log(
+                'MSAL Logging: ',
+                LogLevel[level],
+                message,
+                containsPii,
+              );
+            },
+            piiLoggingEnabled: true,
+            logLevel: LogLevel.Info,
           },
         },
       }),
@@ -115,9 +123,11 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
       {
         protectedResourceMap: new Map([
-          ['https://graph.microsoft.com/v1.0/me', ['user.read']],
-          ['https://api.myapplication.com/users/*', ['customscope.read']],
-          ['http://localhost:4200/about/', null],
+          ['https://graph.microsoft.com/v1.0/me', ['openid, offline_access']],
+          [
+            'http://localhost:3000/api/programs/assigned/*',
+            ['api://81329ff8-25f7-47b4-b4ae-ae12d17a47a4/User.Read'],
+          ],
         ]),
         interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
       },
@@ -146,6 +156,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MsalGuard,
     MsalBroadcastService,
   ],
-  bootstrap: [AppComponent, MsalRedirectComponent],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -51,7 +52,6 @@ export class ProgramController {
     private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
-  @UseGuards(AuthGuard('azure-ad'))
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
@@ -88,6 +88,7 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
+  @UseGuards(AuthGuard('azure-ad'))
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
     status: 200,
@@ -100,13 +101,13 @@ export class ProgramController {
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
   public async getAssignedPrograms(
-    @User('id') userId: number,
-  ): Promise<ProgramsRO> {
-    if (!userId) {
+    @Req() req: any
+    ): Promise<ProgramsRO> {
+    if (!req.user.id) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.programService.getAssignedPrograms(userId);
+    return await this.programService.getAssignedPrograms(req.user.id);
   }
 
   @Admin()
