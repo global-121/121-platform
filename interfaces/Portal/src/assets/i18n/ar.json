@@ -1,5 +1,13 @@
 {
   "_dir": "rtl",
+  "badge": {
+    "message": {
+      "delivered": "تسليم",
+      "failed": "فشل",
+      "read": "قرأ",
+      "sent": "ارسال"
+    }
+  },
   "common": {
     "all": "كل",
     "answer-is-required": "مطلوب إجابة لهذا السؤال.",
@@ -484,12 +492,6 @@
           "left": "باق"
         },
         "message-history-popup": {
-          "chip-status": {
-            "delivered": "تسليم",
-            "failed": "فشل",
-            "read": "قرأ",
-            "sent": "ارسال"
-          },
           "content-type": {
             "custom": "رسالة مخصصة",
             "default-reply": "الرد الافتراضي",

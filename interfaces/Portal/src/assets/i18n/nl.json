@@ -1,5 +1,13 @@
 {
   "_dir": "ltr",
+  "badge": {
+    "message": {
+      "delivered": "Afgeleverd",
+      "failed": "Mislukt",
+      "read": "Gelezen",
+      "sent": "Verstuurd"
+    }
+  },
   "common": {
     "all": "Alle",
     "answer-is-required": "Op deze vraag is een antwoord nodig.",
@@ -489,12 +497,6 @@
           "left": "over"
         },
         "message-history-popup": {
-          "chip-status": {
-            "delivered": "Afgeleverd",
-            "failed": "Mislukt",
-            "read": "Gelezen",
-            "sent": "Verstuurd"
-          },
           "content-type": {
             "custom": "Aangepast bericht",
             "default-reply": "Standaard antwoord",

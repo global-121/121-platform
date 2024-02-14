@@ -1,5 +1,13 @@
 {
   "_dir": "ltr",
+  "badge": {
+    "message": {
+      "delivered": "Livré",
+      "failed": "Raté",
+      "read": "Lire",
+      "sent": "Envoyèrent"
+    }
+  },
   "common": {
     "all": "Tout",
     "answer-is-required": "Une réponse est requise pour cette question.",
@@ -484,12 +492,6 @@
           "left": "restant"
         },
         "message-history-popup": {
-          "chip-status": {
-            "delivered": "Livré",
-            "failed": "Raté",
-            "read": "Lire",
-            "sent": "Envoyèrent"
-          },
           "content-type": {
             "custom": "Message personnalisé",
             "default-reply": "Réponse par défaut",

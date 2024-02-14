@@ -1,5 +1,13 @@
 {
   "_dir": "ltr",
+  "badge": {
+    "message": {
+      "delivered": "Entregado",
+      "failed": "Fracasado",
+      "read": "Leer",
+      "sent": "Enviado"
+    }
+  },
   "common": {
     "all": "Todo",
     "answer-is-required": "Se requiere una respuesta para esta pregunta.",
@@ -484,12 +492,6 @@
           "left": "restante"
         },
         "message-history-popup": {
-          "chip-status": {
-            "delivered": "Entregado",
-            "failed": "Fracasado",
-            "read": "Leer",
-            "sent": "Enviado"
-          },
           "content-type": {
             "custom": "Mensaje personalizado",
             "default-reply": "Respuesta predeterminada",
