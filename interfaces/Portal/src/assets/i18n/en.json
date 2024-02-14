@@ -20,12 +20,31 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(image)",
+      "content-type": {
+        "custom": "Custom message",
+        "default-reply": "Default reply",
+        "generic-templated": "Message notification",
+        "included": "Inclusion",
+        "inclusion-ended": "Inclusion ended",
+        "invited": "Invitation for registration",
+        "payment": "Payment",
+        "payment-instructions": "Payment instructions",
+        "payment-reminder": "Payment reminder",
+        "payment-templated": "Payment notification",
+        "payment-voucher": "Payment voucher",
+        "registered": "Registration",
+        "rejected": "Rejection"
+      },
       "error-code-prefix": "Twilio error code:",
       "status": {
         "delivered": "Delivered",
         "failed": "Failed",
         "read": "Read",
         "sent": "Sent"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
       }
     },
     "registration": {
@@ -497,26 +516,7 @@
           "left": "remaining"
         },
         "message-history-popup": {
-          "content-type": {
-            "custom": "Custom message",
-            "default-reply": "Default reply",
-            "generic-templated": "Message notification",
-            "included": "Inclusion",
-            "inclusion-ended": "Inclusion ended",
-            "invited": "Invitation for registration",
-            "payment": "Payment",
-            "payment-instructions": "Payment instructions",
-            "payment-reminder": "Payment reminder",
-            "payment-templated": "Payment notification",
-            "payment-voucher": "Payment voucher",
-            "registered": "Registration",
-            "rejected": "Rejection"
-          },
-          "message-title": "Message History",
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp"
-          }
+          "message-title": "Message History"
         },
         "no-actions": "No actions available",
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",

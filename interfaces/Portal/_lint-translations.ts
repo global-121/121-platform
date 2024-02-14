@@ -31,14 +31,14 @@ const ruleConfig: IRulesConfig = {
   misprintCoefficient: 0.9,
   ignoredKeys: [
     // Plain string or RegExp
+    'entity.message.content-type.(.*)',
     `entity.message.status.${anyValueFrom(MessageStatus)}`,
+    'entity.message.type.(sms|whatsapp)',
     `entity.registration.status.(${anyValueFrom(RegistrationStatus)})`,
     'page.program.program-people-affected.column.(.*)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.error.(not-an-integer|not-empty|too-low)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation',
     'page.program.program-people-affected.language.(.*)',
-    'page.program.program-people-affected.message-history-popup.content-type.(.*)',
-    'page.program.program-people-affected.message-history-popup.type..(.*)',
     'page.program.program-people-affected.transaction.custom-data.(.*)',
     `page.program.export-list.(${anyValueFrom(
       ExportType,

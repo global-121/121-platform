@@ -20,12 +20,31 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(imagen)",
+      "content-type": {
+        "custom": "Mensaje personalizado",
+        "default-reply": "Respuesta predeterminada",
+        "generic-templated": "Notificación de mensajes",
+        "included": "Inclusión",
+        "inclusion-ended": "Fin de la inclusión",
+        "invited": "Invitación a inscribirse",
+        "payment": "Pago",
+        "payment-instructions": "Instrucciones de pago",
+        "payment-reminder": "Recordatorio de pago",
+        "payment-templated": "Notificación de pago",
+        "payment-voucher": "Comprobante de pago",
+        "registered": "Registro",
+        "rejected": "Rechazo"
+      },
       "error-code-prefix": "Código de error de Twilio:",
       "status": {
         "delivered": "Entregado",
         "failed": "Fracasado",
         "read": "Leer",
         "sent": "Enviado"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp (en inglés)"
       }
     },
     "registration": {
@@ -492,26 +511,7 @@
           "left": "restante"
         },
         "message-history-popup": {
-          "content-type": {
-            "custom": "Mensaje personalizado",
-            "default-reply": "Respuesta predeterminada",
-            "generic-templated": "Notificación de mensajes",
-            "included": "Inclusión",
-            "inclusion-ended": "Fin de la inclusión",
-            "invited": "Invitación a inscribirse",
-            "payment": "Pago",
-            "payment-instructions": "Instrucciones de pago",
-            "payment-reminder": "Recordatorio de pago",
-            "payment-templated": "Notificación de pago",
-            "payment-voucher": "Comprobante de pago",
-            "registered": "Registro",
-            "rejected": "Rechazo"
-          },
-          "message-title": "Historial de mensajes",
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp (en inglés)"
-          }
+          "message-title": "Historial de mensajes"
         },
         "no-actions": "No hay acciones disponibles",
         "no-checkboxes": "Actualmente no hay personas afectadas a las que se pueda aplicar esta acción.",

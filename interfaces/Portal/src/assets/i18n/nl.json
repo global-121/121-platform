@@ -20,12 +20,31 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(afbeelding)",
+      "content-type": {
+        "custom": "Aangepast bericht",
+        "default-reply": "Standaard antwoord",
+        "generic-templated": "Berichtmelding",
+        "included": "Actief",
+        "inclusion-ended": "Beëindigd",
+        "invited": "Uitnodiging voor registratie",
+        "payment": "Betaling",
+        "payment-instructions": "Betalingsinstructies",
+        "payment-reminder": "Betalingsherinnering",
+        "payment-templated": "Betalings melding",
+        "payment-voucher": "Betalingsvoucher",
+        "registered": "Registratie",
+        "rejected": "Afwijzing"
+      },
       "error-code-prefix": "Twilio foutcode:",
       "status": {
         "delivered": "Afgeleverd",
         "failed": "Mislukt",
         "read": "Gelezen",
         "sent": "Verstuurd"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
       }
     },
     "registration": {
@@ -497,26 +516,7 @@
           "left": "over"
         },
         "message-history-popup": {
-          "content-type": {
-            "custom": "Aangepast bericht",
-            "default-reply": "Standaard antwoord",
-            "generic-templated": "Berichtmelding",
-            "included": "Actief",
-            "inclusion-ended": "Beëindigd",
-            "invited": "Uitnodiging voor registratie",
-            "payment": "Betaling",
-            "payment-instructions": "Betalingsinstructies",
-            "payment-reminder": "Betalingsherinnering",
-            "payment-templated": "Betalings melding",
-            "payment-voucher": "Betalingsvoucher",
-            "registered": "Registratie",
-            "rejected": "Afwijzing"
-          },
-          "message-title": "Berichtengeschiedenis",
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp"
-          }
+          "message-title": "Berichtengeschiedenis"
         },
         "no-actions": "Geen acties beschikbaar",
         "no-checkboxes": "Er zijn momenteel geen hulpvragers waarvoor deze actie kan worden toegepast.",

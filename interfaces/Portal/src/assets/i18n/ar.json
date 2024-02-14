@@ -20,12 +20,31 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(صورة)",
+      "content-type": {
+        "custom": "رسالة مخصصة",
+        "default-reply": "الرد الافتراضي",
+        "generic-templated": "إشعار الرسالة",
+        "included": "ادراج",
+        "inclusion-ended": "انتهى الإدراج",
+        "invited": "دعوة للتسجيل",
+        "payment": "دفع",
+        "payment-instructions": "تعليمات الدفع",
+        "payment-reminder": "تذكير الدفع",
+        "payment-templated": "إشعار الدفع",
+        "payment-voucher": "قسيمة الدفع",
+        "registered": "تسجيل",
+        "rejected": "رفض"
+      },
       "error-code-prefix": "رمز الخطأ تويليو:",
       "status": {
         "delivered": "تسليم",
         "failed": "فشل",
         "read": "قرأ",
         "sent": "ارسال"
+      },
+      "type": {
+        "sms": "الرسائل القصيرة",
+        "whatsapp": "واتس اب"
       }
     },
     "registration": {
@@ -492,26 +511,7 @@
           "left": "باق"
         },
         "message-history-popup": {
-          "content-type": {
-            "custom": "رسالة مخصصة",
-            "default-reply": "الرد الافتراضي",
-            "generic-templated": "إشعار الرسالة",
-            "included": "ادراج",
-            "inclusion-ended": "انتهى الإدراج",
-            "invited": "دعوة للتسجيل",
-            "payment": "دفع",
-            "payment-instructions": "تعليمات الدفع",
-            "payment-reminder": "تذكير الدفع",
-            "payment-templated": "إشعار الدفع",
-            "payment-voucher": "قسيمة الدفع",
-            "registered": "تسجيل",
-            "rejected": "رفض"
-          },
-          "message-title": "سجل الرسائل",
-          "type": {
-            "sms": "الرسائل القصيرة",
-            "whatsapp": "واتس اب"
-          }
+          "message-title": "سجل الرسائل"
         },
         "no-actions": "لا توجد إجراءات متاحة",
         "no-checkboxes": "لا يوجد حاليا أي أشخاص متأثرين يمكن تطبيق هذا الإجراء عليهم.",

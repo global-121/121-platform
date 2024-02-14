@@ -20,12 +20,31 @@
   "entity": {
     "message": {
       "body-image-placeholder": "(l’image)",
+      "content-type": {
+        "custom": "Message personnalisé",
+        "default-reply": "Réponse par défaut",
+        "generic-templated": "Notification de message",
+        "included": "Inclusion",
+        "inclusion-ended": "Fin de l’inclusion",
+        "invited": "Invitation à l’inscription",
+        "payment": "Paiement",
+        "payment-instructions": "Instructions de paiement",
+        "payment-reminder": "Rappel de paiement",
+        "payment-templated": "Notification de paiement",
+        "payment-voucher": "Bon de paiement",
+        "registered": "Inscription",
+        "rejected": "Rejet"
+      },
       "error-code-prefix": "Code d’erreur Twilio :",
       "status": {
         "delivered": "Livré",
         "failed": "Raté",
         "read": "Lire",
         "sent": "Envoyèrent"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp (en anglais)"
       }
     },
     "registration": {
@@ -492,26 +511,7 @@
           "left": "restant"
         },
         "message-history-popup": {
-          "content-type": {
-            "custom": "Message personnalisé",
-            "default-reply": "Réponse par défaut",
-            "generic-templated": "Notification de message",
-            "included": "Inclusion",
-            "inclusion-ended": "Fin de l’inclusion",
-            "invited": "Invitation à l’inscription",
-            "payment": "Paiement",
-            "payment-instructions": "Instructions de paiement",
-            "payment-reminder": "Rappel de paiement",
-            "payment-templated": "Notification de paiement",
-            "payment-voucher": "Bon de paiement",
-            "registered": "Inscription",
-            "rejected": "Rejet"
-          },
-          "message-title": "Historique des messages",
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp (en anglais)"
-          }
+          "message-title": "Historique des messages"
         },
         "no-actions": "Aucune action disponible",
         "no-checkboxes": "À l’heure actuelle, il n’y a pas de personnes concernées auxquelles cette action peut s’appliquer.",
