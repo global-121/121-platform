@@ -46,7 +46,8 @@ export class AzureAdStrategy extends PassportStrategy(
     if (!profile) {
       throw new UnauthorizedException();
     }
-    // TODO: Find user by email and return the ID
+    // TODO: Find user by email (in 121 DB) and return the ID 
+    // TODO: If the Azure profile is valid & the user does not exist in 121, create a new user
     profile.id = 1;
     return profile;
   }
