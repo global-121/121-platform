@@ -43,12 +43,12 @@
       </div>
       <div class="activity-detail--header-end ion-justify-content-end">
         <span
-          *ngIf="activity.chipText"
+          *ngIf="activity.user"
           class="activity-detail--user badge util--overflow-ellipsis"
           style="max-width: 20em"
-          [attr.title]="activity.chipText"
+          [attr.title]="activity.user"
         >
-          {{ activity.chipText }}
+          {{ activity.user }}
         </span>
       </div>
     </div>

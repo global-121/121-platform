@@ -336,7 +336,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           subLabel: this.getSubLabelText(change, attribute),
           date: new Date(change.created),
           description,
-          chipText: change.user.username,
+          user: change.user.username,
         });
       }
 
@@ -352,7 +352,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
           date: new Date(note.created),
           description: note.text,
-          chipText: note.username,
+          user: note.username,
         });
       }
     }

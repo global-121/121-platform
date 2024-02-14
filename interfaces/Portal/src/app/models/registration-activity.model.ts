@@ -13,7 +13,7 @@ export class RegistrationActivity {
   program?: Program;
   hasError?: boolean;
   hasWaiting?: boolean;
-  chipText?: string;
+  user?: string;
   subLabel?: string;
   activityStatus?: string;
   messageErrorCode?: string;
