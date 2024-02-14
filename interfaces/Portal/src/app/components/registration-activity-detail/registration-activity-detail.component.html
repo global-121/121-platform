@@ -19,8 +19,13 @@
 
           <span
             *ngIf="activity.activityStatus"
-            class="activity-detail--status badge util--half-margin-start"
-            [class]="activity.type + '-' + activity.activityStatus"
+            [class]="
+              'activity-detail--status util--half-margin-start badge' +
+              ' is-' +
+              activity.type +
+              '-' +
+              activity.activityStatus
+            "
           >
             {{
               'entity.' + activity.type + '.status.' + activity.activityStatus
