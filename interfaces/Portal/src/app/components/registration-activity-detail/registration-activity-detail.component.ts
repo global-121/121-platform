@@ -7,6 +7,7 @@ import {
   RegistrationActivity,
   RegistrationActivityType,
 } from 'src/app/models/registration-activity.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-registration-activity-detail',
@@ -23,6 +24,7 @@ export class RegistrationActivityDetailComponent {
   public locale: string;
 
   public DateFormat = DateFormat;
+  public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
 
   constructor(public translate: TranslateService) {}
 

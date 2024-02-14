@@ -19,7 +19,7 @@
 
           <span
             *ngIf="activity.activityStatus"
-            class="activity-detail--status badge"
+            class="activity-detail--status badge util--half-margin-start"
             [class]="activity.type + '-' + activity.activityStatus"
           >
             {{
@@ -55,6 +55,22 @@
     </div>
     <div class="activity-detail--body ion-padding-top">
       <div [innerHTML]="activity.description"></div>
+      <div
+        *ngIf="activity.messageErrorCode"
+        class="util--half-margin-top"
+      >
+        <ion-note>
+          {{
+            'page.program.program-people-affected.message-history-popup.status-line.code'
+              | translate
+          }}<a
+            [href]="errorCodeUrl + activity.messageErrorCode"
+            target="_blank"
+            rel="external noopener noreferrer"
+            >{{ activity.messageErrorCode }}</a
+          ></ion-note
+        >
+      </div>
       <!-- <pre>{{ activity | json }}</pre> -->
     </div>
   </div>

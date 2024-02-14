@@ -249,6 +249,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       );
 
       for (const message of messageHistory) {
+        const messageErrorCode = message.errorCode || null;
         this.activityOverview.push({
           type: RegistrationActivityType.message,
           label: this.translate.instant(
@@ -257,6 +258,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           date: new Date(message.created),
           description: message.body,
           activityStatus: message.messageStatus,
+          messageErrorCode,
         });
       }
     }
