@@ -235,7 +235,7 @@ export class ExcelService
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registration.referenceId;
     paTransactionResult.fspName = FspName.excel;
-    paTransactionResult.status = StatusEnum.error;
+    paTransactionResult.status = StatusEnum.waiting;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(
         programId,
