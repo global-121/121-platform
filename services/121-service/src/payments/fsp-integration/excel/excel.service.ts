@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RegistrationEntity } from 'src/registration/registration.entity';
 import { Repository } from 'typeorm';
 import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -192,5 +193,60 @@ export class ExcelService
         fsp: FspName.excel,
       })
       .orderBy('registration.referenceId', 'ASC');
+  }
+
+  public async findReconciliationRecord(
+    registration: RegistrationEntity,
+    importRecords: any,
+  ): Promise<any> {
+    const programWithConfig = await this.programRepository
+      .createQueryBuilder('program')
+      .leftJoinAndSelect(
+        'program.programFspConfiguration',
+        'programFspConfiguration',
+        'programFspConfiguration.name = :configName',
+        { configName: FspConfigurationEnum.columnToMatch },
+      )
+      .andWhere('program.id = :programId', {
+        programId: registration.programId,
+      })
+      .getOne();
+    const matchColumn: string =
+      programWithConfig.programFspConfiguration[0]?.value;
+    for (const record of importRecords) {
+      const importResponseRecord = record;
+      if ('status' in importResponseRecord) {
+        if (importResponseRecord[matchColumn] === registration.phoneNumber) {
+          return importResponseRecord;
+        }
+      } else {
+        const errors = 'Missing status in one or more records';
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  public async createTransactionResult(
+    registration: RegistrationEntity,
+    record: any,
+    programId: number,
+    payment: number,
+  ): Promise<PaTransactionResultDto> {
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.referenceId = registration.referenceId;
+    paTransactionResult.fspName = FspName.excel;
+    paTransactionResult.status = StatusEnum.error;
+    paTransactionResult.calculatedAmount = (
+      await this.transactionsService.getLastTransactions(
+        programId,
+        payment,
+        registration.referenceId,
+      )
+    )[0].amount;
+
+    if (record) {
+      paTransactionResult.status = StatusEnum.success;
+    }
+    return paTransactionResult;
   }
 }

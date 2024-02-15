@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import csv from 'csv-parser';
 import { PaginateQuery } from 'nestjs-paginate';
+import { Readable } from 'stream';
 import { DataSource, In, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
@@ -643,7 +645,6 @@ export class PaymentsService {
         programId,
         payment,
         null,
-        StatusEnum.waiting,
       )
     ).map((t) => t.referenceId);
     return await this.registrationScopedRepository.find({
@@ -908,8 +909,7 @@ export class PaymentsService {
     let countPaymentFailed = 0;
     let countNotFound = 0;
     let paTransactionResult, record, importResponseRecord;
-    const validatedImport = await this.xmlToValidatedFspReconciliation(file);
-    const validatedImportRecords = validatedImport.validatedArray;
+    let validatedImport;
     const registrationsPerPayment =
       await this.getRegistrationsForReconsiliation(programId, payment);
     const importResponseRecords = [];
@@ -918,6 +918,9 @@ export class PaymentsService {
         const fsp = await this.fspService.getFspById(fspId);
 
         if (fsp.fsp === FspName.vodacash) {
+          validatedImport = await this.xmlToValidatedFspReconciliation(file);
+          const validatedImportRecords = validatedImport.validatedArray;
+
           record = await this.vodacashService.findReconciliationRecord(
             registration,
             validatedImportRecords,
@@ -929,6 +932,20 @@ export class PaymentsService {
               programId,
               payment,
             );
+        }
+
+        if (fsp.fsp === FspName.excel) {
+          validatedImport = await this.validateCsv(file);
+          record = await this.excelService.findReconciliationRecord(
+            registration,
+            validatedImport,
+          );
+          paTransactionResult = await this.excelService.createTransactionResult(
+            registration,
+            record,
+            programId,
+            payment,
+          );
         }
 
         if (!paTransactionResult) {
@@ -1000,5 +1017,52 @@ export class PaymentsService {
       validatedArray,
       recordsCount,
     };
+  }
+
+  public async validateCsv(csvFile): Promise<object[]> {
+    const indexLastPoint = csvFile.originalname.lastIndexOf('.');
+    const extension = csvFile.originalname
+      .substring(indexLastPoint, csvFile.originalname.length)
+      .toLowerCase(); // Use toLowerCase() to ensure extension checks are case-insensitive
+
+    if (extension !== '.csv') {
+      const errors = [`Wrong file extension. It should be .csv`];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    let importRecords = await this.csvBufferToArray(csvFile.buffer);
+
+    const maxRecords = 1000;
+    if (importRecords.length > maxRecords) {
+      const errors = [
+        `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
+      ];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return importRecords;
+  }
+
+  private async csvBufferToArray(buffer: Buffer): Promise<object[]> {
+    const parsedData = [];
+    const stream = new Readable();
+    stream.push(buffer); // No need to call toString() since the csv-parser can handle Buffer directly
+    stream.push(null); // Signal the end of the stream
+
+    return new Promise((resolve, reject) => {
+      stream
+        .pipe(csv())
+        .on('error', (error) => reject(error))
+        .on('data', (rowData) => {
+          // Clean up the keys in rowData
+          const cleanedRowData = Object.keys(rowData).reduce((acc, key) => {
+            // Use a regex to remove non-printable characters and trim whitespace
+            const cleanKey = key.replace(/[^\x20-\x7E]+/g, '').trim();
+            acc[cleanKey] = rowData[key];
+            return acc;
+          }, {});
+          parsedData.push(cleanedRowData);
+        })
+        .on('end', () => resolve(parsedData));
+    });
   }
 }
