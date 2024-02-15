@@ -19,15 +19,14 @@
       </ion-col>
     </ion-item>
 
-    <!--tabs-->
     <ion-segment
       (ionChange)="segmentChanged($event)"
       value="users"
-      class="tabs"
+      class="tab-bar"
     >
       <ion-segment-button
         value="users"
-        class="tab"
+        class="tab-bar--tab"
       >
         <ion-label
           ><strong> {{ 'page.users.users-tab' | translate }}</strong></ion-label
@@ -35,7 +34,7 @@
       </ion-segment-button>
       <ion-segment-button
         value="roles"
-        class="tab"
+        class="tab-bar--tab"
       >
         <ion-label
           ><strong>{{ 'page.users.roles-tab' | translate }}</strong></ion-label

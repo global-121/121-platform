@@ -27,8 +27,8 @@
   (ngSubmit)="doUpdate()"
 >
   <div class="input-item update-property-item">
-    <label class="input-item--label text-bold">
-      {{ label }}
+    <label class="input-item--label">
+      <strong>{{ label }}</strong>
     </label>
     <div class="input-item--contents">
       <ion-row class="ion-no-padding">
@@ -138,13 +138,11 @@
               [subHeader]="reasonSubheader"
               [inputProps]="reasonInputProps"
               [bypassModalComponent]="type === answerType.Boolean"
-              [class]="
-                'ion-margin-start ion-float-right text-bold ion-text-uppercase'
-              "
+              class="ion-margin-start ion-float-right ion-text-uppercase"
               fill="clear"
               type="submit"
             >
-              {{ 'common.save' | translate }}
+              <strong>{{ 'common.save' | translate }}</strong>
             </app-confirm-prompt>
             <ion-spinner
               *ngIf="inProgress"

@@ -32,7 +32,7 @@ Feature: View and manage people affected (generic features)
   Scenario: View Message History
     When the user click the "last message" column
     Then a popup appears with the message history of the PA
-    And it shows per message the type, the channel, the status, the message text (collapsed), the error code (if applicable)
+    And it shows per message the type, the channel, the status, the date, the message text, the error code (if applicable)
 
   Scenario: View payment history column and popup
   >> See View_payment_history_popup.feature

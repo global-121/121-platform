@@ -2,14 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DateFormat } from 'src/app/enums/date-format.enum';
 import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
+import {
+  RegistrationActivity,
+  RegistrationActivityType,
+} from 'src/app/models/registration-activity.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
+import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
@@ -17,32 +22,11 @@ import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EnumService } from '../../services/enum.service';
+import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { AddNotePopupComponent } from '../add-note-popup/add-note-popup.component';
-
-class ActivityOverviewItem {
-  type: string;
-  label?: string;
-  date: Date;
-  paymentRowDetail?: PaymentRowDetail;
-  description?: string;
-  hasVoucherSupport?: boolean;
-  person?: Person;
-  program?: Program;
-  hasError?: boolean;
-  hasWaiting?: boolean;
-  chipText?: string;
-  subLabel?: string;
-}
-
-enum ActivityOverviewType {
-  dataChanges = 'dataChanges',
-  payment = 'payment',
-  message = 'message',
-  notes = 'notes',
-  status = 'status',
-}
+import { RegistrationActivityDetailComponent } from '../registration-activity-detail/registration-activity-detail.component';
 
 @Component({
   standalone: true,
@@ -52,6 +36,7 @@ enum ActivityOverviewType {
     TranslateModule,
     PaymentHistoryAccordionComponent,
     AddNotePopupComponent,
+    RegistrationActivityDetailComponent,
   ],
   selector: 'app-registration-activity-overview',
   templateUrl: './registration-activity-overview.component.html',
@@ -70,17 +55,17 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   public statusChanges: RegistrationStatusChange[];
 
-  public DateFormat = DateFormat;
+  public locale: string;
   public firstPaymentToShow = 1;
-  public activityOverview: ActivityOverviewItem[];
-  public activityOverviewFilter: string = null;
+  public activityOverview: RegistrationActivity[];
+  public activityOverviewFilter: string | null = null;
   public activityOverviewButtons = [
     null,
-    ActivityOverviewType.payment,
-    ActivityOverviewType.notes,
-    ActivityOverviewType.message,
-    ActivityOverviewType.dataChanges,
-    ActivityOverviewType.status,
+    RegistrationActivityType.payment,
+    RegistrationActivityType.note,
+    RegistrationActivityType.message,
+    RegistrationActivityType.changeData,
+    RegistrationActivityType.status,
   ];
   public canUpdatePersonalData: boolean;
 
@@ -101,7 +86,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private translatableString: TranslatableStringService,
     private enumService: EnumService,
     private modalController: ModalController,
-  ) {}
+    private messagesService: MessagesService,
+    private registrationActivityService: RegistrationActivityService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     if (!this.person || !this.program.id || !this.person.referenceId) {
@@ -134,7 +123,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     this.activityOverview.reverse();
   }
 
-  public getFilteredActivityOverview(): ActivityOverviewItem[] {
+  public getFilteredActivityOverview(): RegistrationActivity[] {
     if (!this.activityOverviewFilter) {
       return this.activityOverview;
     }
@@ -241,11 +230,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private async fillActivityOverview() {
     this.activityOverview = [];
     if (this.canViewPaymentData) {
-      const tempData: ActivityOverviewItem[] = [];
+      const tempData: RegistrationActivity[] = [];
       this.fillPaymentRows().forEach((v) => {
         tempData.push({
           paymentRowDetail: { ...v },
-          type: ActivityOverviewType.payment,
+          type: RegistrationActivityType.payment,
           date: new Date(v.sentDate),
         });
       });
@@ -254,27 +243,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewMessageHistory) {
-      const messageHistory = await this.programsService.retrieveMsgHistory(
+      const messageHistory = await this.messagesService.getMessageHistory(
         this.program.id,
         this.person.referenceId,
       );
 
       for (const message of messageHistory) {
-        this.activityOverview.push({
-          type: ActivityOverviewType.message,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.message.label',
-          ),
-          date: new Date(message.created),
-          description: message.body,
-        });
+        this.activityOverview.push(
+          this.registrationActivityService.createMessageActivity(message),
+        );
       }
     }
 
     if (this.canViewRegistration) {
       for (const statusChange of this.statusChanges) {
         this.activityOverview.push({
-          type: ActivityOverviewType.status,
+          type: RegistrationActivityType.status,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.status.label',
           ),
@@ -305,8 +289,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         );
 
         const booleanLabel = {
-          true: 'Yes',
-          false: 'No',
+          true: this.translate.instant(
+            'page.program.program-people-affected.column.custom-attribute-true',
+          ),
+          false: this.translate.instant(
+            'page.program.program-people-affected.column.custom-attribute-false',
+          ),
         };
 
         let oldValue = change.oldValue ? change.oldValue : '-';
@@ -338,14 +326,14 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           );
         }
         this.activityOverview.push({
-          type: ActivityOverviewType.dataChanges,
+          type: RegistrationActivityType.changeData,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.label',
           ),
           subLabel: this.getSubLabelText(change, attribute),
           date: new Date(change.created),
           description,
-          chipText: change.user.username,
+          user: change.user.username,
         });
       }
 
@@ -354,15 +342,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         this.person.referenceId,
       );
       for (const note of notes) {
-        this.activityOverview.push({
-          type: ActivityOverviewType.notes,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.note.label',
-          ),
-          date: new Date(note.created),
-          description: note.text,
-          chipText: note.username,
-        });
+        this.activityOverview.push(
+          this.registrationActivityService.createNoteActivity(note),
+        );
       }
     }
 
@@ -377,17 +359,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       : translation !== translationKey
         ? translation
         : change.fieldName;
-  }
-
-  public getIconName(type: ActivityOverviewType): string {
-    const map = {
-      [ActivityOverviewType.message]: 'mail-outline',
-      [ActivityOverviewType.dataChanges]: 'document-text-outline',
-      [ActivityOverviewType.payment]: 'cash-outline',
-      [ActivityOverviewType.status]: 'reload-circle-outline',
-      [ActivityOverviewType.notes]: 'clipboard-outline',
-    };
-    return map[type];
   }
 
   private loadPermissions() {
