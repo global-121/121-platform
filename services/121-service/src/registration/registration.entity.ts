@@ -48,6 +48,7 @@ import { RegistrationDataError } from './errors/registration-data.error';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { EventEntity } from '../events/entities/event.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -167,6 +168,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
   public notes: NoteEntity[];
+
+  @OneToMany(() => EventEntity, (events) => events.registration)
+  public events: EventEntity[];
 
   // TODO: add some database constraints to make sure that scope is always lowercase
   // TODO: DO not make this nullable but set everything to empty string in migration

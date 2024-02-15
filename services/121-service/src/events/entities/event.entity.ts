@@ -10,6 +10,7 @@ import { Base121AuditedEntity } from '../../base-audited.entity';
 import { UserEntity } from '../../user/user.entity';
 import { EventEnum } from '../event.enum';
 import { EventAttributeEntity } from './event-attribute.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Entity('event')
 export class EventEntity extends Base121AuditedEntity {
@@ -27,7 +28,7 @@ export class EventEntity extends Base121AuditedEntity {
   @Column()
   public type: EventEnum;
 
-  @Index()
-  @Column()
-  public referenceKey: string;
+  @ManyToOne(() => RegistrationEntity)
+  @JoinColumn({ name: 'registrationId' })
+  public registration: RegistrationEntity;
 }
