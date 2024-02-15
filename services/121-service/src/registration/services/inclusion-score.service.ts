@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
+import { RegistrationDataService } from '../modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from '../modules/registration-utilts.module.ts/registration-utils.service';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
@@ -14,6 +16,8 @@ export class InclusionScoreService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationUtilsService: RegistrationUtilsService,
+    private readonly registrationDataService: RegistrationDataService,
   ) {}
 
   public async calculatePaymentAmountMultiplier(
@@ -36,14 +40,16 @@ export class InclusionScoreService {
     let paymentAmountMultiplier = constant;
     for await (const factor of formulaParts) {
       const factorElements = factor.replace(/\s/g, '').split('*');
-      const factorValue = await registration.getRegistrationDataValueByName(
-        factorElements[1],
-      );
+      const factorValue =
+        await this.registrationDataService.getRegistrationDataValueByName(
+          registration,
+          factorElements[1],
+        );
       paymentAmountMultiplier +=
         Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    return await this.registrationScopedRepository.save(registration);
+    return await this.registrationUtilsService.save(registration);
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
@@ -65,7 +71,7 @@ export class InclusionScoreService {
 
     registration.inclusionScore = score;
 
-    await this.registrationScopedRepository.save(registration);
+    await this.registrationUtilsService.save(registration);
   }
 
   private async createQuestionAnswerListPrefilled(

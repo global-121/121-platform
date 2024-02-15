@@ -37,6 +37,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { RegistrationUtilsService } from '../modules/registration-utilts.module.ts/registration-utils.service';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
@@ -71,6 +72,7 @@ export class RegistrationsImportService {
     private readonly userService: UserService,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationUtilsService: RegistrationUtilsService,
   ) {}
 
   public async importBulkAsImported(
@@ -147,7 +149,8 @@ export class RegistrationsImportService {
       }
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
-      const savedRegistration = await newRegistration.save();
+      const savedRegistration =
+        await this.registrationUtilsService.save(newRegistration);
       savedRegistrations.push(savedRegistration);
 
       for (const att of programCustomAttributes) {
@@ -329,7 +332,9 @@ export class RegistrationsImportService {
     // Save registrations using .save to properly set registrationProgramId
     const savedRegistrations = [];
     for await (const registration of registrations) {
-      savedRegistrations.push(await registration.save());
+      const savedRegistration =
+        await this.registrationUtilsService.save(registration);
+      savedRegistrations.push(savedRegistration);
     }
 
     // Save registration status changes seperately without the registration.subscriber for better performance

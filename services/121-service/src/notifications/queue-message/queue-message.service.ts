@@ -5,6 +5,7 @@ import { Queue } from 'bull';
 import { Repository } from 'typeorm';
 import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import {
@@ -29,6 +30,7 @@ export class QueueMessageService {
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   public constructor(
+    private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
     private readonly messageProcessorReplyOnIncoming: Queue,
@@ -56,9 +58,11 @@ export class QueueMessageService {
     if (registration instanceof RegistrationViewEntity) {
       whatsappPhoneNumber = registration['whatsappPhoneNumber'];
     } else if (registration instanceof RegistrationEntity) {
-      whatsappPhoneNumber = await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      );
+      whatsappPhoneNumber =
+        await this.registrationDataService.getRegistrationDataValueByName(
+          registration,
+          CustomDataAttributes.whatsappPhoneNumber,
+        );
     }
 
     // If messageProcessType is smsOrWhatsappTemplateGeneric, check if registration has whatsappPhoneNumber

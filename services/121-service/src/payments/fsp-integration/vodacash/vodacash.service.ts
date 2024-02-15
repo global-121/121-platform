@@ -3,6 +3,7 @@ import fs from 'fs';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { ImportFspReconciliationArrayDto } from '../../dto/import-fsp-reconciliation.dto';
@@ -22,6 +23,7 @@ export class VodacashService
 {
   public constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly registrationDataService: RegistrationDataService,
   ) {}
 
   public async sendPayment(
@@ -106,9 +108,11 @@ export class VodacashService
       String(amount),
     );
 
-    const healthArea = await registration.getRegistrationDataValueByName(
-      ' A. 5. Village/Quartier :  ',
-    );
+    const healthArea =
+      await this.registrationDataService.getRegistrationDataValueByName(
+        registration,
+        ' A. 5. Village/Quartier :  ',
+      );
     this.setValue(vodcashInstructionCustomer, 'Comment', 'Value', healthArea);
 
     vodacashInstructions.elements[0].elements.push(vodcashInstructionCustomer);

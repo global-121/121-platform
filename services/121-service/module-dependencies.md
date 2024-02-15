@@ -12,13 +12,20 @@ graph LR
   RegistrationsModule-->FspModule
   RegistrationsModule-->QueueMessageModule
   QueueMessageModule-->ProgramAttributesModule
+  QueueMessageModule-->RegistrationDataModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
+  TransactionsModule-->RegistrationUtilsModule
+  RegistrationUtilsModule-->RegistrationDataModule
   IntersolveVisaModule-->QueueMessageModule
+  IntersolveVisaModule-->RegistrationDataModule
   IntersolveVisaModule-->RedisModule
   RegistrationsModule-->RegistrationChangeLogModule
+  RegistrationChangeLogModule-->RegistrationUtilsModule
+  RegistrationsModule-->RegistrationDataModule
+  RegistrationsModule-->RegistrationUtilsModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
@@ -29,6 +36,8 @@ graph LR
   IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
+  IntersolveVoucherModule-->RegistrationDataModule
+  IntersolveVoucherModule-->RegistrationUtilsModule
   IntersolveVoucherModule-->RedisModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
@@ -39,6 +48,7 @@ graph LR
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
+  IntersolveJumboModule-->RegistrationDataModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule
@@ -46,10 +56,13 @@ graph LR
   PaymentsModule-->TransactionsModule
   PaymentsModule-->BobFinanceModule
   BobFinanceModule-->TransactionsModule
+  BobFinanceModule-->RegistrationDataModule
   PaymentsModule-->UkrPoshtaModule
   UkrPoshtaModule-->TransactionsModule
+  UkrPoshtaModule-->RegistrationDataModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  VodacashModule-->RegistrationDataModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
@@ -61,6 +74,8 @@ graph LR
   CommercialBankEthiopiaModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
+  PaymentsModule-->RegistrationUtilsModule
+  PaymentsModule-->RegistrationDataModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationChangeLogModule
@@ -69,5 +84,6 @@ graph LR
   MessageIncomingModule-->WhatsappModule
   MessageIncomingModule-->QueueMessageModule
   MessageIncomingModule-->MessageTemplateModule
+  MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
 ```

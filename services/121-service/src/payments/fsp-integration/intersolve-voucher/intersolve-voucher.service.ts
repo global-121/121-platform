@@ -18,6 +18,8 @@ import {
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { LanguageEnum } from '../../../registration/enum/language.enum';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from '../../../registration/modules/registration-utilts.module.ts/registration-utils.service';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -62,6 +64,8 @@ export class IntersolveVoucherService
   private readonly fallbackLanguage = LanguageEnum.en;
 
   public constructor(
+    private readonly registrationUtilsService: RegistrationUtilsService,
+    private readonly registrationDataService: RegistrationDataService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
@@ -892,15 +896,19 @@ export class IntersolveVoucherService
     const voucherWithBalance = new VoucherWithBalanceDto();
     voucherWithBalance.paNumber =
       voucher.image[0].registration.registrationProgramId;
-    voucherWithBalance.name = await voucher.image[0].registration.getFullName();
+    voucherWithBalance.name = await this.registrationUtilsService.getFullName(
+      voucher.image[0].registration,
+    );
     voucherWithBalance.phoneNumber = voucher.image[0].registration.phoneNumber;
     voucherWithBalance.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
     voucherWithBalance.paStatus =
       voucher.image[0].registration.registrationStatus;
     voucherWithBalance.partnerName =
-      await voucher.image[0].registration.getRegistrationDataValueByName(
+      await this.registrationDataService.getRegistrationDataValueByName(
+        voucher.image[0].registration,
         'namePartnerOrganization',
       );
+
     voucherWithBalance.payment = voucher.payment;
     voucherWithBalance.issueDate = voucher.created;
     voucherWithBalance.originalBalance = voucher.amount;
