@@ -33,10 +33,11 @@ export class MessagesService {
   }
 
   private getMessageBody(message: Message): string {
-    if (!message.body && !!message.mediaurl) {
+    if (!message.body && !!message.mediaUrl) {
       return this.translate.instant('entity.message.body-image-placeholder');
     }
-    return message.body ? message.body : '';
+
+    return message.body || '';
   }
 
   private getMessageStatus(twilioStatus: TwilioStatus): MessageStatus {

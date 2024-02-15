@@ -4,7 +4,7 @@ export class Message {
   body: string;
   created: string;
   from: string;
-  mediaurl: string;
+  mediaUrl: string;
   to: string;
   type: string;
   contentType: string;
