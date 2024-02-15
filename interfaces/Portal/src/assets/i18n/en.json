@@ -316,7 +316,7 @@
           "success": "Successful",
           "waiting": "Waiting"
         },
-        "make-export": "Export payment data",
+        "make-export-import": "Payment data",
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact 121 technical support."

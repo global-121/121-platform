@@ -316,7 +316,7 @@
           "success": "Succesvol",
           "waiting": "Wachten"
         },
-        "make-export": "Exporteer betalingsinformatie",
+        "make-export-import": "Betalingsinformatie",
         "make-payment": {
           "error": {
             "generic": "Er is iets misgegaan met de betaling. Neem contact op met 121 technische ondersteuning."

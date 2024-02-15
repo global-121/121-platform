@@ -315,7 +315,7 @@
           "success": "ناجح",
           "waiting": "انتظار"
         },
-        "make-export": "تصدير بيانات الدفع",
+        "make-export-import": "بيانات الدفع",
         "make-payment": {
           "error": {
             "generic": "حدث خطأ ما في الدفع. يرجى الاتصال بالدعم الفني 121."
