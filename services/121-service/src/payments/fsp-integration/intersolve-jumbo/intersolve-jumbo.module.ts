@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
@@ -18,6 +19,7 @@ import { IntersolveJumboService } from './intersolve-jumbo.service';
     TypeOrmModule.forFeature([RegistrationEntity]),
     UserModule,
     TransactionsModule,
+    RegistrationDataModule,
   ],
   providers: [
     IntersolveJumboService,

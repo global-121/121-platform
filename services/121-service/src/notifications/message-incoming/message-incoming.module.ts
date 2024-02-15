@@ -10,6 +10,7 @@ import { API_PATHS } from '../../config';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../programs/program.entity';
+import { RegistrationDataModule } from '../../registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { AzureLogService } from '../../shared/services/azure-log.service';
 import { UserModule } from '../../user/user.module';
@@ -43,6 +44,7 @@ import { MessageIncomingService } from './message-incoming.service';
     WhatsappModule,
     QueueMessageModule,
     MessageTemplateModule,
+    RegistrationDataModule,
     BullModule.registerQueue({
       name: QueueNameMessageCallBack.status,
       processors: [

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
@@ -32,6 +33,7 @@ export class IntersolveJumboService
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
+    private readonly registrationDataService: RegistrationDataService,
   ) {}
 
   public async sendPayment(
@@ -102,7 +104,10 @@ export class IntersolveJumboService
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveJumboPaymentInfoEnum)) {
-      const relation = await registration.getRelationForName(attr);
+      const relation = await this.registrationDataService.getRelationForName(
+        registration,
+        attr,
+      );
       const registrationDataOption = {
         name: attr,
         relation: relation,

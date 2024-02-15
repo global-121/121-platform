@@ -12,6 +12,7 @@ import { RegistrationDataOptions } from '../../../registration/dto/registration-
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { ErrorEnum } from '../../../registration/errors/registration-data.error';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -80,6 +81,7 @@ export class IntersolveVisaService
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
+    private readonly registrationDataService: RegistrationDataService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
@@ -293,7 +295,10 @@ export class IntersolveVisaService
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
-      const relation = await registration.getRelationForName(attr);
+      const relation = await this.registrationDataService.getRelationForName(
+        registration,
+        attr,
+      );
       const registrationDataOption = {
         name: attr,
         relation: relation,

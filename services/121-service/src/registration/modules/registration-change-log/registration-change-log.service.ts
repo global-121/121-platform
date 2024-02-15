@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Between } from 'typeorm';
 import { ScopedRepository } from '../../../scoped.repository';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
+import { RegistrationUtilsService } from '../registration-utilts.module.ts/registration-utils.service';
 import { RegistrationChangeLogReturnDto } from './dto/registration-change-log-return.dto';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationChangeLogMapper } from './utils/registration-change-log.mapper';
@@ -9,6 +10,7 @@ import { RegistrationChangeLogMapper } from './utils/registration-change-log.map
 @Injectable()
 export class RegistrationChangeLogService {
   public constructor(
+    private readonly registrationUtilsService: RegistrationUtilsService,
     @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
     private registrationChangeLogScopedRepository: ScopedRepository<RegistrationChangeLogEntity>,
   ) {}
@@ -51,7 +53,9 @@ export class RegistrationChangeLogService {
         return {
           paId: dataChange.registration.registrationProgramId,
           referenceId: dataChange.registration.referenceId,
-          fullName: await dataChange.registration.getFullName(),
+          fullName: await this.registrationUtilsService.getFullName(
+            dataChange.registration,
+          ),
           fieldName: dataChange.fieldName,
           oldValue: dataChange.oldValue || '-',
           newValue: dataChange.newValue || '-',

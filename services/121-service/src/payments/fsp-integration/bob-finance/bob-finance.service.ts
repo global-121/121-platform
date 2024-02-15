@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -22,6 +23,7 @@ export class BobFinanceService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly lookupService: LookupService,
+    private registrationDataService: RegistrationDataService,
   ) {}
 
   public async sendPayment(
@@ -66,15 +68,18 @@ export class BobFinanceService
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
 
     bobFinanceFspInstructions['Receiver First name'] =
-      await registration.getRegistrationDataValueByName(
+      await this.registrationDataService.getRegistrationDataValueByName(
+        registration,
         CustomDataAttributes.nameFirst,
       );
     bobFinanceFspInstructions['Receiver last name'] =
-      await registration.getRegistrationDataValueByName(
+      await this.registrationDataService.getRegistrationDataValueByName(
+        registration,
         CustomDataAttributes.nameLast,
       );
     bobFinanceFspInstructions['Mobile Number'] = await this.formatToLocalNumber(
-      await registration.getRegistrationDataValueByName(
+      await this.registrationDataService.getRegistrationDataValueByName(
+        registration,
         CustomDataAttributes.nameLast,
       ),
     );

@@ -29,6 +29,8 @@ import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepos
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
+import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
+import { RegistrationUtilsModule } from './modules/registration-utilts.module.ts/registration-utils.module';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -67,6 +69,8 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     QueueMessageModule,
     IntersolveVisaModule,
     RegistrationChangeLogModule,
+    RegistrationDataModule,
+    RegistrationUtilsModule,
   ],
   providers: [
     RegistrationsService,

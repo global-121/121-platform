@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { VodacashService } from './vodacash.service';
@@ -11,6 +12,7 @@ import { VodacashService } from './vodacash.service';
     TypeOrmModule.forFeature(),
     UserModule,
     TransactionsModule,
+    RegistrationDataModule,
   ],
   providers: [VodacashService],
   controllers: [],
