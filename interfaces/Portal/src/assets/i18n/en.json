@@ -193,7 +193,7 @@
       "import-fsp-reconciliation": {
         "btn-text": "Import Payment Reconciliation Data",
         "confirm-message": "Import Payment Reconciliation Data",
-        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider. Be aware that uploading a new file will overwrite any previously uploaded file.",
         "import-result": {
           "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
           "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
