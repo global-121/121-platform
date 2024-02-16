@@ -14,10 +14,7 @@ import {
   BulkActionResultDto,
   BulkActionResultPaymentDto,
 } from '../registration/dto/bulk-action-result.dto';
-import {
-  ImportResult,
-  ImportStatus,
-} from '../registration/dto/bulk-import.dto';
+import { ImportResult } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
@@ -902,76 +899,69 @@ export class PaymentsService {
     file,
     programId: number,
     payment: number,
-    fspIds: number[],
     userId: number,
   ): Promise<ImportResult> {
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
     let countNotFound = 0;
-    let paTransactionResult, record, importResponseRecord;
+    let paTransactionResult, record;
     let validatedImport;
     const registrationsPerPayment =
       await this.getRegistrationsForReconsiliation(programId, payment);
     const importResponseRecords = [];
     for await (const registration of registrationsPerPayment) {
-      for await (const fspId of fspIds) {
-        const fsp = await this.fspService.getFspById(fspId);
+      if (registration.fsp.fsp === FspName.vodacash) {
+        validatedImport = await this.xmlToValidatedFspReconciliation(file);
+        const validatedImportRecords = validatedImport.validatedArray;
 
-        if (fsp.fsp === FspName.vodacash) {
-          validatedImport = await this.xmlToValidatedFspReconciliation(file);
-          const validatedImportRecords = validatedImport.validatedArray;
-
-          record = await this.vodacashService.findReconciliationRecord(
-            registration,
-            validatedImportRecords,
-          );
-          paTransactionResult =
-            await this.vodacashService.createTransactionResult(
-              registration,
-              record,
-              programId,
-              payment,
-            );
-        }
-
-        if (fsp.fsp === FspName.excel) {
-          validatedImport = await this.validateCsv(file);
-          record = await this.excelService.findReconciliationRecord(
-            registration,
-            validatedImport,
-          );
-          paTransactionResult = await this.excelService.createTransactionResult(
+        record = await this.vodacashService.findReconciliationRecord(
+          registration,
+          validatedImportRecords,
+        );
+        paTransactionResult =
+          await this.vodacashService.createTransactionResult(
             registration,
             record,
             programId,
             payment,
           );
-        }
+      }
 
-        if (!paTransactionResult) {
-          importResponseRecord.importStatus = ImportStatus.notFound;
-          importResponseRecords.push(importResponseRecord);
-          countNotFound += 1;
-          continue;
-        }
-
-        const transactionRelationDetails: TransactionRelationDetailsDto = {
+      if (registration.fsp.fsp === FspName.excel) {
+        validatedImport = await this.validateCsv(file);
+        record = await this.excelService.findReconciliationRecord(
+          registration,
+          validatedImport,
+        );
+        paTransactionResult = await this.excelService.createTransactionResult(
+          registration,
+          record,
           programId,
-          paymentNr: payment,
-          userId,
-        };
-
-        await this.transactionService.storeTransactionUpdateStatus(
-          paTransactionResult,
-          transactionRelationDetails,
-        );
-        countPaymentSuccess += Number(
-          paTransactionResult.status === StatusEnum.success,
-        );
-        countPaymentFailed += Number(
-          paTransactionResult.status === StatusEnum.error,
+          payment,
         );
       }
+
+      if (!record) {
+        countNotFound += 1;
+        continue;
+      }
+
+      const transactionRelationDetails: TransactionRelationDetailsDto = {
+        programId,
+        paymentNr: payment,
+        userId,
+      };
+
+      await this.transactionService.storeTransactionUpdateStatus(
+        paTransactionResult,
+        transactionRelationDetails,
+      );
+      countPaymentSuccess += Number(
+        paTransactionResult.status === StatusEnum.success,
+      );
+      countPaymentFailed += Number(
+        paTransactionResult.status === StatusEnum.error,
+      );
     }
 
     await this.actionService.saveAction(
@@ -983,7 +973,7 @@ export class PaymentsService {
     return {
       importResult: importResponseRecords,
       aggregateImportResult: {
-        countImported: validatedImport.recordsCount,
+        countImported: validatedImport.length,
         countPaymentStarted: registrationsPerPayment.length,
         countPaymentFailed,
         countPaymentSuccess,
@@ -1042,12 +1032,12 @@ export class PaymentsService {
     return importRecords;
   }
 
-  private async csvBufferToArray(buffer: Buffer): Promise<object[]> {
-    const parsedData = [];
+  private async csvBufferToArray(buffer): Promise<object[]> {
     const stream = new Readable();
-    stream.push(buffer); // No need to call toString() since the csv-parser can handle Buffer directly
-    stream.push(null); // Signal the end of the stream
+    stream.push(buffer.toString()); // Convert buffer to string and push into the stream
+    stream.push(null); // Signifies the end of the stream
 
+    const parsedData = [];
     return new Promise((resolve, reject) => {
       stream
         .pipe(csv())

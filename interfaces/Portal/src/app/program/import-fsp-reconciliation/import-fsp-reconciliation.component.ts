@@ -22,9 +22,6 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   public payment: number;
 
   @Input()
-  public fspIds: number[];
-
-  @Input()
   public lastPaymentId: number;
 
   public disabled: boolean;
@@ -93,12 +90,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
     this.isInProgress = true;
 
     this.programsService
-      .importFspReconciliation(
-        this.programId,
-        this.payment,
-        this.fspIds,
-        event.file,
-      )
+      .importFspReconciliation(this.programId, this.payment, event.file)
       .then(
         (response) => {
           const aggregateResult = response.aggregateImportResult;
@@ -170,7 +162,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
 
   private setupFilePickerProps() {
     this.filePickerProps = {
-      type: 'xml',
+      type: 'csv,xml',
       explanation: this.translate.instant(
         'page.program.import-fsp-reconciliation.explanation',
         { payment: this.payment },
