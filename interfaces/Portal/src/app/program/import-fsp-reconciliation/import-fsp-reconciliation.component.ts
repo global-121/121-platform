@@ -48,17 +48,11 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
       'page.program.import-fsp-reconciliation.btn-text',
     );
     this.updateSubHeader();
-    this.filePickerProps = {
-      type: 'xml',
-      explanation: this.translate.instant(
-        'page.program.import-fsp-reconciliation.explanation',
-      ),
-      programId: this.programId,
-      downloadTemplate: null,
-    };
+    this.setupFilePickerProps();
   }
 
   async ngOnChanges() {
+    this.setupFilePickerProps();
     this.disabled = !this.btnEnabled();
   }
 
@@ -172,5 +166,17 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
           );
         },
       );
+  }
+
+  private setupFilePickerProps() {
+    this.filePickerProps = {
+      type: 'xml',
+      explanation: this.translate.instant(
+        'page.program.import-fsp-reconciliation.explanation',
+        { payment: this.payment },
+      ),
+      programId: this.programId,
+      downloadTemplate: null,
+    };
   }
 }
