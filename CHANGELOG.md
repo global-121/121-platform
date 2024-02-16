@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.112.2](https://github.com/global-121/121-platform/compare/v1.112.1...v1.112.2)- 2024-02-16
+
+### Fixed
+
+- Single retry gives no response on success
+
 ## [1.112.1](https://github.com/global-121/121-platform/compare/v1.112.0...v1.112.1)- 2024-02-12
 
 ### Changed
