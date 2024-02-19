@@ -28,8 +28,6 @@ import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
-import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from './modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from './registration-data.entity';
@@ -69,7 +67,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     FspModule,
     QueueMessageModule,
     IntersolveVisaModule,
-    RegistrationChangeLogModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     EventsLogModule,
@@ -88,7 +85,6 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
-    createScopedRepositoryProvider(RegistrationChangeLogEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(NoteEntity),

@@ -22,8 +22,6 @@ graph LR
   IntersolveVisaModule-->QueueMessageModule
   IntersolveVisaModule-->RegistrationDataModule
   IntersolveVisaModule-->RedisModule
-  RegistrationsModule-->RegistrationChangeLogModule
-  RegistrationChangeLogModule-->RegistrationUtilsModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsLogModule
@@ -79,7 +77,6 @@ graph LR
   PaymentsModule-->RegistrationDataModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
-  MetricsModule-->RegistrationChangeLogModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
