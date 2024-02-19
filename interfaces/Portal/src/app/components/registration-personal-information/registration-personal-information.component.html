@@ -1,5 +1,26 @@
 <ion-card *ngIf="person">
   <ion-card-header>
+    <small
+      *ngIf="isDebug"
+      style="
+        position: absolute;
+        inset-block-start: 0.5em;
+        inset-inline-end: 0.5em;
+        font-family: monospace;
+      "
+      >[
+      <a
+        href="/program/{{ program.id }}/registration/{{
+          person.registrationProgramId
+        }}"
+        >profile</a
+      >
+      |
+      <a href="/iframe/recipient?phonenumber={{ person.phoneNumber }}"
+        >iframe</a
+      >
+      ]
+    </small>
     <ion-card-title>
       {{ person.name }}
     </ion-card-title>

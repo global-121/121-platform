@@ -1,0 +1,20 @@
+/**
+ * Component: Tab-Bar
+ *
+ * A component that looks like the top-bar of a tabbed interface.
+*/
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 30px;
+  padding-inline-start: 32px;
+  border-bottom: 1px solid var(--fiveten-neutral-600);
+}
+
+.tab-bar--tab {
+  --background: #f4f7fa;
+  --color-checked: #4f22d7;
+
+  margin-inline-end: 1em;
+}

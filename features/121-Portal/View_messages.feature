@@ -29,13 +29,15 @@ Feature: View Messages
     Then the user sees the "Mail icon" of "Message"
     And the user sees the "Template Type" of "Message"
     And the user sees if "Message" was sent via "SMS" or "WhatsApp"
+    And the user sees a green "Status" badge of "Sent", "Delivered", or "Read" for "Message"
     And the user sees the "Date" of "Message"
-    And the user sees "Status" of "Success" for "Message"
     And the user sees the "Text" of the "Message"
 
   Scenario: View failed message
     Given the user has opened the Acivity overview on the PA profile page or the message history pop-up
     Given the PA was sent at least 1 "Message" that failed
     When the user sees a card with "Message"
-    Then the user sees "Status" of "Failed" for "Message"
+    Then the user sees a red "Status" badge of "Failed" for "Message"
+    And the user sees the "Date" of "Message"
+    And the user sees the "Text" of the "Message"
     And the user sees the text "Twilio error code" with a hyperlink to the Twilio error code

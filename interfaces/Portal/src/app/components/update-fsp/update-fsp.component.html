@@ -4,8 +4,8 @@
   (ngSubmit)="updateChosenFsp()"
 >
   <div class="input-item ion-padding-vertical">
-    <label class="input-item--label text-bold">
-      {{ label }}
+    <label class="input-item--label">
+      <strong>{{ label }}</strong>
     </label>
     <div class="input-item--contents">
       <div>
@@ -75,10 +75,10 @@
           [disabled]="!enableUpdateBtn"
           type="submit"
           size="default"
-          class="ion-margin-start text-bold ion-text-uppercase"
+          class="ion-margin-start ion-text-uppercase"
           fill="clear"
         >
-          {{ 'common.save' | translate }}
+          <strong>{{ 'common.save' | translate }}</strong>
         </ion-button>
         <ion-spinner
           *ngIf="inProgress"

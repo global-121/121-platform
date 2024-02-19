@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DateFormat } from 'src/app/enums/date-format.enum';
+import { TranslateService } from '@ngx-translate/core';
+import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { environment } from '../../../environments/environment';
-import { Message, MessageStatusMapping } from '../../models/message.model';
 import { Person } from '../../models/person.model';
+import { RegistrationActivity } from '../../models/registration-activity.model';
+import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
@@ -19,19 +21,20 @@ export class MessageHistoryPopupComponent implements OnInit {
   public programId: number;
 
   public person: Person;
-  public DateFormat = DateFormat;
-  public messageHistory: Message[];
-  public historySize = 5;
-  public trimBodyLength = 20;
-  public imageString = '(image)';
-  public rowIndex: number;
-  public chipStatus = MessageStatusMapping;
+  public messageHistory: RegistrationActivity[];
+
   public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
+  public locale: string;
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private messageServices: MessagesService,
     private modalController: ModalController,
-  ) {}
+    private registrationActivityService: RegistrationActivityService,
+    private translate: TranslateService,
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     await this.getPersonData();
@@ -47,21 +50,16 @@ export class MessageHistoryPopupComponent implements OnInit {
     );
     this.person = res.data[0];
   }
+
   private async getMessageHistory() {
-    this.messageHistory = await this.programsService.retrieveMsgHistory(
-      this.programId,
-      this.referenceId,
-    );
-  }
-  public async loadMore(historyLength) {
-    this.historySize = historyLength;
-  }
-  public openMessageDetails(index) {
-    if (index === this.rowIndex) {
-      this.rowIndex = null;
-    } else {
-      this.rowIndex = index;
-    }
+    this.messageHistory = (
+      await this.messageServices.getMessageHistory(
+        this.programId,
+        this.referenceId,
+      )
+    ).map((message) => {
+      return this.registrationActivityService.createMessageActivity(message);
+    });
   }
 
   public closeModal() {

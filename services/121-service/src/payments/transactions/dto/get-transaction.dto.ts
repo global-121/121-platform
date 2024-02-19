@@ -53,8 +53,10 @@ export class AuditedTransactionReturnDto extends TransactionReturnDto {
 }
 
 export class PaymentReturnDto {
+  @ApiProperty({ example: 2, type: 'number' })
   nrSuccess: number;
+  @ApiProperty({ example: 2, type: 'number' })
   nrWaiting: number;
+  @ApiProperty({ example: 2, type: 'number' })
   nrError: number;
-  paymentInProgress: boolean;
 }

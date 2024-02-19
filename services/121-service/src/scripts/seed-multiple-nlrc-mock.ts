@@ -136,14 +136,13 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
 
-    const result = await this.seedMockHelper.doPayment(
+    await this.seedMockHelper.doPayment(
       programId,
       1,
       amountVisa,
       [registration.referenceId],
       accessToken,
     );
-    console.log('🚀 ~ SeedMultipleNLRCMockData ~ result:', result.data);
   }
 
   private async multiplyRegistrations(powerNr: number): Promise<void> {

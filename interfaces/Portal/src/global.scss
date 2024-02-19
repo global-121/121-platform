@@ -1,30 +1,50 @@
 // http://ionicframework.com/docs/theming/
-@import '~@ionic/angular/css/core.css';
-@import '~@ionic/angular/css/normalize.css';
-@import '~@ionic/angular/css/structure.css';
-@import '~@ionic/angular/css/typography.css';
-@import '~@ionic/angular/css/display.css';
-@import '~@ionic/angular/css/padding.css';
-@import '~@ionic/angular/css/float-elements.css';
-@import '~@ionic/angular/css/text-alignment.css';
-@import '~@ionic/angular/css/text-transformation.css';
-@import '~@ionic/angular/css/flex-utils.css';
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+/* Ionic Overrides/Fixes */
+@import 'styles/_ionic-overrides.css';
+
+/* Load custom Fonts */
+@import 'styles/_fonts.css';
+
+/**
+ * Utilities:
+ *
+ * Single-purpose, Standalone classes
+ */
+@import 'styles/utilities/_layout.css';
+@import 'styles/utilities/_spacing.css';
+@import 'styles/utilities/_typography.css';
+
+/**
+ * (CSS-Only) Components:
+ * **************************************************************************
+ */
+@import 'styles/components/badge.css';
+@import 'styles/components/tab-bar.css';
+
+/**
+ * Third-party Components:
+ * **************************************************************************
+ */
 
 /* NGX Datatable CSS */
-@import 'assets/styles/ngx-datatable/_ngx-datatable.component.scss';
-@import 'assets/styles/ngx-datatable/_icons.css';
-@import 'assets/styles/ngx-datatable/_bootstrap.scss';
+@import 'styles/ngx-datatable/_ngx-datatable.component.scss';
+@import 'styles/ngx-datatable/_icons.css';
+@import 'styles/ngx-datatable/_bootstrap.scss';
 // Custom overrides only:
-@import 'assets/styles/ngx-datatable/_bootstrap-overrides.scss';
+@import 'styles/ngx-datatable/_bootstrap-overrides.scss';
 
-// Workaround for touch-screen laptops
-// See: https://github.com/ionic-team/ionic-framework/issues/19942#issuecomment-621944260
-// See: https://github.com/ionic-team/ionic-framework/blob/4.11.x/core/src/components/app/app.scss
-@media (any-pointer: fine) {
-  html.plt-mobile ion-app {
-    user-select: auto;
-  }
-}
+/////////////////////////////////////////////////////////////////////////////
 
 // Default styles for a 'styled' select:
 .styled-select {
@@ -36,11 +56,6 @@
       color: var(--ion-color-medium);
     }
   }
-}
-
-.horizontal-scroll-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 ion-button {
@@ -151,10 +166,6 @@ ion-button {
   width: 48px;
 }
 
-.full-height {
-  height: 100%;
-}
-
 #portal-title {
   display: flex;
   flex-direction: row;
@@ -203,13 +214,6 @@ ion-button {
     var(--ion-color-primary);
 }
 
-.text-bold {
-  font-weight: bold;
-}
-
-.ml-auto {
-  margin-inline-start: auto;
-}
 .select-popover {
   &::part(content) {
     --width: fit-content;
@@ -309,46 +313,6 @@ ion-input.custom-border {
   }
 }
 
-/*
-	Component: Tabs
-*/
-.tabs {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  margin-top: 30px;
-  padding-inline-start: 32px;
-  border-bottom: 1px solid var(--fiveten-neutral-600);
-}
-
-.tab {
-  --background: #f4f7fa;
-  --color-checked: #4f22d7;
-  margin-inline-end: 1em;
-}
-
-/*
-  Component: User-Status-Badge (chip)
-*/
-.user-status-badge {
-  margin: 0;
-  min-height: auto;
-  padding-inline: 0.75em;
-  padding-block: 0.375em;
-  font-size: 0.75em;
-  opacity: 1;
-
-  &.active {
-    --color: var(--ion-color-status-successful-text);
-    --background: var(--fiveten-success-200);
-  }
-
-  &.inactive {
-    --color: var(--ion-color-medium);
-    --background: var(--ion-color-light-shade);
-  }
-}
-
 .rolesDropdown {
   --box-shadow: none;
   ion-list {
@@ -390,13 +354,4 @@ ion-input.custom-border {
 
 .export-select-popover {
   min-width: 250px;
-}
-
-.layout-flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.full-width {
-  width: 100%;
 }

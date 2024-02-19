@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageTemplate } from 'src/app/models/message.model';
 import { Person } from 'src/app/models/person.model';
 import { Item } from '../../components/select-typeahead/select-typeahead.component';
+import { BulkActionId } from '../../models/bulk-actions.models';
 import { PaTableAttribute } from '../../models/program.model';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -35,6 +36,9 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
 
   @Input()
   public message: string;
+
+  @Input()
+  action: BulkActionId;
 
   @ViewChild('input')
   public input: any;
@@ -74,7 +78,7 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.showMessageTemplate = this.message.includes('Send Message');
+    this.showMessageTemplate = this.action === BulkActionId.sendMessage;
     this.messageTemplates =
       await this.programsService.getMessageTemplatesByProgram(
         this.inputProps.programId,
