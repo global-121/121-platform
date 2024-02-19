@@ -143,7 +143,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       [registration.referenceId],
       accessToken,
     );
-    console.log('🚀 ~ SeedMultipleNLRCMockData ~ result:', result.data);
   }
 
   private async multiplyRegistrations(powerNr: number): Promise<void> {
