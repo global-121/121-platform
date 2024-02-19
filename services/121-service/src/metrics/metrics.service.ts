@@ -835,7 +835,7 @@ export class MetricsService {
         'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
-        'transaction."errorMessage" as "errorMessage"',
+        'SUBSTRING(transaction."errorMessage", 1, 32000) as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
