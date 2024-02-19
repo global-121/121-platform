@@ -1,35 +1,35 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import csv from 'csv-parser';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Readable } from 'stream';
 import { DataSource, In, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import {
   BulkActionResultDto,
   BulkActionResultPaymentDto,
 } from '../registration/dto/bulk-action-result.dto';
-import { ImportResult } from '../registration/dto/bulk-import.dto';
+import {
+  BulkImportResult,
+  ImportResult,
+  ImportStatus,
+} from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationsImportService } from '../registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
+import { FileImportService } from '../utils/file-import/file-import.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
-import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
@@ -69,7 +69,6 @@ export class PaymentsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,
     private readonly azureLogService: AzureLogService,
-    private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -82,9 +81,9 @@ export class PaymentsService {
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
-    private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -637,7 +636,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
   ): Promise<RegistrationEntity[]> {
-    const waitingReferenceIds = (
+    const referenceIds = (
       await this.transactionService.getLastTransactions(
         programId,
         payment,
@@ -645,7 +644,10 @@ export class PaymentsService {
       )
     ).map((t) => t.referenceId);
     return await this.registrationScopedRepository.find({
-      where: { referenceId: In(waitingReferenceIds) },
+      where: {
+        referenceId: In(referenceIds),
+        fsp: { hasReconciliation: true },
+      },
       relations: ['fsp'],
     });
   }
@@ -904,19 +906,24 @@ export class PaymentsService {
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
     let countNotFound = 0;
-    let paTransactionResult, record;
     let validatedImport;
     const registrationsPerPayment =
       await this.getRegistrationsForReconsiliation(programId, payment);
     const importResponseRecords = [];
     for await (const registration of registrationsPerPayment) {
-      if (registration.fsp.fsp === FspName.vodacash) {
-        validatedImport = await this.xmlToValidatedFspReconciliation(file);
-        const validatedImportRecords = validatedImport.validatedArray;
+      let paTransactionResult;
 
-        record = await this.vodacashService.findReconciliationRecord(
+      let validatedVodacashImport;
+      if (registration.fsp.fsp === FspName.vodacash) {
+        if (!validatedVodacashImport) {
+          validatedVodacashImport =
+            await this.vodacashService.xmlToValidatedFspReconciliation(file);
+          validatedImport = validatedVodacashImport;
+        }
+
+        const record = await this.vodacashService.findReconciliationRecord(
           registration,
-          validatedImportRecords,
+          validatedVodacashImport,
         );
         paTransactionResult =
           await this.vodacashService.createTransactionResult(
@@ -927,21 +934,32 @@ export class PaymentsService {
           );
       }
 
+      let validatedExcelImport, matchColumn;
       if (registration.fsp.fsp === FspName.excel) {
-        validatedImport = await this.validateCsv(file);
-        record = await this.excelService.findReconciliationRecord(
+        if (!validatedExcelImport) {
+          validatedExcelImport = await this.fileImportService.validateCsv(file);
+          validatedImport = validatedExcelImport;
+          matchColumn = await this.excelService.getImportMatchColumn(programId);
+        }
+        const record = await this.excelService.findReconciliationRecord(
           registration,
-          validatedImport,
+          validatedExcelImport,
+          matchColumn,
         );
-        paTransactionResult = await this.excelService.createTransactionResult(
-          registration,
-          record,
-          programId,
-          payment,
-        );
+        if (record) {
+          paTransactionResult = await this.excelService.createTransactionResult(
+            registration,
+            record,
+            programId,
+            payment,
+          );
+        }
       }
 
-      if (!record) {
+      const importResponseRecord = new BulkImportResult();
+      if (!paTransactionResult) {
+        importResponseRecord.importStatus = ImportStatus.notFound;
+        importResponseRecords.push(importResponseRecord);
         countNotFound += 1;
         continue;
       }
@@ -951,11 +969,13 @@ export class PaymentsService {
         paymentNr: payment,
         userId,
       };
-
       await this.transactionService.storeTransactionUpdateStatus(
         paTransactionResult,
         transactionRelationDetails,
       );
+
+      importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecords.push(importResponseRecord);
       countPaymentSuccess += Number(
         paTransactionResult.status === StatusEnum.success,
       );
@@ -980,79 +1000,5 @@ export class PaymentsService {
         countNotFound,
       },
     };
-  }
-
-  private async xmlToValidatedFspReconciliation(
-    xmlFile,
-  ): Promise<ImportFspReconciliationDto> {
-    const importRecords =
-      await this.registrationsImportService.validateXml(xmlFile);
-    return await this.validateFspReconciliationXmlInput(importRecords);
-  }
-
-  private async validateFspReconciliationXmlInput(
-    xmlArray,
-  ): Promise<ImportFspReconciliationDto> {
-    const validatedArray = [];
-    let recordsCount = 0;
-    for (const row of xmlArray) {
-      recordsCount += 1;
-      if (this.registrationsImportService.checkForCompletelyEmptyRow(row)) {
-        continue;
-      }
-      const importRecord = this.vodacashService.validateReconciliationData(row);
-      validatedArray.push(importRecord);
-    }
-    return {
-      validatedArray,
-      recordsCount,
-    };
-  }
-
-  public async validateCsv(csvFile): Promise<object[]> {
-    const indexLastPoint = csvFile.originalname.lastIndexOf('.');
-    const extension = csvFile.originalname
-      .substring(indexLastPoint, csvFile.originalname.length)
-      .toLowerCase(); // Use toLowerCase() to ensure extension checks are case-insensitive
-
-    if (extension !== '.csv') {
-      const errors = [`Wrong file extension. It should be .csv`];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    let importRecords = await this.csvBufferToArray(csvFile.buffer);
-
-    const maxRecords = 1000;
-    if (importRecords.length > maxRecords) {
-      const errors = [
-        `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
-      ];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-    return importRecords;
-  }
-
-  private async csvBufferToArray(buffer): Promise<object[]> {
-    const stream = new Readable();
-    stream.push(buffer.toString()); // Convert buffer to string and push into the stream
-    stream.push(null); // Signifies the end of the stream
-
-    const parsedData = [];
-    return new Promise((resolve, reject) => {
-      stream
-        .pipe(csv())
-        .on('error', (error) => reject(error))
-        .on('data', (rowData) => {
-          // Clean up the keys in rowData
-          const cleanedRowData = Object.keys(rowData).reduce((acc, key) => {
-            // Use a regex to remove non-printable characters and trim whitespace
-            const cleanKey = key.replace(/[^\x20-\x7E]+/g, '').trim();
-            acc[cleanKey] = rowData[key];
-            return acc;
-          }, {});
-          parsedData.push(cleanedRowData);
-        })
-        .on('end', () => resolve(parsedData));
-    });
   }
 }

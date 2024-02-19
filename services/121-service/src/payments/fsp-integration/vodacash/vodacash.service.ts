@@ -5,7 +5,11 @@ import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { ImportFspReconciliationArrayDto } from '../../dto/import-fsp-reconciliation.dto';
+import { FileImportService } from '../../../utils/file-import/file-import.service';
+import {
+  ImportFspReconciliationArrayDto,
+  ImportFspReconciliationDto,
+} from '../../dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -22,6 +26,7 @@ export class VodacashService
 {
   public constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly fileImportService: FileImportService,
   ) {}
 
   public async sendPayment(
@@ -206,5 +211,33 @@ export class VodacashService
         el.attributes[attributeName] = value;
       }
     }
+  }
+
+  // This method is potentially generic, but since it does contain vodacash-specific code down the line, putting it here
+  public async xmlToValidatedFspReconciliation(
+    xmlFile,
+  ): Promise<ImportFspReconciliationArrayDto[]> {
+    const importRecords = await this.fileImportService.validateXml(xmlFile);
+    return (await this.validateFspReconciliationXmlInput(importRecords))
+      .validatedArray;
+  }
+
+  private async validateFspReconciliationXmlInput(
+    xmlArray,
+  ): Promise<ImportFspReconciliationDto> {
+    const validatedArray = [];
+    let recordsCount = 0;
+    for (const row of xmlArray) {
+      recordsCount += 1;
+      if (this.fileImportService.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
+      const importRecord = this.validateReconciliationData(row);
+      validatedArray.push(importRecord);
+    }
+    return {
+      validatedArray,
+      recordsCount,
+    };
   }
 }

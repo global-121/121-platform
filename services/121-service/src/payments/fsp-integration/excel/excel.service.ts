@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegistrationEntity } from 'src/registration/registration.entity';
 import { Repository } from 'typeorm';
@@ -26,6 +26,8 @@ export class ExcelService
 {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+
+  private statusColumnName = 'status';
 
   public constructor(
     private readonly transactionsService: TransactionsService,
@@ -198,7 +200,31 @@ export class ExcelService
   public async findReconciliationRecord(
     registration: RegistrationEntity,
     importRecords: any,
+    matchColumn: string,
   ): Promise<any> {
+    const registrationMatchColumnValue =
+      registration[matchColumn] ||
+      (await registration.getRegistrationDataValueByName(matchColumn));
+    for (const record of importRecords) {
+      const importResponseRecord = record;
+      if (
+        ![StatusEnum.success, StatusEnum.error].includes(
+          importResponseRecord[this.statusColumnName],
+        )
+      ) {
+        // if no valid status-column or value, then do not return and continue to next record
+        continue;
+      } else {
+        if (
+          importResponseRecord[matchColumn] === registrationMatchColumnValue
+        ) {
+          return importResponseRecord;
+        }
+      }
+    }
+  }
+
+  public async getImportMatchColumn(programId: number): Promise<string> {
     const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
       .leftJoinAndSelect(
@@ -208,34 +234,22 @@ export class ExcelService
         { configName: FspConfigurationEnum.columnToMatch },
       )
       .andWhere('program.id = :programId', {
-        programId: registration.programId,
+        programId: programId,
       })
       .getOne();
-    const matchColumn: string =
-      programWithConfig.programFspConfiguration[0]?.value;
-    for (const record of importRecords) {
-      const importResponseRecord = record;
-      if ('status' in importResponseRecord) {
-        if (importResponseRecord[matchColumn] === registration.phoneNumber) {
-          return importResponseRecord;
-        }
-      } else {
-        const errors = 'Missing status in one or more records';
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    }
+    return programWithConfig.programFspConfiguration[0]?.value;
   }
 
   public async createTransactionResult(
     registration: RegistrationEntity,
-    record: any,
+    importResponseRecord: any,
     programId: number,
     payment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registration.referenceId;
     paTransactionResult.fspName = FspName.excel;
-    paTransactionResult.status = StatusEnum.waiting;
+    paTransactionResult.status = importResponseRecord[this.statusColumnName];
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(
         programId,
@@ -243,10 +257,6 @@ export class ExcelService
         registration.referenceId,
       )
     )[0].amount;
-
-    if (record) {
-      paTransactionResult.status = StatusEnum.success;
-    }
     return paTransactionResult;
   }
 }
