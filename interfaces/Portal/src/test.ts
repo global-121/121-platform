@@ -6,6 +6,7 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
+import { setAssetPath } from '@stencil/core';
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
@@ -15,3 +16,7 @@ getTestBed().initTestEnvironment(
     teardown: { destroyAfterEach: false },
   },
 );
+
+// Fix warnings about loading of Ionicons (and other assets)
+// See: https://github.com/ionic-team/ionicons/issues/1302
+setAssetPath(`${window.location.origin}/`);

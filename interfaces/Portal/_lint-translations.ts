@@ -11,6 +11,7 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { BulkActionId } from 'src/app/models/bulk-actions.models';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
+import { MessageStatus } from './src/app/models/message.model';
 
 // ----------------------------------------------------------------------------
 // Configuration
@@ -30,14 +31,14 @@ const ruleConfig: IRulesConfig = {
   misprintCoefficient: 0.9,
   ignoredKeys: [
     // Plain string or RegExp
+    'entity.message.content-type.(.*)',
+    `entity.message.status.${anyValueFrom(MessageStatus)}`,
+    'entity.message.type.(sms|whatsapp)',
     `entity.registration.status.(${anyValueFrom(RegistrationStatus)})`,
     'page.program.program-people-affected.column.(.*)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.error.(not-an-integer|not-empty|too-low)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation',
     'page.program.program-people-affected.language.(.*)',
-    'page.program.program-people-affected.message-history-popup.chip-status.(.*)',
-    'page.program.program-people-affected.message-history-popup.content-type.(.*)',
-    'page.program.program-people-affected.message-history-popup.type..(.*)',
     'page.program.program-people-affected.transaction.custom-data.(.*)',
     `page.program.export-list.(${anyValueFrom(
       ExportType,

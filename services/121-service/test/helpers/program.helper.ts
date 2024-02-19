@@ -129,6 +129,15 @@ export async function retryPayment(
     });
 }
 
+export async function getProgramPaymentsStatus(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/payments/status`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function getTransactions(
   programId: number,
   paymentNr: number,

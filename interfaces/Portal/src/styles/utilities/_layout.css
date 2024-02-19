@@ -1,0 +1,38 @@
+/**
+ * Utilities: Layout
+ *
+ * Classes that define a certain layout or position of elements only.
+ * No colors, text-styles etc. should be affected by these.
+ */
+
+/**
+ * Horizontal-Scroll-Container
+ *
+ * Makes a conntainer overflow horizontally, allowing its children to be scrolled.
+ */
+.horizontal-scroll-container {
+  overflow-x: auto;
+}
+
+/**
+ * Flex-Row
+ *
+ * Use flex-box utility classes of Ionic.
+ * See: https://ionicframework.com/docs/layout/css-utilities#flex-properties
+ */
+.util--flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/**
+* Force: Full Width/Height
+*
+* Override any other layout-properties/styles.
+*/
+.util--full-height {
+  height: 100% !important;
+}
+.util--full-width {
+  width: 100% !important;
+}
