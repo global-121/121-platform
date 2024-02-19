@@ -36,13 +36,7 @@ export class MigrateDataChangesToEvent1708330965061
     const registrationDataChanges = await queryRunner.query(
       `SELECT * FROM "121-service".registration_change_log`,
     );
-    const registrationStatusChanges = await queryRunner.query(
-      `SELECT * FROM "121-service".registration_status_change`,
-    );
-    console.log(
-      '🚀 ~ migrateData ~ registrationStatusChanges:',
-      registrationStatusChanges,
-    );
+
     const mappedEvents = registrationDataChanges.map((change) => {
       const event = new EventEntity();
       event.created = change.created;
