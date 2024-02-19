@@ -8,7 +8,6 @@
     "confirm": "هل أنت متأكد؟",
     "error-with-message": "حدث خطأ ما: {{error}}",
     "export-error": "حدث خطأ ما في التصدير.",
-    "import-error": "حدث خطأ ما في الاستيراد.",
     "ok": "OK",
     "save": "أنقذ",
     "save-success": "تم الحفظ بنجاح",

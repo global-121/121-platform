@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegistrationEntity } from 'src/registration/registration.entity';
 import { Repository } from 'typeorm';
@@ -197,28 +197,25 @@ export class ExcelService
       .orderBy('registration.referenceId', 'ASC');
   }
 
-  public async findReconciliationRecord(
-    registration: RegistrationEntity,
-    importRecords: any,
+  public async findReconciliationRegistration(
+    importRecord: any,
+    registrations: RegistrationEntity[],
     matchColumn: string,
-  ): Promise<any> {
-    const registrationMatchColumnValue =
-      registration[matchColumn] ||
-      (await registration.getRegistrationDataValueByName(matchColumn));
-    for (const record of importRecords) {
-      const importResponseRecord = record;
+  ): Promise<RegistrationEntity> {
+    for (const registration of registrations) {
+      const registrationMatchColumnValue =
+        registration[matchColumn] ||
+        (await registration.getRegistrationDataValueByName(matchColumn));
       if (
         ![StatusEnum.success, StatusEnum.error].includes(
-          importResponseRecord[this.statusColumnName],
+          importRecord[this.statusColumnName],
         )
       ) {
-        // if no valid status-column or value, then do not return and continue to next record
-        continue;
+        const errors = `No 'status' column or it contains unaccepted values ('success' or 'error')`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       } else {
-        if (
-          importResponseRecord[matchColumn] === registrationMatchColumnValue
-        ) {
-          return importResponseRecord;
+        if (importRecord[matchColumn] === registrationMatchColumnValue) {
+          return registration;
         }
       }
     }

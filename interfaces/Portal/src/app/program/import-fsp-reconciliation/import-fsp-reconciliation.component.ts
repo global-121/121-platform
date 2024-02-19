@@ -5,8 +5,10 @@ import { AuthService } from '../../../app/auth/auth.service';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
 import Permission from '../../auth/permission.enum';
 import { ActionType } from '../../models/actions.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LatestActionService } from '../../services/latest-action.service';
 import { actionResult } from '../../shared/action-result';
+import { downloadAsCsv } from '../../shared/array-to-csv';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -38,6 +40,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
     private latestActionService: LatestActionService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -146,6 +149,8 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
             resultMessage,
             true,
           );
+
+          this.exportCSV(response.importResult);
         },
         (err) => {
           this.isInProgress = false;
@@ -153,11 +158,18 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
           actionResult(
             this.alertController,
             this.translate,
-            this.translate.instant('common.import-error'),
+            this.translate.instant('common.error-with-message', {
+              error: this.errorHandlerService.formatErrors(err),
+            }),
             true,
           );
         },
       );
+  }
+
+  private exportCSV(importResponse: any[]) {
+    const filename = 'import-fsp-reconciliation-response';
+    downloadAsCsv(importResponse, filename);
   }
 
   private setupFilePickerProps() {

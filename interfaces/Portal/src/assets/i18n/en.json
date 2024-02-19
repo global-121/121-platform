@@ -8,7 +8,6 @@
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
-    "import-error": "Something went wrong with the import.",
     "ok": "OK",
     "save": "Save",
     "save-success": "Saved successfully",

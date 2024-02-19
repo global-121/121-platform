@@ -102,7 +102,7 @@ export class BulkImportComponent implements OnInit {
     };
   }
 
-  public exportCSV(importResponse: any[]) {
+  private exportCSV(importResponse: any[]) {
     const filename = 'import-people-affected-response';
     downloadAsCsv(importResponse, filename);
   }

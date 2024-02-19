@@ -8,7 +8,6 @@
     "confirm": "Weet je het zeker?",
     "error-with-message": "Er is iets misgegaan: {{error}}",
     "export-error": "Er is iets misgegaan bij het exporteren",
-    "import-error": "Er is iets misgegaan bij het importeren.",
     "ok": "OK",
     "save": "Opslaan",
     "save-success": "Opgeslagen",

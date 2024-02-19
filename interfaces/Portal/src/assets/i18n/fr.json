@@ -8,7 +8,6 @@
     "confirm": "Es-tu sûr?",
     "error-with-message": "Quelque chose s’est mal passé : {{error}}",
     "export-error": "Quelque chose s’est mal passé avec l’exportation.",
-    "import-error": "Quelque chose s’est mal passé avec l’importation.",
     "ok": "OK",
     "save": "Sauvegarder",
     "save-success": "Enregistré avec succès",

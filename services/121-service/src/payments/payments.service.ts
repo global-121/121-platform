@@ -12,7 +12,6 @@ import {
   BulkActionResultPaymentDto,
 } from '../registration/dto/bulk-action-result.dto';
 import {
-  BulkImportResult,
   ImportResult,
   ImportStatus,
 } from '../registration/dto/bulk-import.dto';
@@ -903,63 +902,80 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<ImportResult> {
+    // NOTE: this code is still really ambigious because it seems to facilitate multiple FSPs, but it does not in practice because e.g. only 1 (fsp-specific) file is uploaded
+    let validatedImport;
+    const registrationsInPayment = await this.getRegistrationsForReconsiliation(
+      programId,
+      payment,
+    );
+    const fspsInPayment = [
+      ...new Set(registrationsInPayment.map((r) => r.fsp.fsp)),
+    ];
+
+    const importResponseRecords = [];
+    for (const fsp of fspsInPayment) {
+      if (fsp === FspName.vodacash) {
+        const validatedVodacashImport =
+          await this.vodacashService.xmlToValidatedFspReconciliation(file);
+        validatedImport = validatedVodacashImport;
+        const vodacashRegistrations = registrationsInPayment.filter(
+          (r) => r.fsp.fsp === FspName.vodacash,
+        );
+        for (const record of validatedVodacashImport) {
+          const matchedRegistration =
+            await this.vodacashService.findReconciliationRegistration(
+              record,
+              vodacashRegistrations,
+            );
+          if (matchedRegistration) {
+            record['paTransactionResult'] =
+              await this.vodacashService.createTransactionResult(
+                matchedRegistration,
+                record,
+                programId,
+                payment,
+              );
+          }
+          importResponseRecords.push(record);
+        }
+      }
+
+      if (fsp === FspName.excel) {
+        const validatedExcelImport =
+          await this.fileImportService.validateCsv(file);
+        validatedImport = validatedExcelImport;
+        const matchColumn =
+          await this.excelService.getImportMatchColumn(programId);
+        const excelRegistrations = registrationsInPayment.filter(
+          (r) => r.fsp.fsp === FspName.excel,
+        );
+        for (const record of validatedExcelImport) {
+          const matchedRegistration =
+            await this.excelService.findReconciliationRegistration(
+              record,
+              excelRegistrations,
+              matchColumn,
+            );
+          if (matchedRegistration) {
+            record['paTransactionResult'] =
+              await this.excelService.createTransactionResult(
+                matchedRegistration,
+                record,
+                programId,
+                payment,
+              );
+          }
+          importResponseRecords.push(record);
+        }
+      }
+    }
+
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
     let countNotFound = 0;
-    let validatedImport;
-    const registrationsPerPayment =
-      await this.getRegistrationsForReconsiliation(programId, payment);
-    const importResponseRecords = [];
-    for await (const registration of registrationsPerPayment) {
-      let paTransactionResult;
-
-      let validatedVodacashImport;
-      if (registration.fsp.fsp === FspName.vodacash) {
-        if (!validatedVodacashImport) {
-          validatedVodacashImport =
-            await this.vodacashService.xmlToValidatedFspReconciliation(file);
-          validatedImport = validatedVodacashImport;
-        }
-
-        const record = await this.vodacashService.findReconciliationRecord(
-          registration,
-          validatedVodacashImport,
-        );
-        paTransactionResult =
-          await this.vodacashService.createTransactionResult(
-            registration,
-            record,
-            programId,
-            payment,
-          );
-      }
-
-      let validatedExcelImport, matchColumn;
-      if (registration.fsp.fsp === FspName.excel) {
-        if (!validatedExcelImport) {
-          validatedExcelImport = await this.fileImportService.validateCsv(file);
-          validatedImport = validatedExcelImport;
-          matchColumn = await this.excelService.getImportMatchColumn(programId);
-        }
-        const record = await this.excelService.findReconciliationRecord(
-          registration,
-          validatedExcelImport,
-          matchColumn,
-        );
-        if (record) {
-          paTransactionResult = await this.excelService.createTransactionResult(
-            registration,
-            record,
-            programId,
-            payment,
-          );
-        }
-      }
-
-      const importResponseRecord = new BulkImportResult();
-      if (!paTransactionResult) {
+    for (const importResponseRecord of importResponseRecords) {
+      if (!importResponseRecord.paTransactionResult) {
         importResponseRecord.importStatus = ImportStatus.notFound;
-        importResponseRecords.push(importResponseRecord);
         countNotFound += 1;
         continue;
       }
@@ -970,18 +986,17 @@ export class PaymentsService {
         userId,
       };
       await this.transactionService.storeTransactionUpdateStatus(
-        paTransactionResult,
+        importResponseRecord.paTransactionResult,
         transactionRelationDetails,
       );
-
       importResponseRecord.importStatus = ImportStatus.imported;
-      importResponseRecords.push(importResponseRecord);
       countPaymentSuccess += Number(
-        paTransactionResult.status === StatusEnum.success,
+        importResponseRecord.paTransactionResult.status === StatusEnum.success,
       );
       countPaymentFailed += Number(
-        paTransactionResult.status === StatusEnum.error,
+        importResponseRecord.paTransactionResult.status === StatusEnum.error,
       );
+      delete importResponseRecord.paTransactionResult;
     }
 
     await this.actionService.saveAction(
@@ -994,7 +1009,7 @@ export class PaymentsService {
       importResult: importResponseRecords,
       aggregateImportResult: {
         countImported: validatedImport.length,
-        countPaymentStarted: registrationsPerPayment.length,
+        countPaymentStarted: registrationsInPayment.length,
         countPaymentFailed,
         countPaymentSuccess,
         countNotFound,

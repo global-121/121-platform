@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { FileImportService } from '../../../utils/file-import/file-import.service';
@@ -151,14 +150,13 @@ export class VodacashService
     return importRecord;
   }
 
-  public async findReconciliationRecord(
-    registration: RegistrationEntity,
-    importRecords: ImportFspReconciliationArrayDto[],
-  ): Promise<ImportFspReconciliationArrayDto> {
-    for (const record of importRecords) {
-      const importResponseRecord = record as ImportFspReconciliationResult;
-      if (importResponseRecord.phoneNumber === registration.phoneNumber) {
-        return importResponseRecord;
+  public async findReconciliationRegistration(
+    importRecord: ImportFspReconciliationArrayDto,
+    registrations: RegistrationEntity[],
+  ): Promise<RegistrationEntity> {
+    for (const registration of registrations) {
+      if (importRecord.phoneNumber === registration.phoneNumber) {
+        return registration;
       }
     }
   }
