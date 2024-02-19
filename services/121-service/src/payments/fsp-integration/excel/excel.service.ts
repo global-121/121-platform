@@ -204,8 +204,7 @@ export class ExcelService
   ): Promise<RegistrationEntity> {
     for (const registration of registrations) {
       const registrationMatchColumnValue =
-        registration[matchColumn] ||
-        (await registration.getRegistrationDataValueByName(matchColumn));
+        await registration.getRegistrationValueByName(matchColumn);
       if (
         ![StatusEnum.success, StatusEnum.error].includes(
           importRecord[this.statusColumnName],
