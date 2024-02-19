@@ -25,7 +25,6 @@ import {
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationsService } from '../registration/registrations.service';
 import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
@@ -65,7 +64,6 @@ export class MetricsService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
   ) {}
@@ -1383,11 +1381,13 @@ export class MetricsService {
     fileName: ExportType;
     data: any[];
   }> {
-    const data = await this.registrationChangeLogService.exportChangeLog(
-      programId,
-      fromDate,
-      toDate,
-    );
+    // TODO implent this with events
+    const data = [];
+    // const data = await this.registrationChangeLogService.exportChangeLog(
+    //   programId,
+    //   fromDate,
+    //   toDate,
+    // );
     return {
       fileName: ExportType.paDataChanges,
       data,

@@ -36,7 +36,6 @@ import { UserEntity } from '../user/user.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
@@ -70,12 +69,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
   public data: RegistrationDataEntity[];
-
-  @OneToMany(
-    () => RegistrationChangeLogEntity,
-    (changes) => changes.registration,
-  )
-  public changes: RegistrationChangeLogEntity[];
 
   @Column({ nullable: true })
   public phoneNumber: string;
@@ -184,10 +177,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TwilioMessageEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: RegistrationChangeLogEntity,
         columnName: 'registration',
       },
       {

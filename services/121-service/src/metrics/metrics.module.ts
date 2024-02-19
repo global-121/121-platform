@@ -9,7 +9,7 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
+
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
@@ -34,7 +34,6 @@ import { MetricsService } from './metrics.service';
     PaymentsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
-    RegistrationChangeLogModule,
   ],
   providers: [
     MetricsService,
