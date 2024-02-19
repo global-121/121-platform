@@ -481,7 +481,7 @@ export class RegistrationsController {
     @Param() params,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @User('id') userId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
@@ -547,7 +547,6 @@ export class RegistrationsController {
       params.programId,
       params.referenceId,
       updateRegistrationDataDto,
-      userId,
     );
   }
 
@@ -609,7 +608,7 @@ export class RegistrationsController {
   public async updateChosenFsp(
     @Param() params,
     @Body() data: UpdateChosenFspDto,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     return await this.registrationsService.updateChosenFsp(
       params.referenceId,
       data.newFspName,

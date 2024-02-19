@@ -28,7 +28,6 @@ export class RegistrationUtilsService {
         .orderBy('r."registrationProgramId"', 'DESC')
         .limit(1);
       const result = await query.getRawOne();
-      console.log('🚀 ~ RegistrationUtilsService ~ result:', result);
       registration.registrationProgramId = result
         ? result.registrationProgramId + 1
         : 1;

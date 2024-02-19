@@ -635,12 +635,10 @@ export class ProgramService {
       });
     }
 
-    const fspAttributes = await this.fspAttributeRepository.find({
+    const programFspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp', 'fsp.program'],
+      where: { fsp: { program: { id: programId } } },
     });
-    const programFspAttributes = fspAttributes.filter((a) =>
-      a.fsp.program.map((p) => p.id).includes(programId),
-    );
 
     for (const attribute of programFspAttributes) {
       relations.push({

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
+import { EventsLogService } from '../events/events-log.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -48,7 +49,6 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
-import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataService } from './modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from './modules/registration-utilts.module.ts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
@@ -92,11 +92,10 @@ export class RegistrationsService {
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly eventsLogService: EventsLogService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
-    private registrationChangeLogScopedRepo: ScopedRepository<RegistrationChangeLogEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
@@ -111,7 +110,6 @@ export class RegistrationsService {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ referenceId: referenceId });
-
     const paginateResult =
       await this.registrationsPaginationService.getPaginate(
         { path: '' },
@@ -302,15 +300,10 @@ export class RegistrationsService {
       if (programQuestion) {
         const data = {};
         data[answer.programQuestionName] = answer.programAnswer;
-        await this.updateRegistration(
-          programId,
-          referenceId,
-          {
-            data,
-            reason: 'Changed from field validation app.',
-          },
-          userId,
-        );
+        await this.updateRegistration(programId, referenceId, {
+          data,
+          reason: 'Changed from field validation app.',
+        });
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -875,46 +868,44 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
-    userId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     const partialRegistration = updateRegistrationDto.data;
-    let registration = await this.getRegistrationFromReferenceId(
+    let registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
       programId,
     );
 
+    let oldViewRegistration = await this.getPaginateRegistrationForReferenceId(
+      referenceId,
+      programId,
+    );
+
+    let nrAttributesUpdated = 0;
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue =
-        await this.registrationDataService.getRegistrationValueByName(
-          registration,
-          attributeKey,
-        );
+      const oldValue = oldViewRegistration[attributeKey];
       const attributeValue = partialRegistration[attributeKey];
-      registration = await this.updateAttribute(
+      registrationToUpdate = await this.updateAttribute(
         attributeKey,
         attributeValue,
-        registration,
+        registrationToUpdate,
       );
-      const newValue =
-        await this.registrationDataService.getRegistrationValueByName(
-          registration,
-          attributeKey,
-        );
+      const newValue = registrationToUpdate[attributeKey];
       if (String(oldValue) !== String(newValue)) {
-        const registrationChangeLog = new RegistrationChangeLogEntity();
-        registrationChangeLog.registration = registration;
-        registrationChangeLog.userId = userId;
-        registrationChangeLog.fieldName = attributeKey;
-        registrationChangeLog.oldValue = oldValue;
-        registrationChangeLog.newValue = newValue;
-        registrationChangeLog.reason = updateRegistrationDto.reason;
-
-        await this.registrationChangeLogScopedRepo.save(registrationChangeLog);
+        nrAttributesUpdated++;
       }
     }
-    await this.inclusionScoreService.calculateInclusionScore(referenceId);
-    return registration;
+    const newRegistration = await this.getPaginateRegistrationForReferenceId(
+      referenceId,
+      programId,
+    );
+    if (nrAttributesUpdated > 0) {
+      await this.inclusionScoreService.calculateInclusionScore(referenceId);
+      await this.eventsLogService.log(oldViewRegistration, newRegistration, {
+        reason: updateRegistrationDto.reason,
+      });
+    }
+    return newRegistration;
   }
 
   private async updateAttribute(
@@ -1189,7 +1180,7 @@ export class RegistrationsService {
     referenceId: string,
     newFspName: FspName,
     newFspAttributesRaw: object,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
       where: { fsp: newFspName },
@@ -1234,6 +1225,13 @@ export class RegistrationsService {
       );
     }
 
+    // Get old registration to log
+    const oldViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(
+        referenceId,
+        registration.programId,
+      );
+
     // Remove old attributes
     const oldFsp = registration.fsp;
     for (const attribute of oldFsp?.questions) {
@@ -1258,7 +1256,18 @@ export class RegistrationsService {
         newFspAttributes[attribute.name],
       );
     }
-    return await this.registrationUtilsService.save(updatedRegistration);
+    await this.registrationUtilsService.save(updatedRegistration);
+
+    const newViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(
+        referenceId,
+        registration.programId,
+      );
+
+    // Log change
+    await this.eventsLogService.log(oldViewRegistration, newViewRegistration);
+
+    return newViewRegistration;
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {

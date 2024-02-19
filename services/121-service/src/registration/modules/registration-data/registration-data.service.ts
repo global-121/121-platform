@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
+import { Brackets, SelectQueryBuilder } from 'typeorm';
 import { AppDataSource } from '../../../../appdatasource';
 import { InstanceEntity } from '../../../instance/instance.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -10,6 +10,7 @@ import {
 } from '../../dto/registration-data-relation.model';
 import { RegistrationDataError } from '../../errors/registration-data.error';
 import { RegistrationDataEntity } from '../../registration-data.entity';
+import { RegistrationViewEntity } from '../../registration-view.entity';
 import { RegistrationEntity } from '../../registration.entity';
 
 @Injectable()
@@ -45,12 +46,12 @@ export class RegistrationDataService {
     }
   }
 
-  public async getRegistrationDataByName(
+  private getRegistrationDataQuery(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<RegistrationDataByNameDto> {
+  ): SelectQueryBuilder<RegistrationDataEntity> {
     const repo = AppDataSource.getRepository(RegistrationDataEntity);
-    const q = repo
+    return repo
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')
@@ -78,22 +79,37 @@ export class RegistrationDataService {
               name: name,
             });
         }),
-      )
-      .select(
-        `CASE
+      );
+  }
+
+  public async getRegistrationDataByName(
+    registration: RegistrationEntity,
+    name: string,
+  ): Promise<RegistrationDataByNameDto> {
+    const query = this.getRegistrationDataQuery(registration, name);
+    const queryWithSelect = query.select(
+      `CASE
           WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
         END as name,
         value, "registrationData".id`,
-      );
-    const result = q.getRawOne();
+    );
+    const result = queryWithSelect.getRawOne();
     return result;
   }
 
-  public async getRelationForName(
+  public async getRegistrationDataEntityByName(
     registration: RegistrationEntity,
+    name: string,
+  ): Promise<RegistrationDataEntity> {
+    const query = this.getRegistrationDataQuery(registration, name);
+    return query.getOne();
+  }
+
+  public async getRelationForName(
+    registration: RegistrationEntity | RegistrationViewEntity,
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
@@ -120,7 +136,7 @@ export class RegistrationDataService {
         registration: registration.id,
       })
       .andWhere('question.name = :name', { name: name })
-      .andWhere('question."fspId" = :fsp', { fsp: registration.fspId })
+      .andWhere('question."fspId" = fsp.id')
       .select('"question".id', 'id')
       .getRawOne();
     if (resultFspQuestion) {
@@ -155,7 +171,7 @@ export class RegistrationDataService {
 
   // To save registration data you need either a relation or a name
   public async saveData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
@@ -183,7 +199,7 @@ export class RegistrationDataService {
   }
 
   private async saveOneData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string | number | boolean,
     relation: RegistrationDataRelation,
   ): Promise<void> {
@@ -220,7 +236,7 @@ export class RegistrationDataService {
   }
 
   private async saveMultipleData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string[],
     relation: RegistrationDataRelation,
   ): Promise<void> {
@@ -255,7 +271,7 @@ export class RegistrationDataService {
   }
 
   private async saveProgramQuestionData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
   ): Promise<void> {
@@ -273,7 +289,7 @@ export class RegistrationDataService {
       await repoRegistrationData.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -281,7 +297,7 @@ export class RegistrationDataService {
   }
 
   private async saveProgramQuestionDataMultiSelect(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
@@ -296,7 +312,7 @@ export class RegistrationDataService {
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -304,7 +320,7 @@ export class RegistrationDataService {
   }
 
   private async saveFspQuestionData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
   ): Promise<void> {
@@ -322,7 +338,7 @@ export class RegistrationDataService {
       await repoRegistrationData.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.fspQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -330,7 +346,7 @@ export class RegistrationDataService {
   }
 
   private async saveFspQuestionDataMultiSelect(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
@@ -345,7 +361,7 @@ export class RegistrationDataService {
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.fspQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -353,7 +369,7 @@ export class RegistrationDataService {
   }
 
   private async saveProgramCustomAttributeData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
   ): Promise<void> {
@@ -374,7 +390,7 @@ export class RegistrationDataService {
       await repoRegistrationData.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -382,7 +398,7 @@ export class RegistrationDataService {
   }
 
   private async saveProgramCustomAttributeDataMultiSelect(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
@@ -397,7 +413,7 @@ export class RegistrationDataService {
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -405,7 +421,7 @@ export class RegistrationDataService {
   }
 
   private async saveMonitoringQuestionData(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
   ): Promise<void> {
@@ -423,7 +439,7 @@ export class RegistrationDataService {
       await repoRegistrationData.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.monitoringQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);
@@ -431,7 +447,7 @@ export class RegistrationDataService {
   }
 
   private async saveMonitoringQuestionDataMultiSelect(
-    registration: RegistrationEntity,
+    registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
@@ -446,7 +462,7 @@ export class RegistrationDataService {
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registration = registration;
+      newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.monitoringQuestionId = id;
       await repoRegistrationData.save(newRegistrationData);

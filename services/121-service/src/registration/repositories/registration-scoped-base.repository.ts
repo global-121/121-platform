@@ -6,12 +6,12 @@ import {
   Repository,
 } from 'typeorm';
 import { ScopedQueryBuilder } from '../../scoped.repository';
-import { RequestWithScope } from '../../shared/middleware/scope.middleware';
+import { ScopedUserRequest } from '../../shared/middleware/scope-user.middleware';
 import { convertToScopedOptions } from '../../utils/scope/createFindWhereOptions.helper';
 
 export class RegistrationScopedBaseRepository<T> {
   public readonly repository: Repository<T>;
-  public request: RequestWithScope;
+  public request: ScopedUserRequest;
 
   constructor(target: EntityTarget<T>, dataSource: DataSource) {
     this.repository = dataSource.createEntityManager().getRepository(target);

@@ -21,6 +21,7 @@ export class EventEntity extends Base121AuditedEntity {
   @OneToMany(
     (_type) => EventAttributeEntity,
     (eventAttribute) => eventAttribute.event,
+    { cascade: true },
   )
   public attributes: EventAttributeEntity[];
 
