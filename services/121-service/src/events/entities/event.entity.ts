@@ -17,10 +17,13 @@ export class EventEntity extends Base121AuditedEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
   public user: UserEntity;
+  @Column()
+  public userId: number;
 
   @OneToMany(
     (_type) => EventAttributeEntity,
     (eventAttribute) => eventAttribute.event,
+    { cascade: true },
   )
   public attributes: EventAttributeEntity[];
 

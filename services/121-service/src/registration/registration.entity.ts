@@ -19,6 +19,7 @@ import {
   Unique,
 } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
+import { EventEntity } from '../events/entities/event.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
@@ -38,7 +39,6 @@ import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { EventEntity } from '../events/entities/event.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
