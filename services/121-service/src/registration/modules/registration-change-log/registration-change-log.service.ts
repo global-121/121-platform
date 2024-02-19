@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Between } from 'typeorm';
 import { ScopedRepository } from '../../../scoped.repository';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { RegistrationUtilsService } from '../registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from '../registration-utilts/registration-utils.service';
 import { RegistrationChangeLogReturnDto } from './dto/registration-change-log-return.dto';
 import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationChangeLogMapper } from './utils/registration-change-log.mapper';

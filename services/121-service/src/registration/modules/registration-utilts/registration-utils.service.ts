@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
-import { AppDataSource } from '../../../../appdatasource';
+import { InjectRepository } from '@nestjs/typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../registration.entity';
+import { RegistrationScopedRepository } from '../../repositories/registration-scoped.repository';
 import { RegistrationDataService } from '../registration-data/registration-data.service';
 
 @Injectable()
 export class RegistrationUtilsService {
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
+
   constructor(
+    private registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationDataService: RegistrationDataService,
   ) {}
 
@@ -16,12 +21,11 @@ export class RegistrationUtilsService {
     retryCount?: number,
   ): Promise<RegistrationEntity> {
     let saveRetriesCount = retryCount ? retryCount : 0;
-    const regRepo = AppDataSource.getRepository(RegistrationEntity);
     if (!registration.registrationProgramId) {
-      const query = regRepo
+      const query = this.registrationScopedRepository
         .createQueryBuilder('r')
         .select('r."registrationProgramId"')
-        .where('r.programId = :programId', {
+        .andWhere('r.programId = :programId', {
           programId: registration.program.id,
         })
         .andWhere('r.registrationProgramId is not null')
@@ -33,7 +37,7 @@ export class RegistrationUtilsService {
         : 1;
     }
     try {
-      return await regRepo.save(registration);
+      return await this.registrationScopedRepository.save(registration);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         // This is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
@@ -53,10 +57,11 @@ export class RegistrationUtilsService {
   }
 
   public async getFullName(registration: RegistrationEntity): Promise<string> {
-    const repoProgram = AppDataSource.getRepository(ProgramEntity);
     let fullName = '';
     const fullnameConcat = [];
-    const program = await repoProgram.findOneBy({ id: registration.programId });
+    const program = await this.programRepository.findOneBy({
+      id: registration.programId,
+    });
     if (program && program.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(
         JSON.stringify(program.fullnameNamingConvention),

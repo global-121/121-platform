@@ -11,7 +11,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataModule } from '../registration/modules/registration-data/registration-data.module';
-import { RegistrationUtilsModule } from '../registration/modules/registration-utilts.module.ts/registration-utils.module';
+import { RegistrationUtilsModule } from '../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';

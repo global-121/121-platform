@@ -7,7 +7,7 @@ import { MessageTemplateModule } from '../../notifications/message-template/mess
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationUtilsModule } from '../../registration/modules/registration-utilts.module.ts/registration-utils.module';
+import { RegistrationUtilsModule } from '../../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
 import { UserModule } from '../../user/user.module';
 import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';

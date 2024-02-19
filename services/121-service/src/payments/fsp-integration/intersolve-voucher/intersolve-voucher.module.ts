@@ -9,7 +9,7 @@ import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configurati
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
-import { RegistrationUtilsModule } from '../../../registration/modules/registration-utilts.module.ts/registration-utils.module';
+import { RegistrationUtilsModule } from '../../../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { UserModule } from '../../../user/user.module';

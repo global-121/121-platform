@@ -9,7 +9,7 @@ import { QueueMessageService } from '../../notifications/queue-message/queue-mes
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
-import { RegistrationUtilsService } from '../../registration/modules/registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from '../../registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';

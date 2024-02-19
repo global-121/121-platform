@@ -37,7 +37,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { RegistrationUtilsService } from '../modules/registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from '../modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';

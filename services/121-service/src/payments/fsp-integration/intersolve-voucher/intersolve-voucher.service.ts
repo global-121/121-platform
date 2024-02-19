@@ -19,7 +19,7 @@ import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configurati
 import { ProgramEntity } from '../../../programs/program.entity';
 import { LanguageEnum } from '../../../registration/enum/language.enum';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '../../../registration/modules/registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from '../../../registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';

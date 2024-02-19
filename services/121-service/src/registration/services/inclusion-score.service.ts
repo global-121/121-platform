@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
 import { RegistrationDataService } from '../modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '../modules/registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from '../modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';

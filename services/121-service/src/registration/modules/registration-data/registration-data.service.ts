@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { AppDataSource } from '../../../../appdatasource';
 import { InstanceEntity } from '../../../instance/instance.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { ScopedRepository } from '../../../scoped.repository';
+import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { RegistrationDataByNameDto } from '../../dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
@@ -12,9 +15,20 @@ import { RegistrationDataError } from '../../errors/registration-data.error';
 import { RegistrationDataEntity } from '../../registration-data.entity';
 import { RegistrationViewEntity } from '../../registration-view.entity';
 import { RegistrationEntity } from '../../registration.entity';
+import { RegistrationScopedRepository } from '../../repositories/registration-scoped.repository';
 
 @Injectable()
 export class RegistrationDataService {
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(InstanceEntity)
+  private readonly instanceRepository: Repository<InstanceEntity>;
+  public constructor(
+    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
+    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+  ) {}
+
   public async getRegistrationValueByName(
     registration: RegistrationEntity,
     name: string,
@@ -50,8 +64,7 @@ export class RegistrationDataService {
     registration: RegistrationEntity,
     name: string,
   ): SelectQueryBuilder<RegistrationDataEntity> {
-    const repo = AppDataSource.getRepository(RegistrationDataEntity);
-    return repo
+    return this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')
@@ -61,10 +74,10 @@ export class RegistrationDataService {
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
       )
-      .where('registration.id = :id', { id: registration.id })
+      .andWhere('registration.id = :id', { id: registration.id })
       .andWhere(
         new Brackets((qb) => {
-          qb.where(`programQuestion.name = :name`, { name: name })
+          qb.andWhere(`programQuestion.name = :name`, { name: name })
             .orWhere(
               `(fspQuestion.name = :name AND "fspQuestion"."fspId" = :fsp)`,
               {
@@ -113,11 +126,12 @@ export class RegistrationDataService {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const repoProgram = AppDataSource.getRepository(ProgramEntity);
-    const query = repoProgram
+    const query = this.programRepository
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
-      .where('program.id = :programId', { programId: registration.programId })
+      .andWhere('program.id = :programId', {
+        programId: registration.programId,
+      })
       .andWhere('programQuestion.name = :name', { name: name })
       .select('"programQuestion".id', 'id');
 
@@ -127,12 +141,12 @@ export class RegistrationDataService {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
     }
-    const repoRegistration = AppDataSource.getRepository(RegistrationEntity);
-    const resultFspQuestion = await repoRegistration
+
+    const resultFspQuestion = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin('fsp.questions', 'question')
-      .where('registration.id = :registration', {
+      .andWhere('registration.id = :registration', {
         registration: registration.id,
       })
       .andWhere('question.name = :name', { name: name })
@@ -143,10 +157,12 @@ export class RegistrationDataService {
       result.fspQuestionId = resultFspQuestion.id;
       return result;
     }
-    const resultProgramCustomAttribute = await repoProgram
+    const resultProgramCustomAttribute = await this.programRepository
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-      .where('program.id = :programId', { programId: registration.programId })
+      .andWhere('program.id = :programId', {
+        programId: registration.programId,
+      })
       .andWhere('programCustomAttribute.name = :name', { name: name })
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();
@@ -154,11 +170,10 @@ export class RegistrationDataService {
       result.programCustomAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
-    const repoInstance = AppDataSource.getRepository(InstanceEntity);
-    const resultMonitoringQuestion = await repoInstance
+    const resultMonitoringQuestion = await this.instanceRepository
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
-      .where('question.name = :name', { name: name })
+      .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
     if (resultMonitoringQuestion) {
@@ -175,7 +190,6 @@ export class RegistrationDataService {
     value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
-    const repo = AppDataSource.getRepository(RegistrationEntity);
     let relation = options.relation;
     if (!options.relation && !options.name) {
       const errors = `Cannot save registration data, need either a dataRelation or a name`;
@@ -190,7 +204,7 @@ export class RegistrationDataService {
       await this.saveOneData(registration, value, relation);
     }
 
-    return await repo.findOne({
+    return await this.registrationScopedRepository.findOne({
       relations: ['data'],
       where: {
         id: registration.id,
@@ -275,24 +289,21 @@ export class RegistrationDataService {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-    const existingEntry = await repoRegistrationData
+    const existingEntry = await this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :regId', { regId: registration.id })
+      .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.programQuestion', 'programQuestion')
       .andWhere('programQuestion.id = :id', { id: id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
-      await repoRegistrationData.save(existingEntry);
+      await this.registrationDataScopedRepository.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
@@ -329,7 +340,7 @@ export class RegistrationDataService {
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :regId', { regId: registration.id })
+      .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
       .andWhere('fspQuestion.id = :id', { id: id })
       .getOne();
@@ -350,11 +361,7 @@ export class RegistrationDataService {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-
-    await repoRegistrationData.delete({
+    await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
       fspQuestion: { id: id },
     });
@@ -364,7 +371,7 @@ export class RegistrationDataService {
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.fspQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
@@ -373,12 +380,9 @@ export class RegistrationDataService {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-    const existingEntry = await repoRegistrationData
+    const existingEntry = await this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :regId', { regId: registration.id })
+      .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin(
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
@@ -387,13 +391,13 @@ export class RegistrationDataService {
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
-      await repoRegistrationData.save(existingEntry);
+      await this.registrationDataScopedRepository.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
@@ -402,11 +406,7 @@ export class RegistrationDataService {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-
-    await repoRegistrationData.delete({
+    await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
       programCustomAttribute: { id: id },
     });
@@ -416,7 +416,7 @@ export class RegistrationDataService {
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
@@ -425,24 +425,21 @@ export class RegistrationDataService {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-    const existingEntry = await repoRegistrationData
+    const existingEntry = await this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :regId', { regId: registration.id })
+      .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
       .andWhere('monitoringQuestion.id = :id', { id: id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
-      await repoRegistrationData.save(existingEntry);
+      await this.registrationDataScopedRepository.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.monitoringQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
@@ -451,11 +448,7 @@ export class RegistrationDataService {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-
-    await repoRegistrationData.delete({
+    await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
       monitoringQuestion: { id: id },
     });
@@ -465,7 +458,7 @@ export class RegistrationDataService {
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.monitoringQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
+      await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 }

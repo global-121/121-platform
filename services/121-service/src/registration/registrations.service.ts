@@ -50,7 +50,7 @@ import {
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
 import { RegistrationDataService } from './modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from './modules/registration-utilts.module.ts/registration-utils.service';
+import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
