@@ -826,6 +826,7 @@ export class MetricsService {
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
+    // The SUBSTRING() in the query below is to prevent an error within the XLSX library when the string is too long (32767 characters)
     const transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select([
