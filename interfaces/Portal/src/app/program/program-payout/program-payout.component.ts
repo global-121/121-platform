@@ -44,7 +44,6 @@ export class ProgramPayoutComponent implements OnInit {
   public programHasVoucherSupport: boolean;
   public hasFspWithExportFileIntegration: boolean;
   public hasFspWithReconciliation: boolean;
-  public fspIdsWithReconciliation: number[];
   public canMakeFspInstructions: boolean;
 
   public canViewPayment: boolean;
@@ -84,14 +83,15 @@ export class ProgramPayoutComponent implements OnInit {
     this.programHasVoucherSupport = this.checkProgramHasVoucherSupport(
       this.program.financialServiceProviders,
     );
-    this.hasFspWithExportFileIntegration = this.checkFspIntegrationType(
-      this.program.financialServiceProviders,
-      [FspIntegrationType.csv, FspIntegrationType.xml],
+    this.hasFspWithExportFileIntegration =
+      this.program.financialServiceProviders.some((fsp) =>
+        [FspIntegrationType.csv, FspIntegrationType.xml].includes(
+          fsp.integrationType,
+        ),
+      );
+    this.hasFspWithReconciliation = this.program.financialServiceProviders.some(
+      (fsp) => fsp.hasReconciliation,
     );
-    this.fspIdsWithReconciliation = this.program.financialServiceProviders
-      .filter((fsp) => fsp.hasReconciliation)
-      .map((fsp) => fsp.id);
-    this.hasFspWithReconciliation = this.fspIdsWithReconciliation.length > 0;
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canViewPayment = this.checkCanViewPayment();
@@ -315,18 +315,6 @@ export class ProgramPayoutComponent implements OnInit {
   ): boolean {
     for (const fsp of fsps || []) {
       if (fsp && PaymentUtils.hasVoucherSupport(fsp.fsp)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private checkFspIntegrationType(
-    fsps: Program['financialServiceProviders'],
-    integrationTypes: FspIntegrationType[],
-  ): boolean {
-    for (const fsp of fsps || []) {
-      if (fsp && integrationTypes.includes(fsp.integrationType)) {
         return true;
       }
     }
