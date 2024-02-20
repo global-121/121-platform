@@ -5,8 +5,6 @@ import * as convert from 'xml-js';
 
 @Injectable()
 export class FileImportService {
-  public constructor() {}
-
   public async validateCsv(csvFile): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
