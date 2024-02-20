@@ -59,7 +59,7 @@
       [paymentInProgress]="paymentInProgress"
     ></app-export-fsp-instructions>
     <app-import-fsp-reconciliation
-      *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
+      *ngIf="hasFspWithReconciliation && canImportFspReconciliation"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"

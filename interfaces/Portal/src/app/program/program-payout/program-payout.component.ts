@@ -45,6 +45,7 @@ export class ProgramPayoutComponent implements OnInit {
   public hasFspWithExportFileIntegration: boolean;
   public hasFspWithReconciliation: boolean;
   public canMakeFspInstructions: boolean;
+  public canImportFspReconciliation: boolean;
 
   public canViewPayment: boolean;
   public canMakePayment: boolean;
@@ -101,6 +102,7 @@ export class ProgramPayoutComponent implements OnInit {
       return;
     }
     this.canMakeFspInstructions = this.checkCanMakeFspInstructions();
+    this.canImportFspReconciliation = this.checkCanImportFspReconciliation();
 
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
@@ -161,6 +163,14 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.id,
       Permission.PaymentFspInstructionREAD,
     );
+  }
+
+  private checkCanImportFspReconciliation(): boolean {
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentCREATE,
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+    ]);
   }
 
   checkShowCbeValidation(): boolean {
