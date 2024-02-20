@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { FileImportService } from '../../../utils/file-import/file-import.service';
 import {
@@ -26,6 +28,7 @@ export class VodacashService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly fileImportService: FileImportService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async sendPayment(
@@ -150,10 +153,31 @@ export class VodacashService
     return importRecord;
   }
 
+  public async getRegistrationsForReconciliation(
+    programId: number,
+    payment: number,
+  ): Promise<RegistrationViewEntity[]> {
+    const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
+      programId,
+      payment,
+      FspName.vodacash,
+    );
+    const chunkSize = 400000;
+    return await this.registrationsPaginationService.getRegistrationsChunked(
+      programId,
+      {
+        select: ['phoneNumber'],
+        path: '',
+      },
+      chunkSize,
+      qb,
+    );
+  }
+
   public async findReconciliationRegistration(
     importRecord: ImportFspReconciliationArrayDto,
-    registrations: RegistrationEntity[],
-  ): Promise<RegistrationEntity> {
+    registrations: RegistrationViewEntity[],
+  ): Promise<RegistrationViewEntity> {
     for (const registration of registrations) {
       if (importRecord.phoneNumber === registration.phoneNumber) {
         return registration;
@@ -162,20 +186,20 @@ export class VodacashService
   }
 
   public async createTransactionResult(
-    registration: RegistrationEntity,
+    referenceId: string,
     record: ImportFspReconciliationArrayDto,
     programId: number,
     payment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.referenceId = registration.referenceId;
+    paTransactionResult.referenceId = referenceId;
     paTransactionResult.fspName = FspName.vodacash;
     paTransactionResult.status = StatusEnum.error;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(
         programId,
         payment,
-        registration.referenceId,
+        referenceId,
       )
     )[0].amount;
     if (record) {

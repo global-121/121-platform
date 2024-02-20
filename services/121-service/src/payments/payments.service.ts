@@ -68,7 +68,7 @@ export class PaymentsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionService,
     private readonly azureLogService: AzureLogService,
-    private readonly transactionService: TransactionsService,
+    private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
@@ -115,14 +115,14 @@ export class PaymentsService {
       .select(['status', 'COUNT(*) as count'])
       .from(
         '(' +
-          this.transactionService
+          this.transactionsService
             .getLastTransactionsQuery(programId, payment)
             .getQuery() +
           ')',
         'transactions',
       )
       .setParameters(
-        this.transactionService
+        this.transactionsService
           .getLastTransactionsQuery(programId, payment)
           .getParameters(),
       )
@@ -636,7 +636,7 @@ export class PaymentsService {
     payment: number,
   ): Promise<RegistrationEntity[]> {
     const referenceIds = (
-      await this.transactionService.getLastTransactions(
+      await this.transactionsService.getLastTransactions(
         programId,
         payment,
         null,
@@ -740,7 +740,7 @@ export class PaymentsService {
       // If no referenceIds passed, retry all failed transactions for this payment
       // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
-        await this.transactionService.getLastTransactions(
+        await this.transactionsService.getLastTransactions(
           programId,
           payment,
           null,
@@ -799,7 +799,7 @@ export class PaymentsService {
     userId: number,
   ): Promise<FspInstructions> {
     const exportPaymentTransactions = (
-      await this.transactionService.getLastTransactions(
+      await this.transactionsService.getLastTransactions(
         programId,
         payment,
         null,
@@ -902,25 +902,25 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<ImportResult> {
-    // NOTE: this code is still really ambigious because it seems to facilitate multiple FSPs, but it does not in practice because e.g. only 1 (fsp-specific) file is uploaded
-    let validatedImport;
-    const registrationsInPayment = await this.getRegistrationsForReconsiliation(
-      programId,
-      payment,
-    );
-    const fspsInPayment = [
-      ...new Set(registrationsInPayment.map((r) => r.fsp.fsp)),
-    ];
+    // NOTE: this code is still really ambiguous because it seems to facilitate multiple FSPs, but it does not in practice because e.g. only 1 (fsp-specific) file is uploaded
+    const programWithReconciliationFsps = await this.programRepository.findOne({
+      where: {
+        id: programId,
+        financialServiceProviders: { hasReconciliation: true },
+      },
+      relations: ['financialServiceProviders'],
+    });
 
-    const importResponseRecords = [];
-    for (const fsp of fspsInPayment) {
-      if (fsp === FspName.vodacash) {
+    let importResponseRecords = [];
+    for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
+      if (fsp.fsp === FspName.vodacash) {
         const validatedVodacashImport =
           await this.vodacashService.xmlToValidatedFspReconciliation(file);
-        validatedImport = validatedVodacashImport;
-        const vodacashRegistrations = registrationsInPayment.filter(
-          (r) => r.fsp.fsp === FspName.vodacash,
-        );
+        const vodacashRegistrations =
+          await this.vodacashService.getRegistrationsForReconciliation(
+            programId,
+            payment,
+          );
         for (const record of validatedVodacashImport) {
           const matchedRegistration =
             await this.vodacashService.findReconciliationRegistration(
@@ -930,7 +930,7 @@ export class PaymentsService {
           if (matchedRegistration) {
             record['paTransactionResult'] =
               await this.vodacashService.createTransactionResult(
-                matchedRegistration,
+                matchedRegistration.referenceId,
                 record,
                 programId,
                 payment,
@@ -940,39 +940,38 @@ export class PaymentsService {
         }
       }
 
-      if (fsp === FspName.excel) {
-        const validatedExcelImport =
-          await this.fileImportService.validateCsv(file);
-        validatedImport = validatedExcelImport;
+      if (fsp.fsp === FspName.excel) {
+        const maxRecords = 10000;
+        const validatedExcelImport = await this.fileImportService.validateCsv(
+          file,
+          maxRecords,
+        );
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
-        const excelRegistrations = registrationsInPayment.filter(
-          (r) => r.fsp.fsp === FspName.excel,
+        const excelRegistrations =
+          await this.excelService.getRegistrationsForReconciliation(
+            programId,
+            payment,
+            matchColumn,
+          );
+        const transactions = await this.transactionsService.getLastTransactions(
+          programId,
+          payment,
         );
-        for (const record of validatedExcelImport) {
-          const matchedRegistration =
-            await this.excelService.findReconciliationRegistration(
-              record,
-              excelRegistrations,
-              matchColumn,
-            );
-          if (matchedRegistration) {
-            record['paTransactionResult'] =
-              await this.excelService.createTransactionResult(
-                matchedRegistration,
-                record,
-                programId,
-                payment,
-              );
-          }
-          importResponseRecords.push(record);
-        }
+        importResponseRecords =
+          this.excelService.joinRegistrationsAndImportRecords(
+            excelRegistrations,
+            validatedExcelImport,
+            matchColumn,
+            transactions,
+          );
       }
     }
 
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
     let countNotFound = 0;
+    const transactionsToSave = [];
     for (const importResponseRecord of importResponseRecords) {
       if (!importResponseRecord.paTransactionResult) {
         importResponseRecord.importStatus = ImportStatus.notFound;
@@ -980,15 +979,7 @@ export class PaymentsService {
         continue;
       }
 
-      const transactionRelationDetails: TransactionRelationDetailsDto = {
-        programId,
-        paymentNr: payment,
-        userId,
-      };
-      await this.transactionService.storeTransactionUpdateStatus(
-        importResponseRecord.paTransactionResult,
-        transactionRelationDetails,
-      );
+      transactionsToSave.push(importResponseRecord.paTransactionResult);
       importResponseRecord.importStatus = ImportStatus.imported;
       countPaymentSuccess += Number(
         importResponseRecord.paTransactionResult.status === StatusEnum.success,
@@ -999,6 +990,16 @@ export class PaymentsService {
       delete importResponseRecord.paTransactionResult;
     }
 
+    const transactionRelationDetails: TransactionRelationDetailsDto = {
+      programId,
+      paymentNr: payment,
+      userId,
+    };
+    await this.transactionsService.storeAllTransactionsBulk(
+      transactionsToSave,
+      transactionRelationDetails,
+    );
+
     await this.actionService.saveAction(
       userId,
       programId,
@@ -1008,8 +1009,6 @@ export class PaymentsService {
     return {
       importResult: importResponseRecords,
       aggregateImportResult: {
-        countImported: validatedImport.length,
-        countPaymentStarted: registrationsInPayment.length,
         countPaymentFailed,
         countPaymentSuccess,
         countNotFound,

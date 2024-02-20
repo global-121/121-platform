@@ -430,7 +430,11 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<BulkImportDto[]> {
-    const importRecords = await this.fileImportService.validateCsv(csvFile);
+    const maxRecords = 1000;
+    const importRecords = await this.fileImportService.validateCsv(
+      csvFile,
+      maxRecords,
+    );
     return await this.validateBulkImportCsvInput(
       importRecords,
       programId,
@@ -443,7 +447,11 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    const importRecords = await this.fileImportService.validateCsv(csvFile);
+    const maxRecords = 1000;
+    const importRecords = await this.fileImportService.validateCsv(
+      csvFile,
+      maxRecords,
+    );
     return await this.validateRegistrationsInput(
       importRecords,
       programId,

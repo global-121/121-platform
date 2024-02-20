@@ -7,7 +7,7 @@ import * as convert from 'xml-js';
 export class FileImportService {
   public constructor() {}
 
-  public async validateCsv(csvFile): Promise<object[]> {
+  public async validateCsv(csvFile, maxRecords?: number): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -23,8 +23,7 @@ export class FileImportService {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
     }
 
-    const maxRecords = 1000;
-    if (importRecords.length > maxRecords) {
+    if (maxRecords && importRecords.length > maxRecords) {
       const errors = [
         `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
       ];

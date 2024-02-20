@@ -33,6 +33,8 @@ export class ErrorHandlerService extends ErrorHandler {
         return this.formatConstraintsErrors(error.error.message, attribute);
       } else if (Array.isArray(error.error.errors)) {
         return this.formatConstraintsErrors(error.error.errors, attribute);
+      } else if (Array.isArray(error.error)) {
+        return '<br><br>' + error.error[0] + '<br>';
       } else {
         return '<br><br>' + error.error.message + '<br>';
       }

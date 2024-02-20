@@ -49,6 +49,7 @@ graph LR
   UkrPoshtaModule-->TransactionsModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule

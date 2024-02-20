@@ -79,7 +79,6 @@ export class AggregateImportResult {
   public countNotFound?: number;
   public countPaymentSuccess?: number;
   public countPaymentFailed?: number;
-  public countPaymentStarted?: number;
 }
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({
