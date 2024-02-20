@@ -31,19 +31,24 @@
 >
   <h2>{{ paDisplayName }}</h2>
 
-  <!-- Accordion -->
-  <ion-accordion-group [multiple]="true">
-    <ng-container *ngFor="let paymentRow of paymentRows">
-      <app-payment-history-accordion
-        [paymentRow]="paymentRow"
-        [enableSinglePayment]="enableSinglePayment(paymentRow)"
-        [person]="person"
-        [program]="program"
-        [paymentRows]="enableSinglePayment(paymentRow)"
-        [canViewVouchers]="canViewVouchers"
-        [canDoSinglePayment]="canDoSinglePayment"
-        [lastPaymentId]="lastPaymentId"
-      ></app-payment-history-accordion>
-    </ng-container>
-  </ion-accordion-group>
+  <ng-container *ngFor="let activity of paymentRows">
+    <app-registration-activity-detail
+      [activity]="activity"
+      [locale]="locale"
+      style="border-top: 1px solid var(--fiveten-neutral-100)"
+    >
+      <div body>
+        <!-- <app-payment-history-accordion
+          [paymentRow]="paymentRow"
+          [enableSinglePayment]="enableSinglePayment(paymentRow)"
+          [person]="person"
+          [program]="program"
+          [paymentRows]="enableSinglePayment(paymentRow)"
+          [canViewVouchers]="canViewVouchers"
+          [canDoSinglePayment]="canDoSinglePayment"
+          [lastPaymentId]="lastPaymentId"
+        ></app-payment-history-accordion> -->
+      </div>
+    </app-registration-activity-detail>
+  </ng-container>
 </ion-content>

@@ -9,6 +9,12 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { environment } from '../../../environments/environment';
+import { RegistrationActivityDetailComponent } from '../../components/registration-activity-detail/registration-activity-detail.component';
+import {
+  RegistrationActivity,
+  RegistrationActivityType,
+} from '../../models/registration-activity.model';
 import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
 import { StatusEnum } from './../../models/status.enum';
 @Component({
@@ -21,6 +27,7 @@ import { StatusEnum } from './../../models/status.enum';
     CommonModule,
     TranslateModule,
     PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailComponent,
   ],
 })
 export class PaymentHistoryPopupComponent implements OnInit {
@@ -31,7 +38,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public program: Program;
 
   @Input()
-  public paymentRows: PaymentRowDetail[] = [];
+  public paymentRows: RegistrationActivity[] = [];
 
   @Input()
   private canViewPersonalData = false;
@@ -54,6 +61,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public isInProgress = false;
   public paDisplayName: string;
   private programId: number;
+  public locale: string;
   private pastTransactions: Transaction[] = [];
 
   constructor(
@@ -61,7 +69,9 @@ export class PaymentHistoryPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private pastPaymentsService: PastPaymentsService,
-  ) {}
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     this.programId = this.program?.id;
@@ -176,7 +186,16 @@ export class PaymentHistoryPopupComponent implements OnInit {
           false,
         )
       ) {
-        this.paymentRows.push(paymentRowValue);
+        this.paymentRows.push({
+          paymentRowDetail: { ...paymentRowValue },
+          type: RegistrationActivityType.payment,
+          date: new Date(paymentRowValue.sentDate),
+          label: this.translate.instant(
+            'registration-details.payment-history.transfer',
+            { paymentNr: paymentRowValue.paymentIndex },
+          ),
+          user: paymentRowValue.transaction?.user.username,
+        });
       }
     }
   }

@@ -18,6 +18,10 @@ export class Transaction {
     | any;
   fspName: string;
   fsp: FspName;
+  user: {
+    id: number;
+    username: string;
+  };
 }
 
 export class PaymentSummary {

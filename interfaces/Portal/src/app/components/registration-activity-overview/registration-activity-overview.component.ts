@@ -238,6 +238,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           paymentRowDetail: { ...v },
           type: RegistrationActivityType.payment,
           date: new Date(v.sentDate),
+          label: this.translate.instant(
+            'registration-details.payment-history.transfer',
+            { paymentNr: v.paymentIndex },
+          ),
+          user: v.transaction.user.username,
         });
       });
       this.activityOverview = [...tempData];
