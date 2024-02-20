@@ -120,11 +120,13 @@ export class IntersolveVisaService
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
     if (!transactionDetails.data?.success) {
+      const error =
+        transactionDetails.data?.errors ||
+        'Intersolve-visa: Get transactions API-call failed';
+      console.error(error);
       throw new HttpException(
         {
-          errors:
-            transactionDetails.data?.errors ||
-            'Get transactions API-call failed',
+          errors: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
@@ -727,8 +729,14 @@ export class IntersolveVisaService
       wallet.tokenCode,
     );
     if (!walletDetails.data?.success) {
+      const error =
+        walletDetails.data?.errors ||
+        'Intersolve-visa: Get wallet API-call failed';
+      console.error(error);
       throw new HttpException(
-        { errors: walletDetails.data?.errors || 'Get wallet API-call failed' },
+        {
+          errors: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
     }
