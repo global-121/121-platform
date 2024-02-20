@@ -15,7 +15,7 @@ export class EventGetService {
     private eventRepository: ScopedRepository<EventEntity>,
   ) {}
 
-  public async getEventsJson(
+  public async getEventsJsonDto(
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<GetEventDto[]> {
@@ -23,7 +23,7 @@ export class EventGetService {
     return EventsMapper.mapEventsToJsonDtos(events);
   }
 
-  public async getEventsXlsx(
+  public async getEventsXlsxDto(
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<GetEventXlsxDto[]> {
@@ -42,7 +42,6 @@ export class EventGetService {
       order: { created: 'DESC' },
       take: exportLimit,
     });
-    console.log('🚀 ~ EventGetService ~ events:', JSON.stringify(events));
     return events;
   }
 

@@ -61,13 +61,13 @@ export class EventController {
     // TODO - should this have a different filename?
     const filename = `registration-data-change-events`;
     if (format === ExportFileFormat.xlsx) {
-      const result = await this.eventService.getEventsXlsx(
+      const result = await this.eventService.getEventsXlsxDto(
         programId,
         queryParams,
       );
       return sendXlsxReponse(result, filename, res);
     }
-    const result = await this.eventService.getEventsJson(
+    const result = await this.eventService.getEventsJsonDto(
       programId,
       queryParams,
     );
@@ -98,6 +98,8 @@ export class EventController {
     @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<GetEventDto[]> {
-    return await this.eventService.getEventsJson(programId, { registrationId });
+    return await this.eventService.getEventsJsonDto(programId, {
+      registrationId,
+    });
   }
 }
