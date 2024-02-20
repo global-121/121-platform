@@ -50,25 +50,7 @@
       </small>
     </div>
     <div class="activity-detail--body ion-padding-top">
-      <div
-        [innerHTML]="activity.description"
-        style="white-space: pre-wrap"
-      ></div>
-
-      <div
-        *ngIf="activity.messageErrorCode"
-        class="util--half-margin-top"
-      >
-        <ion-note>
-          {{ 'entity.message.error-code-prefix' | translate }}
-          <a
-            [href]="errorCodeUrl + activity.messageErrorCode"
-            target="_blank"
-            rel="external noopener noreferrer"
-            >{{ activity.messageErrorCode }}</a
-          ></ion-note
-        >
-      </div>
+      <ng-content select="[body]"></ng-content>
     </div>
   </div>
 </article>

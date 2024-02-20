@@ -78,14 +78,82 @@
   </div>
   <div class="ion-no-padding">
     <ng-container
-      *ngFor="let item of getFilteredActivityOverview()"
+      *ngFor="let activity of getFilteredActivityOverview()"
       style="outline: 1px dashed hotpink"
     >
-      <div
+      <app-registration-activity-detail
+        [activity]="activity"
+        [locale]="locale"
+        style="border-top: 1px solid var(--fiveten-neutral-100)"
+      >
+        <div
+          [ngSwitch]="activity.type"
+          body
+        >
+          <ng-container *ngSwitchCase="RegistrationActivityType.payment">
+            <!-- <app-payment-history-accordion
+              [paymentRow]="activity.paymentRowDetail"
+              [enableSinglePayment]="
+                enableSinglePayment(activity.paymentRowDetail)
+              "
+              [person]="person"
+              [program]="program"
+              [paymentRows]="enableSinglePayment(paymentRow)"
+              [canViewVouchers]="canViewVouchers"
+              [canDoSinglePayment]="canDoSinglePayment"
+              [lastPaymentId]="lastPaymentId"
+            ></app-payment-history-accordion> -->
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.message">
+            <div
+              [innerHTML]="activity.description"
+              style="white-space: pre-wrap"
+            ></div>
+
+            <div
+              *ngIf="activity.messageErrorCode"
+              class="util--half-margin-top"
+            >
+              <ion-note>
+                {{ 'entity.message.error-code-prefix' | translate }}
+                <a
+                  [href]="errorCodeUrl + activity.messageErrorCode"
+                  target="_blank"
+                  rel="external noopener noreferrer"
+                  >{{ activity.messageErrorCode }}</a
+                ></ion-note
+              >
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.changeData">
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.old'
+                | translate
+            }}</strong
+            >{{ activity.description.oldValue }}<br />
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.new'
+                | translate
+            }}</strong
+            >{{ activity.description.newValue }}<br />
+            <ng-container *ngIf="activity.description.reason">
+              <strong>{{
+                'registration-details.activity-overview.activities.data-changes.reason'
+                  | translate
+              }}</strong
+              >{{ activity.description.reason }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngSwitchDefault>{{
+            activity.description
+          }}</ng-container>
+        </div>
+      </app-registration-activity-detail>
+
+      <!-- <div
         *ngIf="item.type === 'payment'"
         style="border-top: 1px solid var(--fiveten-neutral-100)"
       >
-        <!-- Accordion -->
         <ion-accordion-group [multiple]="true">
           <app-payment-history-accordion
             [paymentRow]="item.paymentRowDetail"
@@ -105,7 +173,7 @@
         [activity]="item"
         [locale]="locale"
         style="border-top: 1px solid var(--fiveten-neutral-100)"
-      ></app-registration-activity-detail>
+      ></app-registration-activity-detail> -->
     </ng-container>
   </div>
 </div>

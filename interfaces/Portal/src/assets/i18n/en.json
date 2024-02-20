@@ -668,8 +668,9 @@
       "activities": {
         "data-changes": {
           "label": "Data change",
-          "reason": "<br><b>Reason:</b> {{reason}}",
-          "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}"
+          "new": "New: ",
+          "old": "Old: ",
+          "reason": "Reason: "
         },
         "message": {
           "label": "Message"

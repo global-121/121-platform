@@ -55,6 +55,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   public statusChanges: RegistrationStatusChange[];
 
+  public RegistrationActivityType = RegistrationActivityType;
+
   public locale: string;
   public firstPaymentToShow = 1;
   public activityOverview: RegistrationActivity[];
@@ -310,21 +312,14 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           newValue = this.enumService.getEnumLabel(change.fieldName, newValue);
         }
 
-        let description = this.translate.instant(
-          'registration-details.activity-overview.activities.data-changes.values',
-          {
-            oldValue: oldValue,
-            newValue: newValue,
-          },
-        );
-        if (change.reason) {
-          description += this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.reason',
-            {
-              reason: change.reason,
-            },
-          );
-        }
+        const reason = change.reason || null;
+
+        const description = {
+          oldValue,
+          newValue,
+          reason,
+        };
+
         this.activityOverview.push({
           type: RegistrationActivityType.changeData,
           label: this.translate.instant(
