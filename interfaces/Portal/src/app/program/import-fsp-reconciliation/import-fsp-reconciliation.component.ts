@@ -26,6 +26,9 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   @Input()
   public lastPaymentId: number;
 
+  @Input()
+  public paymentInProgress: boolean;
+
   public disabled: boolean;
   public isInProgress = false;
 
@@ -85,7 +88,9 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
         Permission.PaymentTransactionREAD,
       ]) &&
       this.payment > 0 &&
-      this.payment <= this.lastPaymentId
+      this.payment <= this.lastPaymentId &&
+      // only disable last payment if in progress
+      (!this.paymentInProgress || this.payment < this.lastPaymentId)
     );
   }
 
