@@ -20,7 +20,7 @@ import { ExportFileFormat } from '../metrics/enum/export-file-format.enum';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import { GetEventDto } from './dto/get-event.dto';
-import { EventGetService } from './events-get/events.get.service';
+import { EventGetService } from './events-get/events-get.service';
 
 @UseGuards(PermissionsGuard)
 @Controller()

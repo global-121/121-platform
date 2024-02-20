@@ -42,6 +42,7 @@ export class EventGetService {
       order: { created: 'DESC' },
       take: exportLimit,
     });
+    console.log('🚀 ~ EventGetService ~ events:', JSON.stringify(events));
     return events;
   }
 
