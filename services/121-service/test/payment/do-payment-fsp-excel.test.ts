@@ -125,7 +125,9 @@ describe('Download FSP instructions', () => {
       .configuration.find(
         (c) => c.name === FspConfigurationEnum.columnsToExport,
       );
-    const columns = JSON.parse(configValue.value).concat(['amount']);
+    const columns = Array.isArray(configValue.value)
+      ? [...configValue.value, 'amount']
+      : [];
 
     // Act
     const transactionsResponse = await getTransactions(
