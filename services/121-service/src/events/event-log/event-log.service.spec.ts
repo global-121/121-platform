@@ -45,7 +45,7 @@ let eventRepository: jest.Mocked<any>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
-describe('IntersolveVisaService', () => {
+describe('EventLogService', () => {
   let eventsLogService: EventsLogService;
 
   beforeEach(() => {
