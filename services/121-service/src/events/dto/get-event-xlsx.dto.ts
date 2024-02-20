@@ -1,7 +1,7 @@
 import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
 import { EventEnum } from '../enum/event.enum';
 
-export class ExportEventDto {
+export class GetEventXlsxDto {
   paId: number;
   referenceId: string;
   type: EventEnum;

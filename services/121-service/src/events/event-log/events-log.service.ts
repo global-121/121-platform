@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
-import { EventAttributeEntity } from './entities/event-attribute.entity';
-import { EventEntity } from './entities/event.entity';
-import { EventAttributeKeyEnum } from './enum/event-attribute-key.enum';
-import { EventEnum } from './enum/event.enum';
+import { RegistrationViewEntity } from '../../registration/registration-view.entity';
+import { ScopedUserRequest } from '../../shared/middleware/scope-user.middleware';
+import { EventAttributeEntity } from '../entities/event-attribute.entity';
+import { EventEntity } from '../entities/event.entity';
+import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
+import { EventEnum } from '../enum/event.enum';
 
 @Injectable()
 export class EventsLogService {

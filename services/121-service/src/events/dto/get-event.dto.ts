@@ -16,4 +16,6 @@ export class GetEventDto {
   public readonly created: Date;
   @ApiProperty({ example: { exampleKey: 'exampleValue' } })
   public readonly attributes: AttributesDto;
+  @ApiProperty({ example: 1 })
+  public readonly registrationId: number;
 }

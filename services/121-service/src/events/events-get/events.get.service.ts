@@ -3,9 +3,10 @@ import { Between } from 'typeorm';
 import { ScopedRepository } from '../../scoped.repository';
 import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import { EventSearchOptionsDto } from '../dto/event-search-options.dto';
+import { GetEventXlsxDto } from '../dto/get-event-xlsx.dto';
 import { GetEventDto } from '../dto/get-event.dto';
-import { EventAttributeEntity } from '../entities/event-attribute.entity';
 import { EventEntity } from '../entities/event.entity';
+import { EventsMapper } from '../utils/events.mapper';
 
 @Injectable()
 export class EventGetService {
@@ -14,10 +15,26 @@ export class EventGetService {
     private eventRepository: ScopedRepository<EventEntity>,
   ) {}
 
-  public async getEvents(
+  public async getEventsJson(
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<GetEventDto[]> {
+    const events = await this.fetchEvents(programId, searchOptions);
+    return EventsMapper.mapEventsToJsonDtos(events);
+  }
+
+  public async getEventsXlsx(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ): Promise<GetEventXlsxDto[]> {
+    const events = await this.fetchEvents(programId, searchOptions);
+    return EventsMapper.mapEventsToXlsxDtos(events);
+  }
+
+  private async fetchEvents(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ): Promise<EventEntity[]> {
     const exportLimit = 100000;
     const events = await this.eventRepository.find({
       where: this.createWhereClause(programId, searchOptions),
@@ -25,8 +42,7 @@ export class EventGetService {
       order: { created: 'DESC' },
       take: exportLimit,
     });
-
-    return this.mapEventsToJsonDtos(events);
+    return events;
   }
 
   private createWhereClause(
@@ -53,47 +69,5 @@ export class EventGetService {
       );
     }
     return whereStatement;
-  }
-
-  // private mapEventToXlsxDto(events: EventEntity[]): GetEventXlsxDto[] {
-  //   const mappedEvents: GetEventXlsxDto[] = events.map((event) => {
-  //     const attributes = this.createAttributesObject(event.attributes);
-  //     return {
-  //       paId: event.registration.registrationProgramId,
-  //       referenceId: event.registration.referenceId,
-  //       changedAt: event.created,
-  //       changedBy: event.user.username,
-  //       type: event.type,
-  //       ...attributes,
-  //     };
-  //   });
-
-  //   return mappedEvents;
-  // }
-
-  private mapEventsToJsonDtos(events: EventEntity[]): GetEventDto[] {
-    const mappedEvents: GetEventDto[] = events.map((event) => {
-      const attributes = this.createAttributesObject(event.attributes);
-      return {
-        id: event.id,
-        created: event.created,
-        user: { id: event.userId, username: event.user.username },
-        registrationId: event.registrationId,
-        type: event.type,
-        attributes: attributes,
-      };
-    });
-
-    return mappedEvents;
-  }
-
-  private createAttributesObject(
-    attributes: EventAttributeEntity[],
-  ): Record<string, any> {
-    const attributesObject: Record<string, any> = {};
-    for (const attribute of attributes) {
-      attributesObject[attribute.key] = attribute.value;
-    }
-    return attributesObject;
   }
 }

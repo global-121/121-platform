@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  Res,
+} from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -7,6 +14,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ExportFileFormat } from '../metrics/enum/export-file-format.enum';
+import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import { GetEventDto } from './dto/get-event.dto';
 import { EventGetService } from './events-get/events.get.service';
 
@@ -40,8 +48,23 @@ export class EventController {
   public async getEvents(
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams: Record<string, string>,
-  ): Promise<GetEventDto[]> {
-    return await this.eventService.getEvents(programId, { queryParams });
+    @Query('format') format = 'json',
+    @Res() res,
+  ): Promise<GetEventDto[] | void> {
+    // TODO - should this have a different filename?
+    const filename = `registration-data-change-events`;
+    if (format === ExportFileFormat.xlsx) {
+      const result = await this.eventService.getEventsXlsx(
+        programId,
+        queryParams,
+      );
+      return sendXlsxReponse(result, filename, res);
+    }
+    const result = await this.eventService.getEventsJson(
+      programId,
+      queryParams,
+    );
+    return res.send(result);
   }
 
   @ApiOperation({ summary: 'Get list of events for a specific registrationId' })
@@ -66,6 +89,6 @@ export class EventController {
     @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<GetEventDto[]> {
-    return await this.eventService.getEvents(programId, { registrationId });
+    return await this.eventService.getEventsJson(programId, { registrationId });
   }
 }
