@@ -46,14 +46,15 @@
       ]
     },
     {
-      "fsp": "Africas-talking"
-    },
-    {
       "fsp": "Excel",
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": "[\"name\", \"birthdate\", \"documentid\"]"
+          "value": ["name", "birthdate", "documentid"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
         }
       ]
     }

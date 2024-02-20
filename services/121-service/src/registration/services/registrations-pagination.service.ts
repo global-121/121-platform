@@ -14,6 +14,7 @@ import {
   Repository,
   WhereExpressionBuilder,
 } from 'typeorm';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { ScopedQueryBuilder } from '../../scoped.repository';
@@ -632,5 +633,23 @@ export class RegistrationsPaginationService {
       queryBuilder.andWhere(`"${alias}"."id" IS NULL`);
     }
     return queryBuilder;
+  }
+
+  public getQueryBuilderForFsp(
+    programId: number,
+    payment: number,
+    fspName: FspName,
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .innerJoin('registration.latestTransactions', 'latestTransaction')
+      .innerJoin('latestTransaction.transaction', 'transaction')
+      .innerJoin('transaction.financialServiceProvider', 'fsp')
+      .andWhere('registration.programId = :programId', { programId })
+      .andWhere('transaction.payment = :payment', { payment })
+      .andWhere('fsp.fsp = :fsp', {
+        fsp: fspName,
+      })
+      .orderBy('registration.referenceId', 'ASC');
   }
 }

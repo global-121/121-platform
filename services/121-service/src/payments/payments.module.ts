@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -18,6 +17,7 @@ import { RegistrationsModule } from '../registration/registrations.module';
 import { InclusionScoreService } from '../registration/services/inclusion-score.service';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
+import { FileImportService } from '../utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
 import { BelcashModule } from './fsp-integration/belcash/belcash.module';
@@ -49,7 +49,6 @@ import { TransactionsModule } from './transactions/transactions.module';
     UserModule,
     HttpModule,
     ActionModule,
-    FspModule,
     IntersolveVoucherModule,
     IntersolveVisaModule,
     IntersolveJumboModule,
@@ -70,6 +69,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     LookupService,
     InclusionScoreService,
     RegistrationScopedRepository,
+    FileImportService,
     AzureLogService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),

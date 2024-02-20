@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
@@ -184,7 +184,6 @@ export class TransactionsService {
       transactionResponse.notificationObjects.length > 0
     ) {
       // loop over notification objects and send a message for each
-
       for (const transactionNotification of transactionResponse.notificationObjects) {
         const message = await this.getMessageText(
           registration.preferredLanguage,
@@ -304,7 +303,7 @@ export class TransactionsService {
   }
 
   public async storeAllTransactions(
-    transactionResults: any,
+    transactionResults: { paList: PaTransactionResultDto[] },
     transactionRelationDetails: TransactionRelationDetailsDto,
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
@@ -314,6 +313,58 @@ export class TransactionsService {
         transaction,
         transactionRelationDetails,
       );
+    }
+  }
+
+  public async storeAllTransactionsBulk(
+    transactionResults: PaTransactionResultDto[],
+    transactionRelationDetails: TransactionRelationDetailsDto,
+    transactionStep?: number,
+  ): Promise<void> {
+    // NOTE: this method is currently only used for the import-fsp-reconciliation use case and assumes:
+    // 1: only 1 FSP
+    // 2: no notifications to send
+    // 3: no payment count to update (as it is reconciliation of existing payment)
+    // 4: no twilio message to relate to
+    // 5: registrationId to be known in transactionResults
+    const program = await this.programRepository.findOneBy({
+      id: transactionRelationDetails.programId,
+    });
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: transactionResults[0].fspName },
+    });
+
+    const transactionsToSave = transactionResults.map(
+      (transactionResponse) => ({
+        amount: transactionResponse.calculatedAmount,
+        registrationId: transactionResponse.registrationId,
+        financialServiceProvider: fsp,
+        program: program,
+        payment: transactionRelationDetails.paymentNr,
+        userId: transactionRelationDetails.userId,
+        status: transactionResponse.status,
+        errorMessage: transactionResponse.message,
+        customData: transactionResponse.customData,
+        transactionStep: transactionStep || 1,
+      }),
+    );
+
+    const savedTransactions = await this.transactionScopedRepository
+      .createQueryBuilder('transaction')
+      .insert()
+      .into(TransactionEntity)
+      .values(transactionsToSave)
+      .execute();
+    const savedTransactionEntities =
+      await this.transactionScopedRepository.find({
+        where: {
+          id: In(savedTransactions.identifiers.map((i) => i.id)),
+        },
+      });
+
+    // Leaving this per transaction for now, as it is not a performance bottleneck
+    for (const transaction of savedTransactionEntities) {
+      await this.updateLatestTransaction(transaction);
     }
   }
 

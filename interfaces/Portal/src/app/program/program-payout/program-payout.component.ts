@@ -44,8 +44,8 @@ export class ProgramPayoutComponent implements OnInit {
   public programHasVoucherSupport: boolean;
   public hasFspWithExportFileIntegration: boolean;
   public hasFspWithReconciliation: boolean;
-  public fspIdsWithReconciliation: number[];
   public canMakeFspInstructions: boolean;
+  public canImportFspReconciliation: boolean;
 
   public canViewPayment: boolean;
   public canMakePayment: boolean;
@@ -84,17 +84,16 @@ export class ProgramPayoutComponent implements OnInit {
     this.programHasVoucherSupport = this.checkProgramHasVoucherSupport(
       this.program.financialServiceProviders,
     );
-    this.hasFspWithExportFileIntegration = this.checkFspIntegrationType(
-      this.program.financialServiceProviders,
-      [FspIntegrationType.csv, FspIntegrationType.xml],
+    this.hasFspWithExportFileIntegration =
+      this.program.financialServiceProviders.some((fsp) =>
+        [FspIntegrationType.csv, FspIntegrationType.xml].includes(
+          fsp.integrationType,
+        ),
+      );
+    this.hasFspWithReconciliation = this.program.financialServiceProviders.some(
+      (fsp) => fsp.hasReconciliation,
     );
-    this.hasFspWithReconciliation = this.checkFspIntegrationType(
-      this.program.financialServiceProviders,
-      [FspIntegrationType.xml],
-    );
-    this.fspIdsWithReconciliation = this.program.financialServiceProviders
-      .filter((fsp) => fsp.integrationType === FspIntegrationType.xml)
-      .map((fsp) => fsp.id);
+
     this.canMakePayment = this.checkCanMakePayment();
     this.canViewPayment = this.checkCanViewPayment();
     this.canMakeExport = this.checkCanMakeExport();
@@ -103,6 +102,7 @@ export class ProgramPayoutComponent implements OnInit {
       return;
     }
     this.canMakeFspInstructions = this.checkCanMakeFspInstructions();
+    this.canImportFspReconciliation = this.checkCanImportFspReconciliation();
 
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
@@ -163,6 +163,14 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.id,
       Permission.PaymentFspInstructionREAD,
     );
+  }
+
+  private checkCanImportFspReconciliation(): boolean {
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentCREATE,
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+    ]);
   }
 
   checkShowCbeValidation(): boolean {
@@ -317,18 +325,6 @@ export class ProgramPayoutComponent implements OnInit {
   ): boolean {
     for (const fsp of fsps || []) {
       if (fsp && PaymentUtils.hasVoucherSupport(fsp.fsp)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private checkFspIntegrationType(
-    fsps: Program['financialServiceProviders'],
-    integrationTypes: FspIntegrationType[],
-  ): boolean {
-    for (const fsp of fsps || []) {
-      if (fsp && integrationTypes.includes(fsp.integrationType)) {
         return true;
       }
     }

@@ -5,7 +5,7 @@ import { ImportType } from 'src/app/models/import-type.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 export interface FilePickerProps {
-  type: 'csv' | 'xml';
+  type: string;
   explanation?: string;
   programId?: number;
   downloadTemplate?: ImportType;
@@ -47,14 +47,20 @@ export class FilePickerPromptComponent implements OnInit {
     return await this.programsService.downloadImportTemplate(programId, type);
   }
 
-  private getAcceptForType(type: FilePickerProps['type']): string {
-    if (type === 'csv') {
-      return '.csv,text/csv,text/comma-separated-values,application/csv';
-    }
-    if (type === 'xml') {
-      return '.xml,application/xml,application/xhtml+xml,';
-    }
-    return '';
+  private getAcceptForType(types: string): string {
+    const typeList = types.split(',').map((type) => {
+      switch (type.trim().toLowerCase()) {
+        case 'csv':
+          return '.csv,text/csv,text/comma-separated-values,application/csv';
+        case 'xml':
+          return '.xml,application/xml,application/xhtml+xml';
+        default:
+          console.warn(`Unsupported file type: ${type}`);
+          return '';
+      }
+    });
+
+    return typeList.filter((t) => t).join(',');
   }
 
   public checkOkDisabled() {

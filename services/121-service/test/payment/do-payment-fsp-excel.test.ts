@@ -76,7 +76,7 @@ describe('Download FSP instructions', () => {
       refrenceIdsWesteros,
       accessToken,
       10_000,
-      [StatusEnum.success],
+      [StatusEnum.waiting],
     );
 
     ////////////////////////////
@@ -125,7 +125,9 @@ describe('Download FSP instructions', () => {
       .configuration.find(
         (c) => c.name === FspConfigurationEnum.columnsToExport,
       );
-    const columns = JSON.parse(configValue.value).concat(['amount']);
+    const columns = Array.isArray(configValue.value)
+      ? [...configValue.value, 'amount']
+      : [];
 
     // Act
     const transactionsResponse = await getTransactions(
@@ -143,9 +145,9 @@ describe('Download FSP instructions', () => {
     const fspInstructions = fspInstructionsResponse.body.data;
 
     // Assert
-    // Check if transactions are successful
+    // Check if transactions are on 'waiting' status
     for (const transaction of transactionsResponse.body) {
-      expect(transaction.status).toBe(StatusEnum.success);
+      expect(transaction.status).toBe(StatusEnum.waiting);
     }
 
     // Also check if the right amount of transactions are created

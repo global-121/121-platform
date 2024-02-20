@@ -236,15 +236,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   public async getRegistrationValueByName(name: string): Promise<string> {
+    const registrationResult = this[name];
+    if (registrationResult) {
+      return registrationResult;
+    }
     const registrationDataResult =
       await this.getRegistrationDataValueByName(name);
     if (registrationDataResult) {
       return registrationDataResult;
-    } else {
-      const registrationResult = this[name];
-      if (registrationResult) {
-        return registrationResult;
-      }
     }
   }
 

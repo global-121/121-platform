@@ -21,6 +21,7 @@ export enum FspConfigurationEnum {
   password = 'password',
   username = 'username',
   columnsToExport = 'columnsToExport',
+  columnToMatch = 'columnToMatch',
 }
 
 export const FspConfigurationMapping: { [key in FspName]?: any } = {
@@ -36,5 +37,8 @@ export const FspConfigurationMapping: { [key in FspName]?: any } = {
     FspConfigurationEnum.password,
     FspConfigurationEnum.username,
   ],
-  [FspName.excel]: [FspConfigurationEnum.columnsToExport],
+  [FspName.excel]: [
+    FspConfigurationEnum.columnsToExport,
+    FspConfigurationEnum.columnToMatch,
+  ],
 };

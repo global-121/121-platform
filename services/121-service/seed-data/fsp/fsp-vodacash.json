@@ -1,6 +1,7 @@
 {
   "fsp": "VodaCash",
   "integrationType": "xml",
+  "hasReconciliation": true,
   "fspDisplayNamePaApp": {
     "en": "Vodacash"
   },
