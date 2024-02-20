@@ -17,6 +17,7 @@ import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
@@ -277,74 +278,88 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
     if (this.canViewPersonalData) {
       const changes =
-        await this.programsService.getRegistrationChangeLogByReferenceId(
+        await this.programsService.getRegistrationEventsByRegistrationId(
           this.program.id,
-          this.person.referenceId,
+          this.person.id,
         );
 
       for (const change of changes) {
-        const paTableAttributes = this.program.paTableAttributes || [];
-        const attribute = paTableAttributes.find(
-          (attr) => attr.name === change.fieldName,
-        );
+        if (change.type === EventType.registrationDataChange) {
+          const paTableAttributes = this.program.paTableAttributes || [];
+          const attribute = paTableAttributes.find(
+            (attr) => attr.name === change.attributes.fieldName,
+          );
 
-        const booleanLabel = {
-          true: this.translate.instant(
-            'page.program.program-people-affected.column.custom-attribute-true',
-          ),
-          false: this.translate.instant(
-            'page.program.program-people-affected.column.custom-attribute-false',
-          ),
-        };
+          const booleanLabel = {
+            true: this.translate.instant(
+              'page.program.program-people-affected.column.custom-attribute-true',
+            ),
+            false: this.translate.instant(
+              'page.program.program-people-affected.column.custom-attribute-false',
+            ),
+          };
 
-        let oldValue = change.oldValue ? change.oldValue : '-';
-        let newValue = change.newValue ? change.newValue : '-';
+          let oldValue = change.attributes.oldValue
+            ? change.attributes.oldValue
+            : '-';
+          let newValue = change.attributes.newValue
+            ? change.attributes.newValue
+            : '-';
 
-        if (attribute?.type === AnswerType.Boolean) {
-          oldValue = booleanLabel[oldValue];
-          newValue = booleanLabel[newValue];
-        }
+          if (attribute?.type === AnswerType.Boolean) {
+            oldValue = booleanLabel[oldValue];
+            newValue = booleanLabel[newValue];
+          }
 
-        if (this.enumService.isEnumerableAttribute(change.fieldName)) {
-          oldValue = this.enumService.getEnumLabel(change.fieldName, oldValue);
-          newValue = this.enumService.getEnumLabel(change.fieldName, newValue);
-        }
+          if (
+            this.enumService.isEnumerableAttribute(change.attributes.fieldName)
+          ) {
+            oldValue = this.enumService.getEnumLabel(
+              change.attributes.fieldName,
+              oldValue,
+            );
+            newValue = this.enumService.getEnumLabel(
+              change.attributes.fieldName,
+              newValue,
+            );
+          }
 
-        let description = this.translate.instant(
-          'registration-details.activity-overview.activities.data-changes.values',
-          {
-            oldValue: oldValue,
-            newValue: newValue,
-          },
-        );
-        if (change.reason) {
-          description += this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.reason',
+          let description = this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.values',
             {
-              reason: change.reason,
+              oldValue: oldValue,
+              newValue: newValue,
             },
           );
+          if (change.attributes.reason) {
+            description += this.translate.instant(
+              'registration-details.activity-overview.activities.data-changes.reason',
+              {
+                reason: change.attributes.reason,
+              },
+            );
+          }
+          this.activityOverview.push({
+            type: RegistrationActivityType.changeData,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.data-changes.label',
+            ),
+            subLabel: this.getSubLabelText(change, attribute),
+            date: new Date(change.created),
+            description,
+            user: change.user.username,
+          });
         }
-        this.activityOverview.push({
-          type: RegistrationActivityType.changeData,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.label',
-          ),
-          subLabel: this.getSubLabelText(change, attribute),
-          date: new Date(change.created),
-          description,
-          user: change.user.username,
-        });
-      }
 
-      const notes = await this.programsService.getNotes(
-        this.program.id,
-        this.person.referenceId,
-      );
-      for (const note of notes) {
-        this.activityOverview.push(
-          this.registrationActivityService.createNoteActivity(note),
+        const notes = await this.programsService.getNotes(
+          this.program.id,
+          this.person.referenceId,
         );
+        for (const note of notes) {
+          this.activityOverview.push(
+            this.registrationActivityService.createNoteActivity(note),
+          );
+        }
       }
     }
 
