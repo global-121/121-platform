@@ -90,6 +90,15 @@ To start a debugger using Chrome, follow these steps:
 13. In the left margin of the code, you can also right mouse click and for example select: continue to here.
 14. If you want to set the theme to dark, go to Settings in DevTools and under Preferences you have Theme, there select Dark. For more info: <https://stackoverflow.com/questions/20777454/google-chrome-customize-developer-tools-theme-color-schema>
 
+To start the debugger from Visual Studio Code, follow these steps:
+
+1. Probably some steps from above, starting debugger in Chrome, are also needed here, but not sure which. Maybe items 1, and 2.
+2. The contents of launch.json in the root folder of the repository enable the possibility to attach the Debugger in Visual Studio Code to the Node.js process running in the 121-service Docker container.
+3. Start the services with npm run start:services, probably need to do this from a Terminal inside Visual Studio Code.
+4. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
+5. Press the green play icon left besides the "Docker: Attach to Node" text which is selected by default in the dropdown. This attaches the Debugger.
+6. Now you can for example set a breakpoint in your code by right mouse clicking to the left of the line number and select Add breakpoint.
+
 ---
 
 ## License
