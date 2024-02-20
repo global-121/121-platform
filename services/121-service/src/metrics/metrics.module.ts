@@ -10,6 +10,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 
+import { EventGetModule } from '../events/events-get/events.get.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
@@ -34,6 +35,7 @@ import { MetricsService } from './metrics.service';
     PaymentsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
+    EventGetModule,
   ],
   providers: [
     MetricsService,

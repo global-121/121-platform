@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EventEnum } from '../event.enum';
+import { EventEnum } from '../enum/event.enum';
 
 class AttributesDto {
   [key: string]: string;
@@ -16,4 +16,6 @@ export class GetEventDto {
   public readonly created: Date;
   @ApiProperty({ example: { exampleKey: 'exampleValue' } })
   public readonly attributes: AttributesDto;
+  @ApiProperty({ example: 1 })
+  public readonly registrationId: number;
 }

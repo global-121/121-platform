@@ -74,8 +74,6 @@ export class MetricsService {
     userId: number,
     minPayment: number | null = null,
     maxPayment: number | null = null,
-    fromDate?: Date,
-    toDate?: Date,
     paginationQuery?: PaginateQuery,
   ): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
@@ -100,9 +98,6 @@ export class MetricsService {
       }
       case ExportType.cardBalances: {
         return this.getCardBalances(programId);
-      }
-      case ExportType.paDataChanges: {
-        return this.getPaDataChanges(programId, fromDate, toDate);
       }
     }
   }
@@ -1369,27 +1364,6 @@ export class MetricsService {
     const data = await this.intersolveVisaExportService.getCards(programId);
     return {
       fileName: ExportType.cardBalances,
-      data,
-    };
-  }
-
-  private async getPaDataChanges(
-    programId: number,
-    fromDate?: any,
-    toDate?: any,
-  ): Promise<{
-    fileName: ExportType;
-    data: any[];
-  }> {
-    // TODO implent this with events
-    const data = [];
-    // const data = await this.registrationChangeLogService.exportChangeLog(
-    //   programId,
-    //   fromDate,
-    //   toDate,
-    // );
-    return {
-      fileName: ExportType.paDataChanges,
       data,
     };
   }

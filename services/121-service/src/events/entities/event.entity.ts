@@ -9,7 +9,7 @@ import {
 import { Base121AuditedEntity } from '../../base-audited.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserEntity } from '../../user/user.entity';
-import { EventEnum } from '../event.enum';
+import { EventEnum } from '../enum/event.enum';
 import { EventAttributeEntity } from './event-attribute.entity';
 
 @Entity('event')
