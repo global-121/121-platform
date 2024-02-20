@@ -77,6 +77,7 @@ graph LR
   PaymentsModule-->RegistrationDataModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
+  MetricsModule-->EventGetModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule

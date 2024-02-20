@@ -6,7 +6,8 @@ import { RegistrationViewEntity } from '../registration/registration-view.entity
 import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
 import { EventAttributeEntity } from './entities/event-attribute.entity';
 import { EventEntity } from './entities/event.entity';
-import { EventEnum } from './event.enum';
+import { EventAttributeKeyEnum } from './enum/event-attribute-key.enum';
+import { EventEnum } from './enum/event.enum';
 
 @Injectable()
 export class EventsLogService {
@@ -50,7 +51,7 @@ export class EventsLogService {
 
   private addAdditionalAttributesToEvents(
     events: EventEntity[],
-    additionalAttributeObject: Record<string, string>,
+    additionalAttributeObject: Record<EventAttributeKeyEnum, string>,
   ): EventEntity[] {
     if (!additionalAttributeObject) {
       return events;
@@ -58,7 +59,7 @@ export class EventsLogService {
     for (const event of events) {
       for (const [key, value] of Object.entries(additionalAttributeObject)) {
         const attribute = new EventAttributeEntity();
-        attribute.key = key;
+        attribute.key = key as EventAttributeKeyEnum;
         attribute.value = value;
         event.attributes.push(attribute);
       }
@@ -150,22 +151,31 @@ export class EventsLogService {
   ): EventAttributeEntity[] {
     const eventAttributes: EventAttributeEntity[] = [];
     if (oldValue) {
-      const attribute = this.createEventAttributeEntity('oldValue', oldValue);
+      const attribute = this.createEventAttributeEntity(
+        EventAttributeKeyEnum.oldValue,
+        oldValue,
+      );
       eventAttributes.push(attribute);
     }
     if (newValue) {
-      const attribute = this.createEventAttributeEntity('newValue', newValue);
+      const attribute = this.createEventAttributeEntity(
+        EventAttributeKeyEnum.newValue,
+        newValue,
+      );
       eventAttributes.push(attribute);
     }
     if (key) {
-      const attribute = this.createEventAttributeEntity('key', key);
+      const attribute = this.createEventAttributeEntity(
+        EventAttributeKeyEnum.fieldName,
+        key,
+      );
       eventAttributes.push(attribute);
     }
     return eventAttributes;
   }
 
   private createEventAttributeEntity(
-    key: string,
+    key: EventAttributeKeyEnum,
     value: string,
   ): EventAttributeEntity {
     const eventAttribute = new EventAttributeEntity();
