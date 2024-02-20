@@ -5,6 +5,7 @@ import {
   ParseIntPipe,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -13,15 +14,21 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
 import { ExportFileFormat } from '../metrics/enum/export-file-format.enum';
+import { PermissionEnum } from '../user/enum/permission.enum';
 import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import { GetEventDto } from './dto/get-event.dto';
 import { EventGetService } from './events-get/events.get.service';
 
+@UseGuards(PermissionsGuard)
 @Controller()
 export class EventController {
   public constructor(private readonly eventService: EventGetService) {}
 
+  // We can later extend these permissions to different types when we get more types of events
+  @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiTags('programs/events')
   @ApiOperation({ summary: 'Get list of events for query params' })
   @ApiParam({
@@ -67,6 +74,8 @@ export class EventController {
     return res.send(result);
   }
 
+  // We can later extend these permissions to different types when we get more types of events
+  @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ summary: 'Get list of events for a specific registrationId' })
   @ApiParam({
     name: 'registrationId',
