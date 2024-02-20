@@ -47,6 +47,14 @@
         "whatsapp": "WhatsApp"
       }
     },
+    "payment": {
+      "status": {
+        "error": "Failed",
+        "not-yet-sent": "Not yet sent",
+        "success": "Successful",
+        "waiting": "Waiting"
+      }
+    },
     "registration": {
       "status": {
         "completed": "Completed",

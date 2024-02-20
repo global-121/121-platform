@@ -194,6 +194,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue.sentDate = dateOfCompletePayment
           ? dateOfCompletePayment.toISOString()
           : null;
+
+        paymentRowValue.status = 'not-yet-sent';
       } else {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
@@ -243,6 +245,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             { paymentNr: v.paymentIndex },
           ),
           user: v.transaction.user.username,
+          activityStatus: v.status,
         });
       });
       this.activityOverview = [...tempData];

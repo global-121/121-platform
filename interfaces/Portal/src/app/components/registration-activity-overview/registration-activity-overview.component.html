@@ -77,10 +77,7 @@
     </ion-row>
   </div>
   <div class="ion-no-padding">
-    <ng-container
-      *ngFor="let activity of getFilteredActivityOverview()"
-      style="outline: 1px dashed hotpink"
-    >
+    <ng-container *ngFor="let activity of getFilteredActivityOverview()">
       <app-registration-activity-detail
         [activity]="activity"
         [locale]="locale"
@@ -91,7 +88,7 @@
           body
         >
           <ng-container *ngSwitchCase="RegistrationActivityType.payment">
-            <!-- <app-payment-history-accordion
+            <app-payment-history-accordion
               [paymentRow]="activity.paymentRowDetail"
               [enableSinglePayment]="
                 enableSinglePayment(activity.paymentRowDetail)
@@ -102,7 +99,7 @@
               [canViewVouchers]="canViewVouchers"
               [canDoSinglePayment]="canDoSinglePayment"
               [lastPaymentId]="lastPaymentId"
-            ></app-payment-history-accordion> -->
+            ></app-payment-history-accordion>
           </ng-container>
           <ng-container *ngSwitchCase="RegistrationActivityType.message">
             <div

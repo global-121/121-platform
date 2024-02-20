@@ -42,7 +42,7 @@
         {{ activity.user }}
       </span>
     </div>
-    <div>
+    <div *ngIf="activity.date">
       <small>
         <time [attr.datetime]="activity.date">
           {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}

@@ -37,7 +37,8 @@
 }
 
 .badge.is-message-waiting,
-.badge.is-payment-waiting {
+.badge.is-payment-waiting,
+.badge.is-payment-not-yet-sent {
   background-color: var(--ion-color-status-waiting);
   color: var(--ion-color-status-waiting-text);
 }

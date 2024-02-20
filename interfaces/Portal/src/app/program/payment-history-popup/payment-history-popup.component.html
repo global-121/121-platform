@@ -38,16 +38,16 @@
       style="border-top: 1px solid var(--fiveten-neutral-100)"
     >
       <div body>
-        <!-- <app-payment-history-accordion
-          [paymentRow]="paymentRow"
-          [enableSinglePayment]="enableSinglePayment(paymentRow)"
+        <app-payment-history-accordion
+          [paymentRow]="activity.paymentRowDetail"
+          [enableSinglePayment]="enableSinglePayment(activity.paymentRowDetail)"
           [person]="person"
           [program]="program"
-          [paymentRows]="enableSinglePayment(paymentRow)"
+          [paymentRows]="enableSinglePayment(activity.paymentRowDetail)"
           [canViewVouchers]="canViewVouchers"
           [canDoSinglePayment]="canDoSinglePayment"
           [lastPaymentId]="lastPaymentId"
-        ></app-payment-history-accordion> -->
+        ></app-payment-history-accordion>
       </div>
     </app-registration-activity-detail>
   </ng-container>

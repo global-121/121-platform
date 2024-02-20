@@ -157,6 +157,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
+        paymentRowValue.status = 'not-yet-sent';
       } else {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
@@ -189,12 +190,15 @@ export class PaymentHistoryPopupComponent implements OnInit {
         this.paymentRows.push({
           paymentRowDetail: { ...paymentRowValue },
           type: RegistrationActivityType.payment,
-          date: new Date(paymentRowValue.sentDate),
+          date: paymentRowValue.sentDate
+            ? new Date(paymentRowValue.sentDate)
+            : null,
           label: this.translate.instant(
             'registration-details.payment-history.transfer',
             { paymentNr: paymentRowValue.paymentIndex },
           ),
           user: paymentRowValue.transaction?.user.username,
+          activityStatus: paymentRowValue.status,
         });
       }
     }
