@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { TransactionsService } from '../../../payments/transactions/transactions.service';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationViewScopedRepository } from '../../../registration/registration-scoped.repository';
@@ -22,7 +21,6 @@ const mockRegistrationViewScopedRepository = {
 
 describe('ExcelService', () => {
   let excelService: ExcelService;
-  let programRepository: jest.Mocked<Repository<ProgramEntity>>;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -59,7 +57,6 @@ describe('ExcelService', () => {
     }).compile();
 
     excelService = moduleRef.get<ExcelService>(ExcelService);
-    programRepository = moduleRef.get(getRepositoryToken(ProgramEntity));
   });
 
   it('should find and return the matching reconciliation record for a given registration', async () => {
