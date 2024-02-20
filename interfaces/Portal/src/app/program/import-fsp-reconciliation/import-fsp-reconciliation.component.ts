@@ -123,21 +123,6 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
               },
             ) + '<br><br>';
 
-          if (
-            aggregateResult.countPaymentStarted !==
-            aggregateResult.countImported
-          ) {
-            resultMessage +=
-              this.translate.instant(
-                'page.program.import-fsp-reconciliation.import-result.mismatch',
-                {
-                  payment: this.payment,
-                  countPaymentStarted: aggregateResult.countPaymentStarted,
-                  countImported: aggregateResult.countImported,
-                },
-              ) + '<br><br>';
-          }
-
           if (aggregateResult.countNotFound) {
             resultMessage +=
               this.translate.instant(
