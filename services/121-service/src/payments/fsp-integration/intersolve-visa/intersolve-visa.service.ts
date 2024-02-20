@@ -475,9 +475,9 @@ export class IntersolveVisaService
         paTransactionResult.status = StatusEnum.error;
         let errorMessage = 'Unknown';
         if (error?.response?.errors) {
-          errorMessage = error.response.errors?.length
-            ? this.intersolveErrorToMessage(error.response.errors)
-            : error.response.errors;
+          errorMessage =
+            this.intersolveErrorToMessage(error.response.errors) ||
+            error.response.errors;
         } else {
           console.error('Error in CALCULATE TOPUP AMOUNT:', error);
         }
@@ -712,6 +712,9 @@ export class IntersolveVisaService
   private intersolveErrorToMessage(
     errors: IntersolveReponseErrorDto[],
   ): string {
+    if (!errors || !Array.isArray(errors) || !errors.length) {
+      return;
+    }
     let allMessages = '';
     for (const [i, error] of errors.entries()) {
       const newLine = i < errors.length - 1 ? '\n' : '';
