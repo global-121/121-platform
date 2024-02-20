@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
-import { EventsLogModule } from '../events/events-log.module';
+import { EventsLogModule } from '../events/event-log/events-log.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';

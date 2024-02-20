@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { EventAttributeEntity } from '../src/events/entities/event-attribute.entity';
 import { EventEntity } from '../src/events/entities/event.entity';
-import { EventEnum } from '../src/events/event.enum';
+import { EventAttributeKeyEnum } from '../src/events/enum/event-attribute-key.enum';
+import { EventEnum } from '../src/events/enum/event.enum';
 
 export class MigrateDataChangesToEvent1708330965061
   implements MigrationInterface
@@ -48,7 +49,7 @@ export class MigrateDataChangesToEvent1708330965061
       Object.entries(change).forEach(([key, value]) => {
         if (keysToMigrate.includes(key)) {
           const attributeEntity = new EventAttributeEntity();
-          attributeEntity.key = key;
+          attributeEntity.key = key as EventAttributeKeyEnum;
           attributeEntity.value = value as string;
           event.attributes.push(attributeEntity);
         }
