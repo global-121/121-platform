@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { TransactionsService } from '../../../payments/transactions/transactions.service';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationViewScopedRepository } from '../../../registration/registration-scoped.repository';
-import { RegistrationEntity } from '../../../registration/registration.entity'; // Adjust the import path as necessary
+import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
 import { ExcelService } from './excel.service';
 
@@ -21,6 +21,12 @@ const mockRegistrationViewScopedRepository = {
 
 describe('ExcelService', () => {
   let excelService: ExcelService;
+
+  const matchColumn = 'phoneNumber';
+  const phoneNumber = '27883373741';
+  const registrationViewEntity = new RegistrationViewEntity();
+  registrationViewEntity.phoneNumber = phoneNumber;
+  const registrations = [registrationViewEntity];
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -60,64 +66,46 @@ describe('ExcelService', () => {
   });
 
   it('should find and return the matching reconciliation record for a given registration', async () => {
-    const importRecords = { phoneNumber: '27883373741', status: 'success' };
+    // Arrange
+    const importRecord = { [matchColumn]: phoneNumber, status: 'success' };
 
-    const registrationEntity = new RegistrationEntity();
-    registrationEntity.phoneNumber = '27883373741';
-
-    jest
-      .spyOn(registrationEntity, 'getRegistrationDataValueByName')
-      .mockResolvedValue('27883373741');
-    const registrations = [registrationEntity];
+    // Act
     const result = await excelService.findReconciliationRegistration(
-      importRecords,
+      importRecord,
       registrations,
-      'phoneNumber',
+      matchColumn,
     );
 
+    // Assert
     expect(result).toEqual(
       expect.objectContaining({
-        phoneNumber: '27883373741',
+        phoneNumber: phoneNumber,
       }),
     );
-    expect(
-      registrationEntity.getRegistrationDataValueByName,
-    ).not.toHaveBeenCalled();
   });
 
   it('should throw an error when import record lacks a status column', async () => {
-    const importRecords = [{ phoneNumber: '27883373741' }];
+    // Arrange
+    const importRecord = { [matchColumn]: phoneNumber };
 
-    const registrationEntity = new RegistrationEntity();
-    registrationEntity.phoneNumber = '27883373741';
-
-    jest
-      .spyOn(registrationEntity, 'getRegistrationDataValueByName')
-      .mockResolvedValue('27883373741');
-
+    // Act & Assert
     await expect(
       excelService.findReconciliationRegistration(
-        importRecords,
-        [registrationEntity],
-        'phoneNumber',
+        importRecord,
+        registrations,
+        matchColumn,
       ),
     ).rejects.toThrow('Http Exception');
-
-    expect(
-      registrationEntity.getRegistrationDataValueByName,
-    ).not.toHaveBeenCalled();
   });
 
   it('should return undefined (or appropriate value) when no phone number matches', async () => {
-    const importRecords = { phoneNumber: '1234567890', status: 'success' };
-
-    const registrationEntity = new RegistrationEntity();
-    registrationEntity.phoneNumber = '27883373741';
+    const wrongPhoneNumber = '1234567890';
+    const importRecord = { [matchColumn]: wrongPhoneNumber, status: 'success' };
 
     const result = await excelService.findReconciliationRegistration(
-      importRecords,
-      [registrationEntity],
-      'phoneNumber',
+      importRecord,
+      registrations,
+      matchColumn,
     );
 
     expect(result).toBeUndefined();
