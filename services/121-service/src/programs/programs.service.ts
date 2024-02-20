@@ -368,16 +368,62 @@ export class ProgramService {
 
   public async updateProgram(
     programId: number,
+    // TODO: REFACTOR: rename to programData like in create()?
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    // We need the FSPs configured for this program, therefore using .findOne since .findProgramOrThrow does not have it.
+    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function?
+    const program = await this.findOne(programId);
+    // TODO: Not sure if this is where we want to declare savedProgram. It is used in the try block, and as return value.
+    let savedProgram;
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    // TODO: in create() the function validateProgram(updateProgramDto) is called, which a.o. does some validation in the financialServiceProviders data. Do we also need to do that here? If so, how to implement?
+    //await this.validateProgram(updateProgramDto);
+
+    // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
-      program[attribute] = updateProgramDto[attribute];
+      // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
+      if (attribute !== 'financialServiceProviders') {
+        program[attribute] = updateProgramDto[attribute];
+      }
     }
 
-    await this.programRepository.save(program);
-    return program;
+    debugger;
+    try {
+      // Add newly supplied FSPs to the program.
+      for (const fspItem of updateProgramDto.financialServiceProviders) {
+        // Write an if statement that is true if the value of fsp in fspItem is not in any fsp value of any item in the array savedProgram.financialServiceProviders
+        // Copilot created this if statement, which seems to work:
+        if (!program.financialServiceProviders.some(fsp => fsp.fsp === fspItem.fsp)) {
+          const fsp = await this.financialServiceProviderRepository.findOne({
+            where: { fsp: fspItem.fsp },
+          });
+          if (!fsp) {
+            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
+            await queryRunner.rollbackTransaction();
+            throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+          }
+          program.financialServiceProviders.push(fsp);
+        }
+      }
+      savedProgram = await this.programRepository.save(program);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log('Error updating program ', err);
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        'Error updating program',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+
+    // TODO: Do we simply return the saved program here, with all its relations? Or do we need to do some transformation? DTO?
+    return savedProgram;
   }
 
   public async findProgramOrThrow(programId): Promise<ProgramEntity> {
