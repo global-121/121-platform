@@ -43,11 +43,13 @@
       </span>
     </div>
     <div *ngIf="activity.date">
-      <small>
-        <time [attr.datetime]="activity.date">
-          {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
-        </time>
-      </small>
+      <ion-note color="medium">
+        <small>
+          <time [attr.datetime]="activity.date">
+            {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
+          </time>
+        </small>
+      </ion-note>
     </div>
     <div class="activity-detail--body">
       <ng-content select="[body]"></ng-content>
