@@ -182,28 +182,6 @@ export class ExcelService
     return excelFspInstructions;
   }
 
-  public async findReconciliationRegistration(
-    importRecord: any,
-    registrations: RegistrationViewEntity[],
-    matchColumn: string,
-  ): Promise<RegistrationViewEntity> {
-    for (const registration of registrations) {
-      const registrationMatchColumnValue = registration[matchColumn];
-      if (
-        ![StatusEnum.success, StatusEnum.error].includes(
-          importRecord[this.statusColumnName],
-        )
-      ) {
-        const errors = `No 'status' column or it contains unaccepted values ('success' or 'error')`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      } else {
-        if (importRecord[matchColumn] === registrationMatchColumnValue) {
-          return registration;
-        }
-      }
-    }
-  }
-
   public async getImportMatchColumn(programId: number): Promise<string> {
     const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
@@ -268,7 +246,7 @@ export class ExcelService
       ['id', 'referenceId', matchColumn],
     );
 
-    // Then order regisstrations and importRecords by matchColumn to join them
+    // Then order registrations and importRecords by matchColumn to join them
     const importRecordsOrdered = importRecords.sort((a, b) =>
       a[matchColumn].localeCompare(b[matchColumn]),
     );
@@ -277,6 +255,15 @@ export class ExcelService
     );
 
     const importResponseRecords = importRecordsOrdered.map((record) => {
+      if (
+        ![StatusEnum.success, StatusEnum.error].includes(
+          record[this.statusColumnName],
+        )
+      ) {
+        const errors = `No 'status' column or it contains not accepted values ('success' or 'error')`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+
       const importResponseRecord = record as BulkImportResult;
       // find registration with matching matchColumn value
       const matchedRegistration = registrationsOrdered.find(
