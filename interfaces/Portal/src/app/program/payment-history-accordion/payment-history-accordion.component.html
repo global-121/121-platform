@@ -69,10 +69,7 @@
                       | translate
                   }}:</strong
                 >
-                <ion-text
-                  *ngIf="paymentRow.transaction"
-                  class="padding"
-                >
+                <ion-text *ngIf="paymentRow.transaction">
                   {{
                     paymentRow.sentDate
                       | date: DateFormat.dayAndTimeReverse : locale
@@ -90,10 +87,7 @@
                       | translate
                   }}:</strong
                 >
-                <ion-text
-                  *ngIf="paymentRow.transaction?.status"
-                  class="padding"
-                >
+                <ion-text *ngIf="paymentRow.transaction?.status">
                   {{
                     paymentRow.amount
                       | currency
@@ -124,7 +118,6 @@
                 <ion-text
                   id="hover-trigger"
                   *ngIf="paymentRow.transaction?.status"
-                  class="padding"
                 >
                   {{ paymentRow.transaction?.fspName }}
                 </ion-text>
@@ -147,7 +140,6 @@
                     id="hover-trigger"
                     *ngIf="paymentRow.transaction?.status"
                     [title]="paymentRow.transaction?.customData?.[attribute]"
-                    class="padding"
                   >
                     {{ paymentRow.transaction?.customData?.[attribute] }}
                   </ion-text>
@@ -166,7 +158,7 @@
   <ion-item
     slot="header"
     lines="none"
-    style="font-size: 14px; --padding-start: 0"
+    style="--padding-start: 0"
   >
     <ion-grid class="ion-no-padding">
       <div class="ion-text-right">
