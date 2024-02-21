@@ -284,6 +284,20 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         );
 
       for (const change of changes) {
+        let oldValue = change.attributes.oldValue
+          ? change.attributes.oldValue
+          : '-';
+        let newValue = change.attributes.newValue
+          ? change.attributes.newValue
+          : '-';
+        const description = this.translate.instant(
+          'registration-details.activity-overview.activities.data-changes.values',
+          {
+            oldValue: oldValue,
+            newValue: newValue,
+          },
+        );
+
         if (change.type === EventType.registrationDataChange) {
           const paTableAttributes = this.program.paTableAttributes || [];
           const attribute = paTableAttributes.find(
@@ -298,13 +312,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
               'page.program.program-people-affected.column.custom-attribute-false',
             ),
           };
-
-          let oldValue = change.attributes.oldValue
-            ? change.attributes.oldValue
-            : '-';
-          let newValue = change.attributes.newValue
-            ? change.attributes.newValue
-            : '-';
 
           if (attribute?.type === AnswerType.Boolean) {
             oldValue = booleanLabel[oldValue];
@@ -345,6 +352,18 @@ export class RegistrationActivityOverviewComponent implements OnInit {
               'registration-details.activity-overview.activities.data-changes.label',
             ),
             subLabel: this.getSubLabelText(change, attribute),
+            date: new Date(change.created),
+            description,
+            user: change.user.username,
+          });
+        }
+
+        if (change.type === EventType.financialServiceProviderChange) {
+          this.activityOverview.push({
+            type: RegistrationActivityType.changeData,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.fsp-change.label',
+            ),
             date: new Date(change.created),
             description,
             user: change.user.username,
