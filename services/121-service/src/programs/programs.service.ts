@@ -388,17 +388,11 @@ export class ProgramService {
 
   public async updateProgram(
     programId: number,
-    // TODO: REFACTOR: rename to programData like in create()? No, use typename with lowercase.
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    // We need the FSPs configured for this program, therefore using .findOne since .findProgramOrThrow does not have it.
     // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
     let savedProgram;
-
-    // TODO: remove transaction stuff, but leave the try catch.
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
 
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
@@ -408,37 +402,35 @@ export class ProgramService {
       }
     }
 
-    try {
-      // Add newly supplied FSPs to the program.
-      for (const fspItem of updateProgramDto.financialServiceProviders) {
-        if (!program.financialServiceProviders.some(fsp => fsp.fsp === fspItem.fsp)) {
-          const fsp = await this.financialServiceProviderRepository.findOne({
-            where: { fsp: fspItem.fsp },
-          });
-          if (!fsp) {
-            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
-            await queryRunner.rollbackTransaction();
-            throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-          }
-          program.financialServiceProviders.push(fsp);
+    // Add newly supplied FSPs to the program.
+    for (const fspItem of updateProgramDto.financialServiceProviders) {
+      if (
+        !program.financialServiceProviders.some(
+          (fsp) => fsp.fsp === fspItem.fsp,
+        )
+      ) {
+        const fsp = await this.financialServiceProviderRepository.findOne({
+          where: { fsp: fspItem.fsp },
+        });
+        if (!fsp) {
+          const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
+          throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
         }
+        program.financialServiceProviders.push(fsp);
       }
+    }
+
+    try {
       savedProgram = await this.programRepository.save(program);
-      await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error updating program ', err);
-      await queryRunner.rollbackTransaction();
       throw new HttpException(
         'Error updating program',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
 
-    // TODO: Do we simply return the saved program here, with all its relations? Or do we need to do some transformation? DTO?
-    // Check to use: formatCreateProgramDto
-    // TODO: REFACTOR: consider refactoring GET /programs/:programId, or at least put a comment there.
+    // TODO: REFACTOR: use respone DTO
     return savedProgram;
   }
 
