@@ -195,7 +195,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ? dateOfCompletePayment.toISOString()
           : null;
 
-        paymentRowValue.status = 'not-yet-sent';
+        paymentRowValue.status = StatusEnum.notYetSent;
       } else {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,

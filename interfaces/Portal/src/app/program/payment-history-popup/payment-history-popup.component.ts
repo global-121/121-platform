@@ -157,7 +157,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
-        paymentRowValue.status = 'not-yet-sent';
+        paymentRowValue.status = StatusEnum.notYetSent;
       } else {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
