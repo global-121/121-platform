@@ -888,13 +888,16 @@ export class PaymentsService {
     let importResponseRecords = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
       if (fsp.fsp === FspName.vodacash) {
-        const validatedVodacashImport =
-          await this.vodacashService.xmlToValidatedFspReconciliation(file);
         const vodacashRegistrations =
           await this.vodacashService.getRegistrationsForReconciliation(
             programId,
             payment,
           );
+        if (!vodacashRegistrations?.length) {
+          continue;
+        }
+        const validatedVodacashImport =
+          await this.vodacashService.xmlToValidatedFspReconciliation(file);
         for (const record of validatedVodacashImport) {
           const matchedRegistration =
             await this.vodacashService.findReconciliationRegistration(
@@ -916,10 +919,6 @@ export class PaymentsService {
 
       if (fsp.fsp === FspName.excel) {
         const maxRecords = 10000;
-        const validatedExcelImport = await this.fileImportService.validateCsv(
-          file,
-          maxRecords,
-        );
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
         const excelRegistrations =
@@ -928,6 +927,13 @@ export class PaymentsService {
             payment,
             matchColumn,
           );
+        if (!excelRegistrations?.length) {
+          continue;
+        }
+        const validatedExcelImport = await this.fileImportService.validateCsv(
+          file,
+          maxRecords,
+        );
         const transactions = await this.transactionsService.getLastTransactions(
           programId,
           payment,
@@ -967,15 +973,17 @@ export class PaymentsService {
       delete importResponseRecord.paTransactionResult;
     }
 
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
-      programId,
-      paymentNr: payment,
-      userId,
-    };
-    await this.transactionsService.storeAllTransactionsBulk(
-      transactionsToSave,
-      transactionRelationDetails,
-    );
+    if (transactionsToSave.length) {
+      const transactionRelationDetails: TransactionRelationDetailsDto = {
+        programId,
+        paymentNr: payment,
+        userId,
+      };
+      await this.transactionsService.storeAllTransactionsBulk(
+        transactionsToSave,
+        transactionRelationDetails,
+      );
+    }
 
     await this.actionService.saveAction(
       userId,
