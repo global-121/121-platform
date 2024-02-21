@@ -172,7 +172,7 @@ When making changes to the data-model of the `121-service` (creating/editing any
 The process is:
 
 1. Make the changes in the `\*.entity.ts` file
-2. To generate a migration-script, in the 121-platform/services folder run: `docker compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
+2. To generate a migration-script, in the 121-platform/services folder run: `docker compose exec 121-service npm run migration:generate migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
 5. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
