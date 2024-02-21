@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
@@ -631,26 +631,6 @@ export class PaymentsService {
     }
   }
 
-  private async getRegistrationsForReconsiliation(
-    programId: number,
-    payment: number,
-  ): Promise<RegistrationEntity[]> {
-    const referenceIds = (
-      await this.transactionsService.getLastTransactions(
-        programId,
-        payment,
-        null,
-      )
-    ).map((t) => t.referenceId);
-    return await this.registrationScopedRepository.find({
-      where: {
-        referenceId: In(referenceIds),
-        fsp: { hasReconciliation: true },
-      },
-      relations: ['fsp'],
-    });
-  }
-
   private failedTransactionForRegistrationAndPayment(
     q: ScopedQueryBuilder<RegistrationEntity>,
     payment: number,
@@ -799,12 +779,7 @@ export class PaymentsService {
     userId: number,
   ): Promise<FspInstructions> {
     const exportPaymentTransactions = (
-      await this.transactionsService.getLastTransactions(
-        programId,
-        payment,
-        null,
-        null,
-      )
+      await this.transactionsService.getLastTransactions(programId, payment)
     ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
 
     if (exportPaymentTransactions.length === 0) {
@@ -816,7 +791,6 @@ export class PaymentsService {
 
     let csvInstructions = [];
     let xmlInstructions: string;
-
     let fileType: ExportFileType;
 
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
@@ -830,7 +804,7 @@ export class PaymentsService {
       });
 
       if (
-        // For fsp's with reconciliation upload only export waiting transactions
+        // For fsp's with reconciliation export only export waiting transactions
         registration.fsp.hasReconciliation &&
         transaction.status !== StatusEnum.waiting
       ) {
@@ -873,7 +847,7 @@ export class PaymentsService {
 
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
-      (t) => t.fsp === FspName.excel,
+      (t) => t.fsp === FspName.excel && t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(
@@ -902,7 +876,7 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<ImportResult> {
-    // NOTE: this code is still really ambiguous because it seems to facilitate multiple FSPs, but it does not in practice because e.g. only 1 (fsp-specific) file is uploaded
+    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     const programWithReconciliationFsps = await this.programRepository.findOne({
       where: {
         id: programId,
