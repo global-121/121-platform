@@ -1,13 +1,24 @@
 import { Injectable } from '@angular/core';
-import { PaymentData } from '../models/payment.model';
+import { TranslateService } from '@ngx-translate/core';
+import { PaymentData, PaymentRowDetail } from '../models/payment.model';
+import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
+import {
+  RegistrationActivity,
+  RegistrationActivityType,
+} from '../models/registration-activity.model';
+import { StatusEnum } from '../models/status.enum';
+import { PaymentUtils } from '../shared/payment.utils';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PastPaymentsService {
-  constructor(private programsService: ProgramsServiceApiService) {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private translate: TranslateService,
+  ) {}
 
   public async getLastPaymentId(
     programId: number | string,
@@ -75,5 +86,82 @@ export class PastPaymentsService {
     }[]
   > {
     return this.programsService.getPaymentsWithStateSums(programId);
+  }
+
+  public async getPaymentActivity(
+    program: Program,
+    person: Person,
+    canDoSinglePayment: boolean,
+  ): Promise<RegistrationActivity[]> {
+    const paymentActivity = [];
+    const nrOfPayments = program?.distributionDuration;
+    const lastPaymentToShow = Math.min(
+      await this.getLastPaymentId(program.id),
+      nrOfPayments,
+    );
+
+    for (let index = 1; index <= lastPaymentToShow; index++) {
+      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
+        index,
+        person.referenceId,
+        await this.programsService.getTransactions(
+          program.id,
+          person.referenceId,
+        ),
+      );
+      let paymentRowValue: PaymentRowDetail = {
+        paymentIndex: index,
+        text: '',
+      };
+      if (!transaction) {
+        paymentRowValue.text = this.translate.instant(
+          'page.program.program-people-affected.transaction.do-single-payment',
+        );
+        paymentRowValue.status = StatusEnum.notYetSent;
+      } else {
+        paymentRowValue = PaymentUtils.getPaymentRowInfo(
+          transaction,
+          program,
+          index,
+        );
+        if (transaction.status === StatusEnum.success) {
+          /* empty */
+        } else if (transaction.status === StatusEnum.waiting) {
+          paymentRowValue.errorMessage = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+          paymentRowValue.waiting = true;
+        } else {
+          paymentRowValue.errorMessage = transaction.errorMessage;
+        }
+
+        paymentRowValue.status = transaction.status;
+      }
+      if (
+        paymentRowValue.transaction ||
+        PaymentUtils.enableSinglePayment(
+          paymentRowValue,
+          canDoSinglePayment,
+          person.status,
+          await this.getLastPaymentId(program.id),
+          false,
+        )
+      ) {
+        paymentActivity.push({
+          paymentRowDetail: { ...paymentRowValue },
+          type: RegistrationActivityType.payment,
+          date: paymentRowValue.sentDate
+            ? new Date(paymentRowValue.sentDate)
+            : null,
+          label: this.translate.instant(
+            'registration-details.payment-history.transfer',
+            { paymentNr: paymentRowValue.paymentIndex },
+          ),
+          user: paymentRowValue.transaction?.user.username,
+          activityStatus: paymentRowValue.status,
+        });
+      }
+    }
+    return paymentActivity;
   }
 }

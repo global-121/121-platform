@@ -5,18 +5,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PaymentRowDetail, PayoutDetails } from 'src/app/models/payment.model';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
-import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from '../../../environments/environment';
 import { RegistrationActivityDetailComponent } from '../../components/registration-activity-detail/registration-activity-detail.component';
-import {
-  RegistrationActivity,
-  RegistrationActivityType,
-} from '../../models/registration-activity.model';
+import { RegistrationActivity } from '../../models/registration-activity.model';
 import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
-import { StatusEnum } from './../../models/status.enum';
+
 @Component({
   selector: 'app-payment-history-popup',
   templateUrl: './payment-history-popup.component.html',
@@ -62,7 +58,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public paDisplayName: string;
   private programId: number;
   public locale: string;
-  private pastTransactions: Transaction[] = [];
 
   constructor(
     private modalController: ModalController,
@@ -86,11 +81,11 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
       );
-      this.pastTransactions = await this.programsService.getTransactions(
-        this.programId,
-        this.person?.referenceId,
+      this.paymentRows = await this.pastPaymentsService.getPaymentActivity(
+        this.program,
+        this.person,
+        this.canDoSinglePayment,
       );
-      this.fillPaymentRows();
       this.paymentRows.reverse();
     }
   }
@@ -133,74 +128,5 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.lastPaymentId,
       this.paymentInProgress,
     );
-  }
-
-  private fillPaymentRows() {
-    const nrOfPayments = this.program?.distributionDuration;
-    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
-
-    for (
-      let index = this.firstPaymentToShow;
-      index <= lastPaymentToShow;
-      index++
-    ) {
-      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
-        index,
-        this.person.referenceId,
-        this.pastTransactions,
-      );
-      let paymentRowValue: PaymentRowDetail = {
-        paymentIndex: index,
-        text: '',
-      };
-      if (!transaction) {
-        paymentRowValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.do-single-payment',
-        );
-        paymentRowValue.status = StatusEnum.notYetSent;
-      } else {
-        paymentRowValue = PaymentUtils.getPaymentRowInfo(
-          transaction,
-          this.program,
-          index,
-        );
-        if (transaction.status === StatusEnum.success) {
-          /* empty */
-        } else if (transaction.status === StatusEnum.waiting) {
-          paymentRowValue.errorMessage = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting-message',
-          );
-          paymentRowValue.waiting = true;
-        } else {
-          paymentRowValue.errorMessage = transaction.errorMessage;
-        }
-
-        paymentRowValue.status = transaction.status;
-      }
-      if (
-        paymentRowValue.transaction ||
-        PaymentUtils.enableSinglePayment(
-          paymentRowValue,
-          this.canDoSinglePayment,
-          this.person.status,
-          this.lastPaymentId,
-          false,
-        )
-      ) {
-        this.paymentRows.push({
-          paymentRowDetail: { ...paymentRowValue },
-          type: RegistrationActivityType.payment,
-          date: paymentRowValue.sentDate
-            ? new Date(paymentRowValue.sentDate)
-            : null,
-          label: this.translate.instant(
-            'registration-details.payment-history.transfer',
-            { paymentNr: paymentRowValue.paymentIndex },
-          ),
-          user: paymentRowValue.transaction?.user.username,
-          activityStatus: paymentRowValue.status,
-        });
-      }
-    }
   }
 }
