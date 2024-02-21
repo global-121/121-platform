@@ -190,8 +190,6 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "Importar datos de conciliación de pagos",
-        "confirm-message": "Importar datos de conciliación de pagos",
-        "explanation": "Asegúrese de cargar los datos de conciliación exactamente como los proporcionó el proveedor de servicios financieros. Tenga en cuenta que cargar un nuevo archivo sobrescribirá cualquier archivo cargado anteriormente.<br /><br />Por favor, asegúrese de que el pago seleccionado actualmente, <strong>#{{payment}}</strong>, es correcto. Si el número de pago es incorrecto, cierre este diálogo y elija el número de pago correcto del menú desplegable.",
         "import-result": {
           "new": "Actualización de los datos de pago de {{countTotal}} personas afectadas:<ul><li>{{countPaymentSuccess}} los pagos se han <strong>realizado correctamente</strong> <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> Los pagos <strong>han fallado</strong></li></ul> <strong></strong>",
           "not-found": "Hubo <strong>{{countNotFound}}</strong> transacciones para las que no se encontró ninguna persona afectada que coincidiera. Intenta corregirlos y vuelve a subirlos.",

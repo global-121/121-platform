@@ -55,6 +55,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   }
 
   async ngOnChanges() {
+    this.updateSubHeader();
     this.setupFilePickerProps();
     this.disabled = !this.btnEnabled();
   }
@@ -62,6 +63,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   private async updateSubHeader() {
     this.subHeader = this.translate.instant(
       'page.program.import-fsp-reconciliation.confirm-message',
+      { payment: this.payment },
     );
     if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
       const actionTimestamp =
@@ -167,10 +169,13 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
       type: 'csv,xml',
       explanation: this.translate.instant(
         'page.program.import-fsp-reconciliation.explanation',
-        { payment: this.payment },
+        {
+          payment: this.payment,
+        },
       ),
       programId: this.programId,
       downloadTemplate: null,
+      titleTranslationKey: 'page.program.import-fsp-reconciliation.btn-text',
     };
   }
 }

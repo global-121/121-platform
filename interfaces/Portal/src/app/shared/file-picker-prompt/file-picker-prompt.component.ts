@@ -9,6 +9,7 @@ export interface FilePickerProps {
   explanation?: string;
   programId?: number;
   downloadTemplate?: ImportType;
+  titleTranslationKey?: string;
 }
 
 @Component({

@@ -190,8 +190,6 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "استيراد بيانات تسوية الدفعات",
-        "confirm-message": "استيراد بيانات تسوية الدفعات",
-        "explanation": "تأكد من تحميل بيانات التسوية تماما كما قدمها مزود الخدمة المالية. كن على علم بأن تحميل ملف جديد سيحل محل أي ملف تم تحميله مسبقاً.<br /><br />يرجى التأكد من أن الدفعة المحددة حالياً، <strong>#{{payment}}</strong>، صحيحة. إذا كان رقم الدفعة غير صحيح، اغلق هذا الحوار واختر رقم الدفعة الصحيح من القائمة المنسدلة.",
         "import-result": {
           "new": "تم تحديث بيانات الدفع ل {{countTotal}} الأشخاص المتأثرين:<ul><li>{{countPaymentSuccess}} <strong>تم تنفيذ</strong>عمليات الدفع بنجاح <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> فشلت المدفوعات <strong></strong></li></ul> <strong></strong>",
           "not-found": "كانت هناك <strong>{{countNotFound}}</strong> معاملة لم يتم العثور على شخص مطابق لها. حاول تصحيحها وتحميلها مرة أخرى.",
