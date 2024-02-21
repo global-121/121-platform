@@ -388,20 +388,17 @@ export class ProgramService {
 
   public async updateProgram(
     programId: number,
-    // TODO: REFACTOR: rename to programData like in create()?
+    // TODO: REFACTOR: rename to programData like in create()? No, use typename with lowercase.
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
     // We need the FSPs configured for this program, therefore using .findOne since .findProgramOrThrow does not have it.
-    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function?
+    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
-    // TODO: Not sure if this is where we want to declare savedProgram. It is used in the try block, and as return value.
     let savedProgram;
 
+    // TODO: remove transaction stuff, but leave the try catch.
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
-
-    // TODO: in create() the function validateProgram(updateProgramDto) is called, which a.o. does some validation in the financialServiceProviders data. Do we also need to do that here? If so, how to implement?
-    //await this.validateProgram(updateProgramDto);
 
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
@@ -411,12 +408,9 @@ export class ProgramService {
       }
     }
 
-    debugger;
     try {
       // Add newly supplied FSPs to the program.
       for (const fspItem of updateProgramDto.financialServiceProviders) {
-        // Write an if statement that is true if the value of fsp in fspItem is not in any fsp value of any item in the array savedProgram.financialServiceProviders
-        // Copilot created this if statement, which seems to work:
         if (!program.financialServiceProviders.some(fsp => fsp.fsp === fspItem.fsp)) {
           const fsp = await this.financialServiceProviderRepository.findOne({
             where: { fsp: fspItem.fsp },
@@ -443,6 +437,8 @@ export class ProgramService {
     }
 
     // TODO: Do we simply return the saved program here, with all its relations? Or do we need to do some transformation? DTO?
+    // Check to use: formatCreateProgramDto
+    // TODO: REFACTOR: consider refactoring GET /programs/:programId, or at least put a comment there.
     return savedProgram;
   }
 

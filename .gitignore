@@ -2,6 +2,7 @@
 # IDE / Editor configurations
 .vscode/
 !.vscode/extensions.json
+!.vscode/launch.json
 
 # Third-party code
 node_modules
