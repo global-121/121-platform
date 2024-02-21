@@ -392,7 +392,6 @@ export class ProgramService {
   ): Promise<ProgramEntity> {
     // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
-    let savedProgram;
 
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
@@ -420,6 +419,7 @@ export class ProgramService {
       }
     }
 
+    let savedProgram: ProgramEntity;
     try {
       savedProgram = await this.programRepository.save(program);
     } catch (err) {
