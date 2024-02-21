@@ -260,7 +260,7 @@ export class ExcelService
           record[this.statusColumnName],
         )
       ) {
-        const errors = `No 'status' column or it contains not accepted values ('success' or 'error')`;
+        const errors = `The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
 
