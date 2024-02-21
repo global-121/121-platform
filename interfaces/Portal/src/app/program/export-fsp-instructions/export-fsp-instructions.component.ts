@@ -105,7 +105,8 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
       .then(
         (res) => {
           this.isInProgress = false;
-          if (res.length < 1) {
+          console.log(res);
+          if (res.data.length < 1) {
             actionResult(
               this.alertController,
               this.translate,
