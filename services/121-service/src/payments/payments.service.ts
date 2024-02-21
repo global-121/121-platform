@@ -931,6 +931,9 @@ export class PaymentsService {
         const transactions = await this.transactionsService.getLastTransactions(
           programId,
           payment,
+          null,
+          null,
+          FspName.excel,
         );
         importResponseRecords =
           this.excelService.joinRegistrationsAndImportRecords(

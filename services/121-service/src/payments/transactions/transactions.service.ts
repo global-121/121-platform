@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
@@ -76,12 +77,14 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
+    fspName?: FspName,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
       payment,
       referenceId,
       status,
+      fspName,
     ).getRawMany();
   }
 
@@ -90,6 +93,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
+    fspName?: FspName,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
@@ -128,6 +132,11 @@ export class TransactionsService {
         'transaction.status = :status',
         { status: status },
       );
+    }
+    if (fspName) {
+      transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
+        fspName: fspName,
+      });
     }
     return transactionQuery;
   }
