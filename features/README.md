@@ -114,11 +114,11 @@ Using application such as EspoCRM to call our API
 - [Update program](Admin-user/Update_program.feature)
 - [Export Intersolve vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
 - [Sync Intersolve Visa Customer](Admin-user/Sync_Intersolve_Visa_Customer.feature)
+- [Load seed data](Admin-user/Load_seed_data.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update instance
 - Add/update Intersolve instructions image
-- Load seed data
 - Create new aidworker user and manage assignment to program
 - Delete user
 
