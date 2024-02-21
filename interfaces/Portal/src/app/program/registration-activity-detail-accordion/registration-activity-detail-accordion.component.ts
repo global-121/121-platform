@@ -174,6 +174,7 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
         imageUrl: voucherUrl,
         program: this.program,
       },
+      cssClass: 'payment-status-popup',
     });
     modal.onDidDismiss().then(() => {
       // Remove the image from browser memory
