@@ -27,12 +27,12 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content class="ion-padding">
   <div *ngFor="let activity of messageHistory">
     <app-registration-activity-detail
       [activity]="activity"
       [locale]="locale"
-      style="border-bottom: 1px solid var(--fiveten-neutral-300)"
+      style="border-bottom: 1px solid var(--fiveten-neutral-200)"
     >
       <div
         body
