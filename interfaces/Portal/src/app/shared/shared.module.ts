@@ -26,6 +26,7 @@ import { ExportFspInstructionsComponent } from '../program/export-fsp-instructio
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { ExportSelectComponent } from '../program/export-select/export-select.component';
 import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
+import { PaymentHistoryAccordionComponent } from '../program/payment-history-accordion/payment-history-accordion.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
@@ -82,6 +83,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     SelectTypeaheadComponent,
     LanguageSwitcherComponent,
     RegistrationActivityDetailComponent,
+    PaymentHistoryAccordionComponent,
   ],
   exports: [
     BulkImportComponent,
@@ -116,6 +118,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     LanguageSwitcherComponent,
     ExportSelectComponent,
     RegistrationActivityDetailComponent,
+    PaymentHistoryAccordionComponent,
   ],
 })
 export class SharedModule {}

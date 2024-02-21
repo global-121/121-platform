@@ -39,11 +39,10 @@
     >
       <div body>
         <app-payment-history-accordion
-          [paymentRow]="activity.paymentRowDetail"
+          [activity]="activity"
           [enableSinglePayment]="enableSinglePayment(activity.paymentRowDetail)"
           [person]="person"
           [program]="program"
-          [paymentRows]="enableSinglePayment(activity.paymentRowDetail)"
           [canViewVouchers]="canViewVouchers"
           [canDoSinglePayment]="canDoSinglePayment"
           [lastPaymentId]="lastPaymentId"

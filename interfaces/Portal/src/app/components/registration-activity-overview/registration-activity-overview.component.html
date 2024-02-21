@@ -103,38 +103,20 @@
         >
           <ng-container *ngSwitchCase="RegistrationActivityType.payment">
             <app-payment-history-accordion
-              [paymentRow]="activity.paymentRowDetail"
+              [activity]="activity"
               [enableSinglePayment]="
                 enableSinglePayment(activity.paymentRowDetail)
               "
               [person]="person"
               [program]="program"
-              [paymentRows]="enableSinglePayment(paymentRow)"
               [canViewVouchers]="canViewVouchers"
               [canDoSinglePayment]="canDoSinglePayment"
               [lastPaymentId]="lastPaymentId"
             ></app-payment-history-accordion>
           </ng-container>
           <ng-container *ngSwitchCase="RegistrationActivityType.message">
-            <div
-              [innerHTML]="activity.description"
-              style="white-space: pre-wrap"
-            ></div>
-
-            <div
-              *ngIf="activity.messageErrorCode"
-              class="util--half-margin-top"
-            >
-              <ion-note>
-                {{ 'entity.message.error-code-prefix' | translate }}
-                <a
-                  [href]="errorCodeUrl + activity.messageErrorCode"
-                  target="_blank"
-                  rel="external noopener noreferrer"
-                  >{{ activity.messageErrorCode }}</a
-                ></ion-note
-              >
-            </div>
+            <app-payment-history-accordion [activity]="activity">
+            </app-payment-history-accordion>
           </ng-container>
           <ng-container *ngSwitchCase="RegistrationActivityType.changeData">
             <strong>{{

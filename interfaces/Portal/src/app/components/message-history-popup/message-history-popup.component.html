@@ -34,25 +34,11 @@
       [locale]="locale"
       style="border-bottom: 1px solid var(--fiveten-neutral-200)"
     >
-      <div
-        body
-        [innerHTML]="activity.description"
-        style="white-space: pre-wrap"
-      ></div>
-
-      <div
-        *ngIf="activity.messageErrorCode"
-        class="util--half-margin-top"
-      >
-        <ion-note>
-          {{ 'entity.message.error-code-prefix' | translate }}
-          <a
-            [href]="errorCodeUrl + activity.messageErrorCode"
-            target="_blank"
-            rel="external noopener noreferrer"
-            >{{ activity.messageErrorCode }}</a
-          ></ion-note
-        >
+      <div body>
+        <ng-container>
+          <app-payment-history-accordion [activity]="activity">
+          </app-payment-history-accordion>
+        </ng-container>
       </div>
     </app-registration-activity-detail>
   </div>
