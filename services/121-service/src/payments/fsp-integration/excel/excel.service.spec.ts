@@ -144,8 +144,10 @@ describe('ExcelService', () => {
         matchColumn,
         transactions,
       );
+      // eslint-disable-next-line jest/no-jasmine-globals
       fail('Expected error to be thrown');
     } catch (error) {
+      // eslint-disable-next-line jest/no-conditional-expect
       expect(error).toBeDefined();
     }
   });
