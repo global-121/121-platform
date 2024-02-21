@@ -28,11 +28,32 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div *ngFor="let message of messageHistory">
+  <div *ngFor="let activity of messageHistory">
     <app-registration-activity-detail
-      [activity]="message"
+      [activity]="activity"
       [locale]="locale"
       style="border-bottom: 1px solid var(--fiveten-neutral-300)"
-    ></app-registration-activity-detail>
+    >
+      <div
+        body
+        [innerHTML]="activity.description"
+        style="white-space: pre-wrap"
+      ></div>
+
+      <div
+        *ngIf="activity.messageErrorCode"
+        class="util--half-margin-top"
+      >
+        <ion-note>
+          {{ 'entity.message.error-code-prefix' | translate }}
+          <a
+            [href]="errorCodeUrl + activity.messageErrorCode"
+            target="_blank"
+            rel="external noopener noreferrer"
+            >{{ activity.messageErrorCode }}</a
+          ></ion-note
+        >
+      </div>
+    </app-registration-activity-detail>
   </div>
 </ion-content>
