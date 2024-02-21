@@ -11,7 +11,7 @@ import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from '../../../environments/environment';
 import { RegistrationActivityDetailComponent } from '../../components/registration-activity-detail/registration-activity-detail.component';
 import { RegistrationActivity } from '../../models/registration-activity.model';
-import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
+import { RegistrationActivityDetailAccordionComponent } from '../registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 
 @Component({
   selector: 'app-payment-history-popup',
@@ -22,7 +22,7 @@ import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/p
     IonicModule,
     CommonModule,
     TranslateModule,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
     RegistrationActivityDetailComponent,
   ],
 })

@@ -102,7 +102,7 @@
           body
         >
           <ng-container *ngSwitchCase="RegistrationActivityType.payment">
-            <app-payment-history-accordion
+            <app-registration-activity-detail-accordion
               [activity]="activity"
               [enableSinglePayment]="
                 enableSinglePayment(activity.paymentRowDetail)
@@ -112,11 +112,11 @@
               [canViewVouchers]="canViewVouchers"
               [canDoSinglePayment]="canDoSinglePayment"
               [lastPaymentId]="lastPaymentId"
-            ></app-payment-history-accordion>
+            ></app-registration-activity-detail-accordion>
           </ng-container>
           <ng-container *ngSwitchCase="RegistrationActivityType.message">
-            <app-payment-history-accordion [activity]="activity">
-            </app-payment-history-accordion>
+            <app-registration-activity-detail-accordion [activity]="activity">
+            </app-registration-activity-detail-accordion>
           </ng-container>
           <ng-container *ngSwitchCase="RegistrationActivityType.changeData">
             <strong>{{

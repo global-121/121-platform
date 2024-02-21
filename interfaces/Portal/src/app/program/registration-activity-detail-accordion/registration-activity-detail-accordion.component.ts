@@ -19,13 +19,13 @@ import {
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 @Component({
-  selector: 'app-payment-history-accordion',
-  templateUrl: './payment-history-accordion.component.html',
-  styleUrls: ['./payment-history-accordion.component.scss'],
+  selector: 'app-registration-activity-detail-accordion',
+  templateUrl: './registration-activity-detail-accordion.component.html',
+  styleUrls: ['./registration-activity-detail-accordion.component.scss'],
   standalone: true,
   imports: [IonicModule, FormsModule, CommonModule, TranslateModule],
 })
-export class PaymentHistoryAccordionComponent implements OnInit {
+export class RegistrationActivityDetailAccordionComponent implements OnInit {
   DateFormat = DateFormat;
   hasErrorCheck = PaymentUtils.hasError;
   hasWaitingCheck = PaymentUtils.hasError;

@@ -38,7 +38,7 @@
       style="border-bottom: 1px solid var(--fiveten-neutral-200)"
     >
       <div body>
-        <app-payment-history-accordion
+        <app-registration-activity-detail-accordion
           [activity]="activity"
           [enableSinglePayment]="enableSinglePayment(activity.paymentRowDetail)"
           [person]="person"
@@ -46,7 +46,7 @@
           [canViewVouchers]="canViewVouchers"
           [canDoSinglePayment]="canDoSinglePayment"
           [lastPaymentId]="lastPaymentId"
-        ></app-payment-history-accordion>
+        ></app-registration-activity-detail-accordion>
       </div>
     </app-registration-activity-detail>
   </ng-container>

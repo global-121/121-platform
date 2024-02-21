@@ -8,7 +8,6 @@ import {
   RegistrationActivity,
   RegistrationActivityType,
 } from 'src/app/models/registration-activity.model';
-import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
@@ -19,6 +18,7 @@ import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { RegistrationStatusChange } from '../../models/registration-status-change.model';
+import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -32,7 +32,7 @@ import { RegistrationActivityDetailComponent } from '../registration-activity-de
     CommonModule,
     IonicModule,
     TranslateModule,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
     AddNotePopupComponent,
     RegistrationActivityDetailComponent,
   ],

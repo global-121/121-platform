@@ -26,10 +26,10 @@ import { ExportFspInstructionsComponent } from '../program/export-fsp-instructio
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { ExportSelectComponent } from '../program/export-select/export-select.component';
 import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
-import { PaymentHistoryAccordionComponent } from '../program/payment-history-accordion/payment-history-accordion.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { RegistrationActivityDetailAccordionComponent } from '../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
@@ -83,7 +83,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     SelectTypeaheadComponent,
     LanguageSwitcherComponent,
     RegistrationActivityDetailComponent,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
   ],
   exports: [
     BulkImportComponent,
@@ -118,7 +118,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     LanguageSwitcherComponent,
     ExportSelectComponent,
     RegistrationActivityDetailComponent,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
   ],
 })
 export class SharedModule {}
