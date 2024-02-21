@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -10,9 +11,8 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { Type } from 'class-transformer';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { SetFspDto } from './create-program.dto';
 
 export class UpdateProgramDto {
@@ -95,7 +95,7 @@ export class UpdateProgramDto {
       },
     ],
     description:
-      'Use the GET /api/financial-service-providers endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. FSPs cannot be removed from a program.',
+      'Use the GET /api/financial-service-providers endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. Existing FSPs are not removed from a program. Program-fsp-config is not processed. Use specific POST/PUT endpoints for that.',
   })
   @IsOptional()
   @IsArray()
