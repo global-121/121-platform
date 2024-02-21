@@ -192,7 +192,7 @@
       "import-fsp-reconciliation": {
         "btn-text": "Importeer verrekenings data",
         "confirm-message": "Importeer verrekenings data van betaling #{{payment}}",
-        "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener. Wees ervan bewust dat het uploaden van een nieuw bestand elk eerder geüpload bestand zal overschrijven.<br /><br />Controleer alstublieft dat de momenteel geselecteerde betaling, <strong>#{{payment}}</strong>, correct is. Als het betalingsnummer incorrect is, sluit dan dit dialoogvenster en kies het juiste betalingsnummer uit het dropdown-menu.",
+        "explanation": "Houd er rekening mee dat:<ul><li>Controleer dat het bestand klopt met het geselecteerde betalingsnummer (betaling <strong>#{{payment}}</strong>) voordat je op OK klikt.</li><li>Het uploaden van een nieuw bestand data van eerdere bestanden overschrijft.</li></ul>",
         "import-result": {
           "new": "Betalingsgegevens bijgewerkt voor <strong> {{countTotal}} </strong> getroffen mensen: <ul> <li> <strong> {{countPaymentSuccess}} </strong> betalingen zijn <strong> succesvol </strong> </li> <li> <strong> {{countPaymentFailed}} </strong> betalingen zijn <strong> mislukt </strong> </li> </ul>",
           "not-found": "Er zijn <strong>{{countNotFound}}</strong> transacties waarvoor geen overeenkomende betrokkene werd gevonden. Probeer deze te corrigeren en opnieuw te uploaden.",
@@ -310,7 +310,7 @@
           "confirm-prompt": "Hiermee wordt ALLEEN de {{number}} mislukte betaling(en) opnieuw geprobeerd.",
           "error": "Mislukt",
           "last-payment": "Laatste betaling: {{nr}}",
-          "retry-all": "Probeer alles opnieuw {{number}} mislukt",
+          "retry-all": "Probeer alles opnieuw: {{number}} mislukt",
           "success": "Succesvol",
           "waiting": "Wachten"
         },

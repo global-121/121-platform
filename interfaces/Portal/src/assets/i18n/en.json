@@ -192,7 +192,7 @@
       "import-fsp-reconciliation": {
         "btn-text": "Import Payment Reconciliation Data",
         "confirm-message": "Import reconciliation data of payment #{{payment}}",
-        "explanation": "Upload the reconciliation data as provided by the financial service provider without making any changes.<br/><br/>Please note:<ul><li>Uploading a new file will overwrite data from previously uploaded files.</li><li>Doublecheck that the file matches the selected payment number (payment <strong>#{{payment}}</strong>) before clicking OK.</li></ul>",
+        "explanation": "Please note:<ul><li>Uploading a new file will overwrite data from previously uploaded files.</li><li>Doublecheck that the file matches the selected payment number (payment <strong>#{{payment}}</strong>) before clicking OK.</li></ul>",
         "import-result": {
           "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
           "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again.",
