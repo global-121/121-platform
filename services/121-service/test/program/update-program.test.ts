@@ -68,4 +68,7 @@ describe.only('Update program', () => {
     // Assert
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
+
+  // TODO: Add a test for supplied attributes that do not exist? See validation pipe TODO in ProgramsController and comment in DevOps Task
+
 });
