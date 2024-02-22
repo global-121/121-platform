@@ -178,12 +178,12 @@ export async function importFspReconciliationData(
 
 function jsonArrayToCsv(json: object[]): string {
   const fields = Object.keys(json[0]);
-  const replacer = function (_key, value) {
+  const replacer = function (_key, value): string | number {
     return value === null ? '' : value;
   };
-  const csv = json.map(function (row) {
+  const csv = json.map(function (row): string {
     return fields
-      .map(function (fieldName) {
+      .map(function (fieldName): string {
         return JSON.stringify(row[fieldName], replacer);
       })
       .join(',');

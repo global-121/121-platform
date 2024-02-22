@@ -284,10 +284,10 @@ describe('Do payment with Excel FSP', () => {
       // Assert
       // Check per import record if it is imported or not found
       for (const importResultRecord of importResultRecords) {
-        if (importResultRecord[matchColumn] in phoneNumbersWesteros) {
-          expect(importResultRecord.importStatus === ImportStatus.imported);
+        if (phoneNumbersWesteros.includes(importResultRecord[matchColumn])) {
+          expect(importResultRecord.importStatus).toBe(ImportStatus.imported);
         } else {
-          expect(importResultRecord.importStatus === ImportStatus.notFound);
+          expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
         }
       }
       // Check for updated transaction if the status matches the imported status
