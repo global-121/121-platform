@@ -23,36 +23,32 @@
             *ngIf="activity.type === RegistrationActivityType.payment"
           >
             <ion-button
-              fill="clear"
-              size="small"
-              color="primary"
-              *ngIf="
-                activity.paymentRowDetail.transaction &&
-                !hasErrorCheck(activity.paymentRowDetail) &&
-                hasVoucherSupportCheck(
-                  activity.paymentRowDetail.transaction.fsp
-                )
-              "
-              (click)="rowClick(activity.paymentRowDetail)"
-              >{{
-                'page.program.program-people-affected.transaction.open-voucher'
-                  | translate
-              }}
-            </ion-button>
-
-            <!-- Retry payment button -->
-            <ion-button
               shape="round"
               fill="outline"
               size="small"
               color="primary"
-              *ngIf="hasErrorCheck(activity.paymentRowDetail)"
               (click)="rowClick(activity.paymentRowDetail)"
             >
-              {{
-                'page.program.program-people-affected.transaction.retry'
-                  | translate
-              }}
+              <span
+                *ngIf="
+                  activity.paymentRowDetail.transaction &&
+                  !hasErrorCheck(activity.paymentRowDetail) &&
+                  hasVoucherSupportCheck(
+                    activity.paymentRowDetail.transaction.fsp
+                  )
+                "
+              >
+                {{
+                  'page.program.program-people-affected.transaction.open-voucher'
+                    | translate
+                }}
+              </span>
+              <span *ngIf="hasErrorCheck(activity.paymentRowDetail)">
+                {{
+                  'page.program.program-people-affected.transaction.retry'
+                    | translate
+                }}
+              </span>
             </ion-button>
           </ng-container>
           <!-- Open voucher button -->
@@ -196,11 +192,7 @@
 </ng-container>
 <!-- for single payments -->
 <ng-container *ngIf="!showAccordion">
-  <ion-item
-    slot="header"
-    lines="none"
-    style="--padding-start: 0"
-  >
+  <div>
     <ion-grid class="ion-no-padding">
       <div class="ion-text-right">
         <!-- Single payment send again button -->
@@ -219,5 +211,5 @@
         </ion-button>
       </div>
     </ion-grid>
-  </ion-item>
+  </div>
 </ng-container>
