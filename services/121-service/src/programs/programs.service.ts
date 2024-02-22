@@ -393,6 +393,8 @@ export class ProgramService {
     // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
 
+    // TODO: REFACTOR: When updateProgramDto is empty, it should return successfully. Now it response with a 500 internal server error.
+
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
       // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
@@ -402,20 +404,22 @@ export class ProgramService {
     }
 
     // Add newly supplied FSPs to the program.
-    for (const fspItem of updateProgramDto.financialServiceProviders) {
-      if (
-        !program.financialServiceProviders.some(
-          (fsp) => fsp.fsp === fspItem.fsp,
-        )
-      ) {
-        const fsp = await this.financialServiceProviderRepository.findOne({
-          where: { fsp: fspItem.fsp },
-        });
-        if (!fsp) {
-          const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
-          throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (updateProgramDto.financialServiceProviders) {
+      for (const fspItem of updateProgramDto.financialServiceProviders) {
+        if (
+          !program.financialServiceProviders.some(
+            (fsp) => fsp.fsp === fspItem.fsp,
+          )
+        ) {
+          const fsp = await this.financialServiceProviderRepository.findOne({
+            where: { fsp: fspItem.fsp },
+          });
+          if (!fsp) {
+            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
+            throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+          }
+          program.financialServiceProviders.push(fsp);
         }
-        program.financialServiceProviders.push(fsp);
       }
     }
 
