@@ -7,7 +7,7 @@ import { postProgramQuestion } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from '../registrations/pagination/pagination-data';
 
-describe('Create program', () => {
+describe('Create program questions', () => {
   let accessToken: string;
 
   const programQuestion = {
