@@ -161,6 +161,37 @@ export async function getFspInstructions(
     .query({ format: 'json' });
 }
 
+export async function importFspReconciliationData(
+  programId: number,
+  paymentNr: number,
+  accessToken: string,
+  reconciliationData: object[],
+): Promise<request.Response> {
+  const csvString = jsonArrayToCsv(reconciliationData);
+  const buffer = Buffer.from(csvString, 'utf-8');
+  return await getServer()
+    .post(`/programs/${programId}/payments/${paymentNr}/fsp-reconciliation`)
+    .set('Cookie', [accessToken])
+    .field('Content-Type', 'multipart/form-data')
+    .attach('file', buffer, 'reconciliation.csv');
+}
+
+function jsonArrayToCsv(json: object[]): string {
+  const fields = Object.keys(json[0]);
+  const replacer = function (_key, value) {
+    return value === null ? '' : value;
+  };
+  const csv = json.map(function (row) {
+    return fields
+      .map(function (fieldName) {
+        return JSON.stringify(row[fieldName], replacer);
+      })
+      .join(',');
+  });
+  csv.unshift(fields.join(',')); // add header column
+  return csv.join('\r\n');
+}
+
 export async function getFspConfiguration(
   programId: number,
   accessToken: string,
