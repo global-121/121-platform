@@ -5,7 +5,7 @@ import { UserModule } from '../../user/user.module';
 import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import { EventEntity } from '../entities/event.entity';
 import { EventController } from '../events.controller';
-import { EventGetService } from './events.get.service';
+import { EventGetService } from './events-get.service';
 
 @Module({
   imports: [HttpModule, UserModule, TypeOrmModule.forFeature([EventEntity])],
