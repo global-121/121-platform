@@ -393,8 +393,6 @@ export class ProgramService {
     // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
 
-    // TODO: REFACTOR: When updateProgramDto is empty, it should return successfully. Now it response with a 500 internal server error.
-
     // If nothing to update, raise a 400 Bad Request.
     if (Object.keys(updateProgramDto).length === 0) {
       throw new HttpException(
