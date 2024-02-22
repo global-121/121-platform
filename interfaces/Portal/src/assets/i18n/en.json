@@ -680,9 +680,6 @@
           "old": "Old: ",
           "reason": "Reason: "
         },
-        "message": {
-          "label": "Message"
-        },
         "note": {
           "label": "Note"
         },
