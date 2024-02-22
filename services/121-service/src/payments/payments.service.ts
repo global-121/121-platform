@@ -25,6 +25,7 @@ import { RegistrationsPaginationService } from '../registration/services/registr
 import { ScopedQueryBuilder } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
+import { splitArrayIntoChunks } from '../utils/chunk.helper';
 import { FileImportService } from '../utils/file-import/file-import.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
@@ -284,14 +285,11 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    const chunkSize = 1000;
-    const chunks = [];
-    for (let i = 0; i < referenceIds.length; i += chunkSize) {
-      chunks.push(referenceIds.slice(i, i + chunkSize));
-    }
+    const BATCH_SIZE = 1000;
+    const paymentChunks = splitArrayIntoChunks(referenceIds, BATCH_SIZE);
 
     let paymentTransactionResult = 0;
-    for (const chunk of chunks) {
+    for (const chunk of paymentChunks) {
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,

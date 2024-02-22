@@ -14,6 +14,7 @@ import { RegistrationScopedRepository } from '../../registration/registration-sc
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { splitArrayIntoChunks } from '../../utils/chunk.helper';
 import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import {
   PaTransactionResultDto,
@@ -358,22 +359,30 @@ export class TransactionsService {
       }),
     );
 
-    const savedTransactions = await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .insert()
-      .into(TransactionEntity)
-      .values(transactionsToSave)
-      .execute();
-    const savedTransactionEntities =
-      await this.transactionScopedRepository.find({
-        where: {
-          id: In(savedTransactions.identifiers.map((i) => i.id)),
-        },
-      });
+    const BATCH_SIZE = 2500;
+    const transactionChunks = splitArrayIntoChunks(
+      transactionsToSave,
+      BATCH_SIZE,
+    );
 
-    // Leaving this per transaction for now, as it is not a performance bottleneck
-    for (const transaction of savedTransactionEntities) {
-      await this.updateLatestTransaction(transaction);
+    for (const chunk of transactionChunks) {
+      const savedTransactions = await this.transactionScopedRepository
+        .createQueryBuilder('transaction')
+        .insert()
+        .into(TransactionEntity)
+        .values(chunk)
+        .execute();
+      const savedTransactionEntities =
+        await this.transactionScopedRepository.find({
+          where: {
+            id: In(savedTransactions.identifiers.map((i) => i.id)),
+          },
+        });
+
+      // Leaving this per transaction for now, as it is not a performance bottleneck
+      for (const transaction of savedTransactionEntities) {
+        await this.updateLatestTransaction(transaction);
+      }
     }
   }
 
