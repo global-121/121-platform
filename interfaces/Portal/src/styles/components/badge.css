@@ -16,6 +16,11 @@
   padding: var(--vertical-padding) var(--horizontal-padding);
   border-radius: var(--border-radius);
 
+  background-color: var(--fiveten-neutral-200);
+  color: var(--fiveten-neutral-600);
+}
+
+.badge.username {
   background-color: var(--fiveten-purple-100);
   color: var(--fiveten-purple-900);
 }
