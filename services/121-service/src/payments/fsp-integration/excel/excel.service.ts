@@ -247,11 +247,11 @@ export class ExcelService
     );
 
     // Then order registrations and importRecords by matchColumn to join them
-    const importRecordsOrdered = importRecords.sort((a, b) =>
-      a[matchColumn].localeCompare(b[matchColumn]),
+    const importRecordsOrdered = importRecords.sort(
+      (a, b) => a[matchColumn]?.localeCompare(b[matchColumn]),
     );
-    const registrationsOrdered = registrationsWithAmount.sort((a, b) =>
-      a[matchColumn].localeCompare(b[matchColumn]),
+    const registrationsOrdered = registrationsWithAmount.sort(
+      (a, b) => a[matchColumn]?.localeCompare(b[matchColumn]),
     );
 
     const importResponseRecords = importRecordsOrdered.map((record) => {
@@ -261,6 +261,9 @@ export class ExcelService
         )
       ) {
         const errors = `The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      } else if (!record[matchColumn]) {
+        const errors = `The match column '${matchColumn}' is missing.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
 
