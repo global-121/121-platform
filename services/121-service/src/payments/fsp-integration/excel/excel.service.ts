@@ -257,7 +257,7 @@ export class ExcelService
     const importResponseRecords = importRecordsOrdered.map((record) => {
       if (
         ![StatusEnum.success, StatusEnum.error].includes(
-          record[this.statusColumnName],
+          record[this.statusColumnName]?.toLowerCase(),
         )
       ) {
         const errors = `The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.`;
