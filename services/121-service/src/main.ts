@@ -148,8 +148,6 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
       forbidUnknownValues: true,
       exceptionFactory: (errors) => {
         for (const e of errors) {
