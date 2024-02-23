@@ -7,7 +7,7 @@ export class RegistrationActivity {
   label?: string;
   date: Date;
   paymentRowDetail?: PaymentRowDetail;
-  description?: string;
+  description?: string | object;
   hasVoucherSupport?: boolean;
   person?: Person;
   program?: Program;

@@ -55,8 +55,8 @@
       <ng-container>
         <span
           class="badge"
-          [class.user-active]="row.active === true"
-          [class.user-inactive]="row.active === false"
+          [class.is-user-active]="row.active === true"
+          [class.is-user-inactive]="row.active === false"
         >
           <ng-container *ngIf="row?.active === true">
             {{ 'entity.users.status.active' | translate }}

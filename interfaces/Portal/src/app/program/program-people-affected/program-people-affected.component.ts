@@ -662,6 +662,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         canViewVouchers: this.canViewVouchers,
         canDoSinglePayment: this.canDoSinglePayment,
       },
+      cssClass: 'payment-history-popup',
     });
     await modal.present();
   }
@@ -677,6 +678,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         referenceId,
         programId,
       },
+      cssClass: 'message-history-popup',
     });
     await modal.present();
   }

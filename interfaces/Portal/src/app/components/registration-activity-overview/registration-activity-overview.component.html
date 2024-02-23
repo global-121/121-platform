@@ -1,4 +1,6 @@
-<ion-row class="ion-justify-content-between ion-align-items-center">
+<ion-row
+  class="ion-justify-content-between ion-align-items-center ion-margin-bottom"
+>
   <ion-text>
     <h1 class="ion-padding-start ion-no-margin">
       {{ 'registration-details.activity-overview.title' | translate }}
@@ -43,9 +45,13 @@
 </ion-row>
 
 <div
-  style="border: 1px solid var(--fiveten-neutral-100); border-radius: 0.25rem"
+  style="
+    background-color: var(--fiveten-neutral-100);
+    border: 1px solid var(--fiveten-neutral-100);
+    border-radius: 0.25rem;
+  "
 >
-  <div style="background-color: var(--fiveten-neutral-100)">
+  <div>
     <ion-row style="width: 100%">
       <ion-col
         [size]="12"
@@ -76,36 +82,66 @@
       </ion-col>
     </ion-row>
   </div>
-  <div class="ion-no-padding">
-    <ng-container
-      *ngFor="let item of getFilteredActivityOverview()"
-      style="outline: 1px dashed hotpink"
-    >
-      <div
-        *ngIf="item.type === 'payment'"
-        style="border-top: 1px solid var(--fiveten-neutral-100)"
-      >
-        <!-- Accordion -->
-        <ion-accordion-group [multiple]="true">
-          <app-payment-history-accordion
-            [paymentRow]="item.paymentRowDetail"
-            [enableSinglePayment]="enableSinglePayment(item.paymentRowDetail)"
-            [person]="person"
-            [program]="program"
-            [paymentRows]="enableSinglePayment(paymentRow)"
-            [canViewVouchers]="canViewVouchers"
-            [canDoSinglePayment]="canDoSinglePayment"
-            [lastPaymentId]="lastPaymentId"
-          ></app-payment-history-accordion>
-        </ion-accordion-group>
-      </div>
-
+  <div
+    class="ion-no-padding"
+    style="background-color: var(--fiveten-neutral-100)"
+  >
+    <ng-container *ngFor="let activity of getFilteredActivityOverview()">
       <app-registration-activity-detail
-        *ngIf="item.type !== 'payment'"
-        [activity]="item"
+        [activity]="activity"
         [locale]="locale"
-        style="border-top: 1px solid var(--fiveten-neutral-100)"
-      ></app-registration-activity-detail>
+        class="ion-margin"
+        style="
+          border: 1px solid var(--fiveten-neutral-200);
+          border-radius: 0.25rem;
+          background-color: var(--fiveten-neutral-000);
+        "
+      >
+        <div
+          [ngSwitch]="activity.type"
+          body
+        >
+          <ng-container *ngSwitchCase="RegistrationActivityType.payment">
+            <app-registration-activity-detail-accordion
+              [activity]="activity"
+              [enableSinglePayment]="
+                enableSinglePayment(activity.paymentRowDetail)
+              "
+              [person]="person"
+              [program]="program"
+              [canViewVouchers]="canViewVouchers"
+              [canDoSinglePayment]="canDoSinglePayment"
+              [lastPaymentId]="lastPaymentId"
+            ></app-registration-activity-detail-accordion>
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.message">
+            <app-registration-activity-detail-accordion [activity]="activity">
+            </app-registration-activity-detail-accordion>
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.changeData">
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.old'
+                | translate
+            }}</strong
+            >{{ activity.description.oldValue }}<br />
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.new'
+                | translate
+            }}</strong
+            >{{ activity.description.newValue }}<br />
+            <ng-container *ngIf="activity.description.reason">
+              <strong>{{
+                'registration-details.activity-overview.activities.data-changes.reason'
+                  | translate
+              }}</strong
+              >{{ activity.description.reason }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngSwitchDefault>{{
+            activity.description
+          }}</ng-container>
+        </div>
+      </app-registration-activity-detail>
     </ng-container>
   </div>
 </div>

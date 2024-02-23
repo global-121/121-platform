@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,16 +12,20 @@ import {
 } from '../../models/payment.model';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
+import {
+  RegistrationActivity,
+  RegistrationActivityType,
+} from '../../models/registration-activity.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 @Component({
-  selector: 'app-payment-history-accordion',
-  templateUrl: './payment-history-accordion.component.html',
-  styleUrls: ['./payment-history-accordion.component.scss'],
+  selector: 'app-registration-activity-detail-accordion',
+  templateUrl: './registration-activity-detail-accordion.component.html',
+  styleUrls: ['./registration-activity-detail-accordion.component.scss'],
   standalone: true,
   imports: [IonicModule, FormsModule, CommonModule, TranslateModule],
 })
-export class PaymentHistoryAccordionComponent {
+export class RegistrationActivityDetailAccordionComponent implements OnInit {
   DateFormat = DateFormat;
   hasErrorCheck = PaymentUtils.hasError;
   hasWaitingCheck = PaymentUtils.hasError;
@@ -29,31 +33,44 @@ export class PaymentHistoryAccordionComponent {
   getCustomDataAttributesCheck = PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
-  public paymentRow: PaymentRowDetail;
+  public activity: RegistrationActivity;
 
   @Input()
-  public enableSinglePayment: any;
+  public enableSinglePayment?: any;
 
   @Input()
-  public person: Person;
+  public person?: Person;
 
   @Input()
-  public program: Program;
+  public program?: Program;
 
   @Input()
-  private canViewVouchers = false;
+  private canViewVouchers? = false;
 
   @Input()
-  private canDoSinglePayment = false;
+  private canDoSinglePayment? = false;
 
   @Input()
-  private lastPaymentId: number;
+  private lastPaymentId?: number;
+
+  RegistrationActivityType = RegistrationActivityType;
+
+  public showAccordion = false;
 
   constructor(
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {}
+  ngOnInit(): void {
+    if (
+      (this.activity.type === RegistrationActivityType.payment &&
+        !this.enableSinglePayment) ||
+      this.activity.type === RegistrationActivityType.message
+    ) {
+      this.showAccordion = true;
+    }
+  }
 
   public async rowClick(paymentRow: PaymentRowDetail) {
     let voucherUrl = null;
@@ -157,6 +174,7 @@ export class PaymentHistoryAccordionComponent {
         imageUrl: voucherUrl,
         program: this.program,
       },
+      cssClass: 'payment-status-popup',
     });
     modal.onDidDismiss().then(() => {
       // Remove the image from browser memory

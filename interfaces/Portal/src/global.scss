@@ -355,3 +355,9 @@ ion-input.custom-border {
 .export-select-popover {
   min-width: 250px;
 }
+
+.message-history-popup,
+.payment-history-popup,
+.payment-status-popup {
+  --width: 632px;
+}

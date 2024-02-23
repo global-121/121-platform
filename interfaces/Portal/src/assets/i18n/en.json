@@ -46,6 +46,14 @@
         "whatsapp": "WhatsApp"
       }
     },
+    "payment": {
+      "status": {
+        "error": "Failed",
+        "not-yet-sent": "Not yet sent",
+        "success": "Successful",
+        "waiting": "Waiting"
+      }
+    },
     "registration": {
       "status": {
         "completed": "Completed",
@@ -666,11 +674,9 @@
       "activities": {
         "data-changes": {
           "label": "Data change",
-          "reason": "<br><b>Reason:</b> {{reason}}",
-          "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}"
-        },
-        "message": {
-          "label": "Message"
+          "new": "New: ",
+          "old": "Old: ",
+          "reason": "Reason: "
         },
         "note": {
           "label": "Note"

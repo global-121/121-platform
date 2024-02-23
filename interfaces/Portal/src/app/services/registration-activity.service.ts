@@ -23,10 +23,7 @@ export class RegistrationActivityService {
 
     return {
       type: RegistrationActivityType.message,
-      label: this.translate.instant(
-        'registration-details.activity-overview.activities.message.label',
-      ),
-      subLabel: `${contentTypeLabel} (${messageTypeLabel})`,
+      label: `${contentTypeLabel} (${messageTypeLabel})`,
       date: new Date(message.created),
       description: message.body,
       activityStatus: message.messageStatus,

@@ -1,0 +1,218 @@
+<!-- Accordion -->
+<ng-container *ngIf="showAccordion">
+  <div
+    class="ion-justify-content-end ion-align-items-center"
+    style="display: flex; flex: 1"
+  ></div>
+  <details>
+    <summary>
+      <div style="display: flex; flex-direction: row">
+        <div style="flex: 1"></div>
+        <div
+          class="ion-justify-content-center ion-align-items-center"
+          style="display: flex; flex: 2; font-size: 1.4rem"
+        >
+          <ion-icon name="chevron-down-outline"></ion-icon>
+          <ion-icon name="chevron-up-outline"></ion-icon>
+        </div>
+        <div
+          class="ion-justify-content-end ion-align-items-center"
+          style="display: flex; flex: 1"
+        >
+          <ng-container
+            *ngIf="activity.type === RegistrationActivityType.payment"
+          >
+            <ion-button
+              *ngIf="
+                activity.paymentRowDetail.transaction &&
+                !hasErrorCheck(activity.paymentRowDetail) &&
+                hasVoucherSupportCheck(
+                  activity.paymentRowDetail.transaction.fsp
+                )
+              "
+              shape="round"
+              fill="outline"
+              size="small"
+              color="primary"
+              (click)="rowClick(activity.paymentRowDetail)"
+            >
+              {{
+                'page.program.program-people-affected.transaction.open-voucher'
+                  | translate
+              }}
+            </ion-button>
+            <ion-button
+              *ngIf="hasErrorCheck(activity.paymentRowDetail)"
+              shape="round"
+              fill="outline"
+              size="small"
+              color="primary"
+              (click)="rowClick(activity.paymentRowDetail)"
+            >
+              {{
+                'page.program.program-people-affected.transaction.retry'
+                  | translate
+              }}
+            </ion-button>
+          </ng-container>
+        </div>
+      </div>
+    </summary>
+    <ng-container>
+      <ion-grid
+        *ngIf="activity.type === RegistrationActivityType.payment"
+        class="ion-no-padding"
+      >
+        <ion-row style="font-size: 0.875rem">
+          <ion-col
+            sizeXs="12"
+            sizeMd="6"
+          >
+            <!-- sent -->
+            <div
+              class="util--half-padding-vertical util--half-margin-end"
+              style="border-bottom: 1px solid var(--fiveten-neutral-200)"
+            >
+              <strong
+                >{{
+                  'page.program.program-people-affected.transaction.sent'
+                    | translate
+                }}:
+              </strong>
+              <span *ngIf="activity.paymentRowDetail.transaction">{{
+                activity.paymentRowDetail.sentDate
+                  | date: DateFormat.dayAndTimeReverse : locale
+              }}</span>
+            </div>
+            <!-- amount -->
+            <div
+              class="util--half-padding-vertical util--half-margin-end"
+              style="border-bottom: 1px solid var(--fiveten-neutral-200)"
+            >
+              <strong
+                >{{
+                  'page.program.program-people-affected.transaction.amount'
+                    | translate
+                }}:
+              </strong>
+              <span *ngIf="activity.paymentRowDetail.transaction?.status"
+                >{{
+                  activity.paymentRowDetail.amount
+                    | currency
+                      : activity.paymentRowDetail.currency
+                      : 'symbol'
+                      : '1.2-2'
+                      : locale
+                }}
+              </span>
+            </div>
+          </ion-col>
+          <ion-col
+            sizeXs="12"
+            sizeMd="6"
+          >
+            <!-- fsp -->
+
+            <div
+              class="util--half-padding-vertical util--half-margin-start"
+              style="border-bottom: 1px solid var(--fiveten-neutral-200)"
+            >
+              <strong
+                >{{
+                  'page.program.program-people-affected.transaction.fsp'
+                    | translate
+                }}:
+              </strong>
+              <span
+                id="hover-trigger"
+                *ngIf="activity.paymentRowDetail.transaction?.status"
+              >
+                {{ activity.paymentRowDetail.transaction?.fspName }}
+              </span>
+            </div>
+
+            <!-- custom attributes per FSP -->
+            <ng-container
+              *ngFor="
+                let attribute of getCustomDataAttributesCheck(
+                  activity.paymentRowDetail
+                )
+              "
+            >
+              <div
+                class="util--half-padding-vertical util--half-margin-start"
+                style="border-bottom: 1px solid var(--fiveten-neutral-200)"
+              >
+                <strong>
+                  {{
+                    'page.program.program-people-affected.transaction.custom-data.' +
+                      attribute | translate
+                  }}:
+                </strong>
+                <span
+                  id="hover-trigger"
+                  *ngIf="activity.paymentRowDetail.transaction?.status"
+                  [title]="
+                    activity.paymentRowDetail.transaction?.customData?.[
+                      attribute
+                    ]
+                  "
+                >
+                  {{
+                    activity.paymentRowDetail.transaction?.customData?.[
+                      attribute
+                    ]
+                  }}
+                </span>
+              </div>
+            </ng-container>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+    <ng-container *ngIf="activity.type === RegistrationActivityType.message">
+      <div
+        [innerHTML]="activity.description"
+        style="white-space: pre-wrap"
+      ></div>
+
+      <div
+        *ngIf="activity.messageErrorCode"
+        class="util--half-margin-top"
+      >
+        <ion-note>
+          {{ 'entity.message.error-code-prefix' | translate }}
+          <a
+            [href]="errorCodeUrl + activity.messageErrorCode"
+            target="_blank"
+            rel="external noopener noreferrer"
+            >{{ activity.messageErrorCode }}</a
+          ></ion-note
+        >
+      </div>
+    </ng-container>
+  </details>
+</ng-container>
+<!-- for single payments -->
+<ng-container *ngIf="!showAccordion">
+  <div>
+    <ion-grid class="ion-no-padding">
+      <div class="ion-text-right">
+        <!-- Single payment send again button -->
+        <ion-button
+          shape="round"
+          fill="outline"
+          size="small"
+          color="primary"
+          *ngIf="enableSinglePayment"
+          (click)="rowClick(activity.paymentRowDetail)"
+        >
+          {{
+            'page.program.program-people-affected.transaction.send-payment'
+              | translate
+          }}
+        </ion-button>
+      </div>
+    </ion-grid>
+  </div>
+</ng-container>
