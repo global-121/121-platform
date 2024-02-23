@@ -1265,7 +1265,9 @@ export class RegistrationsService {
       );
 
     // Log change
-    await this.eventsService.log(oldViewRegistration, newViewRegistration);
+    await this.eventsService.log(oldViewRegistration, newViewRegistration, {
+      reason: 'Financial service provider change',
+    });
 
     return newViewRegistration;
   }
