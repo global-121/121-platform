@@ -8,7 +8,6 @@
     "confirm": "¿Estás seguro?",
     "error-with-message": "Algo salió mal: {{error}}",
     "export-error": "Algo salió mal con la exportación.",
-    "import-error": "Algo salió mal con la importación.",
     "ok": "OK",
     "save": "Salvar",
     "save-success": "Guardado con éxito",
@@ -220,10 +219,7 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "Importar datos de conciliación de pagos",
-        "confirm-message": "Importar datos de conciliación de pagos",
-        "explanation": "Asegúrese de cargar los datos de conciliación exactamente como los proporcionó el proveedor de servicios financieros.",
         "import-result": {
-          "mismatch": "CUIDADO: Se iniciaron <strong>pagos {{countPaymentStarted}}</strong> para <strong>el pago #{{payment}}</strong>. Los datos de conciliación contienen <strong>pagos {{countImported}}</strong>. Por lo tanto, el importe total de los datos de conciliación no coincide con los pagos iniciados. Tenga en cuenta que todos los pagos que no tienen un registro correcto en los datos de conciliación se consideran pagos fallidos.",
           "new": "Actualización de los datos de pago de {{countTotal}} personas afectadas:<ul><li>{{countPaymentSuccess}} los pagos se han <strong>realizado correctamente</strong> <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> Los pagos <strong>han fallado</strong></li></ul> <strong></strong>",
           "not-found": "Hubo <strong>{{countNotFound}}</strong> transacciones para las que no se encontró ninguna persona afectada que coincidiera. Intenta corregirlos y vuelve a subirlos.",
           "ready": "Datos de conciliación importados para <strong>#{{payment}}</strong> de pago."
@@ -345,7 +341,7 @@
           "success": "Exitoso",
           "waiting": "Espera"
         },
-        "make-export": "Exportar datos de pago",
+        "make-export-import": "Datos de pago",
         "make-payment": {
           "error": {
             "generic": "Algo salió mal con el pago. Póngase en contacto con el soporte técnico del 121."

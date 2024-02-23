@@ -244,7 +244,6 @@ export class PaymentsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
-  @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
     description:
@@ -257,14 +256,12 @@ export class PaymentsController {
   public async importFspReconciliationData(
     @UploadedFile() file,
     @Param() params,
-    @Query() query,
     @User('id') userId: number,
   ): Promise<ImportResult> {
     return await this.paymentsService.importFspReconciliationData(
       file,
       Number(params.programId),
       Number(params.payment),
-      query.fspIds.split(','),
       userId,
     );
   }

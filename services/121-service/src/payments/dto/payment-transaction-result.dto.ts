@@ -16,6 +16,7 @@ export class PaTransactionResultDto {
   public calculatedAmount: number;
   public fspName: FspName;
   public messageSid?: string;
+  public registrationId?: number;
 }
 
 export class TransactionNotificationObject {

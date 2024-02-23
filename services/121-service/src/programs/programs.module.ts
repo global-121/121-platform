@@ -39,6 +39,6 @@ import { ProgramService } from './programs.service';
   ],
   providers: [ProgramService, ProgramFspConfigurationService],
   controllers: [ProgramController, ProgramFspConfigurationController],
-  exports: [ProgramService],
+  exports: [ProgramService, ProgramFspConfigurationService],
 })
 export class ProgramModule {}

@@ -8,7 +8,6 @@
     "confirm": "هل أنت متأكد؟",
     "error-with-message": "حدث خطأ ما: {{error}}",
     "export-error": "حدث خطأ ما في التصدير.",
-    "import-error": "حدث خطأ ما في الاستيراد.",
     "ok": "OK",
     "save": "أنقذ",
     "save-success": "تم الحفظ بنجاح",
@@ -220,10 +219,7 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "استيراد بيانات تسوية الدفعات",
-        "confirm-message": "استيراد بيانات تسوية الدفعات",
-        "explanation": "تأكد من تحميل بيانات التسوية تماما كما قدمها مزود الخدمة المالية.",
         "import-result": {
-          "mismatch": "كن حذرا: تم البدء في دفع <strong>{{countPaymentStarted}}</strong> <strong>للدفع #{{payment}}</strong>. تحتوي بيانات التسوية على <strong>دفعات {{countImported}}</strong>. لذلك ، لا يتطابق المبلغ الإجمالي في بيانات التسوية مع الدفعات التي بدأت. لاحظ أن جميع الدفعات التي ليس لها سجل نجاح في بيانات التسوية تعتبر دفعات فاشلة.",
           "new": "تم تحديث بيانات الدفع ل {{countTotal}} الأشخاص المتأثرين:<ul><li>{{countPaymentSuccess}} <strong>تم تنفيذ</strong>عمليات الدفع بنجاح <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> فشلت المدفوعات <strong></strong></li></ul> <strong></strong>",
           "not-found": "كانت هناك <strong>{{countNotFound}}</strong> معاملة لم يتم العثور على شخص مطابق لها. حاول تصحيحها وتحميلها مرة أخرى.",
           "ready": "بيانات التسوية المستوردة <strong>للدفع #{{payment}}</strong>."
@@ -345,7 +341,7 @@
           "success": "ناجح",
           "waiting": "انتظار"
         },
-        "make-export": "تصدير بيانات الدفع",
+        "make-export-import": "بيانات الدفع",
         "make-payment": {
           "error": {
             "generic": "حدث خطأ ما في الدفع. يرجى الاتصال بالدعم الفني 121."

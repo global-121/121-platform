@@ -34,7 +34,6 @@ graph LR
   MessageModule-->ProgramModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->PaymentsModule
-  PaymentsModule-->FspModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule
@@ -50,6 +49,7 @@ graph LR
   UkrPoshtaModule-->TransactionsModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule

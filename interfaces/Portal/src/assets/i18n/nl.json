@@ -8,7 +8,6 @@
     "confirm": "Weet je het zeker?",
     "error-with-message": "Er is iets misgegaan: {{error}}",
     "export-error": "Er is iets misgegaan bij het exporteren",
-    "import-error": "Er is iets misgegaan bij het importeren.",
     "ok": "OK",
     "save": "Opslaan",
     "save-success": "Opgeslagen",
@@ -220,11 +219,10 @@
         }
       },
       "import-fsp-reconciliation": {
-        "btn-text": "Importeer verrekinngs data",
-        "confirm-message": "Importeer verrekenings data",
-        "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener.",
+        "btn-text": "Importeer verrekenings data",
+        "confirm-message": "Importeer verrekenings data van betaling #{{payment}}",
+        "explanation": "Houd er rekening mee dat:<ul><li>Controleer dat het bestand klopt met het geselecteerde betalingsnummer (betaling <strong>#{{payment}}</strong>) voordat je op OK klikt.</li><li>Het uploaden van een nieuw bestand data van eerdere bestanden overschrijft.</li></ul>",
         "import-result": {
-          "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong>. De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verrekening komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet succesvol zijn in de verrekening, als mislukte betalingen worden beschouwd.",
           "new": "Betalingsgegevens bijgewerkt voor <strong> {{countTotal}} </strong> getroffen mensen: <ul> <li> <strong> {{countPaymentSuccess}} </strong> betalingen zijn <strong> succesvol </strong> </li> <li> <strong> {{countPaymentFailed}} </strong> betalingen zijn <strong> mislukt </strong> </li> </ul>",
           "not-found": "Er zijn <strong>{{countNotFound}}</strong> transacties waarvoor geen overeenkomende betrokkene werd gevonden. Probeer deze te corrigeren en opnieuw te uploaden.",
           "ready": "Verrekening geïmporteerd voor betaling <strong>#{{payment}}</strong>."
@@ -342,11 +340,11 @@
           "confirm-prompt": "Hiermee wordt ALLEEN de {{number}} mislukte betaling(en) opnieuw geprobeerd.",
           "error": "Mislukt",
           "last-payment": "Laatste betaling: {{nr}}",
-          "retry-all": "Probeer alles opnieuw {{number}} mislukt",
+          "retry-all": "Probeer alles opnieuw: {{number}} mislukt",
           "success": "Succesvol",
           "waiting": "Wachten"
         },
-        "make-export": "Exporteer betalingsinformatie",
+        "make-export-import": "Betalingsinformatie",
         "make-payment": {
           "error": {
             "generic": "Er is iets misgegaan met de betaling. Neem contact op met 121 technische ondersteuning."

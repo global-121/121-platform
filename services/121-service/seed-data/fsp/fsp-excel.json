@@ -5,5 +5,6 @@
   },
   "fspDisplayNamePortal": "Excel Payment Instructions",
   "integrationType": "csv",
+  "hasReconciliation": true,
   "questions": []
 }
