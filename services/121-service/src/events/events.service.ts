@@ -55,7 +55,7 @@ export class EventsService {
   private createWhereClause(
     programId: number,
     searchOptions: EventSearchOptionsDto,
-  ) {
+  ): object {
     const { registrationId, queryParams } = searchOptions;
     const whereStatement = {
       registration: {
