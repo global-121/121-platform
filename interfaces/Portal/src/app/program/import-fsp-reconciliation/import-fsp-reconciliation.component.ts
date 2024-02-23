@@ -5,8 +5,10 @@ import { AuthService } from '../../../app/auth/auth.service';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
 import Permission from '../../auth/permission.enum';
 import { ActionType } from '../../models/actions.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LatestActionService } from '../../services/latest-action.service';
 import { actionResult } from '../../shared/action-result';
+import { downloadAsCsv } from '../../shared/array-to-csv';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -22,10 +24,10 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   public payment: number;
 
   @Input()
-  public fspIds: number[];
+  public lastPaymentId: number;
 
   @Input()
-  public lastPaymentId: number;
+  public paymentInProgress: boolean;
 
   public disabled: boolean;
   public isInProgress = false;
@@ -41,6 +43,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
     private latestActionService: LatestActionService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -48,23 +51,19 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
       'page.program.import-fsp-reconciliation.btn-text',
     );
     this.updateSubHeader();
-    this.filePickerProps = {
-      type: 'xml',
-      explanation: this.translate.instant(
-        'page.program.import-fsp-reconciliation.explanation',
-      ),
-      programId: this.programId,
-      downloadTemplate: null,
-    };
+    this.setupFilePickerProps();
   }
 
   async ngOnChanges() {
+    this.updateSubHeader();
+    this.setupFilePickerProps();
     this.disabled = !this.btnEnabled();
   }
 
   private async updateSubHeader() {
     this.subHeader = this.translate.instant(
       'page.program.import-fsp-reconciliation.confirm-message',
+      { payment: this.payment },
     );
     if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
       const actionTimestamp =
@@ -91,7 +90,9 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
         Permission.PaymentTransactionREAD,
       ]) &&
       this.payment > 0 &&
-      this.payment <= this.lastPaymentId
+      this.payment <= this.lastPaymentId &&
+      // only disable last payment if in progress
+      (!this.paymentInProgress || this.payment < this.lastPaymentId)
     );
   }
 
@@ -99,12 +100,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
     this.isInProgress = true;
 
     this.programsService
-      .importFspReconciliation(
-        this.programId,
-        this.payment,
-        this.fspIds,
-        event.file,
-      )
+      .importFspReconciliation(this.programId, this.payment, event.file)
       .then(
         (response) => {
           const aggregateResult = response.aggregateImportResult;
@@ -129,21 +125,6 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
               },
             ) + '<br><br>';
 
-          if (
-            aggregateResult.countPaymentStarted !==
-            aggregateResult.countImported
-          ) {
-            resultMessage +=
-              this.translate.instant(
-                'page.program.import-fsp-reconciliation.import-result.mismatch',
-                {
-                  payment: this.payment,
-                  countPaymentStarted: aggregateResult.countPaymentStarted,
-                  countImported: aggregateResult.countImported,
-                },
-              ) + '<br><br>';
-          }
-
           if (aggregateResult.countNotFound) {
             resultMessage +=
               this.translate.instant(
@@ -160,6 +141,8 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
             resultMessage,
             true,
           );
+
+          this.exportCSV(response.importResult);
         },
         (err) => {
           this.isInProgress = false;
@@ -167,10 +150,32 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
           actionResult(
             this.alertController,
             this.translate,
-            this.translate.instant('common.import-error'),
+            this.translate.instant('common.error-with-message', {
+              error: this.errorHandlerService.formatErrors(err),
+            }),
             true,
           );
         },
       );
+  }
+
+  private exportCSV(importResponse: any[]) {
+    const filename = 'import-fsp-reconciliation-response';
+    downloadAsCsv(importResponse, filename);
+  }
+
+  private setupFilePickerProps() {
+    this.filePickerProps = {
+      type: 'csv,xml',
+      explanation: this.translate.instant(
+        'page.program.import-fsp-reconciliation.explanation',
+        {
+          payment: this.payment,
+        },
+      ),
+      programId: this.programId,
+      downloadTemplate: null,
+      titleTranslationKey: 'page.program.import-fsp-reconciliation.btn-text',
+    };
   }
 }

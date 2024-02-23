@@ -1,4 +1,7 @@
-<article class="activity-detail ion-padding">
+<article
+  class="activity-detail ion-padding"
+  style="font-size: 0.875rem"
+>
   <div class="activity-detail--icon ion-padding-end">
     <ion-icon
       [name]="getIconName(activity.type)"
@@ -35,40 +38,24 @@
 
       <span
         *ngIf="activity.user"
-        class="activity-detail--user badge util--overflow-ellipsis"
+        class="activity-detail--user badge username util--overflow-ellipsis"
         style="max-width: 20em"
         [attr.title]="activity.user"
       >
         {{ activity.user }}
       </span>
     </div>
-    <div>
-      <small>
-        <time [attr.datetime]="activity.date">
-          {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
-        </time>
-      </small>
+    <div *ngIf="activity.date">
+      <ion-note color="medium">
+        <small>
+          <time [attr.datetime]="activity.date">
+            {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
+          </time>
+        </small>
+      </ion-note>
     </div>
-    <div class="activity-detail--body ion-padding-top">
-      <div
-        [innerHTML]="activity.description"
-        style="white-space: pre-wrap"
-      ></div>
-
-      <div
-        *ngIf="activity.messageErrorCode"
-        class="util--half-margin-top"
-      >
-        <ion-note>
-          {{ 'entity.message.error-code-prefix' | translate }}
-          <a
-            [href]="errorCodeUrl + activity.messageErrorCode"
-            target="_blank"
-            rel="external noopener noreferrer"
-            >{{ activity.messageErrorCode }}</a
-          ></ion-note
-        >
-      </div>
+    <div class="activity-detail--body">
+      <ng-content select="[body]"></ng-content>
     </div>
   </div>
 </article>

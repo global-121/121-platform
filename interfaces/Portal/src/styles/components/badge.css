@@ -16,8 +16,13 @@
   padding: var(--vertical-padding) var(--horizontal-padding);
   border-radius: var(--border-radius);
 
-  background-color: var(--ion-color-medium);
-  color: var(--ion-color-medium-contrast);
+  background-color: var(--fiveten-neutral-200);
+  color: var(--fiveten-neutral-600);
+}
+
+.badge.username {
+  background-color: var(--fiveten-purple-100);
+  color: var(--fiveten-purple-900);
 }
 
 .badge.is-message-success,
@@ -31,13 +36,14 @@
 }
 
 .badge.is-message-failed,
-.badge.is-payment-failed {
+.badge.is-payment-error {
   background-color: var(--ion-color-status-failed);
   color: var(--ion-color-status-failed-text);
 }
 
 .badge.is-message-waiting,
-.badge.is-payment-waiting {
+.badge.is-payment-waiting,
+.badge.is-payment-not-yet-sent {
   background-color: var(--ion-color-status-waiting);
   color: var(--ion-color-status-waiting-text);
 }

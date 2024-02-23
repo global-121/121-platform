@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
+import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { ImportFspReconciliationArrayDto } from '../../dto/import-fsp-reconciliation.dto';
+import { FileImportService } from '../../../utils/file-import/file-import.service';
+import {
+  ImportFspReconciliationArrayDto,
+  ImportFspReconciliationDto,
+} from '../../dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -24,6 +29,8 @@ export class VodacashService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataService: RegistrationDataService,
+    private readonly fileImportService: FileImportService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async sendPayment(
@@ -150,33 +157,53 @@ export class VodacashService
     return importRecord;
   }
 
-  public async findReconciliationRecord(
-    registration: RegistrationEntity,
-    importRecords: ImportFspReconciliationArrayDto[],
-  ): Promise<ImportFspReconciliationArrayDto> {
-    for (const record of importRecords) {
-      const importResponseRecord = record as ImportFspReconciliationResult;
-      if (importResponseRecord.phoneNumber === registration.phoneNumber) {
-        return importResponseRecord;
+  public async getRegistrationsForReconciliation(
+    programId: number,
+    payment: number,
+  ): Promise<RegistrationViewEntity[]> {
+    const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
+      programId,
+      payment,
+      FspName.vodacash,
+    );
+    const chunkSize = 400000;
+    return await this.registrationsPaginationService.getRegistrationsChunked(
+      programId,
+      {
+        select: ['phoneNumber'],
+        path: '',
+      },
+      chunkSize,
+      qb,
+    );
+  }
+
+  public async findReconciliationRegistration(
+    importRecord: ImportFspReconciliationArrayDto,
+    registrations: RegistrationViewEntity[],
+  ): Promise<RegistrationViewEntity> {
+    for (const registration of registrations) {
+      if (importRecord.phoneNumber === registration.phoneNumber) {
+        return registration;
       }
     }
   }
 
   public async createTransactionResult(
-    registration: RegistrationEntity,
+    referenceId: string,
     record: ImportFspReconciliationArrayDto,
     programId: number,
     payment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.referenceId = registration.referenceId;
+    paTransactionResult.referenceId = referenceId;
     paTransactionResult.fspName = FspName.vodacash;
     paTransactionResult.status = StatusEnum.error;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(
         programId,
         payment,
-        registration.referenceId,
+        referenceId,
       )
     )[0].amount;
     if (record) {
@@ -210,5 +237,33 @@ export class VodacashService
         el.attributes[attributeName] = value;
       }
     }
+  }
+
+  // This method is potentially generic, but since it does contain vodacash-specific code down the line, putting it here
+  public async xmlToValidatedFspReconciliation(
+    xmlFile,
+  ): Promise<ImportFspReconciliationArrayDto[]> {
+    const importRecords = await this.fileImportService.validateXml(xmlFile);
+    return (await this.validateFspReconciliationXmlInput(importRecords))
+      .validatedArray;
+  }
+
+  private async validateFspReconciliationXmlInput(
+    xmlArray,
+  ): Promise<ImportFspReconciliationDto> {
+    const validatedArray = [];
+    let recordsCount = 0;
+    for (const row of xmlArray) {
+      recordsCount += 1;
+      if (this.fileImportService.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
+      const importRecord = this.validateReconciliationData(row);
+      validatedArray.push(importRecord);
+    }
+    return {
+      validatedArray,
+      recordsCount,
+    };
   }
 }

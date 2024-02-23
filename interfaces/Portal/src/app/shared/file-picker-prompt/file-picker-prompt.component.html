@@ -1,6 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'common.confirm' | translate }}</ion-title>
+    <ion-title>{{
+      filePickerProps?.titleTranslationKey
+        ? (filePickerProps?.titleTranslationKey | translate)
+        : ('common.confirm' | translate)
+    }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"

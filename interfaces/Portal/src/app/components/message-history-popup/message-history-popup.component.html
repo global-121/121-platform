@@ -27,12 +27,19 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <div *ngFor="let message of messageHistory">
+<ion-content class="ion-padding">
+  <div *ngFor="let activity of messageHistory">
     <app-registration-activity-detail
-      [activity]="message"
+      [activity]="activity"
       [locale]="locale"
-      style="border-bottom: 1px solid var(--fiveten-neutral-300)"
-    ></app-registration-activity-detail>
+      style="border-bottom: 1px solid var(--fiveten-neutral-200)"
+    >
+      <div body>
+        <ng-container>
+          <app-registration-activity-detail-accordion [activity]="activity">
+          </app-registration-activity-detail-accordion>
+        </ng-container>
+      </div>
+    </app-registration-activity-detail>
   </div>
 </ion-content>

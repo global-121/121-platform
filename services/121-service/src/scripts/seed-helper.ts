@@ -1,14 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
 import { DEBUG } from '../config';
-import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
-import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFspConfigurationService } from '../programs/fsp-configuration/fsp-configuration.service';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -25,6 +24,7 @@ export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async addDefaultUsers(
@@ -228,45 +228,16 @@ export class SeedHelper {
       foundProgram.financialServiceProviders.push(fspReturn);
       if (fsp.configuration && fsp.configuration.length > 0) {
         for (const config of fsp.configuration) {
-          await this.addFspConfiguration(config, programReturn.id, fspReturn);
+          await this.programFspConfigurationService.create(programReturn.id, {
+            fspId: fspReturn.id,
+            name: config.name,
+            value: config.value,
+          });
         }
       }
     }
 
     return await programRepository.save(foundProgram);
-  }
-
-  private async addFspConfiguration(
-    fspConfig: { name: string; value: string },
-    programId: number,
-    fsp: FinancialServiceProviderEntity,
-  ): Promise<void> {
-    if (FspConfigurationMapping[fsp.fsp] === undefined) {
-      throw new HttpException(
-        `Fsp ${fsp.fsp} has no fsp config`,
-        HttpStatus.NOT_FOUND,
-      );
-    } else {
-      const allowedConfigForFsp = FspConfigurationMapping[fsp.fsp];
-      if (!allowedConfigForFsp.includes(fspConfig.name)) {
-        throw new HttpException(
-          `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${fspConfig.name}`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-    }
-    const value = process.env[fspConfig.value]
-      ? process.env[fspConfig.value]
-      : fspConfig.value;
-    const fspConfigEntity = new ProgramFspConfigurationEntity();
-    fspConfigEntity.name = fspConfig.name;
-    fspConfigEntity.value = value;
-    fspConfigEntity.programId = programId;
-    fspConfigEntity.fspId = fsp.id;
-    const fspConfigRepo = this.dataSource.getRepository(
-      ProgramFspConfigurationEntity,
-    );
-    await fspConfigRepo.save(fspConfigEntity);
   }
 
   public async addFsp(fspInput: any): Promise<void> {

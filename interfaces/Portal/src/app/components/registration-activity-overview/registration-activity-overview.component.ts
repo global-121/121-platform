@@ -2,15 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
+import { PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import {
   RegistrationActivity,
   RegistrationActivityType,
 } from 'src/app/models/registration-activity.model';
-import { StatusEnum } from 'src/app/models/status.enum';
-import { Transaction } from 'src/app/models/transaction.model';
-import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
@@ -22,6 +19,7 @@ import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { RegistrationStatusChange } from '../../models/registration-status-change.model';
+import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -35,7 +33,7 @@ import { RegistrationActivityDetailComponent } from '../registration-activity-de
     CommonModule,
     IonicModule,
     TranslateModule,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
     AddNotePopupComponent,
     RegistrationActivityDetailComponent,
   ],
@@ -55,6 +53,8 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   @Input()
   public statusChanges: RegistrationStatusChange[];
+
+  public RegistrationActivityType = RegistrationActivityType;
 
   public locale: string;
   public firstPaymentToShow = 1;
@@ -76,8 +76,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private canViewPaymentData: boolean;
   private canDoSinglePayment: boolean;
   private lastPaymentId: number;
-  private pastTransactions: Transaction[] = [];
-  private pastPayments: PaymentData[];
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -110,13 +108,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     );
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.program.id,
-      );
-      this.pastTransactions = await this.programsService.getTransactions(
-        this.program.id,
-        this.person?.referenceId,
-      );
-      this.pastPayments = await this.programsService.getPastPayments(
         this.program.id,
       );
     }
@@ -165,81 +156,16 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     );
   }
 
-  private fillPaymentRows(): PaymentRowDetail[] {
-    const paymentRows = [];
-    const nrOfPayments = this.program?.distributionDuration;
-    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
-    for (
-      let index = this.firstPaymentToShow;
-      index <= lastPaymentToShow;
-      index++
-    ) {
-      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
-        index,
-        this.person.referenceId,
-        this.pastTransactions,
-      );
-      let paymentRowValue: PaymentRowDetail = {
-        paymentIndex: index,
-        text: '',
-      };
-      if (!transaction) {
-        paymentRowValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.do-single-payment',
-        );
-        const dateOfCompletePayment = this.pastPayments.find(
-          (pastP) => pastP.id === paymentRowValue.paymentIndex,
-        )?.paymentDate;
-        paymentRowValue.sentDate = dateOfCompletePayment
-          ? dateOfCompletePayment.toISOString()
-          : null;
-      } else {
-        paymentRowValue = PaymentUtils.getPaymentRowInfo(
-          transaction,
-          this.program,
-          index,
-        );
-        if (transaction.status === StatusEnum.success) {
-          /* empty */
-        } else if (transaction.status === StatusEnum.waiting) {
-          paymentRowValue.errorMessage = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting-message',
-          );
-          paymentRowValue.waiting = true;
-        } else {
-          paymentRowValue.errorMessage = transaction.errorMessage;
-        }
-
-        paymentRowValue.status = transaction.status;
-      }
-      if (
-        paymentRowValue.transaction ||
-        PaymentUtils.enableSinglePayment(
-          paymentRowValue,
-          false,
-          this.person.status,
-          this.lastPaymentId,
-          false,
-        )
-      ) {
-        paymentRows.push(paymentRowValue);
-      }
-    }
-    return paymentRows;
-  }
-
   private async fillActivityOverview() {
     this.activityOverview = [];
     if (this.canViewPaymentData) {
-      const tempData: RegistrationActivity[] = [];
-      this.fillPaymentRows().forEach((v) => {
-        tempData.push({
-          paymentRowDetail: { ...v },
-          type: RegistrationActivityType.payment,
-          date: new Date(v.sentDate),
-        });
-      });
-      this.activityOverview = [...tempData];
+      this.activityOverview = [
+        ...(await this.pastPaymentsService.getPaymentActivity(
+          this.program,
+          this.person,
+          false,
+        )),
+      ];
       this.activityOverview.reverse();
     }
 
@@ -290,13 +216,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         let newValue = change.attributes.newValue
           ? change.attributes.newValue
           : '-';
-        const description = this.translate.instant(
-          'registration-details.activity-overview.activities.data-changes.values',
-          {
-            oldValue: oldValue,
-            newValue: newValue,
-          },
-        );
+        let description = {
+          oldValue,
+          newValue,
+          reason: null,
+        };
 
         if (change.type === EventType.registrationDataChange) {
           const paTableAttributes = this.program.paTableAttributes || [];
@@ -304,16 +228,15 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             (attr) => attr.name === change.attributes.fieldName,
           );
 
-          const booleanLabel = {
-            true: this.translate.instant(
-              'page.program.program-people-affected.column.custom-attribute-true',
-            ),
-            false: this.translate.instant(
-              'page.program.program-people-affected.column.custom-attribute-false',
-            ),
-          };
-
           if (attribute?.type === AnswerType.Boolean) {
+            const booleanLabel = {
+              true: this.translate.instant(
+                'page.program.program-people-affected.column.custom-attribute-true',
+              ),
+              false: this.translate.instant(
+                'page.program.program-people-affected.column.custom-attribute-false',
+              ),
+            };
             oldValue = booleanLabel[oldValue];
             newValue = booleanLabel[newValue];
           }
@@ -331,21 +254,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             );
           }
 
-          let description = this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.values',
-            {
-              oldValue: oldValue,
-              newValue: newValue,
-            },
-          );
-          if (change.attributes.reason) {
-            description += this.translate.instant(
-              'registration-details.activity-overview.activities.data-changes.reason',
-              {
-                reason: change.attributes.reason,
-              },
-            );
-          }
+          const reason = change.attributes.reason || null;
+          description = {
+            oldValue,
+            newValue,
+            reason,
+          };
+
           this.activityOverview.push({
             type: RegistrationActivityType.changeData,
             label: this.translate.instant(

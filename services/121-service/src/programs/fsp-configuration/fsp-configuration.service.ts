@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FspConfigurationMapping } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
@@ -9,6 +11,8 @@ import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entit
 export class ProgramFspConfigurationService {
   @InjectRepository(ProgramFspConfigurationEntity)
   private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(FinancialServiceProviderEntity)
+  public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public async findByProgramId(
     programId: number,
@@ -25,6 +29,31 @@ export class ProgramFspConfigurationService {
     programId: number,
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<number> {
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { id: programFspConfigurationDto.fspId },
+    });
+    if (!fsp) {
+      throw new HttpException(
+        `No fsp found with id ${programFspConfigurationDto.fspId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (FspConfigurationMapping[fsp.fsp] === undefined) {
+      throw new HttpException(
+        `Fsp ${fsp.fsp} has no fsp config`,
+        HttpStatus.NOT_FOUND,
+      );
+    } else {
+      const allowedConfigForFsp = FspConfigurationMapping[fsp.fsp];
+      if (!allowedConfigForFsp.includes(programFspConfigurationDto.name)) {
+        throw new HttpException(
+          `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${programFspConfigurationDto.name}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    }
+
     const programFspConfiguration = new ProgramFspConfigurationEntity();
     programFspConfiguration.programId = programId;
     programFspConfiguration.fspId = programFspConfigurationDto.fspId;

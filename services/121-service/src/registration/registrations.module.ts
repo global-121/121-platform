@@ -26,6 +26,7 @@ import { ProgramModule } from '../programs/programs.module';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
+import { FileImportService } from '../utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
@@ -82,6 +83,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     RegistrationsBulkHelperService,
+    FileImportService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),

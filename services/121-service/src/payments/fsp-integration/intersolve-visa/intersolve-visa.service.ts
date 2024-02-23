@@ -122,11 +122,13 @@ export class IntersolveVisaService
     const transactionDetails =
       await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
     if (!transactionDetails.data?.success) {
+      const error =
+        transactionDetails.data?.errors ||
+        'Intersolve-visa: Get transactions API-call failed';
+      console.error(error);
       throw new HttpException(
         {
-          errors:
-            transactionDetails.data?.errors ||
-            'Get transactions API-call failed',
+          errors: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
@@ -338,11 +340,10 @@ export class IntersolveVisaService
       // if error, return error
       if (!createCustomerResult.data?.success) {
         paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = createCustomerResult.data?.errors?.length
-          ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-              createCustomerResult.data.errors,
-            )}`
-          : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`;
+        paTransactionResult.message = `CREATE CUSTOMER ERROR: ${
+          this.intersolveErrorToMessage(createCustomerResult.data?.errors) ||
+          `${createCustomerResult.status} - ${createCustomerResult.statusText}`
+        }`;
         return paTransactionResult;
       }
 
@@ -364,11 +365,10 @@ export class IntersolveVisaService
       // if error, return error
       if (!createWalletResult.data?.success) {
         paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = createWalletResult.data?.errors?.length
-          ? `CREATE WALLET ERROR: ${this.intersolveErrorToMessage(
-              createWalletResult.data.errors,
-            )}`
-          : `CREATE WALLET ERROR: ${createWalletResult.status} - ${createWalletResult.statusText}`;
+        paTransactionResult.message = `CREATE WALLET ERROR: ${
+          this.intersolveErrorToMessage(createWalletResult.data?.errors) ||
+          `${createWalletResult.status} - ${createWalletResult.statusText}`
+        }`;
         return paTransactionResult;
       }
 
@@ -405,12 +405,11 @@ export class IntersolveVisaService
       // if error, return error
       if (registerResult.status !== 204) {
         paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = registerResult.data?.errors?.length
-          ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-              registerResult.data.errors,
-            )}`
-          : registerResult.data?.code ||
-            `LINK CUSTOMER ERROR: ${registerResult.status} - ${registerResult.statusText}`;
+        paTransactionResult.message = `LINK CUSTOMER ERROR: ${
+          this.intersolveErrorToMessage(registerResult.data?.errors) ||
+          registerResult.data?.code ||
+          `${registerResult.status} - ${registerResult.statusText}`
+        }`;
         paTransactionResult.customData = {
           intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
         };
@@ -440,11 +439,12 @@ export class IntersolveVisaService
       paTransactionResult.message =
         createDebitCardResult.status === 200
           ? null
-          : createDebitCardResult.data?.errors?.length
-            ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
+          : `CREATE DEBIT CARD ERROR: ${
+              this.intersolveErrorToMessage(
                 createDebitCardResult.data?.errors,
-              )}`
-            : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
+              ) ||
+              `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
+            }`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
@@ -478,9 +478,9 @@ export class IntersolveVisaService
         paTransactionResult.status = StatusEnum.error;
         let errorMessage = 'Unknown';
         if (error?.response?.errors) {
-          errorMessage = error.response.errors?.length
-            ? this.intersolveErrorToMessage(error.response.errors)
-            : error.response.errors;
+          errorMessage =
+            this.intersolveErrorToMessage(error.response.errors) ||
+            error.response.errors;
         } else {
           console.error('Error in CALCULATE TOPUP AMOUNT:', error);
         }
@@ -506,11 +506,10 @@ export class IntersolveVisaService
           : StatusEnum.error;
         paTransactionResult.message = loadBalanceResult.data?.success
           ? null
-          : loadBalanceResult.data?.errors?.length
-            ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
-                loadBalanceResult.data?.errors,
-              )}`
-            : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+          : `LOAD BALANCE CARD ERROR: ${
+              this.intersolveErrorToMessage(loadBalanceResult.data?.errors) ||
+              `${loadBalanceResult.status} - ${loadBalanceResult.statusText}`
+            }`;
       } else {
         // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
         paTransactionResult.status = StatusEnum.success;
@@ -715,6 +714,9 @@ export class IntersolveVisaService
   private intersolveErrorToMessage(
     errors: IntersolveReponseErrorDto[],
   ): string {
+    if (!errors || !Array.isArray(errors) || !errors.length) {
+      return;
+    }
     let allMessages = '';
     for (const [i, error] of errors.entries()) {
       const newLine = i < errors.length - 1 ? '\n' : '';
@@ -732,8 +734,14 @@ export class IntersolveVisaService
       wallet.tokenCode,
     );
     if (!walletDetails.data?.success) {
+      const error =
+        walletDetails.data?.errors ||
+        'Intersolve-visa: Get wallet API-call failed';
+      console.error(error);
       throw new HttpException(
-        { errors: walletDetails.data?.errors || 'Get wallet API-call failed' },
+        {
+          errors: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
       );
     }
@@ -1081,13 +1089,11 @@ export class IntersolveVisaService
       if (error.status === 405 && error.data?.code === 'TOKEN_IS_NOT_ACTIVE') {
         console.log('error: ', error);
       } else {
-        const errors = error.data?.errors?.length
-          ? `ACTIVATE OLD WALLET ERROR: ${this.intersolveErrorToMessage(
-              error.data.errors,
-            )}`
-          : `ACTIVATE OLD WALLET ERROR: ${
-              error.data?.code || error.status + ' - ' + error.statusText
-            }`;
+        const errors = `ACTIVATE OLD WALLET ERROR: ${
+          this.intersolveErrorToMessage(error.data?.errors) ||
+          error.data?.code ||
+          `${error.status} - ${error.statusText}`
+        }`;
         throw new HttpException(
           {
             errors: `<strong>${errors}</strong>${errorGenericPart}`,
@@ -1107,14 +1113,11 @@ export class IntersolveVisaService
         // if this step fails, then try to block to overwrite the activation from step 1, but don't throw
         // don't do this above if the fail-reason for unblocking was that it was already unblocked (as nothing went wrong then actually)
         await this.tryToBlockWallet(oldWallet.tokenCode);
-
-        const errors = error.data?.errors?.length
-          ? `UNBLOCK OLD WALLET ERROR: ${this.intersolveErrorToMessage(
-              error.data.errors,
-            )}`
-          : `UNBLOCK OLD WALLET ERROR: ${
-              error.data?.code || error.status + ' - ' + error.statusText
-            }`;
+        const errors = `UNBLOCK OLD WALLET ERROR: ${
+          this.intersolveErrorToMessage(error.data?.errors) ||
+          error.data?.code ||
+          `${error.status} - ${error.statusText}`
+        }`;
         throw new HttpException(
           {
             errors: `<strong>${errors}</strong>${errorGenericPart}`,
@@ -1132,11 +1135,10 @@ export class IntersolveVisaService
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
-      const errors = getWalletResponse.data?.errors?.length
-        ? `GET WALLET ERROR: ${this.intersolveErrorToMessage(
-            getWalletResponse.data.errors,
-          )}`
-        : `GET WALLET ERROR: ${getWalletResponse.status} - ${getWalletResponse.statusText}`;
+      const errors = `GET WALLET ERROR: ${
+        this.intersolveErrorToMessage(getWalletResponse.data?.errors) ||
+        `${getWalletResponse.status} - ${getWalletResponse.statusText}`
+      }`;
       throw new HttpException(
         {
           errors: `<strong>${errors}</strong>${errorGenericPart}`,
@@ -1157,11 +1159,10 @@ export class IntersolveVisaService
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
-      const errors = createWalletResult.data?.errors?.length
-        ? `CREATE WALLET ERROR: ${this.intersolveErrorToMessage(
-            createWalletResult.data.errors,
-          )}`
-        : `CREATE WALLET ERROR: ${createWalletResult.status} - ${createWalletResult.statusText}`;
+      const errors = `CREATE WALLET ERROR: ${
+        this.intersolveErrorToMessage(createWalletResult.data?.errors) ||
+        `${createWalletResult.status} - ${createWalletResult.statusText}`
+      }`;
       throw new HttpException(
         {
           errors: `<strong>${errors}</strong>${errorGenericPart}`,
@@ -1193,15 +1194,11 @@ export class IntersolveVisaService
 
       // remove wallet again because of incomplete flow
       await this.intersolveVisaWalletScopedRepo.remove(newWallet);
-
-      const errors = registerResult.data?.errors?.length
-        ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-            registerResult.data.errors,
-          )}`
-        : `LINK CUSTOMER ERROR: ${
-            registerResult.data?.code ||
-            registerResult.status + ' - ' + registerResult.statusText
-          }`;
+      const errors = `LINK CUSTOMER ERROR: ${
+        this.intersolveErrorToMessage(registerResult.data?.errors) ||
+        registerResult.data?.code ||
+        `${registerResult.status} - ${registerResult.statusText}`
+      }`;
       throw new HttpException(
         {
           errors: `<strong>${errors}</strong>${errorGenericPart}`,
@@ -1230,11 +1227,10 @@ export class IntersolveVisaService
       // remove wallet again because of incomplete flow
       await this.intersolveVisaWalletScopedRepo.remove(newWallet);
 
-      const errors = createDebitCardResult.data?.errors?.length
-        ? `CREATE DEBIT CARD ERROR: ${this.intersolveErrorToMessage(
-            createDebitCardResult.data?.errors,
-          )}`
-        : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
+      const errors = `CREATE DEBIT CARD ERROR: ${
+        this.intersolveErrorToMessage(createDebitCardResult.data?.errors) ||
+        `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
+      }`;
       throw new HttpException(
         {
           errors: `<strong>${errors}</strong>${errorGenericPart}`,

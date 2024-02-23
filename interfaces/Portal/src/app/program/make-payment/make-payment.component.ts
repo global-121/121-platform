@@ -181,7 +181,8 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
 
     if (response) {
       const fspIntegrationType = getFspIntegrationType(
-        response.fspsInPayment,
+        response.fspsInPayment ||
+          this.program.financialServiceProviders.map((fsp) => fsp.fsp),
         this.program,
       );
       message += getPaymentResultText(

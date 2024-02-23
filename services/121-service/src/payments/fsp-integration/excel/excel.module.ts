@@ -15,7 +15,7 @@ import { ExcelService } from './excel.service';
     TransactionsModule,
     RegistrationsModule,
   ],
-  providers: [ExcelService, LookupService, RegistrationViewScopedRepository],
+  providers: [ExcelService, LookupService],
   controllers: [],
   exports: [ExcelService],
 })

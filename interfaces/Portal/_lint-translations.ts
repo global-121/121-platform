@@ -12,6 +12,7 @@ import { BulkActionId } from 'src/app/models/bulk-actions.models';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
 import { MessageStatus } from './src/app/models/message.model';
+import { StatusEnum } from './src/app/models/status.enum';
 
 // ----------------------------------------------------------------------------
 // Configuration
@@ -35,6 +36,7 @@ const ruleConfig: IRulesConfig = {
     `entity.message.status.${anyValueFrom(MessageStatus)}`,
     'entity.message.type.(sms|whatsapp)',
     `entity.registration.status.(${anyValueFrom(RegistrationStatus)})`,
+    `entity.payment.status.${anyValueFrom(StatusEnum)}`,
     'page.program.program-people-affected.column.(.*)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.error.(not-an-integer|not-empty|too-low)',
     'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation',

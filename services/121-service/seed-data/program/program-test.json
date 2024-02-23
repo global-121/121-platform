@@ -47,9 +47,6 @@
       ]
     },
     {
-      "fsp": "Africas-talking"
-    },
-    {
       "fsp": "bank_a"
     },
     {
@@ -66,7 +63,11 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": "[\"name\", \"dob\", \"house\", \"phoneNumber\"]"
+          "value": ["name", "dob", "house", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
         }
       ]
     }
