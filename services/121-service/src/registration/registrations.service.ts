@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
-import { EventsLogService } from '../events/event-log/events-log.service';
+import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -92,7 +92,7 @@ export class RegistrationsService {
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly eventsLogService: EventsLogService,
+    private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
@@ -898,7 +898,7 @@ export class RegistrationsService {
     );
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
-      await this.eventsLogService.log(oldViewRegistration, newRegistration, {
+      await this.eventsService.log(oldViewRegistration, newRegistration, {
         reason: updateRegistrationDto.reason,
       });
     }
@@ -1262,7 +1262,9 @@ export class RegistrationsService {
       );
 
     // Log change
-    await this.eventsLogService.log(oldViewRegistration, newViewRegistration);
+    await this.eventsService.log(oldViewRegistration, newViewRegistration, {
+      reason: 'Financial service provider change',
+    });
 
     return newViewRegistration;
   }

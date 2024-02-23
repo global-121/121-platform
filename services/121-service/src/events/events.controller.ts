@@ -22,12 +22,12 @@ import { ExportFileFormat } from '../metrics/enum/export-file-format.enum';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import { GetEventDto } from './dto/get-event.dto';
-import { EventGetService } from './events-get/events-get.service';
+import { EventsService } from './events.service';
 
 @UseGuards(PermissionsGuard)
 @Controller()
-export class EventController {
-  public constructor(private readonly eventService: EventGetService) {}
+export class EventsController {
+  public constructor(private readonly eventService: EventsService) {}
 
   // We can later extend these permissions to different types when we get more types of events
   @Permissions(PermissionEnum.RegistrationPersonalREAD)

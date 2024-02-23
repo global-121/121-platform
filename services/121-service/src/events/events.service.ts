@@ -1,20 +1,82 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { ScopedUserRequest } from '../../shared/middleware/scope-user.middleware';
-import { EventAttributeEntity } from '../entities/event-attribute.entity';
-import { EventEntity } from '../entities/event.entity';
-import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
-import { EventEnum } from '../enum/event.enum';
+import { Between } from 'typeorm';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { ScopedRepository } from '../scoped.repository';
+import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
+import { EventSearchOptionsDto } from './dto/event-search-options.dto';
+import { GetEventXlsxDto } from './dto/get-event-xlsx.dto';
+import { GetEventDto } from './dto/get-event.dto';
+import { EventAttributeEntity } from './entities/event-attribute.entity';
+import { EventEntity } from './entities/event.entity';
+import { EventAttributeKeyEnum } from './enum/event-attribute-key.enum';
+import { EventEnum } from './enum/event.enum';
+import { EventsMapper } from './utils/events.mapper';
 
 @Injectable()
-export class EventsLogService {
-  @InjectRepository(EventEntity)
-  private readonly eventRepository: Repository<EventEntity>;
-  constructor(@Inject(REQUEST) private request: ScopedUserRequest) {}
-  ß;
+export class EventsService {
+  constructor(
+    @Inject(getScopedRepositoryProviderName(EventEntity))
+    private eventScopedRepository: ScopedRepository<EventEntity>,
+    @Inject(REQUEST) private request: ScopedUserRequest,
+  ) {}
+
+  public async getEventsJsonDto(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ): Promise<GetEventDto[]> {
+    const events = await this.fetchEvents(programId, searchOptions);
+    return EventsMapper.mapEventsToJsonDtos(events);
+  }
+
+  public async getEventsXlsxDto(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ): Promise<GetEventXlsxDto[]> {
+    const events = await this.fetchEvents(programId, searchOptions);
+    return EventsMapper.mapEventsToXlsxDtos(events);
+  }
+
+  private async fetchEvents(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ): Promise<EventEntity[]> {
+    const exportLimit = 100000;
+    const events = await this.eventScopedRepository.find({
+      where: this.createWhereClause(programId, searchOptions),
+      relations: ['registration', 'user', 'attributes'],
+      order: { created: 'DESC' },
+      take: exportLimit,
+    });
+    return events;
+  }
+
+  private createWhereClause(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ) {
+    const { registrationId, queryParams } = searchOptions;
+    const whereStatement = {
+      registration: {
+        programId: programId,
+      },
+    };
+    if (registrationId) {
+      whereStatement['registration']['id'] = registrationId;
+    }
+    if (queryParams) {
+      if (queryParams['referenceId']) {
+        whereStatement['registration']['referenceId'] =
+          queryParams['referenceId'];
+      }
+      whereStatement['created'] = Between(
+        queryParams['fromDate'] || new Date(2000, 1, 1),
+        queryParams['toDate'] || new Date(),
+      );
+    }
+    return whereStatement;
+  }
 
   public async log(
     oldRegistrationOrRegistrations:
@@ -46,7 +108,7 @@ export class EventsLogService {
       additionalAttributeObject,
     );
 
-    await this.eventRepository.save(events, { chunk: 2000 });
+    await this.eventScopedRepository.save(events, { chunk: 2000 });
   }
 
   private addAdditionalAttributesToEvents(
