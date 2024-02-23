@@ -516,6 +516,19 @@ export class ProgramsServiceApiService {
         );
       }
     }
+    if (type === ExportType.paDataChanges) {
+      return this.apiService
+        .get(
+          environment.url_121_service_api,
+          `/programs/${programId}/events`,
+          false,
+          true,
+          params,
+        )
+        .then((response) => {
+          return response;
+        });
+    }
     return this.apiService
       .get(
         environment.url_121_service_api,

@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Query,
@@ -60,17 +62,28 @@ export class EventsController {
   ): Promise<GetEventDto[] | void> {
     // TODO - should this have a different filename?
     const filename = `registration-data-change-events`;
+    const searchOptions = {
+      queryParams: queryParams,
+    };
     if (format === ExportFileFormat.xlsx) {
       const result = await this.eventService.getEventsXlsxDto(
         programId,
-        queryParams,
+        searchOptions,
       );
+      if (result.length === 0) {
+        const errors = 'There is currently no data to export';
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
       return sendXlsxReponse(result, filename, res);
     }
     const result = await this.eventService.getEventsJsonDto(
       programId,
-      queryParams,
+      searchOptions,
     );
+    if (result.length === 0) {
+      const errors = 'There is currently no data to export';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
     return res.send(result);
   }
 
