@@ -247,11 +247,11 @@ export class ExcelService
     );
 
     // Then order registrations and importRecords by matchColumn to join them
-    const importRecordsOrdered = importRecords.sort(
-      (a, b) => a[matchColumn]?.localeCompare(b[matchColumn]),
+    const importRecordsOrdered = importRecords.sort((a, b) =>
+      a[matchColumn]?.localeCompare(b[matchColumn]),
     );
-    const registrationsOrdered = registrationsWithAmount.sort(
-      (a, b) => a[matchColumn]?.localeCompare(b[matchColumn]),
+    const registrationsOrdered = registrationsWithAmount.sort((a, b) =>
+      a[matchColumn]?.localeCompare(b[matchColumn]),
     );
 
     const importResponseRecords = importRecordsOrdered.map((record) => {
