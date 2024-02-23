@@ -36,7 +36,7 @@
 }
 
 .badge.is-message-failed,
-.badge.is-payment-failed {
+.badge.is-payment-error {
   background-color: var(--ion-color-status-failed);
   color: var(--ion-color-status-failed-text);
 }

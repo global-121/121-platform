@@ -23,35 +23,38 @@
             *ngIf="activity.type === RegistrationActivityType.payment"
           >
             <ion-button
+              *ngIf="
+                activity.paymentRowDetail.transaction &&
+                !hasErrorCheck(activity.paymentRowDetail) &&
+                hasVoucherSupportCheck(
+                  activity.paymentRowDetail.transaction.fsp
+                )
+              "
               shape="round"
               fill="outline"
               size="small"
               color="primary"
               (click)="rowClick(activity.paymentRowDetail)"
             >
-              <span
-                *ngIf="
-                  activity.paymentRowDetail.transaction &&
-                  !hasErrorCheck(activity.paymentRowDetail) &&
-                  hasVoucherSupportCheck(
-                    activity.paymentRowDetail.transaction.fsp
-                  )
-                "
-              >
-                {{
-                  'page.program.program-people-affected.transaction.open-voucher'
-                    | translate
-                }}
-              </span>
-              <span *ngIf="hasErrorCheck(activity.paymentRowDetail)">
-                {{
-                  'page.program.program-people-affected.transaction.retry'
-                    | translate
-                }}
-              </span>
+              {{
+                'page.program.program-people-affected.transaction.open-voucher'
+                  | translate
+              }}
+            </ion-button>
+            <ion-button
+              *ngIf="hasErrorCheck(activity.paymentRowDetail)"
+              shape="round"
+              fill="outline"
+              size="small"
+              color="primary"
+              (click)="rowClick(activity.paymentRowDetail)"
+            >
+              {{
+                'page.program.program-people-affected.transaction.retry'
+                  | translate
+              }}
             </ion-button>
           </ng-container>
-          <!-- Open voucher button -->
         </div>
       </div>
     </summary>
