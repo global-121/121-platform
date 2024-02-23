@@ -10,6 +10,10 @@ details {
     }
   }
 
+  summary::marker,
+  summary::-webkit-details-marker {
+    display: none;
+  }
   summary {
     list-style-type: none;
     ion-icon[name='chevron-down-outline'] {
