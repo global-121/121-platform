@@ -369,16 +369,16 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             user: change.user.username,
           });
         }
+      }
 
-        const notes = await this.programsService.getNotes(
-          this.program.id,
-          this.person.referenceId,
+      const notes = await this.programsService.getNotes(
+        this.program.id,
+        this.person.referenceId,
+      );
+      for (const note of notes) {
+        this.activityOverview.push(
+          this.registrationActivityService.createNoteActivity(note),
         );
-        for (const note of notes) {
-          this.activityOverview.push(
-            this.registrationActivityService.createNoteActivity(note),
-          );
-        }
       }
     }
 

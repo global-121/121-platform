@@ -283,7 +283,6 @@ export class RegistrationsService {
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
     programId: number,
-    userId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -876,10 +875,8 @@ export class RegistrationsService {
       programId,
     );
 
-    let oldViewRegistration = await this.getPaginateRegistrationForReferenceId(
-      referenceId,
-      programId,
-    );
+    const oldViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
     let nrAttributesUpdated = 0;
     for (const attributeKey of Object.keys(partialRegistration)) {
@@ -1434,13 +1431,11 @@ export class RegistrationsService {
   public async issueValidation(
     payload: ValidationIssueDataDto,
     programId: number,
-    userId: number,
   ): Promise<void> {
     await this.storeProgramAnswers(
       payload.referenceId,
       payload.programAnswers,
       programId,
-      userId,
     );
     await this.setRegistrationStatus(
       payload.referenceId,
