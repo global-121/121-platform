@@ -21,4 +21,10 @@ details {
 
     cursor: pointer;
   }
+
+  &:hover {
+    summary {
+      background-color: var(--fiveten-purple-100);
+    }
+  }
 }
