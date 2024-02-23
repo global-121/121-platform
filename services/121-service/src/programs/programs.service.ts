@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
@@ -22,7 +22,7 @@ import {
   UpdateProgramQuestionDto,
 } from './dto/program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
+import { ProgramFinancialServiceProviderConfigurationsService } from './financial-service-provider-configurations/financial-service-provider-configurations.service';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
@@ -35,8 +35,8 @@ export class ProgramService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(FinancialServiceProviderAttributeEntity)
+  private readonly fspAttributeRepository: Repository<FinancialServiceProviderAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(ActionEntity)
@@ -46,7 +46,7 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly programFspConfigurationService: ProgramFspConfigurationService,
+    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
   ) {}
 
   public async findProgramOrThrow(
@@ -132,7 +132,7 @@ export class ProgramService {
       financialServiceProviders: programEntity.financialServiceProviders.map(
         (fsp) => {
           return {
-            fsp: fsp.fsp as FspName,
+            fsp: fsp.name as FinancialServiceProviderName,
             configuration: fsp.configuration,
           };
         },
@@ -228,7 +228,7 @@ export class ProgramService {
     const fspAttributeNames = [];
     for (const fsp of programData.financialServiceProviders) {
       const fspEntity = await this.financialServiceProviderRepository.findOne({
-        where: { fsp: fsp.fsp },
+        where: { name: fsp.fsp },
         relations: ['questions'],
       });
       for (const question of fspEntity.questions) {
@@ -339,7 +339,7 @@ export class ProgramService {
       savedProgram.financialServiceProviders = [];
       for (const fspItem of programData.financialServiceProviders) {
         const fsp = await this.financialServiceProviderRepository.findOne({
-          where: { fsp: fspItem.fsp },
+          where: { name: fspItem.fsp },
         });
         if (!fsp) {
           const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
@@ -416,11 +416,11 @@ export class ProgramService {
       for (const fspItem of updateProgramDto.financialServiceProviders) {
         if (
           !program.financialServiceProviders.some(
-            (fsp) => fsp.fsp === fspItem.fsp,
+            (fsp) => fsp.name === fspItem.fsp,
           )
         ) {
           const fsp = await this.financialServiceProviderRepository.findOne({
-            where: { fsp: fspItem.fsp },
+            where: { name: fspItem.fsp },
           });
           if (!fsp) {
             const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;

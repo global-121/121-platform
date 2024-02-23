@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
@@ -38,11 +38,11 @@ export class VodacashService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.vodacash;
+    fspTransactionResult.fspName = FinancialServiceProviderName.vodacash;
 
     for (const payment of paymentList) {
       const paTransactionResult = {
-        fspName: FspName.vodacash,
+        fspName: FinancialServiceProviderName.vodacash,
         referenceId: payment.referenceId,
         date: new Date(),
         calculatedAmount: payment.transactionAmount,
@@ -160,7 +160,7 @@ export class VodacashService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FspName.vodacash,
+      FinancialServiceProviderName.vodacash,
     );
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
@@ -193,7 +193,7 @@ export class VodacashService
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = referenceId;
-    paTransactionResult.fspName = FspName.vodacash;
+    paTransactionResult.fspName = FinancialServiceProviderName.vodacash;
     paTransactionResult.status = StatusEnum.error;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(

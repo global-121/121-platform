@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { CascadeDeleteEntity } from '../../base.entity';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
 import { ProgramEntity } from '../program.entity';
 
-@Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
-@Entity('program_fsp_configuration')
-export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
+@Unique('programFinancialServiceProviderConfigurationUnique', ['programId', 'financialServiceProviderId', 'name'])
+@Entity()
+export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeDeleteEntity {
   @ManyToOne(
     (_type) => ProgramEntity,
     (program) => program.programFspConfiguration,
@@ -18,10 +18,10 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
     (_type) => FinancialServiceProviderEntity,
     (fsp) => fsp.configuration,
   )
-  @JoinColumn({ name: 'fspId' })
-  public fsp: FinancialServiceProviderEntity;
+  @JoinColumn({ name: 'financialServiceProviderId' })
+  public financialServiceProvider: FinancialServiceProviderEntity;
   @Column()
-  public fspId: number;
+  public financialServiceProviderId: number;
 
   @Column()
   public name: string;
