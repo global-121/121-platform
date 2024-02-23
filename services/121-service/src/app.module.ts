@@ -14,7 +14,7 @@ import { DataSource } from 'typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
-import { EventGetModule } from './events/events-get/events-get.module';
+import { EventsModule } from './events/events.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
 import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
@@ -61,7 +61,7 @@ import { UserModule } from './user/user.module';
     MessageIncomingModule,
     NoteModule,
     ExchangeRateModule,
-    EventGetModule,
+    EventsModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

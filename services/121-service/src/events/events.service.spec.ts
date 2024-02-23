@@ -1,12 +1,54 @@
 import { TestBed } from '@automock/jest';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { LanguageEnum } from '../../registration/enum/language.enum';
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { EventEntity } from '../entities/event.entity';
-import { EventEnum } from '../enum/event.enum';
-import { EventsLogService } from './events-log.service';
+import { FspName } from '../fsp/enum/fsp-name.enum';
+import { LanguageEnum } from '../registration/enum/language.enum';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
+import { EventEntity } from './entities/event.entity';
+import { EventEnum } from './enum/event.enum';
+import { EventsService } from './events.service';
+
+const programId = 1;
+
+const attributeEntityOldValue = {
+  key: 'oldValue',
+  value: '11567803125',
+};
+
+const attributeEntityNewValue = {
+  key: 'newValue',
+  value: '31653956630',
+};
+
+const attributeEntityFieldName = {
+  key: 'fieldName',
+  value: 'whatsappPhoneNumber',
+};
+
+const mockFindEventResult = [
+  {
+    id: 5,
+    created: '2024-02-20T11:12:18.597Z',
+    userId: 1,
+    type: 'registrationDataChange',
+    registrationId: 1,
+    registration: {
+      id: 1,
+      referenceId: '2982g82bdsf89sdsd',
+      paymentAmountMultiplier: 3,
+      registrationProgramId: 1,
+    },
+    user: {
+      id: 1,
+      username: 'test@example.org',
+    },
+    attributes: [
+      attributeEntityOldValue,
+      attributeEntityNewValue,
+      attributeEntityFieldName,
+    ],
+  },
+];
 
 function getViewRegistration(): RegistrationViewEntity {
   return {
@@ -41,26 +83,70 @@ function getViewRegistration(): RegistrationViewEntity {
   } as any as RegistrationViewEntity;
 }
 
-let eventRepository: jest.Mocked<any>;
+let eventScopedRepository: jest.Mocked<any>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
-describe('EventLogService', () => {
-  let eventsLogService: EventsLogService;
+describe('EventsService', () => {
+  let eventsService: EventsService;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(EventsLogService).compile();
-    eventRepository = unitRef.get(getRepositoryToken(EventEntity) as string);
-    eventsLogService = unit;
+    const { unit, unitRef } = TestBed.create(EventsService).compile();
+    eventScopedRepository = unitRef.get(
+      getScopedRepositoryProviderName(EventEntity),
+    );
+    eventsService = unit;
     // Mock request user id
-    eventsLogService['request']['userId'] = 2;
+    eventsService['request']['userId'] = 2;
+
+    jest
+      .spyOn(eventScopedRepository, 'find')
+      .mockResolvedValue(mockFindEventResult);
 
     oldViewRegistration = getViewRegistration();
     newViewRegistration = getViewRegistration();
   });
 
   it('should be defined', () => {
-    expect(eventsLogService).toBeDefined();
+    expect(eventsService).toBeDefined();
+  });
+
+  it('should return events in json dto format', async () => {
+    // Act
+    const result = await eventsService.getEventsJsonDto(programId, {});
+
+    const resultEvent = result[0];
+    expect(resultEvent.id).toBe(mockFindEventResult[0].id);
+    expect(resultEvent.created).toBe(mockFindEventResult[0].created);
+    expect(resultEvent.user.id).toBe(mockFindEventResult[0].user.id);
+    expect(resultEvent.user.username).toBe(
+      mockFindEventResult[0].user.username,
+    );
+    expect(resultEvent.registrationId).toBe(
+      mockFindEventResult[0].registration.id,
+    );
+
+    const expectedAttriutes = {
+      [attributeEntityFieldName.key]: attributeEntityFieldName.value,
+      [attributeEntityOldValue.key]: attributeEntityOldValue.value,
+      [attributeEntityNewValue.key]: attributeEntityNewValue.value,
+    };
+    expect(resultEvent.attributes).toEqual(expectedAttriutes);
+  });
+
+  it('should return events in flat dto format (which is used for excel export)', async () => {
+    // Act
+    const result = await eventsService.getEventsXlsxDto(programId, {});
+
+    const resultEvent = result[0];
+    expect(resultEvent.changedAt).toBe(mockFindEventResult[0].created);
+    expect(resultEvent.changedBy).toBe(mockFindEventResult[0].user.username);
+    expect(resultEvent.fieldName).toBe(attributeEntityFieldName.value);
+    expect(resultEvent.oldValue).toBe(attributeEntityOldValue.value);
+    expect(resultEvent.newValue).toBe(attributeEntityNewValue.value);
+    expect(resultEvent.paId).toBe(
+      mockFindEventResult[0].registration.registrationProgramId,
+    );
   });
 
   it('should log a data change', async () => {
@@ -68,14 +154,14 @@ describe('EventLogService', () => {
     const additionalAttributeObject = { reason: 'exampleReason' };
 
     // Act
-    await eventsLogService.log(
+    await eventsService.log(
       oldViewRegistration,
       newViewRegistration,
       additionalAttributeObject,
     );
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -90,7 +176,7 @@ describe('EventLogService', () => {
       },
     ];
 
-    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
+    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
       chunk: 2000,
     });
   });
@@ -111,10 +197,10 @@ describe('EventLogService', () => {
       FspName.intersolveVoucherWhatsapp;
 
     // Act
-    await eventsLogService.log(oldViewRegistration, newViewRegistration);
+    await eventsService.log(oldViewRegistration, newViewRegistration);
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -181,13 +267,13 @@ describe('EventLogService', () => {
     ];
 
     for (const event of expectedEvents) {
-      expect(eventRepository.save).toHaveBeenCalledWith(
+      expect(eventScopedRepository.save).toHaveBeenCalledWith(
         expect.arrayContaining([event]),
         { chunk: 2000 },
       );
     }
     // Assert that the intersolveVoucherWhatsapp change is not logged
-    expect(eventRepository.save).not.toHaveBeenCalledWith(
+    expect(eventScopedRepository.save).not.toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
           attributes: expect.arrayContaining([

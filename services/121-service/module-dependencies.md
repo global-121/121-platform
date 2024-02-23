@@ -24,7 +24,7 @@ graph LR
   IntersolveVisaModule-->RedisModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
-  RegistrationsModule-->EventsLogModule
+  RegistrationsModule-->EventsModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
@@ -77,7 +77,7 @@ graph LR
   PaymentsModule-->RegistrationDataModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
-  MetricsModule-->EventGetModule
+  MetricsModule-->EventsModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
