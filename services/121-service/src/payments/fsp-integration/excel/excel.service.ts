@@ -262,7 +262,7 @@ export class ExcelService
       ) {
         const errors = `The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      } else if (!record[matchColumn]) {
+      } else if (record[matchColumn] === undefined) {
         const errors = `The match column '${matchColumn}' is missing.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
