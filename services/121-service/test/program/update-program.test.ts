@@ -22,10 +22,13 @@ describe.only('Update program', () => {
 
   it('should update a program', async () => {
     // Arrange
-    // TODO: Should this really contain all attributes of a program that can be updated?
+    // Test with a few possibly to be changed attributes, not all attributes of a program
     const program = {
       titlePortal: JSON.parse(JSON.stringify({ en: 'new title' })),
-      location: "new location",
+      published: false,
+      distributionDuration: 100,
+      fixedTransferValue: 500,
+      budget: 50000
     };
 
     // Act
@@ -35,10 +38,12 @@ describe.only('Update program', () => {
     // Assert
     // Check the response to see if the attributes were actually updated
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(updateProgramResponse.body.location).toBe(program.location);
     const keyToIgnore = [''];
     assertObjectsAreEqual(updateProgramResponse.body.titlePortal, program.titlePortal, keyToIgnore);
-
+    expect(updateProgramResponse.body.published).toBe(program.published);
+    expect(updateProgramResponse.body.distributionDuration).toBe(program.distributionDuration);
+    expect(updateProgramResponse.body.fixedTransferValue).toBe(program.fixedTransferValue);
+    expect(updateProgramResponse.body.budget).toBe(program.budget);
   });
 
   it('should add an fsp to a program', async () => {
@@ -68,7 +73,5 @@ describe.only('Update program', () => {
     // Assert
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
-
-  // TODO: Add a test for supplied attributes that do not exist? See validation pipe TODO in ProgramsController and comment in DevOps Task
 
 });
