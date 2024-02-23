@@ -4,7 +4,7 @@ import { FinancialServiceProviderEntity } from '../../financial-service-provider
 import { ProgramEntity } from '../program.entity';
 
 @Unique('programFinancialServiceProviderConfigurationUnique', ['programId', 'financialServiceProviderId', 'name'])
-@Entity()
+@Entity('program_financial_service_provider_configuration')
 export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeDeleteEntity {
   @ManyToOne(
     (_type) => ProgramEntity,

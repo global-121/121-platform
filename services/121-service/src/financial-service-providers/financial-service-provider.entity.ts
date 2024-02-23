@@ -9,7 +9,7 @@ import { FinancialServiceProviderIntegrationType } from './enum/financial-servic
 import { FinancialServiceProviderAttributeEntity } from './financial-service-provider-attribute.entity';
 
 // TODO: REFACTOR: rename table name into financial_service_provider so that aligns with the Entity class name
-@Entity()
+@Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ unique: true })
   @ApiProperty({ example: 'name of financial service provider' })
