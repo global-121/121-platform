@@ -10,11 +10,11 @@ export enum FspName {
   ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
+  excel = 'Excel',
   //The values below are for testing purposes
   fspAllAttributes = 'FSP - all attributes',
   fspNoAttributes = 'FSP - no attributes',
   bankA = 'Bank A',
-  excel = 'Excel',
 }
 
 export enum FspConfigurationEnum {
@@ -22,6 +22,7 @@ export enum FspConfigurationEnum {
   username = 'username',
   columnsToExport = 'columnsToExport',
   columnToMatch = 'columnToMatch',
+  brandCode = 'brandCode',
 }
 
 export const FspConfigurationMapping: { [key in FspName]?: any } = {
@@ -41,4 +42,5 @@ export const FspConfigurationMapping: { [key in FspName]?: any } = {
     FspConfigurationEnum.columnsToExport,
     FspConfigurationEnum.columnToMatch,
   ],
+  [FspName.intersolveVisa]: [FspConfigurationEnum.brandCode],
 };

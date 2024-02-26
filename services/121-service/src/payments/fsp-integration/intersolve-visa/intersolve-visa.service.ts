@@ -600,8 +600,10 @@ export class IntersolveVisaService
         },
       ];
     }
-    const createWalletResult =
-      await this.intersolveVisaApiService.createWallet(createWalletPayload);
+    const createWalletResult = await this.intersolveVisaApiService.createWallet(
+      createWalletPayload,
+      visaCustomer?.registration?.programId,
+    );
     return createWalletResult;
   }
 

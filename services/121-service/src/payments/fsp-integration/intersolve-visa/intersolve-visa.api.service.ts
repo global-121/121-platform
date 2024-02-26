@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Issuer, TokenSet } from 'openid-client';
+import { Repository } from 'typeorm';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import {
   IntersolveBlockWalletDto,
@@ -26,6 +30,8 @@ const intersolveVisaApiUrl = process.env.INTERSOLVE_VISA_API_URL;
 @Injectable()
 export class IntersolveVisaApiService {
   public tokenSet: TokenSet;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   public constructor(
     private readonly httpService: CustomHttpService,
@@ -91,6 +97,7 @@ export class IntersolveVisaApiService {
 
   public async createWallet(
     payload: IntersolveCreateWalletDto,
+    programId: number,
   ): Promise<IntersolveCreateWalletResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.createWalletMock(
@@ -101,7 +108,16 @@ export class IntersolveVisaApiService {
       const apiPath = process.env.INTERSOLVE_VISA_PROD
         ? 'pointofsale-payments'
         : 'pointofsale';
-      const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
+      const brandCodeConfig =
+        await this.programFspConfigurationRepository.findOne({
+          where: {
+            programId: programId,
+            name: FspConfigurationEnum.brandCode,
+            fsp: { fsp: FspName.intersolveVisa },
+          },
+          relations: ['fsp'],
+        });
+      const brandCode = brandCodeConfig?.value;
       const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
