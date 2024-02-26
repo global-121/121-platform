@@ -30,7 +30,7 @@ export class EventsController {
   public constructor(private readonly eventService: EventsService) {}
 
   // We can later extend these permissions to different types when we get more types of events
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
+  @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiTags('programs/events')
   @ApiOperation({ summary: 'Get list of events for query params' })
   @ApiParam({
