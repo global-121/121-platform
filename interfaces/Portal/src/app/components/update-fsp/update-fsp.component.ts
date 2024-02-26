@@ -14,6 +14,9 @@ import { actionResult } from '../../shared/action-result';
 })
 export class UpdateFspComponent implements OnInit {
   @Input()
+  public attributeValues: any = {};
+
+  @Input()
   public label: string;
 
   @Input()
