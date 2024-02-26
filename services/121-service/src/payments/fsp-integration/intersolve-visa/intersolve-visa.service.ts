@@ -1002,7 +1002,7 @@ export class IntersolveVisaService
       );
     if (phoneNumberResult.status !== 200) {
       errors.push(
-        `Phone number update failed: ${phoneNumberResult?.data?.code}`,
+        `Phone number update failed: ${phoneNumberResult?.data?.code}. Adjust the (required) phone number and retry.`,
       );
     }
 
@@ -1023,7 +1023,7 @@ export class IntersolveVisaService
           addressPayload,
         );
       if (addressResult.status !== 200) {
-        errors.push(`Address update failed: ${addressResult?.data?.code}`);
+        errors.push(`Address update failed: ${addressResult?.data?.code}.`);
       }
 
       if (errors.length > 0) {
