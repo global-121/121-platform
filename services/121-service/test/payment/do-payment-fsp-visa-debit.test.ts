@@ -620,12 +620,14 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      // 150 - (13000 /100) - (1000/ 100) = 10
-      expect(transactionsResponse1.body[0].amount).toBe(10);
+      expect(transactionsResponse1.body[0].amount).toBe(
+        150 - 13000 / 100 - 1000 / 100, // = 10
+      );
       expect(transactionsResponse1.text).toContain(StatusEnum.success);
 
-      // 150 - (14000 /100) - (1000/ 100) = 0  - a transaction of 0 is created
-      expect(transactionsResponse2.body[0].amount).toBe(0);
+      expect(transactionsResponse2.body[0].amount).toBe(
+        150 - 14000 / 100 - 1000 / 100, // = 0 : A transaction of 0 is created
+      );
       expect(transactionsResponse2.text).toContain(StatusEnum.success);
 
       // should be able to payout the full amount
@@ -634,9 +636,10 @@ describe('Do payment to 1 PA', () => {
       );
       expect(transactionsResponse3.text).toContain(StatusEnum.success);
 
-      // Kyc requirement - 60 spend * 2 cards = 30 left for transaction
-      // 150 - (6000 * 2  /100) - 0  = 30
-      expect(transactionsResponse4.body[0].amount).toBe(30);
+      // Kyc requirement
+      expect(transactionsResponse4.body[0].amount).toBe(
+        150 - (6000 * 2) / 100 - 0, // = 30
+      );
       expect(transactionsResponse4.text).toContain(StatusEnum.success);
     });
   });
