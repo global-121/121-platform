@@ -5,14 +5,16 @@ import { CustomDataAttributes } from '../../src/registration/enum/custom-data-at
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   getEvents,
+  getRegistrationEvents,
   importRegistrations,
+  searchRegistrationByReferenceId,
   updateRegistration,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 const updatePhoneNumber = '15005550099';
 
-describe('Get all events of 1 PA', () => {
+describe('Get all events of 1 PA or by parameters', () => {
   const programIdOcw = 3;
   const secondRegistration = {
     ...registrationVisa,
@@ -32,7 +34,7 @@ describe('Get all events of 1 PA', () => {
     );
   });
 
-  it('should get events with parameters', async () => {
+  it('should get events for registration by registrationId', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -60,18 +62,68 @@ describe('Get all events of 1 PA', () => {
       reason,
       accessToken,
     );
-
-    // There's 2 change events but it should only return the one for the first registration
-    const eventsResult = await getEvents(
-      programIdOcw,
-      undefined,
-      undefined,
+    const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
+      programIdOcw,
+      accessToken,
     );
+    const registration = result.body.data[0];
+
+    const eventsResult = await getRegistrationEvents(programIdOcw, registration.id);
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
     expect(eventsResult.body.length).toBe(1);
+    expect(eventsResult.body[0].type).toBe(EventEnum.registrationDataChange);
+    expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
+  });
+
+  it('should get events with date parameters', async () => {
+    // Arrange
+    const reason = 'automated test';
+    const dataToUpdate = {
+      phoneNumber: updatePhoneNumber,
+    };
+    const expectedAttributesObject = {
+      oldValue: registrationVisa[CustomDataAttributes.phoneNumber],
+      newValue: updatePhoneNumber,
+      fieldName: CustomDataAttributes.phoneNumber,
+      reason,
+    };
+    const date = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateString = date.toISOString();
+    const tomorrowDateString = tomorrow.toISOString();
+
+    // Act
+    await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      dataToUpdate,
+      reason,
+      accessToken,
+    );
+    await updateRegistration(
+      programIdOcw,
+      secondRegistration.referenceId,
+      dataToUpdate,
+      reason,
+      accessToken,
+    );
+
+    const eventsResult = await getEvents(
+      programIdOcw,
+      dateString,
+      tomorrowDateString,
+      undefined,
+    );
+
+    // Assert
+    expect(eventsResult.statusCode).toBe(HttpStatus.OK);
+    // Check if there's 2 events (1 for each registration)
+    expect(eventsResult.body.length).toBe(2);
+    // Check if the event is of the right type
     expect(eventsResult.body[0].type).toBe(EventEnum.registrationDataChange);
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
   });

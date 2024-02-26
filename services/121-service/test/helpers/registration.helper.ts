@@ -377,3 +377,15 @@ export async function getEvents(
     .query(queryParams)
     .send();
 }
+
+export async function getRegistrationEvents(
+  programId: number,
+  registrationId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/registrations/${registrationId}/events`)
+    .set('Cookie', [accessToken])
+    .send();
+}
