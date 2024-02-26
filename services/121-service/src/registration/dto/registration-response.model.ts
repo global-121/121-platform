@@ -20,7 +20,7 @@ export class RegistrationResponse {
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
   public fsp: FinancialServiceProviderName | string;
-  public fspDisplayNamePortal: string;
+  public displayNamePortal: string;
   public hasNote: boolean;
 
   public paymentAmountMultiplier?: number;

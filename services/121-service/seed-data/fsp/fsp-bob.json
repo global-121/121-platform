@@ -1,9 +1,9 @@
 {
   "fsp": "BoB-finance",
-  "fspDisplayNamePaApp": {
+  "displayNamePaApp": {
     "en": "BoB Finance"
   },
-  "fspDisplayNamePortal": "BoB Finance",
+  "displayNamePortal": "BoB Finance",
   "integrationType": "csv",
   "questions": [
     {

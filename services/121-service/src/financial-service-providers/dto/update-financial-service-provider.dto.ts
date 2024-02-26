@@ -62,9 +62,9 @@ export class CreateFspAttributeDto extends UpdateFinancialServiceProviderAttribu
 export class UpdateFspDto {
   @ApiProperty({ example: { en: 'FSP PA-app display name' } })
   @IsOptional()
-  public readonly fspDisplayNamePaApp: JSON;
+  public readonly displayNamePaApp: JSON;
 
   @ApiProperty({ example: 'FSP portal display name' })
   @IsOptional()
-  public readonly fspDisplayNamePortal: string;
+  public readonly displayNamePortal: string;
 }

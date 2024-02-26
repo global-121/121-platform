@@ -43,7 +43,7 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.name', 'financialServiceProvider')
-      .addSelect('fsp.nameDisplayNamePortal', 'fspDisplayNamePortal')
+      .addSelect('fsp.nameDisplayNamePortal', 'displayNamePortal')
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -103,7 +103,7 @@ export class RegistrationViewEntity {
   public financialServiceProvider: FinancialServiceProviderName;
 
   @ViewColumn()
-  public fspDisplayNamePortal: string;
+  public displayNamePortal: string;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

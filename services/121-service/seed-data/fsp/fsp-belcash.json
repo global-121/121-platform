@@ -1,11 +1,11 @@
 {
   "fsp": "BelCash",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayNamePaApp": {
     "en": "HelloCash",
     "am_ET": "HelloCash"
   },
-  "fspDisplayNamePortal": "BelCash",
+  "displayNamePortal": "BelCash",
   "questions": [
     {
       "name": "phoneNumber",

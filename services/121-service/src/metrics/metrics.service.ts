@@ -411,7 +411,7 @@ export class MetricsService {
       GenericAttributes.preferredLanguage,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.registrationCreatedDate,
-      GenericAttributes.fspDisplayNamePortal,
+      GenericAttributes.displayNamePortal,
     ] as string[];
 
     const program = await this.programRepository.findOneBy({
@@ -460,7 +460,7 @@ export class MetricsService {
       .select([
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
-        `fsp."fspDisplayNamePortal" AS fsp`,
+        `fsp."displayNamePortal" AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
