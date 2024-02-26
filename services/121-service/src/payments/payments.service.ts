@@ -564,8 +564,6 @@ export class PaymentsService {
       );
     }
 
-    console.log('paLists5: ', paLists);
-
     if (paLists.africasTalkingPaPayment.length) {
       await this.africasTalkingService.sendPayment(
         paLists.africasTalkingPaPayment,
