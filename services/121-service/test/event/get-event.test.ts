@@ -14,7 +14,7 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 const updatePhoneNumber = '15005550099';
 
-describe('Get all events of 1 PA or by parameters', () => {
+describe('Get events', () => {
   const programIdOcw = 3;
   const secondRegistration = {
     ...registrationVisa,
@@ -34,7 +34,7 @@ describe('Get all events of 1 PA or by parameters', () => {
     );
   });
 
-  it('should get events for registration by registrationId', async () => {
+  it('should get registration events by registrationId', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -81,7 +81,7 @@ describe('Get all events of 1 PA or by parameters', () => {
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
   });
 
-  it('should get events with date parameters', async () => {
+  it('should get program events with date parameters', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -131,7 +131,7 @@ describe('Get all events of 1 PA or by parameters', () => {
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
   });
 
-  it('should return a 404 when no events are found', async () => {
+  it('should return a 404 when no program events are found', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
