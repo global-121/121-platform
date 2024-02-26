@@ -520,7 +520,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should payout different amounts based on current balance and spend', async () => {
       // Arrange
-      const paymentNumberAmountTest = 2;
+      const testPaymentNumber = 2;
       registrationVisa.lastName = 'mock-current-balance-13000-mock-spent-1000';
       registrationVisa.paymentAmountMultiplier = 3;
 
@@ -579,7 +579,7 @@ describe('Do payment to 1 PA', () => {
 
       await doPayment(
         programIdVisa,
-        paymentNumberAmountTest,
+        testPaymentNumber,
         amountVisa,
         referenceIds,
         accessToken,
@@ -591,31 +591,31 @@ describe('Do payment to 1 PA', () => {
         accessToken,
         3001,
         Object.values(StatusEnum),
-        paymentNumberAmountTest,
+        testPaymentNumber,
       );
 
       // Assert
       const transactionsResponse1 = await getTransactions(
         programIdVisa,
-        paymentNumberAmountTest,
+        testPaymentNumber,
         registrationVisa.referenceId,
         accessToken,
       );
       const transactionsResponse2 = await getTransactions(
         programIdVisa,
-        paymentNumberAmountTest,
+        testPaymentNumber,
         registrationOCW2.referenceId,
         accessToken,
       );
       const transactionsResponse3 = await getTransactions(
         programIdVisa,
-        paymentNumberAmountTest,
+        testPaymentNumber,
         registrationOCW3.referenceId,
         accessToken,
       );
       const transactionsResponse4 = await getTransactions(
         programIdVisa,
-        paymentNumberAmountTest,
+        testPaymentNumber,
         registrationOCW4.referenceId,
         accessToken,
       );
