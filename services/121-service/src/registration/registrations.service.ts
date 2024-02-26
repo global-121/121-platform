@@ -951,7 +951,7 @@ export class RegistrationsService {
     }
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(registration, attribute);
+      await this.syncUpdatesWithThirdParties(registration, [attribute]);
     }
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
@@ -961,7 +961,7 @@ export class RegistrationsService {
 
   private async syncUpdatesWithThirdParties(
     registration: RegistrationEntity,
-    attribute: Attributes | string,
+    attributes: Attributes[] | string[],
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
@@ -970,7 +970,7 @@ export class RegistrationsService {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
           registration.programId,
-          attribute,
+          attributes,
         );
       } catch (error) {
         if (error?.response?.errors?.length > 0) {
@@ -1236,6 +1236,13 @@ export class RegistrationsService {
         newFspAttributes[attribute.name],
       );
     }
+    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+      await this.syncUpdatesWithThirdParties(
+        updatedRegistration,
+        Object.keys(newFspAttributes),
+      );
+    }
+
     return await this.registrationScopedRepository.save(updatedRegistration);
   }
 

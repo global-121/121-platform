@@ -985,25 +985,31 @@ export class IntersolveVisaService
     };
   }
 
-  private doesAttributeRequireSync(attribute: CustomDataAttributes): boolean {
-    return [
+  private doAnyAttributesRequireSync(
+    attributes: CustomDataAttributes[],
+  ): boolean {
+    const attributesThatRequireSync = [
       CustomDataAttributes.phoneNumber,
       CustomDataAttributes.addressCity,
       CustomDataAttributes.addressHouseNumber,
       CustomDataAttributes.addressHouseNumberAddition,
       CustomDataAttributes.addressPostalCode,
       CustomDataAttributes.addressStreet,
-    ].includes(attribute);
+    ];
+
+    return attributes.some((attribute) =>
+      attributesThatRequireSync.includes(attribute),
+    );
   }
 
   public async syncIntersolveCustomerWith121(
     referenceId: string,
     programId: number,
-    attribute?: Attributes | string,
+    attributes?: Attributes[] | string[],
   ): Promise<void> {
     if (
-      attribute &&
-      !this.doesAttributeRequireSync(attribute as CustomDataAttributes)
+      attributes &&
+      !this.doAnyAttributesRequireSync(attributes as CustomDataAttributes[])
     ) {
       return;
     }
