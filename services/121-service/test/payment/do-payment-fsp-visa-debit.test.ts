@@ -564,7 +564,7 @@ describe('Do payment to 1 PA', () => {
         programIdVisa,
         referenceIds,
         accessToken,
-        6000,
+        6_000,
         Object.values(StatusEnum),
         paymentNrVisa,
       );
@@ -589,7 +589,7 @@ describe('Do payment to 1 PA', () => {
         programIdVisa,
         referenceIds,
         accessToken,
-        3001,
+        6_000,
         Object.values(StatusEnum),
         testPaymentNumber,
       );
