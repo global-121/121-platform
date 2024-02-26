@@ -62,7 +62,10 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
-import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
+import {
+  IntersolveVisaPaymentInfoEnum,
+  IntersolveVisaPaymentInfoEnumBackupName,
+} from './enum/intersolve-visa-payment-info.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
@@ -295,7 +298,27 @@ export class IntersolveVisaService
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
-      const relation = await registration.getRelationForName(attr);
+      let relation;
+      try {
+        relation = await registration.getRelationForName(attr);
+      } catch (error) {
+        // If a program does not have firstName and lastName: skip firstName and use fullName as lastname
+        if (
+          error.name === ErrorEnum.RegistrationDataError &&
+          attr === IntersolveVisaPaymentInfoEnum.lastName
+        ) {
+          relation = await registration.getRelationForName(
+            IntersolveVisaPaymentInfoEnumBackupName.fullName,
+          );
+        } else if (
+          error.name === ErrorEnum.RegistrationDataError &&
+          attr === IntersolveVisaPaymentInfoEnum.firstName
+        ) {
+          continue;
+        } else {
+          throw error;
+        }
+      }
       const registrationDataOption = {
         name: attr,
         relation: relation,

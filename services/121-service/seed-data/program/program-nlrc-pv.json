@@ -46,6 +46,9 @@
           "value": "INTERSOLVE_PASSWORD"
         }
       ]
+    },
+    {
+      "fsp": "Intersolve-visa"
     }
   ],
   "targetNrRegistrations": 250,
@@ -86,7 +89,7 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": false,
+      "editableInPortal": true,
       "shortLabel": {
         "en": "Full Name"
       }
