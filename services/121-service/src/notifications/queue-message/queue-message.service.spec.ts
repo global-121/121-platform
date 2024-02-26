@@ -38,6 +38,7 @@ describe('QueueMessageService', () => {
     queueMessageService = unit;
     messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
     programAttributesService = unitRef.get(ProgramAttributesService);
+    registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
     );

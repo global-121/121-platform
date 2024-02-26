@@ -666,14 +666,12 @@
       "activities": {
         "data-changes": {
           "label": "Gegevenswijziging",
-          "reason": "<br><b>Reden:</b> {{reason}}",
-          "values": "<b>Oud:</b> {{oldValue}}<br><b>Nieuw:</b> {{newValue}}"
+          "new": "Nieuw: ",
+          "old": "Oud: ",
+          "reason": "Reden: "
         },
         "fsp-change": {
           "label": "Financiële dienstverlener wijziging"
-        },
-        "message": {
-          "label": "Bericht"
         },
         "note": {
           "label": "Notitie"

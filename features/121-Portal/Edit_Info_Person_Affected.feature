@@ -41,6 +41,7 @@ Feature: Edit information on Person Affected
     And the value of the input-field is written to the database
     And the progress indicator changes into the save-button again
     And the "paymentAmountMultiplier" is updated
+    And the data change is logged in the Profile page Activity overview > See 'View_PA_profile_page.feature' for details
 
   Scenario: Update paymentAmountMultiplier with invalid value
     Given no automatic calculation of paymentAmountMultiplier is configured for the program
@@ -65,6 +66,7 @@ Feature: Edit information on Person Affected
     And the value of the input-field is written to the database
     And the progress indicator changes into the update-button again
     And the "preferredLanguage" is updated
+    And the data change is logged in the Profile page Activity overview > See 'View_PA_profile_page.feature' for details
 
   Scenario: Update custom attributes successfully
     Given a logged-in user with "RegistrationPersonalREAD" permission
@@ -75,6 +77,7 @@ Feature: Edit information on Person Affected
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
     And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula
+    And the data change is logged in the Profile page Activity overview > See 'View_PA_profile_page.feature' for details
 
   Scenario: Update 'numeric' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
@@ -130,4 +133,7 @@ Feature: Edit information on Person Affected
     Then the input-fields for attributes of the old FSP are gone
     And input-fields for attributes of the new FSP are shown
     And the new FSP shows as the current selected value of the dropdown
+
+    And the FSP-change is logged in the Profile page Activity overview
+    And the data changes related to the FSP-change are also logged in the Activity overview with reason 'Financial service provider change'
 

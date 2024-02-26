@@ -47,7 +47,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Make a new payment](121-Portal/Make_new_payment.feature)
 - [View last payment overview](121-Portal/View_last_payment_overview.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
-- [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
+- [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export.feature)
 - [Export unused vouchers](121-Portal/Export_unused_vouchers.feature)
 - [Export Intersolve Visa cards](121-Portal/Export_Intersolve_Visa_cards.feature)
 - Get voucher balance

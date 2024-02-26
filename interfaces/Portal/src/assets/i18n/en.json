@@ -681,9 +681,6 @@
         "fsp-change": {
           "label": "Financial service provider change"
         },
-        "message": {
-          "label": "Message"
-        },
         "note": {
           "label": "Note"
         },

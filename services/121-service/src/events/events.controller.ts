@@ -30,7 +30,7 @@ export class EventsController {
   public constructor(private readonly eventService: EventsService) {}
 
   // We can later extend these permissions to different types when we get more types of events
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
+  @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiTags('programs/events')
   @ApiOperation({ summary: 'Get list of events for query params' })
   @ApiParam({
@@ -60,19 +60,19 @@ export class EventsController {
     @Query('format') format = 'json',
     @Res() res,
   ): Promise<GetEventDto[] | void> {
-    // TODO - should this have a different filename?
+    // REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
     const filename = `registration-data-change-events`;
     const searchOptions = {
       queryParams: queryParams,
     };
+    const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
       const result = await this.eventService.getEventsXlsxDto(
         programId,
         searchOptions,
       );
       if (result.length === 0) {
-        const errors = 'There is currently no data to export';
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+        throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
       }
       return sendXlsxReponse(result, filename, res);
     }
@@ -81,8 +81,7 @@ export class EventsController {
       searchOptions,
     );
     if (result.length === 0) {
-      const errors = 'There is currently no data to export';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
     }
     return res.send(result);
   }

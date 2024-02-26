@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationsModule } from '../../../registration/registrations.module';
-import { RegistrationViewScopedRepository } from '../../../registration/repositories/registration-view-scoped.repository';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { ExcelService } from './excel.service';
 

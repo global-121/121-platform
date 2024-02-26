@@ -45,12 +45,12 @@ Feature: View PA profile page
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Then the user sees the "Status history" tab
     When the user clicks on the "Status history" tab
-    Then the user sees the list status changes in the table
+    Then the user sees the list of status changes in the table
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Then the user sees the "Data Changes" tab
     When the user clicks on the "Data Changes" tab
-    Then the user sees the list status changes in the table
-    And this information includes the date and time of the change, the user who made the change, and the field that was changed
+    Then the user sees the list of data and FSP changes in the table
+    And this information includes the date and time of the change, the user who made the change, the field that was changed, the old value, the new value and the reason
     Given a logged-in user with "RegistrationNotificationREAD" permission
     Then the user sees the "Messages" tab
     When the user clicks on the "Messages" tab
