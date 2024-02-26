@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessType } from '../../../notifications/message-job.dto';
@@ -15,7 +15,7 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '../../../programs/financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { LanguageEnum } from '../../../registration/enum/language.enum';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
@@ -56,8 +56,8 @@ export class IntersolveVoucherService
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -87,14 +87,14 @@ export class IntersolveVoucherService
       .select('name')
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', { fspName: paPaymentList[0].fspName })
+      .andWhere('fsp.name = :fspName', { fspName: paPaymentList[0].fspName })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FspConfigurationEnum.username)
+      username: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.username)
         ?.value,
-      password: config.find((c) => c.name === FspConfigurationEnum.password)
+      password: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.password)
         ?.value,
     };
 
@@ -590,10 +590,10 @@ export class IntersolveVoucherService
       .select('name')
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId: programId })
-      .andWhere('fsp.fsp = :fspName', {
+      .andWhere('fsp.name = :fspName', {
         fspName: intersolveVoucher.whatsappPhoneNumber
-          ? FspName.intersolveVoucherWhatsapp
-          : FspName.intersolveVoucherPaper,
+          ? FinancialServiceProviderName.intersolveVoucherWhatsapp
+          : FinancialServiceProviderName.intersolveVoucherPaper,
       })
       .leftJoin('fspConfig.fsp', 'fsp');
 
@@ -796,7 +796,7 @@ export class IntersolveVoucherService
     if (messageSid) {
       transactionResult.messageSid = messageSid;
     }
-    if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
+    if (registration.fsp.name === FinancialServiceProviderName.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
           ? IntersolveVoucherPayoutStatus.InitialMessage
@@ -805,11 +805,11 @@ export class IntersolveVoucherService
 
     transactionResult.status = status;
 
-    if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
-      transactionResult.fspName = FspName.intersolveVoucherWhatsapp;
+    if (registration.fsp.name === FinancialServiceProviderName.intersolveVoucherWhatsapp) {
+      transactionResult.fspName = FinancialServiceProviderName.intersolveVoucherWhatsapp;
     }
-    if (registration.fsp.fsp === FspName.intersolveVoucherPaper) {
-      transactionResult.fspName = FspName.intersolveVoucherPaper;
+    if (registration.fsp.name === FinancialServiceProviderName.intersolveVoucherPaper) {
+      transactionResult.fspName = FinancialServiceProviderName.intersolveVoucherPaper;
     }
     return transactionResult;
   }

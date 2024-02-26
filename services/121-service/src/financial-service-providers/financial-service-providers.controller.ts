@@ -11,21 +11,21 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
-import { AdminAuthGuard } from './../guards/admin.guard';
+import { AdminAuthGuard } from '../guards/admin.guard';
 import {
   CreateFspAttributeDto,
-  UpdateFspAttributeDto,
+  UpdateFinancialServiceProviderAttributeDto,
   UpdateFspDto,
-} from './dto/update-fsp.dto';
+} from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspQuestionEntity } from './fsp-question.entity';
-import { FspService } from './fsp.service';
+import { FinancialServiceProviderAttributeEntity } from './financial-service-provider-attribute.entity';
+import { FinancialServiceProvidersService } from './financial-service-providers.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
-export class FspController {
-  public constructor(private readonly fspService: FspService) {}
+export class FinancialServiceProviderController {
+  public constructor(private readonly fspService: FinancialServiceProvidersService) {}
 
   @Admin()
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })
@@ -78,7 +78,7 @@ export class FspController {
   @ApiResponse({
     status: 200,
     description: 'FSP attribute updated',
-    type: FspQuestionEntity,
+    type: FinancialServiceProviderAttributeEntity,
   })
   @ApiResponse({
     status: 404,
@@ -90,8 +90,8 @@ export class FspController {
   @Patch(':fspId/attribute/:attributeName')
   public async updateFspAttribute(
     @Param() params,
-    @Body() updateFspAttributeDto: UpdateFspAttributeDto,
-  ): Promise<FspQuestionEntity> {
+    @Body() updateFspAttributeDto: UpdateFinancialServiceProviderAttributeDto,
+  ): Promise<FinancialServiceProviderAttributeEntity> {
     return await this.fspService.updateFspAttribute(
       Number(params.fspId),
       params.attributeName,
@@ -104,7 +104,7 @@ export class FspController {
   @ApiResponse({
     status: 201,
     description: 'FSP attribute created',
-    type: FspQuestionEntity,
+    type: FinancialServiceProviderAttributeEntity,
   })
   @ApiResponse({
     status: 403,
@@ -119,7 +119,7 @@ export class FspController {
   public async createFspAttribute(
     @Param() params,
     @Body() createFspAttributeDto: CreateFspAttributeDto,
-  ): Promise<FspQuestionEntity> {
+  ): Promise<FinancialServiceProviderAttributeEntity> {
     return await this.fspService.createFspAttribute(
       Number(params.fspId),
       createFspAttributeDto,
@@ -131,7 +131,7 @@ export class FspController {
   @ApiResponse({
     status: 200,
     description: 'FSP attribute deleted',
-    type: FspQuestionEntity,
+    type: FinancialServiceProviderAttributeEntity,
   })
   @ApiResponse({
     status: 404,
@@ -140,7 +140,7 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiParam({ name: 'attributeName', required: true, type: 'string' })
   @Delete(':fspId/attribute/:attributeName')
-  public async deleteFspAttribute(@Param() params): Promise<FspQuestionEntity> {
+  public async deleteFspAttribute(@Param() params): Promise<FinancialServiceProviderAttributeEntity> {
     return await this.fspService.deleteFspAttribute(
       Number(params.fspId),
       params.attributeName,

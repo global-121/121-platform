@@ -5,7 +5,7 @@ import { MonitoringQuestionEntity } from '../src/instance/monitoring-question.en
 import { ProgramEntity } from '../src/programs/program.entity';
 import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../src/financial-service-providers/financial-service-provider-attribute.entity';
 export class registrationData1656412499569 implements MigrationInterface {
   name = 'registrationData1656412499569';
 
@@ -106,7 +106,7 @@ export class registrationData1656412499569 implements MigrationInterface {
   private async migrateData(manager: EntityManager): Promise<void> {
     const programRepo = manager.getRepository(ProgramEntity);
     const registrationRepo = manager.getRepository(RegistrationEntity);
-    const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
+    const fspAttributeRepo = manager.getRepository(FinancialServiceProviderAttributeEntity);
     const registrationDataRepo = manager.getRepository(RegistrationDataEntity);
     const instanceRepo = manager.getRepository(InstanceEntity);
     const monQuestionRepo = manager.getRepository(MonitoringQuestionEntity);

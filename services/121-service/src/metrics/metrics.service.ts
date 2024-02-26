@@ -5,8 +5,8 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { ActionService } from '../actions/action.service';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -52,8 +52,8 @@ export class MetricsService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(FinancialServiceProviderAttributeEntity)
+  private readonly fspQuestionRepository: Repository<FinancialServiceProviderAttributeEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -276,7 +276,7 @@ export class MetricsService {
   private getRelationOptionsForDuplicates(
     programQuestions: ProgramQuestionEntity[],
     programCustomAttributes: ProgramCustomAttributeEntity[],
-    fspQuestions: FspQuestionEntity[],
+    fspQuestions: FinancialServiceProviderAttributeEntity[],
   ): RegistrationDataOptions[] {
     const relationOptions = [];
     for (const programQuestion of programQuestions) {
@@ -707,7 +707,7 @@ export class MetricsService {
   private async getRegisrationsForDuplicates(
     duplicatesMap: Map<number, number[]>,
     uniqueRegistrationProgramIds: Set<number>,
-    fspQuestions: FspQuestionEntity[],
+    fspQuestions: FinancialServiceProviderAttributeEntity[],
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
   ): Promise<{
@@ -783,7 +783,7 @@ export class MetricsService {
   private getRelationOptionsPerFsp(
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
-    fspQuestions: FspQuestionEntity[],
+    fspQuestions: FinancialServiceProviderAttributeEntity[],
   ): Record<number, RegistrationDataOptions[]> {
     const relationOptionsPerFsp = {};
     for (const fsp of program.financialServiceProviders) {
@@ -836,7 +836,7 @@ export class MetricsService {
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
         'transaction."errorMessage" as "errorMessage"',
-        'fsp.fsp AS financialServiceProvider',
+        'fsp.name AS financialServiceProvider',
       ])
       .innerJoin(
         '(' + latestTransactionPerPa.getQuery() + ')',
@@ -921,7 +921,7 @@ export class MetricsService {
     });
     let fields = [];
     for (const fsp of program.financialServiceProviders) {
-      if (fsp.fsp === FspName.safaricom) {
+      if (fsp.name === FinancialServiceProviderName.safaricom) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
       }
     }

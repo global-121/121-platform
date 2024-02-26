@@ -36,7 +36,7 @@ import {
   PaginatedSwaggerDocs,
   PaginateQuery,
 } from 'nestjs-paginate';
-import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { FspAnswersAttrInterface } from '../financial-service-providers/financial-service-provider-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';

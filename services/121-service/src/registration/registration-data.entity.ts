@@ -3,7 +3,7 @@ import { AppDataSource } from '../../appdatasource';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from './../fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationEntity } from './registration.entity';
 
@@ -44,11 +44,11 @@ export class RegistrationDataEntity extends Base121Entity {
   public programQuestionId: number;
 
   @ManyToOne(
-    (_type) => FspQuestionEntity,
+    (_type) => FinancialServiceProviderAttributeEntity,
     (fspQuestion) => fspQuestion.registrationData,
   )
   @JoinColumn({ name: 'fspQuestionId' })
-  public fspQuestion: FspQuestionEntity;
+  public fspQuestion: FinancialServiceProviderAttributeEntity;
   @Column({ nullable: true })
   public fspQuestionId: number;
 

@@ -8,7 +8,7 @@ import {
   ViewColumn,
   ViewEntity,
 } from 'typeorm';
-import { FspName } from '../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
@@ -42,8 +42,8 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.programId', 'programId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect('fsp.fsp', 'financialServiceProvider')
-      .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
+      .addSelect('fsp.name', 'financialServiceProvider')
+      .addSelect('fsp.nameDisplayNamePortal', 'fspDisplayNamePortal')
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -100,7 +100,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProvider: FspName;
+  public financialServiceProvider: FinancialServiceProviderName;
 
   @ViewColumn()
   public fspDisplayNamePortal: string;

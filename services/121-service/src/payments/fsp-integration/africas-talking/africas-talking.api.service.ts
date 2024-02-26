@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as africastalking from 'africastalking';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
@@ -18,7 +18,7 @@ export class AfricasTalkingApiService {
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FspName.africasTalking;
+    paTransactionResult.fspName = FinancialServiceProviderName.africasTalking;
     paTransactionResult.referenceId =
       payload.recipients[0].metadata.referenceId;
     paTransactionResult.date = new Date();
