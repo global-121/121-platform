@@ -57,13 +57,6 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
-      defaultJobOptions: {
-        attempts: 2,
-        backoff: {
-          type: 'fixed',
-          delay: 3000,
-        },
-      },
     }),
     RedisModule,
   ],
