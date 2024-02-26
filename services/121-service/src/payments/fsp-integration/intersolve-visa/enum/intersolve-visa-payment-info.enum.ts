@@ -8,3 +8,7 @@ export enum IntersolveVisaPaymentInfoEnum {
   addressCity = 'addressCity',
   phoneNumber = 'phoneNumber',
 }
+
+export enum IntersolveVisaPaymentInfoEnumBackupName {
+  fullName = 'fullName',
+}

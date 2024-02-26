@@ -95,7 +95,7 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": false,
+      "editableInPortal": true,
       "shortLabel": {
         "en": "Full Name"
       }
@@ -144,5 +144,5 @@
   "languages": ["ar", "en", "es", "fr", "in", "nl", "pt_BR", "tl"],
   "enableMaxPayments": true,
   "enableScope": true,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": true
 }
