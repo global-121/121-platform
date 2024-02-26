@@ -65,6 +65,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -82,13 +83,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -98,8 +100,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
-      registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-create-customer';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -108,6 +110,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -125,13 +128,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -140,8 +144,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {
-      registrationVisa.lastName = 'mock-fail-create-wallet';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-create-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -150,6 +154,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -167,13 +172,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -182,8 +188,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should fail pay-out Visa Debit (LINK CUSTOMER ERROR)', async () => {
-      registrationVisa.lastName = 'mock-fail-link-customer-wallet';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-link-customer-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -192,6 +198,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -209,13 +216,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -224,8 +232,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should fail pay-out Visa Debit (CREATE DEBIT CARD ERROR)', async () => {
-      registrationVisa.lastName = 'mock-fail-create-debit-card';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-create-debit-card';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -234,6 +242,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -251,13 +260,14 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -266,8 +276,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
-      registrationVisa.lastName = 'mock-fail-get-wallet';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-get-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -310,6 +320,8 @@ describe('Do payment to 1 PA', () => {
         Object.values(StatusEnum),
         paymentNrVisa + 1,
       );
+
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa + 1,
@@ -317,7 +329,6 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -328,8 +339,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should successfully load balance Visa Debit', async () => {
-      registrationVisa.lastName = 'succeed';
       // Arrange
+      registrationVisa.lastName = 'succeed';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -376,13 +387,14 @@ describe('Do payment to 1 PA', () => {
         paymentNrVisa + 1,
       );
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa + 1,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doSecondPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -391,8 +403,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should successfully retry pay-out after create customer error', async () => {
-      registrationVisa.lastName = 'mock-fail-create-customer';
       // Arrange
+      registrationVisa.lastName = 'mock-fail-create-customer';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -401,6 +413,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       const doPaymentResponse = await doPayment(
         programIdVisa,
@@ -430,16 +443,16 @@ describe('Do payment to 1 PA', () => {
 
       // retry payment
       await retryPayment(programIdVisa, paymentNrVisa, accessToken);
-
       await waitFor(2_000);
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
@@ -459,6 +472,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [registrationVisa.referenceId];
+
       // Act
       await doPayment(
         programIdVisa,
@@ -488,16 +502,16 @@ describe('Do payment to 1 PA', () => {
 
       // retry payment
       await retryPayment(programIdVisa, paymentNrVisa, accessToken);
-
       await waitFor(2_000);
 
+      // Assert
       const transactionsResponse = await getTransactions(
         programIdVisa,
         paymentNrVisa,
         registrationVisa.referenceId,
         accessToken,
       );
-      // Assert
+
       expect(transactionsResponse.body[0].amount).toBe(
         amountVisa * registrationVisa.paymentAmountMultiplier,
       );
@@ -505,8 +519,8 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should payout different amounts based on current balance and spend', async () => {
-      const paymentNumberAmountTest = 2;
       // Arrange
+      const paymentNumberAmountTest = 2;
       registrationVisa.lastName = 'mock-current-balance-13000-mock-spent-1000';
       registrationVisa.paymentAmountMultiplier = 3;
 
@@ -580,6 +594,7 @@ describe('Do payment to 1 PA', () => {
         paymentNumberAmountTest,
       );
 
+      // Assert
       const transactionsResponse1 = await getTransactions(
         programIdVisa,
         paymentNumberAmountTest,
@@ -605,7 +620,6 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      // Assert
       // 150 - (13000 /100) - (1000/ 100) = 10
       expect(transactionsResponse1.body[0].amount).toBe(10);
       expect(transactionsResponse1.text).toContain(StatusEnum.success);
@@ -626,6 +640,7 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse4.text).toContain(StatusEnum.success);
     });
   });
+
   // TODO: We skipped testing successful retry after:
   // 1. create wallet error
   // 2. link customer error
