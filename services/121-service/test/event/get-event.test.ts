@@ -12,7 +12,7 @@ import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 const updatePhoneNumber = '15005550099';
 
-describe('Update attribute of PA', () => {
+describe('Get all events of 1 PA', () => {
   const programIdOcw = 3;
   const secondRegistration = {
     ...registrationVisa,
@@ -97,7 +97,7 @@ describe('Update attribute of PA', () => {
     const eventsResult = await getEvents(
       programIdOcw,
       yesterdayString,
-      yesterdayString,
+      yesterdayString, // same date makes sure no events are found
       undefined,
     );
 
