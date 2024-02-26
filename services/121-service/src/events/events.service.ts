@@ -46,7 +46,7 @@ export class EventsService {
     const events = await this.eventScopedRepository.find({
       where: this.createWhereClause(programId, searchOptions),
       relations: ['registration', 'user', 'attributes'],
-      order: { created: 'DESC' },
+      order: { created: 'DESC', attributes: { key: 'ASC' } }, // This order by attributes.key makes use of the fact that the alphabetical ordering of the possible enum-values happens to be the correct order. This is not very robust.
       take: exportLimit,
     });
     return events;
