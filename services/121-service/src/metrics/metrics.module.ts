@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { PaymentsModule } from '../payments/payments.module';
@@ -27,7 +27,7 @@ import { MetricsService } from './metrics.service';
     TypeOrmModule.forFeature([
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
-      FspQuestionEntity,
+      FinancialServiceProviderAttributeEntity,
       ProgramEntity,
     ]),
     UserModule,

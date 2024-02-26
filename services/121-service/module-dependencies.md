@@ -2,14 +2,14 @@
 
 ```mermaid
 graph LR
-  ProgramModule-->FspModule
+  ProgramModule-->FinancialServiceProvidersModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   MessageTemplateModule-->ProgramAttributesModule
   CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
-  RegistrationsModule-->FspModule
+  RegistrationsModule-->FinancialServiceProvidersModule
   RegistrationsModule-->QueueMessageModule
   QueueMessageModule-->ProgramAttributesModule
   RegistrationsModule-->IntersolveVisaModule

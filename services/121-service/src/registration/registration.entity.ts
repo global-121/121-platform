@@ -22,7 +22,7 @@ import {
 } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { CascadeDeleteEntity } from '../base.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';

@@ -4,18 +4,18 @@ import { Repository } from 'typeorm';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import {
   CreateFspAttributeDto,
-  UpdateFspAttributeDto,
+  UpdateFinancialServiceProviderAttributeDto,
   UpdateFspDto,
-} from './dto/update-fsp.dto';
+} from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspQuestionEntity } from './fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from './financial-service-provider-attribute.entity';
 
 @Injectable()
-export class FspService {
+export class FinancialServiceProvidersService {
   @InjectRepository(FinancialServiceProviderEntity)
   private financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspQuestionEntity)
-  public fspAttributeRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(FinancialServiceProviderAttributeEntity)
+  public fspAttributeRepository: Repository<FinancialServiceProviderAttributeEntity>;
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
@@ -79,8 +79,8 @@ export class FspService {
   public async updateFspAttribute(
     fspId: number,
     attributeName: string,
-    fspAttributeDto: UpdateFspAttributeDto,
-  ): Promise<FspQuestionEntity> {
+    fspAttributeDto: UpdateFinancialServiceProviderAttributeDto,
+  ): Promise<FinancialServiceProviderAttributeEntity> {
     const fspAttributes = await this.fspAttributeRepository.find({
       where: { name: attributeName },
       relations: ['fsp'],
@@ -103,7 +103,7 @@ export class FspService {
   public async createFspAttribute(
     fspId: number,
     fspAttributeDto: CreateFspAttributeDto,
-  ): Promise<FspQuestionEntity> {
+  ): Promise<FinancialServiceProviderAttributeEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { id: fspId },
     });
@@ -122,7 +122,7 @@ export class FspService {
       const errors = `Attribute with name ${fspAttributeDto.name} already exists for fsp with id ${fspId}`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    const fspAttribute = new FspQuestionEntity();
+    const fspAttribute = new FinancialServiceProviderAttributeEntity();
     for (const key in fspAttributeDto) {
       fspAttribute[key] = fspAttributeDto[key];
     }
@@ -134,7 +134,7 @@ export class FspService {
   public async deleteFspAttribute(
     fspId: number,
     attributeName: string,
-  ): Promise<FspQuestionEntity> {
+  ): Promise<FinancialServiceProviderAttributeEntity> {
     const fspAttribute = await this.fspAttributeRepository.findOne({
       where: { name: attributeName, fsp: { id: fspId } },
       relations: ['fsp'],

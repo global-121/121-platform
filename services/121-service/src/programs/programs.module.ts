@@ -3,15 +3,15 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { ActionModule } from '../actions/action.module';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
+import { FinancialServiceProvidersModule } from '../financial-service-providers/financial-service-providers.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 import { UserModule } from '../user/user.module';
-import { ProgramFspConfigurationController } from './fsp-configuration/fsp-configuration.controller';
-import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationsController } from './financial-service-provider-configurations/financial-service-provider-configurations.controller';
+import { ProgramFinancialServiceProviderConfigurationEntity } from './financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationsService } from './financial-service-provider-configurations/financial-service-provider-configurations.service';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
@@ -24,21 +24,21 @@ import { ProgramService } from './programs.service';
       ProgramEntity,
       FinancialServiceProviderEntity,
       ActionEntity,
-      FspQuestionEntity,
+      FinancialServiceProviderAttributeEntity,
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
-      ProgramFspConfigurationEntity,
+      ProgramFinancialServiceProviderConfigurationEntity,
     ]),
     ActionModule,
     UserModule,
-    FspModule,
+    FinancialServiceProvidersModule,
     HttpModule,
     LookupModule,
     UserModule,
     ProgramAttributesModule,
   ],
-  providers: [ProgramService, ProgramFspConfigurationService],
-  controllers: [ProgramController, ProgramFspConfigurationController],
-  exports: [ProgramService, ProgramFspConfigurationService],
+  providers: [ProgramService, ProgramFinancialServiceProviderConfigurationsService],
+  controllers: [ProgramController, ProgramFinancialServiceProviderConfigurationsController],
+  exports: [ProgramService, ProgramFinancialServiceProviderConfigurationsService],
 })
 export class ProgramModule {}
