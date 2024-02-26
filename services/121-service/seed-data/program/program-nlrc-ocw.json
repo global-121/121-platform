@@ -38,7 +38,13 @@
       "fsp": "Intersolve-jumbo-physical"
     },
     {
-      "fsp": "Intersolve-visa"
+      "fsp": "Intersolve-visa",
+      "configuration": [
+        {
+          "name": "brandCode",
+          "value": "Ix906_01"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 100000,

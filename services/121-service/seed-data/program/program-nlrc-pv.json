@@ -46,6 +46,15 @@
           "value": "INTERSOLVE_PASSWORD"
         }
       ]
+    },
+    {
+      "fsp": "Intersolve-visa",
+      "configuration": [
+        {
+          "name": "brandCode",
+          "value": "Ix906_01"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 250,
