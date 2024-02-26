@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
@@ -27,6 +28,7 @@ export class VodacashService
 {
   public constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly registrationDataService: RegistrationDataService,
     private readonly fileImportService: FileImportService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
@@ -113,9 +115,11 @@ export class VodacashService
       String(amount),
     );
 
-    const healthArea = await registration.getRegistrationDataValueByName(
-      ' A. 5. Village/Quartier :  ',
-    );
+    const healthArea =
+      await this.registrationDataService.getRegistrationDataValueByName(
+        registration,
+        ' A. 5. Village/Quartier :  ',
+      );
     this.setValue(vodcashInstructionCustomer, 'Comment', 'Value', healthArea);
 
     vodacashInstructions.elements[0].elements.push(vodcashInstructionCustomer);

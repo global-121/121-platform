@@ -5,17 +5,18 @@ import { Repository } from 'typeorm';
 import { ProgramAidworkerAssignmentEntity } from '../../programs/program-aidworker.entity';
 import { getUserIdFromRequest } from '../../user/user.helper';
 
-export interface RequestWithScope extends Request {
+export interface ScopedUserRequest extends Request {
   scope?: string;
+  userId?: number;
 }
 
 @Injectable()
-export class ScopeMiddleware implements NestMiddleware {
+export class ScopeUserMiddleware implements NestMiddleware {
   constructor(
     @InjectRepository(ProgramAidworkerAssignmentEntity)
     private assignmentRepo: Repository<ProgramAidworkerAssignmentEntity>, // Inject your repository
   ) {}
-  async use(req: RequestWithScope, res: Response, next: any): Promise<void> {
+  async use(req: ScopedUserRequest, res: Response, next: any): Promise<void> {
     const match = req.path.match(/\/programs\/(\d+)/);
     let programId: number;
     if (match) {
@@ -25,6 +26,7 @@ export class ScopeMiddleware implements NestMiddleware {
     }
     // Extract scope from assignment and store in request.scope
     const userId = getUserIdFromRequest('id', req);
+    req.userId = userId;
     const assignment = await this.assignmentRepo.findOne({
       where: { userId: userId, programId: programId },
     });

@@ -10,6 +10,7 @@ import { ImageCodeService } from '../../payments/imagecode/image-code.service';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { waitFor } from '../../utils/waitFor.helper';
@@ -56,6 +57,7 @@ export class MessageIncomingService {
   };
 
   public constructor(
+    private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     @InjectQueue(QueueNameMessageCallBack.status)
@@ -282,9 +284,13 @@ export class MessageIncomingService {
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
       );
-      await savedRegistration.saveData(tryWhatsapp.registration.phoneNumber, {
-        name: CustomDataAttributes.whatsappPhoneNumber,
-      });
+      await this.registrationDataService.saveData(
+        savedRegistration,
+        tryWhatsapp.registration.phoneNumber,
+        {
+          name: CustomDataAttributes.whatsappPhoneNumber,
+        },
+      );
       await this.tryWhatsappRepository.remove(tryWhatsapp);
     }
   }

@@ -657,12 +657,7 @@
       "actions": "الاجراءات",
       "activities": {
         "data-changes": {
-          "label": "تغيير البيانات",
-          "reason": "<br><b>السبب:</b> {{reason}}",
-          "values": "<b>قديم</b>: {{oldValue}}<br><b>جديد:</b> {{newValue}}"
-        },
-        "message": {
-          "label": "رسالة"
+          "label": "تغيير البيانات"
         },
         "note": {
           "label": "ملاحظه"

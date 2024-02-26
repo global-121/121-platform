@@ -9,13 +9,12 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { RegistrationChangeLogModule } from '../registration/modules/registration-change-log/registration-change-log.module';
+
+import { EventsModule } from '../events/events.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from '../registration/registration-scoped.repository';
 import { RegistrationsModule } from '../registration/registrations.module';
+import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '../registration/repositories/registration-view-scoped.repository';
 import { UserModule } from '../user/user.module';
 import { RegistrationDataScopedQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
@@ -36,7 +35,7 @@ import { MetricsService } from './metrics.service';
     PaymentsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
-    RegistrationChangeLogModule,
+    EventsModule,
   ],
   providers: [
     MetricsService,

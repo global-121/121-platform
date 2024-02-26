@@ -111,8 +111,6 @@ export class MetricsController {
       userId,
       queryParams.minPayment,
       queryParams.maxPayment,
-      queryParams.fromDate,
-      queryParams.toDate,
       paginationQuery,
     );
     if (result.data.length === 0) {

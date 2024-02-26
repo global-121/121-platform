@@ -14,6 +14,7 @@ import { DataSource } from 'typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
+import { EventsModule } from './events/events.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
 import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
@@ -32,7 +33,7 @@ import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.e
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
-import { ScopeMiddleware } from './shared/middleware/scope.middleware';
+import { ScopeUserMiddleware } from './shared/middleware/scope-user.middleware';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 
@@ -60,6 +61,7 @@ import { UserModule } from './user/user.module';
     MessageIncomingModule,
     NoteModule,
     ExchangeRateModule,
+    EventsModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
@@ -100,7 +102,7 @@ export class ApplicationModule implements OnApplicationBootstrap {
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
-      .apply(ScopeMiddleware)
+      .apply(ScopeUserMiddleware)
       .forRoutes({ path: 'programs/([0-9]+)*', method: RequestMethod.ALL });
   }
 }
