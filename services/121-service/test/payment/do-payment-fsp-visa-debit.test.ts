@@ -3,7 +3,7 @@ import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-  registrationVisa,
+  registrationVisa as registrationVisaDefault,
 } from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
@@ -32,7 +32,11 @@ import {
 } from '../registrations/pagination/pagination-data';
 
 describe('Do payment to 1 PA', () => {
-  registrationVisa.whatsappPhoneNumber = '14155238887';
+  // Set WhatsApp-number for ALL tests in this suite only
+  const registrationVisa = {
+    ...registrationVisaDefault,
+    whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
+  };
 
   describe('with FSP: Intersolve Visa Debit', () => {
     let accessToken: string;
