@@ -69,7 +69,10 @@ describe('Get all events of 1 PA or by parameters', () => {
     );
     const registration = result.body.data[0];
 
-    const eventsResult = await getRegistrationEvents(programIdOcw, registration.id);
+    const eventsResult = await getRegistrationEvents(
+      programIdOcw,
+      registration.id,
+    );
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
