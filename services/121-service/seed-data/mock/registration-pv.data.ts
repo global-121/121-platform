@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 
@@ -9,7 +9,7 @@ export const registrationAHWhatsapp = {
   fullName: 'Juan Garcia',
   scope: 'utrecht.houten',
   [CustomDataAttributes.phoneNumber]: '14155238888',
-  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+  fspName: FspName.intersolveVoucherWhatsapp,
   [CustomDataAttributes.whatsappPhoneNumber]: '14155238888',
   namePartnerOrganization: 'Help Elkaar',
 };

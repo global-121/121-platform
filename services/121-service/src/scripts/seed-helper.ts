@@ -2,12 +2,12 @@ import { HttpException, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
 import { DEBUG } from '../config';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '../notifications/message-template/message-template.service';
-import { ProgramFinancialServiceProviderConfigurationsService } from '../programs/financial-service-provider-configurations/financial-service-provider-configurations.service';
+import { ProgramFspConfigurationService } from '../programs/fsp-configuration/fsp-configuration.service';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -24,7 +24,7 @@ export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
+    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async addDefaultUsers(
@@ -223,7 +223,7 @@ export class SeedHelper {
     foundProgram.financialServiceProviders = [];
     for (const fsp of fsps) {
       const fspReturn = await fspRepository.findOne({
-        where: { name: fsp.name },
+        where: { fsp: fsp.fsp },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
       if (fsp.configuration && fsp.configuration.length > 0) {
@@ -249,7 +249,7 @@ export class SeedHelper {
     );
 
     const fspQuestionRepository =
-      this.dataSource.getRepository(FinancialServiceProviderAttributeEntity);
+      this.dataSource.getRepository(FspQuestionEntity);
 
     // Remove original custom criteria and add it to a separate variable
     const questions = fsp.questions;

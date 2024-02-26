@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '../../../programs/financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
@@ -27,7 +27,7 @@ import { PaymentProcessorCommercialBankEthiopia } from './processors/commercial-
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFinancialServiceProviderConfigurationEntity,
+      ProgramFspConfigurationEntity,
     ]),
     TransactionsModule,
     UserModule,

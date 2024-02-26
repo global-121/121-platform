@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
-export class UpdateFinancialServiceProviderAttributeDto {
+export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
   @IsOptional()
   public label: JSON;
@@ -52,7 +52,7 @@ export class UpdateFinancialServiceProviderAttributeDto {
   public phases: JSON;
 }
 
-export class CreateFspAttributeDto extends UpdateFinancialServiceProviderAttributeDto {
+export class CreateFspAttributeDto extends UpdateFspAttributeDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

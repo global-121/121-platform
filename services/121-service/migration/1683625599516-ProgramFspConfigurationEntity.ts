@@ -7,7 +7,7 @@ export class ProgramFspConfigurationEntity1683625599516
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "121-service"."program_fsp_configuration" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "fspId" integer NOT NULL, "name" character varying NOT NULL, "value" character varying NOT NULL, CONSTRAINT "programFinancialServiceProviderConfigurationUnique" UNIQUE ("programId", "fspId", "name"), CONSTRAINT "PK_8c7b8aee32b9d0b173d656f7ac3" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."program_fsp_configuration" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "fspId" integer NOT NULL, "name" character varying NOT NULL, "value" character varying NOT NULL, CONSTRAINT "programFspConfigurationUnique" UNIQUE ("programId", "fspId", "name"), CONSTRAINT "PK_8c7b8aee32b9d0b173d656f7ac3" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_e9c1fabe6ed57e114b586d3445" ON "121-service"."program_fsp_configuration" ("created") `,

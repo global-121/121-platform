@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -16,7 +16,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    fspName: FspName.intersolveVoucherWhatsapp,
     bulkSize: 1,
     userId: 1,
   },
@@ -54,8 +54,8 @@ describe('IntersolveVoucherService', () => {
     const useWhatsapp = true;
 
     const dbQueryResult = [
-      { name: FinancialServiceProviderConfigurationEnum.password, value: '1234' },
-      { name: FinancialServiceProviderConfigurationEnum.username, value: '1234' },
+      { name: FspConfigurationEnum.password, value: '1234' },
+      { name: FspConfigurationEnum.username, value: '1234' },
     ];
     const createQueryBuilder: any =
       generateMockCreateQueryBuilder(dbQueryResult);

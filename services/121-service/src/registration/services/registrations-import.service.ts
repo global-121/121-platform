@@ -5,9 +5,9 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
-import { FinancialServiceProviderAttributeEntity } from '../../financial-service-providers/financial-service-provider-attribute.entity';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
 import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
@@ -53,8 +53,8 @@ export class RegistrationsImportService {
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FinancialServiceProviderAttributeEntity)
-  private readonly fspAttributeRepository: Repository<FinancialServiceProviderAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationEntity)
@@ -318,7 +318,7 @@ export class RegistrationsImportService {
         }
       }
       const fsp = await this.fspRepository.findOne({
-        where: { name: record.fspName },
+        where: { fsp: record.fspName },
       });
       registration.fsp = fsp;
       registrations.push(registration);
@@ -617,7 +617,7 @@ export class RegistrationsImportService {
           id: c.id,
           name: c.name,
           type: c.answerType,
-          fspName: c.fsp.name,
+          fspName: c.fsp.fsp,
           questionType: QuestionType.fspQuestion,
         };
       });
@@ -831,7 +831,7 @@ export class RegistrationsImportService {
 
   private isDynamicAttributeForFsp(
     attribute: Attribute,
-    fspName: FinancialServiceProviderName,
+    fspName: FspName,
   ): boolean {
     if (
       attribute.questionTypes.length > 1 ||

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -29,11 +29,11 @@ export class UkrPoshtaService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.ukrPoshta;
+    fspTransactionResult.fspName = FspName.ukrPoshta;
     for (const payment of paymentList) {
       const transactionResult = new PaTransactionResultDto();
       transactionResult.calculatedAmount = payment.transactionAmount;
-      transactionResult.fspName = FinancialServiceProviderName.ukrPoshta;
+      transactionResult.fspName = FspName.ukrPoshta;
       transactionResult.referenceId = payment.referenceId;
       transactionResult.status = StatusEnum.success;
       fspTransactionResult.paList.push(transactionResult);

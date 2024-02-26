@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { In, IsNull, Not, Repository } from 'typeorm';
 import { API_PATHS, EXTERNAL_API } from '../../config';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
@@ -275,7 +275,7 @@ export class MessageIncomingService {
       });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
         (fsp) => {
-          return (fsp.name = FinancialServiceProviderName.intersolveVoucherWhatsapp);
+          return (fsp.fsp = FspName.intersolveVoucherWhatsapp);
         },
       );
       tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;

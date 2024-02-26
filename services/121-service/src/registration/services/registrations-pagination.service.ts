@@ -14,7 +14,7 @@ import {
   Repository,
   WhereExpressionBuilder,
 } from 'typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { ScopedQueryBuilder } from '../../scoped.repository';
@@ -638,7 +638,7 @@ export class RegistrationsPaginationService {
   public getQueryBuilderForFsp(
     programId: number,
     payment: number,
-    fspName: FinancialServiceProviderName,
+    fspName: FspName,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewScopedRepository
       .createQueryBuilder('registration')
@@ -647,7 +647,7 @@ export class RegistrationsPaginationService {
       .innerJoin('transaction.financialServiceProvider', 'fsp')
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('transaction.payment = :payment', { payment })
-      .andWhere('fsp.name = :fsp', {
+      .andWhere('fsp.fsp = :fsp', {
         fsp: fspName,
       })
       .orderBy('registration.referenceId', 'ASC');

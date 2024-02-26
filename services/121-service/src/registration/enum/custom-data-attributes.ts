@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',
@@ -48,7 +48,7 @@ export class Attribute {
   public shortLabel?: object;
   public options?: JSON;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
-  public fspNames?: FinancialServiceProviderName[];
+  public fspNames?: FspName[];
   public questionTypes?: QuestionType[];
 }
 

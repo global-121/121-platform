@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '../../../programs/financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { ScopedRepository } from '../../../scoped.repository';
@@ -42,8 +42,8 @@ export class CommercialBankEthiopiaService
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -74,7 +74,7 @@ export class CommercialBankEthiopiaService
 
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.commercialBankEthiopia;
+    fspTransactionResult.fspName = FspName.commercialBankEthiopia;
 
     const referenceIds = paPaymentList.map(
       (paPayment) => paPayment.referenceId,
@@ -264,7 +264,7 @@ export class CommercialBankEthiopiaService
     credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.commercialBankEthiopia;
+    paTransactionResult.fspName = FspName.commercialBankEthiopia;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
@@ -449,16 +449,16 @@ export class CommercialBankEthiopiaService
       .select('name')
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.name = :fspName', {
-        fspName: FinancialServiceProviderName.commercialBankEthiopia,
+      .andWhere('fsp.fsp = :fspName', {
+        fspName: FspName.commercialBankEthiopia,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.username)
+      username: config.find((c) => c.name === FspConfigurationEnum.username)
         ?.value,
-      password: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.password)
+      password: config.find((c) => c.name === FspConfigurationEnum.password)
         ?.value,
     };
 
@@ -474,7 +474,7 @@ export class CommercialBankEthiopiaService
         'financialServiceProviders',
       )
       .where('financialServiceProviders.fsp = :fsp', {
-        fsp: FinancialServiceProviderName.commercialBankEthiopia,
+        fsp: FspName.commercialBankEthiopia,
       })
       .getMany();
 

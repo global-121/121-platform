@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageTemplateModule } from '../../../notifications/message-template/message-template.module';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { RedisModule } from '../../../payments/redis.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '../../../programs/financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
@@ -37,7 +37,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFinancialServiceProviderConfigurationEntity,
+      ProgramFspConfigurationEntity,
       ProgramAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),

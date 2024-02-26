@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -287,7 +287,7 @@ export class IntersolveJumboService
     transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
-    transactionResult.fspName = FinancialServiceProviderName.intersolveJumboPhysical;
+    transactionResult.fspName = FspName.intersolveJumboPhysical;
     transactionResult.notificationObjects = notificationObjects;
 
     return transactionResult;

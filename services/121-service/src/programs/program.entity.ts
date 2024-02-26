@@ -9,7 +9,7 @@ import {
 import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -22,7 +22,7 @@ import {
   CustomAttributeType,
 } from './../registration/enum/custom-data-attributes';
 import { ValidationInfo } from './dto/validation-info.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from './financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -148,10 +148,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public budget: number;
 
   @OneToMany(
-    () => ProgramFinancialServiceProviderConfigurationEntity,
+    () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
   )
-  public programFspConfiguration: ProgramFinancialServiceProviderConfigurationEntity[];
+  public programFspConfiguration: ProgramFspConfigurationEntity[];
 
   @Column({ nullable: true, default: null })
   public monitoringDashboardUrl: string;
@@ -196,7 +196,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'program',
       },
       {
-        entityClass: ProgramFinancialServiceProviderConfigurationEntity,
+        entityClass: ProgramFspConfigurationEntity,
         columnName: 'programId',
       },
     ]);

@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export class RegistrationResponse {
@@ -19,7 +19,7 @@ export class RegistrationResponse {
 
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
-  public fsp: FinancialServiceProviderName | string;
+  public fsp: FspName | string;
   public fspDisplayNamePortal: string;
   public hasNote: boolean;
 

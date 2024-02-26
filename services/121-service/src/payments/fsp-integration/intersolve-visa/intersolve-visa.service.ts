@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { v4 as uuid } from 'uuid';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
@@ -313,7 +313,7 @@ export class IntersolveVisaService
     paTransactionResult.referenceId = paymentDetails.referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = calculatedAmount;
-    paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
+    paTransactionResult.fspName = FspName.intersolveVisa;
 
     const transactionNotifications = [];
 
@@ -851,7 +851,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (registration.fsp.name !== FinancialServiceProviderName.intersolveVisa) {
+    if (registration.fsp.fsp !== FspName.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

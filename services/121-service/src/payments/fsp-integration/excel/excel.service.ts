@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { BulkImportResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
@@ -47,11 +47,11 @@ export class ExcelService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.excel;
+    fspTransactionResult.fspName = FspName.excel;
     for (const paPayment of paPaymentList) {
       const transactionResult = new PaTransactionResultDto();
       transactionResult.calculatedAmount = paPayment.transactionAmount;
-      transactionResult.fspName = FinancialServiceProviderName.excel;
+      transactionResult.fspName = FspName.excel;
       transactionResult.referenceId = paPayment.referenceId;
       transactionResult.status = StatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
@@ -79,7 +79,7 @@ export class ExcelService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FinancialServiceProviderName.excel,
+      FspName.excel,
     );
     const chunkSize = 400000;
     const registrations =
@@ -114,7 +114,7 @@ export class ExcelService
         'program.programFspConfiguration',
         'programFspConfiguration',
         'programFspConfiguration.name = :configName',
-        { configName: FinancialServiceProviderConfigurationEnum.columnsToExport },
+        { configName: FspConfigurationEnum.columnsToExport },
       )
       .andWhere('program.id = :programId', {
         programId: programId,
@@ -211,7 +211,7 @@ export class ExcelService
         'program.programFspConfiguration',
         'programFspConfiguration',
         'programFspConfiguration.name = :configName',
-        { configName: FinancialServiceProviderConfigurationEnum.columnToMatch },
+        { configName: FspConfigurationEnum.columnToMatch },
       )
       .andWhere('program.id = :programId', {
         programId: programId,
@@ -238,7 +238,7 @@ export class ExcelService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FinancialServiceProviderName.excel,
+      FspName.excel,
     );
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
@@ -302,7 +302,7 @@ export class ExcelService
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registrationWithAmount.referenceId;
     paTransactionResult.registrationId = registrationWithAmount.id;
-    paTransactionResult.fspName = FinancialServiceProviderName.excel;
+    paTransactionResult.fspName = FspName.excel;
     paTransactionResult.status = importResponseRecord[this.statusColumnName];
     paTransactionResult.calculatedAmount = registrationWithAmount.amount;
     return paTransactionResult;

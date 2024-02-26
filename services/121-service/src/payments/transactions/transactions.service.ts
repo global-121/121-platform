@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
@@ -101,8 +101,8 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fsp.nameDisplayNamePortal as "fspName"',
-        'fsp.name as "fsp"',
+        'fsp.fspDisplayNamePortal as "fspName"',
+        'fsp.fsp as "fsp"',
         'fsp.integrationType as "fspIntegrationType"',
       ])
       .leftJoin('transaction.financialServiceProvider', 'fsp')
@@ -141,7 +141,7 @@ export class TransactionsService {
       id: relationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { name: transactionResponse.fspName },
+      where: { fsp: transactionResponse.fspName },
     });
     const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: transactionResponse.referenceId },
@@ -331,7 +331,7 @@ export class TransactionsService {
       id: transactionRelationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { name: transactionResults[0].fspName },
+      where: { fsp: transactionResults[0].fspName },
     });
 
     const transactionsToSave = transactionResults.map(

@@ -1,7 +1,7 @@
-import { FinancialServiceProviderAttributeEntity } from './financial-service-provider-attribute.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
 
 export interface FspAnswersAttrInterface {
-  attributes: FinancialServiceProviderAttributeEntity[];
+  attributes: FspQuestionEntity[];
   answers: AnswerSet;
   referenceId: string;
 }

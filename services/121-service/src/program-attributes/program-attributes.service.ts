@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { In, Repository } from 'typeorm';
-import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -24,8 +24,8 @@ export class ProgramAttributesService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FinancialServiceProviderAttributeEntity)
-  private readonly fspQuestionRepository: Repository<FinancialServiceProviderAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
 
   public getFilterableAttributes(
     program: ProgramEntity,

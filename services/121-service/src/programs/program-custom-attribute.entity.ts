@@ -13,7 +13,7 @@ import { NameConstraintQuestions } from '../shared/const';
 import { CascadeDeleteEntity } from './../base.entity';
 import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
 import { ProgramEntity } from './program.entity';
- 
+
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)

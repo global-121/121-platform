@@ -15,10 +15,10 @@ import { NameConstraintQuestions } from '../shared/const';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 // TODO: REFACTOR: rename table name into fsp_question so it aligns with Entity class name
-@Unique('financialServiceProviderAttributeUnique', ['name', 'fspId'])
-@Entity()
+@Unique('fspQuestionUnique', ['name', 'fspId'])
+@Entity('fsp_attribute')
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
-export class FinancialServiceProviderAttributeEntity extends Base121Entity {
+export class FspQuestionEntity extends Base121Entity {
   @Column()
   @ApiProperty({ example: 'name' })
   public name: string;

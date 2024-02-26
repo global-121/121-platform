@@ -2,8 +2,8 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -43,7 +43,7 @@ import { TransactionsModule } from './transactions/transactions.module';
       RegistrationEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
-      FinancialServiceProviderAttributeEntity,
+      FspQuestionEntity,
       ProgramCustomAttributeEntity,
     ]),
     UserModule,

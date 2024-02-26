@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { PaPaymentDataDto } from '../../../payments/dto/pa-payment-data.dto';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
@@ -14,7 +14,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 25,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FinancialServiceProviderName.intersolveVisa,
+    fspName: FspName.intersolveVisa,
     bulkSize: 1,
     userId: 1,
   },

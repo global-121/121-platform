@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspConfigurationEnum } from '../../fsp/enum/fsp-name.enum';
 
 export class UpdateProgramFspConfigurationDto {
-  @ApiProperty({ example: FinancialServiceProviderConfigurationEnum.username })
+  @ApiProperty({ example: FspConfigurationEnum.username })
   @IsNotEmpty()
   @IsString()
   name: string;

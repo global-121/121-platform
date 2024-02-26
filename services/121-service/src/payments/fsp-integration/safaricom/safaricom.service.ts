@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../../config';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { PaTransactionResultDto } from '../../../payments/dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -181,7 +181,7 @@ export class SafaricomService
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
+    paTransactionResult.fspName = FspName.safaricom;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.Amount;

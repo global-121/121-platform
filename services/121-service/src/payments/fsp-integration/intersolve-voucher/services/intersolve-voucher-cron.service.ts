@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
+  FspConfigurationEnum,
+  FspName,
+} from '../../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
 import { MessageProcessType } from '../../../../notifications/message-job.dto';
 import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '../../../../programs/financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../../registration/registration.entity';
@@ -31,8 +31,8 @@ export class IntersolveVoucherCronService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -68,8 +68,8 @@ export class IntersolveVoucherCronService {
       .createQueryBuilder('fspConfig')
       .select('name')
       .addSelect('value')
-      .andWhere('fsp.name = :fspName', {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+      .andWhere('fsp.fsp = :fspName', {
+        fspName: FspName.intersolveVoucherWhatsapp,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
@@ -80,9 +80,9 @@ export class IntersolveVoucherCronService {
     }
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.username)
+      username: config.find((c) => c.name === FspConfigurationEnum.username)
         ?.value,
-      password: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.password)
+      password: config.find((c) => c.name === FspConfigurationEnum.password)
         ?.value,
     };
 

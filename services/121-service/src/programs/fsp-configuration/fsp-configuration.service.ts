@@ -1,22 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspConfigurationMapping } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
+import { FspConfigurationMapping } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from './program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
 @Injectable()
-export class ProgramFinancialServiceProviderConfigurationsService {
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  private readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
+export class ProgramFspConfigurationService {
+  @InjectRepository(ProgramFspConfigurationEntity)
+  private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public async findByProgramId(
     programId: number,
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
+  ): Promise<ProgramFspConfigurationEntity[]> {
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
         where: { programId: programId },
@@ -39,24 +39,24 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       );
     }
 
-    if (FspConfigurationMapping[fsp.name] === undefined) {
+    if (FspConfigurationMapping[fsp.fsp] === undefined) {
       throw new HttpException(
-        `Fsp ${fsp.name} has no fsp config`,
+        `Fsp ${fsp.fsp} has no fsp config`,
         HttpStatus.NOT_FOUND,
       );
     } else {
-      const allowedConfigForFsp = FspConfigurationMapping[fsp.name];
+      const allowedConfigForFsp = FspConfigurationMapping[fsp.fsp];
       if (!allowedConfigForFsp.includes(programFspConfigurationDto.name)) {
         throw new HttpException(
-          `For fsp ${fsp.name} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${programFspConfigurationDto.name}`,
+          `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${programFspConfigurationDto.name}`,
           HttpStatus.NOT_FOUND,
         );
       }
     }
 
-    const programFspConfiguration = new ProgramFinancialServiceProviderConfigurationEntity();
+    const programFspConfiguration = new ProgramFspConfigurationEntity();
     programFspConfiguration.programId = programId;
-    programFspConfiguration.financialServiceProviderId = programFspConfigurationDto.fspId;
+    programFspConfiguration.fspId = programFspConfigurationDto.fspId;
     programFspConfiguration.name = programFspConfigurationDto.name;
     programFspConfiguration.value = this.formatInputValue(
       programFspConfigurationDto.value,

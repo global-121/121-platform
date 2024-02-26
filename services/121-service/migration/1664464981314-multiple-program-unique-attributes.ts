@@ -34,7 +34,7 @@ export class multipleProgramUniqueAttributes1664464981314
       `ALTER TABLE "121-service"."program_custom_attribute" ADD CONSTRAINT "programCustomAttributeUnique" UNIQUE ("name", "programId")`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."fsp_attribute" ADD CONSTRAINT "financialServiceProviderAttributeUnique" UNIQUE ("name", "fspId")`,
+      `ALTER TABLE "121-service"."fsp_attribute" ADD CONSTRAINT "fspQuestionUnique" UNIQUE ("name", "fspId")`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_question" ADD CONSTRAINT "FK_b34adfcf6ebd3c2536d35dfbf6c" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,

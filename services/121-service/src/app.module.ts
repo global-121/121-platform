@@ -15,7 +15,7 @@ import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
-import { FinancialServiceProvidersModule } from './financial-service-providers/financial-service-providers.module';
+import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
@@ -51,7 +51,7 @@ import { UserModule } from './user/user.module';
     ScriptsModule,
     ActionModule,
     PeopleAffectedModule,
-    FinancialServiceProvidersModule,
+    FspModule,
     InstanceModule,
     RegistrationsModule,
     MessageModule,
