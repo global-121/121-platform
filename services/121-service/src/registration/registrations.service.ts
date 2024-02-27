@@ -136,7 +136,7 @@ export class RegistrationsService {
     postData: CreateRegistrationDto,
     programId: number,
     userId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     const user = await this.findUserOrThrow(userId);
     const registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
@@ -151,16 +151,30 @@ export class RegistrationsService {
     );
   }
 
-  public async setRegistrationStatus(
+  private async setRegistrationStatus(
     referenceId: string,
     status: RegistrationStatusEnum,
-  ): Promise<RegistrationEntity> {
-    const registrationToUpdate =
-      await this.getRegistrationFromReferenceId(referenceId);
-    if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
-      registrationToUpdate.registrationStatus = status;
-      return await this.registrationUtilsService.save(registrationToUpdate);
-    }
+  ): Promise<RegistrationViewEntity> {
+    const registrationBeforeUpdate =
+      await this.registrationViewScopedRepository.findOne({
+        where: { referenceId: referenceId },
+        select: ['id', 'status'],
+      });
+    await this.registrationScopedRepository.updateUnscoped(
+      { referenceId: referenceId },
+      { registrationStatus: status },
+    );
+    const registrationAfterUpdate =
+      await this.registrationViewScopedRepository.findOne({
+        where: { referenceId: referenceId },
+        select: ['id', 'status'],
+      });
+    await this.eventsService.log(
+      registrationBeforeUpdate,
+      registrationAfterUpdate,
+      { registrationAttributes: ['status'] },
+    );
+    return registrationAfterUpdate;
   }
 
   public canChangeStatus(
@@ -899,7 +913,7 @@ export class RegistrationsService {
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
       await this.eventsService.log(oldViewRegistration, newRegistration, {
-        reason: updateRegistrationDto.reason,
+        additionalLogAttributes: { reason: updateRegistrationDto.reason },
       });
     }
     return newRegistration;
@@ -1263,7 +1277,7 @@ export class RegistrationsService {
 
     // Log change
     await this.eventsService.log(oldViewRegistration, newViewRegistration, {
-      reason: 'Financial service provider change',
+      additionalLogAttributes: { reason: 'Financial service provider change' },
     });
 
     return newViewRegistration;

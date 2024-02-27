@@ -154,11 +154,9 @@ describe('EventsService', () => {
     const additionalAttributeObject = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.log(
-      oldViewRegistration,
-      newViewRegistration,
-      additionalAttributeObject,
-    );
+    await eventsService.log(oldViewRegistration, newViewRegistration, {
+      additionalLogAttributes: additionalAttributeObject,
+    });
 
     // Assert
     expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);

@@ -102,7 +102,7 @@ export class RegistrationsController {
     @Body() createRegistrationDto: CreateRegistrationDto,
     @Param('programId') programId,
     @User('id') userId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
