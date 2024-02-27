@@ -390,14 +390,58 @@ export class ProgramService {
     programId: number,
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
+    const program = await this.findOne(programId);
 
-    for (const attribute in updateProgramDto) {
-      program[attribute] = updateProgramDto[attribute];
+    // If nothing to update, raise a 400 Bad Request.
+    if (Object.keys(updateProgramDto).length === 0) {
+      throw new HttpException(
+        'Update program error: no attributes supplied to update',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    await this.programRepository.save(program);
-    return program;
+    // Overwrite any non-nested attributes of the program with the new supplued values.
+    for (const attribute in updateProgramDto) {
+      // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
+      if (attribute !== 'financialServiceProviders') {
+        program[attribute] = updateProgramDto[attribute];
+      }
+    }
+
+    // Add newly supplied FSPs to the program.
+    if (updateProgramDto.financialServiceProviders) {
+      for (const fspItem of updateProgramDto.financialServiceProviders) {
+        if (
+          !program.financialServiceProviders.some(
+            (fsp) => fsp.fsp === fspItem.fsp,
+          )
+        ) {
+          const fsp = await this.financialServiceProviderRepository.findOne({
+            where: { fsp: fspItem.fsp },
+          });
+          if (!fsp) {
+            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
+            throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+          }
+          program.financialServiceProviders.push(fsp);
+        }
+      }
+    }
+
+    let savedProgram: ProgramEntity;
+    try {
+      savedProgram = await this.programRepository.save(program);
+    } catch (err) {
+      console.log('Error updating program ', err);
+      throw new HttpException(
+        'Error updating program',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    // TODO: REFACTOR: use respone DTO
+    return savedProgram;
   }
 
   public async findProgramOrThrow(programId): Promise<ProgramEntity> {

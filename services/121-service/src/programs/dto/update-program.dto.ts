@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsDateString,
   IsEnum,
@@ -7,8 +9,11 @@ import {
   IsOptional,
   IsString,
   Length,
+  ValidateNested,
 } from 'class-validator';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
+import { SetFspDto } from './create-program.dto';
 
 export class UpdateProgramDto {
   @ApiProperty({
@@ -79,6 +84,24 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
+
+  @ApiProperty({
+    example: [
+      {
+        fsp: FspName.intersolveVoucherWhatsapp,
+      },
+      {
+        fsp: FspName.intersolveVoucherPaper,
+      },
+    ],
+    description:
+      'Use the GET /api/financial-service-providers endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. Existing FSPs are not removed from a program. Program-fsp-config is not processed. Use specific POST/PUT endpoints for that.',
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => SetFspDto) // TODO: SetFspDto is now imported from create-program.dto.ts, is that correct? Or put SetFspDto definition in a separate file?
+  public readonly financialServiceProviders: SetFspDto[];
 
   @ApiProperty()
   @IsOptional()

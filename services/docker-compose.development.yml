@@ -16,10 +16,12 @@ services:
   121-service:
     build:
       target: development
+    ports:
+      - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
+      - '9229:9229'
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
-
   mock-service:
     build:
       target: development
