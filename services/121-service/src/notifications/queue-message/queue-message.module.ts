@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramAttributesModule } from '../../program-attributes/program-attributes.module';
+import { RegistrationDataModule } from '../../registration/modules/registration-data/registration-data.module';
 import { QueueNameCreateMessage } from '../enum/queue.names.enum';
 import { MessageTemplateEntity } from '../message-template/message-template.entity';
 import { QueueMessageService } from './queue-message.service';
@@ -10,6 +11,7 @@ import { QueueMessageService } from './queue-message.service';
   imports: [
     TypeOrmModule.forFeature([MessageTemplateEntity]),
     ProgramAttributesModule,
+    RegistrationDataModule,
     BullModule.registerQueue({
       name: QueueNameCreateMessage.replyOnIncoming,
       processors: [

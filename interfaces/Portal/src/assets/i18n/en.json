@@ -678,6 +678,9 @@
           "old": "Old: ",
           "reason": "Reason: "
         },
+        "fsp-change": {
+          "label": "Financial service provider change"
+        },
         "note": {
           "label": "Note"
         },

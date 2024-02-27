@@ -8,8 +8,10 @@ import { RedisModule } from '../../../payments/redis.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../../../programs/program-aidworker.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
+import { RegistrationUtilsModule } from '../../../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { UserModule } from '../../../user/user.module';
 import { createScopedRepositoryProvider } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { SoapService } from '../../../utils/soap/soap.service';
@@ -46,6 +48,8 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
     TransactionsModule,
     QueueMessageModule,
     MessageTemplateModule,
+    RegistrationDataModule,
+    RegistrationUtilsModule,
     BullModule.registerQueue({
       name: QueueNamePayment.paymentIntersolveVoucher,
       processors: [
@@ -56,13 +60,6 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
-      },
-      defaultJobOptions: {
-        attempts: 2,
-        backoff: {
-          type: 'fixed',
-          delay: 3000,
-        },
       },
     }),
     RedisModule,

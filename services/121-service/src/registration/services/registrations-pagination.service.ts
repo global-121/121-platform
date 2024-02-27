@@ -34,8 +34,8 @@ import { CustomDataAttributes } from '../enum/custom-data-attributes';
 import { PaymentFilterEnum } from '../enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationViewScopedRepository } from '../registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration-view.entity';
+import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
 
 interface Filter {
   comparator: FilterComparator;

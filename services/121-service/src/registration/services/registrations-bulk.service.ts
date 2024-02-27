@@ -26,12 +26,10 @@ import { BulkActionResultDto } from '../dto/bulk-action-result.dto';
 import { MessageSizeType as MessageSizeTypeDto } from '../dto/message-size-type.dto';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationDataEntity } from '../registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from '../registration-scoped.repository';
 import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationsService } from '../registrations.service';
+import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
 import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
+import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -48,15 +49,14 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
-import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
+import { RegistrationDataService } from './modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from './registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
+import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import {
   ImportType,
@@ -85,16 +85,17 @@ export class RegistrationsService {
     private readonly queueMessageService: QueueMessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationDataService: RegistrationDataService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
+    private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
     private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationChangeLogEntity))
-    private registrationChangeLogScopedRepo: ScopedRepository<RegistrationChangeLogEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
@@ -109,7 +110,6 @@ export class RegistrationsService {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ referenceId: referenceId });
-
     const paginateResult =
       await this.registrationsPaginationService.getPaginate(
         { path: '' },
@@ -144,7 +144,7 @@ export class RegistrationsService {
     registration.program = await this.programRepository.findOneBy({
       id: programId,
     });
-    await registration.save();
+    await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.startedRegistration,
@@ -159,7 +159,7 @@ export class RegistrationsService {
       await this.getRegistrationFromReferenceId(referenceId);
     if (this.canChangeStatus(registrationToUpdate.registrationStatus, status)) {
       registrationToUpdate.registrationStatus = status;
-      return await this.registrationScopedRepository.save(registrationToUpdate);
+      return await this.registrationUtilsService.save(registrationToUpdate);
     }
   }
 
@@ -283,7 +283,6 @@ export class RegistrationsService {
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
     programId: number,
-    userId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -300,15 +299,10 @@ export class RegistrationsService {
       if (programQuestion) {
         const data = {};
         data[answer.programQuestionName] = answer.programAnswer;
-        await this.updateRegistration(
-          programId,
-          referenceId,
-          {
-            data,
-            reason: 'Changed from field validation app.',
-          },
-          userId,
-        );
+        await this.updateRegistration(programId, referenceId, {
+          data,
+          reason: 'Changed from field validation app.',
+        });
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -363,7 +357,7 @@ export class RegistrationsService {
     );
     if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
       registration.phoneNumber = phoneAnswer.programAnswer;
-      await this.registrationScopedRepository.save(registration);
+      await this.registrationUtilsService.save(registration);
     }
   }
 
@@ -377,7 +371,7 @@ export class RegistrationsService {
       relations: ['questions'],
     });
     registration.fsp = fsp;
-    return await this.registrationScopedRepository.save(registration);
+    return await this.registrationUtilsService.save(registration);
   }
 
   public async addRegistrationDataBulk(
@@ -406,9 +400,13 @@ export class RegistrationsService {
       customDataValueRaw,
       registration.programId,
     );
-    return await registration.saveData(customDataValue, {
-      name: customDataKey,
-    });
+    return await this.registrationDataService.saveData(
+      registration,
+      customDataValue,
+      {
+        name: customDataKey,
+      },
+    );
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -493,7 +491,7 @@ export class RegistrationsService {
         currentRegistration.phoneNumber = sanitizedPhoneNr;
       }
       currentRegistration.preferredLanguage = preferredLanguage;
-      await this.registrationScopedRepository.save(currentRegistration);
+      await this.registrationUtilsService.save(currentRegistration);
       return;
     }
 
@@ -501,9 +499,11 @@ export class RegistrationsService {
     const oldFsp = importedRegistration.fsp;
     if (oldFsp) {
       for (const attribute of oldFsp?.questions) {
-        const regData = await importedRegistration.getRegistrationDataByName(
-          attribute.name,
-        );
+        const regData =
+          await this.registrationDataService.getRegistrationDataByName(
+            importedRegistration,
+            attribute.name,
+          );
         await this.registrationDataScopedRepository.deleteUnscoped({
           id: regData.id,
         });
@@ -522,7 +522,11 @@ export class RegistrationsService {
       relation.programQuestionId = d.programQuestionId;
       relation.monitoringQuestionId = d.monitoringQuestionId;
       relation.programCustomAttributeId = d.programCustomAttributeId;
-      await currentRegistration.saveData(d.value, { relation });
+      await this.registrationDataService.saveData(
+        currentRegistration,
+        d.value,
+        { relation },
+      );
       await this.registrationDataScopedRepository.remove(d);
     }
     currentRegistration.paymentAmountMultiplier =
@@ -551,7 +555,7 @@ export class RegistrationsService {
 
     // .. and save the updated import-registration
     const updatedRegistration =
-      await this.registrationScopedRepository.save(currentRegistration);
+      await this.registrationUtilsService.save(currentRegistration);
 
     // .. and update the try whatsapp entity
     const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
@@ -863,40 +867,42 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
-    userId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     const partialRegistration = updateRegistrationDto.data;
-    let registration = await this.getRegistrationFromReferenceId(
+    let registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
       programId,
     );
 
+    const oldViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(referenceId, programId);
+
+    let nrAttributesUpdated = 0;
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue =
-        await registration.getRegistrationValueByName(attributeKey);
+      const oldValue = oldViewRegistration[attributeKey];
       const attributeValue = partialRegistration[attributeKey];
-      registration = await this.updateAttribute(
+      registrationToUpdate = await this.updateAttribute(
         attributeKey,
         attributeValue,
-        registration,
+        registrationToUpdate,
       );
-      const newValue =
-        await registration.getRegistrationValueByName(attributeKey);
+      const newValue = registrationToUpdate[attributeKey];
       if (String(oldValue) !== String(newValue)) {
-        const registrationChangeLog = new RegistrationChangeLogEntity();
-        registrationChangeLog.registration = registration;
-        registrationChangeLog.userId = userId;
-        registrationChangeLog.fieldName = attributeKey;
-        registrationChangeLog.oldValue = oldValue;
-        registrationChangeLog.newValue = newValue;
-        registrationChangeLog.reason = updateRegistrationDto.reason;
-
-        await this.registrationChangeLogScopedRepo.save(registrationChangeLog);
+        nrAttributesUpdated++;
       }
     }
-    await this.inclusionScoreService.calculateInclusionScore(referenceId);
-    return registration;
+    const newRegistration = await this.getPaginateRegistrationForReferenceId(
+      referenceId,
+      programId,
+    );
+    if (nrAttributesUpdated > 0) {
+      await this.inclusionScoreService.calculateInclusionScore(referenceId);
+      await this.eventsService.log(oldViewRegistration, newRegistration, {
+        reason: updateRegistrationDto.reason,
+      });
+    }
+    return newRegistration;
   }
 
   private async updateAttribute(
@@ -926,19 +932,21 @@ export class RegistrationsService {
       )
     ) {
       try {
-        await registration.saveData(value, { name: attribute });
+        await this.registrationDataService.saveData(registration, value, {
+          name: attribute,
+        });
       } catch (error) {
         // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
         if (attribute === Attributes.phoneNumber) {
           registration.phoneNumber = value.toString();
-          await this.registrationScopedRepository.save(registration);
+          await this.registrationUtilsService.save(registration);
         } else {
           throw error;
         }
       }
     }
     const savedRegistration =
-      await this.registrationScopedRepository.save(registration);
+      await this.registrationUtilsService.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         registration.program,
@@ -1169,7 +1177,7 @@ export class RegistrationsService {
     referenceId: string,
     newFspName: FspName,
     newFspAttributesRaw: object,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationViewEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
       where: { fsp: newFspName },
@@ -1214,12 +1222,21 @@ export class RegistrationsService {
       );
     }
 
+    // Get old registration to log
+    const oldViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(
+        referenceId,
+        registration.programId,
+      );
+
     // Remove old attributes
     const oldFsp = registration.fsp;
     for (const attribute of oldFsp?.questions) {
-      const regData = await registration.getRegistrationDataByName(
-        attribute.name,
-      );
+      const regData =
+        await this.registrationDataService.getRegistrationDataByName(
+          registration,
+          attribute.name,
+        );
       await this.registrationDataScopedRepository.deleteUnscoped({
         id: regData.id,
       });
@@ -1236,6 +1253,14 @@ export class RegistrationsService {
         newFspAttributes[attribute.name],
       );
     }
+    await this.registrationUtilsService.save(updatedRegistration);
+
+    const newViewRegistration =
+      await this.getPaginateRegistrationForReferenceId(
+        referenceId,
+        registration.programId,
+      );
+
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
       await this.syncUpdatesWithThirdParties(
         updatedRegistration,
@@ -1243,7 +1268,12 @@ export class RegistrationsService {
       );
     }
 
-    return await this.registrationScopedRepository.save(updatedRegistration);
+    // Log change
+    await this.eventsService.log(oldViewRegistration, newViewRegistration, {
+      reason: 'Financial service provider change',
+    });
+
+    return newViewRegistration;
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
@@ -1410,13 +1440,11 @@ export class RegistrationsService {
   public async issueValidation(
     payload: ValidationIssueDataDto,
     programId: number,
-    userId: number,
   ): Promise<void> {
     await this.storeProgramAnswers(
       payload.referenceId,
       payload.programAnswers,
       programId,
-      userId,
     );
     await this.setRegistrationStatus(
       payload.referenceId,

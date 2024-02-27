@@ -348,3 +348,44 @@ export async function seedIncludedRegistrations(
     accessToken,
   );
 }
+
+export async function getEvents(
+  programId: number,
+  fromDate?: string,
+  toDate?: string,
+  referenceId?: string,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  const queryParams = {};
+
+  if (fromDate) {
+    queryParams['fromDate'] = fromDate;
+  }
+
+  if (toDate) {
+    queryParams['toDate'] = toDate;
+  }
+
+  if (referenceId) {
+    queryParams['referenceId'] = referenceId;
+  }
+
+  return getServer()
+    .get(`/programs/${programId}/events`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send();
+}
+
+export async function getRegistrationEvents(
+  programId: number,
+  registrationId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/registrations/${registrationId}/events`)
+    .set('Cookie', [accessToken])
+    .send();
+}

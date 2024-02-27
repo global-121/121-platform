@@ -12,6 +12,7 @@ import { QueueMessageService } from '../../../../notifications/queue-message/que
 import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../../programs/program.entity';
 import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '../../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../../../registration/registration.entity';
 import { TransactionEntity } from '../../../transactions/transaction.entity';
 import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service';
@@ -40,6 +41,7 @@ export class IntersolveVoucherCronService {
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly registrationDataService: RegistrationDataService,
   ) {}
 
   public async cacheUnusedVouchers(): Promise<void> {
@@ -162,9 +164,11 @@ export class IntersolveVoucherCronService {
           where: { referenceId: referenceId },
           relations: ['program'],
         });
-        const fromNumber = await registration.getRegistrationDataValueByName(
-          CustomDataAttributes.whatsappPhoneNumber,
-        );
+        const fromNumber =
+          await this.registrationDataService.getRegistrationDataValueByName(
+            registration,
+            CustomDataAttributes.whatsappPhoneNumber,
+          );
         if (!fromNumber) {
           // This can represent the case where a PA was switched from AH-voucher-whatsapp to AH-voucher-paper. But also otherwise it makes no sense to continue.
           console.log(

@@ -11,7 +11,6 @@ export enum ExportType {
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
   cardBalances = 'card-balances',
-  paDataChanges = 'pa-data-changes',
 }
 
 export class ExportDetailsQueryParamsDto {
