@@ -2,9 +2,9 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
+import { FinancialServiceProvidersModule } from '../financial-service-providers/financial-service-providers.module';
 import { NoteEntity } from '../notes/note.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
@@ -52,7 +52,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
       ProgramEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
-      FspQuestionEntity,
+      FinancialServiceProviderAttributeEntity,
       TryWhatsappEntity,
       ProgramCustomAttributeEntity,
       RegistrationEntity,
@@ -66,7 +66,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     LookupModule,
     ActionModule,
     ProgramModule,
-    FspModule,
+    FinancialServiceProvidersModule,
     QueueMessageModule,
     IntersolveVisaModule,
     RegistrationChangeLogModule,

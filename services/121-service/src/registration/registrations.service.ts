@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
+import { AnswerSet, FspAnswersAttrInterface } from '../financial-service-providers/financial-service-provider-interface';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -20,7 +20,7 @@ import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -74,8 +74,8 @@ export class RegistrationsService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(FinancialServiceProviderAttributeEntity)
+  private readonly fspAttributeRepository: Repository<FinancialServiceProviderAttributeEntity>;
   // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
@@ -759,8 +759,8 @@ export class RegistrationsService {
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect('fsp.fsp', 'fsp')
-      .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
+      .addSelect('fsp.name', 'fsp')
+      .addSelect('fsp.nameDisplayNamePortal', 'displayNamePortal')
       .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
@@ -1167,12 +1167,12 @@ export class RegistrationsService {
 
   public async updateChosenFsp(
     referenceId: string,
-    newFspName: FspName,
+    newFspName: FinancialServiceProviderName,
     newFspAttributesRaw: object,
   ): Promise<RegistrationEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
-      where: { fsp: newFspName },
+      where: { name: newFspName },
       relations: ['questions'],
     });
     if (!newFsp) {

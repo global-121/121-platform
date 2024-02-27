@@ -2,7 +2,7 @@ import fs from 'fs';
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../src/financial-service-providers/financial-service-provider-attribute.entity';
 import { ProgramQuestionEntity } from './../src/programs/program-question.entity';
 
 export class PhasesAndEditableProperties1654693178991
@@ -116,7 +116,7 @@ export class PhasesAndEditableProperties1654693178991
         }
       }
 
-      const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
+      const fspAttributeRepo = manager.getRepository(FinancialServiceProviderAttributeEntity);
 
       const fspAttributes = await fspAttributeRepo
         .createQueryBuilder('fspAttribute')

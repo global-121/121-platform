@@ -9,7 +9,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
@@ -23,7 +23,7 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
-const fspArray = Object.values(FspName).map((item) => String(item));
+const fspArray = Object.values(FinancialServiceProviderName).map((item) => String(item));
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
@@ -86,7 +86,7 @@ export class ImportRegistrationsDto extends BulkImportDto {
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
-  public fspName: FspName;
+  public fspName: FinancialServiceProviderName;
 
   @ApiProperty()
   @IsOptional()

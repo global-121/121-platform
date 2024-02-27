@@ -1,14 +1,14 @@
 {
   "fsp": "bank_a",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayNamePaApp": {
     "ar": "البنك أ",
     "en": "Bank A",
     "es": "Banco A",
     "fr": "Banque A",
     "nl": "Bank A"
   },
-  "fspDisplayNamePortal": {
+  "displayNamePortal": {
     "ar": "البنك أ",
     "en": "Bank A",
     "es": "Banco A",

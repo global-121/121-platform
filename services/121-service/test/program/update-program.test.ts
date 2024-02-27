@@ -57,7 +57,7 @@ describe.only('Update program', () => {
 
     // Assert
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    const hasSpecificKeyValue = updateProgramResponse.body.financialServiceProviders.some(fsp => fsp.fsp === FspName.excel);
+    const hasSpecificKeyValue = updateProgramResponse.body.financialServiceProviders.some(fsp => fsp.name === FspName.excel);
     expect(hasSpecificKeyValue).toBeTruthy();
   });
 

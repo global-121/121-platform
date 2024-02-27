@@ -2,7 +2,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -22,7 +22,7 @@ describe('ProgramAttributesService', () => {
     ProgramQuestionEntity,
   );
   const fspQuestionToken: string | Function =
-    getRepositoryToken(FspQuestionEntity);
+    getRepositoryToken(FinancialServiceProviderAttributeEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

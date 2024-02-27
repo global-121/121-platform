@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { In, Repository } from 'typeorm';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderAttributeEntity } from '../financial-service-providers/financial-service-provider-attribute.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -24,8 +24,8 @@ export class ProgramAttributesService {
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
   private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(FinancialServiceProviderAttributeEntity)
+  private readonly fspQuestionRepository: Repository<FinancialServiceProviderAttributeEntity>;
 
   public getFilterableAttributes(
     program: ProgramEntity,
@@ -38,7 +38,7 @@ export class ProgramAttributesService {
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'fspDisplayNamePortal',
+      'displayNamePortal',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
@@ -164,7 +164,7 @@ export class ProgramAttributesService {
         label: null,
       },
       {
-        name: 'fspDisplayNamePortal',
+        name: 'displayNamePortal',
         type: 'text',
         label: null,
       },

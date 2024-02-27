@@ -14,18 +14,18 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../guards/admin.decorator';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
-import { AdminAuthGuard } from './../../guards/admin.guard';
-import { PermissionsGuard } from './../../guards/permissions.guard';
-import { ProgramFspConfigurationService } from './fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
+import { AdminAuthGuard } from '../../guards/admin.guard';
+import { PermissionsGuard } from '../../guards/permissions.guard';
+import { ProgramFinancialServiceProviderConfigurationsService } from './financial-service-provider-configurations.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from './program-financial-service-provider-configuration.entity';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
-export class ProgramFspConfigurationController {
-  private readonly programFspConfigurationService: ProgramFspConfigurationService;
+export class ProgramFinancialServiceProviderConfigurationsController {
+  private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService;
   public constructor(
-    programFspConfigurationService: ProgramFspConfigurationService,
+    programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
   ) {
     this.programFspConfigurationService = programFspConfigurationService;
   }
@@ -42,7 +42,7 @@ export class ProgramFspConfigurationController {
   @Get(':programId/fsp-configuration')
   public async findByProgramId(
     @Param() params,
-  ): Promise<ProgramFspConfigurationEntity[]> {
+  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     if (isNaN(params.programId)) {
       throw new HttpException(
         'Program ID is not a number',

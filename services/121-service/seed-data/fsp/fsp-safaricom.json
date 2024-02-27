@@ -1,10 +1,10 @@
 {
   "fsp": "Safaricom",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayNamePaApp": {
     "en": "Safaricom"
   },
-  "fspDisplayNamePortal": "Safaricom",
+  "displayNamePortal": "Safaricom",
   "questions": [
     {
       "name": "phoneNumber",

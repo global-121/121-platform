@@ -1,9 +1,9 @@
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class PaPaymentDataDto {
   public referenceId: string;
   public paymentAddress: string;
-  public fspName: FspName;
+  public fspName: FinancialServiceProviderName;
   public transactionAmount: number;
   public bulkSize: number;
   public userId: number;

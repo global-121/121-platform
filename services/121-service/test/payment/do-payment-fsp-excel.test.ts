@@ -121,7 +121,7 @@ describe('Download FSP instructions', () => {
   it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
     // Arrange
     const configValue = programTest.financialServiceProviders
-      .find((fsp) => fsp.fsp === FspName.excel)
+      .find((fsp) => fsp.name === FspName.excel)
       .configuration.find(
         (c) => c.name === FspConfigurationEnum.columnsToExport,
       );

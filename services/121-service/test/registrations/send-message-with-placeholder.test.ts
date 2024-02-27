@@ -35,7 +35,7 @@ describe('Send custom message with placeholders', () => {
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayNamePortal}} and {{fullName}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{displayNamePortal}} and {{fullName}}';
 
     // Act
     await sendMessage(
@@ -70,8 +70,8 @@ describe('Send custom message with placeholders', () => {
       String(registrationAh.paymentAmountMultiplier),
     );
     processedMessage = processedMessage.replace(
-      new RegExp('{{fspDisplayNamePortal}}', 'g'),
-      fspIntersolveJson.fspDisplayNamePortal,
+      new RegExp('{{displayNamePortal}}', 'g'),
+      fspIntersolveJson.displayNamePortal,
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),

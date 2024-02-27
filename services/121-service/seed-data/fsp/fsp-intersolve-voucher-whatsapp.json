@@ -1,7 +1,7 @@
 {
   "fsp": "Intersolve-voucher-whatsapp",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayNamePaApp": {
     "ar": "ارسل قسيمة السوبرماركت إلى رقمي على واتس آب",
     "en": "Send supermarket voucher to my WhatsApp",
     "es": "Enviar recibo del supermercado a mi WhatsApp",
@@ -11,7 +11,7 @@
     "in": "Kirim voucher supermarket ke WhatsApp",
     "fr": "Envoyez-moi le bon de supermarché à mon numéro WhatsApp"
   },
-  "fspDisplayNamePortal": "Albert Heijn voucher WhatsApp",
+  "displayNamePortal": "Albert Heijn voucher WhatsApp",
   "questions": [
     {
       "name": "whatsappPhoneNumber",
