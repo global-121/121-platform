@@ -393,7 +393,13 @@ export class ProgramService {
     // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
     const program = await this.findOne(programId);
 
-    // TODO: REFACTOR: When updateProgramDto is empty, it should return successfully. Now it response with a 500 internal server error.
+    // If nothing to update, raise a 400 Bad Request.
+    if (Object.keys(updateProgramDto).length === 0) {
+      throw new HttpException(
+        'Update program error: no attributes supplied to update',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
@@ -416,7 +422,7 @@ export class ProgramService {
           });
           if (!fsp) {
             const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
-            throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+            throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
           }
           program.financialServiceProviders.push(fsp);
         }
