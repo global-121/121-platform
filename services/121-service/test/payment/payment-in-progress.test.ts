@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { registrationsPV } from '../fixtures/scoped-registrations';
 import {
@@ -25,14 +26,21 @@ describe('Payment in progress', () => {
   });
 
   it('should not be in progress after payment', async () => {
-    const accessToken = await getAccessToken();
     // Arrange
+    const accessToken = await getAccessToken();
     const paymentNr = 1;
+    const paymentAmount = 25;
+    const filterAllIncluded = { 'filter.status': '$in:included' };
 
     // We do a payment here and wait for it to complete
-    await doPayment(PvProgramId, paymentNr, 25, [], accessToken, {
-      'filter.status': '$in:included',
-    });
+    await doPayment(
+      PvProgramId,
+      paymentNr,
+      paymentAmount,
+      [],
+      accessToken,
+      filterAllIncluded,
+    );
     await waitForPaymentTransactionsToComplete(
       programIdPV,
       registrationsPV.map((r) => r.referenceId),
@@ -51,22 +59,18 @@ describe('Payment in progress', () => {
     const doPaymentPvResultPaymentNext = await doPayment(
       PvProgramId,
       paymentNr + 1,
-      25,
+      paymentAmount,
       [],
       accessToken,
-      {
-        'filter.status': '$in:included',
-      },
+      filterAllIncluded,
     );
     const doPaymentOcwResultPaymentNext = await doPayment(
       OcwProgramId,
       paymentNr,
-      25,
+      paymentAmount,
       [],
       accessToken,
-      {
-        'filter.status': '$in:included',
-      },
+      filterAllIncluded,
     );
 
     // Assert
@@ -75,19 +79,26 @@ describe('Payment in progress', () => {
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
     // Should not be possible to do a payment if there is a payment in progress for the program
-    expect(doPaymentPvResultPaymentNext.status).toBe(202);
-    expect(doPaymentOcwResultPaymentNext.status).toBe(202);
+    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
   });
 
   it('should be in progress for program during payment', async () => {
-    const accessToken = await getAccessToken();
     // Arrange
+    const accessToken = await getAccessToken();
     const paymentNr = 1;
+    const paymentAmount = 25;
+    const filterAllIncluded = { 'filter.status': '$in:included' };
 
     // We do a payment here but we do not wait for all transactions to complete
-    await doPayment(PvProgramId, paymentNr, 25, [], accessToken, {
-      'filter.status': '$in:included',
-    });
+    await doPayment(
+      PvProgramId,
+      paymentNr,
+      paymentAmount,
+      [],
+      accessToken,
+      filterAllIncluded,
+    );
 
     // Act
     const getProgramPaymentsPvResult = (
@@ -99,32 +110,27 @@ describe('Payment in progress', () => {
     const doPaymentPvResultCurrent = await doPayment(
       PvProgramId,
       paymentNr,
-      25,
+      paymentAmount,
       [],
       accessToken,
-      {
-        'filter.status': '$in:included',
-      },
+      filterAllIncluded,
     );
+
     const doPaymentPvResultPaymentNext = await doPayment(
       PvProgramId,
       paymentNr + 1,
-      25,
+      paymentAmount,
       [],
       accessToken,
-      {
-        'filter.status': '$in:included',
-      },
+      filterAllIncluded,
     );
     const doPaymentOcwResultPaymentNext = await doPayment(
       OcwProgramId,
       paymentNr,
-      25,
+      paymentAmount,
       [],
       accessToken,
-      {
-        'filter.status': '$in:included',
-      },
+      filterAllIncluded,
     );
     const retryPaymentPvResult = await retryPayment(
       PvProgramId,
@@ -133,15 +139,14 @@ describe('Payment in progress', () => {
     );
 
     // Assert
-
     // PV should be in progress, OCW should not be in progress
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
     // Should not be possible to do a payment if there is a payment in progress for the program
-    expect(doPaymentPvResultCurrent.status).toBe(400);
-    expect(doPaymentPvResultPaymentNext.status).toBe(400);
-    expect(doPaymentOcwResultPaymentNext.status).toBe(202);
-    expect(retryPaymentPvResult.status).toBe(400);
+    expect(doPaymentPvResultCurrent.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
   });
 });
