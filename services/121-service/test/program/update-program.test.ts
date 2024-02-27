@@ -1,13 +1,10 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
-import programEth from '../../seed-data/program/program-joint-response-dorcas.json';
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
-  assertArraysAreEqual,
   assertObjectsAreEqual,
 } from '../helpers/assert.helper';
-import { getProgram, patchProgram, postProgram } from '../helpers/program.helper';
+import { patchProgram } from '../helpers/program.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { UpdateProgramDto } from '../../src/programs/dto/update-program.dto';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
