@@ -15,9 +15,16 @@ export class FspQuestionPattern1709029353607 implements MigrationInterface {
       WHERE fa."fspId" = f.id and f.fsp = 'Intersolve-visa' and fa.name in ('addressStreet','addressPostalCode','addressCity')
       `,
     );
+
+    await queryRunner.query(
+      `UPDATE "121-service"."fsp" set "fspDisplayNamePaApp" = null where "fsp" = 'Intersolve-visa'`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `UPDATE "121-service"."fsp" set "fspDisplayNamePaApp" = '{"en": "Visa debit card"}' where "fsp" = 'Intersolve-visa'`,
+    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."fsp_attribute" DROP COLUMN "pattern"`,
     );
