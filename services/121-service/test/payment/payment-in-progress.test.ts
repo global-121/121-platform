@@ -16,13 +16,10 @@ import {
 } from '../registrations/pagination/pagination-data';
 
 describe('Payment in progress', () => {
-  const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
-
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
-    await seedIncludedRegistrations(registrationsOCW, OcwProgramId);
-    await seedIncludedRegistrations(registrationsPV, PvProgramId);
+    await seedIncludedRegistrations(registrationsOCW, programIdOCW);
+    await seedIncludedRegistrations(registrationsPV, programIdPV);
   });
 
   it('should not be in progress after payment', async () => {
@@ -34,7 +31,7 @@ describe('Payment in progress', () => {
 
     // We do a payment here and wait for it to complete
     await doPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr,
       paymentAmount,
       [],
@@ -57,7 +54,7 @@ describe('Payment in progress', () => {
     ).body;
 
     const doPaymentPvResultPaymentNext = await doPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr + 1,
       paymentAmount,
       [],
@@ -65,7 +62,7 @@ describe('Payment in progress', () => {
       filterAllIncluded,
     );
     const doPaymentOcwResultPaymentNext = await doPayment(
-      OcwProgramId,
+      programIdOCW,
       paymentNr,
       paymentAmount,
       [],
@@ -92,7 +89,7 @@ describe('Payment in progress', () => {
 
     // We do a payment here but we do not wait for all transactions to complete
     await doPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr,
       paymentAmount,
       [],
@@ -108,7 +105,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
     const doPaymentPvResultCurrent = await doPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr,
       paymentAmount,
       [],
@@ -117,7 +114,7 @@ describe('Payment in progress', () => {
     );
 
     const doPaymentPvResultPaymentNext = await doPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr + 1,
       paymentAmount,
       [],
@@ -125,7 +122,7 @@ describe('Payment in progress', () => {
       filterAllIncluded,
     );
     const doPaymentOcwResultPaymentNext = await doPayment(
-      OcwProgramId,
+      programIdOCW,
       paymentNr,
       paymentAmount,
       [],
@@ -133,7 +130,7 @@ describe('Payment in progress', () => {
       filterAllIncluded,
     );
     const retryPaymentPvResult = await retryPayment(
-      PvProgramId,
+      programIdPV,
       paymentNr,
       accessToken,
     );
