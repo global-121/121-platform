@@ -91,6 +91,32 @@ To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Dock
 
     docker exec -it 121-service  /bin/sh
 
+To start a debugger using Chrome, follow these steps:
+
+1. Add port mapping to the docker-compose.development.yml so that internal port 9229 is mapped to external port 9229. Note that all port settings from the main file are overridden.
+2. In the start:dev script in the package.json of the 121-service, add =0.0.0.0 to the -- inspect flag, so it becomes --inspect=0.0.0.0
+3. Start the services with npm run start:services.
+4. In the code of the 121 Service where you want to break, add a line with debugger;
+5. Check if the application indeed started on a debugger address 0.0.0.0 with npm run logs:services 121-services, and see something like: Debugger listening on ws://0.0.0.0:9229 02384d3e-4d1f-40ef-b8d5-be3da792fe71
+6. Open the Swagger Docs in the Chrome Web Browser: <http://localhost:3000/docs/>
+7. Open the Inspector in Chrome with CTRL-SHIFT-I or right mouse click and select Inspect. Now there should be a green hexagon on the top left of the Inspector window.
+8. Click the green hexagon item in the top left of the Inspector window (Open dedicated DevTools for Node.js).
+9. This opens a new window called DevTools. Leave it open.
+10. In the logs of the 121 Service it should say: Debugger attached.
+11. Use Swagger API to call the endpoint that will run into the code where you set the debugger; statement (see point 4 above.)
+12. The DevTools window now should show your code and Debugger functionality so you can watch variables, step over code, etc.
+13. In the left margin of the code, you can also right mouse click and for example select: continue to here.
+14. If you want to set the theme to dark, go to Settings in DevTools and under Preferences you have Theme, there select Dark. For more info: <https://stackoverflow.com/questions/20777454/google-chrome-customize-developer-tools-theme-color-schema>
+
+To start the debugger from Visual Studio Code, follow these steps:
+
+1. Probably some steps from above, starting debugger in Chrome, are also needed here, but not sure which. Maybe items 1, and 2.
+2. The contents of launch.json in the root folder of the repository enable the possibility to attach the Debugger in Visual Studio Code to the Node.js process running in the 121-service Docker container.
+3. Start the services with npm run start:services, probably need to do this from a Terminal inside Visual Studio Code.
+4. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
+5. Press the green play icon left besides the "Docker: Attach to Node" text which is selected by default in the dropdown. This attaches the Debugger.
+6. Now you can for example set a breakpoint in your code by right mouse clicking to the left of the line number and select Add breakpoint.
+
 ---
 
 ## License
