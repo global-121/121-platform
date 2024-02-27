@@ -14,6 +14,7 @@ import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
@@ -203,57 +204,86 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
     if (this.canViewPersonalData) {
       const changes =
-        await this.programsService.getRegistrationChangeLogByReferenceId(
+        await this.programsService.getRegistrationEventsByRegistrationId(
           this.program.id,
-          this.person.referenceId,
+          this.person.id,
         );
 
       for (const change of changes) {
-        const paTableAttributes = this.program.paTableAttributes || [];
-        const attribute = paTableAttributes.find(
-          (attr) => attr.name === change.fieldName,
-        );
-
-        const booleanLabel = {
-          true: this.translate.instant(
-            'page.program.program-people-affected.column.custom-attribute-true',
-          ),
-          false: this.translate.instant(
-            'page.program.program-people-affected.column.custom-attribute-false',
-          ),
-        };
-
-        let oldValue = change.oldValue ? change.oldValue : '-';
-        let newValue = change.newValue ? change.newValue : '-';
-
-        if (attribute?.type === AnswerType.Boolean) {
-          oldValue = booleanLabel[oldValue];
-          newValue = booleanLabel[newValue];
-        }
-
-        if (this.enumService.isEnumerableAttribute(change.fieldName)) {
-          oldValue = this.enumService.getEnumLabel(change.fieldName, oldValue);
-          newValue = this.enumService.getEnumLabel(change.fieldName, newValue);
-        }
-
-        const reason = change.reason || null;
-
-        const description = {
+        let oldValue = change.attributes.oldValue
+          ? change.attributes.oldValue
+          : '-';
+        let newValue = change.attributes.newValue
+          ? change.attributes.newValue
+          : '-';
+        let description = {
           oldValue,
           newValue,
-          reason,
+          reason: null,
         };
 
-        this.activityOverview.push({
-          type: RegistrationActivityType.changeData,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.label',
-          ),
-          subLabel: this.getSubLabelText(change, attribute),
-          date: new Date(change.created),
-          description,
-          user: change.user.username,
-        });
+        if (change.type === EventType.registrationDataChange) {
+          const paTableAttributes = this.program.paTableAttributes || [];
+          const attribute = paTableAttributes.find(
+            (attr) => attr.name === change.attributes.fieldName,
+          );
+
+          if (attribute?.type === AnswerType.Boolean) {
+            const booleanLabel = {
+              true: this.translate.instant(
+                'page.program.program-people-affected.column.custom-attribute-true',
+              ),
+              false: this.translate.instant(
+                'page.program.program-people-affected.column.custom-attribute-false',
+              ),
+            };
+            oldValue = booleanLabel[oldValue];
+            newValue = booleanLabel[newValue];
+          }
+
+          if (
+            this.enumService.isEnumerableAttribute(change.attributes.fieldName)
+          ) {
+            oldValue = this.enumService.getEnumLabel(
+              change.attributes.fieldName,
+              oldValue,
+            );
+            newValue = this.enumService.getEnumLabel(
+              change.attributes.fieldName,
+              newValue,
+            );
+          }
+
+          const reason = change.attributes.reason || null;
+          description = {
+            oldValue,
+            newValue,
+            reason,
+          };
+
+          this.activityOverview.push({
+            type: RegistrationActivityType.changeData,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.data-changes.label',
+            ),
+            subLabel: this.getSubLabelText(change, attribute),
+            date: new Date(change.created),
+            description,
+            user: change.user.username,
+          });
+        }
+
+        if (change.type === EventType.financialServiceProviderChange) {
+          this.activityOverview.push({
+            type: RegistrationActivityType.changeData,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.fsp-change.label',
+            ),
+            date: new Date(change.created),
+            description,
+            user: change.user.username,
+          });
+        }
       }
 
       const notes = await this.programsService.getNotes(
@@ -271,13 +301,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   }
 
   private getSubLabelText(change: any, attribute: Attribute): string {
-    const translationKey = `page.program.program-people-affected.column.${change.fieldName}`;
+    const translationKey = `page.program.program-people-affected.column.${change.attributes.fieldName}`;
     const translation = this.translate.instant(translationKey);
     return attribute?.shortLabel
       ? this.translatableString.get(attribute.shortLabel)
       : translation !== translationKey
         ? translation
-        : change.fieldName;
+        : change.attributes.fieldName;
   }
 
   private loadPermissions() {

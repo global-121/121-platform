@@ -7,7 +7,7 @@ import {
 } from '../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
-import { RegistrationScopedRepository } from '../../registration/registration-scoped.repository';
+import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
 
 @Injectable()
 export class RegistrationDataScopedQueryService {

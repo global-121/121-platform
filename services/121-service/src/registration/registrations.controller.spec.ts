@@ -6,7 +6,7 @@ import { RegistrationsController } from './registrations.controller';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
-describe('RegistrationController', () => {
+describe('RegistrationsController', () => {
   let registrationController: RegistrationsController;
   let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
   let registrationsBulkService: jest.Mocked<RegistrationsBulkService>;

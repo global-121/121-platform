@@ -657,12 +657,7 @@
       "actions": "Actions",
       "activities": {
         "data-changes": {
-          "label": "Modification des données",
-          "reason": "<br><b>Raison :</b> {{reason}}",
-          "values": "<b>Ancien</b> : {{oldValue}}<br><b>Nouveau :</b> {{newValue}}"
-        },
-        "message": {
-          "label": "Message"
+          "label": "Modification des données"
         },
         "note": {
           "label": "Note"

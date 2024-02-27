@@ -12,7 +12,8 @@ import { RegistrationDataOptions } from '../../../registration/dto/registration-
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { ErrorEnum } from '../../../registration/errors/registration-data.error';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
+import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { formatPhoneNumber } from '../../../utils/phone-number.helpers';
@@ -83,6 +84,7 @@ export class IntersolveVisaService
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
+    private readonly registrationDataService: RegistrationDataService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
@@ -300,17 +302,22 @@ export class IntersolveVisaService
     for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
       let relation;
       try {
-        relation = await registration.getRelationForName(attr);
+        relation = await this.registrationDataService.getRelationForName(
+          registration,
+          attr,
+        );
       } catch (error) {
-        // If a program does not have firstName and lastName: skip firstName and use fullName as lastname
+        // If a program does not have lastName: use fullName instead
         if (
           error.name === ErrorEnum.RegistrationDataError &&
           attr === IntersolveVisaPaymentInfoEnum.lastName
         ) {
-          relation = await registration.getRelationForName(
+          relation = await this.registrationDataService.getRelationForName(
+            registration,
             IntersolveVisaPaymentInfoEnumBackupName.fullName,
           );
         } else if (
+          // If a program does not have firstName: ignore and continue
           error.name === ErrorEnum.RegistrationDataError &&
           attr === IntersolveVisaPaymentInfoEnum.firstName
         ) {

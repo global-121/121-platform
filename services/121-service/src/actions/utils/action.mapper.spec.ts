@@ -22,7 +22,6 @@ describe('Action mapper', () => {
       actions: [],
       registrations: [],
       personAffectedAppData: [],
-      changes: [],
       notes: [],
       userType: UserType.aidWorker,
       admin: false,

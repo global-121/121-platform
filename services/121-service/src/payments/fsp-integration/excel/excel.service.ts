@@ -293,7 +293,9 @@ export class ExcelService
     paTransactionResult.referenceId = registrationWithAmount.referenceId;
     paTransactionResult.registrationId = registrationWithAmount.id;
     paTransactionResult.fspName = FspName.excel;
-    paTransactionResult.status = importResponseRecord[this.statusColumnName];
+    paTransactionResult.status = importResponseRecord[
+      this.statusColumnName
+    ]?.toLowerCase() as StatusEnum;
     paTransactionResult.calculatedAmount = registrationWithAmount.amount;
     return paTransactionResult;
   }

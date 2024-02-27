@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
+import { Event } from '../models/event.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
@@ -20,7 +21,6 @@ import {
   ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
-import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { RegistrationStatusChange } from '../models/registration-status-change.model';
 import {
   PaymentSummary,
@@ -516,6 +516,19 @@ export class ProgramsServiceApiService {
         );
       }
     }
+    if (type === ExportType.paDataChanges) {
+      return this.apiService
+        .get(
+          environment.url_121_service_api,
+          `/programs/${programId}/events`,
+          false,
+          true,
+          params,
+        )
+        .then((response) => {
+          return response;
+        });
+    }
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -944,13 +957,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-  async getRegistrationChangeLogByReferenceId(
+  async getRegistrationEventsByRegistrationId(
     programId: number,
-    referenceId: string,
-  ): Promise<RegistrationChangeLog[]> {
+    registrationId: number,
+  ): Promise<Event[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
+      `/programs/${programId}/registrations/${registrationId}/events`,
     );
   }
 
