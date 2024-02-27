@@ -1,7 +1,6 @@
-import * as jwt from 'jsonwebtoken';
+import { verifyToken } from '../guards/guard.helper';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
-import { UserToken } from './user.interface';
 
 export function getUserIdFromRequest(attributeName: string, req: any): any {
   // A request is typed as any from the NestJS framework
@@ -32,10 +31,7 @@ export function getUserIdFromRequest(attributeName: string, req: any): any {
   }
 
   if (token) {
-    const decoded = jwt.verify(
-      token,
-      process.env.SECRETS_121_SERVICE_SECRET,
-    ) as UserToken;
-    return !!attributeName ? decoded[attributeName] : decoded;
+    const decoded = verifyToken(token);
+    return !!attributeName ? decoded?.[attributeName] : decoded;
   }
 }

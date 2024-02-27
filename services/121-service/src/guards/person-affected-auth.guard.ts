@@ -6,13 +6,12 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import * as jwt from 'jsonwebtoken';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
-import { UserToken } from '../user/user.interface';
 import { UserService } from '../user/user.service';
+import { verifyToken } from './guard.helper';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {
@@ -40,10 +39,10 @@ export class PersonAffectedAuthGuard implements CanActivate {
       endpointPersonAffectedAuth.length === 0
     ) {
       const token = request.cookies[CookieNames.paApp];
-      const decoded = jwt.verify(
-        token,
-        process.env.SECRETS_121_SERVICE_SECRET,
-      ) as UserToken;
+      const decoded = verifyToken(token);
+      if (!decoded?.id) {
+        return false;
+      }
       const user = await this.userService.findById(decoded.id);
       if (user.userType === UserType.personAffected) {
         hasAccess = await this.personAffectedCanActivate(user, request);

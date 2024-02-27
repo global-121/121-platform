@@ -8,7 +8,6 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import CookieError from '../enums/cookie-error.enum';
 import InterfaceName from '../enums/interface-names.enum';
 import { User } from '../models/user.model';
 
@@ -276,10 +275,6 @@ export class ApiService {
       return of(error);
     }
     if (error.status === 401) {
-      if (error.error.message === CookieError.oldOrNo) {
-        localStorage.removeItem(this.userKey);
-        window.location.reload();
-      }
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {
         return of(error);
