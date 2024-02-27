@@ -390,14 +390,52 @@ export class ProgramService {
     programId: number,
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
+    const program = await this.findOne(programId);
 
+    // TODO: REFACTOR: When updateProgramDto is empty, it should return successfully. Now it response with a 500 internal server error.
+
+    // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
-      program[attribute] = updateProgramDto[attribute];
+      // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
+      if (attribute !== 'financialServiceProviders') {
+        program[attribute] = updateProgramDto[attribute];
+      }
     }
 
-    await this.programRepository.save(program);
-    return program;
+    // Add newly supplied FSPs to the program.
+    if (updateProgramDto.financialServiceProviders) {
+      for (const fspItem of updateProgramDto.financialServiceProviders) {
+        if (
+          !program.financialServiceProviders.some(
+            (fsp) => fsp.fsp === fspItem.fsp,
+          )
+        ) {
+          const fsp = await this.financialServiceProviderRepository.findOne({
+            where: { fsp: fspItem.fsp },
+          });
+          if (!fsp) {
+            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
+            throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+          }
+          program.financialServiceProviders.push(fsp);
+        }
+      }
+    }
+
+    let savedProgram: ProgramEntity;
+    try {
+      savedProgram = await this.programRepository.save(program);
+    } catch (err) {
+      console.log('Error updating program ', err);
+      throw new HttpException(
+        'Error updating program',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    // TODO: REFACTOR: use respone DTO
+    return savedProgram;
   }
 
   public async findProgramOrThrow(programId): Promise<ProgramEntity> {

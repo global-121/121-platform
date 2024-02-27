@@ -25,24 +25,6 @@ Make sure to update any dependencies from _within_ the Docker-container, with:
 
 This service uses [TypeORM](https://typeorm.io/) with a PostgreSQL database.
 
-### Database migrations
-
-During development the database-structure will change (e.g. an extra column in a table) while there is already data stored that cannot be lost. In this case we have to apply a migration.
-
-Any time, the database-structure is adapted, before pushing, run:
-
-    docker exec -it 121-service  npm run migration:generate migration/<name>
-
-This stores all edits in a migration-file, which is pushed along with your code.
-On test- and production-server, this file is automatically run within the `npm prestart` command.
-To run this file locally, do:
-
-    docker exec -it 121-service  npm run migration:run
-
-If you want to revert one migration you can run:
-
-    docker exec -it 121-service  npm run migration:revert
-
 ### Seed the database
 
 To create the database initially, you have to run a command once:
