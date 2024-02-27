@@ -67,6 +67,10 @@ To run the API/Integration tests: (replace `:all` with `:watch` to run during de
 
     docker exec 121-service  npm run test:e2e:all
 
+To run a single test suite, amend the name of the test file, for example:
+
+    docker exec 121-service  npm run test:e2e:all update-program.test.ts
+
 ### Debugging
 
 To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Docker Desktop)
