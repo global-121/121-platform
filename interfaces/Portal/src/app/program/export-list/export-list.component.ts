@@ -1,9 +1,11 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { AlertController } from '@ionic/angular';
@@ -33,6 +35,8 @@ import { DatetimeProps } from '../../shared/datetime-picker/datetime-picker.comp
   styleUrls: ['./export-list.component.scss'],
 })
 export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
+  @Output() isPopoverClosed = new EventEmitter<void>();
+
   @Input()
   public programId: number;
 
@@ -216,6 +220,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
 
           this.isInProgress = false;
           this.updateHeaderAndMessage();
+          this.isPopoverClosed.emit();
         },
         (err) => {
           this.isInProgress = false;
@@ -231,6 +236,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
             this.translate,
             this.translate.instant(translateKey),
           );
+          this.isPopoverClosed.emit();
         },
       );
   }
