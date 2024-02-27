@@ -275,6 +275,9 @@ export class ApiService {
       return of(error);
     }
     if (error.status === 401) {
+      localStorage.removeItem(this.userKey);
+      window.location.reload();
+
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {
         return of(error);
