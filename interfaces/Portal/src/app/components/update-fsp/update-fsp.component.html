@@ -59,6 +59,7 @@
             <app-update-property-item
               [type]="attribute.type"
               [label]="attribute.shortLabel"
+              [value]="attributeValues[attribute.name]"
               [options]="attribute.options"
               [explanation]="explanation | translate"
               [placeholder]="attribute.placeholder?.en"
