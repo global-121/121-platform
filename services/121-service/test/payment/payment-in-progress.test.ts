@@ -16,15 +16,23 @@ import {
 } from '../registrations/pagination/pagination-data';
 
 describe('Payment in progress', () => {
+  let accessToken: string;
+
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
-    await seedIncludedRegistrations(registrationsOCW, programIdOCW);
-    await seedIncludedRegistrations(registrationsPV, programIdPV);
+
+    accessToken = await getAccessToken();
+
+    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    await seedIncludedRegistrations(
+      registrationsOCW,
+      programIdOCW,
+      accessToken,
+    );
   });
 
-  it('should not be in progress after payment', async () => {
+  it('should not be in progress after payment is completed', async () => {
     // Arrange
-    const accessToken = await getAccessToken();
     const paymentNr = 1;
     const paymentAmount = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
@@ -71,23 +79,20 @@ describe('Payment in progress', () => {
     );
 
     // Assert
-    // Nothing should be in progress
     expect(getProgramPaymentsPvResult.inProgress).toBe(false);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    // Should not be possible to do a payment if there is a payment in progress for the program
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
   });
 
-  it('should be in progress for program during payment', async () => {
+  it('should be in progress when not yet completed', async () => {
     // Arrange
-    const accessToken = await getAccessToken();
     const paymentNr = 1;
     const paymentAmount = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
 
-    // We do a payment here but we do not wait for all transactions to complete
+    // We do a payment and we do not wait for all transactions to complete
     await doPayment(
       programIdPV,
       paymentNr,
@@ -136,11 +141,9 @@ describe('Payment in progress', () => {
     );
 
     // Assert
-    // PV should be in progress, OCW should not be in progress
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    // Should not be possible to do a payment if there is a payment in progress for the program
     expect(doPaymentPvResultCurrent.status).toBe(HttpStatus.BAD_REQUEST);
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
