@@ -6,6 +6,7 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
+import { CheckAttributeInputUtils } from '../../shared/utils/check-attribute-input.utils';
 
 @Component({
   selector: 'app-update-fsp',
@@ -128,19 +129,19 @@ export class UpdateFspComponent implements OnInit {
       if (selectedFsp) {
         this.selectedFspName = selectedFsp.fsp;
         this.selectedFspAttributes = selectedFsp.editableAttributes.map(
-          (attr) => {
-            // Put prefilled values already in attributesToSave
-            if (this.attributeValues[attr.name]) {
-              this.attributesToSave = {
-                ...this.attributesToSave,
-                [attr.name]: this.attributeValues[attr.name],
-              };
-            }
-            return {
-              ...attr,
-              shortLabel: this.translatableString.get(attr.shortLabel),
-            };
+          (attr) => ({
+            ...attr,
+            shortLabel: this.translatableString.get(attr.shortLabel),
+          }),
+        );
+
+        // Preload attributesToSave with prefilled values or empty strings
+        this.attributesToSave = this.selectedFspAttributes.reduce(
+          (obj, key) => {
+            obj[key.name] = this.attributeValues[key.name] || '';
+            return obj;
           },
+          {},
         );
       }
 
@@ -156,19 +157,22 @@ export class UpdateFspComponent implements OnInit {
       [attrName]: detail.value.trim(),
     };
 
-    this.checkAttributesFilled();
+    this.checkAttributesCorrectlyFilled();
   }
 
-  private checkAttributesFilled() {
-    if (
-      Object.values(this.attributesToSave).length <
-        this.selectedFspAttributes.length ||
-      Object.values(this.attributesToSave).includes('')
-    ) {
-      this.enableUpdateBtn = false;
-      return;
+  private checkAttributesCorrectlyFilled() {
+    for (const attr of this.selectedFspAttributes) {
+      if (
+        CheckAttributeInputUtils.isAttributeWronglyFilled(
+          attr.type,
+          attr.pattern,
+          this.attributesToSave[attr.name],
+        )
+      ) {
+        this.enableUpdateBtn = false;
+        return;
+      }
     }
-
     this.enableUpdateBtn = true;
   }
 }

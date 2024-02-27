@@ -235,6 +235,7 @@
             [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
             [options]="paTableAttribute.options"
+            [pattern]="paTableAttribute.pattern"
             [explanation]="paTableAttribute.explanation"
             (updated)="
               updatePaAttribute(

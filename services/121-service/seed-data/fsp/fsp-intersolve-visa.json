@@ -14,6 +14,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address street"
@@ -50,6 +51,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address postal code"
@@ -62,6 +64,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address city"

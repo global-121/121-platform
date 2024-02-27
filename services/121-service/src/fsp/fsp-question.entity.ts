@@ -41,6 +41,10 @@ export class FspQuestionEntity extends Base121Entity {
   @ApiProperty({ example: [] })
   public export: JSON;
 
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'pattern' })
+  public pattern: string;
+
   @Column()
   @ApiProperty({ example: 'tel' })
   public answerType: string;

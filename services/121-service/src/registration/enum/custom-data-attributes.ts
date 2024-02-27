@@ -50,6 +50,7 @@ export class Attribute {
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
   public fspNames?: FspName[];
   public questionTypes?: QuestionType[];
+  public pattern?: string;
 }
 
 export enum QuestionType {

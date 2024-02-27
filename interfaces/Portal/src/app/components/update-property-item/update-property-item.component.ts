@@ -8,6 +8,7 @@ import {
   InputProps,
   PromptType,
 } from '../../shared/confirm-prompt/confirm-prompt.component';
+import { CheckAttributeInputUtils } from '../../shared/utils/check-attribute-input.utils';
 
 @Component({
   selector: 'app-update-property-item',
@@ -23,6 +24,9 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   @Input()
   public type: AnswerType;
+
+  @Input()
+  public pattern: string;
 
   @Input()
   public value: string | string[];
@@ -132,6 +136,15 @@ export class UpdatePropertyItemComponent implements OnInit {
   }
 
   public disableSaveButton(): boolean {
-    return String(this.propertyModel) === String(this.value);
+    return (
+      // value is same as initially
+      String(this.propertyModel) === String(this.value) ||
+      // value is invalid
+      CheckAttributeInputUtils.isAttributeWronglyFilled(
+        this.type,
+        this.pattern,
+        this.propertyModel,
+      )
+    );
   }
 }
