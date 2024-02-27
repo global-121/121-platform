@@ -14,7 +14,7 @@ import {
   registrationsOCW,
 } from '../registrations/pagination/pagination-data';
 
-describe('Test payment in progress', () => {
+describe('Payment in progress', () => {
   const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
 
@@ -24,7 +24,7 @@ describe('Test payment in progress', () => {
     await seedIncludedRegistrations(registrationsPV, PvProgramId);
   });
 
-  it('payment should not be in progress after payment', async () => {
+  it('should not be in progress after payment', async () => {
     const accessToken = await getAccessToken();
     // Arrange
     const paymentNr = 1;
@@ -79,7 +79,7 @@ describe('Test payment in progress', () => {
     expect(doPaymentOcwResultPaymentNext.status).toBe(202);
   });
 
-  it('payment should be in progress for program during payment', async () => {
+  it('should be in progress for program during payment', async () => {
     const accessToken = await getAccessToken();
     // Arrange
     const paymentNr = 1;
