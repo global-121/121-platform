@@ -128,10 +128,19 @@ export class UpdateFspComponent implements OnInit {
       if (selectedFsp) {
         this.selectedFspName = selectedFsp.fsp;
         this.selectedFspAttributes = selectedFsp.editableAttributes.map(
-          (attr) => ({
-            ...attr,
-            shortLabel: this.translatableString.get(attr.shortLabel),
-          }),
+          (attr) => {
+            // Put prefilled values already in attributesToSave
+            if (this.attributeValues[attr.name]) {
+              this.attributesToSave = {
+                ...this.attributesToSave,
+                [attr.name]: this.attributeValues[attr.name],
+              };
+            }
+            return {
+              ...attr,
+              shortLabel: this.translatableString.get(attr.shortLabel),
+            };
+          },
         );
       }
 
