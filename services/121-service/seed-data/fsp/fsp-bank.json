@@ -26,6 +26,7 @@
         "nl": "Wat is uw nationale identiteitsbewijs, zodat we geld naar uw bankrekening kunnen overmaken"
       },
       "answerType": "text",
+      "pattern": ".+",
       "options": null,
       "shortLabel": {
         "ar": "الهوية الشخصية",
