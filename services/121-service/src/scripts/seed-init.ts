@@ -16,6 +16,7 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
+import { CustomHttpService } from '../shared/services/custom-http.service';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -25,7 +26,6 @@ import { UserEntity } from '../user/user.entity';
 import { QueueSeedHelperService } from './queue-seed-helper/queue-seed-helper.service';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
-import { CustomHttpService } from '../shared/services/custom-http.service';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -33,14 +33,13 @@ export class SeedInit implements InterfaceScript {
     private dataSource: DataSource,
     private readonly seedHelper: SeedHelper,
     private readonly queueSeedHelper: QueueSeedHelperService,
-    private readonly httpService: CustomHttpService
+    private readonly httpService: CustomHttpService,
   ) {}
 
   public async run(isApiTests?: boolean): Promise<void> {
     await this.clearCallbacksMockService();
     if (isApiTests) {
       await this.truncateAll();
-
     } else {
       await this.dropAll();
 
@@ -55,7 +54,9 @@ export class SeedInit implements InterfaceScript {
 
   private async clearCallbacksMockService(): Promise<void> {
     if (process.env.NODE_ENV === 'development') {
-      await this.httpService.get(`${process.env.MOCK_SERVICE_URL}api/reset/callbacks`)
+      await this.httpService.get(
+        `${process.env.MOCK_SERVICE_URL}api/reset/callbacks`,
+      );
     }
   }
 

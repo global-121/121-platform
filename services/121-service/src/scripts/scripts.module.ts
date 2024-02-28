@@ -1,8 +1,10 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ORMConfig } from '../../ormconfig';
 import { MessageTemplateModule } from '../notifications/message-template/message-template.module';
 import { ProgramModule } from '../programs/programs.module';
+import { CustomHttpService } from '../shared/services/custom-http.service';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 import { QueueSeedHelperModule } from './queue-seed-helper/queue-seed-helper.module';
 import { ScriptsController } from './scripts.controller';
@@ -22,8 +24,6 @@ import SeedTestProgram from './seed-program-test';
 import SeedTestMultipleProgram from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
-import { CustomHttpService } from '../shared/services/custom-http.service';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
