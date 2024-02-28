@@ -103,7 +103,7 @@ export class ProgramService {
     return program;
   }
 
-  public async getCreateProgramDto(
+  public async getProgramReturnDto(
     programId: number,
     userId: number,
   ): Promise<ProgramReturnDto> {

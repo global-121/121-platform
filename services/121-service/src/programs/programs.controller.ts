@@ -56,7 +56,7 @@ export class ProgramController {
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
   // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
-    name: 'formatCreateProgramDto',
+    name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
   })
@@ -70,7 +70,7 @@ export class ProgramController {
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
-      return this.programService.getCreateProgramDto(params.programId, userId);
+      return this.programService.getProgramReturnDto(params.programId, userId);
     } else {
       return await this.programService.findProgramOrThrow(
         Number(params.programId),
