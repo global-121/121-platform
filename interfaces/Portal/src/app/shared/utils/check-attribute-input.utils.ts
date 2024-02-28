@@ -17,8 +17,8 @@ export class CheckAttributeInputUtils {
       }
       // text without pattern: correct
       return true;
-    } else {
-      return true;
     }
+    // not text: correct
+    return true;
   }
 }
