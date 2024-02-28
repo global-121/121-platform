@@ -60,24 +60,19 @@ jobs:
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env
 
-      - name: Build containers
-        working-directory: ./services
-        run: docker compose -f docker-compose.yml build
-
       - name: Run Services with Docker
         working-directory: ./services
-        run: docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --no-recreate --no-build
+        run: |
+          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull
 
-      - name: Wait for healthcheck 121-service
-        run: timeout 120s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
-
-      - name: Wait for healthcheck mock-service
-        run: timeout 30s sh -c 'until docker ps | grep mock-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+      - name: Wait for healthchecks
+        run: |
+          timeout 90s sh -c 'until docker ps | grep mock-service | grep -q healthy; do echo "Waiting for mock-service to be healthy..."; sleep 5; done'
+          timeout 90s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for 121-service to be healthy..."; sleep 5; done'
 
       - name: Run API tests with Jest
         working-directory: ./services
         run: |
-          echo 'Wait for 121-service to be up...'
           docker compose exec 121-service npm run test:e2e:all
 
       - name: Docker logs
