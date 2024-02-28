@@ -76,9 +76,17 @@ describe('Get events', () => {
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
-    expect(eventsResult.body.length).toBe(1);
-    expect(eventsResult.body[0].type).toBe(EventEnum.registrationDataChange);
+    expect(eventsResult.body.length).toBe(2); // One data change and one status change
+    expect(
+      eventsResult.body.some(
+        (event) => event.type === EventEnum.registrationDataChange,
+      ),
+    ).toBe(true);
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
+    const event = eventsResult.body.find(
+      (event) => event.type === EventEnum.registrationDataChange,
+    );
+    expect(event?.attributes).toEqual(expectedAttributesObject);
   });
 
   it('should get program events with date parameters', async () => {
