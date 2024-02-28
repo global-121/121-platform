@@ -42,6 +42,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
@@ -88,7 +89,7 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
-  @UseGuards(AuthGuard('azure-ad'))
+  @UseGuards(AuthenticatedUserGuard)
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
     status: 200,
