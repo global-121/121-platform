@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
 import { EventsService } from '../events/events.service';
@@ -36,6 +37,7 @@ import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
   Attributes,
+  UpdateAttributeDto,
   UpdateRegistrationDto,
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
@@ -1177,6 +1179,7 @@ export class RegistrationsService {
     referenceId: string,
     newFspName: FspName,
     newFspAttributesRaw: object,
+    userId: number,
   ): Promise<RegistrationViewEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
@@ -1247,6 +1250,12 @@ export class RegistrationsService {
 
     // Add new attributes
     for (const attribute of updatedRegistration.fsp.questions) {
+      await this.validateAttribute(
+        referenceId,
+        attribute.name,
+        newFspAttributes[attribute.name],
+        userId,
+      );
       await this.addRegistrationData(
         referenceId,
         attribute.name,
@@ -1274,6 +1283,26 @@ export class RegistrationsService {
     });
 
     return newViewRegistration;
+  }
+
+  public async validateAttribute(
+    referenceId: string,
+    attributeName: string,
+    value: any,
+    userId: number,
+  ) {
+    const attributeDto: UpdateAttributeDto = {
+      referenceId,
+      attribute: attributeName,
+      value,
+      userId: userId,
+    };
+    const errors = await validate(
+      plainToClass(UpdateAttributeDto, attributeDto),
+    );
+    if (errors.length > 0) {
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {

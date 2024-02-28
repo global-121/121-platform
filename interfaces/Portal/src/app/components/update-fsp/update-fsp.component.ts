@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { AnswerType } from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -135,10 +136,14 @@ export class UpdateFspComponent implements OnInit {
           }),
         );
 
-        // Preload attributesToSave with prefilled values or empty strings
+        // Preload attributesToSave ..
         this.attributesToSave = this.selectedFspAttributes.reduce(
           (obj, key) => {
-            obj[key.name] = this.attributeValues[key.name] || '';
+            obj[key.name] =
+              //.. with prefilled value if available
+              this.attributeValues[key.name] ||
+              // .. and with empty string / null otherwise
+              (key.type === AnswerType.Text ? '' : null);
             return obj;
           },
           {},
