@@ -43,6 +43,10 @@ describe('MessageService', () => {
       .spyOn(messageService.registrationRepository, 'findOne')
       .mockResolvedValue({ program: { id: 1 } } as RegistrationEntity);
 
+    jest
+      .spyOn(console, 'log')
+      .mockImplementation(() => {});
+
     getNotificationTextMock = jest
       .spyOn(messageService as any, 'getNotificationText')
       .mockResolvedValue(mockDefaultNotificationText);

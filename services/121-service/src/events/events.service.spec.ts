@@ -202,27 +202,20 @@ describe('EventsService', () => {
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: EventEnum.financialServiceProviderChange,
         attributes: [
-          {
-            key: 'oldValue',
-            value: oldViewRegistration['whatsappPhoneNumber'],
-          },
-          {
-            key: 'newValue',
-            value: newViewRegistration['whatsappPhoneNumber'],
-          },
-          { key: 'fieldName', value: 'whatsappPhoneNumber' },
+          { key: 'oldValue', value: oldViewRegistration['fspDisplayNamePortal'] },
+          { key: 'newValue', value: newViewRegistration['fspDisplayNamePortal'] },
         ],
         userId: 2,
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.financialServiceProviderChange,
+        type: EventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration.fspDisplayNamePortal },
-          { key: 'newValue', value: newViewRegistration.fspDisplayNamePortal },
-          { key: 'fieldName', value: 'fspDisplayNamePortal' },
+          { key: 'oldValue', value: oldViewRegistration['whatsappPhoneNumber'] },
+          { key: 'newValue', value: newViewRegistration['whatsappPhoneNumber'] },
+          { key: 'fieldName', value: 'whatsappPhoneNumber' },
         ],
         userId: 2,
       },
@@ -242,6 +235,12 @@ describe('EventsService', () => {
           { key: 'oldValue', value: oldViewRegistration['addressPostalCode'] },
           { key: 'fieldName', value: 'addressPostalCode' },
         ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [{ key: 'fieldName', value: 'addressHouseNumberAddition' }],
         userId: 2,
       },
       {
