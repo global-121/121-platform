@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
@@ -18,7 +18,6 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { PaginationFilter } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
-import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import {
   AnswerTypes,
   CustomDataAttributes,
@@ -36,7 +35,6 @@ import { RegistrationDataScopedQueryService } from '../utils/registration-data-q
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { ExportType } from './dto/export-details.dto';
 import { FileDto } from './dto/file.dto';
-import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
@@ -920,213 +918,6 @@ export class MetricsService {
     return fields;
   }
 
-  public async getPaMetrics(
-    programId: number,
-    payment?: number,
-    month?: number,
-    year?: number,
-    fromStart?: number,
-  ): Promise<PaMetrics> {
-    const registrations =
-      await this.registrationsService.getRegistrationsForDashboard(programId);
-
-    const metrics: PaMetrics = {
-      [RegistrationStatusEnum.imported]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.imported,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.invited]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.invited,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.startedRegistration]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.startedRegistration,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.registered]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.registered,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.validated]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.validated,
-          payment,
-          month,
-          year,
-        ),
-      [RegistrationStatusEnum.declined]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.declined,
-          payment,
-          month,
-          year,
-        ),
-      [RegistrationStatusEnum.included]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.included,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.inclusionEnded]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.inclusionEnded,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.noLongerEligible]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.noLongerEligible,
-          payment,
-          month,
-          year,
-        ),
-      [RegistrationStatusEnum.rejected]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.rejected,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.deleted]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.deleted,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.completed]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.completed,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [RegistrationStatusEnum.paused]:
-        await this.getTimestampsPerStatusAndTimePeriod(
-          programId,
-          registrations,
-          RegistrationStatusEnum.paused,
-          payment,
-          month,
-          year,
-          fromStart,
-        ),
-      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
-        programId,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-    };
-
-    return metrics;
-  }
-
-  private async getTimestampsPerStatusAndTimePeriod(
-    programId: number,
-    registrations: RegistrationResponse[],
-    filterStatus: RegistrationStatusEnum,
-    payment?: number,
-    month?: number,
-    year?: number,
-    fromStart?: number,
-  ): Promise<number> {
-    const dateField =
-      this.registrationsService.getDateFieldPerStatus(filterStatus);
-
-    let filteredRegistrations = registrations.filter(
-      (registration) => !!registration[dateField],
-    );
-
-    if (
-      (typeof month !== 'undefined' && year === undefined) ||
-      (typeof year !== 'undefined' && month === undefined)
-    ) {
-      throw new HttpException(
-        'Please provide both month AND year',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (month >= 0 && year) {
-      filteredRegistrations = filteredRegistrations.filter((registration) => {
-        const yearMonth = new Date(
-          registration[dateField].getFullYear(),
-          registration[dateField].getUTCMonth(),
-          1,
-        );
-        const yearMonthCondition = new Date(year, month, 1);
-        if (fromStart && fromStart === 1) {
-          return yearMonth <= yearMonthCondition;
-        } else {
-          return yearMonth.getTime() === yearMonthCondition.getTime();
-        }
-      });
-    }
-
-    if (payment) {
-      const payments = await this.paymentsService.getPayments(programId);
-      const beginDate =
-        payment === 1 || (fromStart && fromStart === 1)
-          ? new Date(2000, 0, 1)
-          : payments.find((i) => i.payment === payment - 1).paymentDate;
-      const endDate = payments.find((i) => i.payment === payment).paymentDate;
-      filteredRegistrations = filteredRegistrations.filter(
-        (registration) =>
-          registration[dateField] > beginDate &&
-          registration[dateField] <= endDate,
-      );
-    }
-    return filteredRegistrations.length;
-  }
-
   public async getTotalPaHelped(
     programId: number,
     payment?: number,
@@ -1259,64 +1050,6 @@ export class MetricsService {
         new: currentPaymentCount - preExistingPa,
       },
     };
-  }
-
-  public async getMonitoringData(programId: number): Promise<any> {
-    const registrations = await this.queryMonitoringData(programId);
-    return registrations.map((registration) => {
-      const startDate = new Date(
-        registration['statusChangeStarted_created'],
-      ).getTime();
-      const registeredDate = new Date(
-        registration['statusChangeRegistered_created'],
-      ).getTime();
-      const durationSeconds = (registeredDate - startDate) / 1000;
-      return {
-        monitoringAnswer:
-          registration['registration_customData']['monitoringAnswer'],
-        registrationDuration: durationSeconds,
-        status: registration['registration_registrationStatus'],
-      };
-    });
-  }
-
-  private async queryMonitoringData(programId: number): Promise<any[]> {
-    const q = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .innerJoinAndSelect(
-        'registration.program',
-        'program',
-        'program.id = :programId',
-        {
-          programId: programId,
-        },
-      )
-      .innerJoinAndSelect('registration.fsp', 'fsp.registrations')
-      .innerJoinAndSelect(
-        'registration.statusChanges',
-        'statusChangeStarted',
-        'registration.id = "statusChangeStarted"."registrationId"',
-      )
-      .innerJoinAndSelect(
-        'registration.statusChanges',
-        'statusChangeRegistered',
-        'registration.id = "statusChangeRegistered"."registrationId"',
-      )
-      .andWhere('"statusChangeStarted"."registrationStatus" = :statusstarted', {
-        statusstarted: RegistrationStatusEnum.startedRegistration,
-      })
-      .andWhere(
-        '"statusChangeRegistered"."registrationStatus" = :statusregister',
-        {
-          statusregister: RegistrationStatusEnum.registered,
-        },
-      )
-      .orderBy('"statusChangeRegistered".created', 'DESC')
-      .orderBy('"statusChangeStarted".created', 'DESC')
-      .orderBy('"registration"."inclusionScore"', 'DESC')
-      .orderBy('"registration"."id"', 'DESC')
-      .distinctOn(['registration.id']);
-    return await q.getRawMany();
   }
 
   public async getProgramStats(programId: number): Promise<ProgramStats> {

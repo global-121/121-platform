@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
+import { EventEntity } from '../events/entities/event.entity';
 import { EventsModule } from '../events/events.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -32,14 +33,12 @@ import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.enti
 import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from './modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
-import { RegistrationsBulkHelperService } from './services/registrations-bulk-helper.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
@@ -82,15 +81,14 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationsBulkService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
-    RegistrationsBulkHelperService,
     FileImportService,
-    createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
+    createScopedRepositoryProvider(EventEntity),
   ],
   controllers: [RegistrationsController],
   exports: [

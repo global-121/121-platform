@@ -177,17 +177,18 @@ export class EventsService {
   private isCompleteRegistrationViewEntity(
     obj: any,
   ): obj is RegistrationViewEntity {
-    // to be implemented
-    // const requiredProperties: (keyof RegistrationViewEntity)[] = [
-    //   // List all properties of RegistrationViewEntity here
-    //   'property1',
-    //   'property2',
-    //   // ...
-    // ];
+    // Banal check if the object is a RegistrationViewEntity
+    // This is to prevent that log is called with an object that is not a RegistrationViewEntity
+    // While registrationAttributes is empty
+    // Which would result in many faulty logs being created
+    const requiredProperties: (keyof RegistrationViewEntity)[] = [
+      'referenceId',
+      'id',
+      'status',
+      'preferredLanguage',
+    ];
 
-    // return requiredProperties.every(prop => prop in obj);
-
-    return true;
+    return requiredProperties.every((prop) => prop in obj);
   }
 
   private arraysAreEqual<T>(array1: T[], array2: T[]): boolean {

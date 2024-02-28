@@ -31,7 +31,6 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
-import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 
 @Injectable()
@@ -58,7 +57,6 @@ export class RegistrationsBulkService {
     private readonly eventsService: EventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly registrationsBulkHelperService: RegistrationsBulkHelperService,
     @Inject(getScopedRepositoryProviderName(SafaricomRequestEntity))
     private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
@@ -410,11 +408,6 @@ export class RegistrationsBulkService {
       filteredRegistrations,
       registrationsAfterUpdate,
       { registrationAttributes: [statusKey] },
-    );
-
-    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
-      filteredRegistrations.map((r) => r.id),
-      registrationStatus,
     );
     for (const registration of filteredRegistrations) {
       if (
