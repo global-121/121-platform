@@ -101,9 +101,8 @@ export class ProgramController {
   })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
-  public async getAssignedPrograms(
-    @Req() req: any
-    ): Promise<ProgramsRO> {
+  public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
+    console.log('req: ', req);
     if (!req.user.id) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
