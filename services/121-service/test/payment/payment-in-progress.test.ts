@@ -17,6 +17,10 @@ import {
 
 describe('Payment in progress', () => {
   let accessToken: string;
+  const registrationReferenceIdsPV = registrationsPV.map((r) => r.referenceId);
+  const registrationReferenceIdsOCW = registrationsOCW.map(
+    (r) => r.referenceId,
+  );
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
@@ -47,7 +51,7 @@ describe('Payment in progress', () => {
     );
     await waitForPaymentTransactionsToComplete(
       programIdPV,
-      registrationsPV.map((r) => r.referenceId),
+      registrationReferenceIdsPV,
       accessToken,
       10_000,
     );
@@ -84,6 +88,20 @@ describe('Payment in progress', () => {
 
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+
+    // Cleanup to make sure nothing is in progress anymore
+    await waitForPaymentTransactionsToComplete(
+      programIdPV,
+      registrationReferenceIdsPV,
+      accessToken,
+      30_000,
+    );
+    await waitForPaymentTransactionsToComplete(
+      programIdOCW,
+      registrationReferenceIdsOCW,
+      accessToken,
+      30_000,
+    );
   });
 
   it('should be in progress when not yet completed', async () => {
@@ -149,5 +167,19 @@ describe('Payment in progress', () => {
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
     expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
+
+    // Cleanup to make sure nothing is in progress anymore
+    await waitForPaymentTransactionsToComplete(
+      programIdPV,
+      registrationReferenceIdsPV,
+      accessToken,
+      30_000,
+    );
+    await waitForPaymentTransactionsToComplete(
+      programIdOCW,
+      registrationReferenceIdsOCW,
+      accessToken,
+      30_000,
+    );
   });
 });
