@@ -1290,7 +1290,7 @@ export class RegistrationsService {
     attributeName: string,
     value: any,
     userId: number,
-  ) {
+  ): Promise<void> {
     const attributeDto: UpdateAttributeDto = {
       referenceId,
       attribute: attributeName,
