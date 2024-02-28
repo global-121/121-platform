@@ -20,13 +20,12 @@ import {
 declare global {
   namespace NodeJS {
     interface Global {
-      queueCallbacks: { [key: string]: string };
+      queueCallbacks: Record<string, string>;
     }
   }
 }
 
 global.queueCallbacks = {};
-
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);

@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { API_PATHS, EXTERNAL_API } from '../config';
+import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
+import { createCancelableTimeout as setTimeoutQueue } from '../utils/timout.helpers';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from './twilio.dto';
-import { API_PATHS, EXTERNAL_API } from '../config';
-import { lastValueFrom } from 'rxjs';
-import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
-import { createCancelableTimout as setTimeoutQueue } from '../utils/timout.helpers';
 
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {
@@ -220,7 +220,7 @@ export class TwilioService {
       twilioMessagesCreateDto.From &&
       twilioMessagesCreateDto.From.includes('whatsapp')
     ) {
-      await setTimeoutQueue(1000)
+      await setTimeoutQueue(1000);
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;
