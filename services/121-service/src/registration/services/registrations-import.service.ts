@@ -1,11 +1,8 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import csv from 'csv-parser';
-import { Readable } from 'stream';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import * as convert from 'xml-js';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
@@ -19,6 +16,7 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { ScopedRepository } from '../../scoped.repository';
 import { UserService } from '../../user/user.service';
+import { FileImportService } from '../../utils/file-import/file-import.service';
 import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
 import {
   BulkImportDto,
@@ -37,6 +35,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { RegistrationUtilsService } from '../modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
@@ -69,8 +68,10 @@ export class RegistrationsImportService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly userService: UserService,
+    private readonly fileImportService: FileImportService,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationUtilsService: RegistrationUtilsService,
   ) {}
 
   public async importBulkAsImported(
@@ -147,7 +148,8 @@ export class RegistrationsImportService {
       }
       newRegistration.registrationStatus = RegistrationStatusEnum.imported;
 
-      const savedRegistration = await newRegistration.save();
+      const savedRegistration =
+        await this.registrationUtilsService.save(newRegistration);
       savedRegistrations.push(savedRegistration);
 
       for (const att of programCustomAttributes) {
@@ -329,7 +331,9 @@ export class RegistrationsImportService {
     // Save registrations using .save to properly set registrationProgramId
     const savedRegistrations = [];
     for await (const registration of registrations) {
-      savedRegistrations.push(await registration.save());
+      const savedRegistration =
+        await this.registrationUtilsService.save(registration);
+      savedRegistrations.push(savedRegistration);
     }
 
     // Save registration status changes seperately without the registration.subscriber for better performance
@@ -431,7 +435,11 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<BulkImportDto[]> {
-    const importRecords = await this.validateCsv(csvFile);
+    const maxRecords = 1000;
+    const importRecords = await this.fileImportService.validateCsv(
+      csvFile,
+      maxRecords,
+    );
     return await this.validateBulkImportCsvInput(
       importRecords,
       programId,
@@ -444,79 +452,16 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    const importRecords = await this.validateCsv(csvFile);
+    const maxRecords = 1000;
+    const importRecords = await this.fileImportService.validateCsv(
+      csvFile,
+      maxRecords,
+    );
     return await this.validateRegistrationsInput(
       importRecords,
       programId,
       userId,
     );
-  }
-
-  public async validateCsv(csvFile): Promise<object[]> {
-    const indexLastPoint = csvFile.originalname.lastIndexOf('.');
-    const extension = csvFile.originalname.substr(
-      indexLastPoint,
-      csvFile.originalname.length - indexLastPoint,
-    );
-    if (extension !== '.csv') {
-      const errors = [`Wrong file extension. It should be .csv`];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
-    if (Object.keys(importRecords[0]).length === 1) {
-      importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
-    }
-
-    const maxRecords = 1000;
-    if (importRecords.length > maxRecords) {
-      const errors = [
-        `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
-      ];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-    return importRecords;
-  }
-
-  public async validateXml(
-    xmlFile,
-  ): Promise<convert.Element | convert.ElementCompact> {
-    const indexLastPoint = xmlFile.originalname.lastIndexOf('.');
-    const extension = xmlFile.originalname.substr(
-      indexLastPoint,
-      xmlFile.originalname.length - indexLastPoint,
-    );
-    if (extension !== '.xml') {
-      const errors = [`Wrong file extension. It should be .xml`];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    const importRecords = await this.xmlBufferToArray(xmlFile.buffer);
-    return importRecords;
-  }
-
-  private async csvBufferToArray(buffer, separator): Promise<object[]> {
-    const stream = new Readable();
-    stream.push(buffer.toString());
-    stream.push(null);
-    const parsedData = [];
-    return await new Promise((resolve, reject): void => {
-      stream
-        .pipe(csv({ separator: separator }))
-        .on('error', (error): void => reject(error))
-        .on('data', (row): number => parsedData.push(row))
-        .on('end', (): void => {
-          resolve(parsedData);
-        });
-    });
-  }
-
-  private async xmlBufferToArray(
-    buffer,
-  ): Promise<convert.Element | convert.ElementCompact> {
-    const xml = convert.xml2js(buffer.toString());
-    return xml.elements[0].elements.find((el) => el.name === 'Records')
-      .elements;
   }
 
   private recordHasAllowedScope(record: any, userScope: string): boolean {
@@ -525,13 +470,6 @@ export class RegistrationsImportService {
         record[AdditionalAttributes.scope]?.startsWith(userScope)) ||
       !userScope
     );
-  }
-
-  public checkForCompletelyEmptyRow(row): boolean {
-    if (Object.keys(row).every((key) => !row[key])) {
-      return true;
-    }
-    return false;
   }
 
   private async validateBulkImportCsvInput(
@@ -555,7 +493,7 @@ export class RegistrationsImportService {
     );
 
     for (const [i, row] of csvArray.entries()) {
-      if (this.checkForCompletelyEmptyRow(row)) {
+      if (this.fileImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new BulkImportDto();
@@ -752,7 +690,7 @@ export class RegistrationsImportService {
       program.languages as unknown as string[],
     );
     for (const [i, row] of csvArray.entries()) {
-      if (this.checkForCompletelyEmptyRow(row)) {
+      if (this.fileImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new ImportRegistrationsDto();

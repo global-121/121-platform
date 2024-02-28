@@ -8,7 +8,6 @@
     "confirm": "Weet je het zeker?",
     "error-with-message": "Er is iets misgegaan: {{error}}",
     "export-error": "Er is iets misgegaan bij het exporteren",
-    "import-error": "Er is iets misgegaan bij het importeren.",
     "ok": "OK",
     "save": "Opslaan",
     "save-success": "Opgeslagen",
@@ -18,6 +17,35 @@
     "update-success": "Update succesvol"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(afbeelding)",
+      "content-type": {
+        "custom": "Aangepast bericht",
+        "default-reply": "Standaard antwoord",
+        "generic-templated": "Berichtmelding",
+        "included": "Actief",
+        "inclusion-ended": "Beëindigd",
+        "invited": "Uitnodiging voor registratie",
+        "payment": "Betaling",
+        "payment-instructions": "Betalingsinstructies",
+        "payment-reminder": "Betalingsherinnering",
+        "payment-templated": "Betalings melding",
+        "payment-voucher": "Betalingsvoucher",
+        "registered": "Registratie",
+        "rejected": "Afwijzing"
+      },
+      "error-code-prefix": "Twilio foutcode:",
+      "status": {
+        "delivered": "Afgeleverd",
+        "failed": "Mislukt",
+        "read": "Gelezen",
+        "sent": "Verstuurd"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
+      }
+    },
     "registration": {
       "status": {
         "completed": "Voltooid",
@@ -191,11 +219,10 @@
         }
       },
       "import-fsp-reconciliation": {
-        "btn-text": "Importeer verrekinngs data",
-        "confirm-message": "Importeer verrekenings data",
-        "explanation": "Zorg ervoor dat u de verrekening precies uploadt zoals verstrekt door de financiële dienstverlener.",
+        "btn-text": "Importeer verrekenings data",
+        "confirm-message": "Importeer verrekenings data van betaling #{{payment}}",
+        "explanation": "Houd er rekening mee dat:<ul><li>Controleer dat het bestand klopt met het geselecteerde betalingsnummer (betaling <strong>#{{payment}}</strong>) voordat je op OK klikt.</li><li>Het uploaden van een nieuw bestand data van eerdere bestanden overschrijft.</li></ul>",
         "import-result": {
-          "mismatch": "LET OP: <strong> {{countPaymentStarted}} </strong> betalingen zijn gestart voor betaling <strong> # {{payment}} </strong>. De verrekening bevat <strong> {{countImported}} </strong> betalingen. Het totaalbedrag in de verrekening komt dus niet overeen met de gestarte betalingen. Houd er rekening mee dat alle betalingen die niet succesvol zijn in de verrekening, als mislukte betalingen worden beschouwd.",
           "new": "Betalingsgegevens bijgewerkt voor <strong> {{countTotal}} </strong> getroffen mensen: <ul> <li> <strong> {{countPaymentSuccess}} </strong> betalingen zijn <strong> succesvol </strong> </li> <li> <strong> {{countPaymentFailed}} </strong> betalingen zijn <strong> mislukt </strong> </li> </ul>",
           "not-found": "Er zijn <strong>{{countNotFound}}</strong> transacties waarvoor geen overeenkomende betrokkene werd gevonden. Probeer deze te corrigeren en opnieuw te uploaden.",
           "ready": "Verrekening geïmporteerd voor betaling <strong>#{{payment}}</strong>."
@@ -210,9 +237,10 @@
           "targeted": "Doel registraties"
         },
         "state-explanation": {
+          "declined": "PA's die tijdens de validatie zijn geweigerd.",
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
-          "included": "Nieuwe hulpvragers die zijn opgenomen. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
+          "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
           "inclusionEnded": "Hulpvragers waarvoor de opname is beëindigd. <br> Zij ontvangen geen (meer) betalingen voor de volgende betalings-/uitbetalingsronde.",
           "invited": "Hulpvragers die zijn uitgenodigd (na import).",
           "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
@@ -312,17 +340,17 @@
           "confirm-prompt": "Hiermee wordt ALLEEN de {{number}} mislukte betaling(en) opnieuw geprobeerd.",
           "error": "Mislukt",
           "last-payment": "Laatste betaling: {{nr}}",
-          "retry-all": "Probeer alles opnieuw {{number}} mislukt",
+          "retry-all": "Probeer alles opnieuw: {{number}} mislukt",
           "success": "Succesvol",
           "waiting": "Wachten"
         },
-        "make-export": "Exporteer betalingsinformatie",
+        "make-export-import": "Betalingsinformatie",
         "make-payment": {
           "error": {
             "generic": "Er is iets misgegaan met de betaling. Neem contact op met 121 technische ondersteuning."
           },
           "make-payment": "Betaling doen: {{nr}}",
-          "number-included": "Hulpvragers inbegrepen: {{number}}"
+          "number-included": "Actieve hulpvragers: {{number}}"
         },
         "open": "Open",
         "payment-nr": "Betaling #{{number}}",
@@ -353,30 +381,30 @@
           "type-message-tooltip": "Het bericht moet langer zijn dan {{minLength}} teken(s). Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de betrokken persoon het bericht als meerdere sms'jes kan ontvangen, als ze geen smartphone hebben."
         },
         "actions": {
-          "deletePa": "Hulpvrager verwijderen",
+          "deletePa": "Verwijder hulpvrager(s)",
           "doPayment": "Doe betaling #{{paymentNr}}",
           "endInclusion": "Beëindig deelname aan programma",
-          "include": "Opnemen in programma",
+          "include": "Activeer hulpvrager(s)",
           "invite": "Uitnodigen voor registratie",
           "markAsDeclined": "Markeer als geweigerd",
           "markAsValidated": "Markeer als gevalideerd",
           "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
-          "reject": "Afwijzen uit programma",
+          "reject": "Afwijzen voor programma",
           "sendMessage": "Stuur bericht"
         },
         "apply-action": "Actie toepassen",
         "bulk-action-conditions": {
-          "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i> actief </i> hebben.",
+          "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i>Actief</i> hebben.",
           "doPayment": "Let op: De actie <strong>{{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
-          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Actief </i> of <i> Voltooid </i> .",
+          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> of <i>Voltooid</i> .",
           "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>, <i>Geselecteerd voor validatie</i>, <i>Gevalideerd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
-          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Niet meer in aanmerking </i>.",
-          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i>.",
-          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> of <i>Geweigerd</i>.",
-          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geïmporteerd </i> of <i> Uitgenodigd </i>.",
-          "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> actief </i> .",
-          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i> Geregistreerd </i> , <i> Geselecteerd voor validatie </i> , <i> Gevalideerd </i> , <i> Actief </i> , <i> Niet meer in aanmerking komend </i> , of <i> Geregistreerd terwijl niet langer in aanmerking komend </i> .",
+          "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Niet meer in aanmerking</i>.",
+          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>.",
+          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> of <i>Geweigerd</i>.",
+          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Uitgenodigd</i>.",
+          "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> .",
+          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> , <i>Geselecteerd voor validatie</i> , <i>Gevalideerd</i> , <i>Actief</i> , <i>Niet meer in aanmerking komend</i> , of <i>Geregistreerd terwijl niet langer in aanmerking komend</i> .",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {
@@ -486,37 +514,7 @@
           "left": "over"
         },
         "message-history-popup": {
-          "accordion-header": "Tekst van het bericht",
-          "chip-status": {
-            "delivered": "Afgeleverd",
-            "failed": "Mislukt",
-            "read": "Gelezen",
-            "sent": "Verstuurd"
-          },
-          "content-type": {
-            "custom": "Aangepast bericht",
-            "default-reply": "Standaard antwoord",
-            "generic-templated": "Berichtmelding",
-            "included": "Actief",
-            "inclusion-ended": "Beëindigd",
-            "invited": "Uitnodiging voor registratie",
-            "payment": "Betaling",
-            "payment-instructions": "Betalingsinstructies",
-            "payment-reminder": "Betalingsherinnering",
-            "payment-templated": "Betalings melding",
-            "payment-voucher": "Betalingsvoucher",
-            "registered": "Registratie",
-            "rejected": "Afwijzing"
-          },
-          "image-string": "(afbeelding)",
-          "message-title": "Bericht Geschiedenis",
-          "status-line": {
-            "code": "Twilio foutcode: "
-          },
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp"
-          }
+          "message-title": "Berichtengeschiedenis"
         },
         "no-actions": "Geen acties beschikbaar",
         "no-checkboxes": "Er zijn momenteel geen hulpvragers waarvoor deze actie kan worden toegepast.",
@@ -668,11 +666,12 @@
       "activities": {
         "data-changes": {
           "label": "Gegevenswijziging",
-          "reason": "<br> <b> Reden: </b> {{reason}}",
-          "values": "<b> Oud: </b> {{oldValue}} <br> <b> Nieuw: </b> {{newValue}}"
+          "new": "Nieuw: ",
+          "old": "Oud: ",
+          "reason": "Reden: "
         },
-        "message": {
-          "label": "Bericht"
+        "fsp-change": {
+          "label": "Financiële dienstverlener wijziging"
         },
         "note": {
           "label": "Notitie"

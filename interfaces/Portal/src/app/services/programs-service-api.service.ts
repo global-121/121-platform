@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
+import { Event } from '../models/event.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
@@ -20,9 +21,12 @@ import {
   ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
-import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { RegistrationStatusChange } from '../models/registration-status-change.model';
-import { PaymentSummary, Transaction } from '../models/transaction.model';
+import {
+  PaymentSummary,
+  ProgramPaymentsStatus,
+  Transaction,
+} from '../models/transaction.model';
 import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
@@ -240,6 +244,15 @@ export class ProgramsServiceApiService {
     );
   }
 
+  getProgramPaymentsStatus(
+    programId: number | string,
+  ): Promise<ProgramPaymentsStatus> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments/status`,
+    );
+  }
+
   async updatePaAttribute(
     programId: number,
     referenceId: string,
@@ -396,15 +409,12 @@ export class ProgramsServiceApiService {
   importFspReconciliation(
     programId: number,
     payment: number,
-    fspIds: number[],
     file: File,
   ): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation?fspIds=${fspIds.join(
-      ',',
-    )}`;
+    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
@@ -505,6 +515,19 @@ export class ProgramsServiceApiService {
           `${allPeopleAffectedOptions.sort.column}:${allPeopleAffectedOptions.sort.direction}`,
         );
       }
+    }
+    if (type === ExportType.paDataChanges) {
+      return this.apiService
+        .get(
+          environment.url_121_service_api,
+          `/programs/${programId}/events`,
+          false,
+          true,
+          params,
+        )
+        .then((response) => {
+          return response;
+        });
     }
     return this.apiService
       .get(
@@ -934,13 +957,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-  async getRegistrationChangeLogByReferenceId(
+  async getRegistrationEventsByRegistrationId(
     programId: number,
-    referenceId: string,
-  ): Promise<RegistrationChangeLog[]> {
+    registrationId: number,
+  ): Promise<Event[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
+      `/programs/${programId}/registrations/${registrationId}/events`,
     );
   }
 

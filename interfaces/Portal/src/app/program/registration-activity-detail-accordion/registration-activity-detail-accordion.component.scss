@@ -1,0 +1,34 @@
+details {
+  &[open] {
+    summary {
+      ion-icon[name='chevron-down-outline'] {
+        display: none;
+      }
+      ion-icon[name='chevron-up-outline'] {
+        display: block;
+      }
+    }
+  }
+
+  summary::marker,
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary {
+    list-style-type: none;
+    ion-icon[name='chevron-down-outline'] {
+      display: block;
+    }
+    ion-icon[name='chevron-up-outline'] {
+      display: none;
+    }
+
+    cursor: pointer;
+  }
+
+  &:hover {
+    summary {
+      background-color: var(--fiveten-purple-100);
+    }
+  }
+}

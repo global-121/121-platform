@@ -8,7 +8,6 @@
     "confirm": "Es-tu sûr?",
     "error-with-message": "Quelque chose s’est mal passé : {{error}}",
     "export-error": "Quelque chose s’est mal passé avec l’exportation.",
-    "import-error": "Quelque chose s’est mal passé avec l’importation.",
     "ok": "OK",
     "save": "Sauvegarder",
     "save-success": "Enregistré avec succès",
@@ -18,6 +17,35 @@
     "update-success": "Mise à jour réussie"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(l’image)",
+      "content-type": {
+        "custom": "Message personnalisé",
+        "default-reply": "Réponse par défaut",
+        "generic-templated": "Notification de message",
+        "included": "Inclusion",
+        "inclusion-ended": "Fin de l’inclusion",
+        "invited": "Invitation à l’inscription",
+        "payment": "Paiement",
+        "payment-instructions": "Instructions de paiement",
+        "payment-reminder": "Rappel de paiement",
+        "payment-templated": "Notification de paiement",
+        "payment-voucher": "Bon de paiement",
+        "registered": "Inscription",
+        "rejected": "Rejet"
+      },
+      "error-code-prefix": "Code d’erreur Twilio :",
+      "status": {
+        "delivered": "Livré",
+        "failed": "Raté",
+        "read": "Lire",
+        "sent": "Envoyèrent"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp (en anglais)"
+      }
+    },
     "registration": {
       "status": {
         "completed": "Terminé",
@@ -191,10 +219,7 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "Importer des données de rapprochement des paiements",
-        "confirm-message": "Importer des données de rapprochement des paiements",
-        "explanation": "Assurez-vous de télécharger les données de rapprochement exactement comme fournies par le fournisseur de services financiers.",
         "import-result": {
-          "mismatch": "ATTENTION : <strong>{{countPaymentStarted}}</strong> paiements ont été lancés pour <strong>le paiement #{{payment}}</strong>. Les données de rapprochement contiennent <strong>{{countImported}}</strong> paiements. Par conséquent, le montant total dans les données de rapprochement ne correspond pas aux paiements commencés. Notez que tous les paiements qui n’ont pas d’enregistrement de réussite dans les données de rapprochement sont considérés comme des paiements ayant échoué.",
           "new": "Données de paiement mises à jour pour les personnes concernées par <ul>{{countTotal}} :<li>22Les paiements RR11 sont <strong>réussis</strong>Les paiements <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> ont <strong>échoué</strong></li></ul> <strong></strong>",
           "not-found": "Il y a eu <strong>{{countNotFound}}</strong> transactions pour lesquelles aucune personne touchée n’a été trouvée. Essayez de les corriger et téléchargez-les à nouveau.",
           "ready": "Données de rapprochement importées pour <strong>les #{{payment}}</strong> de paiement."
@@ -209,6 +234,7 @@
           "targeted": "PA ciblés"
         },
         "state-explanation": {
+          "declined": "AP refusées lors de la validation.",
           "deleted": "PA qui ont été supprimés. Il peut s’agir, par exemple, de PA supprimés après <br> une importation incorrecte, ainsi que de PA qui ont reçu des paiements, qui ne sont plus inclus et qui sont ensuite supprimés après un certain temps.",
           "imported": "PA qui ont été importés, en fonction du numéro de téléphone.",
           "included": "PA qui ont été inclus. <br> Ils recevront les paiements à partir du prochain tour de paiement/versement.",
@@ -315,7 +341,7 @@
           "success": "Réussi",
           "waiting": "Attente"
         },
-        "make-export": "Exporter les données de paiement",
+        "make-export-import": "Données de paiement",
         "make-payment": {
           "error": {
             "generic": "Quelque chose s’est mal passé avec le paiement. Veuillez contacter le support technique 121."
@@ -481,37 +507,7 @@
           "left": "restant"
         },
         "message-history-popup": {
-          "accordion-header": "Texte du message",
-          "chip-status": {
-            "delivered": "Livré",
-            "failed": "Raté",
-            "read": "Lire",
-            "sent": "Envoyèrent"
-          },
-          "content-type": {
-            "custom": "Message personnalisé",
-            "default-reply": "Réponse par défaut",
-            "generic-templated": "Notification de message",
-            "included": "Inclusion",
-            "inclusion-ended": "Fin de l’inclusion",
-            "invited": "Invitation à l’inscription",
-            "payment": "Paiement",
-            "payment-instructions": "Instructions de paiement",
-            "payment-reminder": "Rappel de paiement",
-            "payment-templated": "Notification de paiement",
-            "payment-voucher": "Bon de paiement",
-            "registered": "Inscription",
-            "rejected": "Rejet"
-          },
-          "image-string": "(l’image)",
-          "message-title": "Historique des messages",
-          "status-line": {
-            "code": "Code d’erreur Twilio : "
-          },
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp (en anglais)"
-          }
+          "message-title": "Historique des messages"
         },
         "no-actions": "Aucune action disponible",
         "no-checkboxes": "À l’heure actuelle, il n’y a pas de personnes concernées auxquelles cette action peut s’appliquer.",
@@ -661,12 +657,7 @@
       "actions": "Actions",
       "activities": {
         "data-changes": {
-          "label": "Modification des données",
-          "reason": "<br><b>Raison :</b> {{reason}}",
-          "values": "<b>Ancien</b> : {{oldValue}}<br><b>Nouveau :</b> {{newValue}}"
-        },
-        "message": {
-          "label": "Message"
+          "label": "Modification des données"
         },
         "note": {
           "label": "Note"

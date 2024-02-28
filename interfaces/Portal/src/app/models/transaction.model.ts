@@ -18,11 +18,18 @@ export class Transaction {
     | any;
   fspName: string;
   fsp: FspName;
+  user: {
+    id: number;
+    username: string;
+  };
 }
 
 export class PaymentSummary {
   nrSuccess: number;
   nrWaiting: number;
   nrError: number;
-  paymentInProgress: boolean;
+}
+
+export class ProgramPaymentsStatus {
+  inProgress: boolean;
 }

@@ -4,7 +4,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { RedisModule } from '../../../payments/redis.module';
-import { RegistrationScopedRepository } from '../../../registration/registration-scoped.repository';
+import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
+import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserModule } from '../../../user/user.module';
@@ -29,6 +30,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
     UserModule,
     TransactionsModule,
     QueueMessageModule,
+    RegistrationDataModule,
     BullModule.registerQueue({
       name: QueueNamePayment.paymentIntersolveVisa,
       processors: [
@@ -39,13 +41,6 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
-      },
-      defaultJobOptions: {
-        attempts: 2,
-        backoff: {
-          type: 'fixed',
-          delay: 3000,
-        },
       },
     }),
     RedisModule,

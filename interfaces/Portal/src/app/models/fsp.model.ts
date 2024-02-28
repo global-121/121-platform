@@ -6,6 +6,7 @@ export class Fsp {
   fsp: string;
   fspDisplayNamePortal: TranslatableString | string;
   integrationType: FspIntegrationType;
+  hasReconciliation: boolean;
   questions?: FspQuestion[];
   editableAttributes?: Attribute[];
 }

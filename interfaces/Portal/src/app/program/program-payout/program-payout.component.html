@@ -2,7 +2,7 @@
   *ngIf="canMakeExport"
   class="ion-margin-vertical"
 >
-  <h3>{{ 'page.program.program-payout.make-export' | translate }}</h3>
+  <h3>{{ 'page.program.program-payout.make-export-import' | translate }}</h3>
   <ion-row class="ion-align-items-center">
     <select
       [title]="'page.program.program-payout.choose-payment' | translate"
@@ -59,11 +59,11 @@
       [paymentInProgress]="paymentInProgress"
     ></app-export-fsp-instructions>
     <app-import-fsp-reconciliation
-      *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
+      *ngIf="hasFspWithReconciliation && canImportFspReconciliation"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
-      [fspIds]="fspIdsWithReconciliation"
+      [paymentInProgress]="paymentInProgress"
     ></app-import-fsp-reconciliation>
   </ion-row>
   <ion-row class="ion-margin-vertical">

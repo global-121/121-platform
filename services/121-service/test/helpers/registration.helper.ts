@@ -307,6 +307,27 @@ export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
 ): Promise<void> {
+  await seedIncludedRegistrations(registrations, programId);
+  const accessToken = await getAccessToken();
+
+  await doPayment(programId, 1, 25, [], accessToken, {
+    'filter.status': '$in:included',
+  });
+
+  const registrationReferenceIds = registrations.map((r) => r.referenceId);
+
+  await waitForPaymentTransactionsToComplete(
+    programId,
+    registrationReferenceIds,
+    accessToken,
+    30_000,
+  );
+}
+
+export async function seedIncludedRegistrations(
+  registrations: any[],
+  programId: number,
+): Promise<void> {
   const accessToken = await getAccessToken();
 
   await changePhase(
@@ -326,17 +347,45 @@ export async function seedPaidRegistrations(
     RegistrationStatusEnum.included,
     accessToken,
   );
+}
 
-  await doPayment(programId, 1, 25, [], accessToken, {
-    'filter.status': '$in:included',
-  });
+export async function getEvents(
+  programId: number,
+  fromDate?: string,
+  toDate?: string,
+  referenceId?: string,
+): Promise<any> {
+  const accessToken = await getAccessToken();
 
-  const registrationReferenceIds = registrations.map((r) => r.referenceId);
+  const queryParams = {};
 
-  await waitForPaymentTransactionsToComplete(
-    programId,
-    registrationReferenceIds,
-    accessToken,
-    30_000,
-  );
+  if (fromDate) {
+    queryParams['fromDate'] = fromDate;
+  }
+
+  if (toDate) {
+    queryParams['toDate'] = toDate;
+  }
+
+  if (referenceId) {
+    queryParams['referenceId'] = referenceId;
+  }
+
+  return getServer()
+    .get(`/programs/${programId}/events`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send();
+}
+
+export async function getRegistrationEvents(
+  programId: number,
+  registrationId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/registrations/${registrationId}/events`)
+    .set('Cookie', [accessToken])
+    .send();
 }

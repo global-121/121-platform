@@ -4,6 +4,7 @@ import { Queue } from 'bull';
 import { Repository } from 'typeorm';
 import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
 import { LanguageEnum } from '../../registration/enum/language.enum';
+import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { getQueueName } from '../../utils/unit-test.helpers';
@@ -29,6 +30,7 @@ describe('QueueMessageService', () => {
   let messageQueue: jest.Mocked<Queue>;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
+  let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
@@ -36,6 +38,7 @@ describe('QueueMessageService', () => {
     queueMessageService = unit;
     messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
     programAttributesService = unitRef.get(ProgramAttributesService);
+    registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
     );
@@ -90,7 +93,7 @@ describe('QueueMessageService', () => {
     registration.programId = 1;
 
     const mockGetRegistrationDataValueByName = jest
-      .spyOn(registration, 'getRegistrationDataValueByName')
+      .spyOn(registrationDataService, 'getRegistrationDataValueByName')
       .mockResolvedValue(whatsappNumber);
 
     // Act

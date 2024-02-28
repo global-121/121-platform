@@ -8,7 +8,6 @@
     "confirm": "هل أنت متأكد؟",
     "error-with-message": "حدث خطأ ما: {{error}}",
     "export-error": "حدث خطأ ما في التصدير.",
-    "import-error": "حدث خطأ ما في الاستيراد.",
     "ok": "OK",
     "save": "أنقذ",
     "save-success": "تم الحفظ بنجاح",
@@ -18,6 +17,35 @@
     "update-success": "تم التحديث بنجاح"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(صورة)",
+      "content-type": {
+        "custom": "رسالة مخصصة",
+        "default-reply": "الرد الافتراضي",
+        "generic-templated": "إشعار الرسالة",
+        "included": "ادراج",
+        "inclusion-ended": "انتهى الإدراج",
+        "invited": "دعوة للتسجيل",
+        "payment": "دفع",
+        "payment-instructions": "تعليمات الدفع",
+        "payment-reminder": "تذكير الدفع",
+        "payment-templated": "إشعار الدفع",
+        "payment-voucher": "قسيمة الدفع",
+        "registered": "تسجيل",
+        "rejected": "رفض"
+      },
+      "error-code-prefix": "رمز الخطأ تويليو:",
+      "status": {
+        "delivered": "تسليم",
+        "failed": "فشل",
+        "read": "قرأ",
+        "sent": "ارسال"
+      },
+      "type": {
+        "sms": "الرسائل القصيرة",
+        "whatsapp": "واتس اب"
+      }
+    },
     "registration": {
       "status": {
         "completed": "اكمال",
@@ -191,10 +219,7 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "استيراد بيانات تسوية الدفعات",
-        "confirm-message": "استيراد بيانات تسوية الدفعات",
-        "explanation": "تأكد من تحميل بيانات التسوية تماما كما قدمها مزود الخدمة المالية.",
         "import-result": {
-          "mismatch": "كن حذرا: تم البدء في دفع <strong>{{countPaymentStarted}}</strong> <strong>للدفع #{{payment}}</strong>. تحتوي بيانات التسوية على <strong>دفعات {{countImported}}</strong>. لذلك ، لا يتطابق المبلغ الإجمالي في بيانات التسوية مع الدفعات التي بدأت. لاحظ أن جميع الدفعات التي ليس لها سجل نجاح في بيانات التسوية تعتبر دفعات فاشلة.",
           "new": "تم تحديث بيانات الدفع ل {{countTotal}} الأشخاص المتأثرين:<ul><li>{{countPaymentSuccess}} <strong>تم تنفيذ</strong>عمليات الدفع بنجاح <strong>{{countPaymentFailed}}</strong></li><li><strong></strong> فشلت المدفوعات <strong></strong></li></ul> <strong></strong>",
           "not-found": "كانت هناك <strong>{{countNotFound}}</strong> معاملة لم يتم العثور على شخص مطابق لها. حاول تصحيحها وتحميلها مرة أخرى.",
           "ready": "بيانات التسوية المستوردة <strong>للدفع #{{payment}}</strong>."
@@ -209,6 +234,7 @@
           "targeted": "PA مستهدف"
         },
         "state-explanation": {
+          "declined": "المناطق المحمية التي تم رفضها أثناء التحقق من الصحة.",
           "deleted": "PAs التي تم حذفها. <br> يمكن أن يشمل ذلك على سبيل المثال PAs المحذوفة بعد استيراد غير صحيح ، وكذلك PAs الذين تلقوا مدفوعات ، ولم يعد يتم تضمينهم ، ويتم حذفهم لاحقا بعد مرور بعض الوقت.",
           "imported": "PAs التي تم استيرادها ، بناء على رقم الهاتف.",
           "included": "PAs التي تم تضمينها. <br> سيتلقون مدفوعات بدءا من جولة الدفع / الدفع التالية.",
@@ -315,7 +341,7 @@
           "success": "ناجح",
           "waiting": "انتظار"
         },
-        "make-export": "تصدير بيانات الدفع",
+        "make-export-import": "بيانات الدفع",
         "make-payment": {
           "error": {
             "generic": "حدث خطأ ما في الدفع. يرجى الاتصال بالدعم الفني 121."
@@ -481,37 +507,7 @@
           "left": "باق"
         },
         "message-history-popup": {
-          "accordion-header": "نص الرسالة",
-          "chip-status": {
-            "delivered": "تسليم",
-            "failed": "فشل",
-            "read": "قرأ",
-            "sent": "ارسال"
-          },
-          "content-type": {
-            "custom": "رسالة مخصصة",
-            "default-reply": "الرد الافتراضي",
-            "generic-templated": "إشعار الرسالة",
-            "included": "ادراج",
-            "inclusion-ended": "انتهى الإدراج",
-            "invited": "دعوة للتسجيل",
-            "payment": "دفع",
-            "payment-instructions": "تعليمات الدفع",
-            "payment-reminder": "تذكير الدفع",
-            "payment-templated": "إشعار الدفع",
-            "payment-voucher": "قسيمة الدفع",
-            "registered": "تسجيل",
-            "rejected": "رفض"
-          },
-          "image-string": "(صورة)",
-          "message-title": "سجل الرسائل",
-          "status-line": {
-            "code": "رمز الخطأ تويليو: "
-          },
-          "type": {
-            "sms": "الرسائل القصيرة",
-            "whatsapp": "واتس اب"
-          }
+          "message-title": "سجل الرسائل"
         },
         "no-actions": "لا توجد إجراءات متاحة",
         "no-checkboxes": "لا يوجد حاليا أي أشخاص متأثرين يمكن تطبيق هذا الإجراء عليهم.",
@@ -661,12 +657,7 @@
       "actions": "الاجراءات",
       "activities": {
         "data-changes": {
-          "label": "تغيير البيانات",
-          "reason": "<br><b>السبب:</b> {{reason}}",
-          "values": "<b>قديم</b>: {{oldValue}}<br><b>جديد:</b> {{newValue}}"
-        },
-        "message": {
-          "label": "رسالة"
+          "label": "تغيير البيانات"
         },
         "note": {
           "label": "ملاحظه"

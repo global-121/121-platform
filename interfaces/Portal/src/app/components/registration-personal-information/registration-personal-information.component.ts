@@ -37,6 +37,8 @@ class TableItem {
   styleUrls: ['./registration-personal-information.component.scss'],
 })
 export class RegistrationPersonalInformationComponent implements OnInit {
+  public isDebug = !environment.production;
+
   @Input()
   public person: Person;
 

@@ -5,12 +5,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PaymentRowDetail, PayoutDetails } from 'src/app/models/payment.model';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
-import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
-import { StatusEnum } from './../../models/status.enum';
+import { environment } from '../../../environments/environment';
+import { RegistrationActivityDetailComponent } from '../../components/registration-activity-detail/registration-activity-detail.component';
+import { RegistrationActivity } from '../../models/registration-activity.model';
+import { RegistrationActivityDetailAccordionComponent } from '../registration-activity-detail-accordion/registration-activity-detail-accordion.component';
+
 @Component({
   selector: 'app-payment-history-popup',
   templateUrl: './payment-history-popup.component.html',
@@ -20,7 +22,8 @@ import { StatusEnum } from './../../models/status.enum';
     IonicModule,
     CommonModule,
     TranslateModule,
-    PaymentHistoryAccordionComponent,
+    RegistrationActivityDetailAccordionComponent,
+    RegistrationActivityDetailComponent,
   ],
 })
 export class PaymentHistoryPopupComponent implements OnInit {
@@ -31,7 +34,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public program: Program;
 
   @Input()
-  public paymentRows: PaymentRowDetail[] = [];
+  public paymentRows: RegistrationActivity[] = [];
 
   @Input()
   private canViewPersonalData = false;
@@ -54,14 +57,16 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public isInProgress = false;
   public paDisplayName: string;
   private programId: number;
-  private pastTransactions: Transaction[] = [];
+  public locale: string;
 
   constructor(
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private pastPaymentsService: PastPaymentsService,
-  ) {}
+  ) {
+    this.locale = this.translate.currentLang || environment.defaultLocale;
+  }
 
   async ngOnInit() {
     this.programId = this.program?.id;
@@ -76,11 +81,11 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
       );
-      this.pastTransactions = await this.programsService.getTransactions(
-        this.programId,
-        this.person?.referenceId,
+      this.paymentRows = await this.pastPaymentsService.getPaymentActivity(
+        this.program,
+        this.person,
+        this.canDoSinglePayment,
       );
-      this.fillPaymentRows();
       this.paymentRows.reverse();
     }
   }
@@ -123,61 +128,5 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.lastPaymentId,
       this.paymentInProgress,
     );
-  }
-
-  private fillPaymentRows() {
-    const nrOfPayments = this.program?.distributionDuration;
-    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
-
-    for (
-      let index = this.firstPaymentToShow;
-      index <= lastPaymentToShow;
-      index++
-    ) {
-      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
-        index,
-        this.person.referenceId,
-        this.pastTransactions,
-      );
-      let paymentRowValue: PaymentRowDetail = {
-        paymentIndex: index,
-        text: '',
-      };
-      if (!transaction) {
-        paymentRowValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.do-single-payment',
-        );
-      } else {
-        paymentRowValue = PaymentUtils.getPaymentRowInfo(
-          transaction,
-          this.program,
-          index,
-        );
-        if (transaction.status === StatusEnum.success) {
-          /* empty */
-        } else if (transaction.status === StatusEnum.waiting) {
-          paymentRowValue.errorMessage = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting-message',
-          );
-          paymentRowValue.waiting = true;
-        } else {
-          paymentRowValue.errorMessage = transaction.errorMessage;
-        }
-
-        paymentRowValue.status = transaction.status;
-      }
-      if (
-        paymentRowValue.transaction ||
-        PaymentUtils.enableSinglePayment(
-          paymentRowValue,
-          this.canDoSinglePayment,
-          this.person.status,
-          this.lastPaymentId,
-          false,
-        )
-      ) {
-        this.paymentRows.push(paymentRowValue);
-      }
-    }
   }
 }

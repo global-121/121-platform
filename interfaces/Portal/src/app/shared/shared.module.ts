@@ -10,6 +10,7 @@ import { LanguageSwitcherComponent } from '../components/language-switcher/langu
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
+import { RegistrationActivityDetailComponent } from '../components/registration-activity-detail/registration-activity-detail.component';
 import { SelectTypeaheadComponent } from '../components/select-typeahead/select-typeahead.component';
 import { StatusTableFilterComponent } from '../components/status-table-filter/status-table-filter.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
@@ -28,6 +29,7 @@ import { ImportFspReconciliationComponent } from '../program/import-fsp-reconcil
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { RegistrationActivityDetailAccordionComponent } from '../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
@@ -80,6 +82,8 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     PhaseNavigationComponent,
     SelectTypeaheadComponent,
     LanguageSwitcherComponent,
+    RegistrationActivityDetailComponent,
+    RegistrationActivityDetailAccordionComponent,
   ],
   exports: [
     BulkImportComponent,
@@ -113,6 +117,8 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TableFilterRowComponent,
     LanguageSwitcherComponent,
     ExportSelectComponent,
+    RegistrationActivityDetailComponent,
+    RegistrationActivityDetailAccordionComponent,
   ],
 })
 export class SharedModule {}

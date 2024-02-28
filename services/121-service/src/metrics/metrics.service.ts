@@ -25,13 +25,10 @@ import {
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from '../registration/registration-scoped.repository';
 import { RegistrationsService } from '../registration/registrations.service';
+import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '../registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { ScopedRepository } from '../scoped.repository';
 import { StatusEnum } from '../shared/enum/status.enum';
@@ -67,7 +64,6 @@ export class MetricsService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
   ) {}
@@ -78,8 +74,6 @@ export class MetricsService {
     userId: number,
     minPayment: number | null = null,
     maxPayment: number | null = null,
-    fromDate?: Date,
-    toDate?: Date,
     paginationQuery?: PaginateQuery,
   ): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
@@ -104,9 +98,6 @@ export class MetricsService {
       }
       case ExportType.cardBalances: {
         return this.getCardBalances(programId);
-      }
-      case ExportType.paDataChanges: {
-        return this.getPaDataChanges(programId, fromDate, toDate);
       }
     }
   }
@@ -826,6 +817,7 @@ export class MetricsService {
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
+    // The SUBSTRING() in the query below is to prevent an error within the XLSX library when the string is too long (32767 characters)
     const transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select([
@@ -835,7 +827,7 @@ export class MetricsService {
         'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
-        'transaction."errorMessage" as "errorMessage"',
+        'SUBSTRING(transaction."errorMessage", 1, 32000) as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
@@ -1373,25 +1365,6 @@ export class MetricsService {
     const data = await this.intersolveVisaExportService.getCards(programId);
     return {
       fileName: ExportType.cardBalances,
-      data,
-    };
-  }
-
-  private async getPaDataChanges(
-    programId: number,
-    fromDate?: any,
-    toDate?: any,
-  ): Promise<{
-    fileName: ExportType;
-    data: any[];
-  }> {
-    const data = await this.registrationChangeLogService.exportChangeLog(
-      programId,
-      fromDate,
-      toDate,
-    );
-    return {
-      fileName: ExportType.paDataChanges,
       data,
     };
   }

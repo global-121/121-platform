@@ -1,0 +1,61 @@
+<article
+  class="activity-detail ion-padding"
+  style="font-size: 0.875rem"
+>
+  <div class="activity-detail--icon ion-padding-end">
+    <ion-icon
+      [name]="getIconName(activity.type)"
+      size="large"
+      [attr.aria-hidden]="true"
+    ></ion-icon>
+  </div>
+  <div class="activity-detail--content">
+    <div
+      class="activity-detail--header util--flex-row ion-justify-content-between ion-align-items-baseline"
+    >
+      <span>
+        <strong>
+          {{ activity.label }}
+          <span *ngIf="activity.subLabel"> - {{ activity.subLabel }}</span>
+        </strong>
+
+        <span
+          *ngIf="activity.activityStatus"
+          [class]="
+            'activity-detail--status util--half-margin-start badge' +
+            ' is-' +
+            activity.type +
+            '-' +
+            activity.activityStatus
+          "
+        >
+          {{
+            'entity.' + activity.type + '.status.' + activity.activityStatus
+              | translate
+          }}
+        </span>
+      </span>
+
+      <span
+        *ngIf="activity.user"
+        class="activity-detail--user badge username util--overflow-ellipsis"
+        style="max-width: 20em"
+        [attr.title]="activity.user"
+      >
+        {{ activity.user }}
+      </span>
+    </div>
+    <div *ngIf="activity.date">
+      <ion-note color="medium">
+        <small>
+          <time [attr.datetime]="activity.date">
+            {{ activity.date | date: DateFormat.dayAndTimeReverse : locale }}
+          </time>
+        </small>
+      </ion-note>
+    </div>
+    <div class="activity-detail--body">
+      <ng-content select="[body]"></ng-content>
+    </div>
+  </div>
+</article>

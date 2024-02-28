@@ -1,4 +1,6 @@
-<ion-row class="ion-justify-content-between ion-align-items-center">
+<ion-row
+  class="ion-justify-content-between ion-align-items-center ion-margin-bottom"
+>
   <ion-text>
     <h1 class="ion-padding-start ion-no-margin">
       {{ 'registration-details.activity-overview.title' | translate }}
@@ -42,11 +44,14 @@
   </ng-container>
 </ion-row>
 
-<ion-card>
-  <ion-item
-    color="light"
-    lines="full"
-  >
+<div
+  style="
+    background-color: var(--fiveten-neutral-100);
+    border: 1px solid var(--fiveten-neutral-100);
+    border-radius: 0.25rem;
+  "
+>
+  <div>
     <ion-row style="width: 100%">
       <ion-col
         [size]="12"
@@ -76,91 +81,67 @@
         </div>
       </ion-col>
     </ion-row>
-  </ion-item>
-  <ion-card-content class="ion-no-padding">
-    <ion-list class="ion-no-padding">
-      <ion-item
-        *ngFor="let item of getFilteredActivityOverview()"
+  </div>
+  <div
+    class="ion-no-padding"
+    style="background-color: var(--fiveten-neutral-100)"
+  >
+    <ng-container *ngFor="let activity of getFilteredActivityOverview()">
+      <app-registration-activity-detail
+        [activity]="activity"
+        [locale]="locale"
+        class="ion-margin"
         style="
-          font-size: 14px;
-          --padding-start: 0;
-          --padding-end: 0;
-          --inner-padding-end: 0;
+          border: 1px solid var(--fiveten-neutral-200);
+          border-radius: 0.25rem;
+          background-color: var(--fiveten-neutral-000);
         "
       >
-        <ion-grid>
-          <!-- Other tabs -->
-          <ion-row *ngIf="item.type !== 'payment'">
-            <div class="ion-padding-horizontal">
-              <div style="height: 100%; display: flex; align-items: center">
-                <ion-icon
-                  [name]="getIconName(item.type)"
-                  size="large"
-                  [attr.aria-hidden]="true"
-                ></ion-icon>
-              </div>
-            </div>
-            <ion-col>
-              <ion-row class="ion-justify-content-between">
-                <ion-row>
-                  <ion-label class="ion-margin-end">
-                    <strong
-                      >{{ item.label | uppercase
-                      }}<span *ngIf="item.subLabel"> - </span>
-                      {{ item.subLabel }}</strong
-                    >
-                  </ion-label>
-                  <ion-note>
-                    <small>
-                      {{
-                        item.date | date: DateFormat.dayAndTimeReverse : locale
-                      }}
-                    </small>
-                  </ion-note>
-                </ion-row>
-              </ion-row>
-              <div>
-                <ion-text
-                  class="activity-overview--item--description"
-                  [innerHTML]="item.description"
-                ></ion-text>
-              </div>
-            </ion-col>
-
-            <ion-label
-              *ngIf="item.chipText"
-              class="ion-text-right ion-float-right"
-              ><ion-chip class="chip">
-                <b>
-                  {{ item.chipText }}
-                </b>
-              </ion-chip>
-            </ion-label>
-          </ion-row>
-
-          <!-- payments -->
-          <div
-            *ngIf="item.type === 'payment'"
-            style="width: 100%"
-          >
-            <!-- Accordion -->
-            <ion-accordion-group [multiple]="true">
-              <app-payment-history-accordion
-                [paymentRow]="item.paymentRowDetail"
-                [enableSinglePayment]="
-                  enableSinglePayment(item.paymentRowDetail)
-                "
-                [person]="person"
-                [program]="program"
-                [paymentRows]="enableSinglePayment(paymentRow)"
-                [canViewVouchers]="canViewVouchers"
-                [canDoSinglePayment]="canDoSinglePayment"
-                [lastPaymentId]="lastPaymentId"
-              ></app-payment-history-accordion>
-            </ion-accordion-group>
-          </div>
-        </ion-grid>
-      </ion-item>
-    </ion-list>
-  </ion-card-content>
-</ion-card>
+        <div
+          [ngSwitch]="activity.type"
+          body
+        >
+          <ng-container *ngSwitchCase="RegistrationActivityType.payment">
+            <app-registration-activity-detail-accordion
+              [activity]="activity"
+              [enableSinglePayment]="
+                enableSinglePayment(activity.paymentRowDetail)
+              "
+              [person]="person"
+              [program]="program"
+              [canViewVouchers]="canViewVouchers"
+              [canDoSinglePayment]="canDoSinglePayment"
+              [lastPaymentId]="lastPaymentId"
+            ></app-registration-activity-detail-accordion>
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.message">
+            <app-registration-activity-detail-accordion [activity]="activity">
+            </app-registration-activity-detail-accordion>
+          </ng-container>
+          <ng-container *ngSwitchCase="RegistrationActivityType.changeData">
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.old'
+                | translate
+            }}</strong
+            >{{ activity.description.oldValue }}<br />
+            <strong>{{
+              'registration-details.activity-overview.activities.data-changes.new'
+                | translate
+            }}</strong
+            >{{ activity.description.newValue }}<br />
+            <ng-container *ngIf="activity.description.reason">
+              <strong>{{
+                'registration-details.activity-overview.activities.data-changes.reason'
+                  | translate
+              }}</strong
+              >{{ activity.description.reason }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngSwitchDefault>{{
+            activity.description
+          }}</ng-container>
+        </div>
+      </app-registration-activity-detail>
+    </ng-container>
+  </div>
+</div>

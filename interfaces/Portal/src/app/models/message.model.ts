@@ -4,11 +4,13 @@ export class Message {
   body: string;
   created: string;
   from: string;
-  mediaurl: string;
+  mediaUrl: string;
   to: string;
   type: string;
   contentType: string;
   errorCode: string;
+  status: TwilioStatus;
+  messageStatus: MessageStatus;
 }
 
 export enum TwilioStatus {

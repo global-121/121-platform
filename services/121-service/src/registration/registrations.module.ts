@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
+import { EventsModule } from '../events/events.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
@@ -25,19 +26,18 @@ import { ProgramModule } from '../programs/programs.module';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
+import { FileImportService } from '../utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
-import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
+import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
+import { RegistrationUtilsModule } from './modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from './registration-data.entity';
-import {
-  RegistrationScopedRepository,
-  RegistrationViewScopedRepository,
-} from './registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkHelperService } from './services/registrations-bulk-helper.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
@@ -68,7 +68,9 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     FspModule,
     QueueMessageModule,
     IntersolveVisaModule,
-    RegistrationChangeLogModule,
+    RegistrationDataModule,
+    RegistrationUtilsModule,
+    EventsModule,
   ],
   providers: [
     RegistrationsService,
@@ -81,10 +83,10 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     RegistrationsBulkHelperService,
+    FileImportService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
-    createScopedRepositoryProvider(RegistrationChangeLogEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(NoteEntity),

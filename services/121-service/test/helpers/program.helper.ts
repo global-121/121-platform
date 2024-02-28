@@ -129,6 +129,15 @@ export async function retryPayment(
     });
 }
 
+export async function getProgramPaymentsStatus(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/payments/status`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function getTransactions(
   programId: number,
   paymentNr: number,
@@ -150,6 +159,37 @@ export async function getFspInstructions(
     .get(`/programs/${programId}/payments/${paymentNr}/fsp-instructions`)
     .set('Cookie', [accessToken])
     .query({ format: 'json' });
+}
+
+export async function importFspReconciliationData(
+  programId: number,
+  paymentNr: number,
+  accessToken: string,
+  reconciliationData: object[],
+): Promise<request.Response> {
+  const csvString = jsonArrayToCsv(reconciliationData);
+  const buffer = Buffer.from(csvString, 'utf-8');
+  return await getServer()
+    .post(`/programs/${programId}/payments/${paymentNr}/fsp-reconciliation`)
+    .set('Cookie', [accessToken])
+    .field('Content-Type', 'multipart/form-data')
+    .attach('file', buffer, 'reconciliation.csv');
+}
+
+function jsonArrayToCsv(json: object[]): string {
+  const fields = Object.keys(json[0]);
+  const replacer = function (_key, value): string | number {
+    return value === null ? '' : value;
+  };
+  const csv = json.map(function (row): string {
+    return fields
+      .map(function (fieldName): string {
+        return JSON.stringify(row[fieldName], replacer);
+      })
+      .join(',');
+  });
+  csv.unshift(fields.join(',')); // add header column
+  return csv.join('\r\n');
 }
 
 export async function getFspConfiguration(

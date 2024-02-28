@@ -1,4 +1,5 @@
-import { AfterViewChecked, Component, Input } from '@angular/core';
+import { AfterViewChecked, Component, Input, ViewChild } from '@angular/core';
+import { IonPopover } from '@ionic/angular';
 import { ExportType } from '../../models/export-type.model';
 import { ProgramPhase } from '../../models/program.model';
 
@@ -19,6 +20,8 @@ export class ExportSelectComponent implements AfterViewChecked {
 
   public isPopoverOpen = false;
 
+  @ViewChild(IonPopover) popover: IonPopover;
+
   public options = [
     ExportType.filteredTable,
     ExportType.allPeopleAffected,
@@ -36,5 +39,11 @@ export class ExportSelectComponent implements AfterViewChecked {
 
   public togglePopover() {
     this.isPopoverOpen = !this.isPopoverOpen;
+  }
+
+  public closePopover() {
+    if (this.popover) {
+      this.popover.dismiss();
+    }
   }
 }

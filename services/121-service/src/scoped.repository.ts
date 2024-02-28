@@ -18,7 +18,7 @@ import {
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { RegistrationEntity } from './registration/registration.entity';
-import { RequestWithScope } from './shared/middleware/scope.middleware';
+import { ScopedUserRequest } from './shared/middleware/scope-user.middleware';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
@@ -58,7 +58,7 @@ export class ScopedRepository<T> {
   constructor(
     target: EntityTarget<T>,
     @InjectDataSource() dataSource: DataSource,
-    @Inject(REQUEST) private request: RequestWithScope,
+    @Inject(REQUEST) private request: ScopedUserRequest,
   ) {
     this.repository = dataSource.createEntityManager().getRepository(target);
 

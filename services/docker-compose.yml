@@ -4,6 +4,10 @@ services:
     image: 'postgres:14'
     init: true
     container_name: 121db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DBNAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - './postgresql.conf:/etc/postgresql.conf'
       - './init.sql:/docker-entrypoint-initdb.d/init.sql'

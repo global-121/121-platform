@@ -4,20 +4,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramModule } from '../programs/programs.module';
+import { RegistrationDataModule } from '../registration/modules/registration-data/registration-data.module';
+import { RegistrationUtilsModule } from '../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationScopedRepository } from '../registration/registration-scoped.repository';
 import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
+import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
 import { InclusionScoreService } from '../registration/services/inclusion-score.service';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { UserModule } from '../user/user.module';
+import { FileImportService } from '../utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
 import { BelcashModule } from './fsp-integration/belcash/belcash.module';
@@ -49,7 +51,6 @@ import { TransactionsModule } from './transactions/transactions.module';
     UserModule,
     HttpModule,
     ActionModule,
-    FspModule,
     IntersolveVoucherModule,
     IntersolveVisaModule,
     IntersolveJumboModule,
@@ -64,12 +65,15 @@ import { TransactionsModule } from './transactions/transactions.module';
     CommercialBankEthiopiaModule,
     RegistrationsModule,
     ProgramModule,
+    RegistrationUtilsModule,
+    RegistrationDataModule,
   ],
   providers: [
     PaymentsService,
     LookupService,
     InclusionScoreService,
     RegistrationScopedRepository,
+    FileImportService,
     AzureLogService,
     createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),

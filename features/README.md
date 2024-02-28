@@ -47,7 +47,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Make a new payment](121-Portal/Make_new_payment.feature)
 - [View last payment overview](121-Portal/View_last_payment_overview.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
-- [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
+- [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export.feature)
 - [Export unused vouchers](121-Portal/Export_unused_vouchers.feature)
 - [Export Intersolve Visa cards](121-Portal/Export_Intersolve_Visa_cards.feature)
 - Get voucher balance
@@ -114,11 +114,11 @@ Using application such as EspoCRM to call our API
 - [Update program](Admin-user/Update_program.feature)
 - [Export Intersolve vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
 - [Sync Intersolve Visa Customer](Admin-user/Sync_Intersolve_Visa_Customer.feature)
+- [Load seed data](Admin-user/Load_seed_data.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update instance
 - Add/update Intersolve instructions image
-- Load seed data
 - Create new aidworker user and manage assignment to program
 - Delete user
 

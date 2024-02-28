@@ -180,6 +180,7 @@ export class ConfirmPromptComponent {
           subHeader: this.subHeader,
           message: this.message,
           inputProps: this.inputProps,
+          action: this.action,
         },
       });
     }

@@ -41,6 +41,7 @@ import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
+import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
 import { RetryPaymentDto } from './dto/retry-payment.dto';
 import { PaymentsService } from './payments.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
@@ -65,6 +66,22 @@ export class PaymentsController {
   public async getPayments(@Param() params): Promise<any> {
     // TODO: REFACTOR: use a DTO to define stable structure of result body
     return await this.paymentsService.getPayments(Number(params.programId));
+  }
+
+  @Permissions(PermissionEnum.PaymentREAD)
+  @ApiOperation({ summary: 'Get current status of all payments for program. ' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Status of all payments for program',
+  })
+  @Get('programs/:programId/payments/status')
+  public async getPaymentStatus(
+    @Param() params,
+  ): Promise<ProgramPaymentsStatusDto> {
+    return await this.paymentsService.getProgramPaymentsStatus(
+      Number(params.programId),
+    );
   }
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
@@ -227,7 +244,6 @@ export class PaymentsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
-  @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
   @ApiResponse({
     status: 201,
     description:
@@ -240,14 +256,12 @@ export class PaymentsController {
   public async importFspReconciliationData(
     @UploadedFile() file,
     @Param() params,
-    @Query() query,
     @User('id') userId: number,
   ): Promise<ImportResult> {
     return await this.paymentsService.importFspReconciliationData(
       file,
       Number(params.programId),
       Number(params.payment),
-      query.fspIds.split(','),
       userId,
     );
   }

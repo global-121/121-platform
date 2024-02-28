@@ -8,7 +8,6 @@
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
-    "import-error": "Something went wrong with the import.",
     "ok": "OK",
     "save": "Save",
     "save-success": "Saved successfully",
@@ -18,6 +17,43 @@
     "update-success": "Update successful"
   },
   "entity": {
+    "message": {
+      "body-image-placeholder": "(image)",
+      "content-type": {
+        "custom": "Custom message",
+        "default-reply": "Default reply",
+        "generic-templated": "Message notification",
+        "included": "Inclusion",
+        "inclusion-ended": "Inclusion ended",
+        "invited": "Invitation for registration",
+        "payment": "Payment",
+        "payment-instructions": "Payment instructions",
+        "payment-reminder": "Payment reminder",
+        "payment-templated": "Payment notification",
+        "payment-voucher": "Payment voucher",
+        "registered": "Registration",
+        "rejected": "Rejection"
+      },
+      "error-code-prefix": "Twilio error code:",
+      "status": {
+        "delivered": "Delivered",
+        "failed": "Failed",
+        "read": "Read",
+        "sent": "Sent"
+      },
+      "type": {
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
+      }
+    },
+    "payment": {
+      "status": {
+        "error": "Failed",
+        "not-yet-sent": "Not yet sent",
+        "success": "Successful",
+        "waiting": "Waiting"
+      }
+    },
     "registration": {
       "status": {
         "completed": "Completed",
@@ -192,10 +228,9 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "Import Payment Reconciliation Data",
-        "confirm-message": "Import Payment Reconciliation Data",
-        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "confirm-message": "Import reconciliation data of payment #{{payment}}",
+        "explanation": "Please note:<ul><li>Uploading a new file will overwrite data from previously uploaded files.</li><li>Doublecheck that the file matches the selected payment number (payment <strong>#{{payment}}</strong>) before clicking OK.</li></ul>",
         "import-result": {
-          "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
           "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
           "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again.",
           "ready": "Reconciliation data imported for payment <strong>#{{payment}}</strong>."
@@ -210,6 +245,7 @@
           "targeted": "PA Targeted"
         },
         "state-explanation": {
+          "declined": "PAs that were declined during validataion.",
           "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time.",
           "imported": "PAs that were imported, based on phone-number.",
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
@@ -316,7 +352,7 @@
           "success": "Successful",
           "waiting": "Waiting"
         },
-        "make-export": "Export payment data",
+        "make-export-import": "Payment data",
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact 121 technical support."
@@ -486,37 +522,7 @@
           "left": "remaining"
         },
         "message-history-popup": {
-          "accordion-header": "Message text",
-          "chip-status": {
-            "delivered": "Delivered",
-            "failed": "Failed",
-            "read": "Read",
-            "sent": "Sent"
-          },
-          "content-type": {
-            "custom": "Custom message",
-            "default-reply": "Default reply",
-            "generic-templated": "Message notification",
-            "included": "Inclusion",
-            "inclusion-ended": "Inclusion ended",
-            "invited": "Invitation for registration",
-            "payment": "Payment",
-            "payment-instructions": "Payment instructions",
-            "payment-reminder": "Payment reminder",
-            "payment-templated": "Payment notification",
-            "payment-voucher": "Payment voucher",
-            "registered": "Registration",
-            "rejected": "Rejection"
-          },
-          "image-string": "(image)",
-          "message-title": "Message History",
-          "status-line": {
-            "code": "Twilio error code: "
-          },
-          "type": {
-            "sms": "SMS",
-            "whatsapp": "WhatsApp"
-          }
+          "message-title": "Message History"
         },
         "no-actions": "No actions available",
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
@@ -668,11 +674,12 @@
       "activities": {
         "data-changes": {
           "label": "Data change",
-          "reason": "<br><b>Reason:</b> {{reason}}",
-          "values": "<b>Old:</b> {{oldValue}}<br><b>New:</b> {{newValue}}"
+          "new": "New: ",
+          "old": "Old: ",
+          "reason": "Reason: "
         },
-        "message": {
-          "label": "Message"
+        "fsp-change": {
+          "label": "Financial service provider change"
         },
         "note": {
           "label": "Note"
