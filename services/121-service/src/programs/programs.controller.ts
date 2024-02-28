@@ -71,7 +71,7 @@ export class ProgramController {
     if (formatCreateProgramDto) {
       return this.programService.getCreateProgramDto(params.programId, userId);
     } else {
-      return await this.programService.findProgramOrThrow(
+      return await this.programService.findOne(
         Number(params.programId),
         userId,
       );

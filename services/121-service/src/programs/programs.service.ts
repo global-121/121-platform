@@ -9,6 +9,7 @@ import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '../shared/const';
+import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserService } from '../user/user.service';
@@ -26,7 +27,7 @@ import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configur
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
-import { ProgramsRO } from './program.interface';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -49,7 +50,7 @@ export class ProgramService {
     private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
-  public async findProgramOrThrow(
+  public async findOne(
     programId: number,
     userId?: number,
   ): Promise<ProgramEntity> {
@@ -73,31 +74,27 @@ export class ProgramService {
       where: { id: programId },
       relations: relations,
     });
-    if (!program) {
-      const errors = `No program found with id ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (program) {
+      program.editableAttributes =
+        await this.programAttributesService.getPaEditableAttributes(program.id);
+      program['paTableAttributes'] =
+        await this.programAttributesService.getAttributes(
+          program.id,
+          true,
+          true,
+          true,
+          false,
+        );
+
+      // TODO: Get these attributes from some enum or something
+      program['filterableAttributes'] =
+        this.programAttributesService.getFilterableAttributes(program);
+
+      if (!includeMetricsUrl) {
+        delete program.monitoringDashboardUrl;
+        delete program.evaluationDashboardUrl;
+      }
     }
-
-    program.editableAttributes =
-      await this.programAttributesService.getPaEditableAttributes(program.id);
-    program['paTableAttributes'] =
-      await this.programAttributesService.getAttributes(
-        program.id,
-        true,
-        true,
-        true,
-        false,
-      );
-
-    // TODO: Get these attributes from some enum or something
-    program['filterableAttributes'] =
-      this.programAttributesService.getFilterableAttributes(program);
-
-    if (!includeMetricsUrl) {
-      delete program.monitoringDashboardUrl;
-      delete program.evaluationDashboardUrl;
-    }
-
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
   }
@@ -106,7 +103,7 @@ export class ProgramService {
     programId: number,
     userId: number,
   ): Promise<CreateProgramDto> {
-    const programEntity = await this.findProgramOrThrow(programId, userId);
+    const programEntity = await this.findOne(programId, userId);
     if (!programEntity) {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -393,7 +390,8 @@ export class ProgramService {
     programId: number,
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    // TODO: REFACTOR: combine .findOne and .findProgramOrThrow into one function? Yes, use .findOne and throw exception if not found.
+    const program = await this.findOne(programId);
 
     // If nothing to update, raise a 400 Bad Request.
     if (Object.keys(updateProgramDto).length === 0) {
@@ -444,6 +442,17 @@ export class ProgramService {
 
     // TODO: REFACTOR: use respone DTO
     return savedProgram;
+  }
+
+  public async findProgramOrThrow(programId): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
+    if (!program) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return program;
   }
 
   public async updateProgramCustomAttributes(
@@ -610,6 +619,59 @@ export class ProgramService {
     return await this.programQuestionRepository.remove(programQuestion);
   }
 
+  public async changePhase(
+    programId: number,
+    newPhase: ProgramPhase,
+  ): Promise<SimpleProgramRO> {
+    const oldPhase = (await this.programRepository.findOneBy({ id: programId }))
+      .phase;
+    await this.changeProgramValue(programId, {
+      phase: newPhase,
+    });
+    const changedProgram = await this.findOne(programId);
+    if (
+      oldPhase === ProgramPhase.design &&
+      newPhase === ProgramPhase.registrationValidation
+    ) {
+      await this.publish(programId);
+    }
+    return this.buildProgramRO(changedProgram);
+  }
+
+  public async publish(programId: number): Promise<SimpleProgramRO> {
+    const selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == true) {
+      const errors = { Program: ' already published' };
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    await this.changeProgramValue(programId, { published: true });
+
+    const changedProgram = await this.findOne(programId);
+    return await this.buildProgramRO(changedProgram);
+  }
+
+  private async changeProgramValue(
+    programId: number,
+    change: object,
+  ): Promise<void> {
+    await this.programRepository
+      .createQueryBuilder()
+      .update(ProgramEntity)
+      .set(change)
+      .where('id = :id', { id: programId })
+      .execute();
+  }
+
+  private buildProgramRO(program: ProgramEntity): SimpleProgramRO {
+    const simpleProgramRO = {
+      id: program.id,
+      titlePortal: program.titlePortal,
+      phase: program.phase,
+    };
+
+    return simpleProgramRO;
+  }
+
   public async getAllRelationProgram(
     programId: number,
   ): Promise<RegistrationDataInfo[]> {
@@ -642,12 +704,10 @@ export class ProgramService {
       });
     }
 
-    const fspAttributes = await this.fspAttributeRepository.find({
+    const programFspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp', 'fsp.program'],
+      where: { fsp: { program: { id: programId } } },
     });
-    const programFspAttributes = fspAttributes.filter((a) =>
-      a.fsp.program.map((p) => p.id).includes(programId),
-    );
 
     for (const attribute of programFspAttributes) {
       relations.push({
