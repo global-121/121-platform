@@ -8,8 +8,8 @@ import {
 } from './twilio.dto';
 import { API_PATHS, EXTERNAL_API } from '../config';
 import { lastValueFrom } from 'rxjs';
-import { setTimeout } from 'node:timers/promises';
 import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
+import { timeoutQueue as setTimeoutQueue } from '../utils/timout.helpers';
 
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {
@@ -29,7 +29,7 @@ export class TwilioService {
     if (!phoneNumber) {
       phoneNumber = '+31600000000';
     }
-    await setTimeout(400); // This is the average time of an actual twilio lookup
+    await setTimeoutQueue(400); // This is the average time of an actual twilio lookup
     return {
       phone_number: phoneNumber,
       national_format: phoneNumber,
@@ -172,7 +172,7 @@ export class TwilioService {
     for (const status of statuses) {
       const modifiedResponse = { ...response };
       modifiedResponse.status = status;
-      await setTimeout(30); // ensure order and some delay so that initial api-response is stored in 121-db
+      await setTimeoutQueue(30); // ensure order and some delay so that initial api-response is stored in 121-db
       this.sendStatusResponse121(
         twilioMessagesCreateDto,
         messageSid,
@@ -220,7 +220,7 @@ export class TwilioService {
       twilioMessagesCreateDto.From &&
       twilioMessagesCreateDto.From.includes('whatsapp')
     ) {
-      await setTimeout(1000);
+      await setTimeoutQueue(1000)
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;

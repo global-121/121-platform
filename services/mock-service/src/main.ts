@@ -17,6 +17,17 @@ import {
   SWAGGER_CUSTOM_JS,
 } from './config';
 
+declare global {
+  namespace NodeJS {
+    interface Global {
+      queueCallbacks: { [key: string]: string };
+    }
+  }
+}
+
+global.queueCallbacks = {};
+
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 

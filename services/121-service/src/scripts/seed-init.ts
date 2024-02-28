@@ -16,6 +16,7 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
+import { CustomHttpService } from '../shared/services/custom-http.service';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -32,11 +33,11 @@ export class SeedInit implements InterfaceScript {
     private dataSource: DataSource,
     private readonly seedHelper: SeedHelper,
     private readonly queueSeedHelper: QueueSeedHelperService,
-    // @Inject(REDIS_CLIENT)
-    // private readonly redisClient: Redis,
+    private readonly httpService: CustomHttpService,
   ) {}
 
   public async run(isApiTests?: boolean): Promise<void> {
+    await this.clearCallbacksMockService();
     if (isApiTests) {
       // Only truncate tables when running the API tests, since API Tests are run asynchronously, it may run into a situation where the migrations are still running and a table does not exist yet.
       await this.truncateAll();
@@ -53,6 +54,14 @@ export class SeedInit implements InterfaceScript {
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
     await this.seedFsp();
+  }
+
+  private async clearCallbacksMockService(): Promise<void> {
+    if (process.env.NODE_ENV === 'development') {
+      await this.httpService.get(
+        `${process.env.MOCK_SERVICE_URL}api/reset/callbacks`,
+      );
+    }
   }
 
   private async clearRedisData(): Promise<void> {
