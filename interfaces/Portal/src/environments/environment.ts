@@ -19,4 +19,8 @@ export const environment = {
   ai_endpoint: '',
 
   twilio_error_codes_url: 'https://www.twilio.com/docs/api/errors',
+
+  // Azure AD
+  azure_ad_client_id: '',
+  azure_ad_tenant_id: '',
 };

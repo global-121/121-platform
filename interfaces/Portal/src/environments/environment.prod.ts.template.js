@@ -18,5 +18,9 @@ export const environment = {
   ai_endpoint: '${process.env.NG_AI_ENDPOINT || ''}',
 
   twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL || ''}'
+  
+  // Azure AD
+  azure_ad_client_id: '${process.env.AZURE_ENTRA_CLIENT_ID || ''}',
+  azure_ad_tenant_id: '${process.env.AZURE_ENTRA_TENANT_ID || ''}',
 };
 `;

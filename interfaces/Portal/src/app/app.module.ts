@@ -92,11 +92,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     MsalModule.forRoot(
       new PublicClientApplication({
-        // MSAL Configuration
         auth: {
-          clientId: '81329ff8-25f7-47b4-b4ae-ae12d17a47a4',
-          authority:
-            'https://dfffb37a-55a4-4919-9c93-7028d115eac2.ciamlogin.com/dfffb37a-55a4-4919-9c93-7028d115eac2/v2.0',
+          clientId: environment.azure_ad_client_id,
+          authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
           redirectUri: 'http://localhost:8888/home',
         },
         cache: {
@@ -123,10 +121,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
       {
         protectedResourceMap: new Map([
-          ['https://graph.microsoft.com/v1.0/me', ['openid, offline_access']],
+          [
+            'https://graph.microsoft.com/v1.0/me',
+            ['openid, offline_access, User.read'],
+          ],
           [
             'http://localhost:3000/api/programs/assigned/*',
-            ['api://81329ff8-25f7-47b4-b4ae-ae12d17a47a4/User.Read'],
+            [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
         interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
