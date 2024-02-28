@@ -40,6 +40,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
+import { ProgramReturnDto } from './dto/program-return.dto';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
@@ -65,7 +66,7 @@ export class ProgramController {
     @Param() params,
     @Query() queryParams,
     @User('id') userId: number,
-  ): Promise<ProgramEntity | CreateProgramDto> {
+  ): Promise<ProgramEntity | ProgramReturnDto> {
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
@@ -150,12 +151,17 @@ export class ProgramController {
 
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update program' })
+  @ApiResponse({
+    status: 200,
+    description: 'Representation of updated program',
+    type: ProgramReturnDto,
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch(':programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProgramReturnDto> {
     return await this.programService.updateProgram(
       Number(params.programId),
       updateProgramDto,
