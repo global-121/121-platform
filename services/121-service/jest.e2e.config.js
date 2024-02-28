@@ -14,7 +14,7 @@ module.exports = {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
   testTimeout: 30_000,
-  randomize: false, // TODO: Some tests still depend on the order, but should not. Toggle locally to test + fix.
+  randomize: true,
   verbose: true,
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
 };
