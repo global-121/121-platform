@@ -1,6 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
+import { UserType } from '../user/user-type-enum';
+import { UserService } from '../user/user.service';
+import { generateRandomString } from '../utils/getRandomValue.helper';
 
 const config = {
   credentials: {
@@ -27,7 +30,7 @@ export class AzureAdStrategy extends PassportStrategy(
   BearerStrategy,
   'azure-ad',
 ) {
-  constructor() {
+  constructor(private readonly userService: UserService) {
     super({
       identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
       issuer: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}`,
@@ -46,7 +49,23 @@ export class AzureAdStrategy extends PassportStrategy(
     if (!profile) {
       throw new UnauthorizedException();
     }
-    profile.id = 1;
+
+    const existing121User = await this.userService.findByUsername(
+      profile.email,
+    );
+    console.log('existing121User: ', existing121User);
+    if (existing121User) {
+      profile.id = existing121User.user.id;
+      return profile;
+    }
+
+    const password = generateRandomString(16);
+    const newUser = await this.userService.create(
+      profile.email,
+      password,
+      UserType.aidWorker,
+    );
+    profile.id = newUser.user.id;
     return profile;
   }
 }

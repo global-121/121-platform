@@ -63,6 +63,7 @@ export class UserService {
     const token = this.generateJWT(userEntity);
     const user: UserRO = {
       user: {
+        id: userEntity.id,
         username,
         token,
         permissions,
