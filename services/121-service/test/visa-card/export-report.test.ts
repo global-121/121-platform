@@ -19,7 +19,7 @@ describe('Export Visa debit card report', () => {
   const amount = 25;
 
   const registrationVisa = {
-    referenceId: '2982g82bdsf89sdsd',
+    referenceId: 'registration-visa-export-1',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     firstName: 'Jane',
