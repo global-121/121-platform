@@ -9,7 +9,7 @@ import {
 import { API_PATHS, EXTERNAL_API } from '../config';
 import { lastValueFrom } from 'rxjs';
 import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
-import { timeoutQueue as setTimeoutQueue } from '../utils/timout.helpers';
+import { createCancelableTimout as setTimeoutQueue } from '../utils/timout.helpers';
 
 // Use any other phone-number to trigger a successful response
 enum MockPhoneNumbers {

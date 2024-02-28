@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 
-export async function timeoutQueue(ms: number): Promise<void> {
+export async function createCancelableTimout(ms: number): Promise<void> {
   const randomString = Math.random().toString(36).substring(2, 15);
   global.queueCallbacks[randomString] = 'timout'
   await setTimeout(ms);
@@ -8,6 +8,6 @@ export async function timeoutQueue(ms: number): Promise<void> {
     delete global.queueCallbacks[randomString];
     return
   } else {
-    throw new Error('Timeout');
+    throw new Error(`This queue has been cancelled. {${randomString}`);
   }
 }
