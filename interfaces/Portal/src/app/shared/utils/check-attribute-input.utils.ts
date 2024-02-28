@@ -17,8 +17,15 @@ export class CheckAttributeInputUtils {
       }
       // text without pattern: correct
       return true;
+    } else if (type === AnswerType.Number) {
+      if (value) {
+        // number filled: correct
+        return true;
+      }
+      // number empty: false
+      return false;
     }
-    // not text: correct
+    // not text/number: correct
     return true;
   }
 }
