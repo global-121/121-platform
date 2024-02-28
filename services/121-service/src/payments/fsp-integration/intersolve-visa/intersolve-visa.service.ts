@@ -1,13 +1,16 @@
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -81,6 +84,9 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -607,9 +613,13 @@ export class IntersolveVisaService
         },
       ];
     }
+
+    const brandCode = await this.getBrandcodeForProgram(
+      visaCustomer.registration.programId,
+    );
     const createWalletResult = await this.intersolveVisaApiService.createWallet(
       createWalletPayload,
-      visaCustomer?.registration?.programId,
+      brandCode,
     );
     return createWalletResult;
   }
@@ -624,6 +634,24 @@ export class IntersolveVisaService
       },
       walletEntity.tokenCode,
     );
+  }
+
+  private async getBrandcodeForProgram(programId: number): Promise<string> {
+    const brandCodeConfig =
+      await this.programFspConfigurationRepository.findOne({
+        where: {
+          programId: programId,
+          name: FspConfigurationEnum.brandCode,
+          fsp: { fsp: FspName.intersolveVisa },
+        },
+        relations: ['fsp'],
+      });
+    if (!brandCodeConfig) {
+      throw new Error(
+        `No brandCode found for program ${programId}. Please update the program FSP cofinguration.`,
+      );
+    }
+    return brandCodeConfig?.value;
   }
 
   private async createDebitCard(

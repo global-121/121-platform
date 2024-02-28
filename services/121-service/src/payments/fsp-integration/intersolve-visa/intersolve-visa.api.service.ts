@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Issuer, TokenSet } from 'openid-client';
-import { Repository } from 'typeorm';
-import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import {
   IntersolveBlockWalletDto,
@@ -30,9 +26,6 @@ const intersolveVisaApiUrl = process.env.INTERSOLVE_VISA_API_URL;
 @Injectable()
 export class IntersolveVisaApiService {
   public tokenSet: TokenSet;
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly intersolveVisaApiMockService: IntersolveVisaApiMockService,
@@ -97,32 +90,22 @@ export class IntersolveVisaApiService {
 
   public async createWallet(
     payload: IntersolveCreateWalletDto,
-    programId: number,
+    brandCode: string,
   ): Promise<IntersolveCreateWalletResponseDto> {
+    const authToken = await this.getAuthenticationToken();
+    const apiPath = process.env.INTERSOLVE_VISA_PROD
+      ? 'pointofsale-payments'
+      : 'pointofsale';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.createWalletMock(
         payload.reference,
       );
     } else {
-      const authToken = await this.getAuthenticationToken();
-      const apiPath = process.env.INTERSOLVE_VISA_PROD
-        ? 'pointofsale-payments'
-        : 'pointofsale';
-      const brandCodeConfig =
-        await this.programFspConfigurationRepository.findOne({
-          where: {
-            programId: programId,
-            name: FspConfigurationEnum.brandCode,
-            fsp: { fsp: FspName.intersolveVisa },
-          },
-          relations: ['fsp'],
-        });
-      const brandCode = brandCodeConfig?.value;
-      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
-      const headers = [
-        { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-      ];
       return await this.httpService.post<IntersolveCreateWalletResponseDto>(
         url,
         payload,
