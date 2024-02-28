@@ -391,6 +391,7 @@ export class IntersolveVisaService
       const createWalletResult = await this.createWallet(
         visaCustomer,
         calculatedAmount,
+        registration.programId,
       );
 
       // if error, return error
@@ -599,6 +600,7 @@ export class IntersolveVisaService
   private async createWallet(
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
+    programId: number,
   ): Promise<IntersolveCreateWalletResponseDto> {
     const amountInCents = Math.round(calculatedAmount * 100);
     const createWalletPayload = new IntersolveCreateWalletDto();
@@ -614,9 +616,7 @@ export class IntersolveVisaService
       ];
     }
 
-    const brandCode = await this.getBrandcodeForProgram(
-      visaCustomer.registration.programId,
-    );
+    const brandCode = await this.getBrandcodeForProgram(programId);
     const createWalletResult = await this.intersolveVisaApiService.createWallet(
       createWalletPayload,
       brandCode,
@@ -1215,6 +1215,7 @@ export class IntersolveVisaService
     const createWalletResult = await this.createWallet(
       visaCustomer,
       currentBalance / 100,
+      programId,
     );
     if (!createWalletResult.data?.success) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
