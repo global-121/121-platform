@@ -163,7 +163,7 @@ export class UpdateFspComponent implements OnInit {
   private checkAttributesCorrectlyFilled() {
     for (const attr of this.selectedFspAttributes) {
       if (
-        CheckAttributeInputUtils.isAttributeWronglyFilled(
+        !CheckAttributeInputUtils.isAttributeCorrectlyFilled(
           attr.type,
           attr.pattern,
           this.attributesToSave[attr.name],

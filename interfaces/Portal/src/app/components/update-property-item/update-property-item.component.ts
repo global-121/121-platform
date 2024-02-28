@@ -140,7 +140,7 @@ export class UpdatePropertyItemComponent implements OnInit {
       // value is same as initially
       String(this.propertyModel) === String(this.value) ||
       // value is invalid
-      CheckAttributeInputUtils.isAttributeWronglyFilled(
+      !CheckAttributeInputUtils.isAttributeCorrectlyFilled(
         this.type,
         this.pattern,
         this.propertyModel,
