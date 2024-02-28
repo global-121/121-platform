@@ -1,10 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsArray, IsOptional, IsBoolean, IsDateString, IsDefined, IsNotEmpty, IsNumber, IsString, Length, ValidateNested } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsDefined,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateNested,
+} from 'class-validator';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { CustomAttributeType, CreateProgramCustomAttributeDto } from './create-program-custom-attribute.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CustomAttributeType,
+} from './create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from './program-question.dto';
 
 export class ProgramFinancialServiceProviderDto {
@@ -291,6 +306,4 @@ export class CreateProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
-
-
- }
+}

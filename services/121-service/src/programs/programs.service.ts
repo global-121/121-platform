@@ -21,13 +21,13 @@ import {
   CreateProgramQuestionDto,
   UpdateProgramQuestionDto,
 } from './dto/program-question.dto';
+import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
-import { ProgramReturnDto } from './dto/program-return.dto';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -113,7 +113,8 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const programDto: ProgramReturnDto = this.fillProgramReturnDto(programEntity);
+    const programDto: ProgramReturnDto =
+      this.fillProgramReturnDto(programEntity);
     return programDto;
   }
 
@@ -370,12 +371,13 @@ export class ProgramService {
       );
     }
 
-    const programDto: ProgramReturnDto = this.fillProgramReturnDto(savedProgram);
+    const programDto: ProgramReturnDto =
+      this.fillProgramReturnDto(savedProgram);
     return programDto;
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
-  private fillProgramReturnDto(program: ProgramEntity) {
+  private fillProgramReturnDto(program: ProgramEntity): ProgramReturnDto {
     const programDto: ProgramReturnDto = {
       id: program.id,
       published: program.published,
@@ -399,7 +401,7 @@ export class ProgramService {
             fsp: fsp.fsp as FspName,
             configuration: fsp.configuration,
           };
-        }
+        },
       ),
       targetNrRegistrations: program.targetNrRegistrations,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
@@ -415,28 +417,26 @@ export class ProgramService {
             phases: programCustomAttribute.phases,
             duplicateCheck: programCustomAttribute.duplicateCheck,
           };
-        }
+        },
       ),
-      programQuestions: program.programQuestions.map(
-        (programQuestion) => {
-          return {
-            name: programQuestion.name,
-            label: programQuestion.label,
-            answerType: programQuestion.answerType,
-            questionType: programQuestion.questionType,
-            options: programQuestion.options,
-            scoring: programQuestion.scoring,
-            persistence: programQuestion.persistence,
-            pattern: programQuestion.pattern,
-            phases: programQuestion.phases,
-            editableInPortal: programQuestion.editableInPortal,
-            export: programQuestion.export as unknown as ExportType[],
-            shortLabel: programQuestion.shortLabel,
-            duplicateCheck: programQuestion.duplicateCheck,
-            placeholder: programQuestion.placeholder,
-          };
-        }
-      ),
+      programQuestions: program.programQuestions.map((programQuestion) => {
+        return {
+          name: programQuestion.name,
+          label: programQuestion.label,
+          answerType: programQuestion.answerType,
+          questionType: programQuestion.questionType,
+          options: programQuestion.options,
+          scoring: programQuestion.scoring,
+          persistence: programQuestion.persistence,
+          pattern: programQuestion.pattern,
+          phases: programQuestion.phases,
+          editableInPortal: programQuestion.editableInPortal,
+          export: programQuestion.export as unknown as ExportType[],
+          shortLabel: programQuestion.shortLabel,
+          duplicateCheck: programQuestion.duplicateCheck,
+          placeholder: programQuestion.placeholder,
+        };
+      }),
       aboutProgram: program.aboutProgram,
       fullnameNamingConvention: program.fullnameNamingConvention,
       languages: program.languages,
