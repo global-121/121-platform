@@ -57,11 +57,11 @@
         "invited": "Uitgenodigd",
         "noLongerEligible": "Komt niet meer in aanmerking",
         "paused": "Gepauzeerd",
-        "registered": "Geregistreerd",
-        "registeredWhileNoLongerEligible": "Geregistreerd maar komt niet meer in aanmerking",
+        "registered": "Aangemeld",
+        "registeredWhileNoLongerEligible": "Aangemeld maar komt niet meer in aanmerking",
         "rejected": "Afgewezen",
         "startedRegistration": "Registratie gestart",
-        "validated": "Gevalideerd"
+        "validated": "Goedgekeurd"
       }
     },
     "users": {
@@ -157,8 +157,8 @@
           "explanation": "Zorg ervoor dat het overeenkomt met het vereiste formaat van het CSV-bestand van het sjabloon. Het importeren duurt ongeveer 1 minuut per 100 hulpvragers"
         },
         "registered": {
-          "btn-text": "Registraties importeren",
-          "confirm-message": "Het systeem creëert 'geregistreerde' hulpvragers.",
+          "btn-text": "Aanmeldingen importeren",
+          "confirm-message": "Het systeem creëert 'angemelde' hulpvragers.",
           "explanation": "Zorg ervoor dat het overeenkomt met het vereiste formaat van het CSV-bestand van het sjabloon. Het importeren duurt ongeveer 1 minuut per 100 hulpvragers"
         },
         "timestamp": "Laatste import is gedaan op: {{dateTime}}"
@@ -237,7 +237,7 @@
           "targeted": "Doel registraties"
         },
         "state-explanation": {
-          "declined": "PA's die tijdens de validatie zijn geweigerd.",
+          "declined": "PA's die tijdens de goedkeuring zijn geweigerd.",
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
           "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
@@ -247,7 +247,7 @@
           "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
           "rejected": "Hulpvragers die zijn afgewezen. <br> Ze zullen geen betalingen (meer) ontvangen voor de volgende betalings-/uitbetalingsronde.",
           "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
-          "validated": "Hulpvragers die zijn gevalideerd."
+          "validated": "Hulpvragers die zijn goedgekeurd."
         },
         "timeframe": {
           "calendar-month": {
@@ -297,7 +297,7 @@
         },
         "inclusion": {
           "btnText": "Ga naar: Betaling",
-          "label": "Inclusie"
+          "label": "Deelname"
         },
         "payment": {
           "btnText": "Ga naar: Evaluatie",
@@ -306,9 +306,9 @@
         "registrationValidation": {
           "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
           "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
-          "btnText": "Ga naar: Inclusie",
-          "btnText-no-validation": "Ga naar: Inclusie",
-          "label": "Registratie & validatie",
+          "btnText": "Ga naar: Deelname",
+          "btnText-no-validation": "Ga naar: Deelname",
+          "label": "Aanmeldingen beoordelen",
           "label-no-validation": "Registratie",
           "toggleText-enable-registrations": "Nieuwe registraties toestaan"
         }
@@ -386,8 +386,8 @@
           "endInclusion": "Beëindig deelname aan programma",
           "include": "Activeer hulpvrager(s)",
           "invite": "Uitnodigen voor registratie",
-          "markAsDeclined": "Markeer als geweigerd",
-          "markAsValidated": "Markeer als gevalideerd",
+          "markAsDeclined": "Aanmelding afwijzen",
+          "markAsValidated": "Aanmelding goedkeuren",
           "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
           "reject": "Afwijzen voor programma",
@@ -398,13 +398,13 @@
           "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i>Actief</i> hebben.",
           "doPayment": "Let op: De actie <strong>{{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
           "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> of <i>Voltooid</i> .",
-          "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>, <i>Geselecteerd voor validatie</i>, <i>Gevalideerd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
+          "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i>, <i>Geselecteerd voor goedkeuring</i>, <i>Goedgekeurd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
           "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Niet meer in aanmerking</i>.",
-          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i>.",
-          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> of <i>Geweigerd</i>.",
+          "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i>.",
+          "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i> of <i>Geweigerd</i>.",
           "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Uitgenodigd</i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> .",
-          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geregistreerd</i> , <i>Geselecteerd voor validatie</i> , <i>Gevalideerd</i> , <i>Actief</i> , <i>Niet meer in aanmerking komend</i> , of <i>Geregistreerd terwijl niet langer in aanmerking komend</i> .",
+          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i> , <i>Geselecteerd voor goedkeuring</i> , <i>Goedgekeurd</i> , <i>Actief</i> , <i>Niet meer in aanmerking komend</i> , of <i>Aangemeld terwijl niet langer in aanmerking komend</i> .",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {
@@ -419,7 +419,7 @@
           "custom-attribute-true": "Ja",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
-          "fspDisplayNamePortal": "Financiële dienstverlener",
+          "fspDisplayNamePortal": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",
           "lastMessageStatus": "Laatste bericht",
@@ -428,7 +428,7 @@
           "notYetSentPayment": "Nog niet verzonden betaling #",
           "note": "Notitie",
           "payment-history": "Betaalgeschiedenis",
-          "paymentAmountMultiplier": "Multiplier",
+          "paymentAmountMultiplier": "Vermenigvuldiger",
           "paymentCount": "Betalingen tot nu toe",
           "paymentCountRemaining": "Resterende betalingen",
           "personAffectedSequence": "Hulpvrager",
@@ -465,7 +465,7 @@
             },
             "paymentAmountMultiplier": {
               "explanation": "De standaard bedrag wordt voor deze hulpvrager met dit getal vermenigvuldigd",
-              "label": "Bedrag multiplier"
+              "label": "Bedrag vermenigvuldiger"
             },
             "phoneNumber": {
               "explanation": "Het vereiste formaat is: ALLEEN cijfers, inclusief landcode.",
@@ -671,7 +671,7 @@
           "reason": "Reden: "
         },
         "fsp-change": {
-          "label": "Financiële dienstverlener wijziging"
+          "label": "Type hulp wijziging"
         },
         "note": {
           "label": "Notitie"
@@ -703,7 +703,7 @@
       "transfer": "Betaling #{{paymentNr}}"
     },
     "personal-information-table": {
-      "fsp": "Financiële dienstverlener",
+      "fsp": "Type hulp",
       "phone": "Telefoonnummer",
       "primaryLanguage": "Moedertaal",
       "scope": "Connectie",
