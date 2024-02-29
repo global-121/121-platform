@@ -204,8 +204,14 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.financialServiceProviderChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration['fspDisplayNamePortal'] },
-          { key: 'newValue', value: newViewRegistration['fspDisplayNamePortal'] },
+          {
+            key: 'oldValue',
+            value: oldViewRegistration['fspDisplayNamePortal'],
+          },
+          {
+            key: 'newValue',
+            value: newViewRegistration['fspDisplayNamePortal'],
+          },
         ],
         userId: 2,
       },
@@ -213,8 +219,14 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration['whatsappPhoneNumber'] },
-          { key: 'newValue', value: newViewRegistration['whatsappPhoneNumber'] },
+          {
+            key: 'oldValue',
+            value: oldViewRegistration['whatsappPhoneNumber'],
+          },
+          {
+            key: 'newValue',
+            value: newViewRegistration['whatsappPhoneNumber'],
+          },
           { key: 'fieldName', value: 'whatsappPhoneNumber' },
         ],
         userId: 2,
@@ -283,5 +295,83 @@ describe('EventsService', () => {
       ]),
       { chunk: 2000 },
     );
+  });
+
+  it('should log a registration status change', async () => {
+    newViewRegistration.phoneNumber = '1234567890';
+    newViewRegistration.status = RegistrationStatusEnum.included;
+    const additionalAttributeObject = { reason: 'exampleReason' };
+
+    // Act
+    await eventsService.log(oldViewRegistration, newViewRegistration, {
+      additionalLogAttributes: additionalAttributeObject,
+    });
+
+    // Assert
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    const expectedEvents = [
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationStatusChange,
+        attributes: [
+          { key: 'oldValue', value: RegistrationStatusEnum.registered },
+          { key: 'newValue', value: RegistrationStatusEnum.included },
+          { key: 'reason', value: additionalAttributeObject.reason },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [
+          { key: 'oldValue', value: oldViewRegistration.phoneNumber },
+          { key: 'newValue', value: newViewRegistration.phoneNumber },
+          { key: 'fieldName', value: 'phoneNumber' },
+          { key: 'reason', value: additionalAttributeObject.reason },
+        ],
+        userId: 2,
+      },
+    ];
+    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+      chunk: 2000,
+    });
+  });
+
+  it('should log a registration status change with event log option', async () => {
+    newViewRegistration.status = RegistrationStatusEnum.included;
+    const additionalAttributeObject = { reason: 'exampleReason' };
+
+    // Act
+    await eventsService.log(oldViewRegistration, newViewRegistration, {
+      registrationAttributes: ['status'],
+      additionalLogAttributes: additionalAttributeObject,
+    });
+
+    // Assert
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    const expectedEvents = [
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationStatusChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value: RegistrationStatusEnum.registered,
+          },
+          {
+            key: 'newValue',
+            value: RegistrationStatusEnum.included,
+          },
+          {
+            key: 'reason',
+            value: additionalAttributeObject.reason,
+          },
+        ],
+        userId: 2,
+      },
+    ];
+    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+      chunk: 2000,
+    });
   });
 });
