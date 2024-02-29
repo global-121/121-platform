@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.112.2...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.113.0...main)
 
 ---
+
+## [1.112.2](https://github.com/global-121/121-platform/compare/v1.112.2...v1.113.0)- 2024-02-29
+
+### Added
+
+- Program fsp config for visa
+- See user who did payment
+- Log and see FSP change and related data changes
+- Reconsiliation with generic excel FSP
+- See status of messages in PA profile page
+- Remove progress bar from program over page
 
 ## [1.112.2](https://github.com/global-121/121-platform/compare/v1.112.1...v1.112.2)- 2024-02-19
 
