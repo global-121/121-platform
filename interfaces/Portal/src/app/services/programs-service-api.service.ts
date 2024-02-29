@@ -20,7 +20,6 @@ import {
   ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
-import { RegistrationStatusChange } from '../models/registration-status-change.model';
 import {
   PaymentSummary,
   ProgramPaymentsStatus,
@@ -1026,16 +1025,6 @@ export class ProgramsServiceApiService {
       }
     }
     return params;
-  }
-
-  public async getRegistrationStatusChanges(
-    programId: number,
-    referenceId: string,
-  ): Promise<RegistrationStatusChange[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/status-changes/${referenceId}`,
-    );
   }
 
   getMessageTemplatesByProgram(programId: number): Promise<MessageTemplate[]> {
