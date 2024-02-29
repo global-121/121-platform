@@ -56,6 +56,7 @@ jobs:
           /bin/sed -i '/^MOCK_SERVICE_URL=/s/=.*/=http:\/\/mock-service:3001\//' ./services/.env
           /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env
           /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env
+          /bin/sed -i '/^INTERSOLVE_VISA_BRAND_CODE=/s/=.*/=test/' ./services/.env
           /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env
           /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env
           /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env

@@ -38,7 +38,13 @@
       "fsp": "Intersolve-jumbo-physical"
     },
     {
-      "fsp": "Intersolve-visa"
+      "fsp": "Intersolve-visa",
+      "configuration": [
+        {
+          "name": "brandCode",
+          "value": "INTERSOLVE_VISA_BRAND_CODE"
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 100000,
