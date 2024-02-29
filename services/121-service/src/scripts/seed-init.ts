@@ -42,8 +42,8 @@ export class SeedInit implements InterfaceScript {
       await this.truncateAll();
     } else {
       await this.dropAll();
-
       await this.runAllMigrations();
+      await this.truncateAll();
     }
     await this.clearRedisData();
     const permissions = await this.addPermissions();
