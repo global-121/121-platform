@@ -14,7 +14,6 @@ import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { PhysicalCard } from '../models/physical-card.model';
-import { ProgramMetrics } from '../models/program-metrics.model';
 import {
   PaTableAttribute,
   Program,
@@ -177,23 +176,6 @@ export class ProgramsServiceApiService {
       {
         phase: newPhase,
       },
-    );
-  }
-
-  getMetricsById(programId: number | string): Promise<ProgramMetrics> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/metrics/person-affected`,
-    );
-  }
-
-  getMetricsByIdWithCondition(
-    programId: number | string,
-    condition: string,
-  ): Promise<ProgramMetrics> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/metrics/person-affected?${condition}`,
     );
   }
 

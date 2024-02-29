@@ -8,10 +8,8 @@ import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
-import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentsService } from '../payments/payments.service';
-import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -328,48 +326,6 @@ export class MetricsService {
     };
 
     return response;
-  }
-
-  private addPaymentFieldsToExport(
-    row: object,
-    payments: number[],
-    transactions: any[],
-  ): void {
-    const voucherStatuses = [
-      IntersolveVoucherPayoutStatus.InitialMessage,
-      IntersolveVoucherPayoutStatus.VoucherSent,
-    ];
-    for (const payment of payments) {
-      const transaction = {};
-      for (const voucherStatus of voucherStatuses) {
-        transaction[voucherStatus] = transactions.find(
-          (t) =>
-            t.payment === payment &&
-            t.referenceId === row['referenceId'] &&
-            t.customData['IntersolvePayoutStatus'] === voucherStatus,
-        );
-      }
-      let creationTransaction: GetTransactionOutputDto;
-      if (transaction[IntersolveVoucherPayoutStatus.InitialMessage]) {
-        creationTransaction =
-          transaction[IntersolveVoucherPayoutStatus.InitialMessage];
-      } else {
-        creationTransaction = transactions.find(
-          (t) =>
-            t.payment === payment &&
-            t.referenceId === row['referenceId'] &&
-            !t.customData['IntersolvePayoutStatus'],
-        );
-      }
-      row[`payment${payment}_status`] = creationTransaction?.status;
-      row[`payment${payment}_amount`] = creationTransaction?.amount;
-      row[`payment${payment}_date`] = creationTransaction?.paymentDate;
-      row[`payment${payment}_voucherClaimed_date`] =
-        transaction[IntersolveVoucherPayoutStatus.VoucherSent]?.status ===
-        StatusEnum.success
-          ? transaction[IntersolveVoucherPayoutStatus.VoucherSent]?.paymentDate
-          : null;
-    }
   }
 
   private async getRegistrationsGenericFields(
