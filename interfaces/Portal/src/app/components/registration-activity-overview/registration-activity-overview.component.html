@@ -142,12 +142,18 @@
               'registration-details.activity-overview.activities.data-changes.old'
                 | translate
             }}</strong
-            >{{ activity.description.oldValue }}<br />
+            >{{
+              'entity.registration.status.' + activity.description.oldValue
+                | translate
+            }}<br />
             <strong>{{
               'registration-details.activity-overview.activities.data-changes.new'
                 | translate
             }}</strong
-            >{{ activity.description.newValue }}<br />
+            >{{
+              'entity.registration.status.' + activity.description.newValue
+                | translate
+            }}<br />
           </ng-container>
           <ng-container *ngSwitchDefault>{{
             activity.description
