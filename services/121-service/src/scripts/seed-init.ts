@@ -39,10 +39,13 @@ export class SeedInit implements InterfaceScript {
   public async run(isApiTests?: boolean): Promise<void> {
     await this.clearCallbacksMockService();
     if (isApiTests) {
+      // Only truncate tables when running the API tests, since API Tests are run asynchronously, it may run into a situation where the migrations are still running and a table does not exist yet
       await this.truncateAll();
     } else {
+      // Drop all tables in all other cases (i.e. when not running API Tests), since that creates a clean slate after switching branches.
       await this.dropAll();
       await this.runAllMigrations();
+      // Some migration scripts contain data migrations (i.e. add data), so delete all data before seeding as well.
       await this.truncateAll();
     }
     await this.clearRedisData();
