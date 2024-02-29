@@ -1,7 +1,10 @@
 <ion-grid>
   <ion-row class="ion-align-items-center">
     <ion-col size="auto">
-      <span class="navigation-button">
+      <span
+        class="navigation-button"
+        *ngIf="dashboardIsEnabled"
+      >
         <ion-button
           [disabled]="!canViewMetrics"
           [routerLink]="['/program', programId, 'dashboard']"
