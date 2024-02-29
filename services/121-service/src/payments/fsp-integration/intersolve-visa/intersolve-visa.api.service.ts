@@ -93,19 +93,20 @@ export class IntersolveVisaApiService {
     brandCode: string,
   ): Promise<IntersolveCreateWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
+
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.createWalletMock(
         payload.reference,
       );
     } else {
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
       return await this.httpService.post<IntersolveCreateWalletResponseDto>(
         url,
         payload,
