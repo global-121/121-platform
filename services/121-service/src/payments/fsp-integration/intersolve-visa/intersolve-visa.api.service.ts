@@ -33,7 +33,7 @@ export class IntersolveVisaApiService {
 
   public async getAuthenticationToken(): Promise<string> {
     if (process.env.MOCK_INTERSOLVE) {
-      return 'mocked-token'
+      return 'mocked-token';
     }
     if (this.isTokenValid(this.tokenSet)) {
       // Return cached token
