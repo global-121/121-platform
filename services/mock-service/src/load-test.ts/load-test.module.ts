@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { LoadTestService } from './load-test.service';
 import { LoadTestController } from './load-test.controller';
+import { LoadTestService } from './load-test.service';
 
 @Module({
   imports: [],
