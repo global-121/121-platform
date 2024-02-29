@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Single retry gives no response on success
-- Limit charactars of errorMessage field in export
+- Limit characters of errorMessage field in export
 
 ## [1.112.1](https://github.com/global-121/121-platform/compare/v1.112.0...v1.112.1)- 2024-02-12
 
@@ -58,13 +58,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.110.1](https://github.com/global-121/121-platform/compare/v1.110.0...v1.110.1) - 2024-01-30
 
-- Fix error handling and unneeded API-calls on Limit Visa topup
+- Fix error handling and unneeded API-calls on Limit Visa top-up
 - Missing translation keys on status change result alerts
 
 ## [1.110.0](https://github.com/global-121/121-platform/compare/v1.109.2...v1.110.0) - 2024-01-26
 
 - Renamed `master`-branch to `main`.
-- Limit Visa topup dependend on current balance and spent
+- Limit Visa top-up dependent on current balance and spent
 - Support PA with empty phonenumber
 - Improve performance of registration status change
 - Improve performance of incoming message handling
