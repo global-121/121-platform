@@ -18,7 +18,6 @@ import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
-import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
@@ -50,9 +49,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   @Input()
   public canViewVouchers = false;
-
-  @Input()
-  public statusChanges: RegistrationStatusChange[];
 
   public RegistrationActivityType = RegistrationActivityType;
 
@@ -182,26 +178,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
     }
 
-    if (this.canViewRegistration) {
-      for (const statusChange of this.statusChanges) {
-        this.activityOverview.push({
-          type: RegistrationActivityType.status,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.status.label',
-          ),
-          date: new Date(statusChange.date),
-          description: this.translate.instant(
-            'registration-details.activity-overview.activities.status.description',
-            {
-              status: this.translate.instant(
-                `entity.registration.status.${statusChange.status}`,
-              ),
-            },
-          ),
-        });
-      }
-    }
-
     if (this.canViewPersonalData) {
       const changes =
         await this.programsService.getRegistrationEventsByRegistrationId(
@@ -267,6 +243,21 @@ export class RegistrationActivityOverviewComponent implements OnInit {
               'registration-details.activity-overview.activities.data-changes.label',
             ),
             subLabel: this.getSubLabelText(change, attribute),
+            date: new Date(change.created),
+            description,
+            user: change.user.username,
+          });
+        }
+
+        if (
+          change.type === EventType.registrationStatusChange &&
+          this.canViewRegistration
+        ) {
+          this.activityOverview.push({
+            type: RegistrationActivityType.status,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.status.label',
+            ),
             date: new Date(change.created),
             description,
             user: change.user.username,
