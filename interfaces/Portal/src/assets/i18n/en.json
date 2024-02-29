@@ -637,7 +637,6 @@
           "label": "Note"
         },
         "status": {
-          "description": "Person affected status changed to: {{status}}.",
           "label": "Status update"
         }
       },
