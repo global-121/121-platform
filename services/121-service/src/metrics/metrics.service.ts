@@ -874,50 +874,6 @@ export class MetricsService {
     return fields;
   }
 
-  public async getTotalPaHelped(
-    programId: number,
-    payment?: number,
-    month?: number,
-    year?: number,
-    fromStart?: number,
-  ): Promise<number> {
-    let query = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .andWhere('registration."programId" = :programId', {
-        programId: programId,
-      })
-      .innerJoinAndSelect('registration.transactions', 'transactions');
-    let yearMonthStartCondition;
-    if (month >= 0 && year) {
-      yearMonthStartCondition = new Date(year, month, 1, 0, 0, 0);
-      let yearMonthEndCondition;
-      if (fromStart || !(year || month)) {
-        yearMonthEndCondition = new Date(3000, month + 1, 1, 0, 0, 0);
-      } else {
-        yearMonthEndCondition = new Date(year, month + 1, 1, 0, 0);
-      }
-      query = query
-        .andWhere('transactions.created > :yearMonthStartCondition', {
-          yearMonthStartCondition: yearMonthStartCondition,
-        })
-        .andWhere('transactions.created < :yearMonthEndCondition', {
-          yearMonthEndCondition: yearMonthEndCondition,
-        });
-    }
-    if (payment) {
-      if (fromStart) {
-        query = query.andWhere('transactions.payment >= :payment', {
-          payment: payment,
-        });
-      } else {
-        query = query.andWhere('transactions.payment = :payment', {
-          payment: payment,
-        });
-      }
-    }
-    return await query.getCount();
-  }
-
   public async getPaymentsWithStateSums(
     programId: number,
   ): Promise<PaymentStateSumDto[]> {
