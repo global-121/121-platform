@@ -9,7 +9,7 @@ import { FspIntegrationType } from './enum/fsp-integration-type.enum';
 import { FspQuestionEntity } from './fsp-question.entity';
 
 // TODO: REFACTOR: rename table name into financial_service_provider so that aligns with the Entity class name
-@Entity('fsp')
+@Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ unique: true })
   @ApiProperty({ example: 'fspName' })
