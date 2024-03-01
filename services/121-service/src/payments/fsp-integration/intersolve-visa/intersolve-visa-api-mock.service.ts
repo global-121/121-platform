@@ -418,7 +418,7 @@ export class IntersolveVisaApiMockService {
             value: 3,
           },
           createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 1),
+            new Date().setDate(new Date().getDate()),
           ).toISOString(),
           creditor: {
             tokenCode: 'random token code',
@@ -454,7 +454,7 @@ export class IntersolveVisaApiMockService {
           value: -spentAmount,
         },
         createdAt: new Date(
-          new Date().setDate(new Date().getDate() - 1),
+          new Date().setDate(new Date().getDate()),
         ).toISOString(),
         creditor: {
           tokenCode: 'random token code',
