@@ -13,15 +13,15 @@ import { AuthService } from './auth.service';
 export class AuthGuard {
   constructor(
     private authService: AuthService,
-    private router: Router,
+    public router: Router,
   ) {}
 
   canActivate(
     nextRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
-    ): Observable<boolean> | Promise<boolean> | boolean {
-      console.log('nextRoute: ', nextRoute);
-      console.log('state: ', state); 
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    console.log('nextRoute: ', nextRoute);
+    console.log('state: ', state);
     // If no specific permission is required, only require a valid login
     if (!nextRoute.data.permissions && this.authService.isLoggedIn()) {
       return true;

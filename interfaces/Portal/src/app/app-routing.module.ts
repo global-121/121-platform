@@ -1,8 +1,16 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
+import { environment } from '../environments/environment';
 import { AppRoutes } from './app-routes.enum';
+import { AuthGuard } from './auth/auth.guard';
 import { ProgramPhase } from './models/program.model';
+
+const sso =
+  environment.azure_ad_client_id &&
+  environment.azure_ad_client_id !== '' &&
+  environment.azure_ad_tenant_id &&
+  environment.azure_ad_tenant_id !== '';
 
 const routes: Routes = [
   // {
@@ -19,25 +27,25 @@ const routes: Routes = [
     path: AppRoutes.user,
     loadChildren: () =>
       import('./user/user.module').then((m) => m.UserPageModule),
-    canActivate: [MsalGuard],
+    canActivate: [sso ? MsalGuard : AuthGuard],
   },
   {
     path: AppRoutes.home,
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
-    canActivate: [MsalGuard],
+    canActivate: [sso ? MsalGuard : AuthGuard],
   },
   {
     path: AppRoutes.help,
     loadChildren: () =>
       import('./help/help.module').then((m) => m.HelpPageModule),
-    canActivate: [MsalGuard],
+    canActivate: [sso ? MsalGuard : AuthGuard],
   },
   {
     path: AppRoutes.users,
     loadChildren: () =>
       import('./users/users.module').then((m) => m.UsersPageModule),
-    canActivate: [MsalGuard],
+    canActivate: [sso ? MsalGuard : AuthGuard],
   },
   {
     path: 'program/:id',
@@ -53,13 +61,13 @@ const routes: Routes = [
           import('./pages/dashboard/dashboard.module').then(
             (m) => m.DashboardPageModule,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: 'team',
         loadComponent: () =>
           import('./pages/team/team.page').then((m) => m.TeamPage),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: ProgramPhase.design,
@@ -67,7 +75,7 @@ const routes: Routes = [
           import('./pages/design/design.module').then(
             (m) => m.DesignPageModule,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: ProgramPhase.registrationValidation,
@@ -75,7 +83,7 @@ const routes: Routes = [
           import(
             './pages/registration-validation/registration-validation.module'
           ).then((m) => m.RegistrationValidationPageModule),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: ProgramPhase.inclusion,
@@ -83,7 +91,7 @@ const routes: Routes = [
           import('./pages/inclusion/inclusion.module').then(
             (m) => m.InclusionPageModule,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: ProgramPhase.payment,
@@ -91,7 +99,7 @@ const routes: Routes = [
           import('./pages/payment/payment.module').then(
             (m) => m.PaymentPageModule,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: ProgramPhase.evaluation,
@@ -99,7 +107,7 @@ const routes: Routes = [
           import('./pages/evaluation/evaluation.module').then(
             (m) => m.EvaluationPageModule,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         path: 'registration/:paId',
@@ -107,7 +115,7 @@ const routes: Routes = [
           import('./pages/registration-details/registration-details.page').then(
             (m) => m.RegistrationDetailsPage,
           ),
-        canActivate: [MsalGuard],
+        canActivate: [sso ? MsalGuard : AuthGuard],
       },
       {
         // Fallback for change in url, from old to new syntax:
@@ -121,7 +129,7 @@ const routes: Routes = [
     path: AppRoutes.iframe,
     loadChildren: () =>
       import('./iframe/iframe.module').then((m) => m.IframeModule),
-    canActivate: [MsalGuard],
+    canActivate: [sso ? MsalGuard : AuthGuard],
   },
   {
     path: '**',

@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 
@@ -34,6 +35,8 @@ export class LoginPage {
   public labelHide = this.translate.instant(
     'page.login.form.password.toggle.hide',
   );
+
+  public AppRoutes = AppRoutes;
 
   constructor(
     private authService: AuthService,
