@@ -401,6 +401,9 @@ export class RegistrationsBulkService {
       await this.registrationViewScopedRepository.find({
         where: { id: In(filteredRegistrationsIds) },
         select: ['id', 'status'],
+        order: {
+          id: 'ASC',
+        },
       });
 
     const statusKey: keyof RegistrationViewEntity = 'status';
