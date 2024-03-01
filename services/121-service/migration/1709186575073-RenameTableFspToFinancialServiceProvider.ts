@@ -79,24 +79,6 @@ export class RenameTableFspToFinancialServiceProvider1709186575073
 
   public async down(): Promise<void> {
     console.log('Down migration not implemented');
-    /* TODO: Also create the down migration?
-        await queryRunner.query(`DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`, ["VIEW","registration_view","121-service"]);
-        await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" DROP CONSTRAINT "FK_789ae7926495e63ba39ef47b8c2"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" DROP CONSTRAINT "FK_9963d8ef06f3358d2bc7fa6a4dd"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_9e5a5ef99940e591cad5b25a345"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."fsp_attribute" DROP CONSTRAINT "FK_16ab80e3d29fab4db86caa37b3b"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."program_fsp_configuration" DROP CONSTRAINT "FK_16ea24d04150003a29a346ade61"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_ba98ea5ca43ebe54f60c5aaabec"`);
-        await queryRunner.query(`DROP INDEX "121-service"."IDX_789ae7926495e63ba39ef47b8c"`);
-        await queryRunner.query(`DROP INDEX "121-service"."IDX_9963d8ef06f3358d2bc7fa6a4d"`);
-        await queryRunner.query(`DROP TABLE "121-service"."program_financial_service_providers_financial_service_provider"`);
-        await queryRunner.query(`DROP INDEX "121-service"."IDX_a0f41ec6505ba4bd1c8e99c6e5"`);
-        await queryRunner.query(`DROP TABLE "121-service"."financial_service_provider"`);
-        await queryRunner.query(`ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_9e5a5ef99940e591cad5b25a345" FOREIGN KEY ("fspId") REFERENCES "121-service"."fsp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "121-service"."fsp_attribute" ADD CONSTRAINT "FK_16ab80e3d29fab4db86caa37b3b" FOREIGN KEY ("fspId") REFERENCES "121-service"."fsp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "121-service"."program_fsp_configuration" ADD CONSTRAINT "FK_16ea24d04150003a29a346ade61" FOREIGN KEY ("fspId") REFERENCES "121-service"."fsp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_ba98ea5ca43ebe54f60c5aaabec" FOREIGN KEY ("financialServiceProviderId") REFERENCES "121-service"."fsp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        */
+    // Down migration not implemented because it's not needed
   }
 }
