@@ -6,8 +6,8 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'azure-ad' }),
     UserModule,
+    PassportModule.register({ defaultStrategy: 'cookie-jwt' }),
   ],
   providers: [AzureAdStrategy, CookieJwtStrategy],
 })

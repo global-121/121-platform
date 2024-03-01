@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
+import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
 import { UserToken } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 
 @Injectable()
-export class CookieJwtStrategy extends PassportStrategy(Strategy, 'cookie-jwt') {
-  constructor() {
+export class CookieJwtStrategy extends PassportStrategy(
+  Strategy,
+  'cookie-jwt',
+) {
+  constructor(private readonly userService: UserService) {
     super({
       jwtFromRequest: (req: any) => {
         let token = null;
@@ -30,16 +35,51 @@ export class CookieJwtStrategy extends PassportStrategy(Strategy, 'cookie-jwt') 
               token = req.cookies[CookieNames.general];
               break;
           }
+          req.token = token;
           return token;
         }
         return token;
       },
       ignoreExpiration: false,
       secretOrKey: process.env.SECRETS_121_SERVICE_SECRET,
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: any): Promise<any> {
+  async validate(request: any, payload: UserToken): Promise<any> {
+    const authParams =
+      request.authenticationParameters as AuthenticatedUserParameters;
+    console.log('authParams: ', authParams);
+    // This is an early return to allow the guard to be at the top of the controller and the decorator at the specific endpoints we want to protect.
+    if (!authParams.isGuarded) {
+      return true;
+    }
+
+    if (!request.params.programId) {
+      throw new Error('Endpoint is missing programId parameter');
+    }
+
+    if (authParams.permissions) {
+      const hasPermission = await this.userService.canActivate(
+        payload.id,
+        request.params.programId,
+        authParams.permissions,
+      );
+      // const hasPermission = await this.authService.checkPermission(
+      //   payload.id,
+      //   request.params.programId,
+      //   authParams.permissions,
+      // );
+      if (!hasPermission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+    } else if (authParams.isAdmin) {
+      const isAdmin = payload.admin === true;
+      if (!isAdmin) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+    }
+
     const userToken: UserToken = {
       id: payload.id,
       username: payload.username,
