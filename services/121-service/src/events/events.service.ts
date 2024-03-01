@@ -156,7 +156,10 @@ export class EventsService {
       this.isCompleteRegistrationViewEntity(firstNewEntity);
 
     // Check if one entity is RegistrationViewEntity and the other is not
-    if (isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView) {
+    if (
+      !eventLogOptionsDto?.registrationAttributes &&
+      isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
+    ) {
       throw new Error(
         'Old and new Entities are not of the same type. One is RegistrationViewEntity and the other is an (partial RegistrationViewEntity) object',
       );
