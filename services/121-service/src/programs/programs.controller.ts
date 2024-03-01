@@ -59,6 +59,7 @@ export class ProgramController {
     name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
+    description: `Set to 'true' to be able to use this as example body in POST /api/programs.`,
   })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':programId')
