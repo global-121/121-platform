@@ -55,24 +55,15 @@ export function getToken(
   cookies: CookiesType,
   originInterface: InterfaceNames,
 ): string {
-  {
-    let token: string;
-    switch (originInterface) {
-      case InterfaceNames.portal:
-        token = cookies[CookieNames.portal];
-        break;
-      case InterfaceNames.awApp:
-        token = cookies[CookieNames.awApp];
-        break;
-      case InterfaceNames.paApp:
-        token = cookies[CookieNames.paApp];
-        break;
-
-      default:
-        token = cookies[CookieNames.general];
-        break;
-    }
-    return token;
+  switch (originInterface) {
+    case InterfaceNames.portal:
+      return cookies[CookieNames.portal];
+    case InterfaceNames.awApp:
+      return cookies[CookieNames.awApp];
+    case InterfaceNames.paApp:
+      return cookies[CookieNames.paApp];
+    default:
+      return cookies[CookieNames.general];
   }
 }
 

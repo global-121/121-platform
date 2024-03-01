@@ -22,7 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { Permissions } from '../guards/permissions.decorator';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
