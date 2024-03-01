@@ -69,7 +69,9 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 }
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(ApplicationModule);
+  const app = await NestFactory.create(ApplicationModule, {
+    snapshot: true,
+  });
   if (!process.env.REDIS_PREFIX) {
     throw new Error('REDIS_PREFIX not set');
   }

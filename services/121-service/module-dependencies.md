@@ -2,6 +2,7 @@
 
 ```mermaid
 graph LR
+  DevtoolsModule-->DiscoveryModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule

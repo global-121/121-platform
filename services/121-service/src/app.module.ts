@@ -36,9 +36,13 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { ScopeUserMiddleware } from './shared/middleware/scope-user.middleware';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
+    }),
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     ProgramModule,
