@@ -19,7 +19,10 @@ export class RenameTableFspToFinancialServiceProvider1709186575073
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_9e5a5ef99940e591cad5b25a345"`,
     );
-    // TODO: Also on table program_financial_service_providers_fsp? (see create FK constraints below)
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_financial_service_providers_fsp" DROP CONSTRAINT "FK_94f4ed0a4cb054f80878db020d1"`,
+    );
+
 
     // Rename table fsp to financial_service_provider
     await queryRunner.query(
@@ -47,9 +50,9 @@ export class RenameTableFspToFinancialServiceProvider1709186575073
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_9e5a5ef99940e591cad5b25a345" FOREIGN KEY ("fspId") REFERENCES "121-service"."financial_service_provider"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" ADD CONSTRAINT "FK_9963d8ef06f3358d2bc7fa6a4dd" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
+    //await queryRunner.query(
+    //  `ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" ADD CONSTRAINT "FK_9963d8ef06f3358d2bc7fa6a4dd" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    //);
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" ADD CONSTRAINT "FK_789ae7926495e63ba39ef47b8c2" FOREIGN KEY ("financialServiceProviderId") REFERENCES "121-service"."financial_service_provider"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
