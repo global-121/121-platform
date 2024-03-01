@@ -21,6 +21,7 @@ import {
   CreateProgramQuestionDto,
   UpdateProgramQuestionDto,
 } from './dto/program-question.dto';
+import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
@@ -102,90 +103,18 @@ export class ProgramService {
     return program;
   }
 
-  public async getCreateProgramDto(
+  public async getProgramReturnDto(
     programId: number,
     userId: number,
-  ): Promise<CreateProgramDto> {
+  ): Promise<ProgramReturnDto> {
     const programEntity = await this.findProgramOrThrow(programId, userId);
     if (!programEntity) {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const programDto: CreateProgramDto = {
-      published: programEntity.published,
-      validation: programEntity.validation,
-      phase: programEntity.phase,
-      location: programEntity.location,
-      ngo: programEntity.ngo,
-      titlePortal: programEntity.titlePortal,
-      titlePaApp: programEntity.titlePaApp,
-      description: programEntity.description,
-      startDate: programEntity.startDate,
-      endDate: programEntity.endDate,
-      currency: programEntity.currency,
-      distributionFrequency: programEntity.distributionFrequency,
-      distributionDuration: programEntity.distributionDuration,
-      fixedTransferValue: programEntity.fixedTransferValue,
-      paymentAmountMultiplierFormula:
-        programEntity.paymentAmountMultiplierFormula,
-      financialServiceProviders: programEntity.financialServiceProviders.map(
-        (fsp) => {
-          return {
-            fsp: fsp.fsp as FspName,
-            configuration: fsp.configuration,
-          };
-        },
-      ),
-      targetNrRegistrations: programEntity.targetNrRegistrations,
-      tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
-      meetingDocuments: programEntity.meetingDocuments,
-      budget: programEntity.budget,
-      phoneNumberPlaceholder: programEntity.phoneNumberPlaceholder,
-      programCustomAttributes: programEntity.programCustomAttributes.map(
-        (programCustomAttribute) => {
-          return {
-            name: programCustomAttribute.name,
-            type: programCustomAttribute.type,
-            label: programCustomAttribute.label,
-            phases: programCustomAttribute.phases,
-            duplicateCheck: programCustomAttribute.duplicateCheck,
-          };
-        },
-      ),
-      programQuestions: programEntity.programQuestions.map(
-        (programQuestion) => {
-          return {
-            name: programQuestion.name,
-            label: programQuestion.label,
-            answerType: programQuestion.answerType,
-            questionType: programQuestion.questionType,
-            options: programQuestion.options,
-            scoring: programQuestion.scoring,
-            persistence: programQuestion.persistence,
-            pattern: programQuestion.pattern,
-            phases: programQuestion.phases,
-            editableInPortal: programQuestion.editableInPortal,
-            export: programQuestion.export as unknown as ExportType[],
-            shortLabel: programQuestion.shortLabel,
-            duplicateCheck: programQuestion.duplicateCheck,
-            placeholder: programQuestion.placeholder,
-          };
-        },
-      ),
-      aboutProgram: programEntity.aboutProgram,
-      fullnameNamingConvention: programEntity.fullnameNamingConvention,
-      languages: programEntity.languages,
-      enableMaxPayments: programEntity.enableMaxPayments,
-      enableScope: programEntity.enableScope,
-      allowEmptyPhoneNumber: programEntity.allowEmptyPhoneNumber,
-    };
-    if (programEntity.monitoringDashboardUrl) {
-      programDto.monitoringDashboardUrl = programEntity.monitoringDashboardUrl;
-    }
-    if (programEntity.evaluationDashboardUrl) {
-      programDto.evaluationDashboardUrl = programEntity.evaluationDashboardUrl;
-    }
+    const programDto: ProgramReturnDto =
+      this.fillProgramReturnDto(programEntity);
     return programDto;
   }
 
@@ -392,7 +321,7 @@ export class ProgramService {
   public async updateProgram(
     programId: number,
     updateProgramDto: UpdateProgramDto,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProgramReturnDto> {
     const program = await this.findProgramOrThrow(programId);
 
     // If nothing to update, raise a 400 Bad Request.
@@ -442,8 +371,86 @@ export class ProgramService {
       );
     }
 
-    // TODO: REFACTOR: use respone DTO
-    return savedProgram;
+    const programDto: ProgramReturnDto =
+      this.fillProgramReturnDto(savedProgram);
+    return programDto;
+  }
+
+  // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
+  private fillProgramReturnDto(program: ProgramEntity): ProgramReturnDto {
+    const programDto: ProgramReturnDto = {
+      id: program.id,
+      published: program.published,
+      validation: program.validation,
+      phase: program.phase,
+      location: program.location,
+      ngo: program.ngo,
+      titlePortal: program.titlePortal,
+      titlePaApp: program.titlePaApp,
+      description: program.description,
+      startDate: program.startDate,
+      endDate: program.endDate,
+      currency: program.currency,
+      distributionFrequency: program.distributionFrequency,
+      distributionDuration: program.distributionDuration,
+      fixedTransferValue: program.fixedTransferValue,
+      paymentAmountMultiplierFormula: program.paymentAmountMultiplierFormula,
+      financialServiceProviders: program.financialServiceProviders.map(
+        (fsp) => {
+          return {
+            fsp: fsp.fsp as FspName,
+            configuration: fsp.configuration,
+          };
+        },
+      ),
+      targetNrRegistrations: program.targetNrRegistrations,
+      tryWhatsAppFirst: program.tryWhatsAppFirst,
+      meetingDocuments: program.meetingDocuments,
+      budget: program.budget,
+      phoneNumberPlaceholder: program.phoneNumberPlaceholder,
+      programCustomAttributes: program.programCustomAttributes.map(
+        (programCustomAttribute) => {
+          return {
+            name: programCustomAttribute.name,
+            type: programCustomAttribute.type,
+            label: programCustomAttribute.label,
+            phases: programCustomAttribute.phases,
+            duplicateCheck: programCustomAttribute.duplicateCheck,
+          };
+        },
+      ),
+      programQuestions: program.programQuestions.map((programQuestion) => {
+        return {
+          name: programQuestion.name,
+          label: programQuestion.label,
+          answerType: programQuestion.answerType,
+          questionType: programQuestion.questionType,
+          options: programQuestion.options,
+          scoring: programQuestion.scoring,
+          persistence: programQuestion.persistence,
+          pattern: programQuestion.pattern,
+          phases: programQuestion.phases,
+          editableInPortal: programQuestion.editableInPortal,
+          export: programQuestion.export as unknown as ExportType[],
+          shortLabel: programQuestion.shortLabel,
+          duplicateCheck: programQuestion.duplicateCheck,
+          placeholder: programQuestion.placeholder,
+        };
+      }),
+      aboutProgram: program.aboutProgram,
+      fullnameNamingConvention: program.fullnameNamingConvention,
+      languages: program.languages,
+      enableMaxPayments: program.enableMaxPayments,
+      enableScope: program.enableScope,
+      allowEmptyPhoneNumber: program.allowEmptyPhoneNumber,
+    };
+    if (program.monitoringDashboardUrl) {
+      programDto.monitoringDashboardUrl = program.monitoringDashboardUrl;
+    }
+    if (program.evaluationDashboardUrl) {
+      programDto.evaluationDashboardUrl = program.evaluationDashboardUrl;
+    }
+    return programDto;
   }
 
   public async updateProgramCustomAttributes(
