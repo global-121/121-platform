@@ -243,7 +243,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             subLabel: this.getSubLabelText(change, attribute),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
 
@@ -258,7 +258,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             ),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
 
@@ -270,7 +270,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             ),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
       }

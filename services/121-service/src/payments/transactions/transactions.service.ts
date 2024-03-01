@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { EventsService } from '../../events/events.service';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
@@ -50,6 +51,7 @@ export class TransactionsService {
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly eventsService: EventsService,
   ) {}
 
   public async getAuditedTransactions(
@@ -305,8 +307,23 @@ export class TransactionsService {
       currentPaymentCount >= registration.maxPayments &&
       registration.registrationStatus === RegistrationStatusEnum.included
     ) {
+      const registrationsBeforeUpdate = { ...registration };
       registration.registrationStatus = RegistrationStatusEnum.completed;
-      await this.registrationUtilsService.save(registration);
+      let registrationsAfterUpdate =
+        await this.registrationUtilsService.save(registration);
+      await this.eventsService.log(
+        {
+          id: registrationsBeforeUpdate.id,
+          status: registrationsBeforeUpdate.registrationStatus,
+        },
+        {
+          id: registrationsAfterUpdate.id,
+          status: registrationsAfterUpdate.registrationStatus,
+        },
+        {
+          registrationAttributes: ['status'],
+        },
+      );
     }
     // After .save() because it otherwise overwrites with old paymentCount
     await this.registrationScopedRepository.updateUnscoped(registration.id, {

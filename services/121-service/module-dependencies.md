@@ -19,6 +19,7 @@ graph LR
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
+  TransactionsModule-->EventsModule
   IntersolveVisaModule-->QueueMessageModule
   IntersolveVisaModule-->RegistrationDataModule
   IntersolveVisaModule-->RedisModule
