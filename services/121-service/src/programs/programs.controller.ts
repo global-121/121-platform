@@ -34,6 +34,7 @@ import {
   CreateProgramQuestionDto,
   UpdateProgramQuestionDto,
 } from './dto/program-question.dto';
+import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
@@ -55,9 +56,10 @@ export class ProgramController {
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
   // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
-    name: 'formatCreateProgramDto',
+    name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
+    description: `Set to 'true' to be able to use this as example body in POST /api/programs.`,
   })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':programId')
@@ -65,11 +67,11 @@ export class ProgramController {
     @Param() params,
     @Query() queryParams,
     @User('id') userId: number,
-  ): Promise<ProgramEntity | CreateProgramDto> {
+  ): Promise<ProgramEntity | ProgramReturnDto> {
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
-      return this.programService.getCreateProgramDto(params.programId, userId);
+      return this.programService.getProgramReturnDto(params.programId, userId);
     } else {
       return await this.programService.findProgramOrThrow(
         Number(params.programId),
@@ -150,12 +152,17 @@ export class ProgramController {
 
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update program' })
+  @ApiResponse({
+    status: 200,
+    description: 'Representation of updated program',
+    type: ProgramReturnDto,
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch(':programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProgramReturnDto> {
     return await this.programService.updateProgram(
       Number(params.programId),
       updateProgramDto,

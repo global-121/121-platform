@@ -50,6 +50,7 @@ export class FspService {
         label: c.label,
         shortLabel: c.shortLabel,
         options: c.options,
+        pattern: c.pattern,
       };
     });
   }

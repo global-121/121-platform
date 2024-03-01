@@ -6,4 +6,5 @@ export class Attribute {
   type: AnswerType;
   label: TranslatableString;
   shortLabel?: TranslatableString;
+  pattern?: string;
 }

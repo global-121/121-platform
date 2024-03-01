@@ -1,13 +1,16 @@
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
 import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -63,7 +66,10 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
-import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
+import {
+  IntersolveVisaPaymentInfoEnum,
+  IntersolveVisaPaymentInfoEnumBackupName,
+} from './enum/intersolve-visa-payment-info.enum';
 import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
@@ -78,6 +84,9 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -297,10 +306,32 @@ export class IntersolveVisaService
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
-      const relation = await this.registrationDataService.getRelationForName(
-        registration,
-        attr,
-      );
+      let relation;
+      try {
+        relation = await this.registrationDataService.getRelationForName(
+          registration,
+          attr,
+        );
+      } catch (error) {
+        // If a program does not have lastName: use fullName instead
+        if (
+          error.name === ErrorEnum.RegistrationDataError &&
+          attr === IntersolveVisaPaymentInfoEnum.lastName
+        ) {
+          relation = await this.registrationDataService.getRelationForName(
+            registration,
+            IntersolveVisaPaymentInfoEnumBackupName.fullName,
+          );
+        } else if (
+          // If a program does not have firstName: ignore and continue
+          error.name === ErrorEnum.RegistrationDataError &&
+          attr === IntersolveVisaPaymentInfoEnum.firstName
+        ) {
+          continue;
+        } else {
+          throw error;
+        }
+      }
       const registrationDataOption = {
         name: attr,
         relation: relation,
@@ -360,6 +391,7 @@ export class IntersolveVisaService
       const createWalletResult = await this.createWallet(
         visaCustomer,
         calculatedAmount,
+        registration.programId,
       );
 
       // if error, return error
@@ -568,6 +600,7 @@ export class IntersolveVisaService
   private async createWallet(
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
+    programId: number,
   ): Promise<IntersolveCreateWalletResponseDto> {
     const amountInCents = Math.round(calculatedAmount * 100);
     const createWalletPayload = new IntersolveCreateWalletDto();
@@ -582,8 +615,12 @@ export class IntersolveVisaService
         },
       ];
     }
-    const createWalletResult =
-      await this.intersolveVisaApiService.createWallet(createWalletPayload);
+
+    const brandCode = await this.getBrandcodeForProgram(programId);
+    const createWalletResult = await this.intersolveVisaApiService.createWallet(
+      createWalletPayload,
+      brandCode,
+    );
     return createWalletResult;
   }
 
@@ -597,6 +634,24 @@ export class IntersolveVisaService
       },
       walletEntity.tokenCode,
     );
+  }
+
+  private async getBrandcodeForProgram(programId: number): Promise<string> {
+    const brandCodeConfig =
+      await this.programFspConfigurationRepository.findOne({
+        where: {
+          programId: programId,
+          name: FspConfigurationEnum.brandCode,
+          fsp: { fsp: FspName.intersolveVisa },
+        },
+        relations: ['fsp'],
+      });
+    if (!brandCodeConfig) {
+      throw new Error(
+        `No brandCode found for program ${programId}. Please update the program FSP cofinguration.`,
+      );
+    }
+    return brandCodeConfig?.value;
   }
 
   private async createDebitCard(
@@ -965,25 +1020,31 @@ export class IntersolveVisaService
     };
   }
 
-  private doesAttributeRequireSync(attribute: CustomDataAttributes): boolean {
-    return [
+  private doAnyAttributesRequireSync(
+    attributes: CustomDataAttributes[],
+  ): boolean {
+    const attributesThatRequireSync = [
       CustomDataAttributes.phoneNumber,
       CustomDataAttributes.addressCity,
       CustomDataAttributes.addressHouseNumber,
       CustomDataAttributes.addressHouseNumberAddition,
       CustomDataAttributes.addressPostalCode,
       CustomDataAttributes.addressStreet,
-    ].includes(attribute);
+    ];
+
+    return attributes.some((attribute) =>
+      attributesThatRequireSync.includes(attribute),
+    );
   }
 
   public async syncIntersolveCustomerWith121(
     referenceId: string,
     programId: number,
-    attribute?: Attributes | string,
+    attributes?: Attributes[] | string[],
   ): Promise<void> {
     if (
-      attribute &&
-      !this.doesAttributeRequireSync(attribute as CustomDataAttributes)
+      attributes &&
+      !this.doAnyAttributesRequireSync(attributes as CustomDataAttributes[])
     ) {
       return;
     }
@@ -1005,7 +1066,7 @@ export class IntersolveVisaService
       );
     if (phoneNumberResult.status !== 200) {
       errors.push(
-        `Phone number update failed: ${phoneNumberResult?.data?.code}`,
+        `Phone number update failed: ${phoneNumberResult?.data?.code}. Adjust the (required) phone number and retry.`,
       );
     }
 
@@ -1026,7 +1087,7 @@ export class IntersolveVisaService
           addressPayload,
         );
       if (addressResult.status !== 200) {
-        errors.push(`Address update failed: ${addressResult?.data?.code}`);
+        errors.push(`Address update failed: ${addressResult?.data?.code}.`);
       }
 
       if (errors.length > 0) {
@@ -1154,6 +1215,7 @@ export class IntersolveVisaService
     const createWalletResult = await this.createWallet(
       visaCustomer,
       currentBalance / 100,
+      programId,
     );
     if (!createWalletResult.data?.success) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
