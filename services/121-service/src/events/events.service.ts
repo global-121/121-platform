@@ -4,6 +4,7 @@ import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
 import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventLogOptionsDto } from './dto/event-log-options.dto';
 import { EventSearchOptionsDto } from './dto/event-search-options.dto';
@@ -21,6 +22,7 @@ export class EventsService {
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
     @Inject(REQUEST) private request: ScopedUserRequest,
+    private readonly userService: UserService,
   ) {}
 
   public async getEventsJsonDto(
@@ -98,10 +100,20 @@ export class EventsService {
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
 
+    let userId = null;
+
+    if (this.request.userId) {
+      const user = await this.userService.findById(this.request.userId);
+
+      if (user && user.userType === 'aidWorker') {
+        userId = this.request.userId;
+      }
+    }
+
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      this.request.userId,
+      userId,
       eventLogOptions?.registrationAttributes,
     );
 
