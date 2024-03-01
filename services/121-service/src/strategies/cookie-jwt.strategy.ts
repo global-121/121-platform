@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
@@ -12,7 +13,7 @@ export class CookieJwtStrategy extends PassportStrategy(
   Strategy,
   'cookie-jwt',
 ) {
-  constructor(private readonly userService: UserService) {
+  constructor(private moduleRef: ModuleRef) {
     super({
       jwtFromRequest: (req: any) => {
         let token = null;
@@ -47,29 +48,26 @@ export class CookieJwtStrategy extends PassportStrategy(
   }
 
   async validate(request: any, payload: UserToken): Promise<any> {
+    const userService = await this.moduleRef.resolve(UserService, undefined, {
+      strict: false,
+    });
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
-    console.log('authParams: ', authParams);
+
     // This is an early return to allow the guard to be at the top of the controller and the decorator at the specific endpoints we want to protect.
     if (!authParams.isGuarded) {
       return true;
     }
 
-    if (!request.params.programId) {
-      throw new Error('Endpoint is missing programId parameter');
-    }
-
     if (authParams.permissions) {
-      const hasPermission = await this.userService.canActivate(
+      if (!request.params.programId) {
+        throw new Error('Endpoint is missing programId parameter');
+      }
+      const hasPermission = await userService.canActivate(
         payload.id,
         request.params.programId,
         authParams.permissions,
       );
-      // const hasPermission = await this.authService.checkPermission(
-      //   payload.id,
-      //   request.params.programId,
-      //   authParams.permissions,
-      // );
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
