@@ -12,5 +12,7 @@ export class Readonlyuser1709300672260 implements MigrationInterface {
     }
   }
 
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // Empty
+  }
 }
