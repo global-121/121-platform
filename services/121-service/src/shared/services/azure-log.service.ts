@@ -23,6 +23,8 @@ export class AzureLogService {
           severity: alert ? SeverityLevel.Critical : SeverityLevel.Error,
         });
         this.defaultClient.flush();
+      } else {
+        throw error;
       }
     } catch (error) {
       console.log('An error occured in logError: ', error);
