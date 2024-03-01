@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
 import { EventEntity } from './event.entity';
@@ -11,6 +11,7 @@ export class EventAttributeEntity extends Base121Entity {
   @Column()
   public eventId: number;
 
+  @Index()
   @Column()
   public key: EventAttributeKeyEnum;
 
