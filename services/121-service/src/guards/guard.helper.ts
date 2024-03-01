@@ -7,7 +7,10 @@ import { CookiesType } from './cookies.type';
 
 export function verifyToken(token: string): UserToken {
   try {
-    return jwt.verify(token, process.env.SECRETS_121_SERVICE_SECRET);
+    return jwt.verify(
+      token,
+      process.env.SECRETS_121_SERVICE_SECRET,
+    ) as UserToken;
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
       return null;
