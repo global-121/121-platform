@@ -99,15 +99,16 @@ export class PastPaymentsService {
       await this.getLastPaymentId(program.id),
       nrOfPayments,
     );
-
+    const transactions = await this.programsService.getTransactions(
+      program.id,
+      person.referenceId,
+    );
+    const lastPaymentId = await this.getLastPaymentId(program.id);
     for (let index = 1; index <= lastPaymentToShow; index++) {
       const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
         index,
         person.referenceId,
-        await this.programsService.getTransactions(
-          program.id,
-          person.referenceId,
-        ),
+        transactions,
       );
       let paymentRowValue: PaymentRowDetail = {
         paymentIndex: index,
@@ -143,7 +144,7 @@ export class PastPaymentsService {
           paymentRowValue,
           canDoSinglePayment,
           person.status,
-          await this.getLastPaymentId(program.id),
+          lastPaymentId,
           false,
         )
       ) {
