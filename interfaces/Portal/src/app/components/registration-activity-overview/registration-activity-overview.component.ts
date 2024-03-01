@@ -184,12 +184,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
     if (this.canViewPersonalData) {
       for (const change of this.events) {
-        let oldValue = change.attributes.oldValue
-          ? change.attributes.oldValue
-          : '-';
-        let newValue = change.attributes.newValue
-          ? change.attributes.newValue
-          : '-';
+        let oldValue = change.attributes.oldValue;
+        let newValue = change.attributes.newValue;
+
         let description = {
           oldValue,
           newValue,
