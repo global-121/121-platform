@@ -9,9 +9,7 @@ export class AuthenticatedUserGuard
   extends AuthGuard(['cookie-jwt', 'azure-ad'])
   implements CanActivate
 {
-  public constructor(
-    private readonly reflector: Reflector,
-  ) {
+  public constructor(private readonly reflector: Reflector) {
     super();
   }
 

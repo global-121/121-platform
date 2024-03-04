@@ -61,7 +61,7 @@ export class CookieJwtStrategy extends PassportStrategy(
 
     if (authParams.permissions) {
       if (!request.params.programId) {
-        throw new Error('Endpoint is missing programId parameter');
+        throw new HttpException('Endpoint is missing programId parameter', HttpStatus.BAD_REQUEST);
       }
       const hasPermission = await userService.canActivate(
         payload.id,
