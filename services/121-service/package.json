@@ -88,6 +88,7 @@
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.202",
     "@types/node": "^18.19.17",
+    "@types/passport-azure-ad": "^4.3.6",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "@types/yargs": "^17.0.32",

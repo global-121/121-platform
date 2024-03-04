@@ -1,7 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { UserType } from '../user/user-type-enum';
+import { UserRO } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 import { generateRandomString } from '../utils/getRandomValue.helper';
 
 const config = {
@@ -25,11 +34,12 @@ const config = {
 const EXPOSED_SCOPES = ['User.read']; //provide a scope of your azure AD
 
 @Injectable()
-export class AzureAdStrategy extends PassportStrategy(
-  BearerStrategy,
-  'azure-ad',
-) {
-  constructor() {
+export class AzureAdStrategy
+  extends PassportStrategy(BearerStrategy, 'azure-ad')
+  implements OnModuleInit
+{
+  private userService: UserService;
+  constructor(private moduleRef: ModuleRef) {
     super({
       identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
       issuer: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}`,
@@ -43,30 +53,42 @@ export class AzureAdStrategy extends PassportStrategy(
     });
   }
 
-  async validate(profile: any): Promise<any> {
-    // console.log('profile: ', profile);
-    // TODO: Create a 'authentication' service that checks if permission or admin should be checked
-    if (!profile) {
+  async onModuleInit(): Promise<void> {
+    const contextId = ContextIdFactory.create();
+    this.userService = await this.moduleRef.resolve(UserService, contextId, {
+      strict: false,
+    });
+  }
+
+  async validate(response: any): Promise<any> {
+    if (!response) {
       throw new UnauthorizedException();
     }
 
-    // const existing121User = await this.userService.findByUsername(
-    //   profile.email,
-    // );
-    // console.log('existing121User: ', existing121User);
-    // if (existing121User) {
-    //   profile.id = existing121User.user.id;
-    //   return profile;
-    // }
+    let user: UserRO;
+    const username = response.email;
 
-    // const password = generateRandomString(16);
-    // const newUser = await this.userService.create(
-    //   profile.email,
-    //   password,
-    //   UserType.aidWorker,
-    // );
-    // // TODO: Use 'authentication' service to check permisson or admin
-    // profile.id = newUser.user.id;
-    return profile;
+    try {
+      user = await this.userService.findByUsername(username);
+    } catch (error: Error | unknown) {
+      if (
+        error instanceof HttpException &&
+        error.getStatus() === HttpStatus.NOT_FOUND
+      ) {
+        const password = generateRandomString(16);
+        user = await this.userService.create(
+          username,
+          password,
+          UserType.aidWorker,
+        );
+      } else {
+        throw error;
+      }
+    }
+
+    return {
+      ...response,
+      id: user?.user?.id,
+    };
   }
 }
