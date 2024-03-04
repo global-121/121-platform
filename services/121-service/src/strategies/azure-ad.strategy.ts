@@ -8,6 +8,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
+import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
 import { UserType } from '../user/user-type-enum';
 import { UserRO } from '../user/user.interface';
 import { UserService } from '../user/user.service';
@@ -60,21 +61,30 @@ export class AzureAdStrategy
     });
   }
 
-  async validate(response: any): Promise<any> {
-    if (!response) {
+  async validate(request: any, payload: any): Promise<any> {
+    if (!payload) {
       throw new UnauthorizedException();
     }
 
     let user: UserRO;
-    const username = response.email;
+    const username = payload.email;
+    const authParams =
+      request.authenticationParameters as AuthenticatedUserParameters;
+
+    // This is an early return to allow the guard to be at the top of the controller and the decorator at the specific endpoints we want to protect.
+    if (!authParams.isGuarded) {
+      return true;
+    }
 
     try {
-      user = await this.userService.findByUsername(username);
+      // Try to find user by username (this is an email address in our case)
+      user = await this.userService.findByUsernameOrThrow(username);
     } catch (error: Error | unknown) {
       if (
         error instanceof HttpException &&
         error.getStatus() === HttpStatus.NOT_FOUND
       ) {
+        // If this user is not found, create a new user
         const password = generateRandomString(16);
         user = await this.userService.create(
           username,
@@ -86,8 +96,30 @@ export class AzureAdStrategy
       }
     }
 
+    if (authParams.permissions) {
+      if (!request.params.programId) {
+        throw new HttpException(
+          'Endpoint is missing programId parameter',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const hasPermission = await this.userService.canActivate(
+        user.user.id,
+        request.params.programId,
+        authParams.permissions,
+      );
+      if (!hasPermission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+    } else if (authParams.isAdmin) {
+      const isAdmin = payload.admin === true;
+      if (!isAdmin) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+    }
+
     return {
-      ...response,
+      ...payload,
       id: user?.user?.id,
     };
   }

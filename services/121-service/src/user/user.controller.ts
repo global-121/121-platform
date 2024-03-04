@@ -335,7 +335,7 @@ export class UserController {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.userService.findByUsername(username);
+    return await this.userService.findByUsernameOrThrow(username);
   }
 
   // This endpoint searches users accross all programs, which is needed to add a user to a program

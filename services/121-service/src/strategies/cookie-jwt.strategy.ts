@@ -1,5 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
@@ -9,10 +14,12 @@ import { UserToken } from '../user/user.interface';
 import { UserService } from '../user/user.service';
 
 @Injectable()
-export class CookieJwtStrategy extends PassportStrategy(
-  Strategy,
-  'cookie-jwt',
-) {
+export class CookieJwtStrategy
+  extends PassportStrategy(Strategy, 'cookie-jwt')
+  implements OnModuleInit
+{
+  private userService: UserService;
+
   constructor(private moduleRef: ModuleRef) {
     super({
       jwtFromRequest: (req: any) => {
@@ -47,10 +54,14 @@ export class CookieJwtStrategy extends PassportStrategy(
     });
   }
 
-  async validate(request: any, payload: UserToken): Promise<any> {
-    const userService = await this.moduleRef.resolve(UserService, undefined, {
+  async onModuleInit(): Promise<void> {
+    const contextId = ContextIdFactory.create();
+    this.userService = await this.moduleRef.resolve(UserService, contextId, {
       strict: false,
     });
+  }
+
+  async validate(request: any, payload: UserToken): Promise<any> {
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
 
@@ -61,9 +72,12 @@ export class CookieJwtStrategy extends PassportStrategy(
 
     if (authParams.permissions) {
       if (!request.params.programId) {
-        throw new HttpException('Endpoint is missing programId parameter', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Endpoint is missing programId parameter',
+          HttpStatus.BAD_REQUEST,
+        );
       }
-      const hasPermission = await userService.canActivate(
+      const hasPermission = await this.userService.canActivate(
         payload.id,
         request.params.programId,
         authParams.permissions,

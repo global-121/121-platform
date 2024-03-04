@@ -461,7 +461,7 @@ export class UserService {
     return user;
   }
 
-  public async findByUsername(username: string): Promise<UserRO> {
+  public async findByUsernameOrThrow(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
       relations: [
