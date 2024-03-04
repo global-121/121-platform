@@ -53,7 +53,7 @@ export class AzureAdStrategy
     });
   }
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     const contextId = ContextIdFactory.create();
     this.userService = await this.moduleRef.resolve(UserService, contextId, {
       strict: false,
