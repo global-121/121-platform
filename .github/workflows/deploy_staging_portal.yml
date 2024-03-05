@@ -40,6 +40,7 @@ jobs:
           NG_ENV_NAME: 'staging'
           NG_LOCALES: 'ar,en,es,fr,nl'
           NG_URL_121_SERVICE_API: 'https://staging.121.global/api'
+          NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
           NG_AI_IKEY: '27eaf00e-92e5-46b7-8d0b-1b413db898e7'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=27eaf00e-92e5-46b7-8d0b-1b413db898e7;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
