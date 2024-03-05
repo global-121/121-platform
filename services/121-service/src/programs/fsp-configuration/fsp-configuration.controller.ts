@@ -11,15 +11,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Admin } from '../../guards/admin.decorator';
+import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
-import { AdminAuthGuard } from './../../guards/admin.guard';
-import { PermissionsGuard } from './../../guards/permissions.guard';
 import { ProgramFspConfigurationService } from './fsp-configuration.service';
 import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramFspConfigurationController {
@@ -30,7 +29,7 @@ export class ProgramFspConfigurationController {
     this.programFspConfigurationService = programFspConfigurationService;
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Get all programFspConfigurationEntity for a specific program',
   })
@@ -54,7 +53,7 @@ export class ProgramFspConfigurationController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Create ProgramFspConfigurationEntity for a program',
   })
@@ -83,7 +82,7 @@ export class ProgramFspConfigurationController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update ProgramFspConfigurationEntity' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -116,7 +115,7 @@ export class ProgramFspConfigurationController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update ProgramFspConfigurationEntity' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({

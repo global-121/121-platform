@@ -1,14 +1,12 @@
 import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Admin } from '../../../guards/admin.decorator';
-import { AdminAuthGuard } from '../../../guards/admin.guard';
-import { Permissions } from '../../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../../user/enum/permission.enum';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
 @Controller()
 export class CommercialBankEthiopiaController {
@@ -16,7 +14,9 @@ export class CommercialBankEthiopiaController {
     private commercialBankEthiopiaService: CommercialBankEthiopiaService,
   ) {}
 
-  @Permissions(PermissionEnum.PaymentFspInstructionREAD)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.PaymentFspInstructionREAD],
+  })
   @ApiOperation({
     summary:
       '[SCOPED] Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
@@ -39,7 +39,7 @@ export class CommercialBankEthiopiaController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
@@ -59,7 +59,7 @@ export class CommercialBankEthiopiaController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',

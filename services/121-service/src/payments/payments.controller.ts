@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -25,8 +26,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
 import {
   BulkActionResultDto,
@@ -37,7 +38,6 @@ import { RegistrationViewEntity } from '../registration/registration-view.entity
 import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
@@ -46,7 +46,7 @@ import { RetryPaymentDto } from './dto/retry-payment.dto';
 import { PaymentsService } from './payments.service';
 import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
 @Controller()
 export class PaymentsController {
@@ -55,7 +55,7 @@ export class PaymentsController {
     private readonly registrationsPaginateService: RegistrationsPaginationService,
   ) {}
 
-  @Permissions(PermissionEnum.PaymentREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
   @ApiOperation({ summary: 'Get past payments for program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -68,7 +68,7 @@ export class PaymentsController {
     return await this.paymentsService.getPayments(Number(params.programId));
   }
 
-  @Permissions(PermissionEnum.PaymentREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
   @ApiOperation({ summary: 'Get current status of all payments for program. ' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -84,7 +84,7 @@ export class PaymentsController {
     );
   }
 
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get payment aggregate results' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -109,7 +109,7 @@ export class PaymentsController {
     );
   }
 
-  @Permissions(PermissionEnum.PaymentCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
   @ApiResponse({
     status: 200,
     description:
@@ -160,9 +160,10 @@ export class PaymentsController {
     @Body() data: CreatePaymentDto,
     @Paginate() query: PaginateQuery,
     @Param('programId', ParseIntPipe) programId: number,
-    @User('id') userId: number,
+    @Req() req,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
+    const userId = req.user.id;
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
@@ -194,7 +195,7 @@ export class PaymentsController {
     return result;
   }
 
-  @Permissions(PermissionEnum.PaymentCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
   @ApiOperation({
     summary:
       '[SCOPED] Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
@@ -204,8 +205,9 @@ export class PaymentsController {
   public async retryPayment(
     @Body() data: RetryPaymentDto,
     @Param('programId', ParseIntPipe) programId: number,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<BulkActionResultDto> {
+    const userId = req.user.id;
     return await this.paymentsService.retryPayment(
       userId,
       programId,
@@ -214,7 +216,9 @@ export class PaymentsController {
     );
   }
 
-  @Permissions(PermissionEnum.PaymentFspInstructionREAD)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.PaymentFspInstructionREAD],
+  })
   @ApiOperation({
     summary:
       '[SCOPED] Get payments instructions for past payment to post in Financial Service Provider Portal',
@@ -229,8 +233,9 @@ export class PaymentsController {
   @Get('programs/:programId/payments/:payment/fsp-instructions')
   public async getFspInstructions(
     @Param() params,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<FspInstructions> {
+    const userId = req.user.id;
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
       Number(params.payment),
@@ -238,7 +243,7 @@ export class PaymentsController {
     );
   }
 
-  @Permissions(PermissionEnum.PaymentCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
   @ApiOperation({
     summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
   })
@@ -256,8 +261,9 @@ export class PaymentsController {
   public async importFspReconciliationData(
     @UploadedFile() file,
     @Param() params,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ImportResult> {
+    const userId = req.user.id;
     return await this.paymentsService.importFspReconciliationData(
       file,
       Number(params.programId),

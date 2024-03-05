@@ -12,6 +12,6 @@ export const AuthenticatedUser = (
 ): any =>
   SetMetadata('authenticationParameters', {
     ...parameters,
-    // TODO: Find a way to make this 'authenticated' part more explicit
+    // TODO: Find a way to make this 'isGuarded' part more explicit
     isGuarded: true,
   });

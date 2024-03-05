@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,13 +17,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
-import { Admin } from '../guards/admin.decorator';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import {
   ExportDetailsQueryParamsDto,
@@ -34,7 +33,7 @@ import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from './enum/export-file-format.enum';
 import { MetricsService } from './metrics.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('metrics')
 @Controller()
 export class MetricsController {
@@ -42,7 +41,9 @@ export class MetricsController {
   public constructor(metricsService: MetricsService) {
     this.metricsService = metricsService;
   }
-  @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalEXPORT],
+  })
   @ApiOperation({
     summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allPeopleAffected}`,
   })
@@ -92,11 +93,12 @@ export class MetricsController {
     @Param('programId') programId: number,
     @Param('exportType') exportType: ExportType,
     @Query() queryParams: ExportDetailsQueryParamsDto,
-    @User('id') userId: number,
     @Paginate() paginationQuery: PaginateQuery,
     @Query('format') format = 'json',
+    @Req() req,
     @Res() res,
   ): Promise<any> {
+    const userId = req.user.id;
     if (
       queryParams.toDate &&
       queryParams.fromDate &&
@@ -124,7 +126,7 @@ export class MetricsController {
     return res.send(result);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Get list of vouchers to cancel, only used by admin',
   })
@@ -138,7 +140,7 @@ export class MetricsController {
     return await this.metricsService.getToCancelVouchers();
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
     summary: '[SCOPED] Get metrics about people affected for dashboard page',
   })
@@ -189,7 +191,7 @@ export class MetricsController {
     };
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
     summary: '[SCOPED] Get payments with state sums by program-id',
   })
@@ -210,7 +212,7 @@ export class MetricsController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get monitoring data' })
   @ApiResponse({
     status: 200,
@@ -225,7 +227,7 @@ export class MetricsController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
@@ -237,7 +239,7 @@ export class MetricsController {
     return await this.metricsService.getProgramStats(Number(params.programId));
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({

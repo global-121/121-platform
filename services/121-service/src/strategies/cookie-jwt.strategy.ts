@@ -66,7 +66,7 @@ export class CookieJwtStrategy
       request.authenticationParameters as AuthenticatedUserParameters;
 
     // This is an early return to allow the guard to be at the top of the controller and the decorator at the specific endpoints we want to protect.
-    if (!authParams.isGuarded) {
+    if (!authParams?.isGuarded) {
       return true;
     }
 

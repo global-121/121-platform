@@ -11,7 +11,6 @@ import { PermissionEnum } from '../user/enum/permission.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { verifyToken } from './guard.helper';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {
@@ -38,8 +37,7 @@ export class PersonAffectedAuthGuard implements CanActivate {
       request.cookies[CookieNames.paApp] &&
       endpointPersonAffectedAuth.length === 0
     ) {
-      const token = request.cookies[CookieNames.paApp];
-      const decoded = verifyToken(token);
+      const decoded = request.user;
       if (!decoded?.id) {
         return false;
       }

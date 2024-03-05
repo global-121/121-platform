@@ -22,6 +22,9 @@ export class AuthenticatedUserGuard
     );
     const request = context.switchToHttp().getRequest();
     request.authenticationParameters = endpointParameters;
+    if (!endpointParameters?.isGuarded) {
+      return true;
+    }
     return super.canActivate(context);
   }
 }

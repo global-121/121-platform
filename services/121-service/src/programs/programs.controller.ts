@@ -26,7 +26,6 @@ import { ProgramAttributesService } from '../program-attributes/program-attribut
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
@@ -63,8 +62,9 @@ export class ProgramController {
   public async findOne(
     @Param() params,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ProgramEntity | CreateProgramDto> {
+    const userId = req.user.id;
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
@@ -98,12 +98,12 @@ export class ProgramController {
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
   public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
-    // console.log('req: ', req);
-    if (!req.user.id) {
+    const userId = req.user.id;
+    if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.programService.getAssignedPrograms(req.user.id);
+    return await this.programService.getAssignedPrograms(userId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -116,8 +116,9 @@ export class ProgramController {
   @Post()
   public async create(
     @Body() programData: CreateProgramDto,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ProgramEntity> {
+    const userId = req.user.id;
     return this.programService.create(programData, userId);
   }
 

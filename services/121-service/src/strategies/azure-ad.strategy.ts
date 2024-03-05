@@ -10,7 +10,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
 import { UserType } from '../user/user-type-enum';
-import { UserRO } from '../user/user.interface';
+import { UserRO, UserToken } from '../user/user.interface';
 import { UserService } from '../user/user.service';
 import { generateRandomString } from '../utils/getRandomValue.helper';
 
@@ -72,7 +72,7 @@ export class AzureAdStrategy
       request.authenticationParameters as AuthenticatedUserParameters;
 
     // This is an early return to allow the guard to be at the top of the controller and the decorator at the specific endpoints we want to protect.
-    if (!authParams.isGuarded) {
+    if (!authParams?.isGuarded) {
       return true;
     }
 
@@ -118,9 +118,17 @@ export class AzureAdStrategy
       }
     }
 
-    return {
-      ...payload,
-      id: user?.user?.id,
+    const userToken: UserToken = {
+      id: user.user.id,
+      username: user.user.username,
+      exp: payload.exp,
+      admin: user.user.isAdmin,
     };
+    return userToken;
+
+    // return {
+    //   ...payload,
+    //   id: user?.user?.id,
+    // };
   }
 }

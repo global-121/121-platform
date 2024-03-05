@@ -1,12 +1,19 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
-import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { User } from '../user/user.decorator';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { StoreDataDto } from './dto/store-data.dto';
 import { PeopleAffectedService } from './people-affected.service';
 
-@UseGuards(PersonAffectedAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('people-affected')
 @Controller('people-affected')
 export class PeopleAffectedController {
@@ -15,12 +22,13 @@ export class PeopleAffectedController {
     this.peopleAffectedService = peopleAffectedService;
   }
   @ApiOperation({ summary: 'Post data to storage' })
-  @PersonAffectedAuth()
+  @AuthenticatedUser()
   @Post('data-storage')
   public async postData(
-    @User('id') userId: number,
+    @Req() req,
     @Body() storeData: StoreDataDto,
   ): Promise<void> {
+    const userId = req.user.id;
     return await this.peopleAffectedService.postData(userId, storeData);
   }
 
@@ -31,12 +39,10 @@ export class PeopleAffectedController {
     required: true,
     type: 'string',
   })
-  @PersonAffectedAuth()
+  @AuthenticatedUser()
   @Get('data-storage/:type')
-  public async getData(
-    @User('id') userId: number,
-    @Param() params,
-  ): Promise<string> {
+  public async getData(@Req() req, @Param() params): Promise<string> {
+    const userId = req.user.id;
     return await this.peopleAffectedService.getData(userId, params.type);
   }
 }

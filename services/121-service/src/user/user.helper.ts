@@ -1,4 +1,3 @@
-import { verifyToken } from '../guards/guard.helper';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
 
@@ -31,7 +30,6 @@ export function getUserIdFromRequest(attributeName: string, req: any): any {
   }
 
   if (token) {
-    const decoded = verifyToken(token);
-    return !!attributeName ? decoded?.[attributeName] : decoded;
+    return !!attributeName ? req.user?.[attributeName] : req.user;
   }
 }

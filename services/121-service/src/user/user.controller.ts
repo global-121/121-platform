@@ -25,10 +25,8 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { DEBUG } from '../config';
-import { Admin } from '../guards/admin.decorator';
-import { AdminAuthGuard } from '../guards/admin.guard';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import {
@@ -46,12 +44,11 @@ import {
   UserRoleResponseDTO,
 } from './dto/userrole-response.dto';
 import { PermissionEnum } from './enum/permission.enum';
-import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { tokenExpirationDays, UserService } from './user.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class UserController {
   private readonly userService: UserService;
@@ -68,13 +65,12 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(
-    @User('id') userId: number,
-  ): Promise<UserRoleResponseDTO[]> {
+  public async getUserRoles(@Req() req): Promise<UserRoleResponseDTO[]> {
+    const userId = req.user.id;
     return await this.userService.getUserRoles(userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
   @ApiResponse({
@@ -89,7 +85,7 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
@@ -113,7 +109,7 @@ export class UserController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
@@ -132,11 +128,12 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
   @Get('users')
-  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
+  public async getUsers(@Req() req): Promise<UserEntity[]> {
+    const userId = req.user.id;
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -283,9 +280,10 @@ export class UserController {
     description: 'No user detectable from cookie or no cookie present',
   })
   public async update(
-    @User('id') userId: number,
+    @Req() req,
     @Body() userData: UpdateUserDto,
   ): Promise<any> {
+    const userId = req.user.id;
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -293,7 +291,7 @@ export class UserController {
     return this.userService.update(userData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
   @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
@@ -312,9 +310,8 @@ export class UserController {
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async deleteCurrentUser(
-    @User('id') deleterId: number,
-  ): Promise<UserEntity> {
+  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
+    const deleterId = req.user.id;
     if (!deleterId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -330,7 +327,8 @@ export class UserController {
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async findMe(@User('username') username: string): Promise<UserRO> {
+  public async findMe(@Req() req): Promise<UserRO> {
+    const username = req.user.username;
     if (!username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -341,7 +339,7 @@ export class UserController {
   // This endpoint searches users accross all programs, which is needed to add a user to a program
   // We did not create an extra permission for this as it is always used in combination with adding new users to a program
   // ProgramId is therefore not needed in the service
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users')
   @ApiOperation({
     summary:
@@ -362,7 +360,7 @@ export class UserController {
     return await this.userService.findUsersByName(username);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -386,7 +384,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary: 'Create or OVERWRITE program assignment including roles and scope',
@@ -415,7 +413,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
@@ -444,7 +442,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
@@ -475,7 +473,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
