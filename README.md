@@ -415,7 +415,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
 - PR's to the branch `main` are automatically deployed to an individual preview-environment.
-- When merged, a separate deployment is done to the test-environment; for that interface only.
+- When merged, a separate deployment is done to the test-environment; for that interface only
 
 ### To "staging/production" environment(s)
 
