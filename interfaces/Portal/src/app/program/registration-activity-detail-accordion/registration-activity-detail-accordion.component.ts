@@ -27,11 +27,12 @@ import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-sta
   imports: [IonicModule, FormsModule, CommonModule, TranslateModule],
 })
 export class RegistrationActivityDetailAccordionComponent implements OnInit {
-  DateFormat = DateFormat;
-  hasErrorCheck = PaymentUtils.hasError;
-  hasWaitingCheck = PaymentUtils.hasError;
-  hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
-  getCustomDataAttributesCheck = PaymentUtils.getCustomDataAttributesToShow;
+  public DateFormat = DateFormat;
+  public hasErrorCheck = PaymentUtils.hasError;
+  public hasWaitingCheck = PaymentUtils.hasError;
+  public hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
+  public getCustomDataAttributesCheck =
+    PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
   public activity: RegistrationActivity;
@@ -54,7 +55,7 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
   @Input()
   private lastPaymentId?: number;
 
-  RegistrationActivityType = RegistrationActivityType;
+  public RegistrationActivityType = RegistrationActivityType;
 
   public showAccordion = false;
 
@@ -63,7 +64,8 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {}
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     if (
       (this.activity.type === RegistrationActivityType.payment &&
         !this.enableSinglePayment) ||
