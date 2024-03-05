@@ -119,7 +119,7 @@ Steps to rename a database table:
 7. Use the generated CREATE FK CONSTRAINTS queries.
 8. Caveats: if there is a related "cross table" that TypeORM automatically generated, then there is a bit of manual editing of the generated query involved.
 9. See for an example: <https://github.com/global-121/121-platform/pull/4985/files#diff-9d32e210b9db0795ae71d28aaad421f3bb58bc8e3b263bbf54be13429239397c>
-10. No renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM.
+10. In principle there is no renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM. However, we do have some hard-coded SQL scripts for creaing mock data. Check if it is needed to update these queries: they are in .sql files.
 11. Test the migration script:
 12. Incremental, given an existing (filled) database, like on production.
 13. New instance, like when installing a fresh local dev environment.
