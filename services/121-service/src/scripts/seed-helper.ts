@@ -228,10 +228,15 @@ export class SeedHelper {
       foundProgram.financialServiceProviders.push(fspReturn);
       if (fsp.configuration && fsp.configuration.length > 0) {
         for (const config of fsp.configuration) {
+          let fspConfigValue = config.value;
+          if (typeof config.value === 'string') {
+            fspConfigValue = process.env[config.value] || config.value;
+          }
+
           await this.programFspConfigurationService.create(programReturn.id, {
             fspId: fspReturn.id,
             name: config.name,
-            value: config.value,
+            value: fspConfigValue,
           });
         }
       }

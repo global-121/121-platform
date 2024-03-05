@@ -7,7 +7,7 @@ export const paymentNrVisa = 1;
 export const amountVisa = 25;
 
 export const registrationVisa = {
-  referenceId: '2982g82bdsf89sdsd',
+  referenceId: 'registration-visa-1',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   firstName: 'Jane',

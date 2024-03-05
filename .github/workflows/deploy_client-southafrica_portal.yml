@@ -35,6 +35,7 @@ jobs:
             script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             connect-src 'self' https://southafrica.121.global;
             form-action https://southafrica.121.global;
+            frame-src 'self' https://app.powerbi.com;
         env:
           NG_ENV_NAME: 'South Africa'
           NG_LOCALES: 'en'

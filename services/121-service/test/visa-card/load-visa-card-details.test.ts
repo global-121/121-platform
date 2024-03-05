@@ -51,7 +51,7 @@ describe('Load Visa debit cards and details', () => {
         ...registrationVisa,
         lastName: `mock-fail-get-card-${status}`,
         referenceId: `${registrationVisa.referenceId}-${status}`,
-        whatsappPhoneNumber: '14155238887',
+        whatsappPhoneNumber: registrationVisa.phoneNumber,
       };
       registrations.push(copyRegistration);
     }

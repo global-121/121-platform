@@ -20,6 +20,8 @@ export class TwilioController {
     phone_number: string;
     national_format: string;
   }> {
+    console.info('GET api/v1/PhoneNumbers/:phoneNumber', phoneNumber);
+
     return await this.twilioService.fetchPhoneNumber(phoneNumber);
   }
 
@@ -34,6 +36,11 @@ export class TwilioController {
     @Body() twilioMessagesCreateDto: any,
     @Param('accountSid') accountSid: string,
   ): object {
+    console.info(
+      'POST api/2010-04-01/Accounts/:accountSid/Messages.json',
+      twilioMessagesCreateDto,
+    );
+
     return this.twilioService.createMessage(
       twilioMessagesCreateDto,
       accountSid,
