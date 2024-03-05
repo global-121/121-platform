@@ -309,7 +309,7 @@ export class TransactionsService {
     ) {
       const registrationsBeforeUpdate = { ...registration };
       registration.registrationStatus = RegistrationStatusEnum.completed;
-      let registrationsAfterUpdate =
+      const registrationsAfterUpdate =
         await this.registrationUtilsService.save(registration);
       await this.eventsService.log(
         {
