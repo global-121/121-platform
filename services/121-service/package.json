@@ -79,10 +79,10 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.0",
-    "@types/cookie-parser": "^1.4.6",
+    "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^18.19.17",
+    "@types/node": "^18.19.21",
     "@types/supertest": "^6.0.2",
     "@types/yargs": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
