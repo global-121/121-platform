@@ -295,7 +295,6 @@ export class ProgramController {
     @Req() req: any,
   ): Promise<Attribute[]> {
     const userId = req.user.id;
-    console.log('userId: ', userId);
     if (userId) {
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(

@@ -65,7 +65,6 @@ export class IntersolveVoucherCronService {
           toCancel: true,
         },
       });
-    console.log('failedIntersolveRquests: ', failedIntersolveRquests);
 
     const config = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')
@@ -88,7 +87,6 @@ export class IntersolveVoucherCronService {
       password: config.find((c) => c.name === FspConfigurationEnum.password)
         ?.value,
     };
-    console.log('credentials: ', credentials);
 
     for (const intersolveRequest of failedIntersolveRquests) {
       await this.cancelRequestRefpos(
