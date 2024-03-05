@@ -40,7 +40,6 @@ jobs:
           NG_ENV_NAME: ''
           NG_LOCALES: 'en'
           NG_URL_121_SERVICE_API: 'https://krcs.121.global/api'
-          NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
           NG_AI_IKEY: '0e57907b-8dba-4fd7-a640-9d36fa2bb0d4'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=0e57907b-8dba-4fd7-a640-9d36fa2bb0d4;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
