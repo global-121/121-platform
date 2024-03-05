@@ -112,8 +112,7 @@ export class AzureAdStrategy
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     } else if (authParams.isAdmin) {
-      const isAdmin = payload.admin === true;
-      if (!isAdmin) {
+      if (!user.user.isAdmin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }

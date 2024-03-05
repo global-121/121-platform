@@ -526,6 +526,7 @@ export class UserService {
       token: this.generateJWT(user),
       username: user.username,
       permissions,
+      isAdmin: user.admin,
     };
     return { user: userRO };
   }
