@@ -289,12 +289,14 @@ export class RegistrationsImportService {
     return await this.importValidatedRegistrations(
       validatedImportRecords,
       program,
+      userId,
     );
   }
 
   public async importValidatedRegistrations(
     validatedImportRecords: ImportRegistrationsDto[],
     program: ProgramEntity,
+    userId: number,
   ): Promise<ImportResult> {
     let countImported = 0;
     const registrations: RegistrationEntity[] = [];
@@ -393,6 +395,12 @@ export class RegistrationsImportService {
         );
       }
     }
+    await this.actionService.saveAction(
+      userId,
+      program.id,
+      AdditionalActionType.importRegistrations,
+    );
+
     return { aggregateImportResult: { countImported } };
   }
 

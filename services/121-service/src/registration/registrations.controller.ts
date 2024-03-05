@@ -271,11 +271,13 @@ export class RegistrationsController {
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
         Number(params.programId),
+        userId,
       );
     } else {
       return await this.registrationsService.importValidatedRegistrations(
         data,
         Number(params.programId),
+        userId,
       );
     }
   }

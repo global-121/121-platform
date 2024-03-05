@@ -725,11 +725,13 @@ export class RegistrationsService {
   public async importValidatedRegistrations(
     validatedImportRecords: ImportRegistrationsDto[],
     programId: number,
+    userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
     return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
+      userId,
     );
   }
 
