@@ -609,8 +609,9 @@ export class RegistrationsController {
   public async updateChosenFsp(
     @Param() params,
     @Body() data: UpdateChosenFspDto,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<RegistrationViewEntity> {
+    const userId = req.user.id;
     return await this.registrationsService.updateChosenFsp(
       params.referenceId,
       data.newFspName,
