@@ -126,7 +126,7 @@ Steps to rename a database table:
 14. Run unit tests and API tests. Any problems/bugs are likely due to an incomplete/incorrect migration script.
 15. Generate a "test" migration script.
 16. In case this actually creates a script with queries, it means the migration script you created earlier is not yet complete.
-17. Copy/paste (mindfully) the created queries into your migration script and re-do from step 11.
+17. Copy/paste (mindfully) the created queries into your migration script, edit them if needed, and re-do from step 11.
 18. Caveat: TypeORM "randomly" names things like indexes and constraints, and these names need to be changed as well as TypeORM expects these new names, even though technically for PostgreSQL it does not matter. Just copy-paste the generated drop and create queries.
 19. Rinse and repeat until step 15 does not create a migration script anymore (it will "complain" that there are no changes).
 20. Do a smoke test on local dev: walk through happy flow main functions via the Portal.
