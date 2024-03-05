@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -11,17 +7,14 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   canActivate(
     nextRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
-    ): Observable<boolean> | Promise<boolean> | boolean {
-      console.log('nextRoute: ', nextRoute);
-      console.log('state: ', state); 
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    console.log('nextRoute: ', nextRoute);
+    console.log('state: ', state);
     // If no specific permission is required, only require a valid login
     if (!nextRoute.data.permissions && this.authService.isLoggedIn()) {
       return true;
