@@ -22,8 +22,6 @@ export class MessageHistoryPopupComponent implements OnInit {
 
   public person: Person;
   public messageHistory: RegistrationActivity[];
-
-  public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
   public locale: string;
 
   constructor(
