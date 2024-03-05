@@ -39,6 +39,7 @@ jobs:
           NG_ENV_NAME: ''
           NG_LOCALES: 'en'
           NG_URL_121_SERVICE_API: 'https://jrethiopia.121.global/api'
+          NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
           NG_AI_IKEY: '3b5033ee-be17-4e42-bc11-1efadaa66c27'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=3b5033ee-be17-4e42-bc11-1efadaa66c27;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
