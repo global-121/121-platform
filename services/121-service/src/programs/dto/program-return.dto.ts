@@ -20,20 +20,13 @@ import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from './create-program-custom-attribute.dto';
+import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 import { CreateProgramQuestionDto } from './program-question.dto';
 
-export class ProgramFinancialServiceProviderDto {
-  @ApiProperty()
-  @IsEnum(FspName)
-  fsp: FspName;
+export class ProgramReturnDto {
+  @ApiProperty({ example: 1, type: 'number' })
+  id: number;
 
-  @ApiProperty()
-  @IsArray()
-  @IsOptional()
-  configuration: { name: string; value: string }[];
-}
-
-export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly published: boolean;

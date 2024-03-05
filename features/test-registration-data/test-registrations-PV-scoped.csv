@@ -1,3 +1,4 @@
-namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,nameFirst,nameLast,phoneNumber,fspName,whatsappPhoneNumber,scope
-ABC,en,1,Henk,de Vries,31600000000,Intersolve-voucher-whatsapp,31600000000,utrecht.houten
-DEF,en,1,Jan,Klaassen,31600000001,Intersolve-voucher-paper,,zeeland.middelburg
+namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,fullName,phoneNumber,fspName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity,scope
+ABC,en,1,Henk de Vries,31600000000,Intersolve-voucher-whatsapp,31600000000,,,,,,utrecht.houten
+DEF,en,1,Jan Klaassen,31600000001,Intersolve-voucher-paper,,,,,,,zeeland.middelburg
+ABC,en,1,Ahmed Al-Saadi,14155238886,Intersolve-visa,14155238885,Straat,1,A,1234AB,Den Haag,utrecht.houten

@@ -3,6 +3,16 @@
 # git hook to run a command before actually committing when running `git commit`:
 #
 
+# Prevent committing to "main"-branch:
+if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
+  echo "You shouldn't commit directly to the main branch."
+  echo "Create a feature branch:  git branch new-branch-name"
+  echo "Then reset 'main':        git reset --hard origin/main"
+  echo "And continue to work:     git checkout new-branch-name"
+  exit 1
+fi
+
+
 check_if_need_to_lint() {
   if git diff --cached --name-only | grep --quiet "$1*"
   then
