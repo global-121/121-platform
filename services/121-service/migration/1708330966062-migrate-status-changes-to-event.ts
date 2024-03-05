@@ -21,7 +21,7 @@ export class MigrateStatusChangesToEvent1708330966062
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {}
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {
     console.time('migrateStatusChanges');
