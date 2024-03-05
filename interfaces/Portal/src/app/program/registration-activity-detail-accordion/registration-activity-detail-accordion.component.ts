@@ -5,6 +5,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { environment } from 'src/environments/environment';
 import {
   PaymentRowDetail,
   PayoutDetails,
@@ -183,5 +184,11 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
       }
     });
     await modal.present();
+  }
+
+  public getErrorCodeUrl(
+    errorCode: RegistrationActivity['messageErrorCode'],
+  ): string {
+    return `${environment.twilio_error_codes_url}/${errorCode}`;
   }
 }
