@@ -105,6 +105,35 @@ To start the debugger from Visual Studio Code, follow these steps:
 
 ---
 
+### Refactoring
+
+Steps to rename a database table:
+
+1. Rename table name in the Entity decorator:
+    @Entity('new_table_name')
+2. Generate migrate script.
+3. Change generated migration script:
+4. Use the generated DROP FK CONSTRAINTS queries.
+5. Manually add a query to change the name of the table.
+6. Remove the query that creates a new table.
+7. Use the generated CREATE FK CONSTRAINTS queries.
+8. Caveats: if there is a related "cross table" that TypeORM automatically generated, then there is a bit of manual editing of the generated query involved.
+9. See for an example: <https://github.com/global-121/121-platform/pull/4985/files#diff-9d32e210b9db0795ae71d28aaad421f3bb58bc8e3b263bbf54be13429239397c>
+10. No renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM.
+11. Test the migration script:
+12. Incremental, given an existing (filled) database, like on production.
+13. New instance, like when installing a fresh local dev environment.
+14. Run unit tests and API tests. Any problems/bugs are likely due to an incomplete/incorrect migration script.
+15. Generate a "test" migration script.
+16. In case this actually creates a script with queries, it means the migration script you created earlier is not yet complete.
+17. Copy/paste (mindfully) the created queries into your migration script and re-do from step 11.
+18. Caveat: TypeORM "randomly" names things like indexes and constraints, and these names need to be changed as well as TypeORM expects these new names, even though technically for PostgreSQL it does not matter. Just copy-paste the generated drop and create queries.
+19. Rinse and repeat until step 15 does not create a migration script anymore (it will "complain" that there are no changes).
+20. Do a smoke test on local dev: walk through happy flow main functions via the Portal.
+21. We chose not to implement the down function of the migration script for table renames.
+
+---
+
 ## License
 
 Released under the Apache 2.0 License. See [LICENSE](LICENSE).
