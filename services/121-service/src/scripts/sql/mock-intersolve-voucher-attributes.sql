@@ -1,6 +1,6 @@
  WITH fsp_data AS (
   SELECT fa.id
-  FROM "121-service".fsp_attribute fa
+  FROM "121-service".financial_service_provider_question fa
   LEFT JOIN "121-service".financial_service_provider f ON f.id = fa."fspId"
   WHERE "name" = 'whatsappPhoneNumber' AND f.fsp = 'Intersolve-voucher-whatsapp'
 )
