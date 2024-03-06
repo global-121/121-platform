@@ -3,6 +3,8 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { UserEntity } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventEntity } from './entities/event.entity';
 import { EventEnum } from './enum/event.enum';
@@ -89,12 +91,14 @@ let newViewRegistration: RegistrationViewEntity;
 
 describe('EventsService', () => {
   let eventsService: EventsService;
+  let userService: UserService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(EventsService).compile();
     eventScopedRepository = unitRef.get(
       getScopedRepositoryProviderName(EventEntity),
     );
+    userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
     eventsService['request']['userId'] = 2;
@@ -102,6 +106,15 @@ describe('EventsService', () => {
     jest
       .spyOn(eventScopedRepository, 'find')
       .mockResolvedValue(mockFindEventResult);
+
+    jest.spyOn(userService, 'findById').mockResolvedValue({
+      id: 2,
+      userType: 'aidWorker',
+      username: 'testUser',
+      password: 'dummyPassword',
+      hashPassword: async () => 'hashedPasswordDummy',
+      programAssignments: [],
+    } as UserEntity);
 
     oldViewRegistration = getViewRegistration();
     newViewRegistration = getViewRegistration();
