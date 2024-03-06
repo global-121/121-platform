@@ -79,34 +79,34 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly userService: UserService,
   ) {}
 
-  @ApiTags('programs/registrations')
-  @ApiOperation({ summary: 'Create registration' })
-  @ApiResponse({ status: 201, description: 'Created registration' })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations')
-  public async create(
-    @Body() createRegistrationDto: CreateRegistrationDto,
-    @Param('programId') programId,
-    @Req() req,
-  ): Promise<RegistrationEntity> {
-    const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return await this.registrationsService.create(
-      createRegistrationDto,
-      Number(programId),
-      userId,
-    );
-  }
+  // NOTE: only used from PA-app. Already removing instead of solving conflict.
+  // @ApiTags('programs/registrations')
+  // @ApiOperation({ summary: 'Create registration' })
+  // @ApiResponse({ status: 201, description: 'Created registration' })
+  // @ApiResponse({
+  //   status: 401,
+  //   description: 'No user detectable from cookie or no cookie present',
+  // })
+  // @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // @Post('programs/:programId/registrations')
+  // public async create(
+  //   @Body() createRegistrationDto: CreateRegistrationDto,
+  //   @Param('programId') programId,
+  //   @Req() req,
+  // ): Promise<RegistrationEntity> {
+  //   const userId = req.user.id;
+  //   if (!userId) {
+  //     const errors = `No user detectable from cookie or no cookie present'`;
+  //     throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+  //   }
+  //   return await this.registrationsService.create(
+  //     createRegistrationDto,
+  //     Number(programId),
+  //     userId,
+  //   );
+  // }
 
   @ApiTags('programs/registrations')
   @AuthenticatedUser()

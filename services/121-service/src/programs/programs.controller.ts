@@ -49,7 +49,7 @@ export class ProgramController {
     private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
-  // Note: protecting this endpoint because we assume in this branch, the PA-app will be removed
+  // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -81,6 +81,7 @@ export class ProgramController {
     }
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   // TODO: REFACTOR: into GET /api/programs?published=true

@@ -21,6 +21,8 @@ export class PeopleAffectedController {
   public constructor(peopleAffectedService: PeopleAffectedService) {
     this.peopleAffectedService = peopleAffectedService;
   }
+
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Post data to storage' })
   @AuthenticatedUser()
   @Post('data-storage')
@@ -32,6 +34,7 @@ export class PeopleAffectedController {
     return await this.peopleAffectedService.postData(userId, storeData);
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get data from storage' })
   @ApiParam({
     name: 'type',

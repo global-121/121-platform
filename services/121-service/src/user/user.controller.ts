@@ -156,6 +156,7 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
   @ApiResponse({
