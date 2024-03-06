@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
+import { EventEntity } from '../events/entities/event.entity';
 import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
@@ -15,7 +16,7 @@ import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { ScopedQueryBuilder, ScopedRepository } from '../scoped.repository';
+import { ScopedRepository } from '../scoped.repository';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -30,7 +31,6 @@ import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
-import { RegistrationResponse } from './dto/registration-response.model';
 import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
@@ -45,14 +45,12 @@ import {
 } from './enum/custom-data-attributes';
 import { LanguageEnum } from './enum/language.enum';
 import {
-  RegistrationStatusDateMap,
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
 import { RegistrationDataService } from './modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
@@ -94,12 +92,12 @@ export class RegistrationsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProviderName(RegistrationStatusChangeEntity))
-    private registrationStatusChangeScopedRepository: ScopedRepository<RegistrationStatusChangeEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    @Inject(getScopedRepositoryProviderName(EventEntity))
+    private eventScopedRepository: ScopedRepository<EventEntity>,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -554,18 +552,15 @@ export class RegistrationsService {
     currentRegistration.preferredLanguage = preferredLanguage;
 
     // Update the 'imported' registration-changes to the current registration
-    const importedRegistrationChanges =
-      await this.registrationStatusChangeScopedRepository.find({
-        where: {
-          registrationId: importedRegistration.id,
-        },
-      });
-    importedRegistrationChanges.forEach(
+    const importedRegistrationEvents = await this.eventScopedRepository.find({
+      where: {
+        registrationId: importedRegistration.id,
+      },
+    });
+    importedRegistrationEvents.forEach(
       (i) => (i.registration = currentRegistration),
     );
-    await this.registrationStatusChangeScopedRepository.save(
-      importedRegistrationChanges,
-    );
+    await this.eventScopedRepository.save(importedRegistrationEvents);
 
     // .. and save the updated import-registration
     const updatedRegistration =
@@ -730,11 +725,13 @@ export class RegistrationsService {
   public async importValidatedRegistrations(
     validatedImportRecords: ImportRegistrationsDto[],
     programId: number,
+    userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
     return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
+      userId,
     );
   }
 
@@ -760,62 +757,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
-  }
-
-  public async getRegistrationsForDashboard(
-    programId: number,
-  ): Promise<RegistrationResponse[]> {
-    let q = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .select('registration.id', 'id');
-
-    q = q
-      .addSelect('registration.registrationProgramId', 'registrationProgramId')
-      .distinctOn(['registration.registrationProgramId'])
-      .orderBy(`registration.registrationProgramId`, 'ASC')
-      .addSelect('registration.referenceId', 'referenceId')
-      .addSelect('registration.registrationStatus', 'status')
-      .addSelect('registration.preferredLanguage', 'preferredLanguage')
-      .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect('fsp.fsp', 'fsp')
-      .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
-      .addSelect(
-        'registration.paymentAmountMultiplier',
-        'paymentAmountMultiplier',
-      )
-      .addSelect('registration.maxPayments', 'maxPayments')
-      .addSelect('registration.phoneNumber', 'phoneNumber')
-      .leftJoin('registration.fsp', 'fsp');
-
-    if (programId) {
-      q.andWhere('registration.program.id = :programId', {
-        programId: programId,
-      });
-    }
-    this.addStatusChangeToQuery(q);
-
-    const rows = await q.getRawMany();
-    return rows;
-  }
-
-  public addStatusChangeToQuery(
-    q:
-      | ScopedQueryBuilder<RegistrationEntity>
-      | ScopedQueryBuilder<RegistrationViewEntity>,
-  ): void {
-    for (const registrationStatus in RegistrationStatusEnum) {
-      const timestampField =
-        RegistrationStatusTimestampField[
-          RegistrationStatusDateMap[registrationStatus]
-        ];
-      q.addSelect(`${registrationStatus}.created`, timestampField)
-        .addOrderBy(`${registrationStatus}.created`, 'DESC')
-        .leftJoin(
-          RegistrationStatusChangeEntity,
-          registrationStatus,
-          `registration.id = ${registrationStatus}.registrationId AND ${registrationStatus}.registrationStatus = '${registrationStatus}'`,
-        );
-    }
   }
 
   public getName(registrationRow: object, program: ProgramEntity): string {
@@ -1519,35 +1460,5 @@ export class RegistrationsService {
     return await this.registrationScopedRepository.findOne({
       where: { programId: programId, registrationProgramId: paId },
     });
-  }
-
-  public async getRegistrationStatusChanges(
-    programId: number,
-    referenceId: string,
-  ): Promise<any[]> {
-    const qb = await this.registrationStatusChangeScopedRepository
-      .createQueryBuilder('registrationStatusChange')
-      .andWhere('registration.referenceId = :referenceId', {
-        referenceId,
-      })
-      .andWhere('registration.programId = :programId', {
-        programId,
-      })
-      .leftJoinAndSelect(
-        'registrationStatusChange.registration',
-        'registration',
-      )
-      .orderBy('registrationStatusChange.created', 'DESC');
-    qb.getQueryAndParameters();
-    const statusChanges = await qb.getMany();
-
-    return await Promise.all(
-      statusChanges.map((statusChange) => {
-        return {
-          status: statusChange.registrationStatus,
-          date: statusChange.created,
-        };
-      }),
-    );
   }
 }

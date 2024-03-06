@@ -4,6 +4,7 @@ import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
 import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventLogOptionsDto } from './dto/event-log-options.dto';
 import { EventSearchOptionsDto } from './dto/event-search-options.dto';
@@ -21,6 +22,7 @@ export class EventsService {
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
     @Inject(REQUEST) private request: ScopedUserRequest,
+    private readonly userService: UserService,
   ) {}
 
   public async getEventsJsonDto(
@@ -98,10 +100,20 @@ export class EventsService {
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
 
+    let userId = null;
+
+    if (this.request.userId) {
+      const user = await this.userService.findById(this.request.userId);
+
+      if (user && user.userType === 'aidWorker') {
+        userId = this.request.userId;
+      }
+    }
+
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      this.request.userId,
+      userId,
       eventLogOptions?.registrationAttributes,
     );
 
@@ -156,7 +168,10 @@ export class EventsService {
       this.isCompleteRegistrationViewEntity(firstNewEntity);
 
     // Check if one entity is RegistrationViewEntity and the other is not
-    if (isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView) {
+    if (
+      !eventLogOptionsDto?.registrationAttributes &&
+      isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
+    ) {
       throw new Error(
         'Old and new Entities are not of the same type. One is RegistrationViewEntity and the other is an (partial RegistrationViewEntity) object',
       );
@@ -177,17 +192,18 @@ export class EventsService {
   private isCompleteRegistrationViewEntity(
     obj: any,
   ): obj is RegistrationViewEntity {
-    // to be implemented
-    // const requiredProperties: (keyof RegistrationViewEntity)[] = [
-    //   // List all properties of RegistrationViewEntity here
-    //   'property1',
-    //   'property2',
-    //   // ...
-    // ];
+    // Banal check if the object is a RegistrationViewEntity
+    // This is to prevent that log is called with an object that is not a RegistrationViewEntity
+    // While registrationAttributes is empty
+    // Which would result in many faulty logs being created
+    const requiredProperties: (keyof RegistrationViewEntity)[] = [
+      'referenceId',
+      'id',
+      'status',
+      'preferredLanguage',
+    ];
 
-    // return requiredProperties.every(prop => prop in obj);
-
-    return true;
+    return requiredProperties.every((prop) => prop in obj);
   }
 
   private arraysAreEqual<T>(array1: T[], array2: T[]): boolean {

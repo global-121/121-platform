@@ -3,6 +3,8 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { UserEntity } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventEntity } from './entities/event.entity';
 import { EventEnum } from './enum/event.enum';
@@ -89,12 +91,14 @@ let newViewRegistration: RegistrationViewEntity;
 
 describe('EventsService', () => {
   let eventsService: EventsService;
+  let userService: UserService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(EventsService).compile();
     eventScopedRepository = unitRef.get(
       getScopedRepositoryProviderName(EventEntity),
     );
+    userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
     eventsService['request']['userId'] = 2;
@@ -102,6 +106,15 @@ describe('EventsService', () => {
     jest
       .spyOn(eventScopedRepository, 'find')
       .mockResolvedValue(mockFindEventResult);
+
+    jest.spyOn(userService, 'findById').mockResolvedValue({
+      id: 2,
+      userType: 'aidWorker',
+      username: 'testUser',
+      password: 'dummyPassword',
+      hashPassword: async () => 'hashedPasswordDummy',
+      programAssignments: [],
+    } as UserEntity);
 
     oldViewRegistration = getViewRegistration();
     newViewRegistration = getViewRegistration();
@@ -202,6 +215,21 @@ describe('EventsService', () => {
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
+        type: EventEnum.financialServiceProviderChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value: oldViewRegistration['fspDisplayNamePortal'],
+          },
+          {
+            key: 'newValue',
+            value: newViewRegistration['fspDisplayNamePortal'],
+          },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
         type: EventEnum.registrationDataChange,
         attributes: [
           {
@@ -213,16 +241,6 @@ describe('EventsService', () => {
             value: newViewRegistration['whatsappPhoneNumber'],
           },
           { key: 'fieldName', value: 'whatsappPhoneNumber' },
-        ],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: EventEnum.financialServiceProviderChange,
-        attributes: [
-          { key: 'oldValue', value: oldViewRegistration.fspDisplayNamePortal },
-          { key: 'newValue', value: newViewRegistration.fspDisplayNamePortal },
-          { key: 'fieldName', value: 'fspDisplayNamePortal' },
         ],
         userId: 2,
       },
@@ -242,6 +260,12 @@ describe('EventsService', () => {
           { key: 'oldValue', value: oldViewRegistration['addressPostalCode'] },
           { key: 'fieldName', value: 'addressPostalCode' },
         ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [{ key: 'fieldName', value: 'addressHouseNumberAddition' }],
         userId: 2,
       },
       {
@@ -284,5 +308,83 @@ describe('EventsService', () => {
       ]),
       { chunk: 2000 },
     );
+  });
+
+  it('should log a registration status change', async () => {
+    newViewRegistration.phoneNumber = '1234567890';
+    newViewRegistration.status = RegistrationStatusEnum.included;
+    const additionalAttributeObject = { reason: 'exampleReason' };
+
+    // Act
+    await eventsService.log(oldViewRegistration, newViewRegistration, {
+      additionalLogAttributes: additionalAttributeObject,
+    });
+
+    // Assert
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    const expectedEvents = [
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationStatusChange,
+        attributes: [
+          { key: 'oldValue', value: RegistrationStatusEnum.registered },
+          { key: 'newValue', value: RegistrationStatusEnum.included },
+          { key: 'reason', value: additionalAttributeObject.reason },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [
+          { key: 'oldValue', value: oldViewRegistration.phoneNumber },
+          { key: 'newValue', value: newViewRegistration.phoneNumber },
+          { key: 'fieldName', value: 'phoneNumber' },
+          { key: 'reason', value: additionalAttributeObject.reason },
+        ],
+        userId: 2,
+      },
+    ];
+    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+      chunk: 2000,
+    });
+  });
+
+  it('should log a registration status change with event log option', async () => {
+    newViewRegistration.status = RegistrationStatusEnum.included;
+    const additionalAttributeObject = { reason: 'exampleReason' };
+
+    // Act
+    await eventsService.log(oldViewRegistration, newViewRegistration, {
+      registrationAttributes: ['status'],
+      additionalLogAttributes: additionalAttributeObject,
+    });
+
+    // Assert
+    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    const expectedEvents = [
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationStatusChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value: RegistrationStatusEnum.registered,
+          },
+          {
+            key: 'newValue',
+            value: RegistrationStatusEnum.included,
+          },
+          {
+            key: 'reason',
+            value: additionalAttributeObject.reason,
+          },
+        ],
+        userId: 2,
+      },
+    ];
+    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+      chunk: 2000,
+    });
   });
 });

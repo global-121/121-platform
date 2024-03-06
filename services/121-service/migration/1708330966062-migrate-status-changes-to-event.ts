@@ -15,11 +15,13 @@ export class MigrateStatusChangesToEvent1708330966062
     await this.migrateStatusChanges(queryRunner);
     // Start artificial transaction because TypeORM migrations automatically try to close a transaction after migration
     await queryRunner.startTransaction();
+    await queryRunner.query(
+      'DROP table "121-service"."registration_status_change"',
+    );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    // Down migration not implemented as data loss is expected
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public async down(_queryRunner: QueryRunner): Promise<void> {}
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {
     console.time('migrateStatusChanges');

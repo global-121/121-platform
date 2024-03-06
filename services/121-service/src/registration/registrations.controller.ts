@@ -68,7 +68,6 @@ import {
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
@@ -272,11 +271,13 @@ export class RegistrationsController {
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
         Number(params.programId),
+        userId,
       );
     } else {
       return await this.registrationsService.importValidatedRegistrations(
         data,
         Number(params.programId),
+        userId,
       );
     }
   }
@@ -925,26 +926,6 @@ export class RegistrationsController {
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationREAD)
-  @ApiOperation({ summary: '[SCOPED] Get registration status changes' })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Registration status changes retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/status-changes/:referenceId')
-  public async getRegistrationStatusChanges(
-    @Param() params,
-  ): Promise<RegistrationStatusChangeEntity[]> {
-    return await this.registrationsService.getRegistrationStatusChanges(
-      params.programId,
-      params.referenceId,
     );
   }
 }

@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { Event } from 'src/app/models/event.model';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
@@ -12,7 +13,6 @@ import {
   Program,
   ProgramPhase,
 } from '../../models/program.model';
-import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -46,7 +46,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   private program: Program;
 
   @Input()
-  public currentStatus: RegistrationStatusChange;
+  public lastRegistrationStatusChangeEvent: Event;
 
   public personalInfoTable: TableItem[];
   private tableAttributes: PaTableAttribute[];
@@ -107,8 +107,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     this.personalInfoTable = [];
 
     if (this.person?.status) {
-      const statusKey = this.currentStatus?.status
-        ? this.currentStatus.status
+      const statusKey = this.lastRegistrationStatusChangeEvent?.attributes
+        ?.newValue
+        ? this.lastRegistrationStatusChangeEvent?.attributes?.newValue
         : this.person?.status;
       this.personalInfoTable.push({
         label: this.getLabel('status', {
@@ -116,9 +117,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
             `entity.registration.status.${statusKey}`,
           ),
         }),
-        value: this.currentStatus?.date
+        value: this.lastRegistrationStatusChangeEvent?.created
           ? formatDate(
-              new Date(this.currentStatus.date),
+              new Date(this.lastRegistrationStatusChangeEvent.created),
               DateFormat.dateOnly,
               this.locale,
             )

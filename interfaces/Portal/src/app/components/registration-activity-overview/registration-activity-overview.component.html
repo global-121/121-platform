@@ -123,12 +123,20 @@
               'registration-details.activity-overview.activities.data-changes.old'
                 | translate
             }}</strong
-            >{{ activity.description.oldValue }}<br />
+            >{{
+              activity.description.oldValue
+                ? activity.description.oldValue
+                : '-'
+            }}<br />
             <strong>{{
               'registration-details.activity-overview.activities.data-changes.new'
                 | translate
             }}</strong
-            >{{ activity.description.newValue }}<br />
+            >{{
+              activity.description.newValue
+                ? activity.description.newValue
+                : '-'
+            }}<br />
             <ng-container *ngIf="activity.description.reason">
               <strong>{{
                 'registration-details.activity-overview.activities.data-changes.reason'
@@ -142,12 +150,22 @@
               'registration-details.activity-overview.activities.data-changes.old'
                 | translate
             }}</strong
-            >{{ activity.description.oldValue }}<br />
+            >{{
+              activity.description.oldValue
+                ? ('entity.registration.status.' + activity.description.oldValue
+                  | translate)
+                : '-'
+            }}<br />
             <strong>{{
               'registration-details.activity-overview.activities.data-changes.new'
                 | translate
             }}</strong
-            >{{ activity.description.newValue }}<br />
+            >{{
+              activity.description.newValue
+                ? ('entity.registration.status.' + activity.description.newValue
+                  | translate)
+                : '-'
+            }}<br />
           </ng-container>
           <ng-container *ngSwitchDefault>{{
             activity.description

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Event } from 'src/app/models/event.model';
 import { PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import {
@@ -49,6 +50,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   @Input()
   public canViewVouchers = false;
+
+  @Input()
+  public events: Event[];
 
   public RegistrationActivityType = RegistrationActivityType;
 
@@ -179,19 +183,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewPersonalData) {
-      const changes =
-        await this.programsService.getRegistrationEventsByRegistrationId(
-          this.program.id,
-          this.person.id,
-        );
+      for (const change of this.events) {
+        let oldValue = change.attributes.oldValue;
+        let newValue = change.attributes.newValue;
 
-      for (const change of changes) {
-        let oldValue = change.attributes.oldValue
-          ? change.attributes.oldValue
-          : '-';
-        let newValue = change.attributes.newValue
-          ? change.attributes.newValue
-          : '-';
         let description = {
           oldValue,
           newValue,
@@ -245,7 +240,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             subLabel: this.getSubLabelText(change, attribute),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
 
@@ -260,7 +255,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             ),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
 
@@ -272,7 +267,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             ),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
       }
