@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 
@@ -38,6 +40,7 @@ export class LoginPage {
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
+    private router: Router,
   ) {}
 
   ionViewWillLeave(): void {
@@ -96,5 +99,10 @@ export class LoginPage {
 
   toggleInputType() {
     this.inputType = this.isPassword() ? 'text' : 'password';
+  }
+
+  public loginSso() {
+    // redirect to /home which will in turn redirect to SSO flow
+    this.router.navigate(['/', AppRoutes.home]);
   }
 }

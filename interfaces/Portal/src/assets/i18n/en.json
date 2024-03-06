@@ -147,6 +147,7 @@
           "label": "Log in"
         }
       },
+      "login-sso": "Or log in via SSO",
       "portalTitle": "Portal"
     },
     "program": {

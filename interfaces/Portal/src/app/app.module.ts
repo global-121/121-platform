@@ -95,7 +95,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: 'http://localhost:8888/auth/callback',
+          redirectUri: 'http://localhost:8888/',
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -125,6 +125,9 @@ export function HttpLoaderFactory(http: HttpClient) {
             'https://graph.microsoft.com/v1.0/me',
             ['openid, offline_access, User.read'],
           ],
+          // list open endpoints here first, without scopes
+          ['http://localhost:3000/api/users/login', null],
+          // then catch all other protected endpoints with this wildcard
           [
             'http://localhost:3000/api/*',
             [`api://${environment.azure_ad_client_id}/User.read`],

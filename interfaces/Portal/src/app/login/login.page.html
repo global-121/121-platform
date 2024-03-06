@@ -191,6 +191,14 @@
               </ion-button>
             </div>
           </form>
+          <ion-button
+            expand="block"
+            class="auth-button"
+            color="secondary"
+            (click)="loginSso()"
+          >
+            {{ 'page.login.login-sso'|translate }}
+          </ion-button>
         </div>
       </div>
     </ion-row>
