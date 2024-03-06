@@ -23,11 +23,11 @@
     "strict": false,
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "strictDomEventTypes": false,
     "strictTemplates": false,
-    "strictInjectionParameters": true,
-  },
+    "strictInjectionParameters": true
+  }
 }
