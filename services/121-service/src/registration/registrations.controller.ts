@@ -327,6 +327,7 @@ export class RegistrationsController {
     );
   }
 
+  @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
