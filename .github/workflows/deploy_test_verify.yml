@@ -52,15 +52,14 @@ jobs:
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
           envContentSecurityPolicy: >-
             img-src 'self' data: ;
-            script-src 'self';
-            connect-src 'self' https://test.121.global;
+            connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://test.121.global;
         env:
           NG_ENV_NAME: 'test'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
-          NG_AI_IKEY: ''
-          NG_AI_ENDPOINT: ''
-          APPLICATIONINSIGHTS_CONNECTION_STRING: ''
+          NG_AI_IKEY: '6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig

@@ -32,8 +32,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFCPkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAABERAAAAABEREREREQAAERERERERAAAREREREREAABEREREREQAAAAAREQAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAPw/AAD8PwAA/D8AAPw/AADAAwAAwAMAAMADAADAAwAA/D8AAPw/AAD8PwAA/D8AAP//AAD//wAA'
           envContentSecurityPolicy: >-
-            script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
-            connect-src 'self' https://demo.121.global;
+            connect-src 'self' https://demo.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://demo.121.global;
             frame-src blob: 'self' https://app.powerbi.com;
             frame-ancestors 'self' https://flex.twilio.com;
