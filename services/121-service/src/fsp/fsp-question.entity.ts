@@ -14,7 +14,6 @@ import { RegistrationDataEntity } from '../registration/registration-data.entity
 import { NameConstraintQuestions } from '../shared/const';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
-// TODO: REFACTOR: rename table name into fsp_question so it aligns with Entity class name
 @Unique('fspQuestionUnique', ['name', 'fspId'])
 @Entity('financial_service_provider_question')
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
