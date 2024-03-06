@@ -32,8 +32,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAb7lAOCjAAA9YCAAAdL6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0RERERERERERERERERERERERERERERERCIiIiIiIiIiIiIiIiIhIhIiIiIiIiIRIiIiIiIiIhEiIiIiIiIhIhIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
           envContentSecurityPolicy: >-
-            script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
-            connect-src 'self' https://rwanda.121.global;
+            connect-src 'self' https://rwanda.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://rwanda.121.global;
         env:
           NG_ENV_NAME: 'Rwanda'
