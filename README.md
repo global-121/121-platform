@@ -89,10 +89,6 @@ Then install the required version of Node.js and `npm`:
 
 ## Setup Services
 
-Clone the repository
-
-    git clone https://github.com/global-121/121-platform.git
-
 Switch to the repository folder
 
     cd services/
@@ -164,6 +160,10 @@ To start an individual interface/service in VS Code:
 - Run: (where `<package>` is one of `pa`, `aw`, `portal`, `121-service`)
 
       npm run code:<package>
+
+### Setup git pre-commit hooks
+
+To automatically check the (syntax of the) code, before committing/pushing, you can enable the [`githook`-scripts](tools/git-hooks/).
 
 ### Process for implementing data-model changes
 
