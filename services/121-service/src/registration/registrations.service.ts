@@ -877,32 +877,54 @@ export class RegistrationsService {
       programId,
     );
 
+    const oldFspData = {};
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      const registrationData =
+        await this.registrationDataService.getRegistrationDataEntityByName(
+          registrationToUpdate,
+          attributeKey,
+        );
+      if (!registrationData || !registrationData.fspQuestionId) {
+        continue;
+      }
+      oldFspData[attributeKey] = registrationData.value;
+    }
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
     let nrAttributesUpdated = 0;
+    const newFspData = {};
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue = oldViewRegistration[attributeKey];
+      const oldValue =
+        oldViewRegistration[attributeKey] || oldFspData[attributeKey];
       const attributeValue = partialRegistration[attributeKey];
       registrationToUpdate = await this.updateAttribute(
         attributeKey,
         attributeValue,
         registrationToUpdate,
       );
-      const newValue = registrationToUpdate[attributeKey];
+
+      const newValue = attributeValue;
+      newFspData[attributeKey] = newValue;
       if (String(oldValue) !== String(newValue)) {
         nrAttributesUpdated++;
       }
     }
+
     const newRegistration = await this.getPaginateRegistrationForReferenceId(
       referenceId,
       programId,
     );
+
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
-      await this.eventsService.log(oldViewRegistration, newRegistration, {
-        reason: updateRegistrationDto.reason,
-      });
+      await this.eventsService.log(
+        { ...oldViewRegistration, ...oldFspData },
+        { ...newRegistration, ...newFspData },
+        {
+          reason: updateRegistrationDto.reason,
+        },
+      );
     }
     return newRegistration;
   }
