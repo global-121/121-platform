@@ -17,6 +17,7 @@ inputs:
     default: >-
       base-uri 'self';
       default-src 'self';
+      script-src 'self';
       style-src 'self' 'unsafe-inline';
       object-src 'none';
       upgrade-insecure-requests;
@@ -25,8 +26,7 @@ inputs:
     description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
     required: false
     default: >-
-      script-src 'self';
-      connect-src 'self' https://*.121.global;
+      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
       form-action https://*.121.global;
       frame-src blob: 'self';
       frame-ancestors 'self';
