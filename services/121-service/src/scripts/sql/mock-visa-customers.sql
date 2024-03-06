@@ -9,5 +9,5 @@ INSERT
 			,'mock-holderId'
 			,r.id
 	from "121-service".registration r 
-	left join "121-service".fsp f on r."fspId" = f.id 
+	left join "121-service".financial_service_provider f on r."fspId" = f.id 
 	where f.fsp = 'Intersolve-visa');
