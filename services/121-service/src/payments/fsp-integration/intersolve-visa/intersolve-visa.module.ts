@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QueueMessageModule } from '../../../notifications/queue-message/queue-message.module';
 import { RedisModule } from '../../../payments/redis.module';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { RegistrationDataModule } from '../../../registration/modules/registration-data/registration-data.module';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '../../../shared/services/azure-log.service';
@@ -26,7 +27,7 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature(),
+    TypeOrmModule.forFeature([ProgramFspConfigurationEntity]),
     UserModule,
     TransactionsModule,
     QueueMessageModule,
@@ -41,13 +42,6 @@ import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-s
       limiter: {
         max: 5, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
-      },
-      defaultJobOptions: {
-        attempts: 2,
-        backoff: {
-          type: 'fixed',
-          delay: 3000,
-        },
       },
     }),
     RedisModule,

@@ -39,6 +39,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockPv = true,
     mockOcw = true,
   ): Promise<void> {
+    if (!process.env.MOCK_INTERSOLVE || !process.env.MOCK_TWILIO) {
+      throw new HttpException(
+        `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const powerNrRegistrations = Number(powerNrRegistrationsString) || 2;
     const nrPayments = Number(nrPaymentsString) || 2;
     const powerNrMessages = Number(powerNrMessagesString) || 1;

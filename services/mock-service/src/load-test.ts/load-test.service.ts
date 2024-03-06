@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { EXTERNAL_API } from '../config';
 import { lastValueFrom } from 'rxjs';
+import { EXTERNAL_API } from '../config';
 
 @Injectable()
 export class LoadTestService {

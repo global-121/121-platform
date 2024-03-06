@@ -80,6 +80,7 @@ export class ExcelService
       programId,
       payment,
       FspName.excel,
+      StatusEnum.waiting,
     );
     const chunkSize = 400000;
     const registrations =

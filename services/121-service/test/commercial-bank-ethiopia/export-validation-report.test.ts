@@ -15,7 +15,7 @@ describe('Export CBE validation report', () => {
   const programId = 1;
 
   const registrationCbe = {
-    referenceId: '2982g82bdsf89sdsd',
+    referenceId: 'registration-cbe-1',
     phoneNumber: '14155238886',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,

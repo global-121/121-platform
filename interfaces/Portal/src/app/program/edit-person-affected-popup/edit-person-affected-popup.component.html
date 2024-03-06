@@ -220,6 +220,7 @@
               | translate
           "
           [value]="person?.fspDisplayNamePortal"
+          [attributeValues]="attributeValues"
           [referenceId]="person?.referenceId"
           [programId]="programId"
           class="ion-margin-vertical"
@@ -234,6 +235,7 @@
             [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
             [options]="paTableAttribute.options"
+            [pattern]="paTableAttribute.pattern"
             [explanation]="paTableAttribute.explanation"
             (updated)="
               updatePaAttribute(

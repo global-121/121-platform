@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { In, Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
@@ -36,6 +37,7 @@ import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
   Attributes,
+  UpdateAttributeDto,
   UpdateRegistrationDto,
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
@@ -914,7 +916,7 @@ export class RegistrationsService {
     }
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(registration, attribute);
+      await this.syncUpdatesWithThirdParties(registration, [attribute]);
     }
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
@@ -924,7 +926,7 @@ export class RegistrationsService {
 
   private async syncUpdatesWithThirdParties(
     registration: RegistrationEntity,
-    attribute: Attributes | string,
+    attributes: Attributes[] | string[],
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
@@ -933,13 +935,13 @@ export class RegistrationsService {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
           registration.programId,
-          attribute,
+          attributes,
         );
       } catch (error) {
         if (error?.response?.errors?.length > 0) {
-          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors.join(
-            ', ',
-          )}. The update in 121 did succeed.`;
+          const errors = `ERROR SYNCING TO INTERSOLVE: ${error.response.errors.join(
+            ' ',
+          )} The update in 121 did succeed.`;
           throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
           throw error;
@@ -1132,6 +1134,7 @@ export class RegistrationsService {
     referenceId: string,
     newFspName: FspName,
     newFspAttributesRaw: object,
+    userId: number,
   ): Promise<RegistrationViewEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
@@ -1202,6 +1205,12 @@ export class RegistrationsService {
 
     // Add new attributes
     for (const attribute of updatedRegistration.fsp.questions) {
+      await this.validateAttribute(
+        referenceId,
+        attribute.name,
+        newFspAttributes[attribute.name],
+        userId,
+      );
       await this.addRegistrationData(
         referenceId,
         attribute.name,
@@ -1216,12 +1225,39 @@ export class RegistrationsService {
         registration.programId,
       );
 
+    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+      await this.syncUpdatesWithThirdParties(
+        updatedRegistration,
+        Object.keys(newFspAttributes),
+      );
+    }
+
     // Log change
     await this.eventsService.log(oldViewRegistration, newViewRegistration, {
       additionalLogAttributes: { reason: 'Financial service provider change' },
     });
 
     return newViewRegistration;
+  }
+
+  public async validateAttribute(
+    referenceId: string,
+    attributeName: string,
+    value: any,
+    userId: number,
+  ): Promise<void> {
+    const attributeDto: UpdateAttributeDto = {
+      referenceId,
+      attribute: attributeName,
+      value,
+      userId: userId,
+    };
+    const errors = await validate(
+      plainToClass(UpdateAttributeDto, attributeDto),
+    );
+    if (errors.length > 0) {
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {

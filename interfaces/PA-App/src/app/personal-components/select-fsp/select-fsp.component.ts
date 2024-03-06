@@ -60,7 +60,10 @@ export class SelectFspComponent extends PersonalDirective implements OnInit {
 
   override async initNew() {
     this.conversationService.startLoading();
-    this.fsps = this.program.financialServiceProviders;
+    // NOTE: we use this attribute being empty to avoid a new fsp-attribute, while this is a short-term feature only
+    this.fsps = this.program.financialServiceProviders.filter(
+      (fsp) => fsp.fspDisplayNamePaApp,
+    );
     this.fsps.forEach(
       (fsp) =>
         (fsp.fspDisplayNamePaApp = this.translatableString.get(

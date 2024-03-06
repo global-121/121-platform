@@ -303,8 +303,8 @@ export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
 ): Promise<void> {
-  await seedIncludedRegistrations(registrations, programId);
   const accessToken = await getAccessToken();
+  await seedIncludedRegistrations(registrations, programId, accessToken);
 
   await doPayment(programId, 1, 25, [], accessToken, {
     'filter.status': '$in:included',
@@ -323,9 +323,8 @@ export async function seedPaidRegistrations(
 export async function seedIncludedRegistrations(
   registrations: any[],
   programId: number,
+  accessToken: string,
 ): Promise<void> {
-  const accessToken = await getAccessToken();
-
   await changePhase(
     programId,
     ProgramPhase.registrationValidation,

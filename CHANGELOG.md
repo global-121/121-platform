@@ -5,16 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.112.2...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.113.1...main)
 
 ---
+
+## [1.113.1](https://github.com/global-121/121-platform/compare/v1.113.0...v1.113.1)- 2024-03-01
+
+### Fixed
+
+- Performance of payment logs in PA profile page
+
+## [1.113.0](https://github.com/global-121/121-platform/compare/v1.112.2...v1.113.0)- 2024-02-29
+
+### Added
+
+- Program fsp config for visa
+- See user who did payment
+- Log and see FSP change and related data changes
+- Reconsiliation with generic excel FSP
+- See status of messages in PA profile page
+- Remove progress bar from program over page
 
 ## [1.112.2](https://github.com/global-121/121-platform/compare/v1.112.1...v1.112.2)- 2024-02-19
 
 ### Fixed
 
 - Single retry gives no response on success
-- Limit charactars of errorMessage field in export
+- Limit characters of errorMessage field in export
 
 ## [1.112.1](https://github.com/global-121/121-platform/compare/v1.112.0...v1.112.1)- 2024-02-12
 
@@ -47,13 +64,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.110.1](https://github.com/global-121/121-platform/compare/v1.110.0...v1.110.1) - 2024-01-30
 
-- Fix error handling and unneeded API-calls on Limit Visa topup
+- Fix error handling and unneeded API-calls on Limit Visa top-up
 - Missing translation keys on status change result alerts
 
 ## [1.110.0](https://github.com/global-121/121-platform/compare/v1.109.2...v1.110.0) - 2024-01-26
 
 - Renamed `master`-branch to `main`.
-- Limit Visa topup dependend on current balance and spent
+- Limit Visa top-up dependent on current balance and spent
 - Support PA with empty phonenumber
 - Improve performance of registration status change
 - Improve performance of incoming message handling

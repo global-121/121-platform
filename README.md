@@ -89,10 +89,6 @@ Then install the required version of Node.js and `npm`:
 
 ## Setup Services
 
-Clone the repository
-
-    git clone https://github.com/global-121/121-platform.git
-
 Switch to the repository folder
 
     cd services/
@@ -165,6 +161,10 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
+### Setup git pre-commit hooks
+
+To automatically check the (syntax of the) code, before committing/pushing, you can enable the [`githook`-scripts](tools/git-hooks/).
+
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
@@ -172,17 +172,19 @@ When making changes to the data-model of the `121-service` (creating/editing any
 The process is:
 
 1. Make the changes in the `\*.entity.ts` file
-2. Generate a migration-script with `docker compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
+2. To generate a migration-script run: `docker exec 121-service npm run migration:generate migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
-5. If ever running into issues with migrations locally, the reset process is:
+5. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
+6. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
+7. If ever running into issues with migrations locally, the reset process is:
 
 - Delete all tables in the `121-service` database schema
 - Restart `121-service` container
 - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
 - (Run seed)
 
-6. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
+8. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
 
@@ -413,7 +415,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
 - PR's to the branch `main` are automatically deployed to an individual preview-environment.
-- When merged, a separate deployment is done to the test-environment; for that interface only.
+- When merged, a separate deployment is done to the test-environment; for that interface only
 
 ### To "staging/production" environment(s)
 
