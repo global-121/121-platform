@@ -110,7 +110,7 @@ To start the debugger from Visual Studio Code, follow these steps:
 Steps to rename a database table:
 
 1. Rename table name in the Entity decorator:
-    @Entity('new_table_name')
+   @Entity('new_table_name')
 2. Generate migrate script.
 3. Change generated migration script:
 4. Use the generated DROP FK CONSTRAINTS queries.
