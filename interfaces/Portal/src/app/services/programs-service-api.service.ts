@@ -117,6 +117,10 @@ export class ProgramsServiceApiService {
           return response.programs;
         }
         return [];
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
+        return [];
       });
   }
 
