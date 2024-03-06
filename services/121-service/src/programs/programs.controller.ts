@@ -49,6 +49,8 @@ export class ProgramController {
     private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
+  // Note: protecting this endpoint because we assume in this branch, the PA-app will be removed
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
@@ -100,7 +102,7 @@ export class ProgramController {
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
   public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     if (!userId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
