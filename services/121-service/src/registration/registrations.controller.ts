@@ -42,14 +42,12 @@ import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { FinancialAttributes } from '../user/enum/registration-financial-attributes.const';
-import { UserService } from '../user/user.service';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
 } from './const/filter-operation.const';
 import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
@@ -469,6 +467,7 @@ export class RegistrationsController {
     return result;
   }
 
+  @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiOperation({
     summary:
@@ -504,7 +503,7 @@ export class RegistrationsController {
 
     if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {
       const errors = `User does not have permission to update attributes`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
     }
 
     const partialRegistration = updateRegistrationDataDto.data;
@@ -515,7 +514,7 @@ export class RegistrationsController {
           FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
         ) {
           const errors = `User does not have permission to update financial attributes`;
-          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       }
     }
@@ -528,7 +527,7 @@ export class RegistrationsController {
           )
         ) {
           const errors = `User does not have permission to update attributes`;
-          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       }
     }
@@ -551,6 +550,7 @@ export class RegistrationsController {
     );
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -561,10 +561,6 @@ export class RegistrationsController {
     status: 200,
     description:
       'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
   })
   @ApiQuery({
     name: 'phonenumber',
@@ -577,10 +573,6 @@ export class RegistrationsController {
     @Req() req,
   ): Promise<RegistrationViewEntity[]> {
     const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -695,6 +687,7 @@ export class RegistrationsController {
     return result;
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -712,13 +705,10 @@ export class RegistrationsController {
   @Get('registrations/download/validation-data')
   public async downloadValidationData(@Req() req): Promise<DownloadData> {
     const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
     return await this.registrationsService.downloadValidationData(userId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -739,10 +729,6 @@ export class RegistrationsController {
     @Req() req,
   ): Promise<RegistrationEntity> {
     const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,

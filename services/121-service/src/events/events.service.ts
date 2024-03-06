@@ -100,7 +100,7 @@ export class EventsService {
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      this.request.userId,
+      this.request.user['id'],
     );
 
     const events = this.addAdditionalAttributesToEvents(

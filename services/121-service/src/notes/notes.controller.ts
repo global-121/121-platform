@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -37,10 +35,6 @@ export class NoteController {
       'Created new note for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @ApiResponse({
     status: 404,
     description:
       'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
@@ -53,11 +47,6 @@ export class NoteController {
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
     const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
     await this.noteService.createNote(
       createNote.referenceId,
       createNote.text,

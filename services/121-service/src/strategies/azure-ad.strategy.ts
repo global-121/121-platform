@@ -29,7 +29,7 @@ const config = {
     // TODO: Probably should be set to true in production
     validateIssuer: false,
     passReqToCallback: true,
-    loggingLevel: 'info',
+    loggingLevel: 'error',
   },
 };
 const EXPOSED_SCOPES = ['User.read']; //provide a scope of your azure AD

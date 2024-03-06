@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   Patch,
@@ -96,18 +95,10 @@ export class ProgramController {
     status: 200,
     description: 'Return all assigned programs for a user.',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
   public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
-    const userId = req.user?.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const userId = req.user.id;
     return await this.programService.getAssignedPrograms(userId);
   }
 

@@ -1108,23 +1108,6 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  public async checkPermissionAndThrow(
-    userId: number,
-    permission: PermissionEnum,
-    programId: number,
-  ): Promise<void> {
-    const programIds = (
-      await this.userService.getProgramScopeIdsUserHasPermission(
-        userId,
-        permission,
-      )
-    ).map((p) => p.programId);
-    if (!programIds.includes(programId)) {
-      const error = `User does not have the ${permission} permission for this program`;
-      throw new HttpException({ error }, HttpStatus.UNAUTHORIZED);
-    }
-  }
-
   // AW: get answers to attributes for a given PA (identified first through referenceId)
   public async getRegistrationToValidate(
     referenceId: string,

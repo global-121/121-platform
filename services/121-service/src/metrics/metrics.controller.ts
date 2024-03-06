@@ -41,6 +41,7 @@ export class MetricsController {
   public constructor(metricsService: MetricsService) {
     this.metricsService = metricsService;
   }
+
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })

@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -57,6 +55,7 @@ export class UserController {
   }
 
   //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
+  @AuthenticatedUser()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
@@ -131,14 +130,13 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all users',
+    type: [UserEntity],
+  })
   @Get('users')
-  public async getUsers(@Req() req): Promise<UserEntity[]> {
-    const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+  public async getUsers(): Promise<UserEntity[]> {
     return await this.userService.getUsers();
   }
 
@@ -267,6 +265,7 @@ export class UserController {
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
   // TODO: Change this in to a PATCH request
@@ -276,19 +275,7 @@ export class UserController {
     description: 'Changed password of user',
     type: UpdateUserDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  public async update(
-    @Req() req,
-    @Body() userData: UpdateUserDto,
-  ): Promise<any> {
-    const userId = req.user.id;
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+  public async update(@Body() userData: UpdateUserDto): Promise<any> {
     return this.userService.update(userData);
   }
 
@@ -303,37 +290,23 @@ export class UserController {
     return await this.userService.delete(Number(params.userId));
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   @Delete('users')
   @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
     const deleterId = req.user.id;
-    if (!deleterId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
     return await this.userService.delete(deleterId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
-  @Get('users')
+  @Get('users/current')
   @ApiResponse({ status: 200, description: 'User returned' })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   public async findMe(@Req() req): Promise<UserRO> {
     const username = req.user.username;
-    if (!username) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
     return await this.userService.findByUsernameOrThrow(username);
   }
 
