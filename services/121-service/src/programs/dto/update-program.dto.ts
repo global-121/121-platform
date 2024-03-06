@@ -13,7 +13,7 @@ import {
 } from 'class-validator';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { SetFspDto } from './create-program.dto';
+import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 
 export class UpdateProgramDto {
   @ApiProperty({
@@ -100,8 +100,8 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => SetFspDto) // TODO: SetFspDto is now imported from create-program.dto.ts, is that correct? Or put SetFspDto definition in a separate file?
-  public readonly financialServiceProviders: SetFspDto[];
+  @Type(() => ProgramFinancialServiceProviderDto) // TODO: SetFspDto is now imported from create-program.dto.ts, is that correct? Or put SetFspDto definition in a separate file?
+  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
 
   @ApiProperty()
   @IsOptional()

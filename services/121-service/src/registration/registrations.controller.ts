@@ -29,8 +29,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
 import {
   Paginate,
   Paginated,
@@ -60,10 +58,7 @@ import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto'
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
-import {
-  UpdateAttributeDto,
-  UpdateRegistrationDto,
-} from './dto/update-registration.dto';
+import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
@@ -332,6 +327,7 @@ export class RegistrationsController {
     );
   }
 
+  @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
@@ -539,18 +535,12 @@ export class RegistrationsController {
 
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const attributeDto: UpdateAttributeDto = {
-        referenceId: params.referenceId,
-        attribute: attributeKey,
-        value: partialRegistration[attributeKey],
-        userId: userId,
-      };
-      const errors = await validate(
-        plainToClass(UpdateAttributeDto, attributeDto),
+      await this.registrationsService.validateAttribute(
+        params.referenceId,
+        attributeKey,
+        partialRegistration[attributeKey],
+        userId,
       );
-      if (errors.length > 0) {
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
     }
 
     // if all valid, process update
@@ -620,11 +610,14 @@ export class RegistrationsController {
   public async updateChosenFsp(
     @Param() params,
     @Body() data: UpdateChosenFspDto,
+    @Req() req,
   ): Promise<RegistrationViewEntity> {
+    const userId = req.user.id;
     return await this.registrationsService.updateChosenFsp(
       params.referenceId,
       data.newFspName,
       data.newFspAttributes,
+      userId,
     );
   }
 

@@ -5,6 +5,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { environment } from 'src/environments/environment';
 import {
   PaymentRowDetail,
   PayoutDetails,
@@ -26,11 +27,12 @@ import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-sta
   imports: [IonicModule, FormsModule, CommonModule, TranslateModule],
 })
 export class RegistrationActivityDetailAccordionComponent implements OnInit {
-  DateFormat = DateFormat;
-  hasErrorCheck = PaymentUtils.hasError;
-  hasWaitingCheck = PaymentUtils.hasError;
-  hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
-  getCustomDataAttributesCheck = PaymentUtils.getCustomDataAttributesToShow;
+  public DateFormat = DateFormat;
+  public hasErrorCheck = PaymentUtils.hasError;
+  public hasWaitingCheck = PaymentUtils.hasError;
+  public hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
+  public getCustomDataAttributesCheck =
+    PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
   public activity: RegistrationActivity;
@@ -53,7 +55,7 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
   @Input()
   private lastPaymentId?: number;
 
-  RegistrationActivityType = RegistrationActivityType;
+  public RegistrationActivityType = RegistrationActivityType;
 
   public showAccordion = false;
 
@@ -62,7 +64,8 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {}
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     if (
       (this.activity.type === RegistrationActivityType.payment &&
         !this.enableSinglePayment) ||
@@ -183,5 +186,11 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
       }
     });
     await modal.present();
+  }
+
+  public getErrorCodeUrl(
+    errorCode: RegistrationActivity['messageErrorCode'],
+  ): string {
+    return `${environment.twilio_error_codes_url}/${errorCode}`;
   }
 }

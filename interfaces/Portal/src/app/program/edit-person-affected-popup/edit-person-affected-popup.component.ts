@@ -283,6 +283,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           label,
           value: this.person[paTableAttribute.name],
           options,
+          pattern: paTableAttribute.pattern,
           explanation: this.translate.instant(translationKey).explanation,
         };
       },

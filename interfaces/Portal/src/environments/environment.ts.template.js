@@ -10,14 +10,14 @@ export const environment = {
   locales: '${process.env.NG_LOCALES || ''}',
   envName: '${process.env.NG_ENV_NAME || ''}',
 
+  twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL || ''}',
+
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
 
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY || ''}',
   ai_endpoint: '${process.env.NG_AI_ENDPOINT || ''}',
-
-  twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL || ''}'
   
   // Azure AD
   azure_ad_client_id: '${process.env.AZURE_ENTRA_CLIENT_ID || ''}',

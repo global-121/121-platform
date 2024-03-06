@@ -3,9 +3,11 @@ import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { AnswerType } from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
+import { CheckAttributeInputUtils } from '../../shared/utils/check-attribute-input.utils';
 
 @Component({
   selector: 'app-update-fsp',
@@ -13,6 +15,9 @@ import { actionResult } from '../../shared/action-result';
   styleUrls: ['./update-fsp.component.scss'],
 })
 export class UpdateFspComponent implements OnInit {
+  @Input()
+  public attributeValues: any = {};
+
   @Input()
   public label: string;
 
@@ -130,6 +135,19 @@ export class UpdateFspComponent implements OnInit {
             shortLabel: this.translatableString.get(attr.shortLabel),
           }),
         );
+
+        // Preload attributesToSave ..
+        this.attributesToSave = this.selectedFspAttributes.reduce(
+          (obj, key) => {
+            obj[key.name] =
+              //.. with prefilled value if available
+              this.attributeValues[key.name] ||
+              // .. and with empty string / null otherwise
+              (key.type === AnswerType.Text ? '' : null);
+            return obj;
+          },
+          {},
+        );
       }
 
       this.attributeDifference = this.startingAttributes.filter(
@@ -144,19 +162,22 @@ export class UpdateFspComponent implements OnInit {
       [attrName]: detail.value.trim(),
     };
 
-    this.checkAttributesFilled();
+    this.checkAttributesCorrectlyFilled();
   }
 
-  private checkAttributesFilled() {
-    if (
-      Object.values(this.attributesToSave).length <
-        this.selectedFspAttributes.length ||
-      Object.values(this.attributesToSave).includes('')
-    ) {
-      this.enableUpdateBtn = false;
-      return;
+  private checkAttributesCorrectlyFilled() {
+    for (const attr of this.selectedFspAttributes) {
+      if (
+        !CheckAttributeInputUtils.isAttributeCorrectlyFilled(
+          attr.type,
+          attr.pattern,
+          this.attributesToSave[attr.name],
+        )
+      ) {
+        this.enableUpdateBtn = false;
+        return;
+      }
     }
-
     this.enableUpdateBtn = true;
   }
 }

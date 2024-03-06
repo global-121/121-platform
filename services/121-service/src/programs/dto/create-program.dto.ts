@@ -22,7 +22,7 @@ import {
 } from './create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from './program-question.dto';
 
-export class SetFspDto {
+export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
   @IsEnum(FspName)
   fsp: FspName;
@@ -117,8 +117,8 @@ export class CreateProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => SetFspDto)
-  public readonly financialServiceProviders: SetFspDto[];
+  @Type(() => ProgramFinancialServiceProviderDto)
+  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
 
   @ApiProperty({ example: 250 })
   @IsNumber()

@@ -78,9 +78,9 @@ export class CookieJwtStrategy
         );
       }
       const hasPermission = await this.userService.canActivate(
-        payload.id,
-        request.params.programId,
         authParams.permissions,
+        request.params.programId,
+        payload.id,
       );
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

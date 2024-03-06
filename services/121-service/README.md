@@ -67,6 +67,10 @@ To run the API/Integration tests: (replace `:all` with `:watch` to run during de
 
     docker exec 121-service  npm run test:e2e:all
 
+To run a single test suite, amend the name of the test file, for example:
+
+    docker exec 121-service  npm run test:e2e:all update-program.test.ts
+
 ### Debugging
 
 To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Docker Desktop)
@@ -98,6 +102,35 @@ To start the debugger from Visual Studio Code, follow these steps:
 4. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
 5. Press the green play icon left besides the "Docker: Attach to Node" text which is selected by default in the dropdown. This attaches the Debugger.
 6. Now you can for example set a breakpoint in your code by right mouse clicking to the left of the line number and select Add breakpoint.
+
+---
+
+### Refactoring
+
+Steps to rename a database table:
+
+1. Rename table name in the Entity decorator:
+   @Entity('new_table_name')
+2. Generate migrate script.
+3. Change generated migration script:
+4. Use the generated DROP FK CONSTRAINTS queries.
+5. Manually add a query to change the name of the table.
+6. Remove the query that creates a new table.
+7. Use the generated CREATE FK CONSTRAINTS queries.
+8. Caveats: if there is a related "cross table" that TypeORM automatically generated, then there is a bit of manual editing of the generated query involved.
+9. See for an example: <https://github.com/global-121/121-platform/pull/4985/files#diff-9d32e210b9db0795ae71d28aaad421f3bb58bc8e3b263bbf54be13429239397c>
+10. In principle there is no renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM. However, we do have some hard-coded SQL scripts for creaing mock data. Check if it is needed to update these queries: they are in .sql files.
+11. Test the migration script:
+12. Incremental, given an existing (filled) database, like on production.
+13. New instance, like when installing a fresh local dev environment.
+14. Run unit tests and API tests. Any problems/bugs are likely due to an incomplete/incorrect migration script.
+15. Generate a "test" migration script.
+16. In case this actually creates a script with queries, it means the migration script you created earlier is not yet complete.
+17. Copy/paste (mindfully) the created queries into your migration script, edit them if needed, and re-do from step 11.
+18. Caveat: TypeORM "randomly" names things like indexes and constraints, and these names need to be changed as well as TypeORM expects these new names, even though technically for PostgreSQL it does not matter. Just copy-paste the generated drop and create queries.
+19. Rinse and repeat until step 15 does not create a migration script anymore (it will "complain" that there are no changes).
+20. Do a smoke test on local dev: walk through happy flow main functions via the Portal.
+21. We chose not to implement the down function of the migration script for table renames.
 
 ---
 

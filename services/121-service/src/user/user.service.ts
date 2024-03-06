@@ -77,7 +77,11 @@ export class UserService {
     return { userRo: user, cookieSettings: cookieSettings, token: token };
   }
 
-  public async canActivate(permissions, programId, userId): Promise<boolean> {
+  public async canActivate(
+    permissions: PermissionEnum[],
+    programId: number,
+    userId: number,
+  ): Promise<boolean> {
     const results = await this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.programAssignments', 'assignment')
@@ -156,7 +160,7 @@ export class UserService {
       user.programAssignments.length === 0
     ) {
       const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return user;
   }
@@ -526,6 +530,7 @@ export class UserService {
       token: this.generateJWT(user),
       username: user.username,
       permissions,
+      isAdmin: user.admin,
     };
     return { user: userRO };
   }

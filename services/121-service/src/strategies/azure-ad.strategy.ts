@@ -104,16 +104,15 @@ export class AzureAdStrategy
         );
       }
       const hasPermission = await this.userService.canActivate(
-        user.user.id,
-        request.params.programId,
         authParams.permissions,
+        request.params.programId,
+        user.user.id,
       );
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     } else if (authParams.isAdmin) {
-      const isAdmin = payload.admin === true;
-      if (!isAdmin) {
+      if (!user.user.isAdmin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
@@ -125,10 +124,5 @@ export class AzureAdStrategy
       admin: user.user.isAdmin,
     };
     return userToken;
-
-    // return {
-    //   ...payload,
-    //   id: user?.user?.id,
-    // };
   }
 }

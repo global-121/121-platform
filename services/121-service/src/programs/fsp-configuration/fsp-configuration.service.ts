@@ -106,6 +106,8 @@ export class ProgramFspConfigurationService {
   }
 
   private formatInputValue(value: string | string[]): string {
+    // check if value is an environment variable
+
     let error = false;
     if (Array.isArray(value)) {
       for (const element of value) {

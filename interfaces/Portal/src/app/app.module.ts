@@ -126,7 +126,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             ['openid, offline_access, User.read'],
           ],
           [
-            'http://localhost:3000/api/programs/assigned/*',
+            'http://localhost:3000/api/*',
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),

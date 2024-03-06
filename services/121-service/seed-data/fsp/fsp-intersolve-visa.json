@@ -1,9 +1,7 @@
 {
   "fsp": "Intersolve-visa",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
-    "en": "Visa debit card"
-  },
+  "fspDisplayNamePaApp": null,
   "fspDisplayNamePortal": "Visa debit card",
   "notifyOnTransaction": true,
   "questions": [
@@ -14,6 +12,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address street"
@@ -50,6 +49,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address postal code"
@@ -62,6 +62,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
+      "pattern": ".+",
       "phases": [],
       "shortLabel": {
         "en": "Address city"
