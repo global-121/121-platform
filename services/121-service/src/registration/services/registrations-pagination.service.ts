@@ -639,8 +639,9 @@ export class RegistrationsPaginationService {
     programId: number,
     payment: number,
     fspName: FspName,
+    status?: StatusEnum,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.registrationViewScopedRepository
+    const query = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .innerJoin('registration.latestTransactions', 'latestTransaction')
       .innerJoin('latestTransaction.transaction', 'transaction')
@@ -651,5 +652,9 @@ export class RegistrationsPaginationService {
         fsp: fspName,
       })
       .orderBy('registration.referenceId', 'ASC');
+    if (status) {
+      query.andWhere('transaction.status = :status', { status });
+    }
+    return query;
   }
 }
