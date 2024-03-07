@@ -877,34 +877,53 @@ export class RegistrationsService {
       programId,
     );
 
+    const oldFspData = {};
+    const newFspData = {};
+    let nrAttributesUpdated = 0;
+
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
-    let nrAttributesUpdated = 0;
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue = oldViewRegistration[attributeKey];
       const attributeValue = partialRegistration[attributeKey];
-      registrationToUpdate = await this.updateAttribute(
-        attributeKey,
-        attributeValue,
-        registrationToUpdate,
-      );
-      const newValue = registrationToUpdate[attributeKey];
-      if (String(oldValue) !== String(newValue)) {
+
+      const registrationData =
+        await this.registrationDataService.getRegistrationDataEntityByName(
+          registrationToUpdate,
+          attributeKey,
+        );
+      if (registrationData && registrationData.fspQuestionId) {
+        oldFspData[attributeKey] = registrationData.value;
+      }
+
+      const oldValue =
+        oldViewRegistration[attributeKey] || oldFspData[attributeKey];
+
+      if (String(oldValue) !== String(attributeValue)) {
+        registrationToUpdate = await this.updateAttribute(
+          attributeKey,
+          attributeValue,
+          registrationToUpdate,
+        );
+        newFspData[attributeKey] = attributeValue;
         nrAttributesUpdated++;
       }
     }
+
     const newRegistration = await this.getPaginateRegistrationForReferenceId(
       referenceId,
       programId,
     );
+
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
-      await this.eventsService.log(oldViewRegistration, newRegistration, {
-        reason: updateRegistrationDto.reason,
-      });
+      await this.eventsService.log(
+        { ...oldViewRegistration, ...oldFspData },
+        { ...newRegistration, ...newFspData },
+        { reason: updateRegistrationDto.reason },
+      );
+      return newRegistration;
     }
-    return newRegistration;
   }
 
   private async updateAttribute(
