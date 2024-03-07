@@ -37,8 +37,11 @@ describe('Get events', () => {
   it('should get registration events by registrationId', async () => {
     // Arrange
     const reason = 'automated test';
-    const dataToUpdate = {
+    const updatePhoneNumberDto = {
       phoneNumber: updatePhoneNumber,
+    };
+    const updateAdressStreetDto = {
+      addressStreet: 'updated street',
     };
     const expectedAttributesObject = {
       oldValue: registrationVisa[CustomDataAttributes.phoneNumber],
@@ -48,17 +51,27 @@ describe('Get events', () => {
     };
 
     // Act
+
+    // Update a 'regular' question/attribute
     await updateRegistration(
       programIdOcw,
       registrationVisa.referenceId,
-      dataToUpdate,
+      updatePhoneNumberDto,
+      reason,
+      accessToken,
+    );
+    // Also update an FSP attribute
+    await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      updateAdressStreetDto,
       reason,
       accessToken,
     );
     await updateRegistration(
       programIdOcw,
       secondRegistration.referenceId,
-      dataToUpdate,
+      updatePhoneNumberDto,
       reason,
       accessToken,
     );
@@ -76,17 +89,18 @@ describe('Get events', () => {
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
-    expect(eventsResult.body.length).toBe(2); // One data change and one status change
+    expect(eventsResult.body.length).toBe(3); // Two data changes and one status change
     expect(
       eventsResult.body.some(
         (event) => event.type === EventEnum.registrationDataChange,
       ),
     ).toBe(true);
-    expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
     const event = eventsResult.body.find(
-      (event) => event.type === EventEnum.registrationDataChange,
+      (event) =>
+        event.type === EventEnum.registrationDataChange &&
+        event.attributes.fieldName === CustomDataAttributes.phoneNumber,
     );
-    expect(event?.attributes).toEqual(expectedAttributesObject);
+    expect(event.attributes).toEqual(expectedAttributesObject);
   });
 
   it('should get program events with date parameters', async () => {
