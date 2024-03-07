@@ -37,8 +37,11 @@ describe('Get events', () => {
   it('should get registration events by registrationId', async () => {
     // Arrange
     const reason = 'automated test';
-    const dataToUpdate = {
+    const updatePhoneNumberDto = {
       phoneNumber: updatePhoneNumber,
+    };
+    const updateAdressStreetDto = {
+      addressStreet: 'updated street',
     };
     const expectedAttributesObject = {
       oldValue: registrationVisa[CustomDataAttributes.phoneNumber],
@@ -48,17 +51,27 @@ describe('Get events', () => {
     };
 
     // Act
+
+    // Update a 'regular' question/attribute
     await updateRegistration(
       programIdOcw,
       registrationVisa.referenceId,
-      dataToUpdate,
+      updatePhoneNumberDto,
+      reason,
+      accessToken,
+    );
+    // Also update an FSP attribute
+    await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      updateAdressStreetDto,
       reason,
       accessToken,
     );
     await updateRegistration(
       programIdOcw,
       secondRegistration.referenceId,
-      dataToUpdate,
+      updatePhoneNumberDto,
       reason,
       accessToken,
     );
@@ -76,9 +89,9 @@ describe('Get events', () => {
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
-    expect(eventsResult.body.length).toBe(1);
-    expect(eventsResult.body[0].type).toBe(EventEnum.registrationDataChange);
-    expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
+    expect(eventsResult.body.length).toBe(2);
+    expect(eventsResult.body[1].type).toBe(EventEnum.registrationDataChange);
+    expect(eventsResult.body[1].attributes).toEqual(expectedAttributesObject);
   });
 
   it('should get program events with date parameters', async () => {
