@@ -104,9 +104,6 @@
   },
   "page": {
     "dashboard": {
-      "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
-      "help-explanation-tooltip": "Like this!",
-      "introduction": "The information on this screen comes from data in the 121 Platform only.",
       "pageTitle": "Dashboard"
     },
     "help": {
@@ -238,53 +235,8 @@
         "timestamp": "Latest import has been done on: {{dateTime}}"
       },
       "metrics": {
-        "export-button": {
-          "label": "Export as CSV"
-        },
         "pa": {
           "targeted": "PA Targeted"
-        },
-        "state-explanation": {
-          "declined": "PAs that were declined during validataion.",
-          "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time.",
-          "imported": "PAs that were imported, based on phone-number.",
-          "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
-          "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "invited": "PAs that were invited (after import).",
-          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
-          "registered": "PAs that finished registration in the PA-app.",
-          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "startedRegistration": "PAs that started registration in the PA-app.",
-          "validated": "PAs that were validated."
-        },
-        "timeframe": {
-          "calendar-month": {
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA that were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month.",
-            "label": "Calendar month:",
-            "select-hint": "Choose month..."
-          },
-          "month-from-start": {
-            "explanation": "This row shows all data up to and including this month, instead of only the data specific to this month.",
-            "label": "Up to selected month:"
-          },
-          "payment": {
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA that were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period.",
-            "label": "Payment #:",
-            "option": "Payment #{{number}} - {{date}}",
-            "select-hint": "Choose payment..."
-          },
-          "payment-from-start": {
-            "explanation": "This row shows all data up to and including the selected payment, instead of only the data specific to this payment period (the period between the previous payment and the selected payment).",
-            "label": "Up to selected payment #:"
-          },
-          "to-date": {
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA that were included at some point.",
-            "label": "To date:"
-          }
-        },
-        "totals": {
-          "tooltip": "PAs that received one or more payments",
-          "total-helped-to-date": "Total number of individual PA helped to date"
         },
         "units": {
           "frequency": {
@@ -685,7 +637,6 @@
           "label": "Note"
         },
         "status": {
-          "description": "Person affected status changed to: {{status}}.",
           "label": "Status update"
         }
       },

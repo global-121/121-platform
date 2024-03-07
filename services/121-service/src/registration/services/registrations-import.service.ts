@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
+import { EventsService } from '../../events/events.service';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
@@ -39,7 +40,6 @@ import { RegistrationUtilsService } from '../modules/registration-utilts/registr
 import { RegistrationDataEntity } from '../registration-data.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { InclusionScoreService } from './inclusion-score.service';
-import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -63,7 +63,6 @@ export class RegistrationsImportService {
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly registrationsBulkHelperService: RegistrationsBulkHelperService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
@@ -72,6 +71,7 @@ export class RegistrationsImportService {
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     private readonly registrationUtilsService: RegistrationUtilsService,
+    private readonly eventsService: EventsService,
   ) {}
 
   public async importBulkAsImported(
@@ -169,9 +169,16 @@ export class RegistrationsImportService {
       }
     }
     // Save registration status changes seperately without the registration.subscriber for better performance
-    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
-      savedRegistrations.map((r) => r.id),
-      RegistrationStatusEnum.imported,
+    await this.eventsService.log(
+      savedRegistrations.map((r) => ({
+        id: r.id,
+        status: null,
+      })),
+      savedRegistrations.map((r) => ({
+        id: r.id,
+        status: r.registrationStatus,
+      })),
+      { registrationAttributes: ['status'] },
     );
     // Save registration data in bulk for performance
     await this.registrationDataScopedRepository.save(dataArray, {
@@ -282,12 +289,14 @@ export class RegistrationsImportService {
     return await this.importValidatedRegistrations(
       validatedImportRecords,
       program,
+      userId,
     );
   }
 
   public async importValidatedRegistrations(
     validatedImportRecords: ImportRegistrationsDto[],
     program: ProgramEntity,
+    userId: number,
   ): Promise<ImportResult> {
     let countImported = 0;
     const registrations: RegistrationEntity[] = [];
@@ -336,10 +345,17 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    // Save registration status changes seperately without the registration.subscriber for better performance
-    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
-      savedRegistrations.map((r) => r.id),
-      RegistrationStatusEnum.registered,
+    // Save registration status change events they changed from null to registered
+    await this.eventsService.log(
+      savedRegistrations.map((r) => ({
+        id: r.id,
+        status: null,
+      })),
+      savedRegistrations.map((r) => ({
+        id: r.id,
+        status: r.registrationStatus,
+      })),
+      { registrationAttributes: ['status'] },
     );
 
     // Save registration data in bulk for performance
@@ -379,6 +395,12 @@ export class RegistrationsImportService {
         );
       }
     }
+    await this.actionService.saveAction(
+      userId,
+      program.id,
+      AdditionalActionType.importRegistrations,
+    );
+
     return { aggregateImportResult: { countImported } };
   }
 

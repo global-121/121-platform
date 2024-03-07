@@ -8,7 +8,7 @@
       <app-registration-personal-information
         [person]="person"
         [program]="program"
-        [currentStatus]="statusChanges ? statusChanges[0] : null"
+        [lastRegistrationStatusChangeEvent]="lastRegistrationStatusChangeEvent"
         class="ion-margin-bottom"
         style="display: block"
       ></app-registration-personal-information>
@@ -39,7 +39,7 @@
       <app-registration-activity-overview
         [person]="person"
         [program]="program"
-        [statusChanges]="statusChanges"
+        [events]="events"
       ></app-registration-activity-overview>
     </ion-col>
   </ion-row>

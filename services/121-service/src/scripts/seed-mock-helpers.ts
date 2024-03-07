@@ -82,11 +82,21 @@ export class SeedMockHelper {
     const startTime = Date.now();
     while (Date.now() - startTime < maxWaitTimeMs) {
       // Get payment transactions
-      const metrics = await this.personAffectedMetrics(programId, accessToken);
+      const paginatedRegistrations = await this.getRegistrations(
+        programId,
+        ['status'],
+        accessToken,
+        1,
+        null,
+        {
+          'filter.status': `$in:${status}`,
+        },
+      );
       // If not all transactions are successful, wait for a short interval before checking again
       if (
-        metrics.data.pa[status] &&
-        metrics.data.pa[status] >= amountOfRegistrations
+        paginatedRegistrations &&
+        paginatedRegistrations.data &&
+        paginatedRegistrations.data.data.length >= amountOfRegistrations
       ) {
         return;
       }
@@ -94,11 +104,21 @@ export class SeedMockHelper {
     }
   }
 
-  public async personAffectedMetrics(
+  public async getRegistrations(
     programId: number,
+    attributes: string[],
     accessToken: string,
+    page?: number,
+    limit?: number,
+    filter: Record<string, string> = {},
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/metrics/person-affected`;
+    const queryParams = new URLSearchParams();
+    attributes.forEach((attr) => queryParams.append('select', attr));
+    if (page) queryParams.append('page', page.toString());
+    if (limit) queryParams.append('limit', limit.toString());
+    Object.keys(filter).forEach((key) => queryParams.append(key, filter[key]));
+
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
 
     return await this.httpService.get(url, headers);
