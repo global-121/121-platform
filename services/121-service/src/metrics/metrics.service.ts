@@ -780,6 +780,7 @@ export class MetricsService {
         'transaction.payment as "payment"',
         'transaction.created as "timestamp"',
         'registration.phoneNumber as "phoneNumber"',
+        'registration.paymentAmountMultiplier as "paymentAmountMultiplier"',
         'transaction.amount as "amount"',
         'SUBSTRING(transaction."errorMessage", 1, 32000) as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
