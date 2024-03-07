@@ -875,7 +875,9 @@ export class RegistrationsService {
       await this.eventsService.log(
         { ...oldViewRegistration, ...oldFspData },
         { ...newRegistration, ...newFspData },
-        { reason: updateRegistrationDto.reason },
+        {
+          additionalLogAttributes: { reason: updateRegistrationDto.reason },
+        },
       );
       return newRegistration;
     }
