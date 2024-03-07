@@ -163,26 +163,22 @@ export async function waitForStatusChangeToComplete(
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     // Get payment transactions
-    const metrics = await personAffectedMetrics(programId, accessToken);
-    // If not all transactions are successful, wait for a short interval before checking again
-    if (
-      metrics.body.pa[status] &&
-      metrics.body.pa[status] >= amountOfRegistrations
-    ) {
+    const paginatedRegistrations = await getRegistrations(
+      programId,
+      ['status'],
+      accessToken,
+      1,
+      null,
+      {
+        'filter.status': `$in:${status}`,
+      },
+    );
+    // If not all status change are done check again
+    if (paginatedRegistrations.body.data.length >= amountOfRegistrations) {
       return;
     }
-    await waitFor(100);
+    await waitFor(200);
   }
-}
-
-export async function personAffectedMetrics(
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return getServer()
-    .get(`/programs/${programId}/metrics/person-affected`)
-    .set('Cookie', [accessToken])
-    .send();
 }
 
 export function sendMessage(

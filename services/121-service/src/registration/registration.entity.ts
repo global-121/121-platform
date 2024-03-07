@@ -37,7 +37,6 @@ import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsa
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -51,13 +50,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @ManyToOne(() => UserEntity)
   public user: UserEntity;
-
-  @OneToMany(
-    () => RegistrationStatusChangeEntity,
-    (statusChange) => statusChange.registration,
-  )
-  @JoinColumn()
-  public statusChanges: RegistrationStatusChangeEntity[];
 
   @Index()
   @Column({ nullable: true })
@@ -189,10 +181,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: RegistrationDataEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: RegistrationStatusChangeEntity,
         columnName: 'registration',
       },
       {

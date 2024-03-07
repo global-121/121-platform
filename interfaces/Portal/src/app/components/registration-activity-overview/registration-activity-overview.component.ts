@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Event } from 'src/app/models/event.model';
 import { PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import {
@@ -18,7 +19,6 @@ import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
 import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
-import { RegistrationStatusChange } from '../../models/registration-status-change.model';
 import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
@@ -52,7 +52,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public canViewVouchers = false;
 
   @Input()
-  public statusChanges: RegistrationStatusChange[];
+  public events: Event[];
 
   public RegistrationActivityType = RegistrationActivityType;
 
@@ -182,40 +182,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
     }
 
-    if (this.canViewRegistration) {
-      for (const statusChange of this.statusChanges) {
-        this.activityOverview.push({
-          type: RegistrationActivityType.status,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.status.label',
-          ),
-          date: new Date(statusChange.date),
-          description: this.translate.instant(
-            'registration-details.activity-overview.activities.status.description',
-            {
-              status: this.translate.instant(
-                `entity.registration.status.${statusChange.status}`,
-              ),
-            },
-          ),
-        });
-      }
-    }
-
     if (this.canViewPersonalData) {
-      const changes =
-        await this.programsService.getRegistrationEventsByRegistrationId(
-          this.program.id,
-          this.person.id,
-        );
+      for (const change of this.events) {
+        let oldValue = change.attributes.oldValue;
+        let newValue = change.attributes.newValue;
 
-      for (const change of changes) {
-        let oldValue = change.attributes.oldValue
-          ? change.attributes.oldValue
-          : '-';
-        let newValue = change.attributes.newValue
-          ? change.attributes.newValue
-          : '-';
         let description = {
           oldValue,
           newValue,
@@ -269,7 +240,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             subLabel: this.getSubLabelText(change, attribute),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
+          });
+        }
+
+        if (
+          change.type === EventType.registrationStatusChange &&
+          this.canViewRegistration
+        ) {
+          this.activityOverview.push({
+            type: RegistrationActivityType.status,
+            label: this.translate.instant(
+              'registration-details.activity-overview.activities.status.label',
+            ),
+            date: new Date(change.created),
+            description,
+            user: change.user ? change.user.username : null,
           });
         }
 
@@ -281,7 +267,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             ),
             date: new Date(change.created),
             description,
-            user: change.user.username,
+            user: change.user ? change.user.username : null,
           });
         }
       }

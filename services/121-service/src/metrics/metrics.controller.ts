@@ -28,7 +28,6 @@ import {
   ExportDetailsQueryParamsDto,
   ExportType,
 } from './dto/export-details.dto';
-import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from './enum/export-file-format.enum';
@@ -140,57 +139,6 @@ export class MetricsController {
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({
-    summary: '[SCOPED] Get metrics about people affected for dashboard page',
-  })
-  @ApiParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'payment',
-    required: false,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'month',
-    required: false,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'year',
-    required: false,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'fromStart',
-    required: false,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Metrics of a program to gain an overview of the program - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/metrics/person-affected')
-  public async getPAMetrics(
-    @Param() params,
-    @Query() query,
-  ): Promise<ProgramMetrics> {
-    return {
-      pa: await this.metricsService.getPaMetrics(
-        Number(params.programId),
-        query.payment ? Number(query.payment) : undefined,
-        query.month ? Number(query.month) : undefined,
-        query.year ? Number(query.year) : undefined,
-        query.fromStart ? Number(query.fromStart) : undefined,
-      ),
-      updated: new Date(),
-    };
-  }
-
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({
     summary: '[SCOPED] Get payments with state sums by program-id',
   })
   @ApiParam({
@@ -206,21 +154,6 @@ export class MetricsController {
   @Get('programs/:programId/metrics/payment-state-sums')
   public async getPaymentsWithStateSums(@Param() params): Promise<any> {
     return await this.metricsService.getPaymentsWithStateSums(
-      Number(params.programId),
-    );
-  }
-
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: '[SCOPED] Get monitoring data' })
-  @ApiResponse({
-    status: 200,
-    description:
-      'All monitoring data of a program - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('programs/:programId/metrics/monitoring')
-  public async getMonitoringData(@Param() params): Promise<any[]> {
-    return await this.metricsService.getMonitoringData(
       Number(params.programId),
     );
   }

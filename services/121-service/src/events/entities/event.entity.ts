@@ -17,7 +17,7 @@ export class EventEntity extends Base121AuditedEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
   public user: UserEntity;
-  @Column()
+  @Column({ nullable: true })
   public userId: number;
 
   @OneToMany(

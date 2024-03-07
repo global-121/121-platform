@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../../actions/action.module';
+import { EventsModule } from '../../events/events.module';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
@@ -30,6 +31,7 @@ import { TransactionsService } from './transactions.service';
     QueueMessageModule,
     MessageTemplateModule,
     RegistrationUtilsModule,
+    EventsModule,
   ],
   providers: [
     TransactionsService,
