@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddDisplayNameToFinancialServiceProvider1710079688508 implements MigrationInterface {
+export class AddDisplayNameToFinancialServiceProvider1710079688508
+  implements MigrationInterface
+{
   name = 'AddDisplayNameToFinancialServiceProvider1710079688508';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
