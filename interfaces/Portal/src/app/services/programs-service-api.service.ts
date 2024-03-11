@@ -1066,4 +1066,12 @@ export class ProgramsServiceApiService {
       `/notifications/${programId}/message-templates`,
     );
   }
+
+  public async getCurrentUser(): Promise<{ user: User }> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/users/current`,
+      false,
+    );
+  }
 }

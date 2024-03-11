@@ -139,6 +139,16 @@ export class AuthService {
     });
   }
 
+  public async processAzureAuthSuccess(): Promise<void> {
+    const userDto = await this.programsService.getCurrentUser();
+    this.processUserSignIn(userDto.user);
+  }
+
+  private processUserSignIn(userRO: any) {
+    localStorage.setItem(this.userKey, JSON.stringify(userRO));
+    this.authenticationState.next(userRO);
+  }
+
   public async setPassword(
     username: string,
     password: string,
