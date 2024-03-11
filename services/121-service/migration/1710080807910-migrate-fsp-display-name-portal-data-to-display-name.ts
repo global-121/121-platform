@@ -30,9 +30,26 @@ export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
     );
 
     const financialServiceProviders = existingData.map(
-      (financialServiceProvider: FinancialServiceProviderEntity) => {
+      (financialServiceProvider: any) => {
         financialServiceProvider.displayName =
-          financialServiceProvider.fspDisplayNamePaApp;
+          financialServiceProvider?.fspDisplayNamePaApp;
+
+        if (
+          !financialServiceProvider.displayName &&
+          financialServiceProvider?.fspDisplayNamePortal &&
+          typeof financialServiceProvider?.fspDisplayNamePortal === 'string'
+        ) {
+          try {
+            financialServiceProvider.displayName = JSON.parse(
+              financialServiceProvider?.fspDisplayNamePortal,
+            );
+          } catch (error) {
+            financialServiceProvider.displayName = {
+              en: financialServiceProvider?.fspDisplayNamePortal,
+            };
+          }
+        }
+
         return financialServiceProvider;
       },
     );
