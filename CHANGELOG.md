@@ -5,9 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.113.1...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.114.0...main)
 
 ---
+
+## [1.114.0](https://github.com/global-121/121-platform/compare/v1.113.1...v1.114.0)- 2024-03-07
+
+### Fixed
+- Export instructions breaks if waiting < total
+- Pressing enter saves data without asking a reason
+
+### Added
+
+- See user who changed the status of a PA
+- Add new FSP to existing instance (migration & endpoint)
+
 
 ## [1.113.1](https://github.com/global-121/121-platform/compare/v1.113.0...v1.113.1)- 2024-03-01
 
