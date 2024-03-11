@@ -97,7 +97,9 @@ Copy the centralized .env file
 
     cp .env.example .env
 
-Environment variables are explained in the comments of the .env.example, they should be set up prior to development
+Environment variables are explained in the comments of the [`.env.example`-file](./services/.env.example), some already have a value that is safe/good to use for development, some need to be unique/specific for your environment.
+
+Some variables are for credentials or tokens to access third-party services.
 
 ## Start Services
 
