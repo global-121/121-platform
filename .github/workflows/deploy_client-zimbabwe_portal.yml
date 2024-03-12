@@ -30,7 +30,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAlSMAAE16AAAxON4A////ABK2/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIkQREREREVIiJEERERERVSIiRBEREREFUiIkQREREQBVIiJEREREAAVSIiIiIiIAAFUiIiIiIgAAVSIiIiIiAAVSIiIiIiIAVSIiRERERAVSIiRDMzMzVSIiRDMzMzNSIiRDMzMzMyIiRDMzMzMzAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAANP/AAAA1QAAZAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAMzMzMzMzM0QDMzMzMzMzREARERERERFERAEREREREUREQCIiIiIiQhJEAiIiIiJBEURAAAAAAEISREAAAAAAISQkAiIiIiJEJEAiIiIiIkREARERERERREARERERERFEAzMzMzMzM0AzMzMzMzMzAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
           envContentSecurityPolicy: >-
             connect-src 'self' https://zimbabwe.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://zimbabwe.121.global;
@@ -39,9 +39,9 @@ jobs:
           NG_ENV_NAME: 'Zimbabwe'
           NG_LOCALES: 'en'
           NG_URL_121_SERVICE_API: 'https://zimbabwe.121.global/api'
-          NG_AI_IKEY: '88aa2b5e-041d-4a33-b7c0-d55e85a28c6d'
+          NG_AI_IKEY: 'bb2c82cf-0e2a-4113-9d0e-da9ca4c86679'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=88aa2b5e-041d-4a33-b7c0-d55e85a28c6d;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=bb2c82cf-0e2a-4113-9d0e-da9ca4c86679;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
