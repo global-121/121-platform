@@ -127,10 +127,10 @@ export function HttpLoaderFactory(http: HttpClient) {
             ['openid, offline_access, User.read'],
           ],
           // list open endpoints here first, without scopes
-          ['http://localhost:3000/api/users/login', null],
+          [`${environment.url_121_service_api}/users/login`, null],
           // then catch all other protected endpoints with this wildcard
           [
-            'http://localhost:3000/api/*',
+            `${environment.url_121_service_api}/*`,
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
