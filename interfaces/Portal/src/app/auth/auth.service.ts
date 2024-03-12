@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
@@ -13,6 +14,7 @@ export class AuthService {
   public redirectUrl: string;
   public isIframe: boolean;
   private userKey = 'logged-in-user-portal';
+  private msalCollectionKey = 'msal.account.keys';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
@@ -20,6 +22,7 @@ export class AuthService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private router: Router,
+    private msalService: MsalService,
   ) {
     this.checkAuthenticationState();
   }
@@ -167,9 +170,15 @@ export class AuthService {
 
   public async logout() {
     localStorage.removeItem(this.userKey);
-    await this.programsService.logout();
-
     this.authenticationState.next(null);
-    this.router.navigate(['/', AppRoutes.login]);
+    const azureLocalStorageDataToClear = localStorage.getItem(
+      this.msalCollectionKey,
+    );
+    if (azureLocalStorageDataToClear) {
+      this.msalService.logoutRedirect();
+    } else {
+      await this.programsService.logout();
+      this.router.navigate(['/', AppRoutes.login]);
+    }
   }
 }

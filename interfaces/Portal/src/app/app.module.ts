@@ -96,6 +96,7 @@ export function HttpLoaderFactory(http: HttpClient) {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
           redirectUri: 'http://localhost:8888/',
+          postLogoutRedirectUri: 'http://localhost:8888/login',
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,

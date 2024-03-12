@@ -37,7 +37,7 @@ export class UserStateComponent implements OnInit {
 
   public async doLogout() {
     await this.authService.logout();
-    window.location.reload();
+    // window.location.reload();
   }
 
   public debugShowPermissions() {
