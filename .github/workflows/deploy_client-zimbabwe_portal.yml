@@ -1,0 +1,64 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [Zimbabwe] Interface: Portal'
+
+env:
+  workingDirectory: interfaces/Portal
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Job
+    runs-on: ubuntu-latest
+    environment: 'client-zimbabwe'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
+        with:
+          interfacePath: ${{ env.workingDirectory }}
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAlSMAAE16AAAxON4A////ABK2/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIkQREREREVIiJEERERERVSIiRBEREREFUiIkQREREQBVIiJEREREAAVSIiIiIiIAAFUiIiIiIgAAVSIiIiIiAAVSIiIiIiIAVSIiRERERAVSIiRDMzMzVSIiRDMzMzNSIiRDMzMzMyIiRDMzMzMzAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
+          envContentSecurityPolicy: >-
+            connect-src 'self' https://zimbabwe.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            form-action https://zimbabwe.121.global;
+            frame-src 'self' https://app.powerbi.com;
+        env:
+          NG_ENV_NAME: 'Zimbabwe'
+          NG_LOCALES: 'en'
+          NG_URL_121_SERVICE_API: 'https://zimbabwe.121.global/api'
+          NG_AI_IKEY: '88aa2b5e-041d-4a33-b7c0-d55e85a28c6d'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=88aa2b5e-041d-4a33-b7c0-d55e85a28c6d;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
+      - name: Deploy to Azure Static Web App
+        id: deploy_to_aswa
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          config_file_location: '${{ env.workingDirectory }}/'
+          app_location: '${{ env.workingDirectory }}/www'
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
