@@ -43,7 +43,7 @@
     "@angular/router": "^16.2.12",
     "@angular/service-worker": "^16.2.12",
     "@ionic/angular": "^7.6.5",
-    "@microsoft/applicationinsights-web": "^2.8.16",
+    "@microsoft/applicationinsights-web": "^3.1.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@swimlane/ngx-datatable": "^20.1.0",
