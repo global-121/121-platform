@@ -1,7 +1,7 @@
 <iframe
   *ngIf="!!safeUrl"
   referrerpolicy="no-referrer"
-  sandbox="allow-downloads allow-forms allow-modals allow-popups allow-scripts"
+  sandbox="allow-downloads allow-forms allow-modals allow-popups allow-scripts allow-same-origin"
   loading="lazy"
   [src]="safeUrl"
 ></iframe>
