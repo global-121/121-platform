@@ -1,7 +1,7 @@
 {
   "fsp": "Intersolve-voucher-paper",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayName": {
     "ar": "ليس لدي واتس آب، قم بإرسال قسيمة السوبر ماركت بطريقة أخرى.",
     "en": "I do not have WhatsApp. Send supermarket voucher in another way.",
     "es": "No tengo WhatsApp. Enviar recibo del supermercado por otro medio",
@@ -11,6 +11,5 @@
     "in": "Saya tidak punya WhatsApp. Kirim voucher supermarket dengan cara lain.",
     "fr": "Je n'ai pas de WhatsApp. Envoyez-moi le bon de supermarché d'une autre manière."
   },
-  "fspDisplayNamePortal": "Albert Heijn voucher paper",
   "questions": []
 }

@@ -1,14 +1,7 @@
 {
   "fsp": "fsp_all_attributes",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
-    "ar": "FSP - جميع الصفات",
-    "en": "FSP - all attributes",
-    "es": "FSP - todos los atributos",
-    "fr": "FSP - tous les attribut",
-    "nl": "FSP - alle attributen"
-  },
-  "fspDisplayNamePortal": {
+  "displayName": {
     "ar": "FSP - جميع الصفات",
     "en": "FSP - all attributes",
     "es": "FSP - todos los atributos",
