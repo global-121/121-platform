@@ -195,8 +195,7 @@ describe('EventsService', () => {
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
-    newViewRegistration['fspDisplayName'] =
-      'Albert Heijn voucher WhatsApp"';
+    newViewRegistration['fspDisplayName'] = 'Albert Heijn voucher WhatsApp"';
     delete newViewRegistration['addressCity'];
     delete newViewRegistration['addressPostalCode'];
     delete newViewRegistration['addressHouseNumberAddition'];

@@ -22,7 +22,9 @@ export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
 
   private async migrateFspDisplayName(queryRunner: QueryRunner): Promise<void> {
     const manager = queryRunner.manager;
-    const financialServiceProviderRepo = manager.getRepository(FinancialServiceProviderEntity);
+    const financialServiceProviderRepo = manager.getRepository(
+      FinancialServiceProviderEntity,
+    );
 
     const existingData = await queryRunner.query(
       `SELECT * FROM "121-service"."financial_service_provider" ORDER BY "id" ASC`,
@@ -53,6 +55,8 @@ export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
       },
     );
 
-    await financialServiceProviderRepo.save(financialServiceProviders, { chunk: 300 });
+    await financialServiceProviderRepo.save(financialServiceProviders, {
+      chunk: 300,
+    });
   }
 }
