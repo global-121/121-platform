@@ -71,7 +71,7 @@ describe('Send custom message with placeholders', () => {
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fspDisplayNamePortal}}', 'g'),
-      fspIntersolveJson.fspDisplayNamePortal,
+      fspIntersolveJson.displayName[registrationAh.preferredLanguage],
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),
