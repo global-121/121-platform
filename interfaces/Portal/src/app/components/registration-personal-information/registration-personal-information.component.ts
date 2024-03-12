@@ -173,7 +173,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     this.personalInfoTable.push({
       label: this.getLabel('fsp'),
-      value: this.person.fspDisplayNamePortal,
+      value: this.translatableString.get(this.person.fspDisplayName),
     });
 
     if (this.program.enableScope) {

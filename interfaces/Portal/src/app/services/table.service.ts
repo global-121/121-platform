@@ -132,7 +132,7 @@ export class TableService {
       {
         prop: 'financialServiceProvider',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fspDisplayNamePortal',
+          'page.program.program-people-affected.column.fspDisplayName',
         ),
         ...this.getColumnDefaults(),
         minWidth: 220,
