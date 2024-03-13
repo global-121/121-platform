@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
@@ -249,16 +250,23 @@ export class EventsService {
 
     const events: EventEntity[] = [];
     for (const fieldName of fieldNames) {
-      if (oldEntity[fieldName] !== newEntity[fieldName]) {
-        const eventForChange = this.createEventForChange(
-          fieldName,
-          oldEntity[fieldName],
-          newEntity[fieldName],
-          oldEntity.id,
-        );
-        eventForChange.userId = userId;
-        events.push(eventForChange);
+      if (
+        oldEntity[fieldName] === newEntity[fieldName] ||
+        (isObject(oldEntity[fieldName]) &&
+          isObject(newEntity[fieldName]) &&
+          isMatch(oldEntity[fieldName], newEntity[fieldName]))
+      ) {
+        continue;
       }
+
+      const eventForChange = this.createEventForChange(
+        fieldName,
+        oldEntity[fieldName],
+        newEntity[fieldName],
+        oldEntity.id,
+      );
+      eventForChange.userId = userId;
+      events.push(eventForChange);
     }
 
     return events;
@@ -266,8 +274,8 @@ export class EventsService {
 
   private createEventForChange(
     fieldName: string,
-    oldValue: string,
-    newValue: string,
+    oldValue: EventAttributeEntity['value'],
+    newValue: EventAttributeEntity['value'],
     registrationdId: number,
   ): EventEntity {
     const event = new EventEntity();
@@ -286,7 +294,7 @@ export class EventsService {
   }
 
   private getAttributesForChange(attributesData: {
-    [key in EventAttributeKeyEnum]?: string;
+    [key in EventAttributeKeyEnum]?: EventAttributeEntity['value'];
   }): EventAttributeEntity[] {
     return Object.entries(attributesData)
       .filter(([_, value]) => value)
@@ -297,7 +305,7 @@ export class EventsService {
 
   private createEventAttributeEntity(
     key: EventAttributeKeyEnum,
-    value: string,
+    value: EventAttributeEntity['value'],
   ): EventAttributeEntity {
     const eventAttribute = new EventAttributeEntity();
     eventAttribute.key = key;
