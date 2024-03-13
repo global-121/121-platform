@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
+import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
@@ -1036,7 +1037,7 @@ export class ProgramsServiceApiService {
   public async getCurrentUser(): Promise<{ user: User }> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/users/current`,
+      CURRENT_USER_ENDPOINT_PATH,
       false,
     );
   }

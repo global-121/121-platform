@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 import { MsalInterceptor } from '@azure/msal-angular';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { USER_KEY } from '../auth/auth.service';
+import { CURRENT_USER_ENDPOINT_PATH, USER_KEY } from '../auth/auth.service';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class MsalSkipInterceptor
     // Only potentially skip on 121-service API requests
     if (request.url.includes(environment.url_121_service_api)) {
       // Never skip on request to get current user, as we need it always to check if user is an Entra user
-      if (request.url.includes('users/current')) {
+      if (request.url.includes(CURRENT_USER_ENDPOINT_PATH)) {
         return super.intercept(request, next);
       }
 
