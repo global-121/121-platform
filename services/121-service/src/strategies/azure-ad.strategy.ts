@@ -79,6 +79,12 @@ export class AzureAdStrategy
     try {
       // Try to find user by username (this is an email address in our case)
       user = await this.userService.findByUsernameOrThrow(username);
+      if (!user.user.isEntraUser) {
+        user = await this.userService.updateUser({
+          id: user.user.id,
+          isEntraUser: true,
+        });
+      }
     } catch (error: Error | unknown) {
       if (
         error instanceof HttpException &&

@@ -26,7 +26,6 @@ import { DEBUG } from '../config';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { CookieNames } from '../shared/enum/cookie.enums';
-import { LoginUserDto, UpdateUserDto } from './dto';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -36,6 +35,8 @@ import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
@@ -152,6 +153,18 @@ export class UserController {
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
     return this.userService.createAidWorker(userData);
+  }
+
+  // TODO: define response type, this cannot use an interface though
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Update Aid Worker user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Updated Aid Worker user',
+  })
+  @Patch('users')
+  public async updateUser(@Body() userData: UpdateUserDto): Promise<UserRO> {
+    return this.userService.updateUser(userData);
   }
 
   // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
@@ -276,8 +289,10 @@ export class UserController {
     description: 'Changed password of user',
     type: UpdateUserDto,
   })
-  public async update(@Body() userData: UpdateUserDto): Promise<any> {
-    return this.userService.update(userData);
+  public async update(
+    @Body() userPasswordData: UpdateUserPasswordDto,
+  ): Promise<any> {
+    return this.userService.updatePassword(userPasswordData);
   }
 
   @AuthenticatedUser({ isAdmin: true })

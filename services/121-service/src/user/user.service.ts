@@ -11,7 +11,6 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { ProgramEntity } from '../programs/program.entity';
 import { CookieNames } from './../shared/enum/cookie.enums';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import { LoginUserDto, UpdateUserDto } from './dto';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -23,6 +22,8 @@ import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.d
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
@@ -265,7 +266,7 @@ export class UserService {
     return await this.buildUserRO(savedUser);
   }
 
-  public async update(dto: UpdateUserDto): Promise<UserRO> {
+  public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
     const userEntity = await this.matchPassword(dto);
 
     if (!userEntity) {
@@ -282,6 +283,19 @@ export class UserService {
       .toString('hex');
     await this.userRepository.save(updated);
     return await this.buildUserRO(updated);
+  }
+
+  public async updateUser(userData: UpdateUserDto): Promise<UserRO> {
+    const userEntity = await this.findById(userData.id);
+    if (!userEntity) {
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+    for (const key of Object.keys(userData)) {
+      userEntity[key] = userData[key];
+    }
+
+    await this.userRepository.save(userEntity);
+    return await this.buildUserRO(userEntity);
   }
 
   public async assignAidworkerToProgram(
