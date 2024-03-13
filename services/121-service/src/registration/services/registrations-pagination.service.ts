@@ -62,6 +62,7 @@ export class RegistrationsPaginationService {
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
+    console.time('getPaginate');
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
       // These setting are needed to get all registrations
@@ -158,6 +159,7 @@ export class RegistrationsPaginationService {
       fullnameNamingConvention,
       hasPersonalReadPermission,
     );
+    console.timeEnd('getPaginate');
     return result;
   }
 
