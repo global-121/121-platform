@@ -1,9 +1,7 @@
 {
   "fsp": "UkrPoshta",
   "displayName": {
-    "en": "UkrPoshta",
-    "uk": "Укрпошта",
-    "ru": "Укр Почта"
+    "en": "UkrPoshta"
   },
   "integrationType": "csv",
   "questions": [
