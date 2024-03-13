@@ -144,10 +144,10 @@ export class AuthService {
 
   public async processAzureAuthSuccess(): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
-    this.processUserSignIn(userDto.user);
+    this.processAzureUserSignIn(userDto.user);
   }
 
-  private processUserSignIn(userRO: any) {
+  private processAzureUserSignIn(userRO: any) {
     localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
     this.router.navigate(['/', AppRoutes.home]);
@@ -170,15 +170,38 @@ export class AuthService {
   }
 
   public async logout() {
-    localStorage.removeItem(USER_KEY);
-    this.authenticationState.next(null);
+    const user = this.getUserFromStorage();
     const azureLocalStorageDataToClear = localStorage.getItem(
       this.msalCollectionKey,
     );
-    if (azureLocalStorageDataToClear) {
-      this.msalService.logoutRedirect();
+    if (azureLocalStorageDataToClear && user) {
+      const currentUser = this.msalService.instance.getAccountByUsername(
+        user.username,
+      );
+      this.msalService.logoutRedirect({ account: currentUser });
     }
+    localStorage.removeItem(USER_KEY);
+    this.authenticationState.next(null);
     await this.programsService.logout();
     this.router.navigate(['/', AppRoutes.login]);
+  }
+
+  async checkExpirationDate() {
+    const user = this.getUserFromStorage();
+    const currentUser = this.msalService.instance.getAccountByUsername(
+      user.username,
+    );
+    const iat = currentUser.idTokenClaims.iat;
+    const issuedDate = new Date(iat * 1000);
+    if (issuedDate) {
+      const today = new Date();
+      if (
+        today.getDate() !== issuedDate.getDate() ||
+        today.getMonth() !== issuedDate.getMonth() ||
+        today.getFullYear() !== issuedDate.getFullYear()
+      ) {
+        await this.logout();
+      }
+    }
   }
 }
