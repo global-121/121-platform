@@ -44,7 +44,7 @@ export class AzureAdStrategy
     super({
       identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
       issuer: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}`,
-      clientID: config.credentials.clientID,
+      clientID: config.credentials.clientID || '-', //TODO: this works to avoid 121-service filure on no-sso scenario, but should be done better
       audience: config.credentials.audience,
       validateIssuer: config.settings.validateIssuer,
       passReqToCallback: config.settings.passReqToCallback,
