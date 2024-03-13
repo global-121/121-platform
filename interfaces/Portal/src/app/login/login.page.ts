@@ -40,7 +40,6 @@ export class LoginPage {
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
-    // private router: Router,
     private msalService: MsalService,
   ) {}
 
@@ -104,11 +103,9 @@ export class LoginPage {
 
   public loginSso() {
     this.msalService.loginRedirect();
-    // redirect to /home which will in turn redirect to SSO flow
-    // this.router.navigate(['/', AppRoutes.auth]);
   }
 
   public showSsoLogin(): boolean {
-    return environment.azure_ad_enable === true;
+    return environment.use_sso_azure_entra === true;
   }
 }
