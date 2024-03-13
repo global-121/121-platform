@@ -188,19 +188,21 @@ export class AuthService {
 
   async checkExpirationDate() {
     const user = this.getUserFromStorage();
-    const currentUser = this.msalService.instance.getAccountByUsername(
-      user.username,
-    );
-    const iat = currentUser.idTokenClaims.iat;
-    const issuedDate = new Date(iat * 1000);
-    if (issuedDate) {
-      const today = new Date();
-      if (
-        today.getDate() !== issuedDate.getDate() ||
-        today.getMonth() !== issuedDate.getMonth() ||
-        today.getFullYear() !== issuedDate.getFullYear()
-      ) {
-        await this.logout();
+    if (user.isEntraUser === true) {
+      const currentUser = this.msalService.instance.getAccountByUsername(
+        user.username,
+      );
+      const iat = currentUser.idTokenClaims.iat;
+      const issuedDate = new Date(iat * 1000);
+      if (issuedDate) {
+        const today = new Date();
+        if (
+          today.getDate() !== issuedDate.getDate() ||
+          today.getMonth() !== issuedDate.getMonth() ||
+          today.getFullYear() !== issuedDate.getFullYear()
+        ) {
+          await this.logout();
+        }
       }
     }
   }
