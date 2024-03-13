@@ -33,8 +33,7 @@ jobs:
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAALsAAAAAAP///wAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREzMzMzMzMzMzMzMzMzMzMzMzMzIwMjMzMzMzMwADMzMyIiIgAgAiIiAAAAECAQAAAAAAAQIBAAAAAAABAgEAAAAAAAECAQAAAiIiIAIAIiIhERERAAERERERERIQEhERERERERERERERERERERERERERERERERERH//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
           envContentSecurityPolicy: >-
             img-src 'self' data: ;
-            script-src 'self' https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
-            connect-src 'self' https://krcs.121.global;
+            connect-src 'self' https://krcs.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://krcs.121.global;
         env:
           NG_ENV_NAME: ''

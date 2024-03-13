@@ -12,7 +12,6 @@ import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataModule } from '../registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '../registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
@@ -75,7 +74,6 @@ import { TransactionsModule } from './transactions/transactions.module';
     RegistrationScopedRepository,
     FileImportService,
     AzureLogService,
-    createScopedRepositoryProvider(RegistrationStatusChangeEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
   ],
   controllers: [PaymentsController],

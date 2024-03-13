@@ -1,8 +1,5 @@
 import RegistrationStatus from '../enums/registration-status.enum';
-import {
-  PeopleMetricsAttribute,
-  ProgramMetrics,
-} from '../models/program-metrics.model';
+import { ProgramMetrics } from '../models/program-metrics.model';
 import { getRandomInt } from './helpers';
 
 export default {
@@ -19,6 +16,5 @@ export default {
     [RegistrationStatus.inclusionEnded]: getRandomInt(0, 100),
     [RegistrationStatus.rejected]: getRandomInt(0, 100),
     [RegistrationStatus.deleted]: getRandomInt(0, 100),
-    [PeopleMetricsAttribute.totalPaHelped]: getRandomInt(0, 100),
   },
 } as ProgramMetrics;

@@ -127,9 +127,7 @@ The default/generic values are defined at: [`build-interface/action.yml#L17`](..
 Following the configuration of the 121 Demo environment, the following CSP is set in: [`workflows/deploy_client-demo_portal.yml`](../.github/workflows/deploy_client-demo_portal.yml#L34):
 
 - `connect-src` and `form-action`:  
-  Allows the hostname to make API-requests to. (i.e. `https://<instance-name>.121.global`)
-- `script-src`:  
-  Allows javascript-code from our own code (`'self'`), but also third-parties like in this case Application-Insights.
+  Allows the hostname to make API-requests to. (i.e. `https://<instance-name>.121.global`), but also third-parties like Application-Insights.
 - `frame-src`:  
   Allows the sources that can be shown in an `<iframe>`.
   - When the FSP `Intersolve-voucher` will be used, `blob: 'self'` should be included. (for the Portal only)

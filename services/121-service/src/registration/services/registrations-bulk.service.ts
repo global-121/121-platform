@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { In, Not, Repository } from 'typeorm';
+import { EventsService } from '../../events/events.service';
 import { NoteEntity } from '../../notes/note.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '../../notifications/latest-message.entity';
@@ -30,7 +31,6 @@ import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationsService } from '../registrations.service';
 import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
-import { RegistrationsBulkHelperService } from './registrations-bulk-helper.service';
 import { RegistrationsPaginationService } from './registrations-pagination.service';
 
 @Injectable()
@@ -54,9 +54,9 @@ export class RegistrationsBulkService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: QueueMessageService,
+    private readonly eventsService: EventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly registrationsBulkHelperService: RegistrationsBulkHelperService,
     @Inject(getScopedRepositoryProviderName(SafaricomRequestEntity))
     private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
@@ -382,23 +382,35 @@ export class RegistrationsBulkService {
   }
 
   private async updateRegistrationStatusChunk(
-    registrations: RegistrationViewEntity[],
+    filteredRegistrations: RegistrationViewEntity[],
     registrationStatus: RegistrationStatusEnum,
     tryWhatsAppFirst: boolean,
     messageSizeType?: MessageSizeTypeDto,
     usedPlaceholders?: string[],
   ): Promise<void> {
-    const filteredRegistrations = registrations;
+    const filteredRegistrationsIds = filteredRegistrations.map((r) => r.id);
+
     await this.registrationScopedRepository.updateUnscoped(
       {
-        id: In(filteredRegistrations.map((r) => r.id)),
+        id: In(filteredRegistrationsIds),
       },
       { registrationStatus },
     );
 
-    await this.registrationsBulkHelperService.saveBulkRegistrationStatusChanges(
-      filteredRegistrations.map((r) => r.id),
-      registrationStatus,
+    const registrationsAfterUpdate =
+      await this.registrationViewScopedRepository.find({
+        where: { id: In(filteredRegistrationsIds) },
+        select: ['id', 'status'],
+        order: {
+          id: 'ASC',
+        },
+      });
+
+    const statusKey: keyof RegistrationViewEntity = 'status';
+    await this.eventsService.log(
+      filteredRegistrations,
+      registrationsAfterUpdate,
+      { registrationAttributes: [statusKey] },
     );
     for (const registration of filteredRegistrations) {
       if (
