@@ -140,9 +140,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     }
 
     if (this.person?.fspDisplayName) {
-      this.person.fspDisplayName = this.translatableString.get(this.person.fspDisplayName);
+      this.person.fspDisplayName = this.translatableString.get(
+        this.person.fspDisplayName,
+      );
     }
-    console.log('person: ', this.person);
 
     this.loading = false;
   }
