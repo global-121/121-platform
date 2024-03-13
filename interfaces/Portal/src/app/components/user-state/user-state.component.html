@@ -1,12 +1,12 @@
 <span style="display: inline-block">
   {{ 'user-state.logged-in-as' | translate }}:
   <br />
-  <ng-container *ngIf="showUserStateActions">
+  <ng-container *ngIf="showUserStateActions && !isEntraUser">
     <a [routerLink]="['/', appRoute.user]">
       <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
     </a>
   </ng-container>
-  <ng-container *ngIf="!showUserStateActions">
+  <ng-container *ngIf="!showUserStateActions || isEntraUser">
     <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
   </ng-container>
 </span>

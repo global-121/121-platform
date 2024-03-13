@@ -8,6 +8,7 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
+export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
 @Injectable({
   providedIn: 'root',
 })

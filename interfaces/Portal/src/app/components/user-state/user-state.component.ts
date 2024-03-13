@@ -22,6 +22,7 @@ export class UserStateComponent implements OnInit {
   public isDebug = !environment.production;
   public appRoute = AppRoutes;
   public userName: string;
+  public isEntraUser = false;
   public permissions: User['permissions'];
 
   constructor(private authService: AuthService) {}
@@ -29,6 +30,7 @@ export class UserStateComponent implements OnInit {
   ngOnInit() {
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.userName = user && user.username ? user.username : '';
+      this.isEntraUser = user?.isEntraUser;
       if (this.isDebug) {
         this.permissions = user && user.permissions ? user.permissions : {};
       }
