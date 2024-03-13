@@ -7,7 +7,7 @@ export const environment = {
   // Configuration/Feature-switches:
   useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
   defaultLocale: 'en',
-  locales: '${process.env.NG_LOCALES || ''}',
+  locales: '${process.env.NG_LOCALES || 'en,ar,fr,nl,es'}',
   envName: '${process.env.NG_ENV_NAME || ''}',
 
   twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL || ''}',
