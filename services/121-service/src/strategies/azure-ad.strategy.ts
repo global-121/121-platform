@@ -90,6 +90,7 @@ export class AzureAdStrategy
           username,
           password,
           UserType.aidWorker,
+          true,
         );
       } else {
         throw error;

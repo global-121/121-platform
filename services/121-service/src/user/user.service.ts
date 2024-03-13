@@ -238,6 +238,7 @@ export class UserService {
     username: string,
     password: string,
     userType: UserType,
+    isEntraUser = false,
   ): Promise<UserRO> {
     // check uniqueness of email
     const qb = this.userRepository
@@ -259,6 +260,7 @@ export class UserService {
     newUser.username = username;
     newUser.password = password;
     newUser.userType = userType;
+    newUser.isEntraUser = isEntraUser;
     const savedUser = await this.userRepository.save(newUser);
     return await this.buildUserRO(savedUser);
   }
