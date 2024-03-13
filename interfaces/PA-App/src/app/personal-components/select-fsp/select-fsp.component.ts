@@ -65,10 +65,7 @@ export class SelectFspComponent extends PersonalDirective implements OnInit {
       (fsp) => fsp.displayName,
     );
     this.fsps.forEach(
-      (fsp) =>
-        (fsp.displayName = this.translatableString.get(
-          fsp.displayName,
-        )),
+      (fsp) => (fsp.displayName = this.translatableString.get(fsp.displayName)),
     );
     this.referenceId = await this.paData.getReferenceId();
     this.conversationService.stopLoading();
