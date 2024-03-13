@@ -241,6 +241,7 @@ export class UserController {
         access_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
+        isEntraUser: loginResponse.userRo.user.isEntraUser,
       });
     } catch (error) {
       throw error;

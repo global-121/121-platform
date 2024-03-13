@@ -58,18 +58,8 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const username = userEntity.username;
-    const permissions = await this.buildPermissionsObject(userEntity.id);
     const token = this.generateJWT(userEntity);
-    const user: UserRO = {
-      user: {
-        id: userEntity.id,
-        username,
-        token,
-        permissions,
-        isAdmin: userEntity.admin,
-      },
-    };
+    const user = await this.buildUserRO(userEntity);
 
     const cookieSettings = this.buildCookieByRequest(token);
     userEntity.lastLogin = new Date();
@@ -531,6 +521,7 @@ export class UserService {
       username: user.username,
       permissions,
       isAdmin: user.admin,
+      isEntraUser: user.isEntraUser,
     };
     return { user: userRO };
   }
