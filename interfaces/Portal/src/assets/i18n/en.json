@@ -626,7 +626,7 @@
         "targeted": "Targeted People Affected",
         "updated": "Last updated: "
       },
-      "not-available": "No programs available.",
+      "not-available": "No programs available. Please contact your line manager to assign you to programs. Afterwards, please logout and login again to see the new programs.",
       "pageSubtitle": "You are running {{nrPrograms}} program(s) actively",
       "pageTitle": "Programs"
     },
