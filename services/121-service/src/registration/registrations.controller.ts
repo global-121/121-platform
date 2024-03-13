@@ -35,6 +35,7 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
@@ -318,6 +319,22 @@ export class RegistrationsController {
       false,
     );
   }
+
+  @ApiTags('programs/registrations')
+  @Admin()
+  @ApiOperation({
+    summary: 'Bulk update registration using a CSV file',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch('programs/:programId/registrations')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
+  @UseInterceptors(FileInterceptor('file'))
+  public async patchRegistrations(
+    @UploadedFile() csvFile,
+    @Param('programId', ParseIntPipe) programId: number,
+    @User('id') userId: number,
+  ): Promise<void> {}
 
   @ApiTags('programs/registrations')
   @ApiResponse({
