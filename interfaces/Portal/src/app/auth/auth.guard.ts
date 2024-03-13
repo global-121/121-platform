@@ -21,10 +21,6 @@ export class AuthGuard {
     nextRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
-    console.log(
-      'this.authService.isLoggedIn(): ',
-      this.authService.isLoggedIn(),
-    );
     // If no specific permission is required, only require a valid login
     if (!nextRoute.data.permissions && this.authService.isLoggedIn()) {
       return true;

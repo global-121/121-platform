@@ -62,7 +62,6 @@ export class CookieJwtStrategy
   }
 
   async validate(request: any, payload: UserToken): Promise<any> {
-    console.log('cookie payload: ', payload);
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
 

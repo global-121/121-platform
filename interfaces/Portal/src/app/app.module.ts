@@ -22,6 +22,7 @@ import {
 import {
   BrowserCacheLocation,
   InteractionType,
+  LogLevel,
   PublicClientApplication,
 } from '@azure/msal-browser';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -146,21 +147,21 @@ export class MsalSkipInterceptor
         },
         system: {
           loggerOptions: {
-            // loggerCallback: (level, message, containsPii) => {
-            //   console.log(
-            //     'MSAL Logging: ',
-            //     LogLevel[level],
-            //     message,
-            //     containsPii,
-            //   );
-            // },
-            // piiLoggingEnabled: true,
-            // logLevel: LogLevel.Info,
+            loggerCallback: (level, message, containsPii) => {
+              console.log(
+                'MSAL Logging: ',
+                LogLevel[level],
+                message,
+                containsPii,
+              );
+            },
+            piiLoggingEnabled: true,
+            logLevel: LogLevel.Info,
           },
         },
       }),
       {
-        interactionType: InteractionType.Popup, // MSAL Guard Configuration
+        interactionType: InteractionType.Redirect,
       },
       {
         protectedResourceMap: new Map([
@@ -176,7 +177,7 @@ export class MsalSkipInterceptor
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
-        interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
+        interactionType: InteractionType.Redirect,
       },
     ),
   ],

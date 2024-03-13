@@ -18,8 +18,8 @@ const routes: Routes = [
   {
     path: AppRoutes.auth,
     loadComponent: () =>
-      import('./auth/callback/callback.component').then(
-        (m) => m.CallbackComponent,
+      import('./auth/entra-callback/entra-callback.component').then(
+        (m) => m.EntraCallbackComponent,
       ),
   },
   {

@@ -4,12 +4,12 @@ import { MsalService } from '@azure/msal-angular';
 import { AuthService } from '../auth.service';
 
 @Component({
-  selector: 'app-callback',
+  selector: 'app-entra-callback',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './callback.component.html',
+  templateUrl: './entra-callback.component.html',
 })
-export class CallbackComponent implements OnInit {
+export class EntraCallbackComponent implements OnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly msalService: MsalService,
