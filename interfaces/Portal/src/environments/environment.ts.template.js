@@ -18,8 +18,9 @@ export const environment = {
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY || ''}',
   ai_endpoint: '${process.env.NG_AI_ENDPOINT || ''}',
-  
+
   // Azure AD
+  azure_ad_enable: ${process.env.AZURE_ENTRA_ENABLE || 'false'},
   azure_ad_client_id: '${process.env.AZURE_ENTRA_CLIENT_ID || ''}',
   azure_ad_tenant_id: '${process.env.AZURE_ENTRA_TENANT_ID || ''}',
 };

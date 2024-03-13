@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
@@ -104,5 +105,9 @@ export class LoginPage {
   public loginSso() {
     // redirect to /home which will in turn redirect to SSO flow
     this.router.navigate(['/', AppRoutes.home]);
+  }
+
+  public showSsoLogin(): boolean {
+    return environment.azure_ad_enable === true;
   }
 }
