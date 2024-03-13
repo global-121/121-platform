@@ -9,6 +9,7 @@ import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
 export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
+export const LOGIN_ENDPOINT_PATH = '/users/login';
 @Injectable({
   providedIn: 'root',
 })
