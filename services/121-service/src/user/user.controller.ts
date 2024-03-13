@@ -155,18 +155,6 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
-  // TODO: define response type, this cannot use an interface though
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Update Aid Worker user' })
-  @ApiResponse({
-    status: 201,
-    description: 'Updated Aid Worker user',
-  })
-  @Patch('users')
-  public async updateUser(@Body() userData: UpdateUserDto): Promise<UserRO> {
-    return this.userService.updateUser(userData);
-  }
-
   // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiTags('users')
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
