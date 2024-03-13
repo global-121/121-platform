@@ -2,8 +2,7 @@
   "fsp": "BelCash",
   "integrationType": "api",
   "displayName": {
-    "en": "HelloCash",
-    "am_ET": "HelloCash"
+    "en": "BelCash"
   },
   "questions": [
     {

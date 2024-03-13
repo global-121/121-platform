@@ -2,7 +2,7 @@
   "fsp": "Intersolve-jumbo-physical",
   "integrationType": "api",
   "displayName": {
-    "en": "Jumbo physical card"
+    "en": "Jumbo card"
   },
   "notifyOnTransaction": true,
   "questions": [

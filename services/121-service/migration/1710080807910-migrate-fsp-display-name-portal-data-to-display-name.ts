@@ -32,11 +32,7 @@ export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
 
     const financialServiceProviders = existingData.map(
       (financialServiceProvider: any) => {
-        financialServiceProvider.displayName =
-          financialServiceProvider?.fspDisplayNamePaApp;
-
         if (
-          !financialServiceProvider.displayName &&
           financialServiceProvider?.fspDisplayNamePortal &&
           typeof financialServiceProvider?.fspDisplayNamePortal === 'string'
         ) {

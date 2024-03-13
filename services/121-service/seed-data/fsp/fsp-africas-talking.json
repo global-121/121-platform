@@ -2,9 +2,7 @@
   "fsp": "Africas-talking",
   "integrationType": "api",
   "displayName": {
-    "saq_KE": "Mpesa",
-    "tuv_KE": "M-PESA",
-    "en": "M-Pesa"
+    "en": "Africas-talking"
   },
   "questions": [
     {
