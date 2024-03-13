@@ -159,6 +159,10 @@ export class RegistrationsPaginationService {
       fullnameNamingConvention,
       hasPersonalReadPermission,
     );
+    console.log(
+      '🚀 ~ RegistrationsPaginationService ~ result.meta.totalItems:',
+      result.meta.totalItems,
+    );
     console.timeEnd('getPaginate');
     return result;
   }

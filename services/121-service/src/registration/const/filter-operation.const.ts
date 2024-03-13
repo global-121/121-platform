@@ -31,7 +31,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       'lastMessageStatus',
       'dataSearchBy.(value)',
     ],
-    ignoreSearchByInQueryParam: true,
+    // ignoreSearchByInQueryParam: true,//
     maxLimit: 40000,
     sortableColumns: [
       'id',
