@@ -144,12 +144,17 @@ export class AuthService {
 
   public async processAzureAuthSuccess(): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
+    console.log('userDto: ', userDto);
     this.processUserSignIn(userDto.user);
   }
 
   private processUserSignIn(userRO: any) {
     localStorage.setItem(this.userKey, JSON.stringify(userRO));
+    // eslint-disable-next-line no-debugger
+    // debugger;
     this.authenticationState.next(userRO);
+    // console.log('this.isLoggedIn(): ', this.isLoggedIn());
+    // this.router.navigate(['/', AppRoutes.home]);
   }
 
   public async setPassword(

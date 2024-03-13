@@ -15,6 +15,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginPageModule),
   },
+  // {
+  //   path: AppRoutes.auth,
+  //   component: MsalRedirectComponent,
+  //   canActivate: [MsalGuard],
+  // },
   {
     path: AppRoutes.user,
     loadChildren: () =>
@@ -26,6 +31,9 @@ const routes: Routes = [
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
     canActivate: [MsalGuard],
+    // data: {
+    //   syncGuards: [AuthGuard, MsalGuard],
+    // },
   },
   {
     path: AppRoutes.help,

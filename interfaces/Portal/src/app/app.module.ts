@@ -2,9 +2,13 @@ import { LOCATION_INITIALIZED } from '@angular/common';
 import {
   HttpClient,
   HttpClientModule,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injectable, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -18,7 +22,6 @@ import {
 import {
   BrowserCacheLocation,
   InteractionType,
-  LogLevel,
   PublicClientApplication,
 } from '@azure/msal-browser';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -28,6 +31,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -70,6 +74,24 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/');
 }
 
+@Injectable()
+export class MsalSkipInterceptor
+  extends MsalInterceptor
+  implements HttpInterceptor
+{
+  override intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<unknown>> {
+    const userKey = 'logged-in-user-portal';
+    if (localStorage.getItem(userKey)) {
+      console.log('userKey: ', userKey);
+      return next.handle(request);
+    }
+    return super.intercept(request, next);
+  }
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -95,8 +117,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: 'http://localhost:8888/',
+          redirectUri: 'http://localhost:8888/home',
           postLogoutRedirectUri: 'http://localhost:8888/login',
+          navigateToLoginRequestUrl: false,
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -104,21 +127,21 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
         system: {
           loggerOptions: {
-            loggerCallback: (level, message, containsPii) => {
-              console.log(
-                'MSAL Logging: ',
-                LogLevel[level],
-                message,
-                containsPii,
-              );
-            },
-            piiLoggingEnabled: true,
-            logLevel: LogLevel.Info,
+            // loggerCallback: (level, message, containsPii) => {
+            //   console.log(
+            //     'MSAL Logging: ',
+            //     LogLevel[level],
+            //     message,
+            //     containsPii,
+            //   );
+            // },
+            // piiLoggingEnabled: true,
+            // logLevel: LogLevel.Info,
           },
         },
       }),
       {
-        interactionType: InteractionType.Redirect, // MSAL Guard Configuration
+        interactionType: InteractionType.Popup, // MSAL Guard Configuration
       },
       {
         protectedResourceMap: new Map([
@@ -134,7 +157,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
-        interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
+        interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
       },
     ),
   ],
@@ -154,7 +177,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorHandlerService,
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
+      useClass: MsalSkipInterceptor,
       multi: true,
     },
     MsalService,

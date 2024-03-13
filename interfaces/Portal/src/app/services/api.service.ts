@@ -262,6 +262,7 @@ export class ApiService {
   }
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
+    console.log('error: ', error);
     if (
       error.status === HttpStatusCode.TooManyRequests &&
       !this.isRateLimitErrorShown
@@ -275,8 +276,8 @@ export class ApiService {
       return of(error);
     }
     if (error.status === 401) {
-      localStorage.removeItem(this.userKey);
-      window.location.reload();
+      // localStorage.removeItem(this.userKey);
+      // window.location.reload();
 
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {

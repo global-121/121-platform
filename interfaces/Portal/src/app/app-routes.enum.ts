@@ -5,5 +5,5 @@ export enum AppRoutes {
   help = 'help',
   iframe = 'iframe',
   users = 'users',
-  authCallback = 'auth/callback',
+  auth = 'auth',
 }

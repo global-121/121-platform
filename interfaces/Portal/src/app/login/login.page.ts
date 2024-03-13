@@ -1,9 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
-import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 
@@ -41,7 +40,8 @@ export class LoginPage {
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
-    private router: Router,
+    // private router: Router,
+    private msalService: MsalService,
   ) {}
 
   ionViewWillLeave(): void {
@@ -103,8 +103,9 @@ export class LoginPage {
   }
 
   public loginSso() {
+    this.msalService.loginRedirect();
     // redirect to /home which will in turn redirect to SSO flow
-    this.router.navigate(['/', AppRoutes.home]);
+    // this.router.navigate(['/', AppRoutes.auth]);
   }
 
   public showSsoLogin(): boolean {

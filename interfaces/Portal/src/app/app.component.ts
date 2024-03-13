@@ -20,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private msalService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
     private authService: AuthService,
+    // private router: Router,
   ) {
     // Initialize storage of preferred language
     this.languageService.setup();
@@ -37,9 +38,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.msalService.handleRedirectObservable().subscribe();
     this.msalBroadcastService.msalSubject$
       .pipe(
-        filter(
-          (msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS,
-        ),
+        filter((msg: EventMessage) => {
+          // console.log('msg: ', msg);
+          return msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS;
+        }),
       )
       .subscribe(async () => {
         await this.authService.processAzureAuthSuccess();
