@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { EventMessage, EventType } from '@azure/msal-browser';
-import { filter, Subject } from 'rxjs';
+import { MsalService } from '@azure/msal-angular';
+import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthService } from './auth/auth.service';
 import { LanguageService } from './services/language.service';
 import { LoggingService } from './services/logging.service';
 
@@ -18,9 +16,6 @@ export class AppComponent implements OnInit, OnDestroy {
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
     private msalService: MsalService,
-    private msalBroadcastService: MsalBroadcastService,
-    private authService: AuthService,
-    // private router: Router,
   ) {
     // Initialize storage of preferred language
     this.languageService.setup();
@@ -36,16 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.msalService.handleRedirectObservable().subscribe();
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter((msg: EventMessage) => {
-          // console.log('msg: ', msg);
-          return msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS;
-        }),
-      )
-      .subscribe(async () => {
-        await this.authService.processAzureAuthSuccess();
-      });
   }
 
   ngOnDestroy(): void {

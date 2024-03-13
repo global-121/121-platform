@@ -6,6 +6,7 @@ export interface UserData {
   token: string;
   permissions: UserPermissions;
   isAdmin?: boolean;
+  isEntraUser?: boolean;
 }
 
 export interface UserRO {

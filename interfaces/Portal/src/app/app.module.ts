@@ -35,6 +35,8 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { USER_KEY } from './auth/auth.service';
+import { User } from './models/user.model';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoggingService } from './services/logging.service';
 
@@ -83,12 +85,29 @@ export class MsalSkipInterceptor
     request: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
-    const userKey = 'logged-in-user-portal';
-    if (localStorage.getItem(userKey)) {
-      console.log('userKey: ', userKey);
-      return next.handle(request);
+    // Only potentially skip on 121-service API requests
+    if (request.url.includes(environment.url_121_service_api)) {
+      // Never skip on request to get current user, as we need it always to check if user is an Entra user
+      if (request.url.includes('users/current')) {
+        return super.intercept(request, next);
+      }
+
+      // Otherwise, get user from local storage
+      const rawUser = localStorage.getItem(USER_KEY);
+      if (!rawUser) {
+        // If no user found (this should never happen), then skip to avoid SSO-redirect, and let it fail somewhere else
+        return next.handle(request);
+      }
+      // If user found ..
+      const user = JSON.parse(rawUser) as User;
+      // .. skip if not an entra-user
+      if (user?.isEntraUser === false) {
+        return next.handle(request);
+      }
+      // .. otherwise don't skip
+      return super.intercept(request, next);
     }
-    return super.intercept(request, next);
+    return next.handle(request);
   }
 }
 
@@ -117,7 +136,7 @@ export class MsalSkipInterceptor
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: 'http://localhost:8888/home',
+          redirectUri: 'http://localhost:8888/auth',
           postLogoutRedirectUri: 'http://localhost:8888/login',
           navigateToLoginRequestUrl: false,
         },

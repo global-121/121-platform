@@ -7,13 +7,13 @@ import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
 
+export const USER_KEY = 'logged-in-user-portal';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   public redirectUrl: string;
   public isIframe: boolean;
-  private userKey = 'logged-in-user-portal';
   private msalCollectionKey = 'msal.account.keys';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
@@ -83,7 +83,7 @@ export class AuthService {
   }
 
   private getUserFromStorage(): User | null {
-    const rawUser = localStorage.getItem(this.userKey);
+    const rawUser = localStorage.getItem(USER_KEY);
 
     if (!rawUser) {
       return null;
@@ -114,7 +114,7 @@ export class AuthService {
       this.programsService.login(username, password).then(
         (response) => {
           if (response) {
-            localStorage.setItem(this.userKey, JSON.stringify(response));
+            localStorage.setItem(USER_KEY, JSON.stringify(response));
           }
 
           const user = this.getUserFromStorage();
@@ -144,17 +144,13 @@ export class AuthService {
 
   public async processAzureAuthSuccess(): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
-    console.log('userDto: ', userDto);
     this.processUserSignIn(userDto.user);
   }
 
   private processUserSignIn(userRO: any) {
-    localStorage.setItem(this.userKey, JSON.stringify(userRO));
-    // eslint-disable-next-line no-debugger
-    // debugger;
+    localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
-    // console.log('this.isLoggedIn(): ', this.isLoggedIn());
-    // this.router.navigate(['/', AppRoutes.home]);
+    this.router.navigate(['/', AppRoutes.home]);
   }
 
   public async setPassword(
@@ -174,16 +170,15 @@ export class AuthService {
   }
 
   public async logout() {
-    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(USER_KEY);
     this.authenticationState.next(null);
     const azureLocalStorageDataToClear = localStorage.getItem(
       this.msalCollectionKey,
     );
     if (azureLocalStorageDataToClear) {
       this.msalService.logoutRedirect();
-    } else {
-      await this.programsService.logout();
-      this.router.navigate(['/', AppRoutes.login]);
     }
+    await this.programsService.logout();
+    this.router.navigate(['/', AppRoutes.login]);
   }
 }

@@ -58,12 +58,7 @@ export class ProgramsServiceApiService {
       )
       .then((response) => {
         if (response) {
-          return {
-            username: response.username,
-            permissions: response.permissions,
-            expires: response.expires,
-            isAdmin: response.isAdmin,
-          };
+          return response;
         }
         return null;
       });

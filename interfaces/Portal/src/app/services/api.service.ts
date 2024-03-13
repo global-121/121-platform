@@ -8,6 +8,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { USER_KEY } from '../auth/auth.service';
 import InterfaceName from '../enums/interface-names.enum';
 import { User } from '../models/user.model';
 
@@ -15,7 +16,6 @@ import { User } from '../models/user.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private userKey = 'logged-in-user-portal';
   private isRateLimitErrorShown = false;
 
   constructor(private http: HttpClient) {}
@@ -262,7 +262,6 @@ export class ApiService {
   }
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
-    console.log('error: ', error);
     if (
       error.status === HttpStatusCode.TooManyRequests &&
       !this.isRateLimitErrorShown
@@ -276,10 +275,10 @@ export class ApiService {
       return of(error);
     }
     if (error.status === 401) {
-      // localStorage.removeItem(this.userKey);
-      // window.location.reload();
+      localStorage.removeItem(USER_KEY);
+      window.location.reload();
 
-      const rawUser = localStorage.getItem(this.userKey);
+      const rawUser = localStorage.getItem(USER_KEY);
       if (!rawUser) {
         return of(error);
       }
@@ -287,7 +286,7 @@ export class ApiService {
       const user: User = JSON.parse(rawUser);
       const expires = Date.parse(user.expires);
       if (expires < Date.now()) {
-        localStorage.removeItem(this.userKey);
+        localStorage.removeItem(USER_KEY);
         window.location.reload();
         return of('Token expired');
       }
