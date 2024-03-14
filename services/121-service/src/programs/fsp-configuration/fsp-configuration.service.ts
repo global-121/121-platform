@@ -58,9 +58,7 @@ export class ProgramFspConfigurationService {
     programFspConfiguration.programId = programId;
     programFspConfiguration.fspId = programFspConfigurationDto.fspId;
     programFspConfiguration.name = programFspConfigurationDto.name;
-    programFspConfiguration.value = this.formatInputValue(
-      programFspConfigurationDto.value,
-    );
+    programFspConfiguration.value = programFspConfigurationDto.value;
 
     try {
       const resProgramFspConfiguration =
@@ -98,33 +96,9 @@ export class ProgramFspConfigurationService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     result.name = updateProgramFspConfigurationDto.name;
-    result.value = this.formatInputValue(
-      updateProgramFspConfigurationDto.value,
-    );
+    result.value = updateProgramFspConfigurationDto.value;
     await this.programFspConfigurationRepository.save(result);
     return programFspConfigurationId;
-  }
-
-  private formatInputValue(value: string | string[]): string {
-    // check if value is an environment variable
-
-    let error = false;
-    if (Array.isArray(value)) {
-      for (const element of value) {
-        if (typeof element !== 'string') {
-          error = true;
-        }
-      }
-    } else if (typeof value !== 'string') {
-      error = true;
-    }
-    if (error) {
-      throw new HttpException(
-        'Invalid value type. Must be string or array of strings.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return Array.isArray(value) ? JSON.stringify(value) : value;
   }
 
   public async delete(

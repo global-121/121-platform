@@ -1,3 +1,4 @@
+import { isObject } from 'lodash';
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { CascadeDeleteEntity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
@@ -26,6 +27,29 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;
 
-  @Column()
-  public value: string;
+  @Column({
+    type: 'varchar',
+    transformer: {
+      to: (value: any) => {
+        if (Array.isArray(value) || isObject(value)) {
+          return JSON.stringify(value);
+        }
+
+        return value;
+      },
+      from: (value: any) => {
+        try {
+          const parsedValue = JSON.parse(value);
+          if (Array.isArray(parsedValue) || isObject(parsedValue)) {
+            return parsedValue;
+          }
+
+          return parsedValue.toString();
+        } catch (error) {
+          return value;
+        }
+      },
+    },
+  })
+  public value: string | string[] | Record<string, string>;
 }
