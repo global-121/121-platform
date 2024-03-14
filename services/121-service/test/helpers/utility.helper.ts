@@ -110,3 +110,22 @@ export async function removePermissionsFromRole(
     permissions: adjustedPermissions as PermissionEnum[],
   });
 }
+
+export async function azureLogin(username: string, password: string) {
+  const tokenEndpoint = `https://login.microsoftonline.com/`;
+  const tokenResponse = await request
+    .agent(tokenEndpoint)
+    .post(`${process.env.AZURE_ENTRA_TENANT_ID}/oauth2/v2.0/token`)
+    .type('form') // Sets 'Content-Type': 'application/x-www-form-urlencoded'
+    .send({
+      grant_type: 'password',
+      client_id: process.env.AZURE_ENTRA_CLIENT_ID,
+      client_secret: process.env.AZURE_CLIENT_SECRET,
+      scope: `api://${process.env.AZURE_ENTRA_CLIENT_ID}/User.read`,
+      username,
+      password,
+    });
+
+  const token = tokenResponse.body.access_token;
+  return token;
+}

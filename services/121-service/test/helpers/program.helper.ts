@@ -50,11 +50,34 @@ export async function postProgramQuestion(
   programQuestion: CreateProgramQuestionDto,
   programId: number,
   accessToken: string,
+  useAzureAuth: boolean = false,
 ): Promise<request.Response> {
-  return await getServer()
-    .post(`/programs/${programId}/program-questions`)
-    .set('Cookie', [accessToken])
-    .send(programQuestion);
+  if (useAzureAuth) {
+    return await getServer()
+      .post(`/programs/${programId}/program-questions`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(programQuestion);
+  } else {
+    return await getServer()
+      .post(`/programs/${programId}/program-questions`)
+      .set('Cookie', [accessToken])
+      .send(programQuestion);
+  }
+}
+
+export async function getAssignedPrograms(
+  accessToken: string,
+  useAzureAuth: boolean = false,
+): Promise<request.Response> {
+  if (useAzureAuth) {
+    return await getServer()
+      .get('/programs/assigned/all')
+      .set('Authorization', `Bearer ${accessToken}`);
+  } else {
+    return await getServer()
+      .get('/programs/assigned/all')
+      .set('Cookie', [accessToken]);
+  }
 }
 
 export async function postCustomAttribute(
