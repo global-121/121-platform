@@ -61,9 +61,15 @@ export class SelectFspComponent extends PersonalDirective implements OnInit {
   override async initNew() {
     this.conversationService.startLoading();
     // NOTE: we use this attribute being empty to avoid a new fsp-attribute, while this is a short-term feature only
-    this.fsps = this.program.financialServiceProviders.filter(
-      (fsp) => fsp.displayName,
-    );
+    this.fsps = this.program.financialServiceProviders.filter((fsp) => {
+      const supportedFsps = [
+        'Intersolve-voucher-whatsapp',
+        'Intersolve-voucher-paper',
+      ];
+
+      return supportedFsps.includes(fsp.fsp) && fsp.displayName;
+    });
+
     this.fsps.forEach(
       (fsp) => (fsp.displayName = this.translatableString.get(fsp.displayName)),
     );
