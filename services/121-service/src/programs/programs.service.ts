@@ -24,11 +24,11 @@ import {
 import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { overwriteProgramFspDisplayName } from './utils/overwrite-fsp-display-name.helper';
 @Injectable()
 export class ProgramService {

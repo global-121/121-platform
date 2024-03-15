@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
-import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
-import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import {
   FspConfigurationEnum,
   FspConfigurationMapping,
 } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
+import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
 @Injectable()
 export class ProgramFspConfigurationService {
