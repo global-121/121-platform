@@ -33,7 +33,7 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 ## Getting Started
 
-To set up a local development-environment:
+### Set up a local development-environment
 
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
@@ -41,11 +41,11 @@ To set up a local development-environment:
   - Install the version specified in the [`.node-version`](.node-version)-file.
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
 
+    - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
+
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
 
-    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows)
-
-    - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
+    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows))
 
 - Install Docker
 
@@ -61,6 +61,8 @@ To set up a local development-environment:
       - `wsl --set-default-version 2`
       - Check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
 
+### Set up repository and code
+
 With these tools in place you can checkout the code and start setting up:
 
     git clone https://github.com/global-121/121-platform.git
@@ -71,19 +73,13 @@ Navigate to the root folder of this repository:
 
 Then install the required version of Node.js and `npm`:
 
+- If you use FNM: `fnm use` (And follow the prompts)
+
 - If you use NVM
 
-  - On macOS/Linux:
+  - On macOS/Linux: `nvm install`
 
-        nvm install
-
-  - On Windows:
-
-         nvm install <version in .node-version>
-
-- If you use FNM:
-
-         fnm use
+  - On Windows: `nvm install <version in .node-version-file>`
 
 ---
 
@@ -97,7 +93,9 @@ Copy the centralized .env file
 
     cp .env.example .env
 
-Environment variables are explained in the comments of the .env.example, they should be set up prior to development
+Environment variables are explained in the comments of the [`.env.example`-file](./services/.env.example), some already have a value that is safe/good to use for development, some need to be unique/specific for your environment.
+
+Some variables are for credentials or tokens to access third-party services.
 
 ## Start Services
 
@@ -348,7 +346,8 @@ Most (development-)dependencies in this repository are monitored by the GitHub [
 The configuration of these updates is in [`.github/dependabot.yml`](../.github/dependabot.yml).  
 Unfortunately most individual dependencies are 'linked' to related dependencies that need to stay 'in sync'.
 
-Sheetjs is not monitored by Dependabot. Check the latest version of Sheetjs: [![Sheetjs latest version](https://img.shields.io/badge/dynamic/xml?url=https%3A%2f%2fgit.sheetjs.com%2fsheetjs%2fsheetjs%2ftags.rss&query=.%2f%2fchannel%2fitem%5B1%5D%2ftitle&logo=microsoftexcel&logoColor=white&label=sheetjs&color=lightgreen)](https://git.sheetjs.com/sheetjs/sheetjs/tags)
+> [!NOTE]  
+> `Sheetjs` is not monitored by Dependabot. Check the latest version of `Sheetjs`: [![`Sheetjs` latest version](https://img.shields.io/badge/dynamic/xml?url=https%3A%2f%2fgit.sheetjs.com%2fsheetjs%2fsheetjs%2ftags.rss&query=.%2f%2fchannel%2fitem%5B1%5D%2ftitle&logo=microsoftexcel&logoColor=white&label=sheetjs&color=lightgreen)](https://git.sheetjs.com/sheetjs/sheetjs/tags)
 
 Interface dependencies:
 
@@ -374,17 +373,19 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the `version`(-number) for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `main`-branch on GitHub.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `main`-branch and push this branch to GitHub
-- [ ] Given current setup of automatic deployments on release:  
-       Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
+- [ ] Create a `release`-branch ("`release/<version>`") from current `main`-branch (or other specific starting-point).
+  - Create on GitHub via: <https://github.com/global-121/121-platform/branches>
+  - Or create locally and push to upstream/origin.
+- [ ] Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
-  - [ ] Select the new `release/<version>`-branch
-  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (only if applicable)
-  - [ ] Publish the release on GitHub
+  - [ ] Select the `release/<version>`-branch
+  - [ ] Set the title of the release to `<version>`.  
+         Add a short description and/or link to relevant other documents (only if applicable)
+  - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
   - [ ] Check the deployed release on the staging environment
-  - [ ] Make any needed configuration changes (ENV-variables, etc.) on production-service(s)
-  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production
+  - [ ] Make any configuration changes (ENV-variables, etc.) on production-service(s)
+  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production (for each instance)
 
 ### Patch/Hotfix Checklist
 
@@ -393,11 +394,11 @@ This follows the same process as a regular release + deployment. With some small
 - Code does not need to be frozen. (As there is no active development on the release-branch)
 
 - Checkout the `release/<version>`-branch that needs the hotfix.
-- Create a new local branch on top of it (e.g. `release/<v0.x.1>`) and make the changes
+- Create a new local branch on top of it (e.g. `release/<v1.x.1>`) and make the changes
 - Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
-- Push this branch directly to the main/upstream repository, not to a personal fork.
+- Push this branch to the upstream/origin repository.
 - Create a new release (see above) and publish it.
-- Use the [manual deployment-workflows](.github/workflows/) to deploy to production
+- Use the [manual deployment-workflows](.github/workflows/) to deploy to production (to applicable instance(s))
 - After the hotfix-release, apply the same fix to the main-branch in a regular PR (by creating a PR from the hotfix-branch to `main`-branch)
 
 ---

@@ -26,7 +26,7 @@ See the [/features/](../features/)-directory in this repository.
 ### Offline features
 
 For some 'offline' features it is required to run them in a specific way (i.e. to enable their service-worker) locally.  
-See the related Angular-documentation: <https://v15.angular.io/guide/service-worker-getting-started#serving-with-http-server>
+See the related Angular-documentation: <https://v16.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
 To use it locally:
 
