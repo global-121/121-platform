@@ -7,7 +7,11 @@ import {
 import { Injectable } from '@angular/core';
 import { from, lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AuthService, CURRENT_USER_ENDPOINT_PATH, LOGIN_ENDPOINT_PATH } from '../auth/auth.service';
+import {
+  AuthService,
+  CURRENT_USER_ENDPOINT_PATH,
+  LOGIN_ENDPOINT_PATH,
+} from '../auth/auth.service';
 
 @Injectable()
 export class AzureSsoExpireInterceptor implements HttpInterceptor {

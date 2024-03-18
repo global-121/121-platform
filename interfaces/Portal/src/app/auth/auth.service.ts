@@ -108,6 +108,7 @@ export class AuthService {
       permissions: user.permissions,
       expires: user.expires,
       isAdmin: user.isAdmin,
+      isEntraUser: user.isEntraUser,
     };
   }
 
@@ -190,7 +191,7 @@ export class AuthService {
 
   async checkExpirationDate() {
     const user = this.getUserFromStorage();
-    if (user?.isEntraUser === true) {
+    if (user.isEntraUser === true) {
       const currentUser = this.msalService.instance.getAccountByUsername(
         user.username,
       );
