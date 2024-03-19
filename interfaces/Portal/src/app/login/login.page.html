@@ -186,22 +186,27 @@
                   expand="block"
                   [disabled]="!loginForm?.form?.valid"
                   class="auth-button"
-                  color="secondary"
+                  color="primary"
                 >
                   {{ 'page.login.form.submit.label'|translate }}
                 </ion-button>
               </div>
             </ng-container>
           </form>
-          <ion-button
-            *ngIf="showSsoLogin()"
-            expand="block"
-            class="auth-button"
-            color="secondary"
-            (click)="loginSso()"
-          >
-            {{ 'page.login.login-sso'|translate }}
-          </ion-button>
+          <ng-container *ngIf="showSsoLogin()">
+            <ion-label class="ion-margin-bottom"
+              >{{ 'page.login.sso.label'|translate }}</ion-label
+            >
+            <br /><br /><br />
+            <ion-button
+              expand="block"
+              class="auth-button"
+              color="primary"
+              (click)="loginSso()"
+            >
+              {{ 'page.login.sso.btn-text'|translate }}
+            </ion-button>
+          </ng-container>
         </div>
       </div>
     </ion-row>
