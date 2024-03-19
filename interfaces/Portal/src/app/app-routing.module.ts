@@ -40,6 +40,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: AppRoutes.craeteProgram,
+    loadChildren: () =>
+      import('./pages/create-program/create-program.module').then(
+        (m) => m.CreateProgramModule,
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'program/:id',
     children: [
       {
