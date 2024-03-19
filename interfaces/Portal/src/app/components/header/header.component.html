@@ -63,6 +63,13 @@
                 >
                   <ion-label>{{ 'header.help' | translate }}</ion-label>
                 </ion-item>
+                <ion-item
+                  *ngIf="isAdmin"
+                  lines="full"
+                  [routerLink]="['/', appRoute.createProgram]"
+                >
+                  <ion-label>Create Program</ion-label>
+                </ion-item>
               </ion-list>
             </ion-content>
           </ng-template>

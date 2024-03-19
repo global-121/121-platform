@@ -3,41 +3,34 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit, Component } from '@angular/core';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import Permission from 'src/app/auth/permission.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-create-program',
   templateUrl: './create-program.page.html',
   styleUrls: ['./create-program.page.scss'],
 })
-export class CreateProgramPage implements OnInit {
-  public programId = this.route.snapshot.params.id;
-  public program: Program;
-  public canViewMetrics: boolean;
-
+export class CreateProgramPage implements AfterViewInit {
   public koboTokenValue = '';
   public koboAssetIdValue = '';
 
+  public isAdmin: boolean;
+
   constructor(
-    private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
     private http: HttpClient,
   ) {}
 
-  async ngOnInit() {
-    this.program = await this.programsService.getProgramById(this.programId);
-
-    this.canViewMetrics = this.authService.hasPermission(
-      this.programId,
-      Permission.ProgramMetricsREAD,
-    );
+  async ngAfterViewInit() {
+    this.authService.authenticationState$.subscribe((user: User | null) => {
+      this.isAdmin = user?.isAdmin;
+    });
   }
 
   public async createProgram() {
