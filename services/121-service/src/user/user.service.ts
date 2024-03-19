@@ -312,14 +312,16 @@ export class UserService {
       ],
     });
     if (!user) {
-      const errors = { User: ' not found' };
+      const errors = { User: `user with userId ${userId} not found` };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
     if (!program) {
-      const errors = { Program: ' not found' };
+      const errors = {
+        Program: `program with programId ${programId} not found`,
+      };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -538,6 +540,7 @@ export class UserService {
       permissions,
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
+      lastLogin: user.lastLogin,
     };
     return { user: userRO };
   }
@@ -800,5 +803,46 @@ export class UserService {
       (a) => a.programId === programId,
     );
     return assignment.scope;
+  }
+
+  public async getUserIdFromRequest(req: any): Promise<number> {
+    // A request is typed as any from the NestJS framework
+    const headerKey = 'x-121-interface';
+    const originInterface = req.headers[headerKey];
+    let token;
+    if (req.cookies) {
+      if (
+        originInterface === InterfaceNames.portal &&
+        req.cookies[CookieNames.portal]
+      ) {
+        token = req.cookies[CookieNames.portal];
+      } else if (
+        originInterface === InterfaceNames.awApp &&
+        req.cookies[CookieNames.awApp]
+      ) {
+        token = req.cookies[CookieNames.awApp];
+      } else if (
+        originInterface === InterfaceNames.paApp &&
+        req.cookies[CookieNames.paApp]
+      ) {
+        token = req.cookies[CookieNames.paApp];
+      } else if (!originInterface && req.cookies[CookieNames.general]) {
+        token = req.cookies[CookieNames.general];
+      } else {
+        token = null;
+      }
+    }
+
+    if (token) {
+      // username/password user
+      const decoded = jwt.verify(token, process.env.SECRETS_121_SERVICE_SECRET);
+      return decoded?.['id'];
+    } else {
+      // entra user
+      const token = req.headers.authorization.split(' ')[1].split('.')[1];
+      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+      const user = await this.findByUsernameOrThrow(decoded.email);
+      return user?.user.id;
+    }
   }
 }

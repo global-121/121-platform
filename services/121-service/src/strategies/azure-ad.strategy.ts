@@ -85,6 +85,20 @@ export class AzureAdStrategy
           isEntraUser: true,
         });
       }
+      // Update last login only once per day (instead of on every request)
+      const today = new Date();
+      const lastLogin = user.user.lastLogin;
+      if (
+        !lastLogin ||
+        today.getDate() !== lastLogin.getDate() ||
+        today.getMonth() !== lastLogin.getMonth() ||
+        today.getFullYear() !== lastLogin.getFullYear()
+      ) {
+        await this.userService.updateUser({
+          id: user.user.id,
+          lastLogin: new Date(),
+        });
+      }
     } catch (error: Error | unknown) {
       if (
         error instanceof HttpException &&
