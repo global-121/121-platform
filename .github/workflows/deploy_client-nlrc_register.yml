@@ -4,6 +4,7 @@ name: 'Deploy [NLRC] Interface: Register (PA)'
 
 env:
   workingDirectory: interfaces/PA-App
+  redirectTarget: https://www.rodekruis.nl/nieuwsbericht/hulp-nodig-de-rode-kruis-hulplijn-staat-voor-je-klaar/
 
 permissions:
   actions: read
@@ -21,26 +22,32 @@ jobs:
     runs-on: ubuntu-latest
     environment: 'client-nlrc'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Prepare output
+        run: 'mkdir www'
 
-      - name: Build Interface
-        id: build
-        uses: ./.github/actions/build-interface
-        with:
-          interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////ACgcrgCLRiEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzEREREREREREREREREREREREREREREREREREREREREREiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
-          envContentSecurityPolicy: >-
-            img-src 'self' data: ;
-            connect-src 'self' https://nlrc.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
-            form-action https://nlrc.121.global;
-        env:
-          NG_ENV_NAME: ''
-          NG_URL_121_SERVICE_API: 'https://nlrc.121.global/api'
-          NG_AI_IKEY: 'b6c16596-ecd4-4d3d-a639-2e542ce0d980'
-          NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=b6c16596-ecd4-4d3d-a639-2e542ce0d980;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+      - name: 'Create redirect `/`'
+        run: |-
+          cat <<EOF > www/index.html
+          <!doctype html>
+          <title>Redirecting...</title>
+          <meta http-equiv="refresh" content="1;url=${{ env.redirectTarget }}">
+          <a href="${{ env.redirectTarget }}">Site moved, please update bookmarks/links.</a>
+          EOF
+
+      - name: Create config
+        run: |
+          cat <<EOF > staticwebapp.config.json
+          {
+          "routes": [
+            { "route": "/", "redirect": "${{ env.redirectTarget }}", "statusCode": 302 }
+          ],
+          "responseOverrides": {
+            "404": { "redirect": "/" }
+          }
+          }
+          EOF
+
+          cat staticwebapp.config.json
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
@@ -51,13 +58,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_POND_0B5AF0903 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
-          config_file_location: '${{ env.workingDirectory }}/'
-          app_location: '${{ env.workingDirectory }}/www'
+          config_file_location: './'
+          app_location: './www'
           output_location: ''
           skip_app_build: true
           skip_api_build: true
 
       - name: Finish
         run: |
-          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
