@@ -4,6 +4,7 @@ import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
 import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { UserType } from '../user/user-type-enum';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventLogOptionsDto } from './dto/event-log-options.dto';
@@ -100,20 +101,19 @@ export class EventsService {
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
 
-    let userId = null;
-
-    if (this.request.userId) {
-      const user = await this.userService.findById(this.request.userId);
-
-      if (user && user.userType === 'aidWorker') {
-        userId = this.request.userId;
+    let requestUserId = this.request.user['id'];
+    let userIdToStore = null;
+    if (requestUserId) {
+      const user = await this.userService.findById(requestUserId);
+      if (user && user.userType === UserType.aidWorker) {
+        userIdToStore = requestUserId;
       }
     }
 
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      this.request.user['id'],
+      userIdToStore,
       eventLogOptions?.registrationAttributes,
     );
 
