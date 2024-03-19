@@ -101,7 +101,7 @@ export class EventsService {
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
 
-    let requestUserId = this.request.user['id'];
+    const requestUserId = this.request.user['id'];
     let userIdToStore = null;
     if (requestUserId) {
       const user = await this.userService.findById(requestUserId);
