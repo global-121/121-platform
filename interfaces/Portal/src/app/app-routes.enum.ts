@@ -5,5 +5,5 @@ export enum AppRoutes {
   help = 'help',
   iframe = 'iframe',
   users = 'users',
-  craeteProgram = 'create-program',
+  createProgram = 'create-program',
 }
