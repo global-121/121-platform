@@ -57,14 +57,6 @@ export async function postProgramQuestion(
     .send(programQuestion);
 }
 
-export async function getAssignedPrograms(
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .get('/programs/assigned/all')
-    .set('Cookie', [accessToken]);
-}
-
 export async function postCustomAttribute(
   customAttribute: CreateProgramCustomAttributeDto,
   programId: number,
