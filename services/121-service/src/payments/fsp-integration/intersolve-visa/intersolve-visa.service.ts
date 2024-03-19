@@ -463,9 +463,9 @@ export class IntersolveVisaService
         visaCustomer.visaWallets[0],
       );
 
-      const createDebitCardResultStatus =
-        createDebitCardResult.status >= 200 &&
-        createDebitCardResult.status < 300;
+      const createDebitCardResultStatus = this.isSuccessResponseStatus(
+        createDebitCardResult.status,
+      );
       // error or success: set transaction result either way
       paTransactionResult.status = createDebitCardResultStatus
         ? StatusEnum.success
@@ -945,7 +945,7 @@ export class IntersolveVisaService
       block,
     );
     if (
-      result.status === 204 ||
+      this.isSuccessResponseStatus(result.status) ||
       (result.status === 405 &&
         ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
           result.data?.code,
@@ -1281,12 +1281,7 @@ export class IntersolveVisaService
       paymentDetails[0],
       newWallet,
     );
-    if (
-      !(
-        createDebitCardResult.status >= 200 &&
-        createDebitCardResult.status < 300
-      )
-    ) {
+    if (!this.isSuccessResponseStatus(createDebitCardResult.status)) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
@@ -1383,5 +1378,9 @@ export class IntersolveVisaService
       .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();
     return count > 0;
+  }
+
+  private isSuccessResponseStatus(status: number): boolean {
+    return status >= 200 && status < 300;
   }
 }
