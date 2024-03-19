@@ -7,6 +7,7 @@ export interface UserData {
   permissions: UserPermissions;
   isAdmin?: boolean;
   isEntraUser?: boolean;
+  lastLogin?: Date;
 }
 
 export interface UserRO {

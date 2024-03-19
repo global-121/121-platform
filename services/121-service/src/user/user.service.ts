@@ -538,6 +538,7 @@ export class UserService {
       permissions,
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
+      lastLogin: user.lastLogin,
     };
     return { user: userRO };
   }

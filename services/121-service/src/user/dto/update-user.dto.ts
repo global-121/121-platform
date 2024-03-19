@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { LoginUserDto } from './login-user.dto';
 
 export class UpdateUserPasswordDto extends LoginUserDto {
@@ -12,7 +12,12 @@ export class UpdateUserDto {
   @ApiProperty({ example: 1 })
   @IsNotEmpty()
   public readonly id: number;
+
   @ApiProperty({ example: true })
-  @IsNotEmpty()
-  public readonly isEntraUser: boolean;
+  @IsOptional()
+  public readonly isEntraUser?: boolean;
+
+  @ApiProperty({ example: new Date() })
+  @IsOptional()
+  public readonly lastLogin?: Date;
 }
