@@ -22,7 +22,6 @@ export class CreateProgramPage implements OnInit {
   public canViewMetrics: boolean;
 
   public koboTokenValue = '';
-
   public koboAssetIdValue = '';
 
   constructor(
@@ -42,15 +41,6 @@ export class CreateProgramPage implements OnInit {
   }
 
   public async createProgram() {
-    console.log(
-      '🚀 ~ CreateProgramPage ~ koboTokenValue:',
-      this.koboTokenValue,
-    );
-    console.log(
-      '🚀 ~ CreateProgramPage ~ koboAssetIdValue:',
-      this.koboAssetIdValue,
-    );
-
     const url = 'https://kobo-connect.azurewebsites.net/121-program';
 
     const httpHeaders: HttpHeaders = new HttpHeaders({
@@ -58,7 +48,7 @@ export class CreateProgramPage implements OnInit {
       koboasset: this.koboAssetIdValue,
     });
 
-    const res = await new Promise((resolve, reject) =>
+    const res: Program = await new Promise((resolve, reject) =>
       this.http
         .get(url, { headers: httpHeaders })
         .pipe(
@@ -79,7 +69,12 @@ export class CreateProgramPage implements OnInit {
         })
         .catch((err) => reject(err)),
     );
-    console.log('🚀 ~ CreateProgramPage ~ createProgram ~ res:', res);
+
+    if (!res) {
+      return;
+    }
+
+    this.programsService.createProgram(res);
   }
 
   public disableCreateProgramButton(): boolean {
