@@ -9,6 +9,7 @@ import { Program } from 'src/app/models/program.model';
 import { User } from 'src/app/models/user.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { environment } from '../../../environments/environment';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { UserStateComponent } from '../user-state/user-state.component';
 
@@ -40,6 +41,8 @@ export class HeaderComponent implements OnInit {
   private program: Program;
   public subtitle: string;
   public isAdmin?: boolean;
+
+  public isCreateProgramEnabled = environment.create_program_enable;
 
   constructor(
     private route: ActivatedRoute,

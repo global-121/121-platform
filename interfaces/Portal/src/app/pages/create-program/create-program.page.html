@@ -1,33 +1,51 @@
 <app-header [title]="'Create Program'"></app-header>
 <ion-content class="ion-padding">
-  <div *ngIf="!isAdmin">You don't have the permission to create a program.</div>
-
-  <div
-    *ngIf="isAdmin"
-    style="width: 30%"
-    class="ion-padding"
+  <ng-container *ngIf="!isCreateProgramEnabled"
+    >Program creation is not enabled</ng-container
   >
-    <ion-input
-      class="ion-margin-bottom"
-      label="Kobo Token"
-      labelPlacement="stacked"
-      fill="outline"
-      [(ngModel)]="koboTokenValue"
-    ></ion-input>
-    <ion-input
-      class="ion-margin-bottom"
-      label="Kobo Asset ID"
-      labelPlacement="stacked"
-      fill="outline"
-      [(ngModel)]="koboAssetIdValue"
-    ></ion-input>
-    <div class="ion-text-right">
-      <ion-button
-        [disabled]="disableCreateProgramButton()"
-        class="ion-margin-bottom"
-        (click)="createProgram()"
-        >Create Program
-      </ion-button>
+  <ng-container *ngIf="isCreateProgramEnabled">
+    <div *ngIf="!isAdmin">
+      You don't have the permission to create a program.
     </div>
-  </div>
+
+    <div
+      *ngIf="isAdmin"
+      style="width: 30%"
+      class="ion-padding"
+    >
+      <ion-input
+        class="ion-margin-bottom"
+        label="Kobo Token"
+        labelPlacement="stacked"
+        fill="outline"
+        [(ngModel)]="koboTokenValue"
+      ></ion-input>
+      <ion-input
+        class="ion-margin-bottom"
+        label="Kobo Asset ID"
+        labelPlacement="stacked"
+        fill="outline"
+        [(ngModel)]="koboAssetIdValue"
+      ></ion-input>
+      <div class="ion-text-right">
+        <ion-button
+          [disabled]="disableCreateProgramButton()"
+          class="ion-margin-bottom"
+          (click)="createProgram()"
+          >Create Program
+          <ion-spinner
+            *ngIf="inProgress"
+            class="ion-margin-start"
+            name="circular"
+          ></ion-spinner>
+        </ion-button>
+      </div>
+    </div>
+  </ng-container>
 </ion-content>
+<ion-alert
+  [isOpen]="isAlertOpen"
+  header="Create Program"
+  [message]="alertMessage"
+  (didDismiss)="dismissAlert()"
+></ion-alert>

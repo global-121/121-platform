@@ -6,8 +6,9 @@ import {
 import { AfterViewInit, Component } from '@angular/core';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from '../../../environments/environment';
+import { Program } from '../../models/program.model';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -21,6 +22,14 @@ export class CreateProgramPage implements AfterViewInit {
 
   public isAdmin: boolean;
 
+  public isAlertOpen = false;
+  public alertMessage: string;
+
+  public inProgress = false;
+
+  public isCreateProgramEnabled = environment.create_program_enable;
+  public createProgramEndpoint = environment.create_program_endpoint;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
@@ -31,10 +40,11 @@ export class CreateProgramPage implements AfterViewInit {
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isAdmin = user?.isAdmin;
     });
+
   }
 
   public async createProgram() {
-    const url = 'https://kobo-connect.azurewebsites.net/121-program';
+    this.inProgress = true;
 
     const httpHeaders: HttpHeaders = new HttpHeaders({
       kobotoken: this.koboTokenValue,
@@ -43,10 +53,14 @@ export class CreateProgramPage implements AfterViewInit {
 
     const res: Program = await new Promise((resolve, reject) =>
       this.http
-        .get(url, { headers: httpHeaders })
+        .get(this.createProgramEndpoint, { headers: httpHeaders })
         .pipe(
           tap((response) =>
-            console.log(`ApiService GET: ${url}`, '\nResponse:', response),
+            console.log(
+              `ApiService GET: ${this.createProgramEndpoint}`,
+              '\nResponse:',
+              response,
+            ),
           ),
           catchError(
             (error: HttpErrorResponse): Observable<any> =>
@@ -56,6 +70,9 @@ export class CreateProgramPage implements AfterViewInit {
         .toPromise()
         .then((response) => {
           if (response && response.error) {
+            this.openAlert(
+              'There was a problem in fetching the program from Kobo',
+            );
             throw response;
           }
           return resolve(response);
@@ -63,11 +80,13 @@ export class CreateProgramPage implements AfterViewInit {
         .catch((err) => reject(err)),
     );
 
-    if (!res) {
-      return;
+    try {
+      this.programsService.createProgram(res);
+      this.openAlert('Program created successfully!');
+    } catch (error) {
+      console.error(error);
+      this.openAlert('There was a problem in creating the program');
     }
-
-    this.programsService.createProgram(res);
   }
 
   public disableCreateProgramButton(): boolean {
@@ -87,5 +106,21 @@ export class CreateProgramPage implements AfterViewInit {
     console.error(error);
 
     return of(error);
+  }
+
+  private openAlert(message: string) {
+    this.alertMessage = message;
+    this.isAlertOpen = true;
+    this.inProgress = false;
+  }
+
+  public dismissAlert() {
+    this.isAlertOpen = false;
+    this.clearFields();
+  }
+
+  public clearFields() {
+    this.koboTokenValue = '';
+    this.koboAssetIdValue = '';
   }
 }
