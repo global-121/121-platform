@@ -10,6 +10,8 @@ import Permission from './permission.enum';
 export const USER_KEY = 'logged-in-user-portal';
 export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
 export const LOGIN_ENDPOINT_PATH = '/users/login';
+export const LOGOUT_ENDPOINT_PATH = '/users/logout';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -182,6 +184,7 @@ export class AuthService {
         user.username,
       );
       this.msalService.logoutRedirect({ account: currentUser });
+      localStorage.removeItem(this.msalCollectionKey);
     }
     localStorage.removeItem(USER_KEY);
     this.authenticationState.next(null);

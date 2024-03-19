@@ -249,6 +249,7 @@ export class UserController {
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
