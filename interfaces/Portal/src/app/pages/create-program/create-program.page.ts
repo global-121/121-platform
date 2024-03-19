@@ -1,5 +1,11 @@
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { Program } from 'src/app/models/program.model';
@@ -23,6 +29,7 @@ export class CreateProgramPage implements OnInit {
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
+    private http: HttpClient,
   ) {}
 
   async ngOnInit() {
@@ -43,6 +50,36 @@ export class CreateProgramPage implements OnInit {
       '🚀 ~ CreateProgramPage ~ koboAssetIdValue:',
       this.koboAssetIdValue,
     );
+
+    const url = 'https://kobo-connect.azurewebsites.net/121-program';
+
+    const httpHeaders: HttpHeaders = new HttpHeaders({
+      kobotoken: this.koboTokenValue,
+      koboasset: this.koboAssetIdValue,
+    });
+
+    const res = await new Promise((resolve, reject) =>
+      this.http
+        .get(url, { headers: httpHeaders })
+        .pipe(
+          tap((response) =>
+            console.log(`ApiService GET: ${url}`, '\nResponse:', response),
+          ),
+          catchError(
+            (error: HttpErrorResponse): Observable<any> =>
+              this.handleError(error),
+          ),
+        )
+        .toPromise()
+        .then((response) => {
+          if (response && response.error) {
+            throw response;
+          }
+          return resolve(response);
+        })
+        .catch((err) => reject(err)),
+    );
+    console.log('🚀 ~ CreateProgramPage ~ createProgram ~ res:', res);
   }
 
   public disableCreateProgramButton(): boolean {
@@ -56,5 +93,11 @@ export class CreateProgramPage implements OnInit {
     }
 
     return false;
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error(error);
+
+    return of(error);
   }
 }
