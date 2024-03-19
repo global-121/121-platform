@@ -463,20 +463,19 @@ export class IntersolveVisaService
         visaCustomer.visaWallets[0],
       );
 
+      const createDebitCardResultStatus =
+        createDebitCardResult.status >= 200 &&
+        createDebitCardResult.status < 300;
       // error or success: set transaction result either way
-      paTransactionResult.status =
-        createDebitCardResult.status === 200
-          ? StatusEnum.success
-          : StatusEnum.error;
-      paTransactionResult.message =
-        createDebitCardResult.status === 200
-          ? null
-          : `CREATE DEBIT CARD ERROR: ${
-              this.intersolveErrorToMessage(
-                createDebitCardResult.data?.errors,
-              ) ||
-              `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
-            }`;
+      paTransactionResult.status = createDebitCardResultStatus
+        ? StatusEnum.success
+        : StatusEnum.error;
+      paTransactionResult.message = createDebitCardResultStatus
+        ? null
+        : `CREATE DEBIT CARD ERROR: ${
+            this.intersolveErrorToMessage(createDebitCardResult.data?.errors) ||
+            `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
+          }`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
@@ -1282,7 +1281,12 @@ export class IntersolveVisaService
       paymentDetails[0],
       newWallet,
     );
-    if (createDebitCardResult.status !== 200) {
+    if (
+      !(
+        createDebitCardResult.status >= 200 &&
+        createDebitCardResult.status < 300
+      )
+    ) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
