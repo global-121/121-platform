@@ -3,6 +3,7 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
@@ -101,7 +102,7 @@ describe('EventsService', () => {
     userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
-    eventsService['request']['userId'] = 2;
+    eventsService['request']['user']['id'] = 2;
 
     jest
       .spyOn(eventScopedRepository, 'find')
@@ -109,7 +110,7 @@ describe('EventsService', () => {
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
       id: 2,
-      userType: 'aidWorker',
+      userType: UserType.aidWorker,
       username: 'testUser',
       password: 'dummyPassword',
       hashPassword: async () => 'hashedPasswordDummy',
