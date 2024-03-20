@@ -27,8 +27,8 @@ export class CreateProgramPage implements AfterViewInit {
 
   public inProgress = false;
 
-  public isCreateProgramEnabled = environment.create_program_enable;
   public createProgramEndpoint = environment.create_program_endpoint;
+  public isCreateProgramEnabled = !!environment.create_program_endpoint;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -40,7 +40,6 @@ export class CreateProgramPage implements AfterViewInit {
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isAdmin = user?.isAdmin;
     });
-
   }
 
   public async createProgram() {

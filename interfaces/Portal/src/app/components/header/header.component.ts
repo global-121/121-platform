@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
   public subtitle: string;
   public isAdmin?: boolean;
 
-  public isCreateProgramEnabled = environment.create_program_enable;
+  public isCreateProgramEnabled = !!environment.create_program_endpoint;
 
   constructor(
     private route: ActivatedRoute,
