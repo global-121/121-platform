@@ -31,7 +31,7 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envContentSecurityPolicy: >-
-            connect-src 'self' https://staging.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            connect-src 'self' https://staging.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
             form-action https://staging.121.global;
             frame-src blob: 'self' https://app.powerbi.com;
             frame-ancestors 'self' https://flex.twilio.com;
@@ -42,9 +42,10 @@ jobs:
           NG_AI_IKEY: '27eaf00e-92e5-46b7-8d0b-1b413db898e7'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=27eaf00e-92e5-46b7-8d0b-1b413db898e7;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
-          USE_SSO_AZURE_ENTRA: ${{ env.USE_SSO_AZURE_ENTRA }}
-          AZURE_ENTRA_CLIENT_ID: ${{ env.AZURE_ENTRA_CLIENT_ID }}
-          AZURE_ENTRA_TENANT_ID: ${{ env.AZURE_ENTRA_TENANT_ID }}
+          USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
+          AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
+          AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
+          URL_PORTAL: 'https://portal.staging.121.global'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
