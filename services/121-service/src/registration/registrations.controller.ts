@@ -48,7 +48,6 @@ import {
 } from './const/filter-operation.const';
 import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
@@ -118,25 +117,26 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({
-    summary: 'Set custom data for registration (Used by Person Affected)',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Custom data set for registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/custom-data')
-  public async addCustomData(
-    @Body(new ParseArrayPipe({ items: CustomDataDto }))
-    customDataArray: CustomDataDto[],
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationsService.addRegistrationDataBulk(
-      customDataArray,
-    );
-  }
+  // NOTE: only used from PA-app. Removing this somehow fixes an unrelated unit-test.
+  // @ApiTags('programs/registrations')
+  // @AuthenticatedUser()
+  // @ApiOperation({
+  //   summary: 'Set custom data for registration (Used by Person Affected)',
+  // })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'Custom data set for registration',
+  // })
+  // @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // @Post('programs/:programId/registrations/custom-data')
+  // public async addCustomData(
+  //   @Body(new ParseArrayPipe({ items: CustomDataDto }))
+  //   customDataArray: CustomDataDto[],
+  // ): Promise<RegistrationEntity[]> {
+  //   return await this.registrationsService.addRegistrationDataBulk(
+  //     customDataArray,
+  //   );
+  // }
 
   @ApiTags('programs/registrations')
   @AuthenticatedUser()

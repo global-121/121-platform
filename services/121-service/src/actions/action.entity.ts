@@ -1,5 +1,4 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-
 import { Base121AuditedEntity } from '../base-audited.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramEntity } from '../programs/program.entity';
