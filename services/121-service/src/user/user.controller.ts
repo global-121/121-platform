@@ -22,17 +22,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { DEBUG } from '../config';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { CookieNames } from '../shared/enum/cookie.enums';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from './dto/assign-aw-to-program.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -45,7 +42,7 @@ import {
 import { PermissionEnum } from './enum/permission.enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { tokenExpirationDays, UserService } from './user.service';
+import { UserService } from './user.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -153,48 +150,6 @@ export class UserController {
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
     return this.userService.createAidWorker(userData);
-  }
-
-  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Person Affected user' })
-  @ApiResponse({
-    status: 201,
-    description: 'Created new Person Affected user',
-  })
-  @Post('users/person-affected')
-  public async createPA(
-    @Body() userData: CreateUserPersonAffectedDto,
-    @Res() res,
-    @Req() req,
-  ): Promise<UserRO> {
-    let sameSite = 'None';
-    let secure = true;
-
-    if (DEBUG) {
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
-      sameSite = serviceWorkerDebug ? 'None' : 'Lax';
-      secure = serviceWorkerDebug;
-    }
-
-    try {
-      const user = await this.userService.createPersonAffected(userData);
-      const exp = new Date(Date.now() + tokenExpirationDays * 24 * 3600000);
-      res.cookie(CookieNames.paApp, user.user.token, {
-        sameSite: sameSite,
-        secure: secure,
-        expires: exp,
-        httpOnly: true,
-      });
-      return res.send({
-        username: user.user.username,
-        permissions: user.user.permissions,
-        expires: exp,
-      });
-    } catch (error) {
-      throw error;
-    }
   }
 
   @Throttle(

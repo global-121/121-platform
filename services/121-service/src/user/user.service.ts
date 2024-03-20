@@ -535,7 +535,6 @@ export class UserService {
 
     const userRO = {
       id: user.id,
-      token: this.generateJWT(user),
       username: user.username,
       permissions,
       isAdmin: user.admin,
@@ -810,39 +809,37 @@ export class UserService {
     const headerKey = 'x-121-interface';
     const originInterface = req.headers[headerKey];
     let token;
-    if (req.cookies) {
-      if (
-        originInterface === InterfaceNames.portal &&
-        req.cookies[CookieNames.portal]
-      ) {
-        token = req.cookies[CookieNames.portal];
-      } else if (
-        originInterface === InterfaceNames.awApp &&
-        req.cookies[CookieNames.awApp]
-      ) {
-        token = req.cookies[CookieNames.awApp];
-      } else if (
-        originInterface === InterfaceNames.paApp &&
-        req.cookies[CookieNames.paApp]
-      ) {
-        token = req.cookies[CookieNames.paApp];
-      } else if (!originInterface && req.cookies[CookieNames.general]) {
-        token = req.cookies[CookieNames.general];
-      } else {
-        token = null;
-      }
+    if (
+      originInterface === InterfaceNames.portal &&
+      req.cookies?.[CookieNames.portal]
+    ) {
+      token = req.cookies[CookieNames.portal];
+    } else if (req.headers.authorization) {
+      const azureToken = req.headers.authorization.split(' ')[1];
+      const payload = azureToken.split('.')[1];
+      const decoded = JSON.parse(Buffer.from(payload, 'base64').toString());
+      const user = await this.findByUsernameOrThrow(decoded.email);
+      return user?.user.id;
+    } else if (
+      originInterface === InterfaceNames.awApp &&
+      req.cookies?.[CookieNames.awApp]
+    ) {
+      token = req.cookies[CookieNames.awApp];
+    } else if (
+      originInterface === InterfaceNames.paApp &&
+      req.cookies?.[CookieNames.paApp]
+    ) {
+      token = req.cookies[CookieNames.paApp];
+    } else if (!originInterface && req.cookies?.[CookieNames.general]) {
+      token = req.cookies[CookieNames.general];
+    } else {
+      token = null;
     }
 
     if (token) {
       // username/password user
       const decoded = jwt.verify(token, process.env.SECRETS_121_SERVICE_SECRET);
       return decoded?.['id'];
-    } else {
-      // entra user
-      const token = req.headers.authorization.split(' ')[1].split('.')[1];
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-      const user = await this.findByUsernameOrThrow(decoded.email);
-      return user?.user.id;
     }
   }
 }
