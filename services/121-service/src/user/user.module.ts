@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GuardsService } from '../guards/guards.service';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { PermissionEntity } from './permissions.entity';
@@ -19,8 +18,8 @@ import { UserService } from './user.service';
       PermissionEntity,
     ]),
   ],
-  providers: [UserService, GuardsService],
+  providers: [UserService],
   controllers: [UserController],
-  exports: [UserService, GuardsService],
+  exports: [UserService],
 })
 export class UserModule {}

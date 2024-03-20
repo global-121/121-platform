@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,16 +15,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { ActionType } from './action.entity';
 import { ActionService } from './action.service';
 import { ActionReturnDto } from './dto/action-return.dto';
 import { ActionDto } from './dto/action.dto';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/actions')
 @Controller()
 export class ActionController {
@@ -32,7 +32,7 @@ export class ActionController {
     this.actionService = actionService;
   }
 
-  @Permissions(PermissionEnum.ActionREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ActionREAD] })
   @ApiOperation({ summary: 'Get latest action of given action-type ' })
   @ApiParam({
     name: 'programId',
@@ -57,7 +57,7 @@ export class ActionController {
   }
 
   // TODO: this endpoint is not used currently, remove it?
-  @Permissions(PermissionEnum.ActionCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ActionCREATE] })
   @ApiOperation({ summary: 'Save action by id' })
   @ApiResponse({
     status: 201,
@@ -71,10 +71,11 @@ export class ActionController {
   })
   @Post('programs/:programId/actions')
   public async saveAction(
-    @User('id') userId: number,
+    @Req() req: any,
     @Body() actionData: ActionDto,
     @Param('programId') programId,
   ): Promise<ActionReturnDto> {
+    const userId = req.user.id;
     return await this.actionService.postAction(
       userId,
       Number(programId),

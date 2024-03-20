@@ -11,7 +11,6 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { ProgramEntity } from '../programs/program.entity';
 import { CookieNames } from './../shared/enum/cookie.enums';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import { LoginUserDto, UpdateUserDto } from './dto';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -23,6 +22,8 @@ import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.d
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
@@ -58,17 +59,8 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const username = userEntity.username;
-    const permissions = await this.buildPermissionsObject(userEntity.id);
     const token = this.generateJWT(userEntity);
-    const user: UserRO = {
-      user: {
-        username,
-        token,
-        permissions,
-        isAdmin: userEntity.admin,
-      },
-    };
+    const user = await this.buildUserRO(userEntity);
 
     const cookieSettings = this.buildCookieByRequest(token);
     userEntity.lastLogin = new Date();
@@ -76,7 +68,11 @@ export class UserService {
     return { userRo: user, cookieSettings: cookieSettings, token: token };
   }
 
-  public async canActivate(permissions, programId, userId): Promise<boolean> {
+  public async canActivate(
+    permissions: PermissionEnum[],
+    programId: number,
+    userId: number,
+  ): Promise<boolean> {
     const results = await this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.programAssignments', 'assignment')
@@ -155,7 +151,7 @@ export class UserService {
       user.programAssignments.length === 0
     ) {
       const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return user;
   }
@@ -243,6 +239,7 @@ export class UserService {
     username: string,
     password: string,
     userType: UserType,
+    isEntraUser = false,
   ): Promise<UserRO> {
     // check uniqueness of email
     const qb = this.userRepository
@@ -264,11 +261,12 @@ export class UserService {
     newUser.username = username;
     newUser.password = password;
     newUser.userType = userType;
+    newUser.isEntraUser = isEntraUser;
     const savedUser = await this.userRepository.save(newUser);
     return await this.buildUserRO(savedUser);
   }
 
-  public async update(dto: UpdateUserDto): Promise<UserRO> {
+  public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
     const userEntity = await this.matchPassword(dto);
 
     if (!userEntity) {
@@ -287,6 +285,19 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
+  public async updateUser(userData: UpdateUserDto): Promise<UserRO> {
+    const userEntity = await this.findById(userData.id);
+    if (!userEntity) {
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+    for (const key of Object.keys(userData)) {
+      userEntity[key] = userData[key];
+    }
+
+    await this.userRepository.save(userEntity);
+    return await this.buildUserRO(userEntity);
+  }
+
   public async assignAidworkerToProgram(
     programId: number,
     userId: number,
@@ -301,14 +312,16 @@ export class UserService {
       ],
     });
     if (!user) {
-      const errors = { User: ' not found' };
+      const errors = { User: `user with userId ${userId} not found` };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
     if (!program) {
-      const errors = { Program: ' not found' };
+      const errors = {
+        Program: `program with programId ${programId} not found`,
+      };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -460,7 +473,7 @@ export class UserService {
     return user;
   }
 
-  public async findByUsername(username: string): Promise<UserRO> {
+  public async findByUsernameOrThrow(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
       relations: [
@@ -525,6 +538,9 @@ export class UserService {
       token: this.generateJWT(user),
       username: user.username,
       permissions,
+      isAdmin: user.admin,
+      isEntraUser: user.isEntraUser,
+      lastLogin: user.lastLogin,
     };
     return { user: userRO };
   }
@@ -787,5 +803,46 @@ export class UserService {
       (a) => a.programId === programId,
     );
     return assignment.scope;
+  }
+
+  public async getUserIdFromRequest(req: any): Promise<number> {
+    // A request is typed as any from the NestJS framework
+    const headerKey = 'x-121-interface';
+    const originInterface = req.headers[headerKey];
+    let token;
+    if (req.cookies) {
+      if (
+        originInterface === InterfaceNames.portal &&
+        req.cookies[CookieNames.portal]
+      ) {
+        token = req.cookies[CookieNames.portal];
+      } else if (
+        originInterface === InterfaceNames.awApp &&
+        req.cookies[CookieNames.awApp]
+      ) {
+        token = req.cookies[CookieNames.awApp];
+      } else if (
+        originInterface === InterfaceNames.paApp &&
+        req.cookies[CookieNames.paApp]
+      ) {
+        token = req.cookies[CookieNames.paApp];
+      } else if (!originInterface && req.cookies[CookieNames.general]) {
+        token = req.cookies[CookieNames.general];
+      } else {
+        token = null;
+      }
+    }
+
+    if (token) {
+      // username/password user
+      const decoded = jwt.verify(token, process.env.SECRETS_121_SERVICE_SECRET);
+      return decoded?.['id'];
+    } else {
+      // entra user
+      const token = req.headers.authorization.split(' ')[1].split('.')[1];
+      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+      const user = await this.findByUsernameOrThrow(decoded.email);
+      return user?.user.id;
+    }
   }
 }

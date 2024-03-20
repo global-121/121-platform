@@ -15,22 +15,20 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Admin } from '../../../guards/admin.decorator';
-import { AdminAuthGuard } from '../../../guards/admin.guard';
-import { Permissions } from '../../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../../user/enum/permission.enum';
 import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')
 @Controller()
 export class IntersolveVisaController {
   public constructor(private intersolveVisaService: IntersolveVisaService) {}
 
-  @Permissions(PermissionEnum.FspDebitCardREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Get Intersolve Visa wallet data related to a registration',
@@ -57,7 +55,7 @@ export class IntersolveVisaController {
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardBLOCK)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
   @ApiOperation({
     summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa wallet',
   })
@@ -82,7 +80,7 @@ export class IntersolveVisaController {
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardUNBLOCK)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardUNBLOCK] })
   @ApiOperation({
     summary: '[SCOPED] Unblock Intersolve Visa wallet',
   })
@@ -107,7 +105,7 @@ export class IntersolveVisaController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Send FSP Visa Customer data of a registration to Intersolve',
   })
@@ -128,7 +126,7 @@ export class IntersolveVisaController {
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary:
       '[SCOPED] Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
@@ -153,7 +151,7 @@ export class IntersolveVisaController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Update all Visa wallet details',
   })

@@ -61,7 +61,7 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          userId,
+          { user: { id: userId } },
           programId,
           queryParams,
         ),
@@ -79,7 +79,7 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          userId,
+          { user: { id: userId } },
           programId,
           queryParams,
         ),
@@ -97,7 +97,7 @@ describe('RegistrationsController', () => {
         await registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          userId,
+          { user: { id: userId } },
           programId,
           queryParams,
         );

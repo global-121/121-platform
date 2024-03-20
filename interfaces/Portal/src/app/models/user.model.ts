@@ -7,6 +7,7 @@ export class User {
   };
   expires: string;
   isAdmin?: boolean;
+  isEntraUser?: boolean;
 }
 
 export enum UserType {

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GuardsService } from '../guards/guards.service';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
 import { UserModule } from '../user/user.module';
@@ -13,11 +12,10 @@ import { NoteService } from './notes.service';
   imports: [TypeOrmModule.forFeature(), RegistrationsModule, UserModule],
   providers: [
     NoteService,
-    GuardsService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(NoteEntity),
   ],
   controllers: [NoteController],
-  exports: [NoteService, GuardsService],
+  exports: [NoteService],
 })
 export class NoteModule {}

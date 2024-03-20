@@ -64,6 +64,10 @@ export class UserEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: false })
   public admin: boolean;
 
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public isEntraUser: boolean;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([

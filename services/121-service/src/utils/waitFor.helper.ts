@@ -1,5 +1,5 @@
 import { setTimeout } from 'node:timers/promises';
-import { getRandomInt } from './getRandomInt.helper';
+import { getRandomInt } from './getRandomValue.helper';
 
 export async function waitFor(timeInMs: number): Promise<void> {
   return setTimeout(timeInMs);

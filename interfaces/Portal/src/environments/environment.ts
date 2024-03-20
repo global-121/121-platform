@@ -19,4 +19,9 @@ export const environment = {
   // Third-party tokens:
   ai_ikey: '',
   ai_endpoint: '',
+
+  // Azure AD
+  use_sso_azure_entra: false, // Enable Azure AD login
+  azure_ad_client_id: '',
+  azure_ad_tenant_id: '',
 };

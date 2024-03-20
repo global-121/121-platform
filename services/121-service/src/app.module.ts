@@ -13,6 +13,7 @@ import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
 import { CronjobModule } from './cronjob/cronjob.module';
 import { EventsModule } from './events/events.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
@@ -84,6 +85,7 @@ import { UserModule } from './user/user.module';
         removeOnComplete: true,
       },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

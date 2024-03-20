@@ -3,12 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -19,15 +19,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Admin } from '../guards/admin.decorator';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
-import { AdminAuthGuard } from './../guards/admin.guard';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
@@ -42,7 +39,7 @@ import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -51,6 +48,8 @@ export class ProgramController {
     private readonly programAttributesService: ProgramAttributesService,
   ) {}
 
+  // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
@@ -66,8 +65,9 @@ export class ProgramController {
   public async findOne(
     @Param() params,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ProgramEntity | ProgramReturnDto> {
+    const userId = req.user.id;
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
@@ -80,6 +80,7 @@ export class ProgramController {
     }
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   // TODO: REFACTOR: into GET /api/programs?published=true
@@ -88,28 +89,20 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
     status: 200,
     description: 'Return all assigned programs for a user.',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
-  public async getAssignedPrograms(
-    @User('id') userId: number,
-  ): Promise<ProgramsRO> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+  public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
+    const userId = req.user.id;
     return await this.programService.getAssignedPrograms(userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -119,12 +112,13 @@ export class ProgramController {
   @Post()
   public async create(
     @Body() programData: CreateProgramDto,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ProgramEntity> {
+    const userId = req.user.id;
     return this.programService.create(programData, userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
@@ -150,7 +144,7 @@ export class ProgramController {
       .send('The program has been successfully deleted.');
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Update program' })
   @ApiResponse({
     status: 200,
@@ -169,7 +163,7 @@ export class ProgramController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/program-questions')
@@ -183,7 +177,7 @@ export class ProgramController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
   @ApiOperation({ summary: 'Update program question' })
   @ApiResponse({
     status: 200,
@@ -204,7 +198,7 @@ export class ProgramController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionDELETE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionDELETE] })
   @ApiOperation({ summary: 'Delete program question AND related answers' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -222,7 +216,7 @@ export class ProgramController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program custom attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/custom-attributes')
@@ -236,7 +230,9 @@ export class ProgramController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramCustomAttributeUPDATE],
+  })
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiResponse({
     status: 200,
@@ -261,6 +257,7 @@ export class ProgramController {
     );
   }
 
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -292,13 +289,13 @@ export class ProgramController {
     required: false,
     type: 'boolean',
   })
-  @Permissions(PermissionEnum.RegistrationREAD)
   @Get(':programId/attributes')
   public async getAttributes(
     @Param() params,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req: any,
   ): Promise<Attribute[]> {
+    const userId = req.user.id;
     if (userId) {
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(

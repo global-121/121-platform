@@ -223,7 +223,7 @@ describe('Update attribute of PA', () => {
     );
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
     response.body;
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
@@ -259,7 +259,7 @@ describe('Update attribute of PA', () => {
     );
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+    expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
     response.body;
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,

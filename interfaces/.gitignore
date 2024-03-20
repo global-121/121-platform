@@ -3,6 +3,7 @@
 
 # Build Configuration/secrets:
 .env
+environment.dev.ts
 environment.prod.ts
 
 

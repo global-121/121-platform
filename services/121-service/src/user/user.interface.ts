@@ -1,10 +1,13 @@
 import { PermissionEnum } from './enum/permission.enum';
 
 export interface UserData {
+  id: number;
   username: string;
   token: string;
   permissions: UserPermissions;
   isAdmin?: boolean;
+  isEntraUser?: boolean;
+  lastLogin?: Date;
 }
 
 export interface UserRO {

@@ -86,4 +86,5 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
+  AuthModule-->PassportModule
 ```
