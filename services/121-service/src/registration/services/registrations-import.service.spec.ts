@@ -5,7 +5,6 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { UserService } from '../../user/user.service';
 import { GenericAttributes } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
-import { RegistrationCsvValidationEnum } from '../enum/registration-csv-validation.enum';
 import { RegistrationsImportService } from './registrations-import.service';
 
 describe('RegistrationsImportService', () => {
@@ -70,11 +69,10 @@ describe('RegistrationsImportService', () => {
 
       // Assert
       await expect(
-        registrationsImportService.validateAndCleanRegistrationsInput(
+        registrationsImportService.validateImportAsRegisteredInput(
           importRegistrationsCsvInput,
           programId,
           userId,
-          RegistrationCsvValidationEnum.importAsRegistered,
         ),
       ).rejects.toHaveProperty('response', [
         {
