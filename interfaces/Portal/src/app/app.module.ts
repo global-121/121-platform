@@ -97,9 +97,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: `${window.location.origin}/auth`,
+          redirectUri: `${window.location.origin}/`,
           postLogoutRedirectUri: `${window.location.origin}/login`,
-          navigateToLoginRequestUrl: false,
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -121,7 +120,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
       }),
       {
-        interactionType: InteractionType.Redirect,
+        interactionType: InteractionType.Popup,
       },
       {
         protectedResourceMap: new Map([
@@ -137,7 +136,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
-        interactionType: InteractionType.Redirect,
+        interactionType: InteractionType.Popup,
       },
     ),
   ],
