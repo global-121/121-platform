@@ -97,8 +97,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: `${environment.url_portal}/auth`,
-          postLogoutRedirectUri: `${environment.url_portal}/login`,
+          redirectUri: `${window.location.origin}/auth`,
+          postLogoutRedirectUri: `${window.location.origin}/login`,
           navigateToLoginRequestUrl: false,
         },
         cache: {
