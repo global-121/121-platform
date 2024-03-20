@@ -331,10 +331,16 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
-    @UploadedFile() csvFile,
+    @UploadedFile() csvFile: any,
     @Param('programId', ParseIntPipe) programId: number,
     @User('id') userId: number,
-  ): Promise<void> {}
+  ): Promise<void> {
+    return await this.registrationsService.patchBulk(
+      csvFile,
+      programId,
+      userId,
+    );
+  }
 
   @ApiTags('programs/registrations')
   @ApiResponse({

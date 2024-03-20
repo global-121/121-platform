@@ -724,6 +724,11 @@ export class RegistrationsService {
     );
   }
 
+  public async patchBulk(csvFile: any, programId: number, userId: number) {
+    await this.findProgramOrThrow(programId);
+    await this.registrationsImportService.patchBulk(csvFile, programId, userId);
+  }
+
   public async importValidatedRegistrations(
     validatedImportRecords: ImportRegistrationsDto[],
     programId: number,
@@ -742,7 +747,7 @@ export class RegistrationsService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    return await this.registrationsImportService.validateRegistrationsInput(
+    return await this.registrationsImportService.validateImportAsRegisteredInput(
       validatedJsonData,
       programId,
       userId,

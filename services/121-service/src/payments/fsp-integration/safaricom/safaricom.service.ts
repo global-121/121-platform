@@ -13,7 +13,10 @@ import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -52,7 +55,7 @@ export class SafaricomService
 
     for (const paPaymentData of paymentList) {
       const job = await this.paymentSafaricomQueue.add(
-        ProcessName.sendPayment,
+        ProcessNamePayment.sendPayment,
         {
           userInfo: userInfo,
           paPaymentData: paPaymentData,

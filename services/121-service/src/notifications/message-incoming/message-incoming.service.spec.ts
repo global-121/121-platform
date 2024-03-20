@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 import { getQueueName } from '../../utils/unit-test.helpers';
 import {
-  ProcessName,
+  ProcessNameMessage,
   QueueNameMessageCallBack,
 } from '../enum/queue.names.enum';
 import {
@@ -43,7 +43,7 @@ describe('MessageIncomingService', () => {
     // Assert
     expect(messageStatusCallbackQueue.add).toHaveBeenCalledTimes(1);
     expect(messageStatusCallbackQueue.add).toHaveBeenCalledWith(
-      ProcessName.sms,
+      ProcessNameMessage.sms,
       testCallbackData,
     );
   });
@@ -60,7 +60,7 @@ describe('MessageIncomingService', () => {
     // Assert
     expect(messageStatusCallbackQueue.add).toHaveBeenCalledTimes(1);
     expect(messageStatusCallbackQueue.add).toHaveBeenCalledWith(
-      ProcessName.whatsapp,
+      ProcessNameMessage.whatsapp,
       testCallbackData,
     );
   });
@@ -77,7 +77,7 @@ describe('MessageIncomingService', () => {
     // Assert
     expect(messageIncommingQueue.add).toHaveBeenCalledTimes(1);
     expect(messageIncommingQueue.add).toHaveBeenCalledWith(
-      ProcessName.whatsapp,
+      ProcessNameMessage.whatsapp,
       testIncommingWhatsappData,
     );
   });

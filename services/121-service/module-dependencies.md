@@ -26,6 +26,7 @@ graph LR
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
+  RegistrationsModule-->QueueRegistrationUpdateModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

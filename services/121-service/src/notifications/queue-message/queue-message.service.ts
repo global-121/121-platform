@@ -14,7 +14,10 @@ import {
   MESSAGE_QUEUE_MAP,
 } from '../enum/message-queue-mapping.const';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
+import {
+  ProcessNameMessage,
+  QueueNameCreateMessage,
+} from '../enum/queue.names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
@@ -93,18 +96,27 @@ export class QueueMessageService {
     try {
       if (queueName === QueueNameCreateMessage.replyOnIncoming) {
         await this.messageProcessorReplyOnIncoming.add(
-          ProcessName.send,
+          ProcessNameMessage.send,
           messageJob,
         );
       } else if (queueName === QueueNameCreateMessage.smallBulk) {
-        await this.messageProcessorSmallBulk.add(ProcessName.send, messageJob);
+        await this.messageProcessorSmallBulk.add(
+          ProcessNameMessage.send,
+          messageJob,
+        );
       } else if (queueName === QueueNameCreateMessage.mediumBulk) {
-        await this.messageProcessorMediumBulk.add(ProcessName.send, messageJob);
+        await this.messageProcessorMediumBulk.add(
+          ProcessNameMessage.send,
+          messageJob,
+        );
       } else if (queueName === QueueNameCreateMessage.largeBulk) {
-        await this.messageProcessorLargeBulk.add(ProcessName.send, messageJob);
+        await this.messageProcessorLargeBulk.add(
+          ProcessNameMessage.send,
+          messageJob,
+        );
       } else if (queueName === QueueNameCreateMessage.lowPriority) {
         await this.messageProcessorLowPriority.add(
-          ProcessName.send,
+          ProcessNameMessage.send,
           messageJob,
         );
       }

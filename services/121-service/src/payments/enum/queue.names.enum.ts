@@ -1,4 +1,4 @@
-export enum ProcessName {
+export enum ProcessNamePayment {
   sendPayment = 'sendPayment',
 }
 

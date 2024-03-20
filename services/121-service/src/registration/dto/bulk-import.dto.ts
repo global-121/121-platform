@@ -28,6 +28,7 @@ const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   public phoneNumber: string;
 
   @ApiProperty()
