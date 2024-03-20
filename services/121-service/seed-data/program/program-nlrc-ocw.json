@@ -31,13 +31,6 @@
         {
           "name": "password",
           "value": "INTERSOLVE_PASSWORD"
-        },
-        {
-          "name": "displayName",
-          "value": {
-            "en": "Intersolve voucher whatsapp in english",
-            "es": "Intersolve voucher whatsapp in spanish"
-          }
         }
       ]
     },
@@ -50,13 +43,6 @@
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"
-        },
-        {
-          "name": "displayName",
-          "value": {
-            "en": "Intersolve visa in english",
-            "es": "Intersolve visa in spanish"
-          }
         }
       ]
     }
