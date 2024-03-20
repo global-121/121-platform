@@ -9,6 +9,7 @@ import { UserService } from '../../user/user.service';
 export interface ScopedUserRequest extends Request {
   scope?: string;
   userId?: number;
+  user?: object;
 }
 
 @Injectable()
