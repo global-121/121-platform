@@ -11,7 +11,7 @@ export class EventEntity1708330964000 implements MigrationInterface {
       `CREATE INDEX "IDX_5c7356500932acbd5f76a787ce" ON "121-service"."event_attribute" ("created") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."event" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer NOT NULL, "type" character varying NOT NULL, "registrationId" integer NOT NULL, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."event" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, "type" character varying NOT NULL, "registrationId" integer NOT NULL, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_b35693f96b1b13156954752023" ON "121-service"."event" ("created") `,

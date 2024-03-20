@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-navigation.component';
 
 @Component({
@@ -25,10 +26,12 @@ export class ProgramNavigationComponent implements OnInit {
 
   public canViewMetrics: boolean;
   public canReadAidWorkers: boolean;
+  public dashboardIsEnabled: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
+    private programsService: ProgramsServiceApiService,
   ) {
     this.programId = this.route.snapshot.params.id;
   }
@@ -42,5 +45,8 @@ export class ProgramNavigationComponent implements OnInit {
       this.programId,
       Permission.ProgramMetricsREAD,
     );
+
+    const program = await this.programsService.getProgramById(this.programId);
+    this.dashboardIsEnabled = !!program?.monitoringDashboardUrl;
   }
 }

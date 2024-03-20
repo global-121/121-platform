@@ -1,9 +1,9 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [demo] Interface: Verify'
+name: 'Deploy [Zimbabwe] Interface: Portal'
 
 env:
-  workingDirectory: interfaces/AW-App
+  workingDirectory: interfaces/Portal
 
 permissions:
   actions: read
@@ -11,7 +11,7 @@ permissions:
 on:
   workflow_call:
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_VERIFY:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL:
         required: true
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
-    environment: 'client-demo'
+    environment: 'client-zimbabwe'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,17 +30,18 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFCPkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAABERAAAAABEREREREQAAERERERERAAAREREREREAABEREREREQAAAAAREQAAAAAAABERAAAAAAAAEREAAAAAAAAREQAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAPw/AAD8PwAA/D8AAPw/AADAAwAAwAMAAMADAADAAwAA/D8AAPw/AAD8PwAA/D8AAP//AAD//wAA'
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAANP/AAAA1QAAZAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAMzMzMzMzM0QDMzMzMzMzREARERERERFERAEREREREUREQCIiIiIiQhJEAiIiIiJBEURAAAAAAEISREAAAAAAISQkAiIiIiJEJEAiIiIiIkREARERERERREARERERERFEAzMzMzMzM0AzMzMzMzMzAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
           envContentSecurityPolicy: >-
-            img-src 'self' data: ;
-            connect-src 'self' https://demo.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
-            form-action https://demo.121.global;
+            connect-src 'self' https://zimbabwe.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            form-action https://zimbabwe.121.global;
+            frame-src 'self' https://app.powerbi.com;
         env:
-          NG_ENV_NAME: 'Demo'
-          NG_URL_121_SERVICE_API: 'https://demo.121.global/api'
-          NG_AI_IKEY: '2aad0652-5b2a-4c01-8533-e1416879c7ac'
+          NG_ENV_NAME: 'Zimbabwe'
+          NG_LOCALES: 'en'
+          NG_URL_121_SERVICE_API: 'https://zimbabwe.121.global/api'
+          NG_AI_IKEY: 'bb2c82cf-0e2a-4113-9d0e-da9ca4c86679'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=2aad0652-5b2a-4c01-8533-e1416879c7ac;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=bb2c82cf-0e2a-4113-9d0e-da9ca4c86679;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
@@ -48,7 +49,7 @@ jobs:
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VERIFY }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           config_file_location: '${{ env.workingDirectory }}/'
