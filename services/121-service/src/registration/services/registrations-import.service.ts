@@ -666,7 +666,7 @@ export class RegistrationsImportService {
       programId,
       userId,
       dynamicAttributes,
-      RegistrationCsvValidationEnum.importAsImport,
+      RegistrationCsvValidationEnum.bulkUpdate,
       validationConfig,
     )) as ImportRegistrationsDto[];
   }
