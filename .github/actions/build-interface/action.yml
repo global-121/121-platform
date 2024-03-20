@@ -26,7 +26,7 @@ inputs:
     description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
     required: false
     default: >-
-      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
       form-action https://*.121.global;
       frame-src blob: 'self';
       frame-ancestors 'self';
