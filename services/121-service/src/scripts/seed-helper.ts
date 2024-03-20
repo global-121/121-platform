@@ -99,7 +99,7 @@ export class SeedHelper {
     }
     if (financeOfficer) {
       await this.assignAidworker(financeOfficer.id, program.id, [
-        DefaultUserRole.FinanceManager,
+        DefaultUserRole.FinanceOfficer,
       ]);
     }
 
