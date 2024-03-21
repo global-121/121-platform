@@ -44,6 +44,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { RegistrationsInputValidator } from './validators/registrations-input-validator';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationViewScopedRepository,
     FileImportService,
     RegistrationUpdateProcessor,
+    RegistrationsInputValidator,
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),

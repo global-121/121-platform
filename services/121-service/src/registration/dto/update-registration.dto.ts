@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, Length } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
-import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
+import { IsRegistrationDataValidType } from '../validators/registration-data-type.class.validator';
 
 export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',

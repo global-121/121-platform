@@ -1,7 +1,7 @@
 export class ValidationConfigDto {
   validateUniqueReferenceId: boolean = true;
   validatePreferredLanguage: boolean = true;
-  validateReferenceId: boolean = true;
+  validateExistingReferenceId: boolean = true;
   validateScope: boolean = true;
   validatePhoneNumberEmpty: boolean = true;
   validatePhoneNumberLookup: boolean = true;

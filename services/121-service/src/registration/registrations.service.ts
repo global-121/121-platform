@@ -725,7 +725,6 @@ export class RegistrationsService {
   }
 
   public async patchBulk(csvFile: any, programId: number, userId: number) {
-    await this.findProgramOrThrow(programId);
     await this.registrationsImportService.patchBulk(csvFile, programId, userId);
   }
 
