@@ -16,8 +16,6 @@ import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {
   imported = 'imported',
-  invalidPhoneNumber = 'invalidPhoneNumber',
-  existingPhoneNumber = 'existingPhoneNumber',
   notFound = 'notFound',
   paymentSuccess = 'paymentSuccess',
   paymentFailed = 'paymentFailed',

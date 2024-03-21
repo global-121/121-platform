@@ -69,8 +69,6 @@ export class RegistrationsInputValidator {
       let importRecord;
       if (typeOfInput === RegistrationCsvValidationEnum.importAsRegistered) {
         importRecord = new ImportRegistrationsDto();
-      } else if (typeOfInput === RegistrationCsvValidationEnum.importAsImport) {
-        importRecord = new BulkImportDto();
       } else if (typeOfInput === RegistrationCsvValidationEnum.bulkUpdate) {
         importRecord = new BulkUpdateDto();
       }
