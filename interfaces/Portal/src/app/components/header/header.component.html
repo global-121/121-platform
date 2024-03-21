@@ -68,7 +68,9 @@
                   lines="full"
                   [routerLink]="['/', appRoute.createProgram]"
                 >
-                  <ion-label>Create Program</ion-label>
+                  <ion-label>{{
+                    'header.create-program' | translate
+                  }}</ion-label>
                 </ion-item>
               </ion-list>
             </ion-content>

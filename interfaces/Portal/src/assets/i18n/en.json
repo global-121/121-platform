@@ -88,6 +88,7 @@
     "label": "Select a file"
   },
   "header": {
+    "create-program": "Create Program",
     "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
@@ -103,6 +104,19 @@
     "total-message": "total"
   },
   "page": {
+    "create-program": {
+      "form": {
+        "kobo-asset-id": {
+          "label": "Kobo Asset ID"
+        },
+        "kobo-token": {
+          "label": "Kobo Token"
+        }
+      },
+      "no-permission": "You don't have the permission to create a program.",
+      "not-enabled": "Program creation is not enabled",
+      "pageTitle": "Create Program"
+    },
     "dashboard": {
       "pageTitle": "Dashboard"
     },
