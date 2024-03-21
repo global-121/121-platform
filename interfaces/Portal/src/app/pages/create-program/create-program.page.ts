@@ -27,8 +27,7 @@ export class CreateProgramPage implements AfterViewInit {
 
   public inProgress = false;
 
-  public createProgramEndpoint = environment.create_program_endpoint;
-  public isCreateProgramEnabled = !!environment.create_program_endpoint;
+  public isCreateProgramEnabled = !!environment.url_create_program_api;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -52,7 +51,7 @@ export class CreateProgramPage implements AfterViewInit {
 
     const res: Program = await new Promise((resolve, reject) =>
       this.http
-        .get(this.createProgramEndpoint, { headers: httpHeaders })
+        .get(environment.url_create_program_api, { headers: httpHeaders })
         .pipe(
           tap((response) =>
             console.log(
