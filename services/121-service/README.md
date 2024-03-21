@@ -154,7 +154,7 @@ AppMap is a very extensive static and dynamic code analysis tool which can be ru
 3. Create recordings by calling an API endpoint, or running test suites, or interacting via the 121 Portal. These recordings are stored in the tmp/appmap folder under the 121-service.
 4. Open the Appmaps from these recordings from the APPMAPS pane in the AppMap Extension in VS Code.
 5. Note: Docker creates new files as root. At least on Linux you need to run `sudo chown -R <your-username> .` in the 121-service folder so that the AppMap Extension can access the files of the recordings.
-6. AppMap creates Dependency Diagrams, Sequence Diagrams, Flame Graphs and more to get insight of the code's behavior. 
+6. AppMap creates Dependency Diagrams, Sequence Diagrams, Flame Graphs and more to get insight of the code's behavior.
 7. AppMap also as an AI bot called Navie AI to ask questions to.
 8. For more information: https://appmap.io/docs/appmap-overview.html or access the Slack channel: https://appmap.io/community
 
