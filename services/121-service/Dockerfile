@@ -16,4 +16,4 @@ FROM base as development
 
 COPY . .
 
-CMD ["npx", "-y", "appmap-node", "npm", "run", "start:dev"]
+# Starting the node process happens in docker-compose-development.yml
