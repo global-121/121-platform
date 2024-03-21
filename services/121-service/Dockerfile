@@ -16,4 +16,4 @@ FROM base as development
 
 COPY . .
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npx", "-y", "appmap-node", "npm", "run", "start:dev"]
