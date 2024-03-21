@@ -21,6 +21,20 @@ describe('Create program questions', () => {
     // Arrange
     const program = JSON.parse(JSON.stringify(programOCW));
 
+    // Add test display name to program
+    const intersolveVoucherWhatsappTranslations = {
+      name: 'displayName',
+      value: {
+        en: 'Intersolve Voucher WhatsApp',
+        nl: 'Intersolve Voucher WhatsApp Dutch translation',
+        es: 'Intersolve Voucher WhatsApp Spanish translation',
+      },
+    };
+
+    program.financialServiceProviders[0].configuration.push(
+      intersolveVoucherWhatsappTranslations,
+    );
+
     // Act
     const createProgramResponse = await postProgram(program, accessToken);
 
