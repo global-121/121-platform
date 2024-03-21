@@ -80,7 +80,6 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -262,7 +261,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Admin()
   @ApiOperation({
-    summary: 'Bulk update registration using a CSV file',
+    summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch('programs/:programId/registrations')
