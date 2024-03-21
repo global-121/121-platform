@@ -181,18 +181,17 @@ export class RegistrationsInputValidator {
             importRecord[att.name] = row[att.name];
           }
         }
-
-        if (validationConfig.validateClassValidator) {
-          const result = await validate(importRecord);
-          if (result.length > 0) {
-            const errorObj = {
-              lineNumber: i + 1,
-              column: result[0].property,
-              value: result[0].value,
-              error: result[0]?.constraints,
-            };
-            errors.push(errorObj);
-          }
+      }
+      if (validationConfig.validateClassValidator) {
+        const result = await validate(importRecord);
+        if (result.length > 0) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: result[0].property,
+            value: result[0].value,
+            error: result[0]?.constraints,
+          };
+          errors.push(errorObj);
         }
       }
       validatedArray.push(importRecord);
