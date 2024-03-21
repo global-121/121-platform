@@ -82,7 +82,9 @@ export class RemoveInviteFlow1711009396879 implements MigrationInterface {
       `SELECT id FROM "121-service"."registration" WHERE "registrationStatus" IN ('${oldStatusses.join("','")}')`,
     );
     const ids = idObjects.map((idObject: { id: string }) => idObject.id);
-
+    if (ids.length === 0) {
+      return;
+    }
     // delete registartion data
     await queryRunner.query(
       `DELETE FROM "121-service"."registration_data" WHERE "registrationId" IN ('${ids.join("','")}')`,
