@@ -24,10 +24,12 @@ import {
 import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
+import { overwriteProgramFspDisplayName } from './utils/overwrite-fsp-display-name.helper';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -68,6 +70,7 @@ export class ProgramService {
       'financialServiceProviders',
       'financialServiceProviders.questions',
       'programCustomAttributes',
+      'programFspConfiguration',
     ];
 
     const program = await this.programRepository.findOne({
@@ -97,6 +100,16 @@ export class ProgramService {
     if (!includeMetricsUrl) {
       delete program.monitoringDashboardUrl;
       delete program.evaluationDashboardUrl;
+    }
+
+    // over write fsp displayname by program specific displayName
+    if (program.financialServiceProviders.length > 0) {
+      program.financialServiceProviders = overwriteProgramFspDisplayName(
+        program.financialServiceProviders,
+        program.programFspConfiguration,
+      );
+
+      delete program.programFspConfiguration;
     }
 
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
@@ -139,16 +152,32 @@ export class ProgramService {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
-    const programs = await this.programRepository.find({
+    let programs = await this.programRepository.find({
       where: { id: In(programIds) },
       relations: [
         'programQuestions',
         'programCustomAttributes',
         'financialServiceProviders',
         'financialServiceProviders.questions',
+        'programFspConfiguration',
       ],
     });
     const programsCount = programs.length;
+
+    if (programsCount > 0) {
+      programs = programs.map((program) => {
+        if (program.financialServiceProviders.length > 0) {
+          program.financialServiceProviders = overwriteProgramFspDisplayName(
+            program.financialServiceProviders,
+            program.programFspConfiguration,
+          );
+
+          delete program.programFspConfiguration;
+        }
+
+        return program;
+      });
+    }
 
     return { programs, programsCount };
   }
@@ -679,5 +708,21 @@ export class ProgramService {
       programId,
       userId,
     );
+  }
+
+  public async getFspConfigurations(
+    programId: number,
+    configName: string[],
+  ): Promise<ProgramFspConfigurationEntity[]> {
+    let programFspConfigurations =
+      await this.programFspConfigurationService.findByProgramId(programId);
+    if (configName.length > 0) {
+      programFspConfigurations = programFspConfigurations.filter(
+        (programFspConfiguration) =>
+          configName.includes(programFspConfiguration.name),
+      );
+    }
+
+    return programFspConfigurations;
   }
 }

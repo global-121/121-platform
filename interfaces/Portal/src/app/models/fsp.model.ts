@@ -4,7 +4,7 @@ import { TranslatableString } from './translatable-string.model';
 export class Fsp {
   id: number;
   fsp: string;
-  fspDisplayNamePortal: TranslatableString | string;
+  displayName: TranslatableString | string;
   integrationType: FspIntegrationType;
   hasReconciliation: boolean;
   questions?: FspQuestion[];

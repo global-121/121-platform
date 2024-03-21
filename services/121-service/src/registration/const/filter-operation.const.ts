@@ -44,7 +44,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       inclusionScore: AllowedFilterOperatorsNumber,
       paymentAmountMultiplier: AllowedFilterOperatorsNumber,
       financialServiceProvider: AllowedFilterOperatorsString,
-      fspDisplayNamePortal: AllowedFilterOperatorsString,
+      fspDisplayName: AllowedFilterOperatorsString,
       registrationProgramId: AllowedFilterOperatorsNumber,
       maxPayments: AllowedFilterOperatorsNumber,
       paymentCount: AllowedFilterOperatorsNumber,

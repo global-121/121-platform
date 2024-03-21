@@ -650,7 +650,8 @@ export class IntersolveVisaService
         `No brandCode found for program ${programId}. Please update the program FSP cofinguration.`,
       );
     }
-    return brandCodeConfig?.value;
+
+    return brandCodeConfig?.value as string;
   }
 
   private async createDebitCard(

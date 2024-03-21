@@ -412,7 +412,7 @@
           "custom-attribute-true": "Oui",
           "dob": "Date de naissance",
           "failedPayment": "Échec du paiement #",
-          "fspDisplayNamePortal": "Fournisseur de services financiers",
+          "fspDisplayName": "Fournisseur de services financiers",
           "hasNote": "A noter",
           "inclusionScore": "Score d’inclusion",
           "lastMessageStatus": "Dernier message",
