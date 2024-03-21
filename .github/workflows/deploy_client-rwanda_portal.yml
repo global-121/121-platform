@@ -34,6 +34,8 @@ jobs:
           envContentSecurityPolicy: >-
             connect-src 'self' https://rwanda.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://kobo-connect.azurewebsites.net;
             form-action https://rwanda.121.global;
+            frame-src blob: 'self' https://app.powerbi.com;
+            frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'Rwanda'
           NG_LOCALES: 'en'
