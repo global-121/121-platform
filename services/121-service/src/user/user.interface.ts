@@ -13,11 +13,12 @@ export interface UserRO {
   user: UserData;
 }
 
-export interface UserToken {
+export interface UserRequestData {
   id: number;
   username: string;
   exp: number;
   admin: boolean;
+  scope: string;
 }
 
 export type UserPermissions = Record<number, PermissionEnum[]>;

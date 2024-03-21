@@ -10,7 +10,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
 import { UserType } from '../user/user-type-enum';
-import { UserRO, UserToken } from '../user/user.interface';
+import { UserEntity } from '../user/user.entity';
+import { UserRequestData } from '../user/user.interface';
 import { UserService } from '../user/user.service';
 import { generateRandomString } from '../utils/getRandomValue.helper';
 
@@ -66,7 +67,7 @@ export class AzureAdStrategy
       throw new UnauthorizedException();
     }
 
-    let user: UserRO;
+    let user: UserEntity;
     const username = payload.email;
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
@@ -79,15 +80,15 @@ export class AzureAdStrategy
     try {
       // Try to find user by username (this is an email address in our case)
       user = await this.userService.findByUsernameOrThrow(username);
-      if (!user.user.isEntraUser) {
+      if (!user.isEntraUser) {
         user = await this.userService.updateUser({
-          id: user.user.id,
+          id: user.id,
           isEntraUser: true,
         });
       }
       // Update last login only once per day (instead of on every request)
       const today = new Date();
-      const lastLogin = user.user.lastLogin;
+      const lastLogin = user.lastLogin;
       if (
         !lastLogin ||
         today.getDate() !== lastLogin.getDate() ||
@@ -95,7 +96,7 @@ export class AzureAdStrategy
         today.getFullYear() !== lastLogin.getFullYear()
       ) {
         await this.userService.updateUser({
-          id: user.user.id,
+          id: user.id,
           lastLogin: new Date(),
         });
       }
@@ -127,22 +128,25 @@ export class AzureAdStrategy
       const hasPermission = await this.userService.canActivate(
         authParams.permissions,
         request.params.programId,
-        user.user.id,
+        user.id,
       );
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     } else if (authParams.isAdmin) {
-      if (!user.user.isAdmin) {
+      if (!user.admin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
 
-    const userToken: UserToken = {
-      id: user.user.id,
-      username: user.user.username,
+    const userToken: UserRequestData = {
+      id: user.id,
+      username: user.username,
       exp: payload.exp,
-      admin: user.user.isAdmin,
+      admin: user.admin,
+      scope: request.params.programId
+        ? this.userService.getScopeForUser(user, request.params.programId)
+        : '',
     };
     return userToken;
   }

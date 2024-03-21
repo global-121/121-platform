@@ -18,7 +18,6 @@ import {
 } from './dto/assign-aw-to-program.dto';
 import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -86,16 +85,6 @@ export class UserService {
       })
       .getCount();
     return results === 1;
-  }
-
-  public async createPersonAffected(
-    dto: CreateUserPersonAffectedDto,
-  ): Promise<UserRO> {
-    return await this.create(
-      dto.username,
-      dto.password,
-      UserType.personAffected,
-    );
   }
 
   public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
@@ -232,7 +221,12 @@ export class UserService {
   }
 
   public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
-    return await this.create(dto.email, dto.password, UserType.aidWorker);
+    const createdUser = await this.create(
+      dto.email,
+      dto.password,
+      UserType.aidWorker,
+    );
+    return await this.buildUserRO(createdUser);
   }
 
   public async create(
@@ -240,7 +234,7 @@ export class UserService {
     password: string,
     userType: UserType,
     isEntraUser = false,
-  ): Promise<UserRO> {
+  ): Promise<UserEntity> {
     // check uniqueness of email
     const qb = this.userRepository
       .createQueryBuilder('user')
@@ -262,8 +256,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
-    const savedUser = await this.userRepository.save(newUser);
-    return await this.buildUserRO(savedUser);
+    return await this.userRepository.save(newUser);
   }
 
   public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
@@ -285,7 +278,7 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
-  public async updateUser(userData: UpdateUserDto): Promise<UserRO> {
+  public async updateUser(userData: UpdateUserDto): Promise<UserEntity> {
     const userEntity = await this.findById(userData.id);
     if (!userEntity) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
@@ -294,8 +287,7 @@ export class UserService {
       userEntity[key] = userData[key];
     }
 
-    await this.userRepository.save(userEntity);
-    return await this.buildUserRO(userEntity);
+    return await this.userRepository.save(userEntity);
   }
 
   public async assignAidworkerToProgram(
@@ -473,7 +465,25 @@ export class UserService {
     return user;
   }
 
-  public async findByUsernameOrThrow(username: string): Promise<UserRO> {
+  public async findByUsernameOrThrow(username: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { username: username },
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  public async getUserRoByUsernameOrThrow(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
       relations: [
@@ -804,42 +814,12 @@ export class UserService {
     return assignment.scope;
   }
 
-  public async getUserIdFromRequest(req: any): Promise<number> {
-    // A request is typed as any from the NestJS framework
-    const headerKey = 'x-121-interface';
-    const originInterface = req.headers[headerKey];
-    let token;
-    if (
-      originInterface === InterfaceNames.portal &&
-      req.cookies?.[CookieNames.portal]
-    ) {
-      token = req.cookies[CookieNames.portal];
-    } else if (req.headers.authorization) {
-      const azureToken = req.headers.authorization.split(' ')[1];
-      const payload = azureToken.split('.')[1];
-      const decoded = JSON.parse(Buffer.from(payload, 'base64').toString());
-      const user = await this.findByUsernameOrThrow(decoded.email);
-      return user?.user.id;
-    } else if (
-      originInterface === InterfaceNames.awApp &&
-      req.cookies?.[CookieNames.awApp]
-    ) {
-      token = req.cookies[CookieNames.awApp];
-    } else if (
-      originInterface === InterfaceNames.paApp &&
-      req.cookies?.[CookieNames.paApp]
-    ) {
-      token = req.cookies[CookieNames.paApp];
-    } else if (!originInterface && req.cookies?.[CookieNames.general]) {
-      token = req.cookies[CookieNames.general];
-    } else {
-      token = null;
-    }
-
-    if (token) {
-      // username/password user
-      const decoded = jwt.verify(token, process.env.SECRETS_121_SERVICE_SECRET);
-      return decoded?.['id'];
-    }
+  public getScopeForUser(user: UserEntity, programId: number): string {
+    programId = Number(programId);
+    const assignment = user.programAssignments.find(
+      (programAssignment) => programAssignment.programId === programId,
+    );
+    const scope = assignment?.scope ? assignment.scope : '';
+    return scope;
   }
 }

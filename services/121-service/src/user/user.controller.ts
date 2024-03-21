@@ -267,7 +267,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User returned' })
   public async findMe(@Req() req): Promise<UserRO> {
     const username = req.user.username;
-    return await this.userService.findByUsernameOrThrow(username);
+    return await this.userService.getUserRoByUsernameOrThrow(username);
   }
 
   // This endpoint searches users accross all programs, which is needed to add a user to a program

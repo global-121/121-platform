@@ -1,6 +1,5 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
 import {
   DataSource,
   DeleteResult,
@@ -12,6 +11,7 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { ScopedUserRequest } from '../../shared/scoped-user-request';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationScopedBaseRepository } from './registration-scoped-base.repository';
 
@@ -20,7 +20,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   constructor(
     dataSource: DataSource,
     // TODO check if this can be set on ScopedRepository so it can be reused
-    @Inject(REQUEST) public request: Request,
+    @Inject(REQUEST) public request: ScopedUserRequest,
   ) {
     super(RegistrationEntity, dataSource);
   }

@@ -10,7 +10,7 @@ import { Strategy } from 'passport-jwt';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
-import { UserToken } from '../user/user.interface';
+import { UserRequestData } from '../user/user.interface';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -61,7 +61,7 @@ export class CookieJwtStrategy
     });
   }
 
-  async validate(request: any, payload: UserToken): Promise<any> {
+  async validate(request: any, payload: UserRequestData): Promise<any> {
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
 
@@ -91,12 +91,16 @@ export class CookieJwtStrategy
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
+    const user = await this.userService.findByUsernameOrThrow(payload.username);
 
-    const userToken: UserToken = {
+    const userToken: UserRequestData = {
       id: payload.id,
       username: payload.username,
       exp: payload.exp,
       admin: payload.admin,
+      scope: request.params.programId
+        ? this.userService.getScopeForUser(user, request.params.programId)
+        : '',
     };
     return userToken;
   }

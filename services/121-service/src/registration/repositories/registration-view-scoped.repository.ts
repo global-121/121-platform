@@ -1,7 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
 import { DataSource } from 'typeorm';
+import { ScopedUserRequest } from '../../shared/scoped-user-request';
 import { RegistrationViewEntity } from '../registration-view.entity';
 import { RegistrationScopedBaseRepository } from './registration-scoped-base.repository';
 
@@ -10,7 +10,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
   constructor(
     dataSource: DataSource,
     // TODO check if this can be set on ScopedRepository so it can be reused
-    @Inject(REQUEST) public request: Request,
+    @Inject(REQUEST) public request: ScopedUserRequest,
   ) {
     super(RegistrationViewEntity, dataSource);
   }

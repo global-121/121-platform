@@ -1,10 +1,5 @@
 import { BullModule } from '@nestjs/bull';
-import {
-  MiddlewareConsumer,
-  Module,
-  OnApplicationBootstrap,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -34,7 +29,6 @@ import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.e
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
-import { ScopeUserMiddleware } from './shared/middleware/scope-user.middleware';
 import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 
@@ -100,11 +94,5 @@ export class ApplicationModule implements OnApplicationBootstrap {
 
   async onApplicationBootstrap(): Promise<void> {
     await this.dataSource.runMigrations();
-  }
-
-  configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(ScopeUserMiddleware)
-      .forRoutes({ path: 'programs/([0-9]+)*', method: RequestMethod.ALL });
   }
 }

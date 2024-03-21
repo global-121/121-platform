@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
-import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { ScopedUserRequest } from '../shared/scoped-user-request';
 import { UserType } from '../user/user-type-enum';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';

@@ -5,8 +5,8 @@ import {
   FindOneOptions,
   Repository,
 } from 'typeorm';
-import { ScopedQueryBuilder } from '../../scoped.repository';
-import { ScopedUserRequest } from '../../shared/middleware/scope-user.middleware';
+import { hasNoUserScope, ScopedQueryBuilder } from '../../scoped.repository';
+import { ScopedUserRequest } from '../../shared/scoped-user-request';
 import { convertToScopedOptions } from '../../utils/scope/createFindWhereOptions.helper';
 
 export class RegistrationScopedBaseRepository<T> {
@@ -18,43 +18,43 @@ export class RegistrationScopedBaseRepository<T> {
   }
 
   public async find(options: FindManyOptions<T>): Promise<T[]> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       [],
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.find(scopedOptions);
   }
 
   public async findOne(options: FindOneOptions<T>): Promise<T> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.findOne(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       [],
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.findOne(scopedOptions);
   }
 
   public async count(options?: FindManyOptions<T>): Promise<number> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.count(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       [],
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.count(scopedOptions);
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));
     }
     const qb = this.repository
@@ -63,7 +63,7 @@ export class RegistrationScopedBaseRepository<T> {
       .andWhere(
         `(program."enableScope" = false OR ${alias}.scope LIKE :scope)`,
         {
-          scope: `${this.request.scope}%`,
+          scope: `${this.request.user.scope}%`,
         },
       );
     return new ScopedQueryBuilder(qb);
