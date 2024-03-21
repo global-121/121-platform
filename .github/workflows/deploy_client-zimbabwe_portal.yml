@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [Rwanda] Interface: Portal'
+name: 'Deploy [Zimbabwe] Interface: Portal'
 
 env:
   workingDirectory: interfaces/Portal
@@ -19,7 +19,7 @@ jobs:
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
-    environment: 'client-rwanda'
+    environment: 'client-zimbabwe'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,20 +30,18 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAb7lAOCjAAA9YCAAAdL6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0RERERERERERERERERERERERERERERERCIiIiIiIiIiIiIiIiIhIhIiIiIiIiIRIiIiIiIiIhEiIiIiIiIhIhIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAANP/AAAA1QAAZAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAMzMzMzMzM0QDMzMzMzMzREARERERERFERAEREREREUREQCIiIiIiQhJEAiIiIiJBEURAAAAAAEISREAAAAAAISQkAiIiIiJEJEAiIiIiIkREARERERERREARERERERFEAzMzMzMzM0AzMzMzMzMzAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
           envContentSecurityPolicy: >-
-            connect-src 'self' https://rwanda.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://kobo-connect.azurewebsites.net;
-            form-action https://rwanda.121.global;
-            frame-src blob: 'self' https://app.powerbi.com;
-            frame-ancestors 'self' https://flex.twilio.com;
+            connect-src 'self' https://zimbabwe.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            form-action https://zimbabwe.121.global;
+            frame-src 'self' https://app.powerbi.com;
         env:
-          NG_ENV_NAME: 'Rwanda'
+          NG_ENV_NAME: 'Zimbabwe'
           NG_LOCALES: 'en'
-          NG_URL_121_SERVICE_API: 'https://rwanda.121.global/api'
-          CREATE_PROGRAM_ENDPOINT: 'https://kobo-connect.azurewebsites.net/121-program'
-          NG_AI_IKEY: 'f9f0adf1-2d39-4926-9569-2c64daf3f4e4'
+          NG_URL_121_SERVICE_API: 'https://zimbabwe.121.global/api'
+          NG_AI_IKEY: 'bb2c82cf-0e2a-4113-9d0e-da9ca4c86679'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=f9f0adf1-2d39-4926-9569-2c64daf3f4e4;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=bb2c82cf-0e2a-4113-9d0e-da9ca4c86679;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
