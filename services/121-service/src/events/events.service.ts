@@ -105,7 +105,7 @@ export class EventsService {
     // Get userId from request if it exists otherwise this update was done using a queue
     // than get it from the request of the job of the queue
 
-    let requestUserId = this.request.userId
+    const requestUserId = this.request.userId
       ? this.request.userId
       : this.jobRef?.data?.request?.userId;
 

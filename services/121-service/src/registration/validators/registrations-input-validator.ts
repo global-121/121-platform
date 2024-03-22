@@ -43,7 +43,7 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationCsvValidationEnum,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
-    let phoneNumberLookupResults: { [key: string]: string } = {};
+    const phoneNumberLookupResults: Record<string, string> = {};
 
     const errors = [];
 
@@ -69,8 +69,6 @@ export class RegistrationsInputValidator {
       let importRecord;
       if (typeOfInput === RegistrationCsvValidationEnum.importAsRegistered) {
         importRecord = new ImportRegistrationsDto();
-      } else if (typeOfInput === RegistrationCsvValidationEnum.importAsImport) {
-        importRecord = new BulkImportDto();
       } else if (typeOfInput === RegistrationCsvValidationEnum.bulkUpdate) {
         importRecord = new BulkUpdateDto();
       }
@@ -183,18 +181,17 @@ export class RegistrationsInputValidator {
             importRecord[att.name] = row[att.name];
           }
         }
-
-        if (validationConfig.validateClassValidator) {
-          const result = await validate(importRecord);
-          if (result.length > 0) {
-            const errorObj = {
-              lineNumber: i + 1,
-              column: result[0].property,
-              value: result[0].value,
-              error: result[0]?.constraints,
-            };
-            errors.push(errorObj);
-          }
+      }
+      if (validationConfig.validateClassValidator) {
+        const result = await validate(importRecord);
+        if (result.length > 0) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: result[0].property,
+            value: result[0].value,
+            error: result[0]?.constraints,
+          };
+          errors.push(errorObj);
         }
       }
       validatedArray.push(importRecord);
@@ -421,7 +418,7 @@ export class RegistrationsInputValidator {
   private async validateLookupPhoneNumber(
     value: string,
     i: number,
-    phoneNumberLookupResults: { [key: string]: string },
+    phoneNumberLookupResults: Record<string, string>,
   ): Promise<{
     errorObj: ValidateRegistrationErrorObjectDto;
     sanitized: string;
@@ -462,7 +459,10 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private cleanNumericOrBoolean(value: string, type: string) {
+  private cleanNumericOrBoolean(
+    value: string,
+    type: string,
+  ): number | boolean | string | null {
     if (type === AnswerTypes.numeric) {
       // Convert the value to a number and return it
       // If the value is not a number, return null
