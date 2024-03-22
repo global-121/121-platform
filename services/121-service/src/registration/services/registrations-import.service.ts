@@ -35,6 +35,8 @@ import { RegistrationsInputValidator } from '../validators/registrations-input-v
 import { RegistrationsInputValidatorHelpers } from '../validators/registrations-input.validator.helper';
 import { InclusionScoreService } from './inclusion-score.service';
 
+const BATCH_SIZE = 500;
+
 @Injectable()
 export class RegistrationsImportService {
   @InjectRepository(ProgramQuestionEntity)
@@ -103,12 +105,19 @@ export class RegistrationsImportService {
       },
     );
 
-    // Call to redis as concurrent operations
-    await Promise.allSettled(
-      updateJobs.map((job) =>
-        this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(job),
-      ),
-    );
+    // Call to redis as concurrent operations in a batch
+    for (let start = 0; start < updateJobs.length; start += BATCH_SIZE) {
+      const end = Math.min(start + BATCH_SIZE, updateJobs.length);
+      await Promise.allSettled(
+        updateJobs
+          .slice(start, end)
+          .map((job) =>
+            this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
+              job,
+            ),
+          ),
+      );
+    }
   }
 
   public async getImportRegistrationsTemplate(
