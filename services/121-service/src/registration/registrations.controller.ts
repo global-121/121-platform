@@ -45,7 +45,6 @@ import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { FinancialAttributes } from '../user/enum/registration-financial-attributes.const';
 import { User } from '../user/user.decorator';
-import { UserService } from '../user/user.service';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,

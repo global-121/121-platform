@@ -43,7 +43,7 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationCsvValidationEnum,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
-    let phoneNumberLookupResults: { [key: string]: string } = {};
+    const phoneNumberLookupResults: Record<string, string> = {};
 
     const errors = [];
 
@@ -418,7 +418,7 @@ export class RegistrationsInputValidator {
   private async validateLookupPhoneNumber(
     value: string,
     i: number,
-    phoneNumberLookupResults: { [key: string]: string },
+    phoneNumberLookupResults: Record<string, string>,
   ): Promise<{
     errorObj: ValidateRegistrationErrorObjectDto;
     sanitized: string;
@@ -459,7 +459,10 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private cleanNumericOrBoolean(value: string, type: string) {
+  private cleanNumericOrBoolean(
+    value: string,
+    type: string,
+  ): number | boolean | string | null {
     if (type === AnswerTypes.numeric) {
       // Convert the value to a number and return it
       // If the value is not a number, return null

@@ -464,7 +464,11 @@ export class RegistrationsService {
     );
   }
 
-  public async patchBulk(csvFile: any, programId: number, userId: number) {
+  public async patchBulk(
+    csvFile: any,
+    programId: number,
+    userId: number,
+  ): Promise<void> {
     await this.registrationsImportService.patchBulk(csvFile, programId, userId);
   }
 
@@ -561,16 +565,16 @@ export class RegistrationsService {
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
   ): Promise<RegistrationViewEntity> {
-    const partialRegistration = updateRegistrationDto.data;
+    const oldFspData = {};
+    const newFspData = {};
+    let nrAttributesUpdated = 0;
+    const { data: partialRegistration } = updateRegistrationDto;
+
     let registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
       programId,
     );
-
-    const oldFspData = {};
-    const newFspData = {};
-    let nrAttributesUpdated = 0;
 
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);

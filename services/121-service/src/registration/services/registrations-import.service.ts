@@ -82,45 +82,47 @@ export class RegistrationsImportService {
 
     // Filter out only columns that were in the original csv
     const filteredRegistrations = validatedRegistrations.map((registration) => {
-      const filteredRegistration = {};
-      for (const key of columnNames) {
+      return columnNames.reduce((acc, key) => {
         if (key in registration) {
-          filteredRegistration[key] = registration[key];
+          acc[key] = registration[key];
         }
-      }
-      return filteredRegistration;
+        return acc;
+      }, {});
     });
 
-    // Add all to queue
-    for (const registration of filteredRegistrations) {
-      const updateData = { ...registration };
-      delete updateData['referenceId'];
-      const updateJob: RegistrationUpdateJobDto = {
-        referenceId: registration['referenceId'],
-        data: updateData,
-        programId: programId,
-      };
-      await this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
-        updateJob,
-      );
-    }
+    // Prepare the job array to push to the queue
+    const updateJobs: RegistrationUpdateJobDto[] = filteredRegistrations.map(
+      (registration) => {
+        const updateData = { ...registration };
+        delete updateData['referenceId'];
+        return {
+          referenceId: registration['referenceId'],
+          data: updateData,
+          programId,
+        } as RegistrationUpdateJobDto;
+      },
+    );
+
+    // Call to redis as concurrent operations
+    await Promise.allSettled(
+      updateJobs.map((job) =>
+        this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(job),
+      ),
+    );
   }
 
   public async getImportRegistrationsTemplate(
     programId: number,
   ): Promise<string[]> {
-    let genericAttributes: string[];
-    let dynamicAttributes: string[];
-
-    genericAttributes = [
+    const genericAttributes: string[] = [
       GenericAttributes.referenceId,
       GenericAttributes.fspName,
       GenericAttributes.phoneNumber,
       GenericAttributes.preferredLanguage,
-    ].map((item) => String(item));
-    dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
-      (d) => d.name,
-    );
+    ];
+    const dynamicAttributes: string[] = (
+      await this.getDynamicAttributes(programId)
+    ).map((d) => d.name);
 
     const program = await this.programRepository.findOneBy({
       id: programId,

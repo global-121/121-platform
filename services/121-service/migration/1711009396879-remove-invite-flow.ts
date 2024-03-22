@@ -71,7 +71,9 @@ export class RemoveInviteFlow1711009396879 implements MigrationInterface {
     );
   }
 
-  private async removeRegistrationsWithOldStatus(queryRunner: QueryRunner) {
+  private async removeRegistrationsWithOldStatus(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     const oldStatusses = [
       'invited',
       'imported',
@@ -116,7 +118,7 @@ export class RemoveInviteFlow1711009396879 implements MigrationInterface {
     schema: string,
     table: string,
     constraint: string,
-  ) {
+  ): Promise<void> {
     const result = await queryRunner.query(
       `SELECT constraint_name
        FROM information_schema.table_constraints
