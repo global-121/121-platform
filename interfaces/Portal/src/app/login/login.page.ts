@@ -108,4 +108,15 @@ export class LoginPage {
   public showSsoLogin(): boolean {
     return environment.use_sso_azure_entra === true;
   }
+
+  public openAzurePopup() {
+    this.msalService.loginPopup().subscribe({
+      next: async () => {
+        await this.authService.processAzureAuthSuccess();
+      },
+      error: (error) => {
+        console.error('Error during Azure Entra authentication', error);
+      },
+    });
+  }
 }
