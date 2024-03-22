@@ -1,14 +1,7 @@
 {
   "fsp": "fsp_no_attributes",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
-    "ar": "FSP - لا توجد سمات",
-    "en": "FSP - no attributes",
-    "es": "FSP - sin atributos",
-    "fr": "FSP - aucun attribut",
-    "nl": "FSP - geen attributen"
-  },
-  "fspDisplayNamePortal": {
+  "displayName": {
     "ar": "FSP - لا توجد سمات",
     "en": "FSP - no attributes",
     "es": "FSP - sin atributos",

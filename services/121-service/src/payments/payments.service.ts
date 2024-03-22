@@ -905,6 +905,7 @@ export class PaymentsService {
           if (matchedRegistration) {
             record['paTransactionResult'] =
               await this.vodacashService.createTransactionResult(
+                matchedRegistration.id,
                 matchedRegistration.referenceId,
                 record,
                 programId,

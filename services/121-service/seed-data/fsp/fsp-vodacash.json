@@ -2,10 +2,9 @@
   "fsp": "VodaCash",
   "integrationType": "xml",
   "hasReconciliation": true,
-  "fspDisplayNamePaApp": {
+  "displayName": {
     "en": "Vodacash"
   },
-  "fspDisplayNamePortal": "Vodacash",
   "questions": [
     {
       "name": "phoneNumber",
@@ -22,6 +21,21 @@
       "shortLabel": {
         "en": "Phone Number",
         "fr": "Numéro de téléphone"
+      }
+    },
+    {
+      "name": "healthArea",
+      "label": {
+        "en": "Health area",
+        "fr": "Aire de santé"
+      },
+      "answerType": "text",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "shortLabel": {
+        "en": "Health area",
+        "fr": "Aire de santé"
       }
     }
   ]

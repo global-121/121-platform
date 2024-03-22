@@ -1,8 +1,9 @@
 {
   "fsp": "Intersolve-visa",
   "integrationType": "api",
-  "fspDisplayNamePaApp": null,
-  "fspDisplayNamePortal": "Visa debit card",
+  "displayName": {
+    "en": "Visa debit card"
+  },
   "notifyOnTransaction": true,
   "questions": [
     {

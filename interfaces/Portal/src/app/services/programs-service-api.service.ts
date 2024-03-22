@@ -994,4 +994,12 @@ export class ProgramsServiceApiService {
       `/notifications/${programId}/message-templates`,
     );
   }
+
+  createProgram(program: Program): Promise<Program> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs',
+      program,
+    );
+  }
 }

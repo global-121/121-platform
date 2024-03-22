@@ -1,13 +1,13 @@
 services:
   121db:
-    env_file: .env
+    container_name: 121db
     image: 'postgres:14'
     init: true
-    container_name: 121db
+    env_file: .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DBNAME}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DBNAME}
     volumes:
       - './postgresql.conf:/etc/postgresql.conf'
       - './init.sql:/docker-entrypoint-initdb.d/init.sql'
@@ -32,12 +32,12 @@ services:
       - '6379:6379'
 
   mock-service:
-    env_file: .env
+    container_name: mock-service
     build:
       context: mock-service
       target: production
     init: true
-    container_name: mock-service
+    env_file: .env
     ports:
       - '3001:3001'
     stdin_open: true
@@ -51,12 +51,12 @@ services:
       timeout: 10s
 
   121-service:
-    env_file: .env
+    container_name: 121-service
     build:
       context: 121-service
       target: production
     init: true
-    container_name: 121-service
+    env_file: .env
     environment:
       - GLOBAL_121_VERSION
     ports:

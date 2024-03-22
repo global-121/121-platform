@@ -17,7 +17,7 @@ export class RegistrationResponse {
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
   public fsp: FspName | string;
-  public fspDisplayNamePortal: string;
+  public fspDisplayName: string;
   public hasNote: boolean;
 
   public paymentAmountMultiplier?: number;

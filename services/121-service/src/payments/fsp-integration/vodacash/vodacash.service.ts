@@ -118,7 +118,7 @@ export class VodacashService
     const healthArea =
       await this.registrationDataService.getRegistrationDataValueByName(
         registration,
-        ' A. 5. Village/Quartier :  ',
+        'healthArea',
       );
     this.setValue(vodcashInstructionCustomer, 'Comment', 'Value', healthArea);
 
@@ -170,7 +170,7 @@ export class VodacashService
     return await this.registrationsPaginationService.getRegistrationsChunked(
       programId,
       {
-        select: ['phoneNumber'],
+        select: ['phoneNumber', 'referenceId', 'id'],
         path: '',
       },
       chunkSize,
@@ -190,12 +190,14 @@ export class VodacashService
   }
 
   public async createTransactionResult(
+    registrationdId: number,
     referenceId: string,
     record: ImportFspReconciliationArrayDto,
     programId: number,
     payment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.registrationId = registrationdId;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.fspName = FspName.vodacash;
     paTransactionResult.status = StatusEnum.error;

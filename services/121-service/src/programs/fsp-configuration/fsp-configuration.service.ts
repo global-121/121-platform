@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspConfigurationMapping } from '../../fsp/enum/fsp-name.enum';
+import {
+  FspConfigurationEnum,
+  FspConfigurationMapping,
+} from '../../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
@@ -58,9 +61,7 @@ export class ProgramFspConfigurationService {
     programFspConfiguration.programId = programId;
     programFspConfiguration.fspId = programFspConfigurationDto.fspId;
     programFspConfiguration.name = programFspConfigurationDto.name;
-    programFspConfiguration.value = this.formatInputValue(
-      programFspConfigurationDto.value,
-    );
+    programFspConfiguration.value = programFspConfigurationDto.value;
 
     try {
       const resProgramFspConfiguration =
@@ -98,33 +99,9 @@ export class ProgramFspConfigurationService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     result.name = updateProgramFspConfigurationDto.name;
-    result.value = this.formatInputValue(
-      updateProgramFspConfigurationDto.value,
-    );
+    result.value = updateProgramFspConfigurationDto.value;
     await this.programFspConfigurationRepository.save(result);
     return programFspConfigurationId;
-  }
-
-  private formatInputValue(value: string | string[]): string {
-    // check if value is an environment variable
-
-    let error = false;
-    if (Array.isArray(value)) {
-      for (const element of value) {
-        if (typeof element !== 'string') {
-          error = true;
-        }
-      }
-    } else if (typeof value !== 'string') {
-      error = true;
-    }
-    if (error) {
-      throw new HttpException(
-        'Invalid value type. Must be string or array of strings.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return Array.isArray(value) ? JSON.stringify(value) : value;
   }
 
   public async delete(
@@ -143,5 +120,21 @@ export class ProgramFspConfigurationService {
     await this.programFspConfigurationRepository.delete({
       id: programFspConfigurationId,
     });
+  }
+
+  public async findDisplayNameConfiguration(
+    programId: number,
+    fspId: number,
+  ): Promise<ProgramFspConfigurationEntity> {
+    const programFspConfiguration =
+      await this.programFspConfigurationRepository.findOne({
+        where: {
+          fspId,
+          programId: programId,
+          name: FspConfigurationEnum.displayName,
+        },
+      });
+
+    return programFspConfiguration;
   }
 }

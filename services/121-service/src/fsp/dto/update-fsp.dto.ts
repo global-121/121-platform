@@ -62,9 +62,5 @@ export class CreateFspAttributeDto extends UpdateFspAttributeDto {
 export class UpdateFspDto {
   @ApiProperty({ example: { en: 'FSP PA-app display name' } })
   @IsOptional()
-  public readonly fspDisplayNamePaApp: JSON;
-
-  @ApiProperty({ example: 'FSP portal display name' })
-  @IsOptional()
-  public readonly fspDisplayNamePortal: string;
+  public readonly displayName: JSON;
 }

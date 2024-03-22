@@ -14,7 +14,7 @@ export class Person {
   status: RegistrationStatus;
   note?: string;
   financialServiceProvider?: string;
-  fspDisplayNamePortal?: string;
+  fspDisplayName?: string;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
