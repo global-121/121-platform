@@ -102,14 +102,7 @@ export class LoginPage {
   }
 
   public loginSso() {
-    this.msalService.loginPopup().subscribe({
-      next: async () => {
-        await this.authService.processAzureAuthSuccess();
-      },
-      error: (error) => {
-        console.error('Error during Azure Entra authentication', error);
-      },
-    });
+    this.msalService.loginRedirect();
   }
 
   public showSsoLogin(): boolean {
