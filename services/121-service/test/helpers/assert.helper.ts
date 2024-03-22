@@ -76,4 +76,4 @@ export function assertRegistrationImport(response: any, expected: any) {
   expect(response.addressStreet).toBe(expected.addressStreet);
   expect(response.addressHouseNumber).toBe(expected.addressHouseNumber);
   expect(response.addressHouseNumberAddition).toBe(expected.addressHouseNumberAddition);
-};
+}
