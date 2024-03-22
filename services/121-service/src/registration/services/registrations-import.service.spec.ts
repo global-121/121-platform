@@ -1,10 +1,12 @@
 import { TestBed } from '@automock/jest';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
-import { UserService } from '../../user/user.service';
+import { ProgramService } from '../../programs/programs.service';
 import { GenericAttributes } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
+import { RegistrationsInputValidator } from '../validators/registrations-input-validator';
 import { RegistrationsImportService } from './registrations-import.service';
 
 describe('RegistrationsImportService', () => {
@@ -32,11 +34,36 @@ describe('RegistrationsImportService', () => {
     ).compile();
     registrationsImportService = unit;
 
-    // Mock userService.getUserScopeForProgram
-    const userService = unitRef.get(UserService);
+    // Mock programService.findProgramOrThrow
+    const programService = unitRef.get(ProgramService);
     jest
-      .spyOn(userService as any, 'getUserScopeForProgram')
-      .mockImplementation(() => null);
+      .spyOn(programService as any, 'findProgramOrThrow')
+      .mockImplementation(() => ({
+        allowEmptyPhoneNumber: false,
+      }));
+
+    // Mock registrationsInputValidator.findProgramOrThrow
+    const registrationsInputValidator = unitRef.get(
+      RegistrationsInputValidator,
+    );
+    jest
+      .spyOn(
+        registrationsInputValidator as any,
+        'validateAndCleanRegistrationsInput',
+      )
+      .mockImplementation(() => {
+        throw new HttpException(
+          [
+            {
+              lineNumber: 1,
+              column: GenericAttributes.phoneNumber,
+              value: '',
+              error: 'PhoneNumber is not allowed to be empty',
+            },
+          ],
+          HttpStatus.BAD_REQUEST,
+        );
+      });
 
     // Mock getDynamicAttributes
     jest
@@ -64,8 +91,6 @@ describe('RegistrationsImportService', () => {
       // Arrange
       importRegistrationsCsvInput[0].phoneNumber = '';
       const userId = 1;
-
-      // Act
 
       // Assert
       await expect(
