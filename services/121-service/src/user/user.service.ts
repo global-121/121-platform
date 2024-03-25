@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { In, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -474,6 +474,19 @@ export class UserService {
         'programAssignments.roles.permissions',
       ],
     });
+    const userWithEqual = await this.userRepository.findOne({
+      where: { username: Equal(username) },
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+    console.log('🚀 ~ UserService ~ findByUsernameOrThrow ~ user:', user);
+    console.log(
+      '🚀 ~ UserService ~ findByUsernameOrThrow ~ userWithEqual:',
+      userWithEqual,
+    );
 
     if (!user) {
       const errors = { User: ' not found' };
