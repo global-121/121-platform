@@ -156,11 +156,6 @@ describe('Do payment with Excel FSP', () => {
       // Also check if the right amount of transactions are created
       expect(fspInstructions.length).toBe(referenceIdsWesteros.length);
 
-      // Also check if the right phonenumber are in the transactions
-      expect(fspInstructions.map((r) => r.phoneNumber).sort()).toEqual(
-        phoneNumbersWesteros.sort(),
-      );
-
       // Check if the rows are created with the right values
       for (const row of fspInstructions) {
         const registration = registrationsWesteros.find(
@@ -171,7 +166,9 @@ describe('Do payment with Excel FSP', () => {
             const multipliedAmount = amount * (registration.dragon + 1);
             expect(value).toBe(multipliedAmount);
           } else {
-            expect(value).toEqual(String(registration[key]));
+            const expectedValue =
+              key !== 'phoneNumber' ? String(registration[key]) : null;
+            expect(value).toEqual(expectedValue);
           }
         }
       }
