@@ -68,7 +68,7 @@ export class AzureAdStrategy
     }
 
     let user: UserEntity;
-    const username = payload.unique_name;
+    const username = payload.unique_name?.toLowerCase();
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
 
