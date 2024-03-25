@@ -467,7 +467,7 @@ export class UserService {
 
   public async findByUsernameOrThrow(username: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { username: Equal(username) },
+      where: { username: Equal(username.toLowerCase()) },
       relations: [
         'programAssignments',
         'programAssignments.roles',
