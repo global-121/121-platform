@@ -587,7 +587,7 @@ export class RegistrationsService {
           registrationToUpdate,
           attributeKey,
         );
-      if (registrationData && registrationData.fspQuestionId) {
+      if (registrationData?.fspQuestionId) {
         oldFspData[attributeKey] = registrationData.value;
       }
 

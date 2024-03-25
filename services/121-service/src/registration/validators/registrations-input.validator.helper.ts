@@ -3,11 +3,17 @@ export class RegistrationsInputValidatorHelpers {
     if (typeof string === 'boolean') {
       return string;
     }
+
+    if (string === null) {
+      return false;
+    }
+
     if (string === undefined) {
       return this.isValueUndefinedOrNull(defaultValue)
         ? undefined
         : defaultValue;
     }
+
     switch (string.toLowerCase().trim()) {
       case 'true':
       case 'yes':
@@ -17,7 +23,6 @@ export class RegistrationsInputValidatorHelpers {
       case 'no':
       case '0':
       case '':
-      case null:
         return false;
       default:
         return this.isValueUndefinedOrNull(defaultValue)
