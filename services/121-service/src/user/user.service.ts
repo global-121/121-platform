@@ -467,14 +467,6 @@ export class UserService {
 
   public async findByUsernameOrThrow(username: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { username: username },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
-    });
-    const userWithEqual = await this.userRepository.findOne({
       where: { username: Equal(username) },
       relations: [
         'programAssignments',
@@ -483,10 +475,6 @@ export class UserService {
       ],
     });
     console.log('🚀 ~ UserService ~ findByUsernameOrThrow ~ user:', user);
-    console.log(
-      '🚀 ~ UserService ~ findByUsernameOrThrow ~ userWithEqual:',
-      userWithEqual,
-    );
 
     if (!user) {
       const errors = { User: ' not found' };
