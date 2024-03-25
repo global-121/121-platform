@@ -474,7 +474,6 @@ export class UserService {
         'programAssignments.roles.permissions',
       ],
     });
-    console.log('🚀 ~ UserService ~ findByUsernameOrThrow ~ user:', user);
 
     if (!user) {
       const errors = { User: ' not found' };

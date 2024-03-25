@@ -63,8 +63,6 @@ export class AzureAdStrategy
   }
 
   async validate(request: any, payload: any): Promise<any> {
-    console.log('🚀 ~ validate ~ request:', request);
-    console.log('🚀 ~ validate ~ payload:', payload);
     if (!payload) {
       throw new UnauthorizedException();
     }
