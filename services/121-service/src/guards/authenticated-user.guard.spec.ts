@@ -34,7 +34,7 @@ describe('AuthenticatedUserGuard', () => {
       switchToHttp: () => ({
         getRequest: () => ({}),
       }),
-      getHandler: () => {}, // Mock getHandler as an empty function
+      getHandler: () => ({}), // Mock getHandler as an empty function
     } as unknown as ExecutionContext;
 
     expect(await guard.canActivate(context)).toBe(true);
@@ -48,7 +48,7 @@ describe('AuthenticatedUserGuard', () => {
       switchToHttp: () => ({
         getRequest: () => ({}),
       }),
-      getHandler: () => {}, // Mock getHandler as an empty function
+      getHandler: () => ({}), // Mock getHandler as an empty function
     } as unknown as ExecutionContext;
 
     const canActivateSpy = jest
