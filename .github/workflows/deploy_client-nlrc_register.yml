@@ -4,7 +4,7 @@ name: 'Deploy [NLRC] Interface: Register (PA)'
 
 env:
   workingDirectory: interfaces/PA-App
-  redirectTarget: https://www.rodekruis.nl/en/#get-in-touch
+  redirectTarget: https://www.rodekruis.nl/programma-voedsel
 
 permissions:
   actions: read
