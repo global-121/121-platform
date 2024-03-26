@@ -469,7 +469,11 @@ export class RegistrationsService {
     programId: number,
     userId: number,
   ): Promise<void> {
-    await this.registrationsImportService.patchBulk(csvFile, programId, userId);
+    return await this.registrationsImportService.patchBulk(
+      csvFile,
+      programId,
+      userId,
+    );
   }
 
   public async importValidatedRegistrations(

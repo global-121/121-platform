@@ -466,7 +466,7 @@ export class RegistrationsImportService {
     const validationConfig = new ValidationConfigDto();
     validationConfig.validateExistingReferenceId = false;
     validationConfig.validatePhoneNumberEmpty = !program.allowEmptyPhoneNumber;
-    validationConfig.validatePhoneNumberLookup = true;
+    validationConfig.validatePhoneNumberLookup = false;
     validationConfig.validateClassValidator = true;
     validationConfig.validateUniqueReferenceId = false;
     validationConfig.validateScope = true;
