@@ -22,6 +22,7 @@ import {
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { KoboConnectService } from '../kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
@@ -49,6 +50,7 @@ export class ProgramController {
   public constructor(
     private readonly programService: ProgramService,
     private readonly programAttributesService: ProgramAttributesService,
+    private readonly koboConnectService: KoboConnectService,
   ) {}
 
   @ApiOperation({ summary: 'Get program by id' })
@@ -110,18 +112,59 @@ export class ProgramController {
   }
 
   @Admin()
-  @ApiOperation({ summary: 'Create program' })
+  @ApiOperation({ summary: 'Create a program.' })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully created.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiQuery({
+    name: 'importFromKobo',
+    required: false,
+    type: 'boolean',
+    description: 'Create a program from an import using the Kobo-Connect API',
+  })
+  @ApiQuery({
+    name: 'koboToken',
+    required: false,
+    type: 'string',
+    description: 'A valid Kobo token (requires `importFromKobo` to be `true`',
+  })
+  @ApiQuery({
+    name: 'koboAssetId',
+    required: false,
+    type: 'string',
+    description:
+      'A valid Kobo asset-ID (requires `importFromKobo` to be `true`',
+  })
   @Post()
   public async create(
-    @Body() programData: CreateProgramDto,
-    @User('id') userId: number,
+    @Body()
+    programData: CreateProgramDto | Partial<CreateProgramDto>,
+
+    @User('id')
+    userId: number,
+
+    @Query()
+    queryParams?: {
+      importFromKobo: boolean;
+      koboToken: string;
+      koboAssetId: string;
+    } | null,
   ): Promise<ProgramEntity> {
-    return this.programService.create(programData, userId);
+    if (
+      queryParams.importFromKobo &&
+      queryParams.koboToken &&
+      queryParams.koboAssetId
+    ) {
+      programData = await this.koboConnectService.create(
+        queryParams.koboToken,
+        queryParams.koboAssetId,
+        programData,
+      );
+    }
+
+    return this.programService.create(programData as any, userId);
   }
 
   @Admin()
