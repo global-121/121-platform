@@ -17,8 +17,9 @@ export class EntraCallbackComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.msalService.handleRedirectObservable().subscribe({
-      next: async () => {
-        await this.authService.processAzureAuthSuccess();
+      next: async (value) => {
+        console.log('🚀 ~ EntraCallbackComponent ~ next: ~ value:', value);
+        await this.authService.processAzureAuthSuccess(false);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
