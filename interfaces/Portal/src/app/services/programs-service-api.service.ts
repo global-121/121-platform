@@ -1034,6 +1034,14 @@ export class ProgramsServiceApiService {
     );
   }
 
+  createProgramFromKobo(token: string, assetId: string): Promise<Program> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs?importFromKobo=true${token ? `&koboToken=${token}` : ''}${assetId ? `&koboAssetId=${assetId}` : ''}`,
+      {},
+    );
+  }
+
   createProgram(program: Program): Promise<Program> {
     return this.apiService.post(
       environment.url_121_service_api,

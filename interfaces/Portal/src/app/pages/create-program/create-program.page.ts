@@ -1,14 +1,11 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from '../../../environments/environment';
-import { Program } from '../../models/program.model';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -17,22 +14,20 @@ import { User } from '../../models/user.model';
   styleUrls: ['./create-program.page.scss'],
 })
 export class CreateProgramPage implements AfterViewInit {
+  @ViewChild('createProgramForm')
+  public createProgramForm: NgForm;
+
   public koboTokenValue = '';
   public koboAssetIdValue = '';
-
   public isAdmin: boolean;
-
-  public isAlertOpen = false;
-  public alertMessage: string;
-
+  public errorMessage: string;
   public inProgress = false;
-
-  public isCreateProgramEnabled = !!environment.url_create_program_api;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
-    private http: HttpClient,
+    private router: Router,
+    private translate: TranslateService,
   ) {}
 
   async ngAfterViewInit() {
@@ -42,83 +37,56 @@ export class CreateProgramPage implements AfterViewInit {
   }
 
   public async createProgram() {
+    if (this.createProgramForm.invalid || this.inProgress) {
+      return;
+    }
+
     this.inProgress = true;
 
-    const httpHeaders: HttpHeaders = new HttpHeaders({
-      kobotoken: this.koboTokenValue,
-      koboasset: this.koboAssetIdValue,
-    });
-
-    const res: Program = await new Promise((resolve, reject) =>
-      this.http
-        .get(environment.url_create_program_api, { headers: httpHeaders })
-        .pipe(
-          tap((response) =>
-            console.log(
-              `ApiService GET: ${this.createProgramEndpoint}`,
-              '\nResponse:',
-              response,
-            ),
-          ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error),
-          ),
-        )
-        .toPromise()
-        .then((response) => {
-          if (response && response.error) {
-            this.openAlert(
-              'There was a problem in fetching the program from Kobo',
-            );
-            throw response;
-          }
-          return resolve(response);
-        })
-        .catch((err) => reject(err)),
-    );
-
     try {
-      this.programsService.createProgram(res);
-      this.openAlert('Program created successfully!');
+      const result = await this.programsService.createProgramFromKobo(
+        this.koboTokenValue,
+        this.koboAssetIdValue,
+      );
+
+      if (!result || !result.id) {
+        throw new Error('No Program-ID returned.');
+      }
+
+      this.resetForm();
+
+      this.router.navigate([AppRoutes.program, result.id, ProgramPhase.design]);
+
+      return;
     } catch (error) {
       console.error(error);
-      this.openAlert('There was a problem in creating the program');
+
+      this.inProgress = false;
+      let errorResult = error;
+
+      if (error.error && error.error.message) {
+        errorResult = error.error.message;
+      }
+
+      if (error.error && error.error.errors) {
+        errorResult = errorResult.concat(': ', error.error.errors.join(' - '));
+      }
+
+      if (errorResult) {
+        this.errorMessage = this.translate.instant(
+          'common.error-with-message',
+          { error: errorResult },
+        );
+        return;
+      }
+
+      this.errorMessage = this.translate.instant('common.unknown-error');
     }
   }
 
-  public disableCreateProgramButton(): boolean {
-    if (
-      !this.koboTokenValue ||
-      !this.koboAssetIdValue ||
-      this.koboTokenValue === '' ||
-      this.koboAssetIdValue === ''
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    console.error(error);
-
-    return of(error);
-  }
-
-  private openAlert(message: string) {
-    this.alertMessage = message;
-    this.isAlertOpen = true;
+  public resetForm() {
+    this.createProgramForm.resetForm();
+    this.errorMessage = '';
     this.inProgress = false;
-  }
-
-  public dismissAlert() {
-    this.isAlertOpen = false;
-    this.clearFields();
-  }
-
-  public clearFields() {
-    this.koboTokenValue = '';
-    this.koboAssetIdValue = '';
   }
 }

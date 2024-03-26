@@ -114,7 +114,6 @@
         }
       },
       "no-permission": "You don't have the permission to create a program.",
-      "not-enabled": "Program creation is not enabled",
       "pageTitle": "Create Program"
     },
     "dashboard": {
