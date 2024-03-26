@@ -24,7 +24,6 @@ export class MetricRow {
 }
 
 export enum MetricGroup {
-  aidworkers = 'aidworkers',
   financial = 'financial',
   pa = 'pa',
   programProperties = 'program-properties',
