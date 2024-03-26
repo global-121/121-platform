@@ -274,7 +274,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Assigned aidworkers",
         "distributionDuration": "Distribution duration",
         "distributionFrequency": "Distribution frequency",
         "endDate": "End date",
