@@ -112,7 +112,7 @@ export class LoginPage {
   public openAzurePopup() {
     this.msalService.loginPopup().subscribe({
       next: async () => {
-        await this.authService.processAzureAuthSuccess();
+        await this.authService.processAzureAuthSuccess(false);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
