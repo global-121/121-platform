@@ -5,6 +5,7 @@
     "answer-is-required": "An answer is required for this question.",
     "apply": "Apply",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
