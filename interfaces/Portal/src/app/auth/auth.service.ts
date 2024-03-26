@@ -155,8 +155,8 @@ export class AuthService {
   private processAzureUserSignIn(userRO: any) {
     localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
-    const isIframe = window !== window.parent && !window.opener;
-    if (!isIframe) {
+    // Only redirect if not in iframe
+    if (window.self === window.top) {
       this.router.navigate(['/', AppRoutes.home]);
     }
   }
