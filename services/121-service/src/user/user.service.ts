@@ -235,6 +235,7 @@ export class UserService {
     userType: UserType,
     isEntraUser = false,
   ): Promise<UserEntity> {
+    username = username.toLowerCase();
     // check uniqueness of email
     const qb = this.userRepository
       .createQueryBuilder('user')
@@ -597,10 +598,11 @@ export class UserService {
   }
 
   public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const username = loginUserDto.username.toLowerCase();
     const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
-      .where({ username: loginUserDto.username })
+      .where({ username: username })
       .getOne();
 
     if (!saltCheck) {
@@ -610,7 +612,7 @@ export class UserService {
     const userSalt = saltCheck.salt;
 
     const findOneOptions = {
-      username: loginUserDto.username,
+      username: username,
       password: userSalt
         ? crypto
             .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
