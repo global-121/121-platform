@@ -94,7 +94,6 @@ export class RegistrationsInputValidator {
        * Validate default registration attributes
        * ========================================
        */
-
       const errorObjScope = this.validateRowScope(
         row,
         userScope,
@@ -139,6 +138,7 @@ export class RegistrationsInputValidator {
       if (errorObj) {
         errors.push(errorObj);
       }
+      importRecord.phoneNumber = row.phoneNumber;
 
       /*
        * =============================================
