@@ -70,9 +70,11 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
+
   if (!process.env.REDIS_PREFIX) {
     throw new Error('REDIS_PREFIX not set');
   }
+
   const notAllowedRegex = /[\0\n\r :]/;
   if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
     throw new Error('REDIS_PREFIX contains one or more not allowed characters');
@@ -139,10 +141,16 @@ async function bootstrap(): Promise<void> {
       SWAGGER_CUSTOM_JS,
     ).toString('base64url')}`,
     swaggerOptions: {
-      persistAuthorization: true,
-      tagsSorter: 'alpha',
+      // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
+      deepLinking: true,
+      displayRequestDuration: true,
+      filter: true,
       operationsSorter: 'alpha',
-      defaultModelExpandDepth: 10,
+      persistAuthorization: true,
+      showExtensions: true,
+      showCommonExtensions: true,
+      tagsSorter: 'alpha',
+      tryItOutEnabled: DEBUG,
     },
   });
 
@@ -193,6 +201,7 @@ async function bootstrap(): Promise<void> {
     process.exit(1);
   });
 }
+
 void bootstrap();
 
 if (!!process.env.APPLICATION_INSIGHT_IKEY) {
