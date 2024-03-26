@@ -7,6 +7,11 @@ export class IsEntraUserBoolean1710319349965 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."user" ADD "isEntraUser" boolean NOT NULL DEFAULT false`,
     );
+
+    // Set all usernames to lowercase
+    await queryRunner.query(
+      `UPDATE "121-service"."user" SET username = LOWER(username)`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
