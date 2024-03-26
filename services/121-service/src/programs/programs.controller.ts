@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   Patch,
   Post,
   Query,
@@ -13,12 +14,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -112,7 +116,9 @@ export class ProgramController {
   }
 
   @Admin()
-  @ApiOperation({ summary: 'Create a program.' })
+  @ApiOperation({
+    summary: `Create a program. You can either create it using the body or import a program from a kobo form using the 'importFromKobo' query param. If you create a program from kobo you can overwrite program properties using the body. If you do not want to overwrite any properties you can leave the body empty.`,
+  })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully created.',
@@ -137,6 +143,7 @@ export class ProgramController {
     description:
       'A valid Kobo asset-ID (requires `importFromKobo` to be `true`',
   })
+  @ApiBody({ type: CreateProgramDto, required: false })
   @Post()
   public async create(
     @Body()
@@ -144,24 +151,32 @@ export class ProgramController {
 
     @User('id')
     userId: number,
-
+    @Query('importFromKobo', new ParseBoolPipe()) importFromKobo: boolean,
     @Query()
     queryParams?: {
-      importFromKobo: boolean;
       koboToken: string;
       koboAssetId: string;
     } | null,
   ): Promise<ProgramEntity> {
-    if (
-      queryParams.importFromKobo &&
-      queryParams.koboToken &&
-      queryParams.koboAssetId
-    ) {
-      programData = await this.koboConnectService.create(
-        queryParams.koboToken,
-        queryParams.koboAssetId,
-        programData,
-      );
+    if (importFromKobo) {
+      if (queryParams.koboToken && queryParams.koboAssetId)
+        programData = await this.koboConnectService.create(
+          queryParams.koboToken,
+          queryParams.koboAssetId,
+          programData,
+        );
+      else {
+        throw new HttpException(
+          {
+            message: `If 'importFromKobo' is true you need to provide a 'koboToken' and 'koboAssetId'`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    const errors = await validate(plainToClass(CreateProgramDto, programData));
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
     return this.programService.create(programData as any, userId);
