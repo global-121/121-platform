@@ -116,7 +116,7 @@ export class LoginPage {
     this.msalService.loginPopup().subscribe({
       next: async () => {
         await this.authService.processAzureAuthSuccess(false);
-        await this.router.navigate(['/', AppRoutes.home]);
+        await this.router.navigate(['/', AppRoutes.iframe]);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
