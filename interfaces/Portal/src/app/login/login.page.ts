@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 
@@ -41,6 +43,7 @@ export class LoginPage {
     private authService: AuthService,
     private translate: TranslateService,
     private msalService: MsalService,
+    private router: Router,
   ) {}
 
   ionViewWillLeave(): void {
@@ -113,6 +116,7 @@ export class LoginPage {
     this.msalService.loginPopup().subscribe({
       next: async () => {
         await this.authService.processAzureAuthSuccess(false);
+        await this.router.navigate(['/', AppRoutes.home]);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
