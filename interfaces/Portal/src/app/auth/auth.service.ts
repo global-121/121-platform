@@ -155,7 +155,10 @@ export class AuthService {
   private processAzureUserSignIn(userRO: any) {
     localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
-    this.router.navigate(['/', AppRoutes.home]);
+    const isIframe = window !== window.parent && !window.opener;
+    if (!isIframe) {
+      this.router.navigate(['/', AppRoutes.home]);
+    }
   }
 
   public async setPassword(
