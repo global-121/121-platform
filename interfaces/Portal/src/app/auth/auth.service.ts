@@ -147,16 +147,15 @@ export class AuthService {
     });
   }
 
-  public async processAzureAuthSuccess(): Promise<void> {
+  public async processAzureAuthSuccess(redirectToHome = true): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
-    this.processAzureUserSignIn(userDto.user);
+    this.processAzureUserSignIn(userDto.user, redirectToHome);
   }
 
-  private processAzureUserSignIn(userRO: any) {
+  private processAzureUserSignIn(userRO: any, redirectToHome: boolean) {
     localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
-    // Only redirect if not in iframe
-    if (window.self === window.top) {
+    if (redirectToHome) {
       this.router.navigate(['/', AppRoutes.home]);
     }
   }
