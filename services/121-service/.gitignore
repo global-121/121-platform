@@ -19,3 +19,10 @@ swagger-spec.json
 
 # certificates
 cert/DigiCertGlobalRootCA.crt.pem
+
+# Compodoc documentation
+documentation
+
+# AppMap
+tmp
+sql_warning.txt
