@@ -63,7 +63,7 @@ export class AuthService {
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-    if (Object.keys(user.permissions).length === 0) {
+    if (Object.keys(user.permissions)[programId] === undefined) {
       await this.processAzureAuthSuccess(false);
     }
     return (
@@ -149,6 +149,7 @@ export class AuthService {
     });
   }
 
+  // TODO: Think of a better name for this method
   public async processAzureAuthSuccess(redirectToHome = true): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
     this.processAzureUserSignIn(userDto.user, redirectToHome);
