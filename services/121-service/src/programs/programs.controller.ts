@@ -175,7 +175,12 @@ You can also leave the body empty.`,
     @User('id')
     userId: number,
 
-    @Query('importFromKobo', new ParseBoolPipe())
+    @Query(
+      'importFromKobo',
+      new ParseBoolPipe({
+        optional: true,
+      }),
+    )
     importFromKobo: boolean,
 
     @Query()
