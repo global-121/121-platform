@@ -184,17 +184,17 @@ You can also leave the body empty.`,
     )
     importFromKobo: boolean,
 
-    @Query()
-    queryParams?: {
-      koboToken: string;
-      koboAssetId: string;
-    } | null,
+    @Query('koboToken')
+    koboToken: string,
+
+    @Query('koboAssetId')
+    koboAssetId: string,
   ): Promise<ProgramEntity> {
     if (importFromKobo) {
-      if (queryParams.koboToken && queryParams.koboAssetId)
+      if (koboToken && koboAssetId)
         programData = await this.koboConnectService.create(
-          queryParams.koboToken,
-          queryParams.koboAssetId,
+          koboToken,
+          koboAssetId,
           programData,
         );
       else {
