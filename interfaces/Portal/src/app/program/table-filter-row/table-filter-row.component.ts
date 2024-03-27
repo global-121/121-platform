@@ -130,6 +130,10 @@ export class TableFilterRowComponent {
   }
 
   public showQuickSearchTooltip(): boolean {
+    if (!this.textFilterOption || !this.textFilterOption.length) {
+      return false;
+    }
+
     if (
       this.textFilterOption[0].name ===
       this.filterService.DEFAULT_FILTER_OPTION.name
