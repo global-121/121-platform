@@ -101,7 +101,7 @@ export class ProgramPayoutComponent implements OnInit {
     if (!this.canViewPayment && !this.canMakeExport && !this.canMakePayment) {
       return;
     }
-    this.canMakeFspInstructions = this.checkCanMakeFspInstructions();
+    this.canMakeFspInstructions = await this.checkCanMakeFspInstructions();
     this.canImportFspReconciliation = this.checkCanImportFspReconciliation();
 
     await this.createPayments();
@@ -111,7 +111,7 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
-    this.showCbeValidationButton = this.checkShowCbeValidation();
+    this.showCbeValidationButton = await this.checkShowCbeValidation();
   }
 
   private async getPaymentInProgress(): Promise<void> {
@@ -158,8 +158,8 @@ export class ProgramPayoutComponent implements OnInit {
     return visaFsp && hasPermission;
   }
 
-  private checkCanMakeFspInstructions(): boolean {
-    return this.authService.hasPermission(
+  private async checkCanMakeFspInstructions(): Promise<boolean> {
+    return await this.authService.hasPermission(
       this.program.id,
       Permission.PaymentFspInstructionREAD,
     );
@@ -173,11 +173,11 @@ export class ProgramPayoutComponent implements OnInit {
     ]);
   }
 
-  checkShowCbeValidation(): boolean {
+  async checkShowCbeValidation(): Promise<boolean> {
     const hasCbeProvider = this.program?.financialServiceProviders?.some(
       (fsp) => fsp.fsp === FspName.commercialBankEthiopia,
     );
-    const hasPermission = this.authService.hasPermission(
+    const hasPermission = await this.authService.hasPermission(
       this.program.id,
       Permission.PaymentFspInstructionREAD,
     );

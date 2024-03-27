@@ -51,11 +51,11 @@ export class AuthService {
     );
   }
 
-  public hasPermission(
+  public async hasPermission(
     programId: number,
     requiredPermission: Permission,
     user?: User | null,
-  ): boolean {
+  ): Promise<boolean> {
     if (!user) {
       user = this.getUserFromStorage();
     }
@@ -63,6 +63,9 @@ export class AuthService {
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
+    if (Object.keys(user.permissions).length === 0) {
+      await this.processAzureAuthSuccess(false);
+    }
     return (
       user &&
       user.permissions &&

@@ -37,11 +37,11 @@ export class ProgramNavigationComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    this.canReadAidWorkers = this.authService.hasPermission(
+    this.canReadAidWorkers = await this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramREAD,
     );
-    this.canViewMetrics = this.authService.hasPermission(
+    this.canViewMetrics = await this.authService.hasPermission(
       this.programId,
       Permission.ProgramMetricsREAD,
     );

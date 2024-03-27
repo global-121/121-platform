@@ -25,7 +25,7 @@ export class EvaluationPage implements OnInit {
   public async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    this.canViewMetrics = this.authService.hasPermission(
+    this.canViewMetrics = await this.authService.hasPermission(
       this.programId,
       Permission.ProgramMetricsREAD,
     );

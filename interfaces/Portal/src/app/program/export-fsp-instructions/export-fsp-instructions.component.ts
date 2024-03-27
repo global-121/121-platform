@@ -71,7 +71,12 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
         ? 'page.program.export-fsp-intructions.sub-message.reconciliation'
         : 'page.program.export-fsp-intructions.sub-message.no-reconciliation',
     );
-    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
+    if (
+      await this.authService.hasPermission(
+        this.programId,
+        Permission.ActionREAD,
+      )
+    ) {
       const actionTimestamp =
         await this.latestActionService.getLatestActionTime(
           ActionType.exportFspInstructions,
