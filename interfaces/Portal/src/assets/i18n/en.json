@@ -458,6 +458,7 @@
         "filter-label": "Select filter:",
         "filter-placeholder": "Type value...",
         "filter-quick-search": "Quick search",
+        "filter-quick-search-tooltip": "Quick search explanation",
         "language": {
           "ar": "Arabic",
           "en": "English",

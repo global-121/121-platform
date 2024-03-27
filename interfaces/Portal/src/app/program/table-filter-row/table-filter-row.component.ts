@@ -128,4 +128,15 @@ export class TableFilterRowComponent {
 
     this.filterRowsVisibleQuery = filter.value;
   }
+
+  public showQuickSearchTooltip(): boolean {
+    if (
+      this.textFilterOption[0].name ===
+      this.filterService.DEFAULT_FILTER_OPTION.name
+    ) {
+      return true;
+    }
+
+    return false;
+  }
 }
