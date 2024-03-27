@@ -39,7 +39,9 @@ export class TableFilterRowComponent {
   @ViewChild('statusTableFilter')
   public statusTableFilter: StatusTableFilterComponent;
 
-  public textFilterOption: Filter[] = [];
+  public textFilterOption: Filter[] = [
+    this.filterService.DEFAULT_FILTER_OPTION,
+  ];
 
   public textFilter: Observable<PaginationFilter[]>;
 
@@ -125,5 +127,16 @@ export class TableFilterRowComponent {
     ];
 
     this.filterRowsVisibleQuery = filter.value;
+  }
+
+  public showQuickSearchTooltip(): boolean {
+    if (
+      this.textFilterOption[0].name ===
+      this.filterService.DEFAULT_FILTER_OPTION.name
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }

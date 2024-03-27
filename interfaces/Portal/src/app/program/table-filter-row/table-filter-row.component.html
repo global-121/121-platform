@@ -12,13 +12,17 @@
       class="util--flex-row ion-align-items-center"
       style="flex-basis: 80%"
     >
-      <span>
+      <span
+        class="ion-align-items-center ion-text-right"
+        style="width: 9rem"
+      >
         <ion-icon
           name="funnel"
           color="black"
           aria-hidden="true"
-          class="ion-margin-start"
         ></ion-icon>
+
+        {{ 'page.program.program-people-affected.filter-label' | translate }}
       </span>
 
       <app-select-typeahead
@@ -29,9 +33,18 @@
         "
         [multiple]="false"
         [disabled]="isLoading"
-        class="tfr--text-filter--select ion-margin-end"
+        class="tfr--text-filter--select"
       ></app-select-typeahead>
-
+      <div style="width: 4rem">
+        <app-tooltip
+          *ngIf="showQuickSearchTooltip()"
+          [value]="
+            'page.program.program-people-affected.filter-quick-search-tooltip'
+              | translate
+          "
+          color="primary"
+        ></app-tooltip>
+      </div>
       <ng-container *ngIf="showInput()">
         <ion-input
           [placeholder]="
