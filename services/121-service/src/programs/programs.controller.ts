@@ -58,16 +58,24 @@ export class ProgramController {
   ) {}
 
   @ApiOperation({ summary: 'Get program by id' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
   // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
     name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
-    description: `Set to 'true' to be able to use this as example body in POST /api/programs.`,
+    description:
+      'Set to `true` to be able to use this as example body in `POST /api/programs`.',
   })
-  @ApiResponse({ status: 200, description: 'Return program by id.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return program by id.',
+  })
   @Get(':programId')
   public async findOne(
     @Param() params,
@@ -87,7 +95,10 @@ export class ProgramController {
   }
 
   @ApiOperation({ summary: 'Get published programs' })
-  @ApiResponse({ status: 200, description: 'Return all published programs.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return all published programs.',
+  })
   // TODO: REFACTOR: into GET /api/programs?published=true
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
@@ -96,11 +107,11 @@ export class ProgramController {
 
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return all assigned programs for a user.',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
@@ -117,33 +128,45 @@ export class ProgramController {
 
   @Admin()
   @ApiOperation({
-    summary: `Create a program. You can either create it using the body or import a program from a kobo form using the 'importFromKobo' query param. If you create a program from kobo you can overwrite program properties using the body. If you do not want to overwrite any properties you can leave the body empty.`,
+    summary: `Create a program.`,
   })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'The program has been successfully created.',
+    type: ProgramEntity,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
   @ApiQuery({
     name: 'importFromKobo',
     required: false,
     type: 'boolean',
-    description: 'Create a program from an import using the Kobo-Connect API',
+    description: `
+Create a program from an import using the Kobo-Connect API.  \n
+
+When set to \`true\`, you can overwrite any specified program-properties using the body.  \n
+You can also leave the body empty.`,
   })
   @ApiQuery({
     name: 'koboToken',
     required: false,
     type: 'string',
-    description: 'A valid Kobo token (requires `importFromKobo` to be `true`',
+    description: 'A valid Kobo token (required when `importFromKobo=true`)',
   })
   @ApiQuery({
     name: 'koboAssetId',
     required: false,
     type: 'string',
-    description:
-      'A valid Kobo asset-ID (requires `importFromKobo` to be `true`',
+    description: 'A valid Kobo asset-ID (required when `importFromKobo=true`)',
   })
-  @ApiBody({ type: CreateProgramDto, required: false })
+  @ApiBody({
+    type: CreateProgramDto,
+    required: false,
+  })
   @Post()
   public async create(
     @Body()
@@ -193,11 +216,17 @@ export class ProgramController {
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description: 'The program has been successfully deleted.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
   @Delete(':programId')
   public async delete(
     @Param() param,
@@ -216,7 +245,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update program' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Representation of updated program',
     type: ProgramReturnDto,
   })
@@ -249,7 +278,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ summary: 'Update program question' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program question',
     type: ProgramQuestionEntity,
   })
@@ -302,12 +331,12 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program custom attributes',
     type: ProgramCustomAttributeEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No attribute found for given program and custom attribute id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -327,7 +356,7 @@ export class ProgramController {
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return attributes by program-id.',
   })
   @ApiQuery({
