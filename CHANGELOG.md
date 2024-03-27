@@ -19,10 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.115.1](https://github.com/global-121/121-platform/compare/v1.115.0...v1.115.1)- 2024-03-20
 
-### Added
-
-- Security policy rwanda
-
 ## [1.115.0](https://github.com/global-121/121-platform/compare/v1.114.1...v1.115.0)- 2024-03-20
 
 ### Added
