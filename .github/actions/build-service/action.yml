@@ -17,7 +17,7 @@ runs:
   using: composite
   steps:
     - name: Set up Node.js version
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
         node-version-file: '${{ inputs.servicePath }}/.node-version'
