@@ -456,6 +456,7 @@
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
         "filter-placeholder": "Type value...",
+        "filter-quick-search": "Quick search",
         "language": {
           "ar": "Arabic",
           "en": "English",

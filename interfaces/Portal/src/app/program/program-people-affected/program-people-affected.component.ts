@@ -268,6 +268,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await this.updateBulkActions();
 
     this.tableFiltersPerColumn = this.createFilterPerAttibute();
+    this.tableFiltersPerColumn.unshift(
+      this.filterService.DEFAULT_FILTER_OPTION,
+    );
     this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
