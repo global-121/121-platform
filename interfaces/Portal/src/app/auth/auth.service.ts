@@ -184,9 +184,7 @@ export class AuthService {
       const currentUser = this.msalService.instance.getAccountByUsername(
         user.username,
       );
-      const isInIframe = window.self !== window.top;
-      console.log('🚀 ~ AuthService ~ logout ~ isInIframe:', isInIframe);
-      if (isInIframe) {
+      if (this.router.url.includes('iframe')) {
         this.msalService.logoutPopup({
           account: currentUser,
           mainWindowRedirectUri: `${window.location.origin}/login`,
