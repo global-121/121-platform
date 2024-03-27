@@ -12,13 +12,17 @@
       class="util--flex-row ion-align-items-center"
       style="flex-basis: 80%"
     >
-      <span>
+      <span
+        class="ion-align-items-center ion-text-right"
+        style="width: 9rem"
+      >
         <ion-icon
           name="funnel"
           color="black"
           aria-hidden="true"
-          class="ion-margin-start"
         ></ion-icon>
+
+        {{ 'page.program.program-people-affected.filter-label' | translate }}
       </span>
 
       <app-select-typeahead
