@@ -151,7 +151,10 @@ export class ProgramController {
 
     @User('id')
     userId: number,
-    @Query('importFromKobo', new ParseBoolPipe()) importFromKobo: boolean,
+
+    @Query('importFromKobo', new ParseBoolPipe())
+    importFromKobo: boolean,
+
     @Query()
     queryParams?: {
       koboToken: string;
@@ -174,12 +177,14 @@ export class ProgramController {
         );
       }
     }
+
     const errors = await validate(plainToClass(CreateProgramDto, programData));
+
     if (errors.length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    return this.programService.create(programData as any, userId);
+    return this.programService.create(programData as CreateProgramDto, userId);
   }
 
   @Admin()
