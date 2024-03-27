@@ -143,12 +143,16 @@ async function bootstrap(): Promise<void> {
     swaggerOptions: {
       // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
       deepLinking: true,
+      defaultModelExpandDepth: 10,
+      defaultModelsExpandDepth: 1,
+      displayOperationId: true,
       displayRequestDuration: true,
+      docExpansion: DEBUG ? 'none' : null,
       filter: true,
       operationsSorter: 'alpha',
-      persistAuthorization: true,
-      showExtensions: true,
+      persistAuthorization: DEBUG,
       showCommonExtensions: true,
+      showExtensions: true,
       tagsSorter: 'alpha',
       tryItOutEnabled: DEBUG,
     },
