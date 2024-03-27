@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth/auth.service';
 import { LanguageService } from './services/language.service';
 import { LoggingService } from './services/logging.service';
 
@@ -16,7 +17,12 @@ export class AppComponent implements OnInit, OnDestroy {
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
     private msalService: MsalService,
+    private authService: AuthService,
   ) {
+    // Logout non-SSO users
+    if (environment.use_sso_azure_entra === true) {
+      this.authService.logoutNonSSOUser();
+    }
     // Initialize storage of preferred language
     this.languageService.setup();
 
