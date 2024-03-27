@@ -17,7 +17,6 @@ export const LOGOUT_ENDPOINT_PATH = '/users/logout';
 })
 export class AuthService {
   public redirectUrl: string;
-  public isIframe: boolean;
   private msalCollectionKey = 'msal.account.keys';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
@@ -185,7 +184,16 @@ export class AuthService {
       const currentUser = this.msalService.instance.getAccountByUsername(
         user.username,
       );
-      this.msalService.logoutRedirect({ account: currentUser });
+      const isInIframe = window.self !== window.top;
+      console.log('🚀 ~ AuthService ~ logout ~ isInIframe:', isInIframe);
+      if (isInIframe) {
+        this.msalService.logoutPopup({
+          account: currentUser,
+          mainWindowRedirectUri: `${window.location.origin}/login`,
+        });
+      } else {
+        this.msalService.logoutRedirect({ account: currentUser });
+      }
       localStorage.removeItem(this.msalCollectionKey);
     }
     localStorage.removeItem(USER_KEY);
