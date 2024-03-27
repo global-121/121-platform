@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -70,7 +71,7 @@ export class ProgramController {
     required: false,
     type: 'boolean',
     description:
-      'Set to `true` to be able to use this as example body in `POST /api/programs`.',
+      'Return in a format to be used as a body for `POST /api/programs`.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -78,19 +79,19 @@ export class ProgramController {
   })
   @Get(':programId')
   public async findOne(
-    @Param() params,
-    @Query() queryParams,
-    @User('id') userId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
+    formatProgramReturnDto: boolean,
+
+    @User('id')
+    userId: number,
   ): Promise<ProgramEntity | ProgramReturnDto> {
-    const formatCreateProgramDto =
-      queryParams.formatCreateProgramDto === 'true';
-    if (formatCreateProgramDto) {
-      return this.programService.getProgramReturnDto(params.programId, userId);
+    if (formatProgramReturnDto) {
+      return this.programService.getProgramReturnDto(programId, userId);
     } else {
-      return await this.programService.findProgramOrThrow(
-        Number(params.programId),
-        userId,
-      );
+      return await this.programService.findProgramOrThrow(programId, userId);
     }
   }
 
