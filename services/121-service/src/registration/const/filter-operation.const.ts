@@ -15,22 +15,7 @@ export const AllowedFilterOperatorsNumber = [
 
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
-    searchableColumns: [
-      'status',
-      'referenceId',
-      'phoneNumber',
-      'preferredLanguage',
-      'inclusionScore',
-      'paymentAmountMultiplier',
-      'financialServiceProvider',
-      'registrationProgramId',
-      'personAffectedSequence',
-      'maxPayments',
-      'paymentCount',
-      'paymentCountRemaining',
-      'lastMessageStatus',
-      'dataSearchBy.(value)',
-    ],
+    searchableColumns: ['dataSearchBy.(value)'],
     maxLimit: 40000,
     sortableColumns: [
       'id',
