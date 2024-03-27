@@ -314,7 +314,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Toegewezen hulpverleners",
         "distributionDuration": "Distributieduur",
         "distributionFrequency": "Distributiefrequentie",
         "endDate": "Einddatum",
@@ -419,7 +418,7 @@
           "custom-attribute-true": "Ja",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
-          "fspDisplayNamePortal": "Type hulp",
+          "fspDisplayName": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",
           "lastMessageStatus": "Laatste bericht",

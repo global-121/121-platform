@@ -35,31 +35,6 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
-          /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env
-          /bin/sed -i '/^PORT_121_SERVICE=/s/=.*/=3000/' ./services/.env
-          /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env
-          /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env
-          /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env
-          /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env
-          /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env
-          /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env
-          /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env
-          /bin/sed -i '/^REDIS_HOST=/s/=.*/=121queue/' ./services/.env
-          /bin/sed -i '/^REDIS_PORT=/s/=.*/=6379/' ./services/.env
-          /bin/sed -i '/^REDIS_PREFIX=/s/=.*/=test/' ./services/.env
-          /bin/sed -i '/^RESET_SECRET=/s/=.*/=reset-secret/' ./services/.env
-          /bin/sed -i '/^SECRETS_121_SERVICE_SECRET=/s/=.*/=token-secret/' ./services/.env
-          /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env
-          /bin/sed -i '/^TWILIO_AUTHTOKEN=/s/=.*/=abc/' ./services/.env
-          /bin/sed -i '/^TWILIO_WHATSAPP_NUMBER=/s/=.*/=15005550006/' ./services/.env
-          /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env
-          /bin/sed -i '/^MOCK_SERVICE_URL=/s/=.*/=http:\/\/mock-service:3001\//' ./services/.env
-          /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env
-          /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env
-          /bin/sed -i '/^INTERSOLVE_VISA_BRAND_CODE=/s/=.*/=test/' ./services/.env
-          /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env
-          /bin/sed -i '/^MOCK_VODACASH=/s/=.*/=TRUE/' ./services/.env
-          /bin/sed -i '/^MOCK_COMMERCIAL_BANK_ETHIOPIA=/s/=.*/=TRUE/' ./services/.env
 
       - name: Run Services with Docker
         working-directory: ./services

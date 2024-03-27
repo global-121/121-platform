@@ -274,7 +274,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Assigned aidworkers",
         "distributionDuration": "Distribution duration",
         "distributionFrequency": "Distribution frequency",
         "endDate": "End date",
@@ -379,7 +378,7 @@
           "custom-attribute-true": "Yes",
           "dob": "Date of birth",
           "failedPayment": "Failed for payment #",
-          "fspDisplayNamePortal": "Financial Service Provider",
+          "fspDisplayName": "Financial Service Provider",
           "hasNote": "Has Note",
           "inclusionScore": "Inclusion score",
           "lastMessageStatus": "Last message",

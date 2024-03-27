@@ -5,13 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.114.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.115.0...main)
 
 ---
+
+## [1.115.1](https://github.com/global-121/121-platform/compare/v1.115.0...v1.115.1)- 2024-03-20
+
+### Added
+
+- Security policy rwanda
+
+## [1.115.0](https://github.com/global-121/121-platform/compare/v1.114.1...v1.115.0)- 2024-03-20
+
+### Added
+
+- Payment amount multiplier to export report
+- Vodacash made working again
+- Create program from kobo form
+
+## [1.114.1](https://github.com/global-121/121-platform/compare/v1.114.0...v1.114.1)- 2024-03-18
+
+### Fixed
+
+- Handle 204 response from Intersolve
 
 ## [1.114.0](https://github.com/global-121/121-platform/compare/v1.113.1...v1.114.0)- 2024-03-07
 
 ### Fixed
+
 - Export instructions breaks if waiting < total
 - Pressing enter saves data without asking a reason
 
@@ -19,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - See user who changed the status of a PA
 - Add new FSP to existing instance (migration & endpoint)
-
 
 ## [1.113.1](https://github.com/global-121/121-platform/compare/v1.113.0...v1.113.1)- 2024-03-01
 
@@ -31,10 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Program fsp config for visa
+- Program FSP config for visa
 - See user who did payment
 - Log and see FSP change and related data changes
-- Reconsiliation with generic excel FSP
+- Reconciliation with generic excel FSP
 - See status of messages in PA profile page
 - Remove progress bar from program over page
 

@@ -30,7 +30,10 @@ export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
   @IsArray()
   @IsOptional()
-  configuration: { name: string; value: string }[];
+  configuration: {
+    name: string;
+    value: string | string[] | Record<string, string>;
+  }[];
 }
 
 export class CreateProgramDto {

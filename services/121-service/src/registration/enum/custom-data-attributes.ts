@@ -37,7 +37,7 @@ export enum GenericAttributes {
   scope = 'scope',
   status = 'status',
   registrationProgramId = 'registrationProgramId',
-  fspDisplayNamePortal = 'fspDisplayNamePortal',
+  fspDisplayName = 'fspDisplayName',
   registrationCreatedDate = 'registrationCreatedDate',
 }
 

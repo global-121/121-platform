@@ -435,7 +435,7 @@ export class IntersolveVisaService
       );
 
       // if error, return error
-      if (registerResult.status !== 204) {
+      if (!this.isSuccessResponseStatus(registerResult.status)) {
         paTransactionResult.status = StatusEnum.error;
         paTransactionResult.message = `LINK CUSTOMER ERROR: ${
           this.intersolveErrorToMessage(registerResult.data?.errors) ||
@@ -463,20 +463,19 @@ export class IntersolveVisaService
         visaCustomer.visaWallets[0],
       );
 
+      const createDebitCardResultStatus = this.isSuccessResponseStatus(
+        createDebitCardResult.status,
+      );
       // error or success: set transaction result either way
-      paTransactionResult.status =
-        createDebitCardResult.status === 200
-          ? StatusEnum.success
-          : StatusEnum.error;
-      paTransactionResult.message =
-        createDebitCardResult.status === 200
-          ? null
-          : `CREATE DEBIT CARD ERROR: ${
-              this.intersolveErrorToMessage(
-                createDebitCardResult.data?.errors,
-              ) ||
-              `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
-            }`;
+      paTransactionResult.status = createDebitCardResultStatus
+        ? StatusEnum.success
+        : StatusEnum.error;
+      paTransactionResult.message = createDebitCardResultStatus
+        ? null
+        : `CREATE DEBIT CARD ERROR: ${
+            this.intersolveErrorToMessage(createDebitCardResult.data?.errors) ||
+            `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
+          }`;
       paTransactionResult.customData = {
         intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
       };
@@ -651,7 +650,8 @@ export class IntersolveVisaService
         `No brandCode found for program ${programId}. Please update the program FSP cofinguration.`,
       );
     }
-    return brandCodeConfig?.value;
+
+    return brandCodeConfig?.value as string;
   }
 
   private async createDebitCard(
@@ -946,7 +946,7 @@ export class IntersolveVisaService
       block,
     );
     if (
-      result.status === 204 ||
+      this.isSuccessResponseStatus(result.status) ||
       (result.status === 405 &&
         ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
           result.data?.code,
@@ -1064,7 +1064,7 @@ export class IntersolveVisaService
         visaCustomer.holderId,
         phoneNumberPayload,
       );
-    if (phoneNumberResult.status !== 200) {
+    if (!this.isSuccessResponseStatus(phoneNumberResult.status)) {
       errors.push(
         `Phone number update failed: ${phoneNumberResult?.data?.code}. Adjust the (required) phone number and retry.`,
       );
@@ -1086,7 +1086,7 @@ export class IntersolveVisaService
           visaCustomer.holderId,
           addressPayload,
         );
-      if (addressResult.status !== 200) {
+      if (!this.isSuccessResponseStatus(addressResult.status)) {
         errors.push(`Address update failed: ${addressResult?.data?.code}.`);
       }
 
@@ -1250,7 +1250,7 @@ export class IntersolveVisaService
       visaCustomer,
       newWallet,
     );
-    if (registerResult.status !== 204) {
+    if (!this.isSuccessResponseStatus(registerResult.status)) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
@@ -1282,7 +1282,7 @@ export class IntersolveVisaService
       paymentDetails[0],
       newWallet,
     );
-    if (createDebitCardResult.status !== 200) {
+    if (!this.isSuccessResponseStatus(createDebitCardResult.status)) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
       await this.tryToBlockWallet(oldWallet.tokenCode);
 
@@ -1310,7 +1310,7 @@ export class IntersolveVisaService
         oldWallet.tokenCode,
         currentBalance,
       );
-      if (unloadResult.status !== 200) {
+      if (!this.isSuccessResponseStatus(unloadResult.status)) {
         const errors =
           'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
         throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -1319,7 +1319,7 @@ export class IntersolveVisaService
 
     // 8. block old wallet
     const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
-    if (blockResult.status !== 204) {
+    if (!this.isSuccessResponseStatus(blockResult.status)) {
       const errors =
         'The old card could not be permanently blocked. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -1379,5 +1379,9 @@ export class IntersolveVisaService
       .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();
     return count > 0;
+  }
+
+  private isSuccessResponseStatus(status: number): boolean {
+    return status >= 200 && status < 300;
   }
 }

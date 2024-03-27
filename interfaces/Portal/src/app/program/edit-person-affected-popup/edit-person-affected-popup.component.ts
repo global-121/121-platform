@@ -95,7 +95,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
-        this.fspList.push(await this.programsService.getFspById(fsp.id));
+        const fspDeatils = await this.programsService.getFspById(fsp.id);
+        fspDeatils.displayName = Object.assign(
+          {},
+          fspDeatils.displayName,
+          fsp.displayName,
+        );
+        this.fspList.push(fspDeatils);
       }
     }
 
@@ -137,6 +143,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.showScopeField = this.program.enableScope;
     if (this.showScopeField) {
       this.attributeValues.scope = this.person?.scope;
+    }
+
+    if (this.person?.fspDisplayName) {
+      this.person.fspDisplayName = this.translatableString.get(
+        this.person.fspDisplayName,
+      );
     }
 
     this.loading = false;
