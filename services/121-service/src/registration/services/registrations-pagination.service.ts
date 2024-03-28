@@ -518,6 +518,7 @@ export class RegistrationsPaginationService {
       mappedRegistration = { ...registration };
     }
     delete mappedRegistration.data;
+    delete mappedRegistration.dataSearchBy;
     if (!hasPersonalReadPermission) {
       delete mappedRegistration.phoneNumber;
     }
