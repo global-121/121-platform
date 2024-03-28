@@ -98,7 +98,5 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const pa2patchedResponse = pa2patched.body.data[0];
     assertRegistrationImport(pa2patchedResponse, PA2Patch);
-
-    console.log('Bulk update and revalidate successful!');
   });
 });
