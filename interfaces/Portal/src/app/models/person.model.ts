@@ -14,7 +14,7 @@ export class Person {
   status: RegistrationStatus;
   note?: string;
   financialServiceProvider?: string;
-  fspDisplayNamePortal?: string;
+  fspDisplayName?: string;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
@@ -94,18 +94,14 @@ export class PersonTableColumn {
 
 export const PA_STATUS_ORDER = [
   { id: 1, value: RegistrationStatus.startedRegistration },
-  { id: 2, value: RegistrationStatus.imported },
-  { id: 3, value: RegistrationStatus.invited },
-  { id: 4, value: RegistrationStatus.registered },
-  { id: 5, value: RegistrationStatus.validated },
-  { id: 6, value: RegistrationStatus.included },
-  { id: 7, value: RegistrationStatus.inclusionEnded },
-  { id: 8, value: RegistrationStatus.declined },
-  { id: 9, value: RegistrationStatus.rejected },
-  { id: 10, value: RegistrationStatus.paused },
-  { id: 11, value: RegistrationStatus.noLongerEligible },
-  { id: 12, value: RegistrationStatus.registeredWhileNoLongerEligible },
-  { id: 13, value: RegistrationStatus.completed },
+  { id: 2, value: RegistrationStatus.registered },
+  { id: 3, value: RegistrationStatus.validated },
+  { id: 4, value: RegistrationStatus.included },
+  { id: 5, value: RegistrationStatus.inclusionEnded },
+  { id: 6, value: RegistrationStatus.declined },
+  { id: 7, value: RegistrationStatus.rejected },
+  { id: 8, value: RegistrationStatus.paused },
+  { id: 9, value: RegistrationStatus.completed },
 ];
 
 export enum PersonDefaultAttributes {

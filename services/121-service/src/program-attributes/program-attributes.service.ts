@@ -38,7 +38,7 @@ export class ProgramAttributesService {
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'fspDisplayNamePortal',
+      'fspDisplayName',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
@@ -164,7 +164,7 @@ export class ProgramAttributesService {
         label: null,
       },
       {
-        name: 'fspDisplayNamePortal',
+        name: 'fspDisplayName',
         type: 'text',
         label: null,
       },

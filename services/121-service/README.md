@@ -19,7 +19,7 @@ See instructions to get started in the main [`README`](../../README.md#getting-s
 
 Make sure to update any dependencies from _within_ the Docker-container, with:
 
-    docker compose exec 121-service  npm install --save
+    docker compose exec 121-service  npm install --save <package-name>
 
 ## Database
 
@@ -79,11 +79,11 @@ To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Dock
 
 To start a debugger using Chrome, follow these steps:
 
-1. Add port mapping to the docker-compose.development.yml so that internal port 9229 is mapped to external port 9229. Note that all port settings from the main file are overridden.
+1. Add port mapping to the `docker-compose.development.yml` so that internal port 9229 is mapped to external port 9229. Note that all port settings from the main file are overridden.
 2. In the start:dev script in the package.json of the 121-service, add =0.0.0.0 to the -- inspect flag, so it becomes --inspect=0.0.0.0
 3. Start the services with npm run start:services.
 4. In the code of the 121 Service where you want to break, add a line with debugger;
-5. Check if the application indeed started on a debugger address 0.0.0.0 with npm run logs:services 121-services, and see something like: Debugger listening on ws://0.0.0.0:9229 02384d3e-4d1f-40ef-b8d5-be3da792fe71
+5. Check if the application indeed started on a debugger address 0.0.0.0 with `npm run logs:services 121-services`, and see something like: "`Debugger listening on ws://0.0.0.0:9229 02384d3e-4d1f-40ef-b8d5-be3da792fe71`"
 6. Open the Swagger Docs in the Chrome Web Browser: <http://localhost:3000/docs/>
 7. Open the Inspector in Chrome with CTRL-SHIFT-I or right mouse click and select Inspect. Now there should be a green hexagon on the top left of the Inspector window.
 8. Click the green hexagon item in the top left of the Inspector window (Open dedicated DevTools for Node.js).
@@ -119,7 +119,7 @@ Steps to rename a database table:
 7. Use the generated CREATE FK CONSTRAINTS queries.
 8. Caveats: if there is a related "cross table" that TypeORM automatically generated, then there is a bit of manual editing of the generated query involved.
 9. See for an example: <https://github.com/global-121/121-platform/pull/4985/files#diff-9d32e210b9db0795ae71d28aaad421f3bb58bc8e3b263bbf54be13429239397c>
-10. In principle there is no renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM. However, we do have some hard-coded SQL scripts for creaing mock data. Check if it is needed to update these queries: they are in .sql files.
+10. In principle there is no renaming of table name in queries in the code needed, as they are dynamically filled by TypeORM. However, we do have some hard-coded SQL scripts for creating mock data. Check if it is needed to update these queries: they are in .sql files.
 11. Test the migration script:
 12. Incremental, given an existing (filled) database, like on production.
 13. New instance, like when installing a fresh local dev environment.

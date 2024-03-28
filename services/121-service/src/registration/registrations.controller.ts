@@ -45,7 +45,6 @@ import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { FinancialAttributes } from '../user/enum/registration-financial-attributes.const';
 import { User } from '../user/user.decorator';
-import { UserService } from '../user/user.service';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
@@ -60,7 +59,6 @@ import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -81,7 +79,6 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -143,77 +140,17 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Set phone number' })
-  @ApiResponse({ status: 201, description: 'Phone set for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/phone')
-  public async addPhone(
-    @Body() setPhoneRequest: SetPhoneRequestDto,
-  ): Promise<void> {
-    return await this.registrationsService.addPhone(
-      setPhoneRequest.referenceId,
-      setPhoneRequest.phonenumber,
-      setPhoneRequest.language,
-      setPhoneRequest.useForInvitationMatching,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
-  @ApiOperation({
-    summary:
-      'Person Affected switches from started registration to registered for program',
-  })
-  @ApiResponse({
-    status: 201,
-    description:
-      'Person Affected switched from started registration to registered for program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/register')
-  public async register(
-    @Body() referenceIdDto: ReferenceIdDto,
-  ): Promise<ReferenceIdDto | boolean> {
-    return await this.registrationsService.register(referenceIdDto.referenceId);
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationCREATE)
-  @ApiOperation({
-    summary: 'Import set of PAs to invite, based on CSV',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-bulk')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
-  public async importBulkAsImported(
-    @UploadedFile() csvFile,
-    @Param() params,
-    @User('id') userId: number,
-  ): Promise<ImportResult> {
-    return await this.registrationsService.importBulkAsImported(
-      csvFile,
-      Number(params.programId),
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
   @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
   @ApiOperation({
     summary: 'Get a CSV template for importing registrations',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'type', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/import-template/:type')
+  @Get('programs/:programId/registrations/import-template')
   public async getImportRegistrationsTemplate(
     @Param() params,
   ): Promise<string[]> {
     return await this.registrationsService.getImportRegistrationsTemplate(
       Number(params.programId),
-      params.type,
     );
   }
 
@@ -323,7 +260,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @Admin()
   @ApiOperation({
-    summary: 'Bulk update registration using a CSV file',
+    summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch('programs/:programId/registrations')
@@ -416,13 +353,6 @@ export class RegistrationsController {
       case RegistrationStatusEnum.paused:
         permission = PermissionEnum.RegistrationStatusPausedUPDATE;
         messageContentType = MessageContentType.paused;
-        break;
-      case RegistrationStatusEnum.invited:
-        permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
-        messageContentType = MessageContentType.invited;
-        break;
-      case RegistrationStatusEnum.noLongerEligible:
-        permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
         break;
       case RegistrationStatusEnum.validated:
         permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;

@@ -2,6 +2,7 @@ import { JOB_REF } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
+import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
@@ -105,7 +106,7 @@ export class EventsService {
     // Get userId from request if it exists otherwise this update was done using a queue
     // than get it from the request of the job of the queue
 
-    let requestUserId = this.request.userId
+    const requestUserId = this.request.userId
       ? this.request.userId
       : this.jobRef?.data?.request?.userId;
 
@@ -256,16 +257,23 @@ export class EventsService {
 
     const events: EventEntity[] = [];
     for (const fieldName of fieldNames) {
-      if (oldEntity[fieldName] !== newEntity[fieldName]) {
-        const eventForChange = this.createEventForChange(
-          fieldName,
-          oldEntity[fieldName],
-          newEntity[fieldName],
-          oldEntity.id,
-        );
-        eventForChange.userId = userId;
-        events.push(eventForChange);
+      if (
+        oldEntity[fieldName] === newEntity[fieldName] ||
+        (isObject(oldEntity[fieldName]) &&
+          isObject(newEntity[fieldName]) &&
+          isMatch(oldEntity[fieldName], newEntity[fieldName]))
+      ) {
+        continue;
       }
+
+      const eventForChange = this.createEventForChange(
+        fieldName,
+        oldEntity[fieldName],
+        newEntity[fieldName],
+        oldEntity.id,
+      );
+      eventForChange.userId = userId;
+      events.push(eventForChange);
     }
 
     return events;
@@ -273,8 +281,8 @@ export class EventsService {
 
   private createEventForChange(
     fieldName: string,
-    oldValue: string,
-    newValue: string,
+    oldValue: EventAttributeEntity['value'],
+    newValue: EventAttributeEntity['value'],
     registrationdId: number,
   ): EventEntity {
     const event = new EventEntity();
@@ -293,7 +301,7 @@ export class EventsService {
   }
 
   private getAttributesForChange(attributesData: {
-    [key in EventAttributeKeyEnum]?: string;
+    [key in EventAttributeKeyEnum]?: EventAttributeEntity['value'];
   }): EventAttributeEntity[] {
     return Object.entries(attributesData)
       .filter(([_, value]) => value)
@@ -304,7 +312,7 @@ export class EventsService {
 
   private createEventAttributeEntity(
     key: EventAttributeKeyEnum,
-    value: string,
+    value: EventAttributeEntity['value'],
   ): EventAttributeEntity {
     const eventAttribute = new EventAttributeEntity();
     eventAttribute.key = key;
@@ -340,7 +348,7 @@ export class EventsService {
 
   private getEventType(key: string): EventEnum {
     const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'fspDisplayNamePortal';
+      'fspDisplayName';
     if (key === financialServiceProviderKey) {
       return EventEnum.financialServiceProviderChange;
     }

@@ -565,7 +565,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           }`
         : '',
       fsp: person.financialServiceProvider,
-      financialServiceProvider: person.fspDisplayNamePortal,
+      financialServiceProvider: this.translatableStringService.get(
+        person.fspDisplayName,
+      ),
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
     };
@@ -990,11 +992,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     customBulkActionInput: CustomBulkActionInput,
   ) {
     const statusRelatedBulkActions = [
-      BulkActionId.invite,
       BulkActionId.include,
       BulkActionId.endInclusion,
       BulkActionId.reject,
-      BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
       BulkActionId.markAsValidated,
       BulkActionId.markAsDeclined,

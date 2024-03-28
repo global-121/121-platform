@@ -43,9 +43,8 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationCsvValidationEnum,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
-    let phoneNumberLookupResults: { [key: string]: string } = {};
-
     const errors = [];
+    const phoneNumberLookupResults: Record<string, string> = {};
 
     const userScope = await this.userService.getUserScopeForProgram(
       userId,
@@ -65,28 +64,30 @@ export class RegistrationsInputValidator {
     );
 
     const validatedArray = [];
+    const importRecordMap = {
+      [RegistrationCsvValidationEnum.importAsRegistered]:
+        ImportRegistrationsDto,
+      [RegistrationCsvValidationEnum.bulkUpdate]: BulkUpdateDto,
+    };
+
     for (const [i, row] of csvArray.entries()) {
-      let importRecord;
-      if (typeOfInput === RegistrationCsvValidationEnum.importAsRegistered) {
-        importRecord = new ImportRegistrationsDto();
-      } else if (typeOfInput === RegistrationCsvValidationEnum.importAsImport) {
-        importRecord = new BulkImportDto();
-      } else if (typeOfInput === RegistrationCsvValidationEnum.bulkUpdate) {
-        importRecord = new BulkUpdateDto();
-      }
+      const importRecordClass = importRecordMap[typeOfInput];
+      const importRecord = importRecordClass
+        ? new importRecordClass()
+        : ({} as any);
 
       /*
        * =============================================================
        * Add default registration attributes without custom validation
        * =============================================================
        */
-
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
           ? +row.paymentAmountMultiplier
           : null;
       }
+
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
@@ -96,7 +97,6 @@ export class RegistrationsInputValidator {
        * Validate default registration attributes
        * ========================================
        */
-
       const errorObjScope = this.validateRowScope(
         row,
         userScope,
@@ -141,6 +141,7 @@ export class RegistrationsInputValidator {
       if (errorObj) {
         errors.push(errorObj);
       }
+      importRecord.phoneNumber = row.phoneNumber;
 
       /*
        * =============================================
@@ -153,57 +154,66 @@ export class RegistrationsInputValidator {
         this.isDynamicAttributeForFsp(att, row.fspName),
       );
 
-      for await (const att of dynamicAttributesForFsp) {
-        if (
-          att.type === AnswerTypes.tel &&
-          row[att.name] &&
-          validationConfig.validatePhoneNumberLookup
-        ) {
-          const { errorObj, sanitized } = await this.validateLookupPhoneNumber(
-            row[att.name],
-            i,
-            phoneNumberLookupResults,
-          );
-          if (errorObj) {
-            errors.push(errorObj);
-          } else {
-            phoneNumberLookupResults[row[att.name]] = sanitized;
-            importRecord[att.name] = sanitized;
+      await Promise.all(
+        dynamicAttributesForFsp.map(async (att) => {
+          if (
+            att.type === AnswerTypes.tel &&
+            row[att.name] &&
+            validationConfig.validatePhoneNumberLookup
+          ) {
+            const { errorObj, sanitized } =
+              await this.validateLookupPhoneNumber(
+                row[att.name],
+                i,
+                phoneNumberLookupResults,
+              );
+            if (errorObj) {
+              errors.push(errorObj);
+            } else {
+              phoneNumberLookupResults[row[att.name]] = sanitized;
+              importRecord[att.name] = sanitized;
+            }
+          } else if (validationConfig.validateDynamicAttributes) {
+            const errorObj = this.validateNumericOrBoolean(
+              row[att.name],
+              att.type,
+              att.name,
+              i,
+            );
+            if (errorObj) {
+              errors.push(errorObj);
+            } else {
+              importRecord[att.name] = row[att.name];
+            }
           }
-        } else if (validationConfig.validateDynamicAttributes) {
-          const errorObj = this.validateNumericOrBoolean(
-            row[att.name],
-            att.type,
-            att.name,
-            i,
-          );
-          if (errorObj) {
-            errors.push(errorObj);
-          } else {
-            importRecord[att.name] = row[att.name];
-          }
-        }
+        }),
+      );
 
-        if (validationConfig.validateClassValidator) {
-          const result = await validate(importRecord);
-          if (result.length > 0) {
-            const errorObj = {
-              lineNumber: i + 1,
-              column: result[0].property,
-              value: result[0].value,
-              error: result[0]?.constraints,
-            };
-            errors.push(errorObj);
-          }
+      // Break the loop and stop processing if file has too many errors
+      if (errors.length >= 5000) {
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
+
+      if (validationConfig.validateClassValidator) {
+        const result = await validate(importRecord);
+        if (result.length > 0) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: result[0].property,
+            value: result[0].value,
+            error: result[0]?.constraints,
+          };
+          errors.push(errorObj);
         }
       }
       validatedArray.push(importRecord);
     }
 
-    // Throw all found errors at once
+    // Throw the errors at once
     if (errors.length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
+
     return validatedArray;
   }
 
@@ -421,7 +431,7 @@ export class RegistrationsInputValidator {
   private async validateLookupPhoneNumber(
     value: string,
     i: number,
-    phoneNumberLookupResults: { [key: string]: string },
+    phoneNumberLookupResults: Record<string, string>,
   ): Promise<{
     errorObj: ValidateRegistrationErrorObjectDto;
     sanitized: string;
@@ -462,7 +472,10 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private cleanNumericOrBoolean(value: string, type: string) {
+  private cleanNumericOrBoolean(
+    value: string,
+    type: string,
+  ): number | boolean | string | null {
     if (type === AnswerTypes.numeric) {
       // Convert the value to a number and return it
       // If the value is not a number, return null

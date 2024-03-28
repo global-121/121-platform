@@ -7,7 +7,6 @@ import { ActionService } from '../../actions/action.service';
 import { EventsService } from '../../events/events.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
-import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
 import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
@@ -16,13 +15,7 @@ import { ProgramService } from '../../programs/programs.service';
 import { ScopedRepository } from '../../scoped.repository';
 import { FileImportService } from '../../utils/file-import/file-import.service';
 import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import {
-  BulkImportDto,
-  BulkImportResult,
-  ImportRegistrationsDto,
-  ImportResult,
-  ImportStatus,
-} from '../dto/bulk-import.dto';
+import { ImportRegistrationsDto, ImportResult } from '../dto/bulk-import.dto';
 import { RegistrationDataInfo } from '../dto/registration-data-relation.model';
 import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '../dto/registration-update-job.dto';
 import { ValidationConfigDto } from '../dto/validate-registration-config.dto';
@@ -42,10 +35,7 @@ import { RegistrationsInputValidator } from '../validators/registrations-input-v
 import { RegistrationsInputValidatorHelpers } from '../validators/registrations-input.validator.helper';
 import { InclusionScoreService } from './inclusion-score.service';
 
-export enum ImportType {
-  imported = 'import-as-imported',
-  registered = 'import-as-registered',
-}
+const BATCH_SIZE = 500;
 
 @Injectable()
 export class RegistrationsImportService {
@@ -59,11 +49,8 @@ export class RegistrationsImportService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
-    private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
@@ -95,185 +82,54 @@ export class RegistrationsImportService {
 
     // Filter out only columns that were in the original csv
     const filteredRegistrations = validatedRegistrations.map((registration) => {
-      const filteredRegistration = {};
-      for (const key of columnNames) {
+      return columnNames.reduce((acc, key) => {
         if (key in registration) {
-          filteredRegistration[key] = registration[key];
+          acc[key] = registration[key];
         }
-      }
-      return filteredRegistration;
+        return acc;
+      }, {});
     });
 
-    // Add all to queue
-    for (const registration of filteredRegistrations) {
-      const updateData = { ...registration };
-      delete updateData['referenceId'];
-      const updateJob: RegistrationUpdateJobDto = {
-        referenceId: registration['referenceId'],
-        data: updateData,
-        programId: programId,
-      };
-      await this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
-        updateJob,
-      );
-    }
-  }
-
-  public async importBulkAsImported(
-    csvFile,
-    program: ProgramEntity,
-    userId: number,
-  ): Promise<ImportResult> {
-    const validatedImportRecords = await this.csvToValidatedBulkImport(
-      csvFile,
-      program.id,
-      userId,
-    );
-    let countImported = 0;
-    let countExistingPhoneNr = 0;
-    let countInvalidPhoneNr = 0;
-
-    const programCustomAttributes = program.programCustomAttributes;
-    const dataArray = [];
-    const savedRegistrations = [];
-
-    const importResponseRecords = [];
-    for await (const record of validatedImportRecords) {
-      const importResponseRecord = record as BulkImportResult;
-      const throwNoException = true;
-
-      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
-        record.phoneNumber,
-        throwNoException,
-      );
-      if (!phoneNumberResult) {
-        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
-        importResponseRecord.registrationStatus = '';
-        importResponseRecords.push(importResponseRecord);
-        countInvalidPhoneNr += 1;
-        continue;
-      }
-
-      // Keep this on non-scoped repo as you do not want duplicates outside scope!
-      const existingRegistrations = await this.registrationRepository.findOne({
-        where: {
-          phoneNumber: phoneNumberResult,
-          programId: program.id,
-        },
-      });
-      if (existingRegistrations) {
-        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
-        importResponseRecord.registrationStatus =
-          existingRegistrations.registrationStatus;
-        importResponseRecords.push(importResponseRecord);
-        countExistingPhoneNr += 1;
-        continue;
-      }
-
-      importResponseRecord.importStatus = ImportStatus.imported;
-      importResponseRecord.registrationStatus = RegistrationStatusEnum.imported;
-      importResponseRecords.push(importResponseRecord);
-      countImported += 1;
-
-      const newRegistration = new RegistrationEntity();
-      newRegistration.referenceId = uuid();
-      newRegistration.phoneNumber = phoneNumberResult;
-      newRegistration.preferredLanguage =
-        importResponseRecord.preferredLanguage;
-      newRegistration.program = program;
-      if (!program.paymentAmountMultiplierFormula) {
-        newRegistration.paymentAmountMultiplier =
-          record.paymentAmountMultiplier || 1;
-      }
-      if (program.enableMaxPayments) {
-        newRegistration.maxPayments = record.maxPayments;
-      }
-      if (program.enableScope) {
-        newRegistration.scope = record.scope || '';
-      }
-      newRegistration.registrationStatus = RegistrationStatusEnum.imported;
-
-      const savedRegistration =
-        await this.registrationUtilsService.save(newRegistration);
-      savedRegistrations.push(savedRegistration);
-
-      for (const att of programCustomAttributes) {
-        if (!att.name || !record[att.name]) {
-          continue;
-        }
-
-        const data = new RegistrationDataEntity();
-
-        data.value =
-          att.type === CustomAttributeType.boolean
-            ? RegistrationsInputValidatorHelpers.stringToBoolean(
-                record[att.name],
-                false,
-              )
-            : record[att.name];
-        data.programCustomAttribute = att;
-        data.registrationId = savedRegistration.id;
-        dataArray.push(data);
-      }
-    }
-    // Save registration status changes seperately without the registration.subscriber for better performance
-    await this.eventsService.log(
-      savedRegistrations.map((r) => ({
-        id: r.id,
-        status: null,
-      })),
-      savedRegistrations.map((r) => ({
-        id: r.id,
-        status: r.registrationStatus,
-      })),
-      { registrationAttributes: ['status'] },
-    );
-    // Save registration data in bulk for performance
-    await this.registrationDataScopedRepository.save(dataArray, {
-      chunk: 5000,
-    });
-    await this.actionService.saveAction(
-      userId,
-      program.id,
-      AdditionalActionType.importPeopleAffected,
-    );
-
-    return {
-      importResult: importResponseRecords,
-      aggregateImportResult: {
-        countExistingPhoneNr,
-        countImported,
-        countInvalidPhoneNr,
+    // Prepare the job array to push to the queue
+    const updateJobs: RegistrationUpdateJobDto[] = filteredRegistrations.map(
+      (registration) => {
+        const updateData = { ...registration };
+        delete updateData['referenceId'];
+        return {
+          referenceId: registration['referenceId'],
+          data: updateData,
+          programId,
+        } as RegistrationUpdateJobDto;
       },
-    };
+    );
+
+    // Call to redis as concurrent operations in a batch
+    for (let start = 0; start < updateJobs.length; start += BATCH_SIZE) {
+      const end = Math.min(start + BATCH_SIZE, updateJobs.length);
+      await Promise.allSettled(
+        updateJobs
+          .slice(start, end)
+          .map((job) =>
+            this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
+              job,
+            ),
+          ),
+      );
+    }
   }
 
   public async getImportRegistrationsTemplate(
     programId: number,
-    type: ImportType,
   ): Promise<string[]> {
-    let genericAttributes: string[];
-    let dynamicAttributes: string[];
-
-    if (type === ImportType.registered) {
-      genericAttributes = [
-        GenericAttributes.referenceId,
-        GenericAttributes.fspName,
-        GenericAttributes.phoneNumber,
-        GenericAttributes.preferredLanguage,
-      ].map((item) => String(item));
-      dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
-        (d) => d.name,
-      );
-    } else if (type === ImportType.imported) {
-      genericAttributes = [
-        GenericAttributes.phoneNumber,
-        GenericAttributes.preferredLanguage,
-      ].map((item) => String(item));
-      dynamicAttributes = (
-        await this.getProgramCustomAttributes(programId)
-      ).map((d) => d.name);
-    }
+    const genericAttributes: string[] = [
+      GenericAttributes.referenceId,
+      GenericAttributes.fspName,
+      GenericAttributes.phoneNumber,
+      GenericAttributes.preferredLanguage,
+    ];
+    const dynamicAttributes: string[] = (
+      await this.getDynamicAttributes(programId)
+    ).map((d) => d.name);
 
     const program = await this.programRepository.findOneBy({
       id: programId,
@@ -478,23 +334,6 @@ export class RegistrationsImportService {
     return registrationDataArray;
   }
 
-  private async csvToValidatedBulkImport(
-    csvFile,
-    programId: number,
-    userId: number,
-  ): Promise<BulkImportDto[]> {
-    const maxRecords = 1000;
-    const importRecords = await this.fileImportService.validateCsv(
-      csvFile,
-      maxRecords,
-    );
-    return await this.validateImportAsImportedCsvInput(
-      importRecords,
-      programId,
-      userId,
-    );
-  }
-
   private async csvToValidatedRegistrations(
     csvFile: any[],
     programId: number,
@@ -593,31 +432,6 @@ export class RegistrationsImportService {
     return deduplicatedAttributes;
   }
 
-  private async validateImportAsImportedCsvInput(
-    csvArray: any[],
-    programId: number,
-    userId: number,
-  ): Promise<BulkImportDto[]> {
-    const validationConfig = new ValidationConfigDto();
-    validationConfig.validatePhoneNumberEmpty = true;
-    validationConfig.validatePhoneNumberLookup = true;
-    validationConfig.validateClassValidator = true;
-    validationConfig.validateUniqueReferenceId = false;
-    validationConfig.validateScope = true;
-    validationConfig.validatePreferredLanguage = true;
-    validationConfig.validateDynamicAttributes = false;
-
-    const dynamicAttributes = await this.getDynamicAttributes(programId);
-    return await this.registrationsInputValidator.validateAndCleanRegistrationsInput(
-      csvArray,
-      programId,
-      userId,
-      dynamicAttributes,
-      RegistrationCsvValidationEnum.importAsImport,
-      validationConfig,
-    );
-  }
-
   public async validateImportAsRegisteredInput(
     csvArray: any[],
     programId: number,
@@ -652,7 +466,7 @@ export class RegistrationsImportService {
     const validationConfig = new ValidationConfigDto();
     validationConfig.validateExistingReferenceId = false;
     validationConfig.validatePhoneNumberEmpty = !program.allowEmptyPhoneNumber;
-    validationConfig.validatePhoneNumberLookup = true;
+    validationConfig.validatePhoneNumberLookup = false;
     validationConfig.validateClassValidator = true;
     validationConfig.validateUniqueReferenceId = false;
     validationConfig.validateScope = true;

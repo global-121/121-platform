@@ -15,20 +15,18 @@ updates:
     open-pull-requests-limit: 3
     versioning-strategy: increase
     groups:
-      types:
-        patterns: ['@types/*']
-      eslint:
-        patterns: ['*eslint*']
+      development:
+        patterns:
+          - '@types/*'
+          - '*eslint*'
       nestjs:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@nestjs/throttler'
-        update-types:
-          ['version-update:semver-major']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
-        update-types:
-          ['version-update:semver-major']
+        update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
       - dependency-name: 'jimp'
       - dependency-name: 'typescript'
@@ -41,8 +39,10 @@ updates:
     open-pull-requests-limit: 3
     versioning-strategy: increase
     groups:
-      eslint:
-        patterns: ['*eslint*']
+      development:
+        patterns:
+          - '@types/*'
+          - '*eslint*'
         exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!
@@ -68,49 +68,6 @@ updates:
         update-types: ['version-update:semver-patch']
       - dependency-name: core-js
       - dependency-name: karma
-      - dependency-name: tslib
-      - dependency-name: typescript
-      - dependency-name: rxjs
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'zone.js'
-
-  - package-ecosystem: npm
-    directory: '/interfaces/PA-App'
-    schedule:
-      interval: weekly
-      day: tuesday
-    open-pull-requests-limit: 3
-    versioning-strategy: increase
-    groups:
-      eslint:
-        patterns: ['*eslint*']
-        exclude-patterns: ['@angular-eslint/*']
-    ignore:
-      # Dependencies below are ordered alphabetically!
-      # Most/all Angular-related dependencies are ignored for all versions
-      - dependency-name: '@angular/*'
-      - dependency-name: '@angular-eslint/*'
-      - dependency-name: '@angular-devkit/*'
-      - dependency-name: '@ionic/angular'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@ionic/cli'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: '@ngx-translate/core'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@ngx-translate/http-loader'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@types/*'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: '@typescript-eslint/*'
-        update-types: ['version-update:semver-patch']
-      - dependency-name: core-js
-      - dependency-name: karma
-      - dependency-name: ngx-translate-lint
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: tslib
       - dependency-name: typescript
       - dependency-name: rxjs

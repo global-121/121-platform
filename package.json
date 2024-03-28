@@ -27,7 +27,8 @@
     "code:portal": "code ./interfaces/Portal/",
     "code:121-service": "code ./services/121-service/",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
-    "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:interfaces test:services",
+    "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:docs test:interfaces test:services",
+    "test:docs": "npx prettier --config=./.prettierrc.yml --check \"**/*.md\"",
     "test:services": "npx npm-run-all --npm-path npm --print-label --parallel test:121-service",
     "test:121-service": "cd services/ && docker compose exec 121-service npm test",
     "test:interfaces": "npx npm-run-all --npm-path npm --print-label --sequential test:pa test:aw test:portal",
@@ -35,5 +36,8 @@
     "test:aw": "npm test --prefix interfaces/AW-App/",
     "test:portal": "npm test --prefix interfaces/Portal/",
     "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1"
+  },
+  "optionalDependencies": {
+    "prettier": "3.2.5"
   }
 }

@@ -1,10 +1,9 @@
 {
   "fsp": "Commercial-bank-ethiopia",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
+  "displayName": {
     "en": "Commercial Bank of Ethiopia"
   },
-  "fspDisplayNamePortal": "Commercial Bank of Ethiopia",
   "questions": [
     {
       "name": "bankAccountNumber",

@@ -15,6 +15,8 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { ProgramFspConfigurationService } from '../../programs/fsp-configuration/fsp-configuration.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { ScopedQueryBuilder } from '../../scoped.repository';
@@ -49,10 +51,13 @@ export class RegistrationsPaginationService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(FinancialServiceProviderEntity)
+  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async getPaginate(
@@ -150,7 +155,7 @@ export class RegistrationsPaginationService {
       );
     }
 
-    result.data = this.mapPaginatedEntity(
+    result.data = await this.mapPaginatedEntity(
       result,
       registrationDataRelationsSelect,
       query.select,
@@ -429,14 +434,14 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  private mapPaginatedEntity(
+  private async mapPaginatedEntity(
     paginatedResult: Paginated<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
     select: string[],
     orignalSelect: string[],
     fullnameNamingConvention: string[],
     hasPersonalReadPermission: boolean,
-  ): RegistrationViewEntity[] {
+  ): Promise<RegistrationViewEntity[]> {
     const mappedData: RegistrationViewEntity[] = [];
     for (const registration of paginatedResult.data) {
       const mappedRootRegistration = this.mapRootRegistration(
@@ -450,6 +455,8 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
+      mappedRegistration.fspDisplayName =
+        await this.overwriteFspDisplayName(mappedRegistration);
       mappedData.push(mappedRegistration);
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
@@ -462,6 +469,35 @@ export class RegistrationsPaginationService {
       }
     }
     return mappedData;
+  }
+
+  private async overwriteFspDisplayName(
+    registration: RegistrationViewEntity,
+  ): Promise<string> {
+    if (registration.financialServiceProvider) {
+      const financialServiceProvider =
+        await this.financialServiceProviderRepository.findOne({
+          where: { fsp: registration.financialServiceProvider },
+        });
+
+      if (financialServiceProvider) {
+        const programFspDisplayNameConfig =
+          await this.programFspConfigurationService.findDisplayNameConfiguration(
+            registration.programId,
+            financialServiceProvider.id,
+          );
+
+        if (programFspDisplayNameConfig) {
+          registration.fspDisplayName = Object.assign(
+            {},
+            financialServiceProvider.displayName,
+            programFspDisplayNameConfig.value,
+          ) as string;
+        }
+      }
+    }
+
+    return registration.fspDisplayName;
   }
 
   private mapRootRegistration(
