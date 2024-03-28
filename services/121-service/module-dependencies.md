@@ -5,6 +5,7 @@ graph LR
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
+  ProgramModule-->KoboConnectModule
   MessageTemplateModule-->ProgramAttributesModule
   CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule

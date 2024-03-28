@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoutes } from '../app-routes.enum';
 import { ProgramPhase } from '../models/program.model';
 import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -107,7 +108,7 @@ export class ProgramPhaseService {
           this.updatePhase();
           const newActivePhase = this.getActivePhase();
           this.router.navigate([
-            'program',
+            AppRoutes.program,
             this.programId,
             newActivePhase.name,
           ]);
