@@ -17,6 +17,16 @@
   width: 100%;
 }
 
+/* Show the indicator of the dropdown options at the edge of the component */
+.is-full-width .select-typeahead--proxy::part(icon) {
+  position: absolute;
+  inset-inline-end: 0;
+}
+.is-full-width .select-typeahead--proxy::part(placeholder),
+.is-full-width .select-typeahead--proxy::part(text) {
+  padding-inline-end: 1em; /* Prevent overlap of marker and selection/placeholder-text */
+}
+
 /*
   This proxy should not be interacted with;
   It is only there to contain + show the input-data.

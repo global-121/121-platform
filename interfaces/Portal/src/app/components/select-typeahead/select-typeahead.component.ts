@@ -1,4 +1,4 @@
-import { NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -21,7 +21,7 @@ export interface Item {
 @Component({
   selector: 'app-select-typeahead',
   standalone: true,
-  imports: [NgIf, NgForOf, IonicModule, TranslateModule],
+  imports: [NgIf, NgForOf, NgClass, IonicModule, TranslateModule],
   templateUrl: './select-typeahead.component.html',
   styleUrls: ['./select-typeahead.component.css'],
 })
@@ -46,6 +46,9 @@ export class SelectTypeaheadComponent implements OnInit, OnChanges {
 
   @Input()
   public showBackdrop = false;
+
+  @Input()
+  public fullWidth = false;
 
   @Input()
   public items: Item[] = [];
