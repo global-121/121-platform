@@ -1,4 +1,9 @@
-<div class="select-typeahead--trigger-wrapper">
+<div
+  class="select-typeahead--trigger-wrapper"
+  [ngClass]="{
+    'is-full-width': fullWidth
+  }"
+>
   <ion-button
     type="button"
     [id]="triggerId"
@@ -41,7 +46,7 @@
   [trigger]="triggerId"
   triggerAction="click"
   reference="trigger"
-  side="right"
+  side="bottom"
   alignment="start"
   [size]="size"
   class="select-typeahead--popover"

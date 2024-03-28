@@ -133,8 +133,9 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data'];
-      paginateConfigCopy.searchableColumns = ['data.(value)'];
+      paginateConfigCopy.relations = ['data', 'dataSearchBy'];
+    } else {
+      paginateConfigCopy.searchableColumns = [];
     }
 
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
@@ -517,6 +518,7 @@ export class RegistrationsPaginationService {
       mappedRegistration = { ...registration };
     }
     delete mappedRegistration.data;
+    delete mappedRegistration.dataSearchBy;
     if (!hasPersonalReadPermission) {
       delete mappedRegistration.phoneNumber;
     }

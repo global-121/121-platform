@@ -20,12 +20,6 @@
   flex-basis: 40%;
 }
 
-.tfr--text-filter--select {
-  &::part(container) {
-    width: 100%;
-  }
-}
-
 .tfr--text-filter--input {
   min-height: 2.75rem;
 }

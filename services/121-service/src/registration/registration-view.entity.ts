@@ -137,6 +137,15 @@ export class RegistrationViewEntity {
   public data: RegistrationDataEntity[];
 
   @OneToMany(
+    () => RegistrationDataEntity,
+    (registrationData) => registrationData.registration,
+    {
+      eager: true,
+    },
+  )
+  public dataSearchBy: RegistrationDataEntity[];
+
+  @OneToMany(
     () => LatestTransactionEntity,
     (latestTransactions) => latestTransactions.registration,
     {

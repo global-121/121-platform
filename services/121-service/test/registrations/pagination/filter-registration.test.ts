@@ -153,5 +153,35 @@ describe('Load PA table', () => {
       }
       expect(meta.totalItems).toBe(1);
     });
+
+    it('should filter using search in combination with filter', async () => {
+      // Act
+      // The postal code shoud filter 1 and 2 and the search should filter 2 and 4, so only 2 should be returned
+      const getRegistrationsResponse = await getRegistrations(
+        programIdOCW,
+        null,
+        accessToken,
+        null,
+        null,
+        {
+          'filter.addressPostalCode': `$ilike:${registrationOCW2.addressPostalCode.substring(
+            0,
+            1,
+          )}`,
+          search: `${registrationOCW2.addressCity}`,
+        },
+      );
+      const data = getRegistrationsResponse.body.data;
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Assert
+      expect(data[0]).toMatchObject(
+        createExpectedValueObject(registrationOCW2, 2),
+      );
+      for (const attribute of expectedAttributes) {
+        expect(data[0]).toHaveProperty(attribute);
+      }
+      expect(meta.totalItems).toBe(1);
+    });
   });
 });

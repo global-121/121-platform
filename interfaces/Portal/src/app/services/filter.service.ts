@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import RegistrationStatus from '../enums/registration-status.enum';
 
@@ -35,6 +36,20 @@ export enum FilterOperatorEnum {
   providedIn: 'root',
 })
 export class FilterService {
+  public DEFAULT_FILTER_OPTION: Filter = {
+    name: 'quickSearch',
+    label: this.translate.instant(
+      'page.program.program-people-affected.filter-quick-search',
+    ),
+    isInteger: false,
+    allowedOperators: [
+      FilterOperatorEnum.eq,
+      FilterOperatorEnum.in,
+      FilterOperatorEnum.ilike,
+      FilterOperatorEnum.null,
+    ],
+  };
+
   private DEFAULT_TEXT_FILTER = [];
   private allAvailableFilters: Filter[] = [];
 
@@ -53,6 +68,7 @@ export class FilterService {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private translate: TranslateService,
   ) {
     this.resetTextFilterInternal();
 
