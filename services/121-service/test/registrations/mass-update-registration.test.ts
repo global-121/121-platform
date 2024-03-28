@@ -1,16 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import {
-  searchRegistrationByReferenceId,
-  importRegistrationsCSV,
-  bulkUpdateRegistrationsCSV,
-} from '../helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '../helpers/utility.helper';
 import { assertRegistrationImport } from '../helpers/assert.helper';
+import {
+  bulkUpdateRegistrationsCSV,
+  importRegistrationsCSV,
+  searchRegistrationByReferenceId,
+} from '../helpers/registration.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Update attribute of multiple PAs via Bulk update', () => {
   const programIdOcw = 3;
@@ -36,7 +33,11 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    const importCsvPAs = await importRegistrationsCSV(programIdOcw, './test-registration-data/test-registrations-OCW.csv', accessToken);
+    const importCsvPAs = await importRegistrationsCSV(
+      programIdOcw,
+      './test-registration-data/test-registrations-OCW.csv',
+      accessToken,
+    );
     expect(importCsvPAs.statusCode).toBe(201);
 
     const pa1result = await searchRegistrationByReferenceId(
@@ -76,7 +77,11 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressHouseNumberAddition: 'updated',
     };
 
-    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(programIdOcw, './test-registration-data/test-registrations-patch-OCW.csv', accessToken);
+    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
+      programIdOcw,
+      './test-registration-data/test-registrations-patch-OCW.csv',
+      accessToken,
+    );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
     await waitFor(2000);
