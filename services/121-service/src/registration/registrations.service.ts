@@ -45,6 +45,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { ErrorEnum } from './errors/registration-data.error';
 import { RegistrationDataService } from './modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
@@ -663,7 +664,9 @@ export class RegistrationsService {
           registration.phoneNumber = value.toString();
           await this.registrationUtilsService.save(registration);
         } else {
-          throw error;
+          if (error.name !== ErrorEnum.RegistrationDataError) {
+            throw error;
+          }
         }
       }
     }
