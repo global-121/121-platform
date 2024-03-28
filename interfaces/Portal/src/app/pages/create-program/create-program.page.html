@@ -1,51 +1,60 @@
-<app-header [title]="'Create Program'"></app-header>
-<ion-content class="ion-padding">
-  <ng-container *ngIf="!isCreateProgramEnabled"
-    >Program creation is not enabled</ng-container
-  >
-  <ng-container *ngIf="isCreateProgramEnabled">
-    <div *ngIf="!isAdmin">
-      You don't have the permission to create a program.
-    </div>
+<app-header [title]="'page.create-program.pageTitle' | translate"></app-header>
 
-    <div
-      *ngIf="isAdmin"
-      style="width: 30%"
-      class="ion-padding"
-    >
-      <ion-input
-        class="ion-margin-bottom"
-        label="Kobo Token"
-        labelPlacement="stacked"
-        fill="outline"
-        [(ngModel)]="koboTokenValue"
-      ></ion-input>
-      <ion-input
-        class="ion-margin-bottom"
-        label="Kobo Asset ID"
-        labelPlacement="stacked"
-        fill="outline"
-        [(ngModel)]="koboAssetIdValue"
-      ></ion-input>
-      <div class="ion-text-right">
-        <ion-button
-          [disabled]="disableCreateProgramButton()"
-          class="ion-margin-bottom"
-          (click)="createProgram()"
-          >Create Program
-          <ion-spinner
-            *ngIf="inProgress"
-            class="ion-margin-start"
-            name="circular"
-          ></ion-spinner>
-        </ion-button>
-      </div>
-    </div>
+<ion-content class="ion-padding">
+  <ng-container *ngIf="!isAdmin">
+    {{ 'page.create-program.no-permission' | translate }}
   </ng-container>
+
+  <form
+    *ngIf="isAdmin"
+    #createProgramForm="ngForm"
+    (ngSubmit)="createProgram()"
+    (keyup.enter)="createProgram()"
+    style="width: 50%"
+    class="ion-padding"
+  >
+    <ion-text
+      *ngIf="errorMessage && !inProgress"
+      color="portal-danger"
+      class="ion-padding-vertical"
+      style="display: block"
+    >
+      {{ errorMessage }}
+    </ion-text>
+
+    <ion-input
+      type="password"
+      name="koboToken"
+      [(ngModel)]="koboTokenValue"
+      required="true"
+      [label]="'page.create-program.form.kobo-token.label' | translate"
+      labelPlacement="stacked"
+      fill="outline"
+      class="ion-margin-vertical"
+    ></ion-input>
+
+    <ion-input
+      name="koboAssetId"
+      [(ngModel)]="koboAssetIdValue"
+      required="true"
+      [label]="'page.create-program.form.kobo-asset-id.label' | translate"
+      labelPlacement="stacked"
+      fill="outline"
+      class="ion-margin-vertical"
+    ></ion-input>
+
+    <div class="ion-text-end">
+      <ion-button
+        type="submit"
+        [disabled]="!createProgramForm.valid"
+      >
+        {{ 'page.create-program.pageTitle' | translate }}
+
+        <ion-spinner
+          *ngIf="inProgress"
+          slot="end"
+        ></ion-spinner>
+      </ion-button>
+    </div>
+  </form>
 </ion-content>
-<ion-alert
-  [isOpen]="isAlertOpen"
-  header="Create Program"
-  [message]="alertMessage"
-  (didDismiss)="dismissAlert()"
-></ion-alert>
