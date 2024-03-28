@@ -206,7 +206,7 @@ export class AuthService {
 
   public async logoutNonSSOUser() {
     const user = this.getUserFromStorage();
-    if (user.isEntraUser === false) {
+    if (user?.isEntraUser === false) {
       console.log('Logging out non-SSO user', user.username);
       await this.logout();
     }
