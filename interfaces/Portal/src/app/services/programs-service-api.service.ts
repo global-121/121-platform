@@ -613,9 +613,12 @@ export class ProgramsServiceApiService {
     sort?: PaginationSort,
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
-    const quickSearch = filters.find(
-      (filter) => filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
-    );
+    const quickSearch = filters
+      ? filters.find(
+          (filter) =>
+            filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
+        )
+      : null;
 
     let params = new HttpParams();
     params = params.append('limit', limit);
