@@ -67,6 +67,7 @@ export class RegistrationsPaginationService {
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
+    console.time('getPaginate');
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
       // These setting are needed to get all registrations
@@ -133,8 +134,9 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data'];
-      paginateConfigCopy.searchableColumns = ['data.(value)'];
+      paginateConfigCopy.relations = ['data', 'dataSearchBy'];
+    } else {
+      paginateConfigCopy.searchableColumns = [];
     }
 
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
@@ -146,7 +148,6 @@ export class RegistrationsPaginationService {
       queryBuilder,
       paginateConfigCopy,
     );
-
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
     if (query.select && query.select.length > 0) {
@@ -163,6 +164,8 @@ export class RegistrationsPaginationService {
       fullnameNamingConvention,
       hasPersonalReadPermission,
     );
+
+    console.timeEnd('getPaginate');
     return result;
   }
 
