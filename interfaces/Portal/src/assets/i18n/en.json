@@ -5,6 +5,7 @@
     "answer-is-required": "An answer is required for this question.",
     "apply": "Apply",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
@@ -88,6 +89,7 @@
     "label": "Select a file"
   },
   "header": {
+    "create-program": "Create Program",
     "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
@@ -103,6 +105,18 @@
     "total-message": "total"
   },
   "page": {
+    "create-program": {
+      "form": {
+        "kobo-asset-id": {
+          "label": "Kobo Asset ID"
+        },
+        "kobo-token": {
+          "label": "Kobo Token"
+        }
+      },
+      "no-permission": "You don't have the permission to create a program.",
+      "pageTitle": "Create Program"
+    },
     "dashboard": {
       "pageTitle": "Dashboard"
     },
@@ -274,7 +288,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Assigned aidworkers",
         "distributionDuration": "Distribution duration",
         "distributionFrequency": "Distribution frequency",
         "endDate": "End date",

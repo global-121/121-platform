@@ -78,10 +78,10 @@
     [disabled]="!noteText || loading"
   >
     {{ 'common.ok' | translate }}
+
     <ion-spinner
       *ngIf="loading"
       color="light"
-      class="ion-margin-start"
     ></ion-spinner>
   </ion-button>
 </ion-footer>
