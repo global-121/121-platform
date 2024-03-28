@@ -570,8 +570,6 @@ export class RegistrationsService {
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
   ): Promise<RegistrationViewEntity> {
-    const oldFspData = {};
-    const newFspData = {};
     let nrAttributesUpdated = 0;
     const { data: partialRegistration } = updateRegistrationDto;
 
@@ -580,24 +578,13 @@ export class RegistrationsService {
       ['program', 'fsp'],
       programId,
     );
-
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
     for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeValue = partialRegistration[attributeKey];
 
-      const registrationData =
-        await this.registrationDataService.getRegistrationDataEntityByName(
-          registrationToUpdate,
-          attributeKey,
-        );
-      if (registrationData?.fspQuestionId) {
-        oldFspData[attributeKey] = registrationData.value;
-      }
-
-      const oldValue =
-        oldViewRegistration[attributeKey] || oldFspData[attributeKey];
+      const oldValue = oldViewRegistration[attributeKey];
 
       if (String(oldValue) !== String(attributeValue)) {
         registrationToUpdate = await this.updateAttribute(
@@ -605,7 +592,6 @@ export class RegistrationsService {
           attributeValue,
           registrationToUpdate,
         );
-        newFspData[attributeKey] = attributeValue;
         nrAttributesUpdated++;
       }
     }
@@ -618,8 +604,8 @@ export class RegistrationsService {
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
       await this.eventsService.log(
-        { ...oldViewRegistration, ...oldFspData },
-        { ...newRegistration, ...newFspData },
+        { ...oldViewRegistration },
+        { ...newRegistration },
         {
           additionalLogAttributes: { reason: updateRegistrationDto.reason },
         },

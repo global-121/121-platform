@@ -427,20 +427,21 @@ export class RegistrationsController {
   //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
-    @Param() params,
+    @Param('programId', new ParseIntPipe()) programId: number,
+    @Param('referenceId') referenceId: string,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @User('id') userId: number,
   ): Promise<RegistrationViewEntity> {
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeUPDATE,
       );
     const hasUpdateFinancialPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
 
@@ -478,7 +479,7 @@ export class RegistrationsController {
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration)) {
       await this.registrationsService.validateAttribute(
-        params.referenceId,
+        referenceId,
         attributeKey,
         partialRegistration[attributeKey],
         userId,
@@ -487,8 +488,8 @@ export class RegistrationsController {
 
     // if all valid, process update
     return await this.registrationsService.updateRegistration(
-      params.programId,
-      params.referenceId,
+      programId,
+      referenceId,
       updateRegistrationDataDto,
     );
   }
