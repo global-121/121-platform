@@ -5,9 +5,6 @@ import { getRandomInt } from './helpers';
 export default {
   updated: new Date().toISOString(),
   pa: {
-    [RegistrationStatus.imported]: getRandomInt(0, 100),
-    [RegistrationStatus.invited]: getRandomInt(0, 100),
-    [RegistrationStatus.noLongerEligible]: getRandomInt(0, 100),
     [RegistrationStatus.startedRegistration]: getRandomInt(0, 100),
     [RegistrationStatus.registered]: getRandomInt(0, 100),
     [RegistrationStatus.validated]: getRandomInt(0, 100),

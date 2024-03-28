@@ -20,6 +20,28 @@ export function importRegistrations(
     .send(registrations);
 }
 
+export function importRegistrationsCSV(
+  programId: number,
+  filePath: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .post(`/programs/${programId}/registrations/import-registrations`)
+    .set('Cookie', [accessToken])
+    .attach('file', filePath);
+}
+
+export function bulkUpdateRegistrationsCSV(
+  programId: number,
+  filePath: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(`/programs/${programId}/registrations`)
+    .set('Cookie', [accessToken])
+    .attach('file', filePath);
+}
+
 export function deleteRegistrations(
   programId: number,
   referenceIds: string[],
