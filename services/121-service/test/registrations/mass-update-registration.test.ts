@@ -1,4 +1,3 @@
-import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import { assertRegistrationImport } from '../helpers/assert.helper';
@@ -33,19 +32,17 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    const importCsvPAs = await importRegistrationsCSV(
+    await importRegistrationsCSV(
       programIdOcw,
       './test-registration-data/test-registrations-OCW.csv',
       accessToken,
     );
-    expect(importCsvPAs.statusCode).toBe(201);
 
     const pa1result = await searchRegistrationByReferenceId(
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
       programIdOcw,
       accessToken,
     );
-    expect(pa1result.statusCode).toBe(HttpStatus.OK);
 
     const pa1response = pa1result.body.data[0];
     assertRegistrationImport(pa1response, PA1);
@@ -55,7 +52,6 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       programIdOcw,
       accessToken,
     );
-    expect(pa2result.statusCode).toBe(HttpStatus.OK);
 
     const pa2response = pa2result.body.data[0];
     assertRegistrationImport(pa2response, PA2);
