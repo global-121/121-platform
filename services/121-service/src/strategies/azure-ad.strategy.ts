@@ -63,6 +63,7 @@ export class AzureAdStrategy
   }
 
   async validate(request: any, payload: any): Promise<any> {
+    console.log("🚀 ~ validate ~ payload:", payload)
     if (!payload) {
       throw new UnauthorizedException();
     }
@@ -80,6 +81,7 @@ export class AzureAdStrategy
     try {
       // Try to find user by username (this is an email address in our case)
       user = await this.userService.findByUsernameOrThrow(username);
+      console.log("🚀 ~ validate ~ user:", user)
       if (!user.isEntraUser) {
         user = await this.userService.updateUser({
           id: user.id,
