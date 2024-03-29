@@ -10,7 +10,6 @@ import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-p
 import { environment } from 'src/environments/environment';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { actionResult } from '../../shared/action-result';
-import { downloadAsCsv } from '../../shared/array-to-csv';
 
 export class AggregateImportResult {
   countImported: number;
@@ -53,14 +52,9 @@ export class BulkImportComponent implements OnInit {
   public isInProgress = false;
 
   public RegistrationStatus = RegistrationStatus;
-  public message: {
-    [RegistrationStatus.imported]: string;
-    [RegistrationStatus.registered]: string;
-  };
-  public filePickerProps: {
-    [RegistrationStatus.imported]: FilePickerProps;
-    [RegistrationStatus.registered]: FilePickerProps;
-  };
+  public message: string;
+
+  public filePickerProps: FilePickerProps;
 
   private locale: string;
 
@@ -73,61 +67,31 @@ export class BulkImportComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.message = {
-      [RegistrationStatus.imported]: await this.getLatestActionMessage(
-        RegistrationStatus.imported,
-      ),
-      [RegistrationStatus.registered]: await this.getLatestActionMessage(
-        RegistrationStatus.registered,
-      ),
-    };
+    this.message = await this.getLatestActionMessage(
+      RegistrationStatus.registered,
+    );
     this.filePickerProps = {
-      [RegistrationStatus.imported]: {
-        type: 'csv',
-        explanation: this.translate.instant(
-          'page.program.bulk-import.imported.explanation',
-        ),
-        programId: this.programId,
-        downloadTemplate: ImportType.imported,
-      },
-      [RegistrationStatus.registered]: {
-        type: 'csv',
-        explanation: this.translate.instant(
-          'page.program.bulk-import.registered.explanation',
-        ),
-        programId: this.programId,
-        downloadTemplate: ImportType.registered,
-      },
+      type: 'csv',
+      explanation: this.translate.instant(
+        'page.program.bulk-import.registered.explanation',
+      ),
+      programId: this.programId,
+      downloadTemplate: ImportType.registered,
     };
   }
 
-  private exportCSV(importResponse: any[]) {
-    const filename = 'import-people-affected-response';
-    downloadAsCsv(importResponse, filename);
-  }
-
-  public importPeopleAffected(
-    event: { file: File },
-    destination: RegistrationStatus,
-  ) {
+  public importPeopleAffected(event: { file: File }) {
     this.isInProgress = true;
 
     this.programsService
-      .import(this.programId, event.file, destination)
+      .import(this.programId, event.file)
       .then((response) => {
         const aggregateResult = response.aggregateImportResult;
         this.isInProgress = false;
         let resultMessage =
           this.translate.instant(
             'page.program.bulk-import.import-result.ready',
-          ) +
-          (destination === RegistrationStatus.imported
-            ? ' ' +
-              this.translate.instant(
-                'page.program.bulk-import.import-result.csv',
-              )
-            : '') +
-          '<br><br>';
+          ) + '<br><br>';
 
         resultMessage +=
           this.translate.instant('page.program.bulk-import.import-result.new', {
@@ -153,10 +117,6 @@ export class BulkImportComponent implements OnInit {
         }
 
         actionResult(this.alertController, this.translate, resultMessage, true);
-
-        if (destination === RegistrationStatus.imported) {
-          this.exportCSV(response.importResult);
-        }
       })
       .catch((err) => {
         this.isInProgress = false;

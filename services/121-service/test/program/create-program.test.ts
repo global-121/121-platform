@@ -23,6 +23,7 @@ describe('Create program questions', () => {
     const programOcwJson = JSON.parse(JSON.stringify(programOCW));
     const programEthJson = JSON.parse(JSON.stringify(programEth));
     const programs = [programOcwJson, programEthJson];
+
     for (const program of programs) {
       // Act
       const createProgramResponse = await postProgram(program, accessToken);
@@ -31,7 +32,7 @@ describe('Create program questions', () => {
       const programId = createProgramResponse.body.id;
       const getProgramResponse = await getProgram(programId, accessToken);
       expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
-      // expect(isEqual(getProgramResponse.body, programOCW)).toBe(true);
+
       const keyToIgnore = ['configuration', 'startDate', 'endDate'];
       for (const key in program) {
         if (!keyToIgnore.includes(key)) {

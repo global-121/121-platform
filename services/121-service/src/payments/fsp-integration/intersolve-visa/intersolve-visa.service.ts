@@ -28,7 +28,10 @@ import {
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -217,7 +220,7 @@ export class IntersolveVisaService
       paymentDetails.bulkSize = paymentList[0].bulkSize;
       paymentDetails.programId = programId;
       const job = await this.paymentIntersolveVisaQueue.add(
-        ProcessName.sendPayment,
+        ProcessNamePayment.sendPayment,
         paymentDetails,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);

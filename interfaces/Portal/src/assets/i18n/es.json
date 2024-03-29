@@ -311,7 +311,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Trabajadores humanitarios asignados",
         "distributionDuration": "Duración de la distribución",
         "distributionFrequency": "Frecuencia de distribución",
         "endDate": "Fecha final",
