@@ -20,7 +20,7 @@ import {
 } from '../enum/message-type.enum';
 import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import {
-  ProcessName,
+  ProcessNameMessage,
   QueueNameMessageCallBack,
 } from '../enum/queue.names.enum';
 import { MessageProcessType } from '../message-job.dto';
@@ -107,7 +107,10 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.messageStatusCallbackQueue.add(ProcessName.sms, callbackData);
+    await this.messageStatusCallbackQueue.add(
+      ProcessNameMessage.sms,
+      callbackData,
+    );
   }
 
   public async processSmsStatusCallback(callbackData): Promise<void> {
@@ -121,7 +124,7 @@ export class MessageIncomingService {
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     await this.messageStatusCallbackQueue.add(
-      ProcessName.whatsapp,
+      ProcessNameMessage.whatsapp,
       callbackData,
     );
   }
@@ -129,7 +132,10 @@ export class MessageIncomingService {
   public async addIncomingWhatsappToQueue(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    await this.incommingMessageQueue.add(ProcessName.whatsapp, callbackData);
+    await this.incommingMessageQueue.add(
+      ProcessNameMessage.whatsapp,
+      callbackData,
+    );
   }
 
   public async processWhatsappStatusCallback(

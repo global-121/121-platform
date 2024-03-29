@@ -183,6 +183,17 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
+    if (
+      !programData.financialServiceProviders ||
+      !programData.programQuestions ||
+      !programData.programCustomAttributes ||
+      !programData.fullnameNamingConvention
+    ) {
+      const errors =
+        'Required properties missing: `financialServiceProviders`, `programQuestions`, `programCustomAttributes` or `fullnameNamingConvention`';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
     const fspAttributeNames = [];
     for (const fsp of programData.financialServiceProviders) {
       const fspEntity = await this.financialServiceProviderRepository.findOne({
@@ -193,6 +204,7 @@ export class ProgramService {
         fspAttributeNames.push(question.name);
       }
     }
+
     const programQuestionNames = programData.programQuestions.map(
       (q) => q.name,
     );
@@ -209,6 +221,7 @@ export class ProgramService {
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
+
     // Check if allAttributeNames has duplicate values
     const duplicateNames = allAttributeNames.filter(
       (item, index) => allAttributeNames.indexOf(item) !== index,

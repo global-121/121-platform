@@ -55,6 +55,18 @@
           "value": "INTERSOLVE_VISA_BRAND_CODE"
         }
       ]
+    },
+    {
+      "fsp": "Excel",
+      "configuration": [
+        {
+          "name": "displayName",
+          "value": {
+            "en": "Occasional (physical)",
+            "nl": "Af-en-toe (Fysiek)"
+          }
+        }
+      ]
     }
   ],
   "targetNrRegistrations": 250,

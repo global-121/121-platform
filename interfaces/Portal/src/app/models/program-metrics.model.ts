@@ -6,9 +6,6 @@ export class ProgramMetrics {
 }
 
 export class PeopleMetrics {
-  [RegistrationStatus.imported]: number;
-  [RegistrationStatus.invited]: number;
-  [RegistrationStatus.noLongerEligible]: number;
   [RegistrationStatus.startedRegistration]: number;
   [RegistrationStatus.registered]: number;
   [RegistrationStatus.validated]: number;
@@ -27,7 +24,6 @@ export class MetricRow {
 }
 
 export enum MetricGroup {
-  aidworkers = 'aidworkers',
   financial = 'financial',
   pa = 'pa',
   programProperties = 'program-properties',
