@@ -17,7 +17,10 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
@@ -102,7 +105,7 @@ export class CommercialBankEthiopiaService
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
-        ProcessName.sendPayment,
+        ProcessNamePayment.sendPayment,
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);

@@ -1,4 +1,4 @@
-export enum ProcessName {
+export enum ProcessNameMessage {
   send = 'send',
   sms = 'sms',
   whatsapp = 'whatsapp',
@@ -15,4 +15,12 @@ export enum QueueNameCreateMessage {
   mediumBulk = 'mediumBulk',
   largeBulk = 'largeBulk',
   lowPriority = 'lowPriority',
+}
+
+export enum QueueNameRegistration {
+  registration = 'registration',
+}
+
+export enum ProcessNameRegistration {
+  update = 'updateRegistration',
 }

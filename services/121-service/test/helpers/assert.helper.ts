@@ -69,3 +69,13 @@ export function processMessagePlaceholders(
 
   return processedTemplate;
 }
+
+export function assertRegistrationImport(response: any, expected: any): void {
+  expect(response.phoneNumber).toBe(expected.phoneNumber);
+  expect(response.lastName).toBe(expected.lastName);
+  expect(response.addressStreet).toBe(expected.addressStreet);
+  expect(response.addressHouseNumber).toBe(expected.addressHouseNumber);
+  expect(response.addressHouseNumberAddition).toBe(
+    expected.addressHouseNumberAddition,
+  );
+}

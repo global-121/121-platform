@@ -14,7 +14,6 @@ export const environment = {
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
-  create_program_endpoint: '${process.env.CREATE_PROGRAM_ENDPOINT || ''}',
 
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY || ''}',

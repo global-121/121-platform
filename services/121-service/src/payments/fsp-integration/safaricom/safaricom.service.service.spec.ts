@@ -3,7 +3,10 @@ import { Queue } from 'bull';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { SafaricomJobDto } from './dto/safaricom-job.dto';
 import { SafaricomService } from './safaricom.service';
 
@@ -69,7 +72,7 @@ describe('SafaricomService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      ProcessName.sendPayment,
+      ProcessNamePayment.sendPayment,
       paymentDetailsResult,
     );
   });
