@@ -18,7 +18,7 @@ import {
 import { RegistrationEntity } from '../registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
-export class RegistrationDataTypeValidator
+export class RegistrationDataTypeClassValidator
   implements ValidatorConstraintInterface
 {
   private message: string;
@@ -225,7 +225,7 @@ export function IsRegistrationDataValidType(
       propertyName: propertyName,
       options: validationOptions,
       constraints: [validationAttributes],
-      validator: RegistrationDataTypeValidator,
+      validator: RegistrationDataTypeClassValidator,
     });
   };
 }

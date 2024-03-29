@@ -16,8 +16,6 @@ import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {
   imported = 'imported',
-  invalidPhoneNumber = 'invalidPhoneNumber',
-  existingPhoneNumber = 'existingPhoneNumber',
   notFound = 'notFound',
   paymentSuccess = 'paymentSuccess',
   paymentFailed = 'paymentFailed',
@@ -28,6 +26,7 @@ const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   public phoneNumber: string;
 
   @ApiProperty()

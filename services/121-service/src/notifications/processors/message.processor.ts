@@ -2,13 +2,16 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MessageService } from '../message.service';
 
-import { ProcessName, QueueNameCreateMessage } from '../enum/queue.names.enum';
+import {
+  ProcessNameMessage,
+  QueueNameCreateMessage,
+} from '../enum/queue.names.enum';
 
 @Processor(QueueNameCreateMessage.replyOnIncoming)
 export class MessageProcessorReplyOnIncoming {
   constructor(private readonly messageService: MessageService) {}
 
-  @Process(ProcessName.send)
+  @Process(ProcessNameMessage.send)
   async handleSend(job: Job): Promise<void> {
     await this.messageService.sendTextMessage(job.data);
   }
@@ -18,7 +21,7 @@ export class MessageProcessorReplyOnIncoming {
 export class MessageProcessorSmallBulk {
   constructor(private readonly messageService: MessageService) {}
 
-  @Process(ProcessName.send)
+  @Process(ProcessNameMessage.send)
   public async handleSend(job: Job): Promise<void> {
     await this.messageService.sendTextMessage(job.data);
   }
@@ -28,7 +31,7 @@ export class MessageProcessorSmallBulk {
 export class MessageProcessorMediumBulk {
   constructor(private readonly messageService: MessageService) {}
 
-  @Process(ProcessName.send)
+  @Process(ProcessNameMessage.send)
   public async handleSend(job: Job): Promise<void> {
     await this.messageService.sendTextMessage(job.data);
   }
@@ -38,7 +41,7 @@ export class MessageProcessorMediumBulk {
 export class MessageProcessorLargeBulk {
   constructor(private readonly messageService: MessageService) {}
 
-  @Process(ProcessName.send)
+  @Process(ProcessNameMessage.send)
   public async handleSend(job: Job): Promise<void> {
     await this.messageService.sendTextMessage(job.data);
   }
@@ -48,7 +51,7 @@ export class MessageProcessorLargeBulk {
 export class MessageProcessorLowPriority {
   constructor(private readonly messageService: MessageService) {}
 
-  @Process(ProcessName.send)
+  @Process(ProcessNameMessage.send)
   public async handleSend(job: Job): Promise<void> {
     await this.messageService.sendTextMessage(job.data);
   }

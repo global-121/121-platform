@@ -5,6 +5,7 @@
     "answer-is-required": "An answer is required for this question.",
     "apply": "Apply",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Are you sure?",
     "error-with-message": "Something went wrong: {{error}}",
     "export-error": "Something went wrong with the export.",
@@ -59,14 +60,10 @@
         "completed": "Completed",
         "declined": "Declined",
         "deleted": "Deleted",
-        "imported": "Imported",
         "included": "Included",
         "inclusionEnded": "Inclusion ended",
-        "invited": "Invited",
-        "noLongerEligible": "No longer eligible",
         "paused": "Paused",
         "registered": "Registered",
-        "registeredWhileNoLongerEligible": "Registered while no longer eligible",
         "rejected": "Rejected",
         "startedRegistration": "Created",
         "validated": "Validated"
@@ -88,6 +85,7 @@
     "label": "Select a file"
   },
   "header": {
+    "create-program": "Create Program",
     "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
@@ -103,6 +101,18 @@
     "total-message": "total"
   },
   "page": {
+    "create-program": {
+      "form": {
+        "kobo-asset-id": {
+          "label": "Kobo Asset ID"
+        },
+        "kobo-token": {
+          "label": "Kobo Token"
+        }
+      },
+      "no-permission": "You don't have the permission to create a program.",
+      "pageTitle": "Create Program"
+    },
     "dashboard": {
       "pageTitle": "Dashboard"
     },
@@ -150,16 +160,10 @@
       "bulk-import": {
         "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
         "import-result": {
-          "csv": "A CSV is automatically downloaded, which shows the import-status and the registration-status per row.",
           "existing": "There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped.",
           "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again.",
           "new": "There are {{countImported}} new records imported.",
           "ready": "Import ready."
-        },
-        "imported": {
-          "btn-text": "Import People Affected",
-          "confirm-message": "The system will detect only new phone-numbers and import them as People Affected.",
-          "explanation": "Make sure to match the required format of the template CSV-file. The import takes about 1 minute per 100 records"
         },
         "registered": {
           "btn-text": "Import registrations",
@@ -274,7 +278,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Assigned aidworkers",
         "distributionDuration": "Distribution duration",
         "distributionFrequency": "Distribution frequency",
         "endDate": "End date",
@@ -345,10 +348,8 @@
           "doPayment": "Do payment #{{paymentNr}}",
           "endInclusion": "End inclusion in program",
           "include": "Include in program",
-          "invite": "Invite for registration",
           "markAsDeclined": "Mark as declined",
           "markAsValidated": "Mark as validated",
-          "markNoLongerEligible": "Mark as no longer eligible",
           "pause": "Pause PAs",
           "reject": "Reject from program",
           "sendMessage": "Send Message to PAs"
@@ -359,10 +360,8 @@
           "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment.",
           "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
           "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
-          "invite": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>No longer eligible</i>.",
           "markAsDeclined": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i> or <i>Validated</i>.",
-          "markNoLongerEligible": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Imported</i> or <i>Invited</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
           "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
           "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them."
