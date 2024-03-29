@@ -36,16 +36,6 @@
         [disabled]="isLoading"
         class="tfr--text-filter--select"
       ></app-select-typeahead>
-      <div style="width: 4rem">
-        <app-tooltip
-          *ngIf="showQuickSearchTooltip()"
-          [value]="
-            'page.program.program-people-affected.filter-quick-search-tooltip'
-              | translate
-          "
-          color="primary"
-        ></app-tooltip>
-      </div>
       <ng-container *ngIf="showInput()">
         <ion-input
           [placeholder]="

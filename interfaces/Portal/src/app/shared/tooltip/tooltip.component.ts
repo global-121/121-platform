@@ -10,9 +10,6 @@ export class TooltipComponent {
   @Input()
   public value: string;
 
-  @Input()
-  public color = 'medium';
-
   @ViewChild('popover') popover;
 
   isOpen = false;
