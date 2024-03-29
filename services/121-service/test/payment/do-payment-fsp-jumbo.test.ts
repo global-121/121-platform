@@ -101,7 +101,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should give error about address', async () => {
       // Arrange
-      registrationJumbo.addressCity = null;
+      registrationJumbo.addressCity = '';
       await importRegistrations(programId, [registrationJumbo], accessToken);
       await awaitChangePaStatus(
         programId,

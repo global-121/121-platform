@@ -10,6 +10,11 @@ export interface ScopedUserRequest extends Request {
   userId?: number;
 }
 
+export interface ScopedUserInterface {
+  scope?: string;
+  userId?: number;
+}
+
 @Injectable()
 export class ScopeUserMiddleware implements NestMiddleware {
   constructor(

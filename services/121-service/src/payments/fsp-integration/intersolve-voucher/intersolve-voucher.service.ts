@@ -29,7 +29,10 @@ import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
@@ -104,7 +107,7 @@ export class IntersolveVoucherService
 
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
-        ProcessName.sendPayment,
+        ProcessNamePayment.sendPayment,
         {
           paymentInfo: paymentInfo,
           useWhatsapp: useWhatsapp,

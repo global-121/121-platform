@@ -10,7 +10,7 @@ import { RegistrationEntity } from '../../registration/registration.entity';
 import { getQueueName } from '../../utils/unit-test.helpers';
 import { DEFAULT_QUEUE_CREATE_MESSAGE } from '../enum/message-queue-mapping.const';
 import { MessageContentType } from '../enum/message-type.enum';
-import { ProcessName } from '../enum/queue.names.enum';
+import { ProcessNameMessage } from '../enum/queue.names.enum';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageTemplateEntity } from '../message-template/message-template.entity';
 import { QueueMessageService } from './queue-message.service';
@@ -68,7 +68,7 @@ describe('QueueMessageService', () => {
     );
 
     // Assert
-    expect(messageQueue.add).toHaveBeenCalledWith(ProcessName.send, {
+    expect(messageQueue.add).toHaveBeenCalledWith(ProcessNameMessage.send, {
       ...defaultMessageJob,
       whatsappPhoneNumber: registration['whatsappPhoneNumber'],
       phoneNumber: registration.phoneNumber,
@@ -107,7 +107,7 @@ describe('QueueMessageService', () => {
 
     // Assert
     expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
-    expect(messageQueue.add).toHaveBeenCalledWith(ProcessName.send, {
+    expect(messageQueue.add).toHaveBeenCalledWith(ProcessNameMessage.send, {
       ...defaultMessageJob,
       whatsappPhoneNumber: whatsappNumber,
       phoneNumber: registration.phoneNumber,

@@ -4,7 +4,10 @@ import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaJobDto } from './dto/commercial-bank-ethiopia-job.dto';
 import { CommercialBankEthiopiaTransferPayload } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
@@ -110,7 +113,7 @@ describe('CommercialBankEthiopiaService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      ProcessName.sendPayment,
+      ProcessNamePayment.sendPayment,
       paymentDetailsResult,
     );
   });

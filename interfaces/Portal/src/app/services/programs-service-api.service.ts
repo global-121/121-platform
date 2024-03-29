@@ -348,19 +348,10 @@ export class ProgramsServiceApiService {
     return;
   }
 
-  import(
-    programId: number,
-    file: File,
-    destination: RegistrationStatus = RegistrationStatus.imported,
-  ): Promise<ImportResult> {
+  import(programId: number, file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
-
-    let path = `/programs/${programId}/registrations/import-bulk`;
-
-    if (destination === RegistrationStatus.registered) {
-      path = `/programs/${programId}/registrations/import-registrations`;
-    }
+    const path = `/programs/${programId}/registrations/import-registrations`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
@@ -710,36 +701,6 @@ export class ProgramsServiceApiService {
       programId,
       dryRun,
       filters,
-    );
-  }
-
-  markNoLongerEligible(
-    programId: number | string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.noLongerEligible,
-      programId,
-      dryRun,
-      filters,
-    );
-  }
-
-  invite(
-    programId: number | string,
-    message: string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-    messageTemplateKey?: string,
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.invited,
-      programId,
-      dryRun,
-      filters,
-      message,
-      messageTemplateKey,
     );
   }
 
