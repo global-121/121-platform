@@ -6,9 +6,6 @@ export class ProgramMetrics {
 }
 
 export class PeopleMetrics {
-  [RegistrationStatus.imported]: number;
-  [RegistrationStatus.invited]: number;
-  [RegistrationStatus.noLongerEligible]: number;
   [RegistrationStatus.startedRegistration]: number;
   [RegistrationStatus.registered]: number;
   [RegistrationStatus.validated]: number;

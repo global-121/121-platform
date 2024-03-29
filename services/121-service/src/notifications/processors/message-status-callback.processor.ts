@@ -2,7 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { AzureLogService } from '../../shared/services/azure-log.service';
 import {
-  ProcessName,
+  ProcessNameMessage,
   QueueNameMessageCallBack,
 } from '../enum/queue.names.enum';
 import { MessageIncomingService } from '../message-incoming/message-incoming.service';
@@ -13,7 +13,7 @@ export class MessageStatusCallbackProcessor {
     private readonly azureLogService: AzureLogService,
   ) {}
 
-  @Process(ProcessName.whatsapp)
+  @Process(ProcessNameMessage.whatsapp)
   async handleStatusCallbackWhatsapp(job: Job): Promise<void> {
     const callbackData = job.data;
     await this.messageIncomingService
@@ -24,7 +24,7 @@ export class MessageStatusCallbackProcessor {
       });
   }
 
-  @Process(ProcessName.sms)
+  @Process(ProcessNameMessage.sms)
   async handleStatusCallbackSms(job: Job): Promise<void> {
     const callbackData = job.data;
     await this.messageIncomingService

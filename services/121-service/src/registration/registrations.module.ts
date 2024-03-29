@@ -30,8 +30,10 @@ import { UserModule } from '../user/user.module';
 import { FileImportService } from '../utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { QueueRegistrationUpdateModule } from './modules/queue-registrations-update/queue-registrations-update.module';
 import { RegistrationDataModule } from './modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from './modules/registration-utilts/registration-utils.module';
+import { RegistrationUpdateProcessor } from './processsors/registrations-update.processor';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
@@ -42,6 +44,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsBulkService } from './services/registrations-bulk.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { RegistrationsInputValidator } from './validators/registrations-input-validator';
 
 @Module({
   imports: [
@@ -70,6 +73,7 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationDataModule,
     RegistrationUtilsModule,
     EventsModule,
+    QueueRegistrationUpdateModule,
   ],
   providers: [
     RegistrationsService,
@@ -82,6 +86,8 @@ import { RegistrationsPaginationService } from './services/registrations-paginat
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     FileImportService,
+    RegistrationUpdateProcessor,
+    RegistrationsInputValidator,
     createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),

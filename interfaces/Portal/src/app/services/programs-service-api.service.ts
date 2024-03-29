@@ -344,19 +344,10 @@ export class ProgramsServiceApiService {
     return;
   }
 
-  import(
-    programId: number,
-    file: File,
-    destination: RegistrationStatus = RegistrationStatus.imported,
-  ): Promise<ImportResult> {
+  import(programId: number, file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
-
-    let path = `/programs/${programId}/registrations/import-bulk`;
-
-    if (destination === RegistrationStatus.registered) {
-      path = `/programs/${programId}/registrations/import-registrations`;
-    }
+    const path = `/programs/${programId}/registrations/import-registrations`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
@@ -698,36 +689,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  markNoLongerEligible(
-    programId: number | string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.noLongerEligible,
-      programId,
-      dryRun,
-      filters,
-    );
-  }
-
-  invite(
-    programId: number | string,
-    message: string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-    messageTemplateKey?: string,
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.invited,
-      programId,
-      dryRun,
-      filters,
-      message,
-      messageTemplateKey,
-    );
-  }
-
   include(
     programId: number | string,
     message: string,
@@ -1031,6 +992,14 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/notifications/${programId}/message-templates`,
+    );
+  }
+
+  createProgramFromKobo(token: string, assetId: string): Promise<Program> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs?importFromKobo=true${token ? `&koboToken=${token}` : ''}${assetId ? `&koboAssetId=${assetId}` : ''}`,
+      {},
     );
   }
 
