@@ -1,5 +1,5 @@
 @portal
-Feature: Import registrations as registered
+Feature: Import registrations with status registered
 
   Background:
     Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions

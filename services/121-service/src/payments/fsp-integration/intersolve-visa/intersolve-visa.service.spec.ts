@@ -3,7 +3,10 @@ import { Queue } from 'bull';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { PaPaymentDataDto } from '../../../payments/dto/pa-payment-data.dto';
 import { getQueueName } from '../../../utils/unit-test.helpers';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
@@ -93,7 +96,7 @@ describe('IntersolveVisaService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      ProcessName.sendPayment,
+      ProcessNamePayment.sendPayment,
       paymentDetailsResult,
     );
   });

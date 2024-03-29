@@ -1,0 +1,4 @@
+namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,fullName,phoneNumber,fspName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+ABC,en,1,Henk de Vries,14155238886,Intersolve-voucher-whatsapp,14155238886,,,,,
+DEF,en,1,Jan Klaassen,14155238885,Intersolve-voucher-paper,,,,,,
+ABC,en,1,Ahmed Al-Saadi,14155238886,Intersolve-visa,14155238885,Straat,1,A,1234AB,Den Haag

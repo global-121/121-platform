@@ -1,5 +1,7 @@
+import { JOB_REF } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
@@ -23,6 +25,7 @@ export class EventsService {
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
     @Inject(REQUEST) private request: ScopedUserRequest,
+    @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
   ) {}
 
@@ -100,14 +103,18 @@ export class EventsService {
       : [newRegistrationOrRegistrations];
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
+    // Get userId from request if it exists otherwise this update was done using a queue
+    // than get it from the request of the job of the queue
 
-    let userId = null;
+    const requestUserId = this.request.userId
+      ? this.request.userId
+      : this.jobRef?.data?.request?.userId;
 
-    if (this.request.userId) {
-      const user = await this.userService.findById(this.request.userId);
-
+    let userId;
+    if (requestUserId) {
+      const user = await this.userService.findById(requestUserId);
       if (user && user.userType === 'aidWorker') {
-        userId = this.request.userId;
+        userId = requestUserId;
       }
     }
 
@@ -322,7 +329,7 @@ export class EventsService {
     const mergedArray = [
       ...new Set([...array1, ...array2]),
     ] as (keyof RegistrationViewEntity)[];
-    const irrelevantKeys: (keyof RegistrationViewEntity)[] = [
+    const irrelevantKeys: (keyof RegistrationViewEntity | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
@@ -333,6 +340,7 @@ export class EventsService {
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
+      'name',
       'inclusionScore',
     ];
     return mergedArray.filter((key) => !irrelevantKeys.includes(key));

@@ -5,12 +5,8 @@ export enum PaMetricsProperty {
 }
 
 export interface PaMetrics {
-  [RegistrationStatusEnum.imported]?: number;
-  [RegistrationStatusEnum.invited]?: number;
-  [RegistrationStatusEnum.noLongerEligible]?: number;
   [RegistrationStatusEnum.startedRegistration]: number;
   [RegistrationStatusEnum.registered]: number;
-  [RegistrationStatusEnum.registeredWhileNoLongerEligible]?: number;
   [RegistrationStatusEnum.validated]: number;
   [RegistrationStatusEnum.declined]: number;
   [RegistrationStatusEnum.included]: number;
