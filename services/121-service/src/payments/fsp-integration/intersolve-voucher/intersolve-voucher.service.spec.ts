@@ -4,7 +4,10 @@ import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
 import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { IntersolveVoucherJobDto } from './dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 
@@ -85,7 +88,7 @@ describe('IntersolveVoucherService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      ProcessName.sendPayment,
+      ProcessNamePayment.sendPayment,
       paymentDetailsResult,
     );
   });
