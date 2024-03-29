@@ -9,7 +9,6 @@ import { Program } from 'src/app/models/program.model';
 import { User } from 'src/app/models/user.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { environment } from '../../../environments/environment';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { UserStateComponent } from '../user-state/user-state.component';
 
@@ -42,8 +41,6 @@ export class HeaderComponent implements OnInit {
   public subtitle: string;
   public isAdmin?: boolean;
 
-  public isCreateProgramEnabled = !!environment.create_program_endpoint;
-
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -55,6 +52,7 @@ export class HeaderComponent implements OnInit {
 
   public async ngOnInit() {
     await this.loadProgramDetails();
+
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isAdmin = user?.isAdmin;
     });
