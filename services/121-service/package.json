@@ -51,7 +51,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@types/express": "^4.17.21",
     "africastalking": "^0.5.5",
-    "applicationinsights": "^2.9.2",
+    "applicationinsights": "^2.9.5",
     "bull": "^4.11.4",
     "bwip-js": "^2.0.11",
     "class-transformer": "^0.5.1",
