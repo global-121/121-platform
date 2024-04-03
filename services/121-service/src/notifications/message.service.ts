@@ -292,7 +292,9 @@ export class MessageService {
           regex,
           placeHolderValue === null || placeHolderValue === undefined
             ? ''
-            : placeHolderValue,
+            : typeof placeHolderValue === 'object'
+              ? placeHolderValue.en ?? ''
+              : placeHolderValue,
         );
       }
     }
