@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ProgramsListComponent } from '../programs-list/programs-list.component';
+import { ProgramsListComponent } from '../../programs-list/programs-list.component';
 
 @Component({
   selector: 'app-home',
