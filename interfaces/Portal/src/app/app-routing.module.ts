@@ -37,7 +37,7 @@ const routes: Routes = [
   {
     path: AppRoutes.help,
     loadChildren: () =>
-      import('./help/help.module').then((m) => m.HelpPageModule),
+      import('./pages/help/help.module').then((m) => m.HelpPageModule),
     canActivate: [AuthGuard],
   },
   {
