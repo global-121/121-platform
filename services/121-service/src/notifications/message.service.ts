@@ -5,6 +5,7 @@ import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/inter
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { LanguageEnum } from '../registration/enum/language.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { MessageContentType } from './enum/message-type.enum';
 import { ProgramNotificationEnum } from './enum/program-notification.enum';
@@ -48,6 +49,7 @@ export class MessageService {
         messageText = await this.processPlaceholders(
           messageText,
           messageJobDto.customData.placeholderData,
+          messageJobDto.preferredLanguage,
         );
       }
 
@@ -282,8 +284,10 @@ export class MessageService {
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
     placeholderData: object,
+    preferredLanguage: LanguageEnum,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;
+    const language = preferredLanguage || this.fallbackLanguage;
     for (const placeholder of Object.keys(placeholderData)) {
       const regex = new RegExp(`{{${placeholder}}}`, 'g');
       if (messageText.match(regex)) {
@@ -293,7 +297,7 @@ export class MessageService {
           placeHolderValue === null || placeHolderValue === undefined
             ? ''
             : typeof placeHolderValue === 'object'
-              ? placeHolderValue.en ?? ''
+              ? placeHolderValue[language] ?? ''
               : placeHolderValue,
         );
       }
