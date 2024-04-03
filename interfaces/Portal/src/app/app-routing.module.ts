@@ -135,7 +135,7 @@ const routes: Routes = [
   {
     path: AppRoutes.iframe,
     loadChildren: () =>
-      import('./iframe/iframe.module').then((m) => m.IframeModule),
+      import('./pages/iframe/iframe.module').then((m) => m.IframeModule),
     canActivate: [AuthGuard],
   },
   {
