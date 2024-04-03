@@ -296,13 +296,14 @@ export class IntersolveVisaService
       ...paymentList.find((s) => s.referenceId === v.referenceId),
     }));
 
-    // Set first name to empy string if it is null
+    // Set first name to empy string if it is null or undefined
     // This is needed because the intersolve API does not accept null values
     result.forEach((r) => {
-      if (r.firstName === null) {
+      if (!r.firstName) {
         r.firstName = '';
       }
     });
+
     return result;
   }
 
