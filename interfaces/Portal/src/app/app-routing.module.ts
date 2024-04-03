@@ -43,7 +43,7 @@ const routes: Routes = [
   {
     path: AppRoutes.users,
     loadChildren: () =>
-      import('./users/users.module').then((m) => m.UsersPageModule),
+      import('./pages/users/users.module').then((m) => m.UsersPageModule),
     canActivate: [AuthGuard],
   },
   {
