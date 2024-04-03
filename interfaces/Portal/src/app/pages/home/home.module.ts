@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProgramsListComponent } from '../../programs-list/programs-list.component';
 import { SharedModule } from '../../shared/shared.module';
+import { ProgramsListComponent } from './components/programs-list/programs-list.component';
 import { HomePage } from './home.page';
 
 @NgModule({

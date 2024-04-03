@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Program, ProgramStats } from '../models/program.model';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { TranslatableStringService } from '../services/translatable-string.service';
+import { Program, ProgramStats } from '../../../../models/program.model';
+import { ProgramsServiceApiService } from '../../../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../../../services/translatable-string.service';
 
 @Component({
   selector: 'app-programs-list',
