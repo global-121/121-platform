@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: AppRoutes.login,
     loadChildren: () =>
-      import('./login/login.module').then((m) => m.LoginPageModule),
+      import('./pages/login/login.module').then((m) => m.LoginPageModule),
   },
   {
     path: AppRoutes.auth,
