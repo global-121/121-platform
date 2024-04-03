@@ -25,7 +25,7 @@ const routes: Routes = [
   {
     path: AppRoutes.user,
     loadChildren: () =>
-      import('./user/user.module').then((m) => m.UserPageModule),
+      import('./pages/user/user.module').then((m) => m.UserPageModule),
     canActivate: [AuthGuard],
   },
   {
