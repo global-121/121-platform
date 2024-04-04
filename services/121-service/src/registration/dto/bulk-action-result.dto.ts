@@ -14,9 +14,12 @@ export class BulkActionResultDto {
   public readonly nonApplicableCount: number;
 }
 
-export class BulkActionResultPaymentDto extends BulkActionResultDto {
-  @ApiProperty({ example: 9 })
-  public readonly sumPaymentAmountMultiplier: number;
+export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
   @ApiProperty({ example: [FspName.intersolveVisa, FspName.excel] })
   public readonly fspsInPayment: string[];
+}
+
+export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto {
+  @ApiProperty({ example: 9 })
+  public readonly sumPaymentAmountMultiplier: number;
 }
