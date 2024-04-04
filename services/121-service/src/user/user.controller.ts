@@ -325,7 +325,7 @@ export class UserController {
   }
 
   @ApiTags('users')
-  @ApiOperation({ summary: 'Get current user' })
+  @ApiOperation({ summary: 'Get all users' })
   @Get('users')
   @ApiResponse({ status: 200, description: 'User returned' })
   @ApiResponse({
