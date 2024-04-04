@@ -437,15 +437,17 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    const program = await this.programService.findProgramOrThrow(programId);
-    const validationConfig = new ValidationConfigDto();
-    validationConfig.validatePhoneNumberEmpty = !program.allowEmptyPhoneNumber;
-    validationConfig.validatePhoneNumberLookup = true;
-    validationConfig.validateClassValidator = true;
-    validationConfig.validateUniqueReferenceId = true;
-    validationConfig.validateScope = true;
-    validationConfig.validatePreferredLanguage = true;
-    validationConfig.validateDynamicAttributes = true;
+    const { allowEmptyPhoneNumber } =
+      await this.programService.findProgramOrThrow(programId);
+    const validationConfig = new ValidationConfigDto({
+      validatePhoneNumberEmpty: !allowEmptyPhoneNumber,
+      validatePhoneNumberLookup: true,
+      validateClassValidator: true,
+      validateUniqueReferenceId: true,
+      validateScope: true,
+      validatePreferredLanguage: true,
+      validateDynamicAttributes: true,
+    });
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     return (await this.registrationsInputValidator.validateAndCleanRegistrationsInput(
       csvArray,
