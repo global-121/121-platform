@@ -180,7 +180,7 @@ export class RegistrationsInputValidator {
               att.name,
               i,
             );
-            if (errorObj) {
+            if (errorObj && Object.keys(row).includes(att.name)) {
               errors.push(errorObj);
             } else {
               importRecord[att.name] = row[att.name];
