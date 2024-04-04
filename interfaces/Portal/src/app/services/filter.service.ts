@@ -39,7 +39,7 @@ export class FilterService {
   public DEFAULT_FILTER_OPTION: Filter = {
     name: 'quickSearch',
     label: this.translate.instant(
-      'page.program.program-people-affected.filter-quick-search',
+      'page.program.table-filter-row.filter-quick-search',
     ),
     isInteger: false,
     allowedOperators: [

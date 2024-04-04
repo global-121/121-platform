@@ -625,7 +625,10 @@ export class ProgramsServiceApiService {
       params = params.append('select', attributes.join());
     }
     if (statuses) {
-      params = params.append('filter.status', `$in:${statuses.join(',')}`);
+      params = params.append(
+        'filter.status',
+        `${FilterOperatorEnum.in}:${statuses.join(',')}`,
+      );
     }
     if (quickSearch) {
       params = params.append('search', quickSearch.value);
