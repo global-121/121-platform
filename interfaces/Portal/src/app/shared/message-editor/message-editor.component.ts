@@ -266,7 +266,7 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
     this.attributes.forEach((att) => {
       preview = preview.replace(
         new RegExp(`{{${att.name}}}`, 'g'),
-        this.previewRegistration?.[att.name] || '',
+        this.translatableString.get(this.previewRegistration[att.name]),
       );
     });
 
