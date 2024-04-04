@@ -7,4 +7,8 @@ export class ValidationConfigDto {
   validatePhoneNumberLookup = true;
   validateDynamicAttributes = true;
   validateClassValidator = true;
+
+  constructor(init?: Partial<ValidationConfigDto>) {
+    Object.assign(this, init);
+  }
 }

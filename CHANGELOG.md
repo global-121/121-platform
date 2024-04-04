@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.115.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.115.3...main)
 
 ### Added
 
@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ENV-variable `CREATE_PROGRAM_ENDPOINT` for Kobo-Connect API URL is removed from the Portal.
 
 ---
+
+## [1.115.3](https://github.com/global-121/121-platform/compare/v1.115.2...v1.115.3)- 2024-04-03
+
+### Fixed
+
+- firstName is empty string if it does not exist when creating visa debit
+
+## [1.115.2](https://github.com/global-121/121-platform/compare/v1.115.1...v1.115.2)- 2024-03-30
+
+### Fixed
+
+- Security policy rwanda
 
 ## [1.115.1](https://github.com/global-121/121-platform/compare/v1.115.0...v1.115.1)- 2024-03-20
 

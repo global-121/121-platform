@@ -21,7 +21,7 @@ import { QueueMessageService } from './queue-message.service';
         },
       ],
       limiter: {
-        max: 8, // Max number of jobs processed
+        max: 24, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),
