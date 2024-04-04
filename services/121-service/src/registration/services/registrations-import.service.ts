@@ -36,6 +36,7 @@ import { RegistrationsInputValidatorHelpers } from '../validators/registrations-
 import { InclusionScoreService } from './inclusion-score.service';
 
 const BATCH_SIZE = 500;
+const MASS_UPDATE_ROW_LIMIT = 100000;
 
 @Injectable()
 export class RegistrationsImportService {
@@ -68,10 +69,9 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<void> {
-    const maxRecords = 100000;
     const bulkUpdateRecords = await this.fileImportService.validateCsv(
       csvFile,
-      maxRecords,
+      MASS_UPDATE_ROW_LIMIT,
     );
     const columnNames = Object.keys(bulkUpdateRecords[0]);
     const validatedRegistrations = await this.validateBulkUpdateInput(
@@ -462,16 +462,18 @@ export class RegistrationsImportService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    const program = await this.programService.findProgramOrThrow(programId);
-    const validationConfig = new ValidationConfigDto();
-    validationConfig.validateExistingReferenceId = false;
-    validationConfig.validatePhoneNumberEmpty = !program.allowEmptyPhoneNumber;
-    validationConfig.validatePhoneNumberLookup = false;
-    validationConfig.validateClassValidator = true;
-    validationConfig.validateUniqueReferenceId = false;
-    validationConfig.validateScope = true;
-    validationConfig.validatePreferredLanguage = true;
-    validationConfig.validateDynamicAttributes = true;
+    const { allowEmptyPhoneNumber } =
+      await this.programService.findProgramOrThrow(programId);
+    const validationConfig = new ValidationConfigDto({
+      validateExistingReferenceId: false,
+      validatePhoneNumberEmpty: !allowEmptyPhoneNumber,
+      validatePhoneNumberLookup: false,
+      validateClassValidator: true,
+      validateUniqueReferenceId: false,
+      validateScope: true,
+      validatePreferredLanguage: true,
+      validateDynamicAttributes: true,
+    });
 
     const dynamicAttributes = await this.getDynamicAttributes(programId);
 
