@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -36,6 +37,7 @@ import {
   DeleteProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from './dto/assign-aw-to-program.dto';
+import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
@@ -497,5 +499,22 @@ export class UserController {
     @Param() params,
   ): Promise<GetUserReponseDto[]> {
     return await this.userService.getUsersInProgram(Number(params.programId));
+  }
+
+  @Admin()
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Reset user password without current password' })
+  @ApiResponse({
+    status: 204,
+    description: 'Password has been updated',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch('users/password')
+  public async changePasswordWithoutCurrentPassword(
+    @Body() changePasswordDto: changePasswordWithoutCurrentPasswordDto,
+  ): Promise<void> {
+    await this.userService.changePasswordWithoutCurrentPassword(
+      changePasswordDto,
+    );
   }
 }

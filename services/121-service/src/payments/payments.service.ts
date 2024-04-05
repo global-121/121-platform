@@ -8,8 +8,8 @@ import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../programs/program.entity';
 import {
-  BulkActionResultDto,
   BulkActionResultPaymentDto,
+  BulkActionResultRetryPaymentDto,
 } from '../registration/dto/bulk-action-result.dto';
 import {
   ImportResult,
@@ -310,7 +310,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
-  ): Promise<BulkActionResultDto> {
+  ): Promise<BulkActionResultRetryPaymentDto> {
     await this.checkPaymentInProgressAndThrow(programId);
 
     await this.getProgramWithFspOrThrow(programId);
@@ -345,10 +345,19 @@ export class PaymentsService {
         );
       });
 
+    const fspsInPayment = [];
+    // This loop is pretty fast: with 131k registrations it takes ~38ms
+    for (const registration of paPaymentDataList) {
+      if (!fspsInPayment.includes(registration.fspName)) {
+        fspsInPayment.push(registration.fspName);
+      }
+    }
+
     return {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
+      fspsInPayment,
     };
   }
 

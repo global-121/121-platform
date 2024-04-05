@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
@@ -48,6 +49,7 @@ export class MessageService {
         messageText = await this.processPlaceholders(
           messageText,
           messageJobDto.customData.placeholderData,
+          messageJobDto.preferredLanguage,
         );
       }
 
@@ -282,8 +284,10 @@ export class MessageService {
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
     placeholderData: object,
+    preferredLanguage: LanguageEnum,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;
+    const language = preferredLanguage || this.fallbackLanguage;
     for (const placeholder of Object.keys(placeholderData)) {
       const regex = new RegExp(`{{${placeholder}}}`, 'g');
       if (messageText.match(regex)) {
@@ -292,7 +296,9 @@ export class MessageService {
           regex,
           placeHolderValue === null || placeHolderValue === undefined
             ? ''
-            : placeHolderValue,
+            : typeof placeHolderValue === 'object'
+              ? placeHolderValue[language] ?? ''
+              : placeHolderValue,
         );
       }
     }
