@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -38,7 +39,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Wallets data retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: GetWalletsResponseDto,
@@ -64,7 +65,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -89,7 +90,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -114,7 +115,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Customer data updated',
   })
   // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/sync
@@ -136,7 +137,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -158,7 +159,7 @@ export class IntersolveVisaController {
     summary: '[CRON] Update all Visa wallet details',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Wallet and card replaced',
   })
   @Patch(

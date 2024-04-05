@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -35,7 +42,7 @@ export class TransactionsController {
     type: 'string',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Retrieved transactions',
     type: [AuditedTransactionReturnDto],
   })

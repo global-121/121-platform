@@ -59,7 +59,7 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Get past payments for program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Get past payments for program',
   })
   @Get('programs/:programId/payments')
@@ -72,7 +72,7 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Get current status of all payments for program. ' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Status of all payments for program',
   })
   @Get('programs/:programId/payments/status')
@@ -94,7 +94,7 @@ export class PaymentsController {
     description: 'Request transactions from a specific payment index',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Retrieved payment aggregate results - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: PaymentReturnDto,
@@ -111,13 +111,13 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for doing a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'Doing the payment was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -222,7 +222,7 @@ export class PaymentsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Get payments instructions for past payment to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -245,7 +245,7 @@ export class PaymentsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Uploaded payment reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
