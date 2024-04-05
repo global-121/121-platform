@@ -8,6 +8,7 @@ import {
   RegistrationActivityType,
 } from '../models/registration-activity.model';
 import { StatusEnum } from '../models/status.enum';
+import { TranslatableStringService } from '../services/translatable-string.service';
 import { PaymentUtils } from '../shared/payment.utils';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -18,6 +19,7 @@ export class PastPaymentsService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
   ) {}
 
   public async getLastPaymentId(
@@ -110,6 +112,7 @@ export class PastPaymentsService {
         person.referenceId,
         transactions,
       );
+      transaction.fspName = this.translatableString.get(transaction.fspName);
       let paymentRowValue: PaymentRowDetail = {
         paymentIndex: index,
         text: '',
