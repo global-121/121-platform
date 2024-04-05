@@ -9,7 +9,6 @@
       - [Using AW-App](#using-aw-app)
       - [Using 3rd party systems](#using-3rd-party-systems)
     - [For Person/People Affected](#for-personpeople-affected)
-      - [Using PA-App](#using-pa-app)
       - [Using external tools/applications](#using-external-toolsapplications)
     - [For Admin-user](#for-admin-user)
       - [Using Swagger UI](#using-swagger-ui)
@@ -87,17 +86,6 @@ Using application such as EspoCRM to call our API
 
 ### For Person/People Affected
 
-#### Using PA-App
-
-- [New registration](PA-App/New_registration.feature)
-- [Consent question](PA-App/Consent_question.feature)
-- [Answer program questions](PA-App/Answer_program_questions.feature)
-- [Fill payment details](PA-App/Fill_payment_details.feature)
-- Answer monitoring questions
-- Generic PA-App components
-  - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
-  - Changes based on instance-configuration/values
-
 #### Using external tools/applications
 
 - Send a WhatsApp message
@@ -147,7 +135,7 @@ Using application such as EspoCRM to call our API
 Features can be added to this folder by:
 
 - Create a `.feature`-file, named after its title with `_` for spaces;
-  i.e. `View_all_PA-App_scenarios.feature`
+  i.e. `View_PA_profile_page.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@pa-app`, `@aw-app`, `@portal`, etc. (all lowercase)
+  i.e: `@aw-app`, `@portal`, etc. (all lowercase)

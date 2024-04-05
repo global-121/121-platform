@@ -22,37 +22,7 @@ check_if_need_to_lint() {
 }
 
 # Include all packages/applications that support an `npm run lint` task:
-check_if_need_to_lint "interfaces/PA-App/"
 check_if_need_to_lint "interfaces/AW-App/"
 check_if_need_to_lint "interfaces/Portal/"
 check_if_need_to_lint "services/121-service/"
 check_if_need_to_lint "services/mock-service/"
-
-
-# Warn about files to keep in sync:
-#
-# warn:         `tput setaf 3`
-# standout:     `tput smso`
-# standout End: `tput rmso`
-# reset:        `tput sgr0`
-
-check_if_need_to_be_in_sync() {
-  if git diff --cached --name-only | grep --quiet "$1*"
-  then
-    echo " "
-    echo "$(tput setaf 3)$(tput smso) ! $(tput sgr0) Make sure to keep $(tput smso) $1 $(tput sgr0) in sync between all interfaces!"
-    echo " "
-  fi
-}
-
-check_if_need_to_be_in_sync ".editorconfig"
-check_if_need_to_be_in_sync ".prettierignore"
-check_if_need_to_be_in_sync ".prettierrc.yml"
-check_if_need_to_be_in_sync ".vscode/settings.json"
-check_if_need_to_be_in_sync "app/shared/dialogue-turn"
-check_if_need_to_be_in_sync "app/shared/q-and-a-set"
-check_if_need_to_be_in_sync "app/shared/numeric-input"
-check_if_need_to_be_in_sync "app/shared/phone-number-input"
-check_if_need_to_be_in_sync "app/services/api.service"
-check_if_need_to_be_in_sync "app/services/translatable-string"
-
