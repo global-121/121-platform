@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
@@ -22,7 +29,7 @@ export class CommercialBankEthiopiaController {
       '[SCOPED] Returns a list of Registrations with the latest retrieved account enquiry data from Commercial Bank of Ethiopia',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'An array of Registrations with the latest retrieved account enquiry data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: CommercialBankEthiopiaValidationReportDto,
@@ -45,7 +52,7 @@ export class CommercialBankEthiopiaController {
       'Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Done getting and storing account enquiry data for all registrations in this program.',
   })
@@ -65,7 +72,7 @@ export class CommercialBankEthiopiaController {
       '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Done getting and storing account enquiry data for all registrations in all programs.',
   })

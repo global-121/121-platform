@@ -46,7 +46,7 @@ export class MetricsController {
     summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allPeopleAffected}`,
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Retrieved data for export',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -128,7 +128,7 @@ export class MetricsController {
     summary: 'Get list of vouchers to cancel, only used by admin',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Retrieved list of vouchers to cancel',
   })
   // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
@@ -147,7 +147,7 @@ export class MetricsController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -162,7 +162,7 @@ export class MetricsController {
   @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Program stats summary',
   })
   @Get('programs/:programId/metrics/program-stats-summary')
@@ -174,7 +174,7 @@ export class MetricsController {
   @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })

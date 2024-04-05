@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
@@ -213,7 +213,7 @@ export class IntersolveVisaApiMockService {
     await waitForRandomDelay(50, 100);
 
     const res: IntersolveLinkWalletCustomerResponseDto = {
-      status: 204,
+      status: HttpStatus.NO_CONTENT,
       statusText: 'No Content',
       data: {},
     };
@@ -237,7 +237,7 @@ export class IntersolveVisaApiMockService {
     await waitForRandomDelay(50, 100);
 
     const res: IntersolveCreateDebitCardResponseDto = {
-      status: 200,
+      status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
     };
@@ -280,7 +280,7 @@ export class IntersolveVisaApiMockService {
           ],
         },
       },
-      status: 200,
+      status: HttpStatus.OK,
       statusText: 'OK',
     };
     if (tokenCode.toLowerCase().includes('mock-fail-load-balance')) {
@@ -317,7 +317,7 @@ export class IntersolveVisaApiMockService {
           ],
         },
       },
-      status: 200,
+      status: HttpStatus.OK,
       statusText: 'OK',
     };
   }
@@ -508,7 +508,7 @@ export class IntersolveVisaApiMockService {
 
     // for the response it does not matter if it's blocked or unblocked
     const res: IntersolveBlockWalletResponseDto = {
-      status: 204,
+      status: HttpStatus.NO_CONTENT,
       statusText: 'No Content',
       data: {},
     };
@@ -548,13 +548,13 @@ export class IntersolveVisaApiMockService {
 
   public updateCustomerPhoneNumber(): any {
     return {
-      status: 200,
+      status: HttpStatus.OK,
     };
   }
 
   public updateCustomerAddress(): any {
     return {
-      status: 200,
+      status: HttpStatus.OK,
     };
   }
 }

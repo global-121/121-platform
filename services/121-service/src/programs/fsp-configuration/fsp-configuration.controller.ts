@@ -36,7 +36,7 @@ export class ProgramFspConfigurationController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return programFspConfigurationEntity by program id.',
   })
   @Get(':programId/fsp-configuration')
@@ -64,8 +64,8 @@ export class ProgramFspConfigurationController {
     description:
       'The programFspConfigurationEntity has been successfully created.',
   })
-  @ApiResponse({ status: 400, description: 'Bad request.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Post(':programId/fsp-configuration')
   public async create(
     @Body() programFspConfigurationData: CreateProgramFspConfigurationDto,
@@ -92,12 +92,12 @@ export class ProgramFspConfigurationController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'The programFspConfigurationEntity has been successfully updated.',
   })
-  @ApiResponse({ status: 400, description: 'Bad request.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Put(':programId/fsp-configuration/:programFspConfigurationId')
   public async update(
     @Body() programFspConfigurationData: UpdateProgramFspConfigurationDto,
@@ -125,12 +125,12 @@ export class ProgramFspConfigurationController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'The programFspConfigurationEntity has been successfully updated.',
   })
-  @ApiResponse({ status: 400, description: 'Bad request.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Delete(':programId/fsp-configuration/:programFspConfigurationId')
   public async delete(@Param() params): Promise<void> {
     if (isNaN(params.programId) || isNaN(params.programFspConfigurationId)) {

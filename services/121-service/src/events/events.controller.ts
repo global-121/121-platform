@@ -39,7 +39,7 @@ export class EventsController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returned list of events for given referenceId.',
     type: [GetEventDto],
   })
@@ -100,7 +100,7 @@ export class EventsController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returned list of events for given registrationId.',
     type: [GetEventDto],
   })
