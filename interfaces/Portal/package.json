@@ -18,7 +18,7 @@
     "lint:translations": "tsx _lint-translations.ts",
     "prebuild": "npm run set-env-variables && npm run check:assets-translations",
     "preserve:static": "shx cp www/index.html www/404.html",
-    "serve:static": "npx http-server ./www/ -c3600 --gzip --brotli --port 8088 --proxy http://localhost:8088/?",
+    "serve:static": "npx http-server ./www/ -c30 --gzip --brotli --port 8088",
     "set-env-variables": "node ./_set-env-variables.js",
     "start:debug-production": "npm run build:prod && npm run serve:static",
     "start": "ng serve --port 0",
