@@ -50,7 +50,7 @@ export class ApiService {
     return new Promise((resolve, reject) =>
       this.http
         .get(endpoint + path, {
-          headers: this.createHeaders(anonymous),
+          headers: this.createHeaders(),
           responseType: responseAsBlob ? 'blob' : null,
           withCredentials: true,
           params,
@@ -230,7 +230,7 @@ export class ApiService {
     return new Promise((resolve, reject) =>
       this.http
         .delete(endpoint + path, {
-          headers: this.createHeaders(anonymous),
+          headers: this.createHeaders(),
           withCredentials: true,
           body: body,
           params,
