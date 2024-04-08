@@ -823,7 +823,7 @@ export class UserService {
     const scope = assignment?.scope ? assignment.scope : '';
     return scope;
   }
-  
+
   public async changePasswordWithoutCurrentPassword(
     changePasswordDto: changePasswordWithoutCurrentPasswordDto,
   ): Promise<void> {
