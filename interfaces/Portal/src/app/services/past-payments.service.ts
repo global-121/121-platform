@@ -112,22 +112,25 @@ export class PastPaymentsService {
         person.referenceId,
         transactions,
       );
-      transaction.fspName = this.translatableString.get(transaction.fspName);
+
       let paymentRowValue: PaymentRowDetail = {
         paymentIndex: index,
         text: '',
       };
+
       if (!transaction) {
         paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
         paymentRowValue.status = StatusEnum.notYetSent;
       } else {
+        transaction.fspName = this.translatableString.get(transaction.fspName);
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           program,
           index,
         );
+
         if (transaction.status === StatusEnum.success) {
           /* empty */
         } else if (transaction.status === StatusEnum.waiting) {
