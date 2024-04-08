@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
+import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-entra-callback',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IonicModule],
   templateUrl: './entra-callback.component.html',
 })
 export class EntraCallbackComponent implements OnInit {

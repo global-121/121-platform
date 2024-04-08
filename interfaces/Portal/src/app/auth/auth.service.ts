@@ -159,7 +159,9 @@ export class AuthService {
     localStorage.setItem(USER_KEY, JSON.stringify(userRO));
     this.authenticationState.next(userRO);
     if (redirectToHome) {
-      this.router.navigate(['/', AppRoutes.home]);
+      setTimeout(() => {
+        this.router.navigate(['/', AppRoutes.home]);
+      }, 2000);
     }
   }
 
