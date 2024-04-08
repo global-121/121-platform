@@ -9,6 +9,9 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
+
+export const MSAL_COLLECTION_KEY = 'msal.account.keys';
+
 export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
 export const LOGIN_ENDPOINT_PATH = '/users/login';
 export const LOGOUT_ENDPOINT_PATH = '/users/logout';
@@ -17,8 +20,9 @@ export const LOGOUT_ENDPOINT_PATH = '/users/logout';
   providedIn: 'root',
 })
 export class AuthService {
+  private useSso = environment.use_sso_azure_entra;
+
   public redirectUrl: string;
-  private msalCollectionKey = 'msal.account.keys';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
@@ -197,24 +201,32 @@ export class AuthService {
   }
 
   public async logout() {
-    const user = this.getUserFromStorage();
-    const azureLocalStorageDataToClear = localStorage.getItem(
-      this.msalCollectionKey,
-    );
-    if (azureLocalStorageDataToClear && user) {
-      const currentUser = this.msalService.instance.getAccountByUsername(
-        user.username,
-      );
-      if (this.router.url.includes('iframe')) {
-        this.msalService.logoutPopup({
-          account: currentUser,
-          mainWindowRedirectUri: `${window.location.origin}/login`,
-        });
-      } else {
-        this.msalService.logoutRedirect({ account: currentUser });
+    if (this.useSso) {
+      const user = this.getUserFromStorage();
+
+      const azureLocalStorageDataToClear =
+        localStorage.getItem(MSAL_COLLECTION_KEY);
+
+      if (azureLocalStorageDataToClear && user) {
+        const currentUser = this.msalService.instance.getAccountByUsername(
+          user.username,
+        );
+
+        if (this.router.url.includes(AppRoutes.iframe)) {
+          this.msalService.logoutPopup({
+            account: currentUser,
+            mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+          });
+        } else {
+          this.msalService.logoutRedirect({
+            account: currentUser,
+          });
+        }
+
+        localStorage.removeItem(MSAL_COLLECTION_KEY);
       }
-      localStorage.removeItem(this.msalCollectionKey);
     }
+
     localStorage.removeItem(USER_KEY);
     this.authenticationState.next(null);
     await this.programsService.logout();

@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
   ) {
     // Logout non-SSO users
-    if (environment.use_sso_azure_entra === true) {
+    if (this.useSso) {
       this.authService.logoutNonSSOUser();
     }
     // Initialize storage of preferred language
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (environment.use_sso_azure_entra) {
+    if (this.useSso) {
       this.msalService.handleRedirectObservable().subscribe();
     }
   }
