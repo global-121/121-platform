@@ -1,12 +1,9 @@
 {
   "fsp": "Africas-talking",
   "integrationType": "api",
-  "fspDisplayNamePaApp": {
-    "saq_KE": "Mpesa",
-    "tuv_KE": "M-PESA",
-    "en": "M-Pesa"
+  "displayName": {
+    "en": "Africas-talking"
   },
-  "fspDisplayNamePortal": "Africas-talking",
   "questions": [
     {
       "name": "phoneNumber",

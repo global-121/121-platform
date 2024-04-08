@@ -5,6 +5,7 @@ graph LR
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
+  ProgramModule-->KoboConnectModule
   MessageTemplateModule-->ProgramAttributesModule
   CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
@@ -26,6 +27,7 @@ graph LR
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
+  RegistrationsModule-->QueueRegistrationUpdateModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

@@ -6,9 +6,6 @@ export class RegistrationResponse {
   public referenceId: string;
 
   public startedRegistrationDate: Date | null;
-  public importedDate: Date | null;
-  public invitedDate: Date | null;
-  public noLongerEligibleDate: Date | null;
   public registeredDate: Date | null;
   public validationDate: Date | null;
   public inclusionDate: Date | null;
@@ -20,7 +17,7 @@ export class RegistrationResponse {
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
   public fsp: FspName | string;
-  public fspDisplayNamePortal: string;
+  public fspDisplayName: string;
   public hasNote: boolean;
 
   public paymentAmountMultiplier?: number;

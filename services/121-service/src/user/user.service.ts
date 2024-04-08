@@ -16,6 +16,7 @@ import {
   DeleteProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from './dto/assign-aw-to-program.dto';
+import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
@@ -271,10 +272,8 @@ export class UserService {
     }
 
     const updated = userEntity;
-    updated.salt = crypto.randomBytes(16).toString('hex');
-    updated.password = crypto
-      .pbkdf2Sync(dto.newPassword, updated.salt, 1, 32, 'sha256')
-      .toString('hex');
+    updated.salt = this.generateSalt();
+    updated.password = this.hashPassword(dto.newPassword, updated.salt);
     await this.userRepository.save(updated);
     return await this.buildUserRO(updated);
   }
@@ -823,5 +822,27 @@ export class UserService {
     );
     const scope = assignment?.scope ? assignment.scope : '';
     return scope;
+  }
+  
+  public async changePasswordWithoutCurrentPassword(
+    changePasswordDto: changePasswordWithoutCurrentPasswordDto,
+  ): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { username: Equal(changePasswordDto.username) },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    user.salt = this.generateSalt();
+    user.password = this.hashPassword(changePasswordDto.password, user.salt);
+    await this.userRepository.save(user);
+  }
+
+  private generateSalt(): string {
+    return crypto.randomBytes(16).toString('hex');
+  }
+
+  private hashPassword(password: string, salt: string): string {
+    return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha256').toString('hex');
   }
 }

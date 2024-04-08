@@ -260,6 +260,32 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         }
 
         if (change.type === EventType.financialServiceProviderChange) {
+          if (description.oldValue) {
+            try {
+              description.oldValue = JSON.parse(description.oldValue);
+              description.oldValue = this.translatableString.get(
+                description.oldValue,
+              );
+            } catch (error) {
+              description.oldValue = this.translatableString.get(
+                description.oldValue,
+              );
+            }
+          }
+
+          if (description.newValue) {
+            try {
+              description.newValue = JSON.parse(description.newValue);
+              description.newValue = this.translatableString.get(
+                description.newValue,
+              );
+            } catch (error) {
+              description.newValue = this.translatableString.get(
+                description.newValue,
+              );
+            }
+          }
+
           this.activityOverview.push({
             type: RegistrationActivityType.changeData,
             label: this.translate.instant(

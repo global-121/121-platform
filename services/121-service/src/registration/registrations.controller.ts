@@ -54,7 +54,6 @@ import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -137,85 +136,6 @@ export class RegistrationsController {
   //     customDataArray,
   //   );
   // }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({ summary: 'Set phone number' })
-  @ApiResponse({ status: 201, description: 'Phone set for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/phone')
-  public async addPhone(
-    @Body() setPhoneRequest: SetPhoneRequestDto,
-  ): Promise<void> {
-    return await this.registrationsService.addPhone(
-      setPhoneRequest.referenceId,
-      setPhoneRequest.phonenumber,
-      setPhoneRequest.language,
-      setPhoneRequest.useForInvitationMatching,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({
-    summary:
-      'Person Affected switches from started registration to registered for program',
-  })
-  @ApiResponse({
-    status: 201,
-    description:
-      'Person Affected switched from started registration to registered for program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/register')
-  public async register(
-    @Body() referenceIdDto: ReferenceIdDto,
-  ): Promise<ReferenceIdDto | boolean> {
-    return await this.registrationsService.register(referenceIdDto.referenceId);
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
-  @ApiOperation({
-    summary: 'Import set of PAs to invite, based on CSV',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-bulk')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
-  public async importBulkAsImported(
-    @UploadedFile() csvFile,
-    @Param() params,
-    @Req() req,
-  ): Promise<ImportResult> {
-    const userId = req.user.id;
-
-    return await this.registrationsService.importBulkAsImported(
-      csvFile,
-      Number(params.programId),
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.RegistrationImportTemplateREAD],
-  })
-  @ApiOperation({
-    summary: 'Get a CSV template for importing registrations',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'type', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/import-template/:type')
-  public async getImportRegistrationsTemplate(
-    @Param() params,
-  ): Promise<string[]> {
-    return await this.registrationsService.getImportRegistrationsTemplate(
-      Number(params.programId),
-      params.type,
-    );
-  }
 
   @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
@@ -326,7 +246,29 @@ export class RegistrationsController {
     );
   }
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({ isAdmin: true})
+  @ApiTags('programs/registrations')
+  @ApiOperation({
+    summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows`,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch('programs/:programId/registrations')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
+  @UseInterceptors(FileInterceptor('file'))
+  public async patchRegistrations(
+    @UploadedFile() csvFile: any,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Req() req,
+  ): Promise<void> {
+    const userId = req.user.id;
+    return await this.registrationsService.patchBulk(
+      csvFile,
+      programId,
+      userId,
+    );
+  }
+
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: 200,
@@ -403,13 +345,6 @@ export class RegistrationsController {
         permission = PermissionEnum.RegistrationStatusPausedUPDATE;
         messageContentType = MessageContentType.paused;
         break;
-      case RegistrationStatusEnum.invited:
-        permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
-        messageContentType = MessageContentType.invited;
-        break;
-      case RegistrationStatusEnum.noLongerEligible:
-        permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
-        break;
       case RegistrationStatusEnum.validated:
         permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
         break;
@@ -484,7 +419,8 @@ export class RegistrationsController {
   //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
-    @Param() params,
+    @Param('programId', new ParseIntPipe()) programId: number,
+    @Param('referenceId') referenceId: string,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @Req() req,
   ): Promise<RegistrationViewEntity> {
@@ -492,13 +428,13 @@ export class RegistrationsController {
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeUPDATE,
       );
     const hasUpdateFinancialPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
 
@@ -536,7 +472,7 @@ export class RegistrationsController {
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration)) {
       await this.registrationsService.validateAttribute(
-        params.referenceId,
+        referenceId,
         attributeKey,
         partialRegistration[attributeKey],
         userId,
@@ -545,8 +481,8 @@ export class RegistrationsController {
 
     // if all valid, process update
     return await this.registrationsService.updateRegistration(
-      params.programId,
-      params.referenceId,
+      programId,
+      referenceId,
       updateRegistrationDataDto,
     );
   }

@@ -11,11 +11,14 @@
           fill="clear"
           size="large"
           color="medium"
+          [title]="'header.menu' | translate"
+          [attr.aria-label]="'header.menu' | translate"
         >
           <ion-icon
             class="hamburger-menu"
             name="menu-outline"
             slot="icon-only"
+            aria-hidden="true"
           ></ion-icon>
         </ion-button>
         <ion-popover
@@ -35,12 +38,14 @@
                     fill="clear"
                     size="large"
                     color="medium"
+                    [title]="'common.close' | translate"
+                    [attr.aria-label]="'common.close' | translate"
                   >
                     <ion-icon
                       slot="icon-only"
                       class="exit"
                       name="close-outline"
-                      [dismissOnSelect]="true"
+                      aria-hidden="true"
                     ></ion-icon>
                   </ion-button>
                 </ion-list-header>
@@ -49,6 +54,15 @@
                   [routerLink]="['/', appRoute.home]"
                 >
                   <ion-label>{{ 'header.home' | translate }}</ion-label>
+                </ion-item>
+                <ion-item
+                  *ngIf="isAdmin"
+                  lines="full"
+                  [routerLink]="['/', appRoute.createProgram]"
+                >
+                  <ion-label>{{
+                    'header.create-program' | translate
+                  }}</ion-label>
                 </ion-item>
                 <ion-item
                   *ngIf="isAdmin"

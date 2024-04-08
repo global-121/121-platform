@@ -126,7 +126,7 @@ export class ExcelService
     const columnsToExportConfig =
       programWithConfig.programFspConfiguration[0]?.value;
     if (columnsToExportConfig) {
-      exportColumns = JSON.parse(columnsToExportConfig);
+      exportColumns = columnsToExportConfig as string[];
     } else {
       // Default to using all program questions & attributes names if columnsToExport is not specified
       // So generic fields must be specified in the programFspConfiguration
@@ -196,8 +196,8 @@ export class ExcelService
         programId: programId,
       })
       .getOne();
-    const matchColumn: string =
-      programWithConfig.programFspConfiguration[0]?.value;
+    const matchColumn: string = programWithConfig.programFspConfiguration[0]
+      ?.value as string;
     if (!matchColumn) {
       throw new HttpException(
         {

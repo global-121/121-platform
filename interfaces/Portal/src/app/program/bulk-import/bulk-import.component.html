@@ -2,31 +2,12 @@
   <div class="ion-no-padding ion-margin-end">
     <app-confirm-prompt
       [disabled]="isInProgress || isTableLoading"
-      (confirm)="importPeopleAffected($event, RegistrationStatus.imported)"
-      [subHeader]="
-        'page.program.bulk-import.imported.confirm-message' | translate
-      "
-      [message]="message?.imported"
-      [filePickerProps]="filePickerProps?.imported"
-      class="ion-no-margin"
-    >
-      <ion-icon
-        name="cloud-upload"
-        slot="start"
-        aria-hidden="true"
-      ></ion-icon>
-      {{ 'page.program.bulk-import.imported.btn-text' | translate }}
-    </app-confirm-prompt>
-  </div>
-  <div class="ion-no-padding">
-    <app-confirm-prompt
-      [disabled]="isInProgress || isTableLoading"
-      (confirm)="importPeopleAffected($event, RegistrationStatus.registered)"
+      (confirm)="importPeopleAffected($event)"
       [subHeader]="
         'page.program.bulk-import.registered.confirm-message' | translate
       "
-      [message]="message?.registered"
-      [filePickerProps]="filePickerProps?.registered"
+      [message]="message"
+      [filePickerProps]="filePickerProps"
       class="ion-no-margin"
     >
       <ion-icon

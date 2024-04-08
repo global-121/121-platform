@@ -2,10 +2,9 @@
   "fsp": "VodaCash",
   "integrationType": "xml",
   "hasReconciliation": true,
-  "fspDisplayNamePaApp": {
+  "displayName": {
     "en": "Vodacash"
   },
-  "fspDisplayNamePortal": "Vodacash",
   "questions": [
     {
       "name": "phoneNumber",

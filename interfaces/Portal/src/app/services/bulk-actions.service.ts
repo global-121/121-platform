@@ -51,37 +51,6 @@ export class BulkActionsService {
 
   private bulkActions: BulkAction[] = [
     {
-      id: BulkActionId.invite,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.invite',
-      permissions: [Permission.RegistrationStatusInvitedUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: true,
-      confirmConditions: {
-        promptType: PromptType.actionWithMessage,
-        checkbox:
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        checkboxChecked: true,
-        inputRequired: true,
-        inputConstraint: {
-          length: 1,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.markNoLongerEligible,
-      enabled: false,
-      label:
-        'page.program.program-people-affected.actions.markNoLongerEligible',
-      permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: true,
-      confirmConditions: {
-        provideInput: false,
-      },
-    },
-    {
       id: BulkActionId.markAsValidated,
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsValidated',
@@ -230,20 +199,6 @@ export class BulkActionsService {
     filters?: PaginationFilter[],
   ): Promise<BulkActionResult | void> {
     switch (action) {
-      case BulkActionId.invite:
-        return await this.programsService.invite(
-          programId,
-          customBulkActionInput?.message,
-          dryRun,
-          filters,
-          customBulkActionInput?.messageTemplateKey,
-        );
-      case BulkActionId.markNoLongerEligible:
-        return await this.programsService.markNoLongerEligible(
-          programId,
-          dryRun,
-          filters,
-        );
       case BulkActionId.include:
         return await this.programsService.include(
           programId,

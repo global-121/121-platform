@@ -3,8 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Param,
+  ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -13,14 +16,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
+import { KoboConnectService } from '../kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
@@ -46,43 +53,54 @@ export class ProgramController {
   public constructor(
     private readonly programService: ProgramService,
     private readonly programAttributesService: ProgramAttributesService,
+    private readonly koboConnectService: KoboConnectService,
   ) {}
 
   // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
   // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
     name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
-    description: `Set to 'true' to be able to use this as example body in POST /api/programs.`,
+    description:
+      'Return in a format to be used as a body for `POST /api/programs`.',
   })
-  @ApiResponse({ status: 200, description: 'Return program by id.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return program by id.',
+  })
   @Get(':programId')
   public async findOne(
-    @Param() params,
-    @Query() queryParams,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
+    formatProgramReturnDto: boolean,
+
     @Req() req,
   ): Promise<ProgramEntity | ProgramReturnDto> {
     const userId = req.user.id;
-    const formatCreateProgramDto =
-      queryParams.formatCreateProgramDto === 'true';
-    if (formatCreateProgramDto) {
-      return this.programService.getProgramReturnDto(params.programId, userId);
+    if (formatProgramReturnDto) {
+      return this.programService.getProgramReturnDto(programId, userId);
     } else {
-      return await this.programService.findProgramOrThrow(
-        Number(params.programId),
-        userId,
-      );
+      return await this.programService.findProgramOrThrow(programId, userId);
     }
   }
 
   // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get published programs' })
-  @ApiResponse({ status: 200, description: 'Return all published programs.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return all published programs.',
+  })
   // TODO: REFACTOR: into GET /api/programs?published=true
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
@@ -92,8 +110,12 @@ export class ProgramController {
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return all assigned programs for a user.',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
   })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
@@ -103,19 +125,93 @@ export class ProgramController {
   }
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Create program' })
-  @ApiResponse({
-    status: 201,
-    description: 'The program has been successfully created.',
+  @ApiOperation({
+    summary: `Create a program.`,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The program has been successfully created.',
+    type: ProgramEntity,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
+  @ApiQuery({
+    name: 'importFromKobo',
+    required: false,
+    type: 'boolean',
+    description: `
+Create a program from an import using the Kobo-Connect API.  \n
+
+When set to \`true\`, you can overwrite any specified program-properties using the body.  \n
+You can also leave the body empty.`,
+  })
+  @ApiQuery({
+    name: 'koboToken',
+    required: false,
+    type: 'string',
+    description: 'A valid Kobo token (required when `importFromKobo=true`)',
+  })
+  @ApiQuery({
+    name: 'koboAssetId',
+    required: false,
+    type: 'string',
+    description: 'A valid Kobo asset-ID (required when `importFromKobo=true`)',
+  })
+  @ApiBody({
+    type: CreateProgramDto,
+    required: false,
+  })
   @Post()
   public async create(
-    @Body() programData: CreateProgramDto,
+    @Body()
+    programData: CreateProgramDto | Partial<CreateProgramDto>,
+
+    @Query(
+      'importFromKobo',
+      new ParseBoolPipe({
+        optional: true,
+      }),
+    )
+    importFromKobo: boolean,
+
+    @Query('koboToken')
+    koboToken: string,
+
+    @Query('koboAssetId')
+    koboAssetId: string,
+
     @Req() req,
   ): Promise<ProgramEntity> {
     const userId = req.user.id;
-    return this.programService.create(programData, userId);
+
+    if (importFromKobo) {
+      if (koboToken && koboAssetId)
+        programData = await this.koboConnectService.create(
+          koboToken,
+          koboAssetId,
+          programData,
+        );
+      else {
+        throw new HttpException(
+          {
+            message: `If 'importFromKobo' is true you need to provide a 'koboToken' and 'koboAssetId'`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const errors = await validate(plainToClass(CreateProgramDto, programData));
+
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    return this.programService.create(programData as CreateProgramDto, userId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -124,11 +220,17 @@ export class ProgramController {
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description: 'The program has been successfully deleted.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
   @Delete(':programId')
   public async delete(
     @Param() param,
@@ -147,7 +249,7 @@ export class ProgramController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Update program' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Representation of updated program',
     type: ProgramReturnDto,
   })
@@ -180,7 +282,7 @@ export class ProgramController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
   @ApiOperation({ summary: 'Update program question' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program question',
     type: ProgramQuestionEntity,
   })
@@ -235,12 +337,12 @@ export class ProgramController {
   })
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program custom attributes',
     type: ProgramCustomAttributeEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No attribute found for given program and custom attribute id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -261,7 +363,7 @@ export class ProgramController {
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return attributes by program-id.',
   })
   @ApiQuery({

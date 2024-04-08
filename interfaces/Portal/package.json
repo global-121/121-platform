@@ -45,7 +45,7 @@
     "@angular/service-worker": "^16.2.12",
     "@azure/msal-angular": "^3.0.12",
     "@azure/msal-browser": "^3.9.0",
-    "@ionic/angular": "^7.6.5",
+    "@ionic/angular": "^7.8.1",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",

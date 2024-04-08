@@ -355,7 +355,7 @@ To update all Angular and ESLint related dependencies together, run (in each ind
 
     npm run upgrade:angular
 
-All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands.
+All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands and local testing.
 
 ---
 
