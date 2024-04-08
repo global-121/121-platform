@@ -8,6 +8,7 @@ import {
   RegistrationActivityType,
 } from '../models/registration-activity.model';
 import { StatusEnum } from '../models/status.enum';
+import { TranslatableStringService } from '../services/translatable-string.service';
 import { PaymentUtils } from '../shared/payment.utils';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -18,6 +19,7 @@ export class PastPaymentsService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
   ) {}
 
   public async getLastPaymentId(
@@ -110,21 +112,25 @@ export class PastPaymentsService {
         person.referenceId,
         transactions,
       );
+
       let paymentRowValue: PaymentRowDetail = {
         paymentIndex: index,
         text: '',
       };
+
       if (!transaction) {
         paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
         paymentRowValue.status = StatusEnum.notYetSent;
       } else {
+        transaction.fspName = this.translatableString.get(transaction.fspName);
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           program,
           index,
         );
+
         if (transaction.status === StatusEnum.success) {
           /* empty */
         } else if (transaction.status === StatusEnum.waiting) {
