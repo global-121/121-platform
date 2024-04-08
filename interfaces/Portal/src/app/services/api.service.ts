@@ -271,25 +271,30 @@ export class ApiService {
       this.isRateLimitErrorShown = false;
       return of('Rate limit exceeded');
     }
+
     if (anonymous === true) {
       return of(error);
     }
-    if (error.status === 401) {
+
+    if (error.status === HttpStatusCode.Unauthorized) {
       localStorage.removeItem(USER_KEY);
       window.location.reload();
 
       const rawUser = localStorage.getItem(USER_KEY);
+
       if (!rawUser) {
         return of(error);
       }
 
       const user: User = JSON.parse(rawUser);
       const expires = Date.parse(user.expires);
+
       if (expires < Date.now()) {
         localStorage.removeItem(USER_KEY);
         window.location.reload();
         return of('Token expired');
       }
+
       return of('Not authorized');
     }
     return of(error);
