@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
@@ -106,10 +107,21 @@ export class AuthService {
       console.warn('AuthService: Invalid token');
       return null;
     }
+
     if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
+
+    if (
+      // Only check for non-SSO users
+      !environment.use_sso_azure_entra &&
+      (!user.expires || Date.parse(user.expires) < Date.now())
+    ) {
+      console.warn('AuthService: Expired token');
+      return null;
+    }
+
     return {
       username: user.username,
       permissions: user.permissions,
@@ -219,6 +231,7 @@ export class AuthService {
 
   async checkExpirationDate() {
     const user = this.getUserFromStorage();
+
     if (user?.isEntraUser === true) {
       const currentUser = this.msalService.instance.getAccountByUsername(
         user.username,
