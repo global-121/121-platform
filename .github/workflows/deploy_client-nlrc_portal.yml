@@ -37,12 +37,18 @@ jobs:
             frame-src blob: ;
             frame-ancestors 'self' https://flex.twilio.com;
         env:
+          NG_USE_SERVICE_WORKER: 'false'
           NG_ENV_NAME: ''
           NG_LOCALES: 'en,nl'
           NG_URL_121_SERVICE_API: 'https://nlrc.121.global/api'
           NG_AI_IKEY: 'b6c16596-ecd4-4d3d-a639-2e542ce0d980'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=b6c16596-ecd4-4d3d-a639-2e542ce0d980;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+
+      - name: 'Use safety-workaround for Service-worker (temporarily)'
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          cp -f -v node_modules/@angular/service-worker/safety-worker.js ./www/ngsw-worker.js
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
