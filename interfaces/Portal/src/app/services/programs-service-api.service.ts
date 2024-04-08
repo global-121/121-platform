@@ -269,7 +269,6 @@ export class ProgramsServiceApiService {
         referenceId,
         text: note,
       },
-      false,
     );
   }
 
