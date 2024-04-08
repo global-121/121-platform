@@ -101,3 +101,9 @@ runs:
         echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
         echo '{"schemaVersion": 1,"label":"build","message":"${{ env.NG_BUILD_VERSION }}"}' >> www/VERSION.json
         echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT
+
+    - name: Output build contents
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        ls -la www/
