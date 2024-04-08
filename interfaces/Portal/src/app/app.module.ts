@@ -28,6 +28,7 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
+import { AppRoutes } from './app-routes.enum';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LOGIN_ENDPOINT_PATH } from './auth/auth.service';
@@ -97,8 +98,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: `${window.location.origin}/auth`,
-          postLogoutRedirectUri: `${window.location.origin}/login`,
+          redirectUri: `${window.location.origin}/${AppRoutes.auth}`,
+          postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
           navigateToLoginRequestUrl: false,
         },
         cache: {
