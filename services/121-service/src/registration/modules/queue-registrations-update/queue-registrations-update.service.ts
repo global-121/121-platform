@@ -6,8 +6,8 @@ import {
   ProcessNameRegistration,
   QueueNameRegistration,
 } from '../../../notifications/enum/queue.names.enum';
-import { ScopedUserRequest } from '../../../shared/middleware/scope-user.middleware';
 import { RegistrationsUpdateJobDto } from '../../dto/registration-update-job.dto';
+import { ScopedUserRequest } from '../../../shared/scoped-user-request';
 
 @Injectable()
 export class QueueRegistrationUpdateService {
@@ -20,7 +20,7 @@ export class QueueRegistrationUpdateService {
   public async addRegistrationUpdateToQueue(
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
-    job.request = { userId: this.request.userId, scope: this.request.scope };
+    job.request = { userId: this.request.user.id, scope: this.request.user.scope };
     await this.queueRegistrationUpdate.add(ProcessNameRegistration.update, job);
   }
 }
