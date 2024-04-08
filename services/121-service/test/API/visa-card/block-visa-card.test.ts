@@ -1,4 +1,4 @@
-import messageTemplatesOCW from '../../seed-data/message-template/message-template-nlrc-ocw.json';
+import messageTemplatesOCW from '../../../seed-data/message-template/message-template-nlrc-ocw.json';
 import {
   amountVisa,
   paymentNrVisa,

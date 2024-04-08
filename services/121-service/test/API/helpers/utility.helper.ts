@@ -7,6 +7,10 @@ import { UpdateUserRoleDto } from '../../../src/user/dto/user-role.dto';
 import { UserRoleResponseDTO } from '../../../src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '../../../src/user/enum/permission.enum';
 import { DefaultUserRole } from '../../../src/user/user-role.enum';
+import path from 'path';
+const envPath = path.resolve(__dirname, '../../../../.env');
+import dotenv from 'dotenv';
+dotenv.config({ path: envPath });
 
 export function getHostname(): string {
   return 'http://localhost:3000/api';

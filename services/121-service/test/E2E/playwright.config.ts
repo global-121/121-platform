@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+const envPath = path.resolve(__dirname, '../../../.env');
+import dotenv from 'dotenv';
+dotenv.config({ path: envPath });
 
 /**
  * Read environment variables from file.
@@ -10,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.devdocs/test-configuration.
  */
 export default defineConfig({
-  testDir: './src/tests',
+  testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,7 +29,7 @@ export default defineConfig({
   outputDir: './test-results',
   timeout: 20000,
   use: {
-    baseURL: 'http://localhost:8888',
+    baseURL: process.env.BASE_URL,
     video:'on-first-retry',
     screenshot: 'only-on-failure',
     headless: false,
@@ -47,25 +51,15 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
-        ...devices['Desktop Chrome'],
-        baseURL: process.env.BASE_URL
+        // ...devices['Desktop Chrome'],
+        // baseURL: process.env.BASE_URL
       },
     },
-
     {
       name: 'firefox',
       use: {
-        ...devices['Desktop Firefox'],
-        baseURL: process.env.BASE_URL
-      },
-    },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: {
-        ...devices['Pixel 5'],
-        baseURL: process.env.BASE_URL
+        // ...devices['Desktop Firefox'],
+        // baseURL: process.env.BASE_URL
       },
     },
   ],

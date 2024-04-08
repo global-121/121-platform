@@ -58,6 +58,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
     "easy-soap-request": "^5.5.0",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^9.0.2",
@@ -96,7 +97,7 @@
     "jest-ci-spec-reporter": "^1.0.3",
     "prettier": "^3.2.4",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "supertest": "^6.3.3",
+    "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
     "tsc-watch": "^6.0.4",
     "yargs": "^17.7.2"
