@@ -28,6 +28,8 @@ updates:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'jimp'
       - dependency-name: 'typescript'
 
@@ -67,6 +69,8 @@ updates:
       - dependency-name: '@typescript-eslint/*'
         update-types: ['version-update:semver-patch']
       - dependency-name: core-js
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
       - dependency-name: karma
       - dependency-name: tslib
       - dependency-name: typescript
