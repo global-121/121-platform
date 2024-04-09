@@ -150,6 +150,7 @@ async function bootstrap(): Promise<void> {
       filter: true,
       operationsSorter: 'alpha',
       persistAuthorization: DEBUG,
+      queryConfigEnabled: DEBUG,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
