@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 import { LookupService } from './lookup.service';
@@ -13,7 +13,7 @@ export class LookupController {
 
   @ApiOperation({ summary: 'Lookup telephone number at Twilio' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Succesfully looked up telephone number',
   })
   @Post()

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -43,7 +44,7 @@ export class MessageTemplateController {
   @ApiOperation({ summary: 'Get all message templates per program' })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'All message templates',
     type: [MessageTemplateEntity],
   })
@@ -64,7 +65,7 @@ export class MessageTemplateController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Created new message template',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -82,12 +83,12 @@ export class MessageTemplateController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: '[EXTERNALLY USED] Update message template' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Message template updated',
     type: MessageTemplateEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No message template found with given id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -111,7 +112,7 @@ export class MessageTemplateController {
     summary: 'Delete message template(s) by type and optionally language',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Message template deleted',
     type: DeleteResult,
   })

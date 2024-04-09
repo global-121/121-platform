@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { AfricasTalkingService } from './africas-talking.service';
@@ -16,7 +16,7 @@ export class AfricasTalkingController {
     summary:
       'Validation callback used by Africas Talking to request validity of payment to us.',
   })
-  @ApiResponse({ status: 201, description: 'Validated' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Validated' })
   @Post('validation')
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
@@ -31,7 +31,7 @@ export class AfricasTalkingController {
     summary:
       'Notification callback used by Africas Talking to notify status of payment to us.',
   })
-  @ApiResponse({ status: 201, description: 'Notified' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
   @Post('notification')
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,

@@ -12,13 +12,17 @@
       class="util--flex-row ion-align-items-center"
       style="flex-basis: 80%"
     >
-      <span>
+      <span
+        class="ion-align-items-center ion-margin-horizontal"
+        style="white-space: nowrap"
+      >
         <ion-icon
           name="funnel"
           color="black"
           aria-hidden="true"
-          class="ion-margin-start"
         ></ion-icon>
+
+        {{ 'page.program.table-filter-row.filter-label' | translate }}
       </span>
 
       <app-select-typeahead
@@ -28,23 +32,20 @@
           'page.program.table-filter-row.select-column-to-filter' | translate
         "
         [multiple]="false"
+        [fullWidth]="true"
         [disabled]="isLoading"
-        class="tfr--text-filter--select ion-margin-end"
+        class="tfr--text-filter--select"
       ></app-select-typeahead>
-
       <ng-container *ngIf="showInput()">
         <ion-input
           [placeholder]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
+            'page.program.table-filter-row.filter-placeholder' | translate
           "
           [attr.title]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
+            'page.program.table-filter-row.filter-placeholder' | translate
           "
           [attr.aria-label]="
-            'page.program.program-people-affected.filter-placeholder'
-              | translate
+            'page.program.table-filter-row.filter-placeholder' | translate
           "
           [type]="getFilterInputType()"
           [(ngModel)]="filterRowsVisibleQuery"

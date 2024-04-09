@@ -76,37 +76,10 @@ export class RegistrationsController {
     private readonly registrationsBulkService: RegistrationsBulkService,
   ) {}
 
-  // NOTE: only used from PA-app. Already removing instead of solving conflict.
-  // @ApiTags('programs/registrations')
-  // @ApiOperation({ summary: 'Create registration' })
-  // @ApiResponse({ status: 201, description: 'Created registration' })
-  // @ApiResponse({
-  //   status: 401,
-  //   description: 'No user detectable from cookie or no cookie present',
-  // })
-  // @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // @Post('programs/:programId/registrations')
-  // public async create(
-  //   @Body() createRegistrationDto: CreateRegistrationDto,
-  //   @Param('programId') programId,
-  //   @Req() req,
-  // ): Promise<RegistrationEntity> {
-  //   const userId = req.user.id;
-  //   if (!userId) {
-  //     const errors = `No user detectable from cookie or no cookie present'`;
-  //     throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-  //   }
-  //   return await this.registrationsService.create(
-  //     createRegistrationDto,
-  //     Number(programId),
-  //     userId,
-  //   );
-  // }
-
   @ApiTags('programs/registrations')
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: HttpStatus.CREATED })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
@@ -115,27 +88,6 @@ export class RegistrationsController {
       setFsp.fspId,
     );
   }
-
-  // NOTE: only used from PA-app. Removing this somehow fixes an unrelated unit-test.
-  // @ApiTags('programs/registrations')
-  // @AuthenticatedUser()
-  // @ApiOperation({
-  //   summary: 'Set custom data for registration (Used by Person Affected)',
-  // })
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'Custom data set for registration',
-  // })
-  // @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // @Post('programs/:programId/registrations/custom-data')
-  // public async addCustomData(
-  //   @Body(new ParseArrayPipe({ items: CustomDataDto }))
-  //   customDataArray: CustomDataDto[],
-  // ): Promise<RegistrationEntity[]> {
-  //   return await this.registrationsService.addRegistrationDataBulk(
-  //     customDataArray,
-  //   );
-  // }
 
   @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
@@ -272,13 +224,13 @@ export class RegistrationsController {
   @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for the registration status update - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'The registration status update was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -411,7 +363,7 @@ export class RegistrationsController {
       '[SCOPED] [EXTERNALLY USED] Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Updated provided attributes of registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -496,9 +448,13 @@ export class RegistrationsController {
       '[SCOPED] Find registration by phone-number for Redline integration and FieldValidation',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
   })
   @ApiQuery({
     name: 'phonenumber',
@@ -530,7 +486,7 @@ export class RegistrationsController {
       '[SCOPED] [EXTERNALLY USED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.OK,
     description:
       'Updated fsp and attributes - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -553,13 +509,13 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for deleting set of registrations - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'Deleting set of registrations was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -632,12 +588,12 @@ export class RegistrationsController {
     summary: '[SCOPED] Download all program answers (for validation)',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Program answers downloaded - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   @Get('registrations/download/validation-data')
@@ -653,9 +609,9 @@ export class RegistrationsController {
     summary:
       '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
   })
-  @ApiResponse({ status: 200, description: 'A single registration' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'A single registration' })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   @ApiParam({
@@ -677,7 +633,7 @@ export class RegistrationsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspREAD] })
   @ApiOperation({ summary: '[SCOPED] Get FSP-attribute answers' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Retrieved FSP-attribute answers - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -698,7 +654,7 @@ export class RegistrationsController {
   })
   @ApiOperation({ summary: '[SCOPED] Issue validationData (For AW)' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Validation Data issued - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -716,13 +672,13 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for sending a bulk message - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'Sending bulk message was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -810,7 +766,7 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Message history retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -829,7 +785,7 @@ export class RegistrationsController {
     summary: 'Get registration status. Used by person affected only',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Registration status retrieved  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -850,7 +806,7 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'ReferenceId retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -859,6 +815,7 @@ export class RegistrationsController {
     if (isNaN(params.paId)) {
       throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
     }
+
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,

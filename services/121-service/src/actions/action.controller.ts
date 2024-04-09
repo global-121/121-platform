@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -40,7 +41,7 @@ export class ActionController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returned latest action for given program-id and action-type.',
     type: ActionReturnDto,
   })
@@ -60,7 +61,7 @@ export class ActionController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ActionCREATE] })
   @ApiOperation({ summary: 'Save action by id' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Action saved',
     type: ActionReturnDto,
   })

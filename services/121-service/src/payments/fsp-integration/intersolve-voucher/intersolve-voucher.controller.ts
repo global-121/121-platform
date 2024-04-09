@@ -49,7 +49,7 @@ export class IntersolveVoucherController {
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -82,7 +82,7 @@ export class IntersolveVoucherController {
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -105,7 +105,10 @@ export class IntersolveVoucherController {
       'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get intersolve instructions',
+  })
   @Get(
     'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
   )
@@ -131,7 +134,10 @@ export class IntersolveVoucherController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
-  @ApiResponse({ status: 201, description: 'Post intersolve instructions' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Post intersolve instructions',
+  })
   @Post(
     'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
   )
@@ -152,7 +158,10 @@ export class IntersolveVoucherController {
     summary: 'Start a job to update all voucher balances of a program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 201, description: 'Voucher update job started' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Voucher update job started',
+  })
   @Post(
     '/programs/:programId/financial-service-providers/intersolve-voucher/batch-jobs',
   )
@@ -170,7 +179,10 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: '[CRON] Cancel by refpos',
   })
-  @ApiResponse({ status: 201, description: 'Vouchers canceled by refpos' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Vouchers canceled by refpos',
+  })
   @Post('/financial-service-providers/intersolve-voucher/cancel')
   public async cancelByRefPos(): Promise<void> {
     console.info('CronjobService - Started: cancelByRefposIntersolve');
@@ -182,7 +194,10 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: '[CRON] Cache unused vouchers',
   })
-  @ApiResponse({ status: 201, description: 'Cached unused vouchers' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Cached unused vouchers',
+  })
   @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
   public async cacheUnusedVouchers(): Promise<void> {
     console.info('CronjobService - Started: cronCacheUnusedVouchers');
@@ -194,7 +209,10 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: '[CRON] Send WhatsApp reminders',
   })
-  @ApiResponse({ status: 201, description: 'Sent WhatsApp reminders' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Sent WhatsApp reminders',
+  })
   @Post('/financial-service-providers/intersolve-voucher/send-reminders')
   public async sendWhatsappReminders(): Promise<void> {
     console.info('CronjobService - Started: cronSendWhatsappReminders');

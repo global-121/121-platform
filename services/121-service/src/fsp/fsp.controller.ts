@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -29,7 +30,7 @@ export class FspController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'All Financial Service Providers with attributes',
     type: [FinancialServiceProviderEntity],
   })
@@ -41,7 +42,7 @@ export class FspController {
   @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId.' })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Fsp with attributes',
     type: FinancialServiceProviderEntity,
   })
@@ -55,12 +56,12 @@ export class FspController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update Financial Service Provider' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Financial Service Provicer updated',
     type: FinancialServiceProviderEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No Financial Service Provicer found with given id',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
@@ -75,12 +76,12 @@ export class FspController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update FSP attribute' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'FSP attribute updated',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description:
       'No attribute with given name found in Financial Service Provicer with given id',
   })
@@ -101,16 +102,16 @@ export class FspController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Create FSP attribute' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'FSP attribute created',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 403,
+    status: HttpStatus.FORBIDDEN,
     description: 'Attribute with given name already exists for given FSP',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No Financial Service Provicer found with given id',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
@@ -128,12 +129,12 @@ export class FspController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Delete FSP attribute' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'FSP attribute deleted',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No attribut with given name found for given fspId',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })

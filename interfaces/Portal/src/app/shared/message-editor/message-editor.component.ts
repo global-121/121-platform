@@ -264,17 +264,9 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
     let preview = input;
 
     this.attributes.forEach((att) => {
-      const placeHolderValue = this.previewRegistration[att.name];
-      const replacement =
-        placeHolderValue === null || placeHolderValue === undefined
-          ? ''
-          : typeof placeHolderValue === 'object'
-            ? this.translatableString.get(placeHolderValue) ?? ''
-            : placeHolderValue ?? '';
-
       preview = preview.replace(
         new RegExp(`{{${att.name}}}`, 'g'),
-        replacement,
+        this.translatableString.get(this.previewRegistration[att.name]),
       );
     });
 
