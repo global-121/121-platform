@@ -17,7 +17,6 @@ import { BearerStrategy } from 'passport-azure-ad';
 
 const config = {
   credentials: {
-    tenantID: process.env.AZURE_ENTRA_TENANT_ID,
     clientID: process.env.AZURE_ENTRA_CLIENT_ID,
     audience: `api://${process.env.AZURE_ENTRA_CLIENT_ID}`,
   },
@@ -43,10 +42,8 @@ export class AzureAdStrategy
   private userService: UserService;
   constructor(private moduleRef: ModuleRef) {
     super({
-      identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
-      issuer: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}`,
+      identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,
       clientID: config.credentials.clientID || '-', //TODO: this works to avoid 121-service filure on no-sso scenario, but should be done better
-      audience: config.credentials.audience,
       validateIssuer: config.settings.validateIssuer,
       passReqToCallback: config.settings.passReqToCallback,
       loggingLevel: config.settings.loggingLevel,
@@ -63,12 +60,13 @@ export class AzureAdStrategy
   }
 
   async validate(request: any, payload: any): Promise<any> {
+    console.log(payload);
     if (!payload) {
       throw new UnauthorizedException();
     }
 
     let user: UserEntity;
-    const usernamePayload: string = payload.unique_name?.toLowerCase();
+    const usernamePayload: string = payload.preferred_username?.toLowerCase();
     const splitUsernamePayload = usernamePayload.split('mail#');
     const username =
       splitUsernamePayload.length > 1

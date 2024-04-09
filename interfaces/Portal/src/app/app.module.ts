@@ -116,7 +116,7 @@ if (environment.use_sso_azure_entra) {
       new PublicClientApplication({
         auth: {
           clientId: environment.azure_ad_client_id,
-          authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
+          authority: 'https://login.microsoftonline.com/common',
           redirectUri: `${window.location.origin}/${AppRoutes.auth}`,
           postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
           navigateToLoginRequestUrl: false,
