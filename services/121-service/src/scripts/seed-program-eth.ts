@@ -73,7 +73,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
@@ -112,7 +111,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
@@ -151,7 +149,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,  // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusRejectedUPDATE,
-          // PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
@@ -191,7 +188,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,// assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusRejectedUPDATE,
-          // PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
@@ -230,7 +226,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusRejectedUPDATE,
-          // PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,

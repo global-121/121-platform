@@ -25,7 +25,6 @@
         "default-reply": "Default reply",
         "generic-templated": "Message notification",
         "included": "Inclusion",
-        "inclusion-ended": "Inclusion ended",
         "invited": "Invitation for registration",
         "payment": "Payment",
         "payment-instructions": "Payment instructions",
@@ -61,7 +60,6 @@
         "declined": "Declined",
         "deleted": "Deleted",
         "included": "Included",
-        "inclusionEnded": "Inclusion ended",
         "paused": "Paused",
         "registered": "Registered",
         "rejected": "Rejected",
@@ -349,7 +347,6 @@
         "actions": {
           "deletePa": "Delete PA",
           "doPayment": "Do payment #{{paymentNr}}",
-          "endInclusion": "End inclusion in program",
           "include": "Include in program",
           "markAsDeclined": "Mark as declined",
           "markAsValidated": "Mark as validated",
@@ -361,8 +358,7 @@
         "bulk-action-conditions": {
           "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that do not have status <i>Included</i>.",
           "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment.",
-          "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
-          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
+          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Paused</i>, or <i>Completed</i>.",
           "markAsDeclined": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i> or <i>Validated</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
