@@ -4,7 +4,7 @@ import { CustomHttpService } from '../shared/services/custom-http.service';
 
 @Injectable()
 export class KoboConnectApiService {
-  private apiUrl = process.env.KOBO_CONNECT_API_URL || '';
+  private apiUrl = process.env.KOBO_CONNECT_API_URL || '-';
 
   public constructor(private readonly httpService: CustomHttpService) {
     if (!this.apiUrl) {
