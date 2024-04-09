@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
-import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
 import { LanguageService } from './services/language.service';
@@ -10,8 +9,8 @@ import { LoggingService } from './services/logging.service';
   selector: 'app-root',
   templateUrl: 'app.component.html',
 })
-export class AppComponent implements OnInit, OnDestroy {
-  private readonly _destroying$ = new Subject<void>();
+export class AppComponent implements OnInit {
+  private useSso = environment.use_sso_azure_entra;
 
   constructor(
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
@@ -39,10 +38,5 @@ export class AppComponent implements OnInit, OnDestroy {
     if (environment.use_sso_azure_entra) {
       this.msalService.handleRedirectObservable().subscribe();
     }
-  }
-
-  ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
   }
 }
