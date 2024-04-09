@@ -111,25 +111,6 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.endInclusion,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.endInclusion',
-      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        promptType: PromptType.actionWithMessage,
-        checkbox:
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        checkboxChecked: true,
-        inputRequired: true,
-        inputConstraint: {
-          length: 1,
-          type: 'min',
-        },
-      },
-    },
-    {
       id: BulkActionId.pause,
       enabled: false,
       label: 'page.program.program-people-affected.actions.pause',
@@ -201,14 +182,6 @@ export class BulkActionsService {
     switch (action) {
       case BulkActionId.include:
         return await this.programsService.include(
-          programId,
-          customBulkActionInput?.message,
-          dryRun,
-          filters,
-          customBulkActionInput?.messageTemplateKey,
-        );
-      case BulkActionId.endInclusion:
-        return await this.programsService.end(
           programId,
           customBulkActionInput?.message,
           dryRun,

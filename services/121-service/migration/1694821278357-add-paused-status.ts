@@ -32,7 +32,7 @@ export class addPausedStatus1694821278357 implements MigrationInterface {
 
     // Define closest permission to the new permission
     const closestPermission =
-      'registration:status:inclusionEnded.update' as PermissionEnum;
+      'registration:status:included.update' as PermissionEnum;
 
     // Loop over all existing roles, if it has the closes permission, also add the new permission
     const userRoleRepository = manager.getRepository(UserRoleEntity);

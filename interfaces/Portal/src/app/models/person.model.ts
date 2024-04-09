@@ -98,7 +98,6 @@ export const PA_STATUS_ORDER = [
   { id: 2, value: RegistrationStatus.registered },
   { id: 3, value: RegistrationStatus.validated },
   { id: 4, value: RegistrationStatus.included },
-  { id: 5, value: RegistrationStatus.inclusionEnded },
   { id: 6, value: RegistrationStatus.declined },
   { id: 7, value: RegistrationStatus.rejected },
   { id: 8, value: RegistrationStatus.paused },

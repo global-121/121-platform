@@ -8,7 +8,6 @@ export class RegistrationResponse {
   public registeredDate: Date | null;
   public validationDate: Date | null;
   public inclusionDate: Date | null;
-  public inclusionEndDate: Date | null;
   public rejectionDate: Date | null;
   public deletedDate: Date | null;
   public declinedDate: Date | null;
