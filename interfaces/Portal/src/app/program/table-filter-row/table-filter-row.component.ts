@@ -39,7 +39,9 @@ export class TableFilterRowComponent {
   @ViewChild('statusTableFilter')
   public statusTableFilter: StatusTableFilterComponent;
 
-  public textFilterOption: Filter[] = [];
+  public textFilterOption: Filter[] = [
+    this.filterService.DEFAULT_FILTER_OPTION,
+  ];
 
   public textFilter: Observable<PaginationFilter[]>;
 

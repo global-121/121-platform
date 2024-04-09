@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -30,12 +31,16 @@ export class NoteController {
   })
   @ApiOperation({ summary: '[SCOPED] Create note for registration' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Created new note for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
     description:
       'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -58,7 +63,7 @@ export class NoteController {
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
   @ApiOperation({ summary: '[SCOPED] Get notes for registration' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Retrieved notes for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: [ResponseNoteDto],

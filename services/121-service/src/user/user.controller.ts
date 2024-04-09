@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -60,7 +61,7 @@ export class UserController {
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of roles and their permissions',
     type: [UserRoleResponseDTO],
   })
@@ -74,7 +75,7 @@ export class UserController {
   @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the created role',
     type: UserRoleResponseDTO,
   })
@@ -90,12 +91,12 @@ export class UserController {
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the updated user role',
     type: UserRoleResponseDTO,
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Role already exists',
   })
   @Put('roles/:userRoleId')
@@ -115,12 +116,12 @@ export class UserController {
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   // TODO: REFACTOR: rename to /users/roles/
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the deleted role',
     type: UserRoleResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
@@ -132,7 +133,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns all users',
     type: [UserEntity],
   })
@@ -145,7 +146,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new Aid Worker user' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Created new Aid Worker user',
   })
   @Post('users')
@@ -162,11 +163,11 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Logged in successfully',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'Wrong username and/or password',
   })
   @Post('users/login')
@@ -232,9 +233,13 @@ export class UserController {
   // TODO: Change this in to a PATCH request
   @Post('users/password')
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Changed password of user',
     type: UpdateUserDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
   })
   public async update(
     @Body() userPasswordData: UpdateUserPasswordDto,
@@ -245,7 +250,11 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
-  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User deleted',
+    type: UserEntity,
+  })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
@@ -257,9 +266,21 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   @Delete('users')
-  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User deleted',
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
     const deleterId = req.user.id;
+    if (!deleterId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.userService.delete(deleterId);
   }
 
@@ -267,9 +288,20 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
   @Get('users/current')
-  @ApiResponse({ status: 200, description: 'User returned' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   public async findMe(@Req() req): Promise<UserRO> {
     const username = req.user.username;
+    if (!username) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.userService.getUserRoByUsernameOrThrow(username);
   }
 
@@ -285,7 +317,7 @@ export class UserController {
   @ApiQuery({ name: 'username', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of users that match the search criteria.',
     type: [FindUserReponseDto],
   })
@@ -303,12 +335,12 @@ export class UserController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns program assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No roles found for user',
   })
   @Get('programs/:programId/users/:userId')
@@ -329,13 +361,13 @@ export class UserController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Returns the created or overwritten program assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program or role(s) not found',
   })
   @Put('programs/:programId/users/:userId')
@@ -359,12 +391,12 @@ export class UserController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns program assignment with all roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program or role(s) not found',
   })
   @Patch('programs/:programId/users/:userId')
@@ -389,13 +421,13 @@ export class UserController {
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Returns the program assignment with the remaining roles or nothing (if program assignment removed)',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program, role(s) or assignment not found',
   })
   @Delete('programs/:programId/users/:userId')
@@ -415,7 +447,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of users assigned to a program',
     type: [GetUserReponseDto],
   })
@@ -430,7 +462,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Reset user password without current password' })
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.NO_CONTENT,
     description: 'Password has been updated',
   })
   @HttpCode(HttpStatus.NO_CONTENT)

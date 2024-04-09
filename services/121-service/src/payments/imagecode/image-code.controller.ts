@@ -19,7 +19,7 @@ export class ImageCodeController {
     summary: 'Get voucher image to include in WhatsApp - called by Twilio',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Collect voucher image via WhatsApp',
   })
   @ApiParam({ name: 'secret' })
