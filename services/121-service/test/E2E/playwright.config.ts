@@ -51,15 +51,13 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
-        // ...devices['Desktop Chrome'],
-        // baseURL: process.env.BASE_URL
+        channel: 'chromium',
       },
     },
     {
-      name: 'firefox',
+      name: 'chrome',
       use: {
-        // ...devices['Desktop Firefox'],
-        // baseURL: process.env.BASE_URL
+        channel: 'chrome',
       },
     },
   ],
