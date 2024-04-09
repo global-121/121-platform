@@ -1,9 +1,7 @@
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
-import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import {
   HttpStatus,
   Injectable,
@@ -17,7 +15,6 @@ import { BearerStrategy } from 'passport-azure-ad';
 
 const config = {
   credentials: {
-    tenantID: process.env.AZURE_ENTRA_TENANT_ID,
     clientID: process.env.AZURE_ENTRA_CLIENT_ID,
     audience: `api://${process.env.AZURE_ENTRA_CLIENT_ID}`,
   },
@@ -43,10 +40,8 @@ export class AzureAdStrategy
   private userService: UserService;
   constructor(private moduleRef: ModuleRef) {
     super({
-      identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
-      issuer: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}`,
+      identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,
       clientID: config.credentials.clientID || '-', //TODO: this works to avoid 121-service filure on no-sso scenario, but should be done better
-      audience: config.credentials.audience,
       validateIssuer: config.settings.validateIssuer,
       passReqToCallback: config.settings.passReqToCallback,
       loggingLevel: config.settings.loggingLevel,
@@ -68,7 +63,9 @@ export class AzureAdStrategy
     }
 
     let user: UserEntity;
-    const usernamePayload: string = payload.unique_name?.toLowerCase();
+    const usernamePayload: string =
+      payload.unique_name?.toLowerCase() ||
+      payload.preferred_username?.toLowerCase();
     const splitUsernamePayload = usernamePayload.split('mail#');
     const username =
       splitUsernamePayload.length > 1
@@ -107,21 +104,10 @@ export class AzureAdStrategy
         });
       }
     } catch (error: Error | unknown) {
-      if (
-        error instanceof HttpException &&
-        error.getStatus() === HttpStatus.NOT_FOUND
-      ) {
-        // If this user is not found, create a new user
-        const password = generateRandomString(16);
-        user = await this.userService.create(
-          username,
-          password,
-          UserType.aidWorker,
-          true,
-        );
-      } else {
-        throw error;
-      }
+      throw new HttpException(
+        { message: `User with username ${username} not found`, username },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (authParams.permissions) {
