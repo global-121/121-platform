@@ -96,7 +96,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       new PublicClientApplication({
         auth: {
           clientId: environment.azure_ad_client_id,
-          authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
+          authority: 'https://login.microsoftonline.com/common',
           redirectUri: `${window.location.origin}/auth`,
           postLogoutRedirectUri: `${window.location.origin}/login`,
           navigateToLoginRequestUrl: false,
@@ -124,10 +124,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
       {
         protectedResourceMap: new Map([
-          [
-            'https://graph.microsoft.com/v1.0/me',
-            ['openid, offline_access, User.read'],
-          ],
+          ['https://graph.microsoft.com/v1.0/me', ['openid, User.read']],
           // list open endpoints here first, without scopes
           [`${environment.url_121_service_api}${LOGIN_ENDPOINT_PATH}`, null],
           // then catch all other protected endpoints with this wildcard
