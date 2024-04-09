@@ -147,7 +147,6 @@ async function bootstrap(): Promise<void> {
       defaultModelsExpandDepth: 1,
       displayOperationId: true,
       displayRequestDuration: true,
-      docExpansion: DEBUG ? 'none' : null,
       filter: true,
       operationsSorter: 'alpha',
       persistAuthorization: DEBUG,
