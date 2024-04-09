@@ -13,13 +13,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Permissions } from '../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../user/enum/permission.enum';
 import { AuditedTransactionReturnDto } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('transactions')
 @Controller()
 export class TransactionsController {
@@ -27,7 +27,7 @@ export class TransactionsController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get all transactions' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({

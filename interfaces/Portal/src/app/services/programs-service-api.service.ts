@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
+import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
@@ -60,12 +61,7 @@ export class ProgramsServiceApiService {
       )
       .then((response) => {
         if (response) {
-          return {
-            username: response.username,
-            permissions: response.permissions,
-            expires: response.expires,
-            isAdmin: response.isAdmin,
-          };
+          return response;
         }
         return null;
       });
@@ -118,6 +114,10 @@ export class ProgramsServiceApiService {
         if (response && response.programs) {
           return response.programs;
         }
+        return [];
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
         return [];
       });
   }
@@ -1010,6 +1010,14 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/notifications/${programId}/message-templates`,
+    );
+  }
+
+  public async getCurrentUser(): Promise<{ user: User }> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      CURRENT_USER_ENDPOINT_PATH,
+      false,
     );
   }
 

@@ -38,7 +38,7 @@ export class ProgramTeamComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    this.canManageAidworkers = this.authService.hasPermission(
+    this.canManageAidworkers = await this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramUPDATE,
     );

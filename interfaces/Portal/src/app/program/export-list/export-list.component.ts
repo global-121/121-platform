@@ -146,7 +146,12 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
 
   private async updateDisplayMessage(): Promise<void> {
     let actionTimestamp;
-    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
+    if (
+      await this.authService.hasPermission(
+        this.programId,
+        Permission.ActionREAD,
+      )
+    ) {
       actionTimestamp = await this.latestActionService.getLatestActionTime(
         this.exportType,
         this.programId,

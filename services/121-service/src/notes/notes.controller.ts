@@ -2,24 +2,22 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../guards/admin.guard';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { CreateNoteDto } from './dto/note.dto';
 import { ResponseNoteDto } from './dto/response-note.dto';
 import { NoteService } from './notes.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class NoteController {
@@ -28,7 +26,9 @@ export class NoteController {
     this.noteService = noteService;
   }
 
-  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
+  })
   @ApiOperation({ summary: '[SCOPED] Create note for registration' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -47,15 +47,11 @@ export class NoteController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/notes')
   public async createNote(
-    @User('id') userId: number,
+    @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+    const userId = req.user.id;
     await this.noteService.createNote(
       createNote.referenceId,
       createNote.text,
@@ -64,7 +60,7 @@ export class NoteController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
   @ApiOperation({ summary: '[SCOPED] Get notes for registration' })
   @ApiResponse({
     status: HttpStatus.OK,

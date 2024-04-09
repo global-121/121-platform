@@ -6,7 +6,8 @@ import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
-import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { ScopedUserRequest } from '../shared/scoped-user-request';
+import { UserType } from '../user/user-type-enum';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventLogOptionsDto } from './dto/event-log-options.dto';
@@ -106,22 +107,23 @@ export class EventsService {
     // Get userId from request if it exists otherwise this update was done using a queue
     // than get it from the request of the job of the queue
 
-    const requestUserId = this.request.userId
-      ? this.request.userId
+    const requestUserId = this.request.user['id']
+      ? this.request.user['id']
       : this.jobRef?.data?.request?.userId;
 
-    let userId;
+    let userIdToStore = null;
     if (requestUserId) {
       const user = await this.userService.findById(requestUserId);
-      if (user && user.userType === 'aidWorker') {
-        userId = requestUserId;
+      if (user && user.userType === UserType.aidWorker) {
+        userIdToStore = requestUserId;
       }
     }
 
+    // TODO: userIdToStore can be null, which causes an exception
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      userId,
+      userIdToStore,
       eventLogOptions?.registrationAttributes,
     );
 

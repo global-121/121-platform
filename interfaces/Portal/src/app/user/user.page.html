@@ -5,7 +5,10 @@
     <ion-row
       class="ion-justify-content-center ion-align-items-center util--full-height"
     >
-      <div style="width: 100%; min-width: 20em; max-width: 24em">
+      <div
+        *ngIf="!useSso"
+        style="width: 100%; min-width: 20em; max-width: 24em"
+      >
         <ion-item
           *ngIf="passwordChanged"
           [color]="showPassCheckFail ? 'danger' : 'success'"

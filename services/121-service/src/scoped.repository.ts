@@ -18,7 +18,7 @@ import {
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { RegistrationEntity } from './registration/registration.entity';
-import { ScopedUserRequest } from './shared/middleware/scope-user.middleware';
+import { ScopedUserRequest } from './shared/scoped-user-request';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
@@ -46,6 +46,10 @@ const indirectRelationConfig: EntityRelations = {
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
+
+export function hasNoUserScope(req: any): boolean {
+  return !req?.user?.scope || req.user.scope === '';
+}
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class ScopedRepository<T> {
@@ -77,13 +81,13 @@ export class ScopedRepository<T> {
   //////////////////////////////////////////////////////////////
 
   public async find(options?: FindOptionsCombined<T>): Promise<T[]> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       this.relationArrayToRegistration,
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.find(scopedOptions);
   }
@@ -91,25 +95,25 @@ export class ScopedRepository<T> {
   public async findAndCount(
     options: FindOptionsCombined<T>,
   ): Promise<[T[], number]> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.findAndCount(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       this.relationArrayToRegistration,
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.findAndCount(scopedOptions);
   }
 
   public async findOne(options: FindOptionsCombined<T>): Promise<T> {
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return this.repository.findOne(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
       options,
       this.relationArrayToRegistration,
-      this.request.scope,
+      this.request.user.scope,
     );
     return this.repository.findOne(scopedOptions);
   }
@@ -117,7 +121,7 @@ export class ScopedRepository<T> {
   public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
-    if (!this.request?.scope || this.request.scope === '') {
+    if (hasNoUserScope(this.request)) {
       return new ScopedQueryBuilder(qb);
     }
 
@@ -135,7 +139,7 @@ export class ScopedRepository<T> {
       qb = qb.andWhere(
         `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
         {
-          scope: `${this.request.scope}%`,
+          scope: `${this.request.user.scope}%`,
         },
       );
     }

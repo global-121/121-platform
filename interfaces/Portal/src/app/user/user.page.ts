@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
@@ -12,6 +13,8 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
+  public useSso = environment.use_sso_azure_entra;
+
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
@@ -44,6 +47,11 @@ export class UserPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.useSso) {
+      this.router.navigate(['/', AppRoutes.home]);
+      return;
+    }
+
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.userName = user && user.username ? user.username : '';
     });

@@ -10,9 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Admin } from '../guards/admin.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { AdminAuthGuard } from './../guards/admin.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateFspAttributeDto,
   UpdateFspAttributeDto,
@@ -22,13 +21,13 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { FspQuestionEntity } from './fsp-question.entity';
 import { FspService } from './fsp.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
 export class FspController {
   public constructor(private readonly fspService: FspService) {}
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -54,7 +53,7 @@ export class FspController {
     return await this.fspService.getFspById(param.fspId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update Financial Service Provider' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -74,7 +73,7 @@ export class FspController {
     return await this.fspService.updateFsp(Number(fspId), updateFspDto);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update FSP attribute' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -100,7 +99,7 @@ export class FspController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Create FSP attribute' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -127,7 +126,7 @@ export class FspController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Delete FSP attribute' })
   @ApiResponse({
     status: HttpStatus.OK,

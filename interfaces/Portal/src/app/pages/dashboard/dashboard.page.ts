@@ -24,7 +24,7 @@ export class DashboardPage implements OnInit {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    this.canViewMetrics = this.authService.hasPermission(
+    this.canViewMetrics = await this.authService.hasPermission(
       this.programId,
       Permission.ProgramMetricsREAD,
     );

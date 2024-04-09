@@ -25,13 +25,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { DEBUG } from '../config';
-import { Admin } from '../guards/admin.decorator';
-import { AdminAuthGuard } from '../guards/admin.guard';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { CookieNames } from '../shared/enum/cookie.enums';
-import { LoginUserDto, UpdateUserDto } from './dto';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -39,21 +34,21 @@ import {
 } from './dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,
 } from './dto/userrole-response.dto';
 import { PermissionEnum } from './enum/permission.enum';
-import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { tokenExpirationDays, UserService } from './user.service';
+import { UserService } from './user.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class UserController {
   private readonly userService: UserService;
@@ -62,6 +57,7 @@ export class UserController {
   }
 
   //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
+  @AuthenticatedUser()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
@@ -70,13 +66,12 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(
-    @User('id') userId: number,
-  ): Promise<UserRoleResponseDTO[]> {
+  public async getUserRoles(@Req() req): Promise<UserRoleResponseDTO[]> {
+    const userId = req.user.id;
     return await this.userService.getUserRoles(userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
   @ApiResponse({
@@ -91,7 +86,7 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
@@ -115,7 +110,7 @@ export class UserController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
@@ -134,16 +129,16 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns all users',
+    type: [UserEntity],
+  })
   @Get('users')
-  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+  public async getUsers(): Promise<UserEntity[]> {
     return await this.userService.getUsers();
   }
 
@@ -159,47 +154,6 @@ export class UserController {
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
     return this.userService.createAidWorker(userData);
-  }
-
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Person Affected user' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Created new Person Affected user',
-  })
-  @Post('users/person-affected')
-  public async createPA(
-    @Body() userData: CreateUserPersonAffectedDto,
-    @Res() res,
-    @Req() req,
-  ): Promise<UserRO> {
-    let sameSite = 'None';
-    let secure = true;
-
-    if (DEBUG) {
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
-      sameSite = serviceWorkerDebug ? 'None' : 'Lax';
-      secure = serviceWorkerDebug;
-    }
-
-    try {
-      const user = await this.userService.createPersonAffected(userData);
-      const exp = new Date(Date.now() + tokenExpirationDays * 24 * 3600000);
-      res.cookie(CookieNames.paApp, user.user.token, {
-        sameSite: sameSite,
-        secure: secure,
-        expires: exp,
-        httpOnly: true,
-      });
-      return res.send({
-        username: user.user.username,
-        permissions: user.user.permissions,
-        expires: exp,
-      });
-    } catch (error) {
-      throw error;
-    }
   }
 
   @Throttle(
@@ -247,12 +201,14 @@ export class UserController {
         access_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
+        isEntraUser: loginResponse.userRo.user.isEntraUser,
       });
     } catch (error) {
       throw error;
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
@@ -271,6 +227,7 @@ export class UserController {
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
   // TODO: Change this in to a PATCH request
@@ -285,17 +242,12 @@ export class UserController {
     description: 'No user detectable from cookie or no cookie present',
   })
   public async update(
-    @User('id') userId: number,
-    @Body() userData: UpdateUserDto,
+    @Body() userPasswordData: UpdateUserPasswordDto,
   ): Promise<any> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return this.userService.update(userData);
+    return this.userService.updatePassword(userPasswordData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
   @ApiResponse({
@@ -310,6 +262,7 @@ export class UserController {
     return await this.userService.delete(Number(params.userId));
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   @Delete('users')
@@ -322,9 +275,8 @@ export class UserController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async deleteCurrentUser(
-    @User('id') deleterId: number,
-  ): Promise<UserEntity> {
+  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
+    const deleterId = req.user.id;
     if (!deleterId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -332,26 +284,31 @@ export class UserController {
     return await this.userService.delete(deleterId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
-  @Get('users')
-  @ApiResponse({ status: HttpStatus.OK, description: 'User returned' })
+  @Get('users/current')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User returned',
+  })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async findMe(@User('username') username: string): Promise<UserRO> {
+  public async findMe(@Req() req): Promise<UserRO> {
+    const username = req.user.username;
     if (!username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.userService.findByUsername(username);
+    return await this.userService.getUserRoByUsernameOrThrow(username);
   }
 
   // This endpoint searches users accross all programs, which is needed to add a user to a program
   // We did not create an extra permission for this as it is always used in combination with adding new users to a program
   // ProgramId is therefore not needed in the service
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users')
   @ApiOperation({
     summary:
@@ -372,7 +329,7 @@ export class UserController {
     return await this.userService.findUsersByName(username);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -396,7 +353,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary: 'Create or OVERWRITE program assignment including roles and scope',
@@ -425,7 +382,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
@@ -454,7 +411,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
@@ -485,7 +442,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -501,11 +458,11 @@ export class UserController {
     return await this.userService.getUsersInProgram(Number(params.programId));
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Reset user password without current password' })
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.NO_CONTENT,
     description: 'Password has been updated',
   })
   @HttpCode(HttpStatus.NO_CONTENT)

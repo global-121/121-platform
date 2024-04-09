@@ -1,6 +1,6 @@
-import { getRandomInt } from './getRandomInt.helper';
+import { getRandomInt } from './getRandomValue.helper';
 
-describe('getRandomInt', () => {
+describe('getRandomValue', () => {
   it('should return a random integer between min and max (inclusive)', () => {
     // Arrange
     const min = 1;

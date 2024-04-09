@@ -38,9 +38,7 @@ export enum FilterOperatorEnum {
 export class FilterService {
   public DEFAULT_FILTER_OPTION: Filter = {
     name: 'quickSearch',
-    label: this.translate.instant(
-      'page.program.table-filter-row.filter-quick-search',
-    ),
+    label: '',
     isInteger: false,
     allowedOperators: [
       FilterOperatorEnum.eq,
@@ -86,6 +84,10 @@ export class FilterService {
   }
 
   private resetTextFilterInternal() {
+    this.DEFAULT_FILTER_OPTION.label = this.translate.instant(
+      'page.program.table-filter-row.filter-quick-search',
+    );
+
     this.textFilter = new Map(this.DEFAULT_TEXT_FILTER);
   }
 

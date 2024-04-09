@@ -44,6 +44,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   public WalletCardStatus121 = WalletCardStatus121;
 
   public isCardPaused: boolean;
+  public canIssueNewCard: boolean;
 
   public issueLoading = false;
   public pauseLoading = false;
@@ -59,8 +60,9 @@ export class PhysicalCardPopupComponent implements OnInit {
     this.locale = this.translate.currentLang || environment.defaultLocale;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.isCardPaused = this.card.status === WalletCardStatus121.Paused;
+    this.canIssueNewCard = await this.getCanIssueNewCard();
   }
 
   public closeModal() {
@@ -81,8 +83,8 @@ export class PhysicalCardPopupComponent implements OnInit {
     );
   }
 
-  public canIssueNewCard(): boolean {
-    return this.authService.hasPermission(
+  private async getCanIssueNewCard(): Promise<boolean> {
+    return await this.authService.hasPermission(
       this.programId,
       Permission.FspDebitCardCREATE,
     );

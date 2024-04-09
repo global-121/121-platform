@@ -20,8 +20,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
-import { Permissions } from '../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../user/enum/permission.enum';
 import {
   CreateMessageTemplateDto,
@@ -33,7 +33,7 @@ import {
 import { MessageTemplateEntity } from './message-template.entity';
 import { MessageTemplateService } from './message-template.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')
 @Controller('notifications')
 export class MessageTemplateController {
@@ -62,7 +62,7 @@ export class MessageTemplateController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -80,7 +80,7 @@ export class MessageTemplateController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: '[EXTERNALLY USED] Update message template' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -107,7 +107,7 @@ export class MessageTemplateController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({
     summary: 'Delete message template(s) by type and optionally language',
   })

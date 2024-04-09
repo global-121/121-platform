@@ -154,7 +154,11 @@
           "label": "Log in"
         }
       },
-      "portalTitle": "Portal"
+      "portalTitle": "Portal",
+      "sso": {
+        "btn-text": "Log in via SSO",
+        "label": "121 uses Single Sign-On (SSO) to securely authenticate and log you in to the portal. Click on the button to log in via SSO."
+      }
     },
     "program": {
       "bulk-import": {
@@ -578,7 +582,7 @@
         "targeted": "Targeted People Affected",
         "updated": "Last updated: "
       },
-      "not-available": "No programs available.",
+      "not-available": "You are currently not assigned to any programs. Please reach out to your line manager to be assigned to the appropriate program(s).",
       "pageSubtitle": "You are running {{nrPrograms}} program(s) actively",
       "pageTitle": "Programs"
     },

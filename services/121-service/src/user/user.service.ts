@@ -11,7 +11,6 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { ProgramEntity } from '../programs/program.entity';
 import { CookieNames } from './../shared/enum/cookie.enums';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import { LoginUserDto, UpdateUserDto } from './dto';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -20,10 +19,11 @@ import {
 import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
@@ -59,17 +59,8 @@ export class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const username = userEntity.username;
-    const permissions = await this.buildPermissionsObject(userEntity.id);
     const token = this.generateJWT(userEntity);
-    const user: UserRO = {
-      user: {
-        username,
-        token,
-        permissions,
-        isAdmin: userEntity.admin,
-      },
-    };
+    const user = await this.buildUserRO(userEntity);
 
     const cookieSettings = this.buildCookieByRequest(token);
     userEntity.lastLogin = new Date();
@@ -77,7 +68,11 @@ export class UserService {
     return { userRo: user, cookieSettings: cookieSettings, token: token };
   }
 
-  public async canActivate(permissions, programId, userId): Promise<boolean> {
+  public async canActivate(
+    permissions: PermissionEnum[],
+    programId: number,
+    userId: number,
+  ): Promise<boolean> {
     const results = await this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.programAssignments', 'assignment')
@@ -91,16 +86,6 @@ export class UserService {
       })
       .getCount();
     return results === 1;
-  }
-
-  public async createPersonAffected(
-    dto: CreateUserPersonAffectedDto,
-  ): Promise<UserRO> {
-    return await this.create(
-      dto.username,
-      dto.password,
-      UserType.personAffected,
-    );
   }
 
   public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
@@ -156,7 +141,7 @@ export class UserService {
       user.programAssignments.length === 0
     ) {
       const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return user;
   }
@@ -237,14 +222,21 @@ export class UserService {
   }
 
   public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
-    return await this.create(dto.email, dto.password, UserType.aidWorker);
+    const createdUser = await this.create(
+      dto.email,
+      dto.password,
+      UserType.aidWorker,
+    );
+    return await this.buildUserRO(createdUser);
   }
 
   public async create(
     username: string,
     password: string,
     userType: UserType,
-  ): Promise<UserRO> {
+    isEntraUser = false,
+  ): Promise<UserEntity> {
+    username = username.toLowerCase();
     // check uniqueness of email
     const qb = this.userRepository
       .createQueryBuilder('user')
@@ -265,11 +257,11 @@ export class UserService {
     newUser.username = username;
     newUser.password = password;
     newUser.userType = userType;
-    const savedUser = await this.userRepository.save(newUser);
-    return await this.buildUserRO(savedUser);
+    newUser.isEntraUser = isEntraUser;
+    return await this.userRepository.save(newUser);
   }
 
-  public async update(dto: UpdateUserDto): Promise<UserRO> {
+  public async updatePassword(dto: UpdateUserPasswordDto): Promise<UserRO> {
     const userEntity = await this.matchPassword(dto);
 
     if (!userEntity) {
@@ -286,6 +278,18 @@ export class UserService {
     return await this.buildUserRO(updated);
   }
 
+  public async updateUser(userData: UpdateUserDto): Promise<UserEntity> {
+    const userEntity = await this.findById(userData.id);
+    if (!userEntity) {
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+    for (const key of Object.keys(userData)) {
+      userEntity[key] = userData[key];
+    }
+
+    return await this.userRepository.save(userEntity);
+  }
+
   public async assignAidworkerToProgram(
     programId: number,
     userId: number,
@@ -300,14 +304,16 @@ export class UserService {
       ],
     });
     if (!user) {
-      const errors = { User: ' not found' };
+      const errors = { User: `user with userId ${userId} not found` };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
     if (!program) {
-      const errors = { Program: ' not found' };
+      const errors = {
+        Program: `program with programId ${programId} not found`,
+      };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -459,7 +465,25 @@ export class UserService {
     return user;
   }
 
-  public async findByUsername(username: string): Promise<UserRO> {
+  public async findByUsernameOrThrow(username: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { username: Equal(username) },
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  public async getUserRoByUsernameOrThrow(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
       relations: [
@@ -521,9 +545,11 @@ export class UserService {
 
     const userRO = {
       id: user.id,
-      token: this.generateJWT(user),
       username: user.username,
       permissions,
+      isAdmin: user.admin,
+      isEntraUser: user.isEntraUser,
+      lastLogin: user.lastLogin,
     };
     return { user: userRO };
   }
@@ -571,10 +597,11 @@ export class UserService {
   }
 
   public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const username = loginUserDto.username.toLowerCase();
     const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
-      .where({ username: loginUserDto.username })
+      .where({ username: username })
       .getOne();
 
     if (!saltCheck) {
@@ -584,7 +611,7 @@ export class UserService {
     const userSalt = saltCheck.salt;
 
     const findOneOptions = {
-      username: loginUserDto.username,
+      username: username,
       password: userSalt
         ? crypto
             .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
@@ -786,6 +813,15 @@ export class UserService {
       (a) => a.programId === programId,
     );
     return assignment.scope;
+  }
+
+  public getScopeForUser(user: UserEntity, programId: number): string {
+    programId = Number(programId);
+    const assignment = user.programAssignments.find(
+      (programAssignment) => programAssignment.programId === programId,
+    );
+    const scope = assignment?.scope ? assignment.scope : '';
+    return scope;
   }
 
   public async changePasswordWithoutCurrentPassword(

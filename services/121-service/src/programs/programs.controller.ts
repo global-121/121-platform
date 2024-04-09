@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -24,16 +25,13 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Admin } from '../guards/admin.decorator';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { KoboConnectService } from '../kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
-import { AdminAuthGuard } from './../guards/admin.guard';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
@@ -48,7 +46,7 @@ import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -58,6 +56,8 @@ export class ProgramController {
     private readonly koboConnectService: KoboConnectService,
   ) {}
 
+  // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({
     name: 'programId',
@@ -85,9 +85,9 @@ export class ProgramController {
     @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
     formatProgramReturnDto: boolean,
 
-    @User('id')
-    userId: number,
+    @Req() req,
   ): Promise<ProgramEntity | ProgramReturnDto> {
+    const userId = req.user.id;
     if (formatProgramReturnDto) {
       return this.programService.getProgramReturnDto(programId, userId);
     } else {
@@ -95,6 +95,7 @@ export class ProgramController {
     }
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -106,6 +107,7 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -117,17 +119,12 @@ export class ProgramController {
   })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
-  public async getAssignedPrograms(
-    @User('id') userId: number,
-  ): Promise<ProgramsRO> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+  public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
+    const userId = req.user.id;
     return await this.programService.getAssignedPrograms(userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: `Create a program.`,
   })
@@ -173,9 +170,6 @@ You can also leave the body empty.`,
     @Body()
     programData: CreateProgramDto | Partial<CreateProgramDto>,
 
-    @User('id')
-    userId: number,
-
     @Query(
       'importFromKobo',
       new ParseBoolPipe({
@@ -189,7 +183,11 @@ You can also leave the body empty.`,
 
     @Query('koboAssetId')
     koboAssetId: string,
+
+    @Req() req,
   ): Promise<ProgramEntity> {
+    const userId = req.user.id;
+
     if (importFromKobo) {
       if (koboToken && koboAssetId)
         programData = await this.koboConnectService.create(
@@ -216,7 +214,7 @@ You can also leave the body empty.`,
     return this.programService.create(programData as CreateProgramDto, userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
@@ -248,7 +246,7 @@ You can also leave the body empty.`,
       .send('The program has been successfully deleted.');
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Update program' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -267,7 +265,7 @@ You can also leave the body empty.`,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/program-questions')
@@ -281,7 +279,7 @@ You can also leave the body empty.`,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
   @ApiOperation({ summary: 'Update program question' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -302,7 +300,7 @@ You can also leave the body empty.`,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionDELETE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionDELETE] })
   @ApiOperation({ summary: 'Delete program question AND related answers' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -320,7 +318,7 @@ You can also leave the body empty.`,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program custom attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/custom-attributes')
@@ -334,7 +332,9 @@ You can also leave the body empty.`,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramCustomAttributeUPDATE],
+  })
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -359,6 +359,7 @@ You can also leave the body empty.`,
     );
   }
 
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -390,13 +391,13 @@ You can also leave the body empty.`,
     required: false,
     type: 'boolean',
   })
-  @Permissions(PermissionEnum.RegistrationREAD)
   @Get(':programId/attributes')
   public async getAttributes(
     @Param() params,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req: any,
   ): Promise<Attribute[]> {
+    const userId = req.user.id;
     if (userId) {
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(

@@ -7,4 +7,5 @@ export enum AppRoutes {
   program = 'program',
   user = 'user',
   users = 'users',
+  auth = 'auth',
 }

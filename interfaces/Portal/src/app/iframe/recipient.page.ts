@@ -1,7 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
@@ -16,7 +17,7 @@ class Recipient extends Person {
   templateUrl: './recipient.page.html',
   styleUrls: ['./recipient.page.scss'],
 })
-export class RecipientPage implements OnDestroy {
+export class RecipientPage implements OnInit, OnDestroy {
   public recipients: Recipient[];
 
   public queryParamPhonenumber = '';
@@ -31,6 +32,7 @@ export class RecipientPage implements OnDestroy {
     private translate: TranslateService,
     private translatableString: TranslatableStringService,
     private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
@@ -41,6 +43,11 @@ export class RecipientPage implements OnDestroy {
         this.getRecipientData();
       },
     );
+  }
+  async ngOnInit(): Promise<void> {
+    // If there is no phone number provided by Redline, it will not do an API call.
+    // And thus this is needed to do an API call always for the 'automatic' logout on a 401 to work.
+    await this.authService.processAzureAuthSuccess(false);
   }
 
   ngOnDestroy(): void {
