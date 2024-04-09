@@ -137,9 +137,7 @@ async function bootstrap(): Promise<void> {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
-    customJs: `data:text/javascript;base64,${Buffer.from(
-      SWAGGER_CUSTOM_JS,
-    ).toString('base64url')}`,
+    customJsStr: SWAGGER_CUSTOM_JS,
     swaggerOptions: {
       // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
       deepLinking: true,
