@@ -63,7 +63,10 @@ export class AuthService {
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-    if (!Object.keys(user.permissions)[programId]) {
+    const hasPermissionsInUserObject = Object.keys(user.permissions).includes(
+      programId.toString(),
+    );
+    if (!hasPermissionsInUserObject) {
       await this.processAzureAuthSuccess(false);
     }
     return (
