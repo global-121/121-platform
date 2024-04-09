@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from '../auth/auth.service';
@@ -13,7 +14,7 @@ import { SystemNotificationComponent } from '../components/system-notification/s
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnDestroy {
   @ViewChild('loginForm', { static: true })
   public loginForm: NgForm;
 
@@ -39,12 +40,20 @@ export class LoginPage {
     'page.login.form.password.toggle.hide',
   );
 
+  private msalSubscription: Subscription;
+
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private msalService: MsalService,
     private router: Router,
   ) {}
+
+  ngOnDestroy(): void {
+    if (this.msalSubscription) {
+      this.msalSubscription.unsubscribe();
+    }
+  }
 
   ionViewWillLeave(): void {
     this.systemNotification.closeToast();
@@ -113,7 +122,7 @@ export class LoginPage {
   }
 
   public openAzurePopup() {
-    this.msalService.loginPopup().subscribe({
+    this.msalSubscription = this.msalService.loginPopup().subscribe({
       next: async () => {
         await this.authService.processAzureAuthSuccess(false);
         await this.router.navigate(['/', AppRoutes.iframe, 'recipient']);

@@ -36,7 +36,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.msalService.handleRedirectObservable().subscribe();
+    if(environment.use_sso_azure_entra){
+      this.msalService.handleRedirectObservable().subscribe();
+    }
   }
 
   ngOnDestroy(): void {
