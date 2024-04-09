@@ -283,7 +283,7 @@ export class RegistrationsBulkService {
     includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
   ): PaginateQuery {
-    query.select = ['referenceId'];
+    query.select = ['referenceId', 'programId'];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
       query.select.push('financialServiceProvider');
