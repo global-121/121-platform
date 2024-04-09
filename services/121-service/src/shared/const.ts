@@ -31,7 +31,6 @@ export const nameConstraintQuestionsArray = [
   'rejectionDate',
   'validationDate',
   'inclusionDate',
-  'inclusionEndDate',
   'deleteDate',
   'completedDate',
   'lastMessageStatus',

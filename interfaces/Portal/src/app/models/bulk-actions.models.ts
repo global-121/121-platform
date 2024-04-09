@@ -6,7 +6,6 @@ import { ProgramPhase } from './program.model';
 export enum BulkActionId {
   chooseAction = '',
   include = 'include',
-  endInclusion = 'endInclusion',
   reject = 'reject',
   sendMessage = 'sendMessage',
   deletePa = 'deletePa',
@@ -19,7 +18,6 @@ export enum BulkActionId {
 
 export const BulkActionRegistrationStatusMap = {
   [BulkActionId.include]: RegistrationStatusEnum.included,
-  [BulkActionId.endInclusion]: RegistrationStatusEnum.inclusionEnded,
   [BulkActionId.reject]: RegistrationStatusEnum.rejected,
   [BulkActionId.pause]: RegistrationStatusEnum.paused,
 };

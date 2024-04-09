@@ -87,7 +87,7 @@ describe('change the status of a set of registrations', () => {
 
   it('should not update statuses if not possible', async () => {
     // Arrange
-    const newStatus = RegistrationStatusEnum.inclusionEnded; // registered to inclusion-ended IS NOT possible
+    const newStatus = RegistrationStatusEnum.paused; // registered to paused IS NOT possible
 
     // Act
     const updateStatusResponse = await awaitChangePaStatus(
