@@ -53,9 +53,9 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
           envContentSecurityPolicy: >-
-            connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
+            connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
             form-action https://test.121.global;
-            frame-src blob: 'self' https://app.powerbi.com https://*.ciamlogin.com;
+            frame-src blob: 'self' https://app.powerbi.com https://login.microsoftonline.com;
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'test'
@@ -68,6 +68,8 @@ jobs:
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
+          AZURE_ENTRA_DOMAINS: ${{ vars.AZURE_ENTRA_DOMAINS }}
+          AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
