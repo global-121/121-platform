@@ -383,6 +383,7 @@
           "dob": "Date of birth",
           "failedPayment": "Failed for payment #",
           "fspDisplayName": "Financial Service Provider",
+          "financialServiceProvider": "Financial Service Provider",
           "hasNote": "Has Note",
           "inclusionScore": "Inclusion score",
           "lastMessageStatus": "Last message",
