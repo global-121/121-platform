@@ -423,6 +423,7 @@
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
           "fspDisplayName": "Type hulp",
+          "financialServiceProvider": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",
           "lastMessageStatus": "Laatste bericht",
