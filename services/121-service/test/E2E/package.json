@@ -12,6 +12,7 @@
     "@types/node": "^20.12.4"
   },
   "dependencies": {
+    "@alex_neo/playwright-azure-reporter": "^1.9.0",
     "axios": "^1.6.8",
     "dotenv": "16.4.5"
   }

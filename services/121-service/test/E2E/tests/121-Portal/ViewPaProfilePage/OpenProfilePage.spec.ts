@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN, process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN);
 });
 
-test('Open PA profile page', async ({ page }) => {
+test('[27411] Open PA profile page', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);

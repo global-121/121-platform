@@ -1,18 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import { AzureReporterOptions } from '@alex_neo/playwright-azure-reporter/dist/playwright-azure-reporter';
 import path from 'path';
 const envPath = path.resolve(__dirname, '../../../.env');
 import dotenv from 'dotenv';
 dotenv.config({ path: envPath });
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
- * See https://playwright.devdocs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -20,14 +12,42 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   /* Opt out of parallel tests on CI. */
   /* Reporter to use. See https://playwright.devdocs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['list'],
+    [
+      '@alex_neo/playwright-azure-reporter',
+      {
+        orgUrl: 'https://dev.azure.com/redcrossnl',
+        token: process.env.AZURE_DEVOPS_TOKEN,
+        planId: 27408,
+        projectName: '121 Platform',
+        environment: 'AQA',
+        logging: true,
+        testRunTitle: 'Playwright Test Run',
+        publishTestResultsMode: 'testRun',
+        uploadAttachments: true,
+        attachmentsType: ['screenshot', 'video', 'trace'],
+        testRunConfig: {
+          owner: {
+            displayName: 'Krajewski, Piotr',
+          },
+          comment: 'Playwright Test Run',
+          // the configuration ids of this test run, use
+          // https://dev.azure.com/{organization}/{project}/_apis/test/configurations to get the ids of  your project.
+          // if multiple configuration ids are used in one run a testPointMapper should be used to pick the correct one,
+          // otherwise the results are pushed to all.
+          configurationIds: [],
+        },
+      } as AzureReporterOptions,
+    ],
+  ],
   /* Shared settings for all the projects below. See https://playwright.devdocs/api/class-testoptions. */
   workers: process.env.CI ? 1 : undefined,
   outputDir: './test-results',
-  timeout: 20000,
+  timeout: 10000,
   use: {
     baseURL: process.env.BASE_URL,
     video:'on-first-retry',
@@ -40,13 +60,10 @@ export default defineConfig({
         args: ['--start-maximized']
     },
     viewport: null,
-    /*Igonore insecure connections */
     ignoreHTTPSErrors: true,
     bypassCSP: true,
-    /* Collect trace when retrying the failed test. See https://playwright.devdocs/trace-viewer */
     trace: 'on-first-retry',
   },
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
