@@ -35,10 +35,6 @@ export default defineConfig({
             displayName: 'Krajewski, Piotr',
           },
           comment: 'Playwright Test Run',
-          // the configuration ids of this test run, use
-          // https://dev.azure.com/{organization}/{project}/_apis/test/configurations to get the ids of  your project.
-          // if multiple configuration ids are used in one run a testPointMapper should be used to pick the correct one,
-          // otherwise the results are pushed to all.
           configurationIds: [],
         },
       } as AzureReporterOptions,
@@ -71,11 +67,11 @@ export default defineConfig({
         channel: 'chromium',
       },
     },
-    {
-      name: 'chrome',
-      use: {
-        channel: 'chrome',
-      },
-    },
+    // {
+    //   name: 'chrome',
+    //   use: {
+    //     channel: 'chrome',
+    //   },
+    // },
   ],
 });
