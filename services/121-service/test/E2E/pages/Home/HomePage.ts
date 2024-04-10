@@ -3,23 +3,24 @@ import { Page } from 'playwright';
 
 class HomePage {
   page: Page;
-  activeProgramsbanner = 'p.ion-no-margin';
+  activeProgramsBanner = 'p.ion-no-margin';
+  programCard = 'app-program-card';
+  openPAsForRegistrationButton = 'ion-button.ion-margin-start';
+  okButton = 'ion-button[fill="solid"][color="primary"]:has-text("OK")';
 
   constructor(page: Page) {
     this.page = page;
-  }
+  };
 
   async validateNumberOfActivePrograms(amount: number) {
-    expect(await this.page.locator(this.activeProgramsbanner).textContent()).toContain(`You are running ${amount} program(s) actively`);
-  }
+    expect(await this.page.locator(this.activeProgramsBanner).textContent()).toContain(`You are running ${amount} program(s) actively`);
+  };
 
-  async openPAsForRegistration() {
-    await this.page.getByText('NLRC OCW program').click();
-    await this.page.getByText('Open for Registration').click();
-    const openForRegistrationBanner = this.page.getByRole('heading', { name: 'Open for registration' });
-    // expect(await openForRegistrationBanner.isVisible()).toBeTruthy();
-    await this.page.getByRole('button', { name: 'OK' }).click();
-  }
+  async openPAsForRegistrationOcwProgram(programName: string) {
+    await this.page.locator(this.programCard).filter({ hasText: programName }).click();
+    await this.page.locator(this.openPAsForRegistrationButton).click();
+    await this.page.locator(this.okButton).click();
+  };
 }
 
 export default HomePage;

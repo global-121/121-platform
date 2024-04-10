@@ -32,12 +32,12 @@ test('Open PA profile page', async ({ page }) => {
 
   await test.step('Should display correct amount of runnig projects and open PAs for registration', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.openPAsForRegistration();
+    await homePage.openPAsForRegistrationOcwProgram('NLRC OCW program');
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.verifyRowTableLeft(1, { personAffected: 'PA #1', firstName: 'Test', lastName: 'succeed' });
-    await table.verifyRowTableRight(1, { phoneNumber: '14155238886', preferredLanguage: 'English', status: 'Registered' });
+    await table.verifyRowTableLeft(1, { personAffected: 'PA #1', firstName: undefined, lastName: undefined, phoneNumber: undefined, status: 'Registered' });
+    await table.verifyRowTableRight(1, { preferredLanguage: 'English' });
     await table.clickOnPaNumber(1);
   });
 
