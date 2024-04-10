@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Single Sign-on with Microsoft Entra ID
 - Multi column filtering
 - Mass update through CSV
 - ENV-variable `KOBO_CONNECT_API_URL` for Kobo-Connect API URL needs to be set for the 121-service.
