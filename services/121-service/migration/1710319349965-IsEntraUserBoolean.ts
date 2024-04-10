@@ -10,7 +10,7 @@ export class IsEntraUserBoolean1710319349965 implements MigrationInterface {
 
     // Set all usernames to lowercase
     await queryRunner.query(
-      `UPDATE "121-service"."user" SET username = LOWER(username)`,
+      `UPDATE "121-service"."user" SET username = LOWER(username) WHERE username LIKE '%@%'`,
     );
   }
 

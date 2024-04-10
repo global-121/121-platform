@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.116.1](https://github.com/global-121/121-platform/compare/v1.116.0...v1.116.1)- 2024-04-10
+
+### Fixed
+
+- Migration: Only update usernames with '@'
+
 ## [1.116.0](https://github.com/global-121/121-platform/compare/v1.115.5...v1.116.0)- 2024-04-10
 
 ### Added
