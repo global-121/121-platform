@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.1)- 2024-04-10
+
+### Fixed
+
+- Search on fspName enum instead of display name
+- Store registrations status changes without userId
+- Export registration data changes without userId
+
 ## [1.116.1](https://github.com/global-121/121-platform/compare/v1.116.0...v1.116.1)- 2024-04-10
 
 ### Fixed
