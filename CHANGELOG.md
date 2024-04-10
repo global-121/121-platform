@@ -5,17 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.115.5...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.116.0...main)
+
+---
+
+## [1.116.0](https://github.com/global-121/121-platform/compare/v1.115.5...v1.116.0)- 2024-04-10
 
 ### Added
 
+- Single Sign-on with Microsoft Entra ID
+- Multi column filtering
+- Mass update through CSV
 - ENV-variable `KOBO_CONNECT_API_URL` for Kobo-Connect API URL needs to be set for the 121-service.
+
+### Changed
+
+- FSP name is now a translatable string & configurable per program
 
 ### Removed
 
+- "Assigned aid workers" from Design tab
 - ENV-variable `CREATE_PROGRAM_ENDPOINT` for Kobo-Connect API URL is removed from the Portal.
-
----
 
 ## [1.115.5](https://github.com/global-121/121-platform/compare/v1.115.4...v1.115.5)- 2024-04-08
 
