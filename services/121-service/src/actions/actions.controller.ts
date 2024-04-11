@@ -20,16 +20,16 @@ import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { ActionType } from './action.entity';
-import { ActionService } from './action.service';
+import { ActionsService } from './actions.service';
 import { ActionReturnDto } from './dto/action-return.dto';
 import { ActionDto } from './dto/action.dto';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/actions')
 @Controller()
-export class ActionController {
-  private readonly actionService: ActionService;
-  public constructor(actionService: ActionService) {
+export class ActionsController {
+  private readonly actionService: ActionsService;
+  public constructor(actionService: ActionsService) {
     this.actionService = actionService;
   }
 

@@ -3,17 +3,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
-import { ActionController } from './action.controller';
+import { ActionsController } from './actions.controller';
 import { ActionEntity } from './action.entity';
-import { ActionService } from './action.service';
+import { ActionsService } from './actions.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProgramEntity, UserEntity, ActionEntity]),
     UserModule,
   ],
-  providers: [ActionService],
-  controllers: [ActionController],
-  exports: [ActionService],
+  providers: [ActionsService],
+  controllers: [ActionsController],
+  exports: [ActionsService],
 })
-export class ActionModule {}
+export class ActionsModule {}

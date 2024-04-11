@@ -8,7 +8,7 @@ import { ActionReturnDto } from './dto/action-return.dto';
 import { ActionMapper } from './utils/action.mapper';
 
 @Injectable()
-export class ActionService {
+export class ActionsService {
   @InjectRepository(ActionEntity)
   private readonly actionRepository: Repository<ActionEntity>;
   @InjectRepository(UserEntity)
