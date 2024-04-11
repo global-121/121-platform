@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://playwright.dev/">
     <img width="140" alt="Playwright Logo" src="https://seeklogo.com/images/P/playwright-logo-22FA8B9E63-seeklogo.com.png" />
-    </a>
+  </a>
 </p>
 
 <p align="center">
@@ -24,37 +24,44 @@
 
 - **Easy reporting setup for Azure Test Plan**: Thanks to many different ways of connecting Playwright report to Azure Test Plan QA can create result outputs from simple pass/fail to more complex charts and reports.
 
-
-
-> 🚩 **Note**
+> 🚩 **Prerequisite**
+>
+> The only prerequisite is to have Node.js, Plawyright and Playwright Add On for VS Code installed on your machine
 
 ### Installation
 
-Clone the repository and run the command:
+- **Clone the repository and run local Docker enviroment**
 
+**Install Playwright dependecies**
+
+```shell
+cd services/121-service/test/E2E
+```
+Then:
+```shell
+npm install
+```
+**Install missing dependencies**
+
+```shell
+cd services/121-service/test/API
+```
+Then:
 ```shell
 npm install
 ```
 
-> 🚩 **Note**
->
-> The only prerequisite is to have Node.js, Plawyright and Playwright Add On for VS Code installed on your machine
-
-### Run test via console
+### Run tests via console
 
 ```shell
 npx playwright test
 ```
 
-### Or run them using built in runner via VS Code
+ <h2>
+  <b>Or run them using built in runner via VS Code</b>
+    <a href="https://playwright.dev/">
+      <img width="40" alt="Playwright Logo" src="https://seeklogo.com/images/P/playwright-logo-22FA8B9E63-seeklogo.com.png" />
+    </a>
+  </h2>
 
-> 🚩 **Note**
-> This project is for sheer purpose of presenting Playwright possibilities.
-
-## License
-
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cypress-io/cypress/blob/master/LICENSE)
-
-This project is licensed under the terms of the [MIT license](/LICENSE).
-
-
+### <p align="center"> This documentation is work in progress and thus far explains only installation process </p>
