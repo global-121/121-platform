@@ -31,7 +31,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutes } from './app-routes.enum';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LOGIN_ENDPOINT_PATH } from './auth/auth.service';
+import { ApiPath } from './enums/api-path.enum';
 import { AzureSsoExpireInterceptor } from './interceptors/azure-sso-expire.interceptor';
 import { MsalSkipInterceptor } from './interceptors/msal-skip.interceptor';
 import { ErrorHandlerService } from './services/error-handler.service';
@@ -130,7 +130,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             ['openid, offline_access, User.read'],
           ],
           // list open endpoints here first, without scopes
-          [`${environment.url_121_service_api}${LOGIN_ENDPOINT_PATH}`, null],
+          [`${environment.url_121_service_api}${ApiPath.usersLogin}`, null],
           // then catch all other protected endpoints with this wildcard
           [
             `${environment.url_121_service_api}/*`,

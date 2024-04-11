@@ -10,18 +10,12 @@ import { LoggingService } from './services/logging.service';
   templateUrl: 'app.component.html',
 })
 export class AppComponent implements OnInit {
-  private useSso = environment.use_sso_azure_entra;
-
   constructor(
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
-    private msalService: MsalService,
-    private authService: AuthService,
+    private msalService?: MsalService,
+    private authService?: AuthService,
   ) {
-    // Logout non-SSO users
-    if (this.useSso) {
-      this.authService.logoutNonSSOUser();
-    }
     // Initialize storage of preferred language
     this.languageService.setup();
 
@@ -35,7 +29,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.useSso) {
+    if (environment.use_sso_azure_entra) {
+      this.authService.logoutNonSSOUser();
       this.msalService.handleRedirectObservable().subscribe();
     }
   }

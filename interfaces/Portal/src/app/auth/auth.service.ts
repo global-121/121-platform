@@ -12,10 +12,6 @@ export const USER_KEY = 'logged-in-user-portal';
 
 export const MSAL_COLLECTION_KEY = 'msal.account.keys';
 
-export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
-export const LOGIN_ENDPOINT_PATH = '/users/login';
-export const LOGOUT_ENDPOINT_PATH = '/users/logout';
-
 @Injectable({
   providedIn: 'root',
 })

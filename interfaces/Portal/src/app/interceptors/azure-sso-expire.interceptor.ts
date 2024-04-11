@@ -7,12 +7,8 @@ import {
 import { Injectable } from '@angular/core';
 import { from, lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import {
-  AuthService,
-  CURRENT_USER_ENDPOINT_PATH,
-  LOGIN_ENDPOINT_PATH,
-  LOGOUT_ENDPOINT_PATH,
-} from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
+import { ApiPath } from '../enums/api-path.enum';
 
 @Injectable()
 export class AzureSsoExpireInterceptor implements HttpInterceptor {
@@ -28,9 +24,9 @@ export class AzureSsoExpireInterceptor implements HttpInterceptor {
   async handle(request: HttpRequest<any>, next: HttpHandler) {
     if (request.url.includes(environment.url_121_service_api)) {
       if (
-        !request.url.includes(CURRENT_USER_ENDPOINT_PATH) &&
-        !request.url.includes(LOGIN_ENDPOINT_PATH) &&
-        !request.url.includes(LOGOUT_ENDPOINT_PATH)
+        !request.url.includes(ApiPath.usersCurrent) &&
+        !request.url.includes(ApiPath.usersLogin) &&
+        !request.url.includes(ApiPath.usersLogout)
       ) {
         await this.authService.checkExpirationDate();
       }
