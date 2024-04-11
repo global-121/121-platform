@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -90,10 +91,12 @@ export class FspController {
   @Patch(':fspId/attribute/:attributeName')
   public async updateFspAttribute(
     @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspAttributeDto: UpdateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.updateFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
       updateFspAttributeDto,
     );
@@ -117,11 +120,12 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Post(':fspId/attribute')
   public async createFspAttribute(
-    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() createFspAttributeDto: CreateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.createFspAttribute(
-      Number(params.fspId),
+      fspId,
       createFspAttributeDto,
     );
   }
@@ -140,9 +144,13 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiParam({ name: 'attributeName', required: true, type: 'string' })
   @Delete(':fspId/attribute/:attributeName')
-  public async deleteFspAttribute(@Param() params): Promise<FspQuestionEntity> {
+  public async deleteFspAttribute(
+    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.deleteFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
     );
   }

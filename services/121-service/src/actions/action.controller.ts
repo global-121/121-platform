@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   Req,
@@ -48,13 +49,11 @@ export class ActionController {
   @ApiQuery({ name: 'actionType', required: true, type: 'string' })
   @Get('programs/:programId/actions')
   public async getLatestAction(
-    @Param('programId') programId,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query('actionType') actionType: ActionType,
   ): Promise<ActionReturnDto> {
-    return await this.actionService.getLatestAction(
-      Number(programId),
-      actionType,
-    );
+    return await this.actionService.getLatestAction(programId, actionType);
   }
 
   // TODO: this endpoint is not used currently, remove it?
@@ -74,12 +73,13 @@ export class ActionController {
   public async saveAction(
     @Req() req: any,
     @Body() actionData: ActionDto,
-    @Param('programId') programId,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ActionReturnDto> {
     const userId = req.user.id;
     return await this.actionService.postAction(
       userId,
-      Number(programId),
+      programId,
       actionData.actionType,
     );
   }

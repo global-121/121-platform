@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   Res,
@@ -57,14 +58,15 @@ export class IntersolveVoucherController {
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers',
   )
   public async exportVouchers(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
       queryParams.referenceId,
       Number(queryParams.payment),
-      params.programId,
+      programId,
     );
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
@@ -90,13 +92,14 @@ export class IntersolveVoucherController {
     'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
   )
   public async getBalance(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
       queryParams.referenceId,
       Number(queryParams.payment),
-      params.programId,
+      programId,
     );
   }
 
@@ -114,11 +117,10 @@ export class IntersolveVoucherController {
   )
   public async intersolveInstructions(
     @Res() response: Response,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<void> {
-    const blob = await this.intersolveVoucherService.getInstruction(
-      Number(params.programId),
-    );
+    const blob = await this.intersolveVoucherService.getInstruction(programId);
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
@@ -144,10 +146,11 @@ export class IntersolveVoucherController {
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<void> {
     await this.intersolveVoucherService.postInstruction(
-      Number(params.programId),
+      programId,
       instructionsFileBlob,
     );
   }
@@ -167,10 +170,11 @@ export class IntersolveVoucherController {
   )
   public async createJob(
     @Body() jobDetails: IntersolveVoucherJobDetails,
-    @Param() param,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<void> {
     await this.intersolveVoucherService.updateVoucherBalanceJob(
-      Number(param.programId),
+      programId,
       jobDetails.name,
     );
   }
