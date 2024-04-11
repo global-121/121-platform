@@ -315,7 +315,6 @@ export class UserController {
       'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns a list of users that match the search criteria.',
@@ -323,7 +322,9 @@ export class UserController {
   })
   @Get('programs/:programId/users/search')
   public async getUsersByName(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('programId', ParseIntPipe)
+    _programId: number,
+
     @Query('username') username: string,
   ): Promise<FindUserReponseDto[]> {
     return await this.userService.findUsersByName(username);
@@ -332,8 +333,6 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns program assignment including roles and scope',
@@ -345,11 +344,15 @@ export class UserController {
   })
   @Get('programs/:programId/users/:userId')
   public async getAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.getAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
     );
   }
 
@@ -358,8 +361,6 @@ export class UserController {
   @ApiOperation({
     summary: 'Create or OVERWRITE program assignment including roles and scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -372,15 +373,15 @@ export class UserController {
   })
   @Put('programs/:programId/users/:userId')
   public async assignAidworkerToProgram(
-    @Param() params,
-    @Body() assignAidworkerToProgram: CreateProgramAssignmentDto,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body()
+    assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
-    const programId = Number(params.programId);
-    const userId = Number(params.userId);
-    if (Number.isNaN(programId) || Number.isNaN(userId)) {
-      const errors = `programId and userId must be integers'`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
     return await this.userService.assignAidworkerToProgram(
       programId,
       userId,
@@ -394,8 +395,6 @@ export class UserController {
     summary:
       'Update existing program assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns program assignment with all roles and scope',
@@ -407,12 +406,17 @@ export class UserController {
   })
   @Patch('programs/:programId/users/:userId')
   public async updateAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.updateAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
@@ -423,8 +427,6 @@ export class UserController {
     summary:
       'Remove roles from program-assignment (pass roles to delete in body) or remove assignment (no body)',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -438,12 +440,17 @@ export class UserController {
   })
   @Delete('programs/:programId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     return await this.userService.deleteAidworkerRolesOrAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
@@ -451,7 +458,6 @@ export class UserController {
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns a list of users assigned to a program',
@@ -459,9 +465,10 @@ export class UserController {
   })
   @Get('programs/:programId/users')
   public async getUsersInProgram(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<GetUserReponseDto[]> {
-    return await this.userService.getUsersInProgram(Number(params.programId));
+    return await this.userService.getUsersInProgram(programId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
