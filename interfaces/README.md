@@ -1,10 +1,5 @@
 # Interfaces on the 121-platform
 
-- [AW-App](./AW-App/)  
-  Web-app used by _AidWorkers_ to validate PAs.
-
-  Primary target(s): Mobile/Smartphone
-
 - [Portal](./Portal/)  
   Web-app used by the _Humanitarian Organization_ to manage their programs, aid-workers, communication, etc.
 
@@ -130,7 +125,5 @@ Following the configuration of the 121 Demo environment, the following CSP is se
 - `frame-ancestors`:  
   Allows an interface to be included in an `<iframe>` on some other web-site or -service.
   - When the integration with Redline/Twilio Flex will be used, `https://flex.twilio.com` should be included. (for the Portal only)
-- `img-src: 'self' data: ;`:
-  Allows images loaded from data-URLs. This is used to show the instance's organizations's avatar in the conversation. (for the Verify/AW-App only)
 
 For each different interface, on each specific instance, other settings apply, depending on their (required) functionality.

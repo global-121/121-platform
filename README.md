@@ -16,7 +16,6 @@ See: [status.121.global](https://status.121.global/)
 ### Tests Status
 
 [![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
-[![Test Interface: Verify (AW)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml)
 [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
 
@@ -116,31 +115,20 @@ To verify the successful installation and setup of services, access their Swagge
 
 Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
 
-Install dependencies for all the interfaces at once, run:
+Install dependencies for the portal, run:
 
-    npm run install:interfaces
-
-Or from each of the individual interface directories(`interfaces/*`) run:
-
-    npm ci
+    npm run install:portal
 
 ## Start Interfaces
 
-To start all interfaces at once, from the root of this repository, run:
+To start the portal, from the root of this repository, run:
 
-    npm run start:interfaces
-
-To start an individual interface in development mode:
-
-- Run: (where `<interface-name>` is one of `aw`, `portal`)
-
-      npm run start:<interface-name>
+    npm run start:portal
 
 - Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
 
-All individual Angular applications, when started will be available via:
+When started, the portal will be available via:
 
-- AW-App: <http://localhost:8080>
 - Portal: <http://localhost:8888>
 
 ---
@@ -153,7 +141,7 @@ When you use [VS Code](https://code.visualstudio.com/), you can start multiple e
 
 To start an individual interface/service in VS Code:
 
-- Run: (where `<package>` is one of `aw`, `portal`, `121-service`)
+- Run: (where `<package>` is one of `portal`, `121-service`)
 
       npm run code:<package>
 
