@@ -375,9 +375,15 @@ export class UserController {
     @Param() params,
     @Body() assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
+    const programId = Number(params.programId);
+    const userId = Number(params.userId);
+    if (Number.isNaN(programId) || Number.isNaN(userId)) {
+      const errors = `programId and userId must be integers'`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     return await this.userService.assignAidworkerToProgram(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
