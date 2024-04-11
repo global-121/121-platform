@@ -422,6 +422,7 @@
           "custom-attribute-true": "Ja",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
+          "financialServiceProvider": "Type hulp",
           "fspDisplayName": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",

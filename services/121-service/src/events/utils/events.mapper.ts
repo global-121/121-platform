@@ -18,7 +18,7 @@ export class EventsMapper {
       paId: event.registration.registrationProgramId,
       referenceId: event.registration.referenceId,
       changedAt: event.created,
-      changedBy: event.user.username,
+      changedBy: event?.user?.username ? event?.user?.username : '',
       type: event.type,
       ...attributes,
     };
