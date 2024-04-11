@@ -52,7 +52,7 @@ npm install
 ```
 ## Enviromental variables
 
-Base Url, Azure Token and test users data are be stored in .env file. 
+Base Url, Azure Token and test users data are stored in .env file. 
 
 ### Run tests via console
 
