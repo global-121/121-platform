@@ -137,9 +137,7 @@ async function bootstrap(): Promise<void> {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
-    customJs: `data:text/javascript;base64,${Buffer.from(
-      SWAGGER_CUSTOM_JS,
-    ).toString('base64url')}`,
+    customJsStr: SWAGGER_CUSTOM_JS,
     swaggerOptions: {
       // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
       deepLinking: true,
@@ -147,10 +145,10 @@ async function bootstrap(): Promise<void> {
       defaultModelsExpandDepth: 1,
       displayOperationId: true,
       displayRequestDuration: true,
-      docExpansion: DEBUG ? 'none' : null,
       filter: true,
       operationsSorter: 'alpha',
       persistAuthorization: DEBUG,
+      queryConfigEnabled: DEBUG,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
