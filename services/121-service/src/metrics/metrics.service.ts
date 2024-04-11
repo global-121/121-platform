@@ -622,6 +622,9 @@ export class MetricsService {
       .innerJoin('registration_data.registration', 'registration')
       .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
+      .andWhere('registration."registrationStatus" != :status', {
+        status: RegistrationStatusEnum.rejected,
+      })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value');
