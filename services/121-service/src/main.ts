@@ -103,26 +103,6 @@ async function bootstrap(): Promise<void> {
     });
   }
 
-  if (!!process.env.REDIRECT_REGISTER_URL_HOST) {
-    expressInstance.get(`/register`, (_req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST);
-    });
-    expressInstance.get(`/app*`, (req: Request, res: Response) => {
-      const newPath = req.url.replace(`/app`, '');
-      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST + newPath);
-    });
-  }
-
-  if (!!process.env.REDIRECT_VERIFY_URL_HOST) {
-    expressInstance.get(`/verify`, (_req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST);
-    });
-    expressInstance.get(`/AW-app*`, (req: Request, res: Response) => {
-      const newPath = req.url.replace(`/AW-app`, '');
-      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST + newPath);
-    });
-  }
-
   expressInstance.disable('x-powered-by');
 
   app.setGlobalPrefix('api');
