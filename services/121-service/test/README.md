@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  This documentation touches upon E2E Playwright test suite for API refer to [`/features`](features/#readme). 
+  This documentation touches upon E2E Playwright test suite for API refer to <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#testing">features/</a>.
 </p>
 
 ## Advantages of Playwright Automated Tests
@@ -30,7 +30,7 @@
 
 ### Installation
 
-- **Clone the repository and run local Docker enviroment**
+<p>Clone the repository and run local Docker enviroment following <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#setup-services">installation/</a> documentation</p>
 
 **Install Playwright dependecies**
 
