@@ -2,12 +2,13 @@
 
 ```mermaid
 graph LR
+  CronjobModule-->ExchangeRateModule
+  MessageTemplateModule-->ProgramAttributesModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
-  MessageTemplateModule-->ProgramAttributesModule
-  CronjobModule-->ExchangeRateModule
+  MetricsModule-->RegistrationsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -28,12 +29,8 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
-  MessageModule-->WhatsappModule
-  WhatsappModule-->ImageCodeModule
-  WhatsappModule-->MessageTemplateModule
-  MessageModule-->SmsModule
-  MessageModule-->QueueMessageModule
-  MessageModule-->IntersolveVoucherModule
+  MetricsModule-->PaymentsModule
+  PaymentsModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->QueueMessageModule
@@ -41,11 +38,6 @@ graph LR
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
   IntersolveVoucherModule-->RedisModule
-  MessageModule-->MessageTemplateModule
-  MessageModule-->ProgramModule
-  MetricsModule-->RegistrationsModule
-  MetricsModule-->PaymentsModule
-  PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
@@ -84,6 +76,8 @@ graph LR
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
+  WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
   MessageIncomingModule-->QueueMessageModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
