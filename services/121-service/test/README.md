@@ -50,6 +50,9 @@ Then:
 ```shell
 npm install
 ```
+## Enviromental variables
+
+Base Url, Azure Token and test users data are be stored in .env file. 
 
 ### Run tests via console
 
@@ -63,5 +66,8 @@ npx playwright test
       <img width="40" alt="Playwright Logo" src="https://seeklogo.com/images/P/playwright-logo-22FA8B9E63-seeklogo.com.png" />
     </a>
   </h2>
+  <a>
+    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/ffca2fd1-5349-41fb-ade9-ace143bb2c58"/>
+  </a>
 
 ### <p align="center"> This documentation is work in progress and thus far explains only installation process </p>
