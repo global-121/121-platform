@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { AppRoutes } from '../app-routes.enum';
-import { AuthService } from '../auth/auth.service';
-import { User } from '../models/user.model';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { AppRoutes } from '../../app-routes.enum';
+import { AuthService } from '../../auth/auth.service';
+import { User } from '../../models/user.model';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
   selector: 'app-user',

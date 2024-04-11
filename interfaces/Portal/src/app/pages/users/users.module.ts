@@ -6,9 +6,9 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { SharedModule } from '../shared/shared.module';
-import { RolesListComponent } from './rolesList/roles-list/roles-list.component';
-import { UsersTableComponent } from './users-table/users-table.component';
+import { SharedModule } from '../../shared/shared.module';
+import { RolesListComponent } from './components/roles-list/roles-list.component';
+import { UsersTableComponent } from './components/users-table/users-table.component';
 import { UsersPage } from './users.page';
 
 @NgModule({

@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { Person } from '../models/person.model';
-import { Program } from '../models/program.model';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { TranslatableStringService } from '../services/translatable-string.service';
+import { AuthService } from '../../auth/auth.service';
+import { Person } from '../../models/person.model';
+import { Program } from '../../models/program.model';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 
 class Recipient extends Person {
   programTitle?: string;

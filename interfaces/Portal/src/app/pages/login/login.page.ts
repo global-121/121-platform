@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { AppRoutes } from '../app-routes.enum';
-import { AuthService } from '../auth/auth.service';
-import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
+import { environment } from '../../../environments/environment';
+import { AppRoutes } from '../../app-routes.enum';
+import { AuthService } from '../../auth/auth.service';
+import { SystemNotificationComponent } from '../../components/system-notification/system-notification.component';
 
 @Component({
   selector: 'app-login',

@@ -3,8 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '../shared/shared.module';
-import { HelpPage } from './help.page';
+import { SharedModule } from '../../shared/shared.module';
+import { ProgramsListComponent } from './components/programs-list/programs-list.component';
+import { HomePage } from './home.page';
 
 @NgModule({
   imports: [
@@ -14,11 +15,11 @@ import { HelpPage } from './help.page';
     RouterModule.forChild([
       {
         path: '',
-        component: HelpPage,
+        component: HomePage,
       },
     ]),
     TranslateModule.forChild(),
   ],
-  declarations: [HelpPage],
+  declarations: [HomePage, ProgramsListComponent],
 })
-export class HelpPageModule {}
+export class HomePageModule {}
