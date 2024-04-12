@@ -124,6 +124,10 @@ Or from each of the individual interface directories(`interfaces/*`) run:
 
     npm ci
 
+Also, make sure to create an env file for each interface. For example:
+
+    cp interfaces/Portal/.env.example interfaces/Portal/.env
+
 ## Start Interfaces
 
 To start all interfaces at once, from the root of this repository, run:
