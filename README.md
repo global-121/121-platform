@@ -16,7 +16,6 @@ See: [status.121.global](https://status.121.global/)
 ### Tests Status
 
 [![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
-[![Test Interface: Register (PA)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml)
 [![Test Interface: Verify (AW)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml)
 [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
@@ -133,7 +132,7 @@ To start all interfaces at once, from the root of this repository, run:
 
 To start an individual interface in development mode:
 
-- Run: (where `<interface-name>` is one of `pa`, `aw`, `portal`)
+- Run: (where `<interface-name>` is one of `aw`, `portal`)
 
       npm run start:<interface-name>
 
@@ -141,7 +140,6 @@ To start an individual interface in development mode:
 
 All individual Angular applications, when started will be available via:
 
-- PA-App: <http://localhost:8008>
 - AW-App: <http://localhost:8080>
 - Portal: <http://localhost:8888>
 
@@ -155,7 +153,7 @@ When you use [VS Code](https://code.visualstudio.com/), you can start multiple e
 
 To start an individual interface/service in VS Code:
 
-- Run: (where `<package>` is one of `pa`, `aw`, `portal`, `121-service`)
+- Run: (where `<package>` is one of `aw`, `portal`, `121-service`)
 
       npm run code:<package>
 

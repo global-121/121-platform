@@ -3,7 +3,6 @@ import { TranslatableString } from './translatable-string.model';
 export class Program {
   id: number;
   titlePortal: string | TranslatableString;
-  titlePaApp: string | TranslatableString;
   description: string | TranslatableString;
   created: string;
   updated: string;

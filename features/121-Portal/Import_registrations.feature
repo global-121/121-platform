@@ -35,7 +35,7 @@ Feature: Import registrations with status registered
     And they have status "Registered"
     And all other columns are filled as if a real registration was done
     And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula
-    And no SMS is sent to the PA unlike a registration through the PA-app
+    And no SMS is sent to the PA
     And in the AW-app the validation data for these PAs can be downloaded
 
   Scenario: Unsuccessfully import registrations via CSV
