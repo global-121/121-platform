@@ -1,5 +1,5 @@
 /* eslint-disable jest/no-conditional-expect */
-import programTest from '../../seed-data/program/program-test.json';
+import programTest from '../../../seed-data/program/program-test.json';
 import {
   FspConfigurationEnum,
   FspName,
