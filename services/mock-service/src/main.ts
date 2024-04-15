@@ -17,6 +17,7 @@ import {
   SWAGGER_CUSTOM_CSS,
 } from './config';
 
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace NodeJS {
     interface Global {
