@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.1)- 2024-04-10
+## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.1...v1.116.2)- 2024-04-10
 
 ### Fixed
 
