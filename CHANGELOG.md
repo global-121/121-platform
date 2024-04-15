@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - PA-App interface code and all related references
+- AW-App interface code and all related references
 
 ---
 
