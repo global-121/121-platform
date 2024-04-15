@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -80,7 +81,7 @@ export class LoginPage implements OnDestroy {
       .catch(({ error }) => {
         console.error(error);
         this.errorStatusCode = error?.statusCode;
-        if (error?.statusCode === 401) {
+        if (error?.statusCode === HttpStatusCode.Unauthorized) {
           this.showLoginFail.email = true;
           this.showLoginFail.password = true;
         }

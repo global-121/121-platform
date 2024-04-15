@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -142,7 +143,7 @@ export class AuthService {
           this.authenticationState.next(user);
 
           if (!user) {
-            return reject({ status: 401 });
+            return reject({ status: HttpStatusCode.Unauthorized });
           }
 
           if (this.redirectUrl) {
