@@ -26,7 +26,6 @@ import { ProgramAttributesModule } from './program-attributes/program-attributes
 import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 import { UserModule } from './user/user.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
-import { ActionModule } from './actions/action.module';
 import { FspModule } from './fsp/fsp.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { MessageModule } from './notifications/message.module';
@@ -46,7 +45,7 @@ import { EventsModule } from './events/events.module';
     SmsModule,
     LookupModule, // Remove?
     ScriptsModule,
-    ActionModule,  // Remove?
+    ActionsModule,  // Remove?
     PeopleAffectedModule,
     FspModule, // Remove?
     InstanceModule,
