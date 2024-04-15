@@ -43,7 +43,7 @@ import { EventsModule } from './events/events.module';
     HealthModule,
     CronjobModule,
     SmsModule,
-    LookupModule, // Remove?
+    //LookupModule, // Remove?
     ScriptsModule,
     ActionsModule,  // Remove?
     PeopleAffectedModule,
