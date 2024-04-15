@@ -42,7 +42,7 @@ import { UserModule } from './user/user.module';
     ScriptsModule,
     //ActionsModule,  // Remove?
     PeopleAffectedModule,
-    FspModule, // Remove?
+    //FspModule, // Remove?
     InstanceModule,
     RegistrationsModule, // Remove?
     MessageModule, // Remove?
