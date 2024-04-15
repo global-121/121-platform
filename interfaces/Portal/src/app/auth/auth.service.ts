@@ -29,10 +29,10 @@ export class AuthService {
     private router: Router,
     private msalService: MsalService,
   ) {
-    this.checkAuthenticationState();
+    this.updateAuthenticationState();
   }
 
-  private checkAuthenticationState() {
+  private updateAuthenticationState() {
     const user = this.getUserFromStorage();
 
     this.authenticationState.next(user);
@@ -92,6 +92,21 @@ export class AuthService {
     );
   }
 
+  private setUserInStorage(user: User): void {
+    const userToStore: User = {
+      username: user.username,
+      permissions: user.permissions,
+      isAdmin: user.isAdmin,
+      isEntraUser: user.isEntraUser,
+    };
+
+    if (user.expires) {
+      userToStore.expires = user.expires;
+    }
+
+    localStorage.setItem(USER_KEY, JSON.stringify(userToStore));
+  }
+
   private getUserFromStorage(): User | null {
     const rawUser = localStorage.getItem(USER_KEY);
 
@@ -125,7 +140,7 @@ export class AuthService {
     return {
       username: user.username,
       permissions: user.permissions,
-      expires: user.expires,
+      expires: user.expires ? user.expires : '',
       isAdmin: user.isAdmin,
       isEntraUser: user.isEntraUser,
     };
@@ -136,15 +151,16 @@ export class AuthService {
       this.programsService.login(username, password).then(
         (response) => {
           if (response) {
-            localStorage.setItem(USER_KEY, JSON.stringify(response));
+            this.setUserInStorage(response);
           }
 
           const user = this.getUserFromStorage();
-          this.authenticationState.next(user);
 
           if (!user) {
             return reject({ status: HttpStatusCode.Unauthorized });
           }
+
+          this.updateAuthenticationState();
 
           if (this.redirectUrl) {
             this.router.navigateByUrl(this.redirectUrl);
@@ -167,16 +183,18 @@ export class AuthService {
   // TODO: Think of a better name for this method
   public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
+
     this.processAzureUserSignIn(userDto.user, redirectToHome);
   }
 
-  private processAzureUserSignIn(userRO: any, redirectToHome: boolean) {
-    localStorage.setItem(USER_KEY, JSON.stringify(userRO));
-    this.authenticationState.next(userRO);
+  private processAzureUserSignIn(user: User, redirectToHome: boolean) {
+    this.setUserInStorage(user);
+    this.updateAuthenticationState();
+
     if (redirectToHome) {
       setTimeout(() => {
         this.router.navigate(['/', AppRoutes.home]);
-      }, 2000);
+      }, 2_000);
     }
   }
 
