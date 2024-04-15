@@ -31,7 +31,7 @@ import { RegistrationsModule } from './registration/registrations.module';
 import { MessageModule } from './notifications/message.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { EventsModule } from './events/events.module';
-
+ 
 @Module({
   imports: [
     TypeOrmModule,
@@ -45,7 +45,7 @@ import { EventsModule } from './events/events.module';
     SmsModule,
     //LookupModule, // Remove?
     ScriptsModule,
-    ActionsModule,  // Remove?
+    //ActionsModule,  // Remove?
     PeopleAffectedModule,
     FspModule, // Remove?
     InstanceModule,
