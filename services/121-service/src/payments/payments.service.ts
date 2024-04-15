@@ -243,7 +243,7 @@ export class PaymentsService {
     payment: number,
     paginateQuery: PaginateQuery,
   ): Promise<RegistrationViewEntity[]> {
-    const chunkSize = 50000;
+    const chunkSize = 4000;
 
     return await this.registrationsPaginationService.getRegistrationsChunked(
       programId,
