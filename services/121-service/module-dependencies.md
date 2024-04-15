@@ -4,11 +4,13 @@
 graph LR
   CronjobModule-->ExchangeRateModule
   MessageTemplateModule-->ProgramAttributesModule
+  ProgramModule-->ActionsModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   RegistrationsModule-->LookupModule
+  RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->QueueMessageModule
@@ -16,6 +18,7 @@ graph LR
   QueueMessageModule-->RegistrationDataModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  TransactionsModule-->ActionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
@@ -44,7 +47,9 @@ graph LR
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->RegistrationsModule
+  MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
+  PaymentsModule-->ActionsModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule

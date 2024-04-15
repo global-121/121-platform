@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { ActionsModule } from './actions/actions.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CronjobModule } from './cronjob/cronjob.module';
