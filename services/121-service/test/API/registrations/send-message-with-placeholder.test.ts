@@ -1,4 +1,4 @@
-import fspIntersolveJson from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
+import fspIntersolveJson from '../../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../../../src/registration/enum/language.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';

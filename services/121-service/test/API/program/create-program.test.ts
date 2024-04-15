@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
-import programEth from '../../seed-data/program/program-joint-response-dorcas.json';
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
+import programEth from '../../../seed-data/program/program-joint-response-dorcas.json';
+import programOCW from '../../../seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
   assertArraysAreEqual,
