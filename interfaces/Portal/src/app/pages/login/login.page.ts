@@ -16,6 +16,8 @@ import { SystemNotificationComponent } from '../../components/system-notificatio
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnDestroy {
+  public useSso = environment.use_sso_azure_entra;
+
   @ViewChild('loginForm', { static: true })
   public loginForm: NgForm;
 
@@ -116,10 +118,6 @@ export class LoginPage implements OnDestroy {
 
   public loginSso() {
     this.msalService.loginRedirect();
-  }
-
-  public showSsoLogin(): boolean {
-    return environment.use_sso_azure_entra === true;
   }
 
   public openAzurePopup() {
