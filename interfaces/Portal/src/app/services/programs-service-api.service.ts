@@ -32,7 +32,7 @@ import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
 import {
   FilterOperatorEnum,
-  FilterService,
+  // FilterService,
   PaginationFilter,
   PaginationSort,
 } from './filter.service';
@@ -43,7 +43,7 @@ import {
 export class ProgramsServiceApiService {
   constructor(
     private apiService: ApiService,
-    private filterService: FilterService,
+    // private filterService: FilterService,
   ) {}
 
   login(username: string, password: string): Promise<User | null> {
@@ -604,12 +604,12 @@ export class ProgramsServiceApiService {
     sort?: PaginationSort,
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
-    const quickSearch = filters
-      ? filters.find(
-          (filter) =>
-            filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
-        )
-      : null;
+    // const quickSearch = filters
+    //   ? filters.find(
+    //       (filter) =>
+    //         filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
+    //     )
+    //   : null;
 
     let params = new HttpParams();
     params = params.append('limit', limit);
@@ -630,10 +630,10 @@ export class ProgramsServiceApiService {
         `${FilterOperatorEnum.in}:${statuses.join(',')}`,
       );
     }
-    if (quickSearch) {
-      params = params.append('search', quickSearch.value);
-      filters = filters.filter((filter) => filter.name !== quickSearch.name);
-    }
+    // if (quickSearch) {
+    //   params = params.append('search', quickSearch.value);
+    //   filters = filters.filter((filter) => filter.name !== quickSearch.name);
+    // }
     if (filters) {
       for (const filter of filters) {
         const defaultFilter = FilterOperatorEnum.ilike;
