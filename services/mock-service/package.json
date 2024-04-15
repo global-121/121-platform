@@ -14,6 +14,7 @@
     "lint:code": "eslint \"src/**/*.{ts,js}\"",
     "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
     "fix": "npm run lint:code -- --fix && npm run lint:syntax -- --write",
+    "test": "echo 'No tests available' && exit 0",
     "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit",
     "start:dev": "tsc-watch --noClear --onSuccess \"  node --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json"

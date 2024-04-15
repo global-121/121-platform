@@ -1,0 +1,43 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test Mock-Service: Code'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - 'feat.*'
+    paths:
+      - '.github/workflows/test_mock-service_code.yml'
+      - 'services/mock-service/**'
+
+env:
+  workingDirectory: 'services/mock-service/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm ci --omit=optional --no-fund --no-audit'
+
+      - name: Lint
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run lint'
+
+      - name: Test
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run test'
