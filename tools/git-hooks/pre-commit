@@ -22,7 +22,6 @@ check_if_need_to_lint() {
 }
 
 # Include all packages/applications that support an `npm run lint` task:
-check_if_need_to_lint "interfaces/AW-App/"
 check_if_need_to_lint "interfaces/Portal/"
 check_if_need_to_lint "services/121-service/"
 check_if_need_to_lint "services/mock-service/"

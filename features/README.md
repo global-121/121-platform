@@ -6,7 +6,6 @@
   - [All features / scenario's](#all-features--scenarios)
     - [For Aid Workers](#for-aid-workers)
       - [Using 121-Portal](#using-121-portal)
-      - [Using AW-App](#using-aw-app)
       - [Using 3rd party systems](#using-3rd-party-systems)
     - [For Person/People Affected](#for-personpeople-affected)
       - [Using external tools/applications](#using-external-toolsapplications)
@@ -59,17 +58,6 @@ Features of the 121-platform are described in this folder in a standardized way 
   - [Change password] (121-Portal/Change_password.feature)
   - [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
   - [Navigate program menu](121-Portal/Navigate_program_menu.feature)
-
-#### Using AW-App
-
-- [Download validation data](AW-App/Download_validation_data.feature)
-- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
-- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
-- [Upload validation data](AW-App/Upload_validation_data.feature)
-- Generic AW-App components/features
-  - Login
-  - Logout
-  - Change password
 
 #### Using 3rd party systems
 
@@ -138,4 +126,4 @@ Features can be added to this folder by:
   i.e. `View_PA_profile_page.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@aw-app`, `@portal`, etc. (all lowercase)
+  i.e: `@portal`, etc. (all lowercase)
