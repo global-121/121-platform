@@ -20,21 +20,43 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
+import { ProgramModule } from './programs/programs.module';
+import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
+import { MessageTemplateModule } from './notifications/message-template/message-template.module';
+import { UserModule } from './user/user.module';
+import { LookupModule } from './notifications/lookup/lookup.module';
+import { ActionModule } from './actions/action.module';
+import { FspModule } from './fsp/fsp.module';
+import { RegistrationsModule } from './registration/registrations.module';
+import { MessageModule } from './notifications/message.module';
+import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
+    ProgramModule, // Remove?
+    ProgramAttributesModule, // Remove?
+    MessageTemplateModule,  // Remove?
+    UserModule, // Remove?
     HealthModule,
     CronjobModule,
     SmsModule,
+    LookupModule, // Remove?
     ScriptsModule,
+    ActionModule,  // Remove?
     PeopleAffectedModule,
+    FspModule, // Remove?
     InstanceModule,
+    RegistrationsModule,  // Remove?
+    MessageModule,  // Remove?
     MetricsModule,
     MessageIncomingModule,
+    WhatsappModule, // Remove?
     NoteModule,
     ExchangeRateModule,
+    EventsModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
