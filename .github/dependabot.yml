@@ -19,6 +19,7 @@ updates:
         patterns:
           - '@types/*'
           - '*eslint*'
+          - '*prettier*'
       nestjs:
         patterns: ['@nestjs/*']
     ignore:
@@ -45,6 +46,7 @@ updates:
         patterns:
           - '@types/*'
           - '*eslint*'
+          - '*prettier*'
         exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!
