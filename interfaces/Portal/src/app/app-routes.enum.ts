@@ -3,6 +3,7 @@ export enum AppRoutes {
   help = 'help',
   home = 'home',
   iframe = 'iframe',
+  iframeRecipient = 'recipient',
   login = 'login',
   program = 'program',
   user = 'user',

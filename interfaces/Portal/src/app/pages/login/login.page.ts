@@ -125,7 +125,11 @@ export class LoginPage implements OnDestroy {
     this.msalSubscription = this.msalService.loginPopup().subscribe({
       next: async () => {
         await this.authService.processAzureAuthSuccess();
-        await this.router.navigate(['/', AppRoutes.iframe, 'recipient']);
+        await this.router.navigate([
+          '/',
+          AppRoutes.iframe,
+          AppRoutes.iframeRecipient,
+        ]);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
