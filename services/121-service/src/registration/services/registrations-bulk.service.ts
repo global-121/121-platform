@@ -77,6 +77,7 @@ export class RegistrationsBulkService {
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
   ): Promise<BulkActionResultDto> {
+
     const includeSendingMessage = !!message || !!messageTemplateKey;
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(

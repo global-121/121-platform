@@ -148,6 +148,7 @@ export class RegistrationsPaginationService {
       paginateConfigCopy,
     );
 
+
     // Custom code is written here to filter on query.select since it does not work with query.relations
     let registrationDataRelationsSelect = [...registrationDataRelations];
     if (query.select && query.select.length > 0) {
@@ -457,6 +458,9 @@ export class RegistrationsPaginationService {
         registrationDataRelations,
       );
       if (select?.includes('fspDisplayName')) {
+        //
+        //
+        console.log('🚀 ~ RegistrationsPaginationService ~ select:', select);
         mappedRegistration.fspDisplayName =
           await this.overwriteFspDisplayName(mappedRegistration);
       }

@@ -97,7 +97,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.getQueryParamBulkActions(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -299,7 +299,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.getQueryParamBulkActions(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
@@ -604,12 +604,6 @@ export class ProgramsServiceApiService {
     sort?: PaginationSort,
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
-    const quickSearch = filters
-      ? filters.find(
-          (filter) =>
-            filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
-        )
-      : null;
 
     let params = new HttpParams();
     params = params.append('limit', limit);
@@ -630,20 +624,8 @@ export class ProgramsServiceApiService {
         `${FilterOperatorEnum.in}:${statuses.join(',')}`,
       );
     }
-    if (quickSearch) {
-      params = params.append('search', quickSearch.value);
-      filters = filters.filter((filter) => filter.name !== quickSearch.name);
-    }
-    if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
-    }
+
+    params = this.updateParamsWithFiltersAndSearch(filters, params);
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     }
@@ -665,7 +647,7 @@ export class ProgramsServiceApiService {
     message?: string,
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.getQueryParamBulkActions(filters, dryRun);
     return this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status`,
@@ -782,7 +764,7 @@ export class ProgramsServiceApiService {
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.getQueryParamBulkActions(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message`,
@@ -987,12 +969,30 @@ export class ProgramsServiceApiService {
       });
   }
 
-  private filterToParams(
+  private getQueryParamBulkActions(
     filters: PaginationFilter[],
     dryRun: boolean,
   ): HttpParams {
     let params = new HttpParams();
     params = params.append('dryRun', dryRun);
+    return this.updateParamsWithFiltersAndSearch(filters, params);
+  }
+
+  private updateParamsWithFiltersAndSearch(
+    filters: PaginationFilter[],
+    params: HttpParams,
+  ): HttpParams {
+    const quickSearch = filters
+    ? filters.find(
+        (filter) =>
+          filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
+      )
+    : null;
+
+    if (quickSearch) {
+      params = params.append('search', quickSearch.value);
+      filters = filters.filter((filter) => filter.name !== quickSearch.name);
+    }
     if (filters) {
       for (const filter of filters) {
         const defaultFilter = FilterOperatorEnum.ilike;
@@ -1003,6 +1003,7 @@ export class ProgramsServiceApiService {
         );
       }
     }
+
     return params;
   }
 
