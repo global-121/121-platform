@@ -36,9 +36,9 @@ import { EventsModule } from './events/events.module';
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
-    ProgramModule, // Remove?
-    ProgramAttributesModule, // Remove?
-    MessageTemplateModule,  // Remove?
+    //ProgramModule, // Remove?
+    //ProgramAttributesModule, // Remove?
+    //MessageTemplateModule,  // Remove?
     UserModule, // Remove?
     HealthModule,
     CronjobModule,

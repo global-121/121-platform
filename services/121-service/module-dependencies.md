@@ -2,12 +2,12 @@
 
 ```mermaid
 graph LR
+  CronjobModule-->ExchangeRateModule
+  MessageTemplateModule-->ProgramAttributesModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
-  MessageTemplateModule-->ProgramAttributesModule
-  CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
