@@ -24,7 +24,7 @@ export class EntraCallbackComponent implements OnInit, OnDestroy {
       .handleRedirectObservable()
       .subscribe({
         next: async () => {
-          await this.authService.processAzureAuthSuccess();
+          await this.authService.processAzureAuthSuccess(true);
         },
         error: (error) => {
           console.error('Error during Azure Entra authentication', error);

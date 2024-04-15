@@ -60,16 +60,15 @@ export class AuthService {
     if (!user) {
       user = this.getUserFromStorage();
     }
-    // Use this to simulate a user not having a certain permission
+    // During development: Use this to simulate a user not having a certain permission
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-    const hasPermissionsInUserObject = Object.keys(user.permissions).includes(
-      programId.toString(),
-    );
-    if (!hasPermissionsInUserObject) {
-      await this.processAzureAuthSuccess(false);
+
+    if (this.useSso && (!user.permissions || !user.permissions[programId])) {
+      await this.processAzureAuthSuccess();
     }
+
     return (
       user &&
       user.permissions &&
@@ -165,7 +164,7 @@ export class AuthService {
   }
 
   // TODO: Think of a better name for this method
-  public async processAzureAuthSuccess(redirectToHome = true): Promise<void> {
+  public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
     this.processAzureUserSignIn(userDto.user, redirectToHome);
   }
@@ -231,13 +230,14 @@ export class AuthService {
 
   public async logoutNonSSOUser() {
     const user = this.getUserFromStorage();
+
     if (user?.isEntraUser === false) {
       console.log('Logging out non-SSO user', user.username);
       await this.logout();
     }
   }
 
-  async checkExpirationDate() {
+  public async checkExpirationDate() {
     const user = this.getUserFromStorage();
 
     if (user?.isEntraUser === true) {

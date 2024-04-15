@@ -124,7 +124,7 @@ export class LoginPage implements OnDestroy {
   public openAzurePopup() {
     this.msalSubscription = this.msalService.loginPopup().subscribe({
       next: async () => {
-        await this.authService.processAzureAuthSuccess(false);
+        await this.authService.processAzureAuthSuccess();
         await this.router.navigate(['/', AppRoutes.iframe, 'recipient']);
       },
       error: (error) => {

@@ -47,7 +47,7 @@ export class RecipientPage implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     // If there is no phone number provided by Redline, it will not do an API call.
     // And thus this is needed to do an API call always for the 'automatic' logout on a 401 to work.
-    await this.authService.processAzureAuthSuccess(false);
+    await this.authService.processAzureAuthSuccess();
   }
 
   ngOnDestroy(): void {
