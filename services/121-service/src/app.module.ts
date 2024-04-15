@@ -6,32 +6,27 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { ActionsModule } from './actions/actions.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CronjobModule } from './cronjob/cronjob.module';
+import { EventsModule } from './events/events.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
+import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
+import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
+import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
+import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
-import { ProgramModule } from './programs/programs.module';
-import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
-import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 import { UserModule } from './user/user.module';
-import { LookupModule } from './notifications/lookup/lookup.module';
-import { FspModule } from './fsp/fsp.module';
-import { RegistrationsModule } from './registration/registrations.module';
-import { MessageModule } from './notifications/message.module';
-import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
-import { EventsModule } from './events/events.module';
- 
+
 @Module({
   imports: [
     TypeOrmModule,
@@ -49,8 +44,8 @@ import { EventsModule } from './events/events.module';
     PeopleAffectedModule,
     FspModule, // Remove?
     InstanceModule,
-    RegistrationsModule,  // Remove?
-    MessageModule,  // Remove?
+    RegistrationsModule, // Remove?
+    MessageModule, // Remove?
     MetricsModule,
     MessageIncomingModule,
     WhatsappModule, // Remove?
