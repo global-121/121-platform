@@ -71,10 +71,11 @@ export class NoteController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true })
   @Get(':programId/notes/:referenceId')
-  public async retrieveNotes(@Param() params): Promise<ResponseNoteDto[]> {
-    return await this.noteService.retrieveNotes(
-      params.referenceId,
-      params.programId,
-    );
+  public async retrieveNotes(
+    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<ResponseNoteDto[]> {
+    return await this.noteService.retrieveNotes(params.referenceId, programId);
   }
 }

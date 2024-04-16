@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: AppRoutes.login,
     loadChildren: () =>
-      import('./login/login.module').then((m) => m.LoginPageModule),
+      import('./pages/login/login.module').then((m) => m.LoginPageModule),
   },
   {
     path: AppRoutes.auth,
@@ -25,25 +25,25 @@ const routes: Routes = [
   {
     path: AppRoutes.user,
     loadChildren: () =>
-      import('./user/user.module').then((m) => m.UserPageModule),
+      import('./pages/user/user.module').then((m) => m.UserPageModule),
     canActivate: [AuthGuard],
   },
   {
     path: AppRoutes.home,
     loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomePageModule),
+      import('./pages/home/home.module').then((m) => m.HomePageModule),
     canActivate: [AuthGuard],
   },
   {
     path: AppRoutes.help,
     loadChildren: () =>
-      import('./help/help.module').then((m) => m.HelpPageModule),
+      import('./pages/help/help.module').then((m) => m.HelpPageModule),
     canActivate: [AuthGuard],
   },
   {
     path: AppRoutes.users,
     loadChildren: () =>
-      import('./users/users.module').then((m) => m.UsersPageModule),
+      import('./pages/users/users.module').then((m) => m.UsersPageModule),
     canActivate: [AuthGuard],
   },
   {
@@ -135,7 +135,7 @@ const routes: Routes = [
   {
     path: AppRoutes.iframe,
     loadChildren: () =>
-      import('./iframe/iframe.module').then((m) => m.IframeModule),
+      import('./pages/iframe/iframe.module').then((m) => m.IframeModule),
     canActivate: [AuthGuard],
   },
   {

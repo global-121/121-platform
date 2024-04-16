@@ -101,14 +101,15 @@ export class RegistrationsController {
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
     @UploadedFile() csvFile,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Req() req,
   ): Promise<ImportResult> {
     const userId = req.user.id;
 
     return await this.registrationsService.importRegistrations(
       csvFile,
-      Number(params.programId),
+      programId,
       userId,
     );
   }
@@ -126,7 +127,8 @@ export class RegistrationsController {
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
     data: ImportRegistrationsDto[],
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams,
     @Req() req,
   ): Promise<ImportResult> {
@@ -137,18 +139,18 @@ export class RegistrationsController {
       const validatedData =
         await this.registrationsService.importJsonValidateRegistrations(
           data,
-          Number(params.programId),
+          programId,
           userId,
         );
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
-        Number(params.programId),
+        programId,
         userId,
       );
     } else {
       return await this.registrationsService.importValidatedRegistrations(
         data,
-        Number(params.programId),
+        programId,
         userId,
       );
     }
