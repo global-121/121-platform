@@ -118,6 +118,11 @@ export class RegistrationsPaginationService {
       );
     }
 
+    if (query.search) {
+      queryBuilder = this.addSearchToQueryBuilder(queryBuilder, query.search);
+      delete query.search;
+    }
+
     // Check if the sort contains at least one registration data name
     // At the moment we only support sorting on one field
     if (
@@ -209,6 +214,17 @@ export class RegistrationsPaginationService {
       programId,
       paginateQuery,
     );
+  }
+
+  private addSearchToQueryBuilder(
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
+    search: string,
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    queryBuilder.leftJoin('registration.data', 'registrationDataSearch');
+    queryBuilder.andWhere('registrationDataSearch.value ILIKE :search', {
+      search: `%${search}%`,
+    });
+    return queryBuilder;
   }
 
   private async throwIfNoTransactionReadPermission(
