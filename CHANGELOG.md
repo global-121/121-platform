@@ -19,13 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Calculate payment amount memory error
 
-## [1.116.3](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.1)- 2024-04-15
+## [1.116.3](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.3)- 2024-04-15
 
 ### Fixed
 
 - Export in smaller chunks to prevent memory error
 
-## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.1...v1.116.2)- 2024-04-10
+## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.1)- 2024-04-10
 
 ### Fixed
 
