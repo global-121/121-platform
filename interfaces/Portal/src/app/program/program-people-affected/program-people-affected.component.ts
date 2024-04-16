@@ -267,10 +267,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    this.tableFiltersPerColumn = this.createFilterPerAttibute();
-    // this.tableFiltersPerColumn = this.createFilterPerAttibute(
-    //   this.filterService.DEFAULT_FILTER_OPTION,
-    // );
+    this.tableFiltersPerColumn = this.createFiltersForAttibutes();
     this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
@@ -459,18 +456,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return attributeName;
   }
 
-  private createFilterPerAttibute(quickSearch?: Filter): Filter[] {
-    const allFilters = [];
-
-    if (quickSearch) {
-      allFilters.push(quickSearch);
-
-      allFilters.push({
-        name: 'divider',
-        label: '-',
-        disabled: true,
-      });
-    }
+  private createFiltersForAttibutes(): Filter[] {
+    const allFilters = [
+      this.filterService.SEARCH_FILTER_OPTION,
+      this.filterService.DIVIDER_FILTER_OPTION,
+    ];
 
     let groupIndex = 0;
     for (const group of this.program.filterableAttributes) {
@@ -492,11 +482,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
       // add divider line after each group except last
       if (groupIndex < this.program.filterableAttributes.length - 1) {
-        allFilters.push({
-          name: 'divider',
-          label: '-',
-          disabled: true,
-        });
+        allFilters.push(this.filterService.DIVIDER_FILTER_OPTION);
       }
       groupIndex += 1;
     }

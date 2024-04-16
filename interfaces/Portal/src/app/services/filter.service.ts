@@ -29,16 +29,16 @@ export class PaginationSort {
   providedIn: 'root',
 })
 export class FilterService {
-  public DEFAULT_FILTER_OPTION: Filter = {
+  public DIVIDER_FILTER_OPTION = {
+    name: 'divider',
+    label: '-',
+    disabled: true,
+  };
+
+  public SEARCH_FILTER_OPTION: Filter = {
     name: FilterParameter.search,
     label: '',
-    isInteger: false,
-    allowedOperators: [
-      FilterOperator.eq,
-      FilterOperator.in,
-      FilterOperator.ilike,
-      FilterOperator.null,
-    ],
+    allowedOperators: [],
   };
 
   private DEFAULT_TEXT_FILTER = [];
@@ -77,7 +77,7 @@ export class FilterService {
   }
 
   private resetTextFilterInternal() {
-    this.DEFAULT_FILTER_OPTION.label = this.translate.instant(
+    this.SEARCH_FILTER_OPTION.label = this.translate.instant(
       'page.program.table-filter-row.filter-quick-search',
     );
 
