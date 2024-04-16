@@ -15,7 +15,6 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { overwriteProgramFspDisplayName } from '../../programs/utils/overwrite-fsp-display-name.helper';
@@ -51,8 +50,6 @@ export class RegistrationsPaginationService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
