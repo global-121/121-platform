@@ -1,5 +1,6 @@
 import packageJson = require('../package.json');
 
+export const DEBUG = process.env.NODE_ENV !== 'production';
 export const PORT = process.env.NODE_ENV === 'development' ? 3001 : 8080;
 
 export const ROOT_URL =
@@ -28,14 +29,6 @@ export const APP_FAVICON = favIconUrl;
 export const SWAGGER_CUSTOM_CSS = `
   .swagger-ui .topbar { background: ${headerStyle}; }
   .swagger-ui .topbar .link { visibility: hidden; }
-`;
-export const SWAGGER_CUSTOM_JS = `
-const loc = window.location;
-const currentUrl = loc.origin + '/';
-const envUrl = '${ROOT_URL}';
-if (currentUrl !== envUrl ) {
-  loc.replace(loc.href.replace(currentUrl,envUrl));
-}
 `;
 
 // Configure Internal and External API URL's

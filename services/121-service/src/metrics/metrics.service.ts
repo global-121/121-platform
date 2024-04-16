@@ -4,7 +4,7 @@ import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
 import { In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { ActionService } from '../actions/action.service';
+import { ActionsService } from '../actions/actions.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
@@ -55,7 +55,7 @@ export class MetricsService {
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly actionService: ActionService,
+    private readonly actionService: ActionsService,
     private readonly paymentsService: PaymentsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
@@ -608,6 +608,9 @@ export class MetricsService {
       .innerJoin('registration_data.registration', 'registration')
       .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
+      .andWhere('registration."registrationStatus" != :status', {
+        status: RegistrationStatusEnum.rejected,
+      })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value');

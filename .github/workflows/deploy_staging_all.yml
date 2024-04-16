@@ -18,18 +18,6 @@ jobs:
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_MEADOW_013E37403: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_MEADOW_013E37403 }}
 
-  deploy_register:
-    name: 'Build + Deploy: Register (PA)'
-    uses: ./.github/workflows/deploy_staging_register.yml
-    secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FIELD_0F6771203: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FIELD_0F6771203 }}
-
-  deploy_verify:
-    name: 'Build + Deploy: Verify (AW)'
-    uses: ./.github/workflows/deploy_staging_verify.yml
-    secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_OCEAN_08B58EA03: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_OCEAN_08B58EA03 }}
-
   deploy_service:
     name: 'Build + Deploy: 121-Service'
     uses: ./.github/workflows/deploy_staging_service.yml
