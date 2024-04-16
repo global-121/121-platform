@@ -44,7 +44,7 @@ import { UserModule } from './user/user.module';
     PeopleAffectedModule,
     //FspModule, // Remove?
     InstanceModule,
-    RegistrationsModule, // Remove?
+    //RegistrationsModule, // Remove?
     MessageModule, // Remove?
     MetricsModule,
     MessageIncomingModule,
