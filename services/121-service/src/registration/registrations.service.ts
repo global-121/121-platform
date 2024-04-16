@@ -733,56 +733,6 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId)
-  public async getRegistrationToValidate(
-    referenceId: string,
-    userId: number,
-  ): Promise<RegistrationEntity> {
-    await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    let registration = await this.getRegistrationFromReferenceId(referenceId, [
-      'program',
-      'program.programQuestions',
-      'data',
-      'data.programQuestion',
-      'data.fspQuestion',
-    ]);
-
-    const registrationsScoped = await this.filterRegistrationsByProgramScope(
-      [registration],
-      userId,
-    );
-    if (registrationsScoped.length !== 1) {
-      return null;
-    }
-
-    registration = registrationsScoped[0];
-
-    const programAnswers = [];
-    for (const d of registration.data) {
-      if (d.programQuestionId) {
-        d['name'] = await d.getDataName();
-        if (d.programQuestion.answerType === AnswerTypes.multiSelect) {
-          const existingQuestion = programAnswers.find(
-            (a) => a.programQuestionId === d.programQuestionId,
-          );
-          if (!existingQuestion) {
-            programAnswers.push(d);
-            programAnswers.find(
-              (a) => a.programQuestionId === d.programQuestionId,
-            ).value = [d.value];
-          } else {
-            existingQuestion.value.push(d.value);
-          }
-        } else {
-          programAnswers.push(d);
-        }
-      }
-    }
-    registration['data'] = null;
-    registration['programAnswers'] = programAnswers;
-    return registration;
-  }
-
   public async updateChosenFsp(
     referenceId: string,
     newFspName: FspName,

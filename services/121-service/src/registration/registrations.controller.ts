@@ -589,33 +589,6 @@ export class RegistrationsController {
     return await this.registrationsService.downloadValidationData(userId);
   }
 
-  @AuthenticatedUser()
-  @ApiTags('registrations')
-  // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({
-    summary:
-      '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
-  })
-  @ApiResponse({ status: HttpStatus.OK, description: 'A single registration' })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @ApiParam({
-    name: 'referenceId',
-  })
-  @Get('registrations/:referenceId')
-  public async getRegistration(
-    @Param() params,
-    @Req() req,
-  ): Promise<RegistrationEntity> {
-    const userId = req.user.id;
-    return await this.registrationsService.getRegistrationToValidate(
-      params.referenceId,
-      userId,
-    );
-  }
-
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: HttpStatus.OK,
