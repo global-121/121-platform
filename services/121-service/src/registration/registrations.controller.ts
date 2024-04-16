@@ -31,9 +31,9 @@ import {
 } from '@nestjs/swagger';
 import {
   Paginate,
-  PaginateQuery,
   Paginated,
   PaginatedSwaggerDocs,
+  PaginateQuery,
 } from 'nestjs-paginate';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
@@ -47,7 +47,6 @@ import {
 } from './const/filter-operation.const';
 import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
@@ -566,27 +565,6 @@ export class RegistrationsController {
       throw new HttpException(result, HttpStatus.OK);
     }
     return result;
-  }
-
-  @AuthenticatedUser()
-  @ApiTags('registrations')
-  // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({
-    summary: '[SCOPED] Download all program answers (for validation)',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Program answers downloaded - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @Get('registrations/download/validation-data')
-  public async downloadValidationData(@Req() req): Promise<DownloadData> {
-    const userId = req.user.id;
-    return await this.registrationsService.downloadValidationData(userId);
   }
 
   @ApiTags('programs/registrations')

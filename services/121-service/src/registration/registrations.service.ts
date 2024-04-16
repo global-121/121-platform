@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
-import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -26,7 +25,6 @@ import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.enti
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
-import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
 import {
@@ -861,147 +859,6 @@ export class RegistrationsService {
     if (errors.length > 0) {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-  }
-
-  public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user =
-      await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const data = {
-      answers: await this.getAllProgramAnswers(user.id),
-      fspData: await this.getAllFspAnswers(user.id),
-      programIds: user.programAssignments.map((assignment) => {
-        return assignment.program.id;
-      }),
-    };
-    return data;
-  }
-
-  public async getAllProgramAnswers(
-    userId: number,
-  ): Promise<RegistrationDataEntity[]> {
-    const registrationsToValidate = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .addSelect([
-        '"referenceId"',
-        'registration."programId" AS "programId"',
-        'scope',
-      ])
-      .leftJoinAndSelect('registration.program', 'program')
-      .leftJoinAndSelect('registration.data', 'data')
-      .leftJoinAndSelect('data.programQuestion', 'programQuestion')
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [RegistrationStatusEnum.registered],
-      })
-      .andWhere('data.programQuestionId is not null')
-      .getMany();
-
-    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
-      registrationsToValidate,
-      userId,
-    );
-
-    let answers = [];
-    for (const r of filteredRegistrations) {
-      const uniqueQuestions = [];
-      for (const a of r.data) {
-        a['referenceId'] = r.referenceId;
-        a['programId'] = r.program.id;
-        a['name'] = await a.getDataName();
-        if (a.programQuestion.answerType === AnswerTypes.multiSelect) {
-          const existingQuestion = uniqueQuestions.find(
-            (q) => q.programQuestionId === a.programQuestionId,
-          );
-          if (!existingQuestion) {
-            uniqueQuestions.push(a);
-            uniqueQuestions.find(
-              (q) => q.programQuestionId === a.programQuestionId,
-            ).value = [a.value];
-          } else {
-            existingQuestion.value.push(a.value);
-          }
-        } else {
-          uniqueQuestions.push(a);
-        }
-      }
-      answers = [...answers, ...uniqueQuestions];
-    }
-    return answers;
-  }
-
-  public async getAllFspAnswers(
-    userId: number,
-  ): Promise<FspAnswersAttrInterface[]> {
-    const registrations = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .addSelect([
-        '"referenceId"',
-        'registration."programId" AS "programId"',
-        'scope',
-      ])
-      .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
-      .leftJoin('registration.program', 'program')
-      .andWhere('registration.fsp IS NOT NULL')
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [RegistrationStatusEnum.registered],
-      })
-      .getMany();
-
-    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
-      registrations,
-      userId,
-    );
-
-    const fspDataPerRegistration = [];
-    for (const registration of filteredRegistrations) {
-      const answers = await this.getFspAnswers(registration.referenceId);
-      const fspData = {
-        attributes: registration.fsp.questions,
-        answers: answers,
-        referenceId: registration.referenceId,
-      };
-      fspDataPerRegistration.push(fspData);
-    }
-    return fspDataPerRegistration;
-  }
-
-  public async getFspAnswers(referenceId: string): Promise<AnswerSet> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      [
-        'program',
-        'program.programQuestions',
-        'data',
-        'data.programQuestion',
-        'data.fspQuestion',
-      ],
-    );
-    const fspAnswers = {};
-    for (const d of registration.data) {
-      if (d.fspQuestionId) {
-        const code = await d.getDataName();
-        if (d.fspQuestion.answerType === AnswerTypes.multiSelect) {
-          if (!fspAnswers[code]) {
-            const answer = {
-              code: code,
-              value: [d.value],
-              label: d.fspQuestion.label['en'],
-            };
-            fspAnswers[code] = answer;
-          } else {
-            fspAnswers[code].value.push(d.value);
-          }
-        } else {
-          const answer = {
-            code: code,
-            value: d.value,
-            label: d.fspQuestion.label['en'],
-          };
-          fspAnswers[code] = answer;
-        }
-      }
-    }
-    return fspAnswers;
   }
 
   public async getMessageHistoryRegistration(
