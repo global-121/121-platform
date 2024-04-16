@@ -51,7 +51,7 @@ import { UserModule } from './user/user.module';
     //WhatsappModule, // Remove?
     NoteModule,
     ExchangeRateModule,
-    EventsModule, // Remove?
+    //EventsModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
