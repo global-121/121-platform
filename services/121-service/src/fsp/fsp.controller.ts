@@ -49,9 +49,10 @@ export class FspController {
   })
   @Get(':fspId')
   public async getFspById(
-    @Param() param,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.getFspById(param.fspId);
+    return await this.fspService.getFspById(fspId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -68,10 +69,11 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Patch(':fspId')
   public async updateFsp(
-    @Param('fspId') fspId: number,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspDto: UpdateFspDto,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.updateFsp(Number(fspId), updateFspDto);
+    return await this.fspService.updateFsp(fspId, updateFspDto);
   }
 
   @AuthenticatedUser({ isAdmin: true })
