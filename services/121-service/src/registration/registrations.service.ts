@@ -1138,25 +1138,6 @@ export class RegistrationsService {
     return fspAnswers;
   }
 
-  public async getFspAnswersAttributes(
-    referenceId: string,
-  ): Promise<FspAnswersAttrInterface> {
-    const qb = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
-      .andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
-      });
-    const registration = await qb.getOne();
-    const fspAnswers = await this.getFspAnswers(registration.referenceId);
-    return {
-      attributes: registration.fsp.questions,
-      answers: fspAnswers,
-      referenceId: referenceId,
-    };
-  }
-
   // Used by Aidworker
   public async issueValidation(
     payload: ValidationIssueDataDto,

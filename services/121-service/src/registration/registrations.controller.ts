@@ -35,7 +35,6 @@ import {
   Paginated,
   PaginatedSwaggerDocs,
 } from 'nestjs-paginate';
-import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
@@ -615,25 +614,6 @@ export class RegistrationsController {
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get FSP-attribute answers' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Retrieved FSP-attribute answers - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/fsp-attributes')
-  public async getFspAnswersAttributes(
-    @Query() queryParams: ReferenceIdDto,
-  ): Promise<FspAnswersAttrInterface> {
-    return await this.registrationsService.getFspAnswersAttributes(
-      queryParams.referenceId,
     );
   }
 
