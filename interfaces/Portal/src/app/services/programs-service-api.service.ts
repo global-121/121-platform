@@ -335,7 +335,7 @@ export class ProgramsServiceApiService {
   ): Promise<void> {
     const downloadData: string[] = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/import-template/${type}`,
+      `/programs/${programId}/registrations/import-template`,
       false,
     );
 
