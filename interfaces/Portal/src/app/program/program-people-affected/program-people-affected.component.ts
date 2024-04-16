@@ -46,6 +46,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
+import { FilterOperator } from '../../enums/filters.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import {
   MessageStatus,
@@ -57,7 +58,6 @@ import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
   Filter,
-  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -874,7 +874,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: referenceId,
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.eq,
+          operator: FilterOperator.eq,
         },
       ];
     } else if (this.selectedPeople.length) {
@@ -884,7 +884,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.in,
+          operator: FilterOperator.in,
         },
       ];
     } else {
@@ -896,7 +896,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             name: 'status',
             label: 'status',
             value: this.tableStatusFilter.join(','),
-            operator: FilterOperatorEnum.in,
+            operator: FilterOperator.in,
           },
         ],
       ];

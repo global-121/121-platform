@@ -2,34 +2,23 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FilterOperator, SortDirection } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 
 export class Filter {
   name: string;
   label: string;
-  allowedOperators?: FilterOperatorEnum[];
+  allowedOperators?: FilterOperator[];
   isInteger?: boolean;
 }
 export class PaginationFilter extends Filter {
   value: string;
-  operator?: FilterOperatorEnum;
+  operator?: FilterOperator;
 }
 
 export class PaginationSort {
   column: string;
-  direction: SortDirectionEnum;
-}
-
-export enum SortDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export enum FilterOperatorEnum {
-  eq = '$eq',
-  in = '$in',
-  ilike = '$ilike',
-  null = '$null',
+  direction: SortDirection;
 }
 
 @Injectable({
@@ -41,10 +30,10 @@ export class FilterService {
     label: '',
     isInteger: false,
     allowedOperators: [
-      FilterOperatorEnum.eq,
-      FilterOperatorEnum.in,
-      FilterOperatorEnum.ilike,
-      FilterOperatorEnum.null,
+      FilterOperator.eq,
+      FilterOperator.in,
+      FilterOperator.ilike,
+      FilterOperator.null,
     ],
   };
 
@@ -127,7 +116,7 @@ export class FilterService {
     this.publishTextFilter();
   }
 
-  private getFilterOperatorForName(name: string): FilterOperatorEnum[] {
+  private getFilterOperatorForName(name: string): FilterOperator[] {
     const filter = this.allAvailableFilters.find(
       (filter) => filter.name === name,
     );
@@ -159,7 +148,7 @@ export class FilterService {
   public setTextFilter(
     columnName: string,
     value: string,
-    allowedOperations: FilterOperatorEnum[],
+    allowedOperations: FilterOperator[],
     label?: string,
     publishChange = true,
   ) {
@@ -171,9 +160,9 @@ export class FilterService {
       name: columnName,
       label,
       value,
-      operator: allowedOperations.includes(FilterOperatorEnum.ilike)
-        ? FilterOperatorEnum.ilike
-        : FilterOperatorEnum.eq,
+      operator: allowedOperations.includes(FilterOperator.ilike)
+        ? FilterOperator.ilike
+        : FilterOperator.eq,
     });
 
     if (publishChange) {

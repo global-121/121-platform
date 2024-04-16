@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
 import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
+import { FilterOperator } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { Event } from '../models/event.model';
@@ -31,7 +32,6 @@ import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
 import {
-  FilterOperatorEnum,
   // FilterService,
   PaginationFilter,
   PaginationSort,
@@ -477,7 +477,7 @@ export class ProgramsServiceApiService {
       }
       if (allPeopleAffectedOptions.filters) {
         for (const filter of allPeopleAffectedOptions.filters) {
-          const defaultFilter = FilterOperatorEnum.ilike;
+          const defaultFilter = FilterOperator.ilike;
           const operator = filter.operator ? filter.operator : defaultFilter;
           params = params.append(
             `filter.${filter.name}`,
@@ -627,7 +627,7 @@ export class ProgramsServiceApiService {
     if (statuses) {
       params = params.append(
         'filter.status',
-        `${FilterOperatorEnum.in}:${statuses.join(',')}`,
+        `${FilterOperator.in}:${statuses.join(',')}`,
       );
     }
     // if (quickSearch) {
@@ -636,7 +636,7 @@ export class ProgramsServiceApiService {
     // }
     if (filters) {
       for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
+        const defaultFilter = FilterOperator.ilike;
         const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
           `filter.${filter.name}`,
@@ -995,7 +995,7 @@ export class ProgramsServiceApiService {
     params = params.append('dryRun', dryRun);
     if (filters) {
       for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
+        const defaultFilter = FilterOperator.ilike;
         const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
           `filter.${filter.name}`,
