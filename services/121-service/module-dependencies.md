@@ -2,6 +2,7 @@
 
 ```mermaid
 graph LR
+  ProgramModule-->ActionsModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
@@ -9,6 +10,7 @@ graph LR
   MessageTemplateModule-->ProgramAttributesModule
   CronjobModule-->ExchangeRateModule
   RegistrationsModule-->LookupModule
+  RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->QueueMessageModule
@@ -16,6 +18,7 @@ graph LR
   QueueMessageModule-->RegistrationDataModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  TransactionsModule-->ActionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
@@ -44,7 +47,9 @@ graph LR
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->RegistrationsModule
+  MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
+  PaymentsModule-->ActionsModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->IntersolveJumboModule

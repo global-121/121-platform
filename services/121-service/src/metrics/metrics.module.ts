@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionModule } from '../actions/action.module';
+import { ActionsModule } from '../actions/actions.module';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
@@ -31,7 +31,7 @@ import { MetricsService } from './metrics.service';
     ]),
     UserModule,
     RegistrationsModule,
-    ActionModule,
+    ActionsModule,
     PaymentsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,

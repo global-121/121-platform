@@ -11,12 +11,13 @@ import { ApplicationModule } from './app.module';
 import {
   APP_FAVICON,
   APP_TITLE,
+  DEBUG,
   PORT,
   ROOT_URL,
   SWAGGER_CUSTOM_CSS,
-  SWAGGER_CUSTOM_JS,
 } from './config';
 
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace NodeJS {
     interface Global {
@@ -45,13 +46,20 @@ async function bootstrap(): Promise<void> {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
-    customJs: `data:text/javascript;base64,${Buffer.from(
-      SWAGGER_CUSTOM_JS,
-    ).toString('base64url')}`,
     swaggerOptions: {
-      tagsSorter: 'alpha',
-      operationsSorter: 'alpha',
+      // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
+      deepLinking: true,
       defaultModelExpandDepth: 10,
+      defaultModelsExpandDepth: 1,
+      displayOperationId: true,
+      displayRequestDuration: true,
+      filter: true,
+      operationsSorter: 'alpha',
+      queryConfigEnabled: DEBUG,
+      showCommonExtensions: true,
+      showExtensions: true,
+      tagsSorter: 'alpha',
+      tryItOutEnabled: DEBUG,
     },
   });
 

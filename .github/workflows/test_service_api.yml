@@ -13,6 +13,7 @@ on:
       - '.github/actions/build-service/action.yml'
       - 'services/.env.example'
       - 'services/121-service/**'
+      - 'services/mock-service/**'
       - '!**.md'
   push:
     branches:
@@ -22,6 +23,7 @@ on:
       - '.github/actions/build-service/action.yml'
       - 'services/.env.example'
       - 'services/121-service/**'
+      - 'services/mock-service/**'
       - '!**.md'
 
 jobs:

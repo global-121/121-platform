@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionModule } from '../actions/action.module';
+import { ActionsModule } from '../actions/actions.module';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsModule } from '../events/events.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -65,7 +65,7 @@ import { RegistrationsInputValidator } from './validators/registrations-input-va
     UserModule,
     HttpModule,
     LookupModule,
-    ActionModule,
+    ActionsModule,
     ProgramModule,
     FspModule,
     QueueMessageModule,
