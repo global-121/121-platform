@@ -28,15 +28,15 @@ import { TypeOrmModule } from './typeorm.module';
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     HealthModule,
     CronjobModule,
-    SmsModule,
+    //SmsModule, // Remove?
     ScriptsModule,
     PeopleAffectedModule,
     InstanceModule,
-    MessageModule,
+    MessageModule, // Remove?
     MetricsModule,
     MessageIncomingModule,
     NoteModule,
-    ExchangeRateModule,
+    ExchangeRateModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
