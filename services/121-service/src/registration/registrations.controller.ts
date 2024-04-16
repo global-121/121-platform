@@ -54,7 +54,6 @@ import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto'
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
-import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -614,28 +613,6 @@ export class RegistrationsController {
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
-  })
-  @ApiOperation({ summary: '[SCOPED] Issue validationData (For AW)' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Validation Data issued - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/issue-validation')
-  public async issue(
-    @Body() validationIssueData: ValidationIssueDataDto,
-    @Param('programId') programId,
-  ): Promise<void> {
-    return await this.registrationsService.issueValidation(
-      validationIssueData,
-      programId,
     );
   }
 
