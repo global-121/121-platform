@@ -97,7 +97,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -299,7 +299,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
@@ -634,7 +634,7 @@ export class ProgramsServiceApiService {
     }
 
     if (filters) {
-      params = this.filterToParams(filters, false);
+      params = this.filtersToParams(filters, false);
     }
 
     if (sort) {
@@ -659,7 +659,7 @@ export class ProgramsServiceApiService {
     message?: string,
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status`,
@@ -776,7 +776,7 @@ export class ProgramsServiceApiService {
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message`,
@@ -981,7 +981,7 @@ export class ProgramsServiceApiService {
       });
   }
 
-  private filterToParams(
+  private filtersToParams(
     filters: PaginationFilter[],
     dryRun: boolean,
   ): HttpParams {
