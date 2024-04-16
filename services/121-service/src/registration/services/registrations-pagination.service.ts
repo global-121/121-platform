@@ -472,10 +472,10 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      // if (select?.includes('fspDisplayName')) {
-      //   mappedRegistration.fspDisplayName =
-      //     await this.overwriteFspDisplayName(mappedRegistration);
-      // }
+      if (select?.includes('fspDisplayName')) {
+        mappedRegistration.fspDisplayName =
+          await this.overwriteFspDisplayName(mappedRegistration);
+      }
 
       mappedData.push(mappedRegistration);
 
