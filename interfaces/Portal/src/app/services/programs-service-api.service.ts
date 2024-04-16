@@ -614,8 +614,10 @@ export class ProgramsServiceApiService {
     };
   }> {
     let params = new HttpParams();
+
     params = params.append('limit', limit);
     params = params.append('page', page);
+
     // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
       params = params.append('filter.referenceId', referenceId);
@@ -632,11 +634,9 @@ export class ProgramsServiceApiService {
         `${FilterOperator.in}:${statuses.join(',')}`,
       );
     }
-
     if (filters) {
-      params = this.filtersToParams(filters, false);
+      params = this.filtersToParams(filters, false, params);
     }
-
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     }
@@ -984,8 +984,15 @@ export class ProgramsServiceApiService {
   private filtersToParams(
     filters: PaginationFilter[],
     dryRun: boolean,
+    existingParams?: HttpParams,
   ): HttpParams {
-    let params = new HttpParams();
+    let params: HttpParams;
+
+    if (existingParams) {
+      params = existingParams;
+    } else {
+      params = new HttpParams();
+    }
 
     params = params.append('dryRun', dryRun);
 
