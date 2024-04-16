@@ -602,8 +602,17 @@ export class ProgramsServiceApiService {
     statuses?: RegistrationStatus[],
     filters?: PaginationFilter[],
     sort?: PaginationSort,
-    // TODO: Fix the 'any' for the 'links' parameter
-  ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
+  ): Promise<{
+    data: Person[];
+    meta: PaginationMetadata;
+    links: {
+      current: string;
+      first: string;
+      last: string;
+      next: string;
+      previous: string;
+    };
+  }> {
     let params = new HttpParams();
     params = params.append('limit', limit);
     params = params.append('page', page);
