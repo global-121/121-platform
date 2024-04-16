@@ -138,7 +138,7 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data', 'dataSearchBy'];
+      paginateConfigCopy.relations = ['data'];
     } else {
       paginateConfigCopy.searchableColumns = [];
     }
@@ -472,10 +472,10 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      if (select?.includes('fspDisplayName')) {
-        mappedRegistration.fspDisplayName =
-          await this.overwriteFspDisplayName(mappedRegistration);
-      }
+      // if (select?.includes('fspDisplayName')) {
+      //   mappedRegistration.fspDisplayName =
+      //     await this.overwriteFspDisplayName(mappedRegistration);
+      // }
 
       mappedData.push(mappedRegistration);
 
@@ -537,7 +537,6 @@ export class RegistrationsPaginationService {
       mappedRegistration = { ...registration };
     }
     delete mappedRegistration.data;
-    delete mappedRegistration.dataSearchBy;
     if (!hasPersonalReadPermission) {
       delete mappedRegistration.phoneNumber;
     }
