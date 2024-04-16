@@ -3,6 +3,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -39,10 +40,11 @@ export class CommercialBankEthiopiaController {
     'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries',
   )
   public async getValidated(
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
-      Number(programId),
+      programId,
     );
   }
 
@@ -60,10 +62,11 @@ export class CommercialBankEthiopiaController {
   @Post(
     'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
   )
-  public async validate(@Param('programId') programId: number): Promise<void> {
-    return this.commercialBankEthiopiaService.validatePasForProgram(
-      Number(programId),
-    );
+  public async validate(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<void> {
+    return this.commercialBankEthiopiaService.validatePasForProgram(programId);
   }
 
   @AuthenticatedUser({ isAdmin: true })

@@ -233,14 +233,15 @@ You can also leave the body empty.`,
   })
   @Delete(':programId')
   public async delete(
-    @Param() param,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Body() body: SecretDto,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== process.env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
-    await this.programService.deleteProgram(param.programId);
+    await this.programService.deleteProgram(programId);
     return res
       .status(HttpStatus.ACCEPTED)
       .send('The program has been successfully deleted.');
@@ -256,13 +257,11 @@ You can also leave the body empty.`,
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch(':programId')
   public async updateProgram(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramReturnDto> {
-    return await this.programService.updateProgram(
-      Number(params.programId),
-      updateProgramDto,
-    );
+    return await this.programService.updateProgram(programId, updateProgramDto);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
@@ -271,10 +270,11 @@ You can also leave the body empty.`,
   @Post(':programId/program-questions')
   public async createProgramQuestion(
     @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.createProgramQuestion(
-      Number(params.programId),
+      programId,
       updateProgramQuestionDto,
     );
   }
@@ -291,11 +291,14 @@ You can also leave the body empty.`,
   @Patch(':programId/program-questions/:programQuestionId')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programQuestionId', ParseIntPipe)
+    programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
-      Number(params.programId),
-      Number(params.programQuestionId),
+      programId,
+      programQuestionId,
       updateProgramQuestionDto,
     );
   }
@@ -310,11 +313,14 @@ You can also leave the body empty.`,
   })
   @Delete(':programId/program-questions/:programQuestionId')
   public async deleteProgramQuestion(
-    @Param() params: any,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programQuestionId', ParseIntPipe)
+    programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.deleteProgramQuestion(
-      params.programId,
-      params.programQuestionId,
+      programId,
+      programQuestionId,
     );
   }
 
@@ -324,10 +330,11 @@ You can also leave the body empty.`,
   @Post(':programId/custom-attributes')
   public async createProgramCustomAttribute(
     @Body() createProgramQuestionDto: CreateProgramCustomAttributeDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.createProgramCustomAttribute(
-      Number(params.programId),
+      programId,
       createProgramQuestionDto,
     );
   }
@@ -349,12 +356,15 @@ You can also leave the body empty.`,
   @ApiParam({ name: 'customAttributeId', required: true, type: 'integer' })
   @Patch(':programId/custom-attributes/:customAttributeId')
   public async updateProgramCustomAttributes(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('customAttributeId', ParseIntPipe)
+    customAttributeId: number,
     @Body() createProgramCustomAttributeDto: CreateProgramCustomAttributeDto,
   ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.updateProgramCustomAttributes(
-      Number(params.programId),
-      Number(params.customAttributeId),
+      programId,
+      customAttributeId,
       createProgramCustomAttributeDto,
     );
   }
@@ -393,7 +403,8 @@ You can also leave the body empty.`,
   })
   @Get(':programId/attributes')
   public async getAttributes(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams,
     @Req() req: any,
   ): Promise<Attribute[]> {
@@ -402,7 +413,7 @@ You can also leave the body empty.`,
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(
           Number(userId),
-          Number(params.programId),
+          programId,
         );
       if (!hasPersonalReadAccess) {
         // If a person does not have personal read permission we should
@@ -412,7 +423,7 @@ You can also leave the body empty.`,
     }
 
     return await this.programAttributesService.getAttributes(
-      Number(params.programId),
+      programId,
       queryParams.includeCustomAttributes === 'true',
       queryParams.includeProgramQuestions === 'true',
       queryParams.includeFspQuestions === 'true',
