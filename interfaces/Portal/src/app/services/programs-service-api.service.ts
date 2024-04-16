@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
 import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
-import { FilterOperator } from '../enums/filters.enum';
+import { FilterOperator, FilterParameter } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { Event } from '../models/event.model';
@@ -604,13 +604,6 @@ export class ProgramsServiceApiService {
     sort?: PaginationSort,
     // TODO: Fix the 'any' for the 'links' parameter
   ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
-    // const quickSearch = filters
-    //   ? filters.find(
-    //       (filter) =>
-    //         filter.name === this.filterService.DEFAULT_FILTER_OPTION.name,
-    //     )
-    //   : null;
-
     let params = new HttpParams();
     params = params.append('limit', limit);
     params = params.append('page', page);
@@ -630,23 +623,15 @@ export class ProgramsServiceApiService {
         `${FilterOperator.in}:${statuses.join(',')}`,
       );
     }
-    // if (quickSearch) {
-    //   params = params.append('search', quickSearch.value);
-    //   filters = filters.filter((filter) => filter.name !== quickSearch.name);
-    // }
+
     if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperator.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
+      params = this.filterToParams(filters, false);
     }
+
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     }
+
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -992,9 +977,16 @@ export class ProgramsServiceApiService {
     dryRun: boolean,
   ): HttpParams {
     let params = new HttpParams();
+
     params = params.append('dryRun', dryRun);
+
     if (filters) {
       for (const filter of filters) {
+        if (filter.name === FilterParameter.search) {
+          params = params.append(FilterParameter.search, filter.value);
+          continue;
+        }
+
         const defaultFilter = FilterOperator.ilike;
         const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
@@ -1003,6 +995,7 @@ export class ProgramsServiceApiService {
         );
       }
     }
+
     return params;
   }
 

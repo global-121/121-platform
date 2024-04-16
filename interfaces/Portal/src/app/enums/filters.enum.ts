@@ -9,3 +9,7 @@ export enum FilterOperator {
   in = '$in',
   null = '$null',
 }
+
+export enum FilterParameter {
+  search = 'search',
+}

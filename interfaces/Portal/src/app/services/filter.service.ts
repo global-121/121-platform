@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FilterOperator, SortDirection } from '../enums/filters.enum';
+import {
+  FilterOperator,
+  FilterParameter,
+  SortDirection,
+} from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 
 export class Filter {
@@ -26,7 +30,7 @@ export class PaginationSort {
 })
 export class FilterService {
   public DEFAULT_FILTER_OPTION: Filter = {
-    name: 'quickSearch',
+    name: FilterParameter.search,
     label: '',
     isInteger: false,
     allowedOperators: [
