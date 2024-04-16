@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -48,9 +49,10 @@ export class FspController {
   })
   @Get(':fspId')
   public async getFspById(
-    @Param() param,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.getFspById(param.fspId);
+    return await this.fspService.getFspById(fspId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -67,10 +69,11 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Patch(':fspId')
   public async updateFsp(
-    @Param('fspId') fspId: number,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspDto: UpdateFspDto,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.updateFsp(Number(fspId), updateFspDto);
+    return await this.fspService.updateFsp(fspId, updateFspDto);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -90,10 +93,12 @@ export class FspController {
   @Patch(':fspId/attribute/:attributeName')
   public async updateFspAttribute(
     @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspAttributeDto: UpdateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.updateFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
       updateFspAttributeDto,
     );
@@ -117,11 +122,12 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Post(':fspId/attribute')
   public async createFspAttribute(
-    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() createFspAttributeDto: CreateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.createFspAttribute(
-      Number(params.fspId),
+      fspId,
       createFspAttributeDto,
     );
   }
@@ -140,9 +146,13 @@ export class FspController {
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiParam({ name: 'attributeName', required: true, type: 'string' })
   @Delete(':fspId/attribute/:attributeName')
-  public async deleteFspAttribute(@Param() params): Promise<FspQuestionEntity> {
+  public async deleteFspAttribute(
+    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.deleteFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
     );
   }

@@ -3,9 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -40,17 +40,10 @@ export class ProgramFspConfigurationController {
   })
   @Get(':programId/fsp-configuration')
   public async findByProgramId(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramFspConfigurationEntity[]> {
-    if (isNaN(params.programId)) {
-      throw new HttpException(
-        'Program ID is not a number',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return this.programFspConfigurationService.findByProgramId(
-      params.programId,
-    );
+    return this.programFspConfigurationService.findByProgramId(programId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -68,16 +61,11 @@ export class ProgramFspConfigurationController {
   @Post(':programId/fsp-configuration')
   public async create(
     @Body() programFspConfigurationData: CreateProgramFspConfigurationDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<number> {
-    if (isNaN(params.programId)) {
-      throw new HttpException(
-        'Program ID is not a number',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     return await this.programFspConfigurationService.create(
-      params.programId,
+      programId,
       programFspConfigurationData,
     );
   }
@@ -100,17 +88,14 @@ export class ProgramFspConfigurationController {
   @Put(':programId/fsp-configuration/:programFspConfigurationId')
   public async update(
     @Body() programFspConfigurationData: UpdateProgramFspConfigurationDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programFspConfigurationId', ParseIntPipe)
+    programFspConfigurationId: number,
   ): Promise<number> {
-    if (isNaN(params.programId) || isNaN(params.programFspConfigurationId)) {
-      throw new HttpException(
-        'Program ID or FSP configuration ID is not a number',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     return await this.programFspConfigurationService.update(
-      params.programId,
-      params.programFspConfigurationId,
+      programId,
+      programFspConfigurationId,
       programFspConfigurationData,
     );
   }
@@ -131,16 +116,15 @@ export class ProgramFspConfigurationController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Delete(':programId/fsp-configuration/:programFspConfigurationId')
-  public async delete(@Param() params): Promise<void> {
-    if (isNaN(params.programId) || isNaN(params.programFspConfigurationId)) {
-      throw new HttpException(
-        'Program ID is not a number',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  public async delete(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programFspConfigurationId', ParseIntPipe)
+    programFspConfigurationId: number,
+  ): Promise<void> {
     return await this.programFspConfigurationService.delete(
-      params.programId,
-      params.programFspConfigurationId,
+      programId,
+      programFspConfigurationId,
     );
   }
 }
