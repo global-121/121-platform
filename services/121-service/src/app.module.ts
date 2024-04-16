@@ -32,11 +32,11 @@ import { TypeOrmModule } from './typeorm.module';
     ScriptsModule,
     PeopleAffectedModule,
     InstanceModule,
-    MessageModule, // Remove?
+    MessageModule,
     MetricsModule,
     MessageIncomingModule,
     NoteModule,
-    ExchangeRateModule, // Remove?
+    //ExchangeRateModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
