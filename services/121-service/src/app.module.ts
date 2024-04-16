@@ -21,7 +21,6 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
