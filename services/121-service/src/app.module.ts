@@ -48,7 +48,7 @@ import { UserModule } from './user/user.module';
     MessageModule, // Remove?
     MetricsModule,
     MessageIncomingModule,
-    WhatsappModule, // Remove?
+    //WhatsappModule, // Remove?
     NoteModule,
     ExchangeRateModule,
     EventsModule, // Remove?
