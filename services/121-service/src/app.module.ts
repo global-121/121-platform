@@ -27,27 +27,18 @@ import { UserModule } from './user/user.module';
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
-    //ProgramModule, // Remove?
-    //ProgramAttributesModule, // Remove?
-    //MessageTemplateModule,  // Remove?
     UserModule, // Remove?
     HealthModule,
     CronjobModule,
     SmsModule,
-    //LookupModule, // Remove?
     ScriptsModule,
-    //ActionsModule,  // Remove?
     PeopleAffectedModule,
-    //FspModule, // Remove?
     InstanceModule,
-    //RegistrationsModule, // Remove?
-    MessageModule, // Remove?
+    MessageModule,
     MetricsModule,
     MessageIncomingModule,
-    //WhatsappModule, // Remove?
     NoteModule,
     ExchangeRateModule,
-    //EventsModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
