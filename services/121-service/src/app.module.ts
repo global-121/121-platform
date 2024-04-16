@@ -27,7 +27,7 @@ import { UserModule } from './user/user.module';
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
-    UserModule, // Remove?
+    //UserModule, // Remove?
     HealthModule,
     CronjobModule,
     SmsModule,
