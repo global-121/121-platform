@@ -69,7 +69,6 @@ export class ProgramService {
       'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
-      'programCustomAttributes',
       'programFspConfiguration',
     ];
 
@@ -82,6 +81,13 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    // Program attributes are queries seperately because the performance is bad when using relations
+    program.programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
+
+    console.time('editableAttributes');
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
     program['paTableAttributes'] =
