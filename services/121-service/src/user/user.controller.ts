@@ -125,8 +125,11 @@ export class UserController {
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
-    return await this.userService.deleteUserRole(params.userRoleId);
+  public async deleteUserRole(
+    @Param('userRoleId', ParseIntPipe)
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
+    return await this.userService.deleteUserRole(userRoleId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -257,9 +260,11 @@ export class UserController {
   })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  public async delete(@Param() params): Promise<UserEntity> {
-    return await this.userService.delete(Number(params.userId));
+  public async delete(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+  ): Promise<UserEntity> {
+    return await this.userService.delete(userId);
   }
 
   @AuthenticatedUser()
