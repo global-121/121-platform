@@ -7,12 +7,9 @@ import { Subscription } from 'rxjs';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { FilterOperator } from '../../enums/filters.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import {
-  FilterOperatorEnum,
-  FilterService,
-  PaginationFilter,
-} from '../../services/filter.service';
+import { FilterService, PaginationFilter } from '../../services/filter.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
 import {
@@ -169,7 +166,7 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
           name: 'status',
           label: 'status',
           value: this.tableStatusFilter.join(','),
-          operator: FilterOperatorEnum.in,
+          operator: FilterOperator.in,
         },
       ],
     ];

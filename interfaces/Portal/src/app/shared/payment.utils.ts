@@ -1,4 +1,5 @@
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import { FilterOperator } from '../enums/filters.enum';
 import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import {
@@ -8,10 +9,7 @@ import {
 import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
 import { Transaction } from '../models/transaction.model';
-import {
-  FilterOperatorEnum,
-  PaginationFilter,
-} from '../services/filter.service';
+import { PaginationFilter } from '../services/filter.service';
 
 export class PaymentUtils {
   static getPaymentRowInfo(
@@ -114,7 +112,7 @@ export class PaymentUtils {
         value: referenceIds.join(','),
         name: 'referenceId',
         label: 'referenceId',
-        operator: FilterOperatorEnum.in,
+        operator: FilterOperator.in,
       },
     ];
   }
