@@ -31,9 +31,9 @@ import {
 } from '@nestjs/swagger';
 import {
   Paginate,
+  PaginateQuery,
   Paginated,
   PaginatedSwaggerDocs,
-  PaginateQuery,
 } from 'nestjs-paginate';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
@@ -53,7 +53,7 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
-import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
+import { UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -75,19 +75,6 @@ export class RegistrationsController {
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
   ) {}
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: HttpStatus.CREATED })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/fsp')
-  public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
-    return await this.registrationsService.addFsp(
-      setFsp.referenceId,
-      setFsp.fspId,
-    );
-  }
 
   @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
