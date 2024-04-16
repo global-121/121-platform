@@ -1086,13 +1086,6 @@ export class RegistrationsService {
     return messageHistoryArray;
   }
 
-  public async getRegistrationStatus(
-    referenceId: string,
-  ): Promise<RegistrationStatusEnum> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    return registration.registrationStatus;
-  }
-
   public async getReferenceId(
     programId: number,
     paId: number,

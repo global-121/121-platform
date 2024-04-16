@@ -726,27 +726,6 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({
-    summary: 'Get registration status. Used by person affected only',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Registration status retrieved  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/status/:referenceId')
-  public async getRegistrationStatus(@Param() params): Promise<any> {
-    const status = await this.registrationsService.getRegistrationStatus(
-      params.referenceId,
-    );
-
-    return { status };
-  }
-
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({ summary: '[SCOPED] Get Person Affected referenceId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
