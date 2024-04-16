@@ -129,8 +129,7 @@ export class UpdateFspComponent implements OnInit {
       }));
 
       const selectedFsp = this.fspList.find(
-        (fspItem) =>
-          fspItem.displayName === this.translatableString.get(fspString),
+        (fspItem) => fspItem.fsp === this.translatableString.get(fspString),
       );
 
       if (selectedFsp) {

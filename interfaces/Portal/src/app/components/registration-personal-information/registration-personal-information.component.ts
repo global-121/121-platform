@@ -173,7 +173,11 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     this.personalInfoTable.push({
       label: this.getLabel('fsp'),
-      value: this.translatableString.get(this.person.fspDisplayName),
+      value: this.translatableString.get(
+        this.program?.financialServiceProviders?.find(
+          (i) => i.fsp === this.person?.financialServiceProvider,
+        )?.displayName,
+      ),
     });
 
     if (this.program.enableScope) {
