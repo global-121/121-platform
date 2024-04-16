@@ -31,20 +31,13 @@ import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
-import {
-  // FilterService,
-  PaginationFilter,
-  PaginationSort,
-} from './filter.service';
+import { PaginationFilter, PaginationSort } from './filter.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(
-    private apiService: ApiService,
-    // private filterService: FilterService,
-  ) {}
+  constructor(private apiService: ApiService) {}
 
   login(username: string, password: string): Promise<User | null> {
     console.log('ProgramsService : login()');
