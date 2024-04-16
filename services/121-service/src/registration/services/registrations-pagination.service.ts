@@ -84,7 +84,7 @@ export class RegistrationsPaginationService {
       }
     }
 
-    // If you want to select fspDisplayName, you also need to temporary financialServiceProvider because we need this to define this to find the fspDisplayName
+    // If you want to select fspDisplayName, you also need to get financialServiceProvider because we need this to find the correct fspDisplayName
     if (query.select && query.select.includes('fspDisplayName')) {
       if (fullnameNamingConvention) {
         query.select.push('financialServiceProvider');
