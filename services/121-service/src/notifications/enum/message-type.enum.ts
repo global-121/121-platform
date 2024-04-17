@@ -1,7 +1,6 @@
 export enum MessageContentType {
   registered = 'registered',
   included = 'included',
-  rejected = 'rejected',
   invited = 'invited',
   paused = 'paused',
   custom = 'custom',

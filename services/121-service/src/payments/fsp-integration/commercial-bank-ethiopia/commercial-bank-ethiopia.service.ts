@@ -419,7 +419,6 @@ export class CommercialBankEthiopiaService
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
         statusValues: [
           'deleted',
-          'reject',
           'noLongerEligible',
           'registeredWhileNoLongerEligible',
           'paused',
@@ -496,7 +495,6 @@ export class CommercialBankEthiopiaService
         .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
           statusValues: [
             'deleted',
-            'reject',
             'noLongerEligible',
             'registeredWhileNoLongerEligible',
             'paused',

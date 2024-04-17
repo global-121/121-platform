@@ -705,23 +705,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  reject(
-    programId: number | string,
-    message: string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-    messageTemplateKey?: string,
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.rejected,
-      programId,
-      dryRun,
-      filters,
-      message,
-      messageTemplateKey,
-    );
-  }
-
   pause(
     programId: number | string,
     message: string,

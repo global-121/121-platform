@@ -72,7 +72,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
@@ -110,7 +109,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
@@ -148,7 +146,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,  // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
-          // PermissionEnum.RegistrationStatusRejectedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
@@ -187,7 +184,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,// assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
-          // PermissionEnum.RegistrationStatusRejectedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
@@ -225,7 +221,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
-          // PermissionEnum.RegistrationStatusRejectedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
