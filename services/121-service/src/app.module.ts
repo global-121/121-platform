@@ -9,14 +9,12 @@ import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CronjobModule } from './cronjob/cronjob.module';
-import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
 import { MessageModule } from './notifications/message.module';
-import { SmsModule } from './notifications/sms/sms.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
@@ -28,7 +26,6 @@ import { TypeOrmModule } from './typeorm.module';
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     HealthModule,
     CronjobModule,
-    //SmsModule, // Remove?
     ScriptsModule,
     PeopleAffectedModule,
     InstanceModule,
@@ -36,7 +33,6 @@ import { TypeOrmModule } from './typeorm.module';
     MetricsModule,
     MessageIncomingModule,
     NoteModule,
-    //ExchangeRateModule, // Remove?
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
