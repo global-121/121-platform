@@ -66,7 +66,7 @@ function getViewRegistration(): RegistrationViewEntity {
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
     financialServiceProvider: FspName.intersolveVisa,
-    fspDisplayName: 'Visa debit card',
+    fspDisplayName: { en: 'Visa debit card' },
     registrationProgramId: 2,
     personAffectedSequence: 'PA #2',
     maxPayments: null,
@@ -196,7 +196,9 @@ describe('EventsService', () => {
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
-    newViewRegistration['fspDisplayName'] = 'Albert Heijn voucher WhatsApp"';
+    newViewRegistration['fspDisplayName'] = {
+      en: 'Albert Heijn voucher WhatsApp',
+    } as unknown as JSON;
     delete newViewRegistration['addressCity'];
     delete newViewRegistration['addressPostalCode'];
     delete newViewRegistration['addressHouseNumberAddition'];

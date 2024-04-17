@@ -183,6 +183,10 @@ export class MetricsService {
 
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'];
+
+      const preferredLanguage = row['preferredLanguage'] || 'en';
+      row['fspDisplayName'] = row['fspDisplayName'][preferredLanguage];
+
       delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);

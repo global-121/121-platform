@@ -15,10 +15,9 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { ProgramFspConfigurationService } from '../../programs/fsp-configuration/fsp-configuration.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { overwriteProgramFspDisplayName } from '../../programs/utils/overwrite-fsp-display-name.helper';
 import { ScopedQueryBuilder } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/enum/permission.enum';
@@ -51,13 +50,10 @@ export class RegistrationsPaginationService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async getPaginate(
@@ -82,6 +78,13 @@ export class RegistrationsPaginationService {
     if (query.select && query.select.includes('name')) {
       if (fullnameNamingConvention) {
         query.select = query.select.concat(fullnameNamingConvention);
+      }
+    }
+
+    // If you want to select fspDisplayName, you also need to get financialServiceProvider because we need this to find the correct fspDisplayName
+    if (query.select && query.select.includes('fspDisplayName')) {
+      if (fullnameNamingConvention) {
+        query.select.push('financialServiceProvider');
       }
     }
 
@@ -163,6 +166,7 @@ export class RegistrationsPaginationService {
       orignalSelect,
       fullnameNamingConvention,
       hasPersonalReadPermission,
+      programId,
     );
     return result;
   }
@@ -442,7 +446,10 @@ export class RegistrationsPaginationService {
     orignalSelect: string[],
     fullnameNamingConvention: string[],
     hasPersonalReadPermission: boolean,
+    programId: number,
   ): Promise<RegistrationViewEntity[]> {
+    const fspDisplayNameMapping =
+      await this.getFspDisplayNameMapping(programId);
     const mappedData: RegistrationViewEntity[] = [];
     for (const registration of paginatedResult.data) {
       const mappedRootRegistration = this.mapRootRegistration(
@@ -456,9 +463,17 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      if (select?.includes('fspDisplayName')) {
-        mappedRegistration.fspDisplayName =
-          await this.overwriteFspDisplayName(mappedRegistration);
+      if (!orignalSelect || orignalSelect?.includes('fspDisplayName')) {
+        mappedRegistration.fspDisplayName = await this.overwriteFspDisplayName(
+          mappedRegistration,
+          fspDisplayNameMapping,
+        );
+        if (
+          orignalSelect &&
+          !orignalSelect.includes('financialServiceProvider')
+        ) {
+          delete mappedRegistration.financialServiceProvider;
+        }
       }
 
       mappedData.push(mappedRegistration);
@@ -475,33 +490,33 @@ export class RegistrationsPaginationService {
     return mappedData;
   }
 
+  private async getFspDisplayNameMapping(
+    programId: number,
+  ): Promise<Record<string, JSON>> {
+    const map = {};
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders', 'programFspConfiguration'],
+    });
+    if (program.financialServiceProviders.length > 0) {
+      program.financialServiceProviders = overwriteProgramFspDisplayName(
+        program.financialServiceProviders,
+        program.programFspConfiguration,
+      );
+    }
+    for (const fsp of program.financialServiceProviders) {
+      map[fsp.fsp] = fsp.displayName;
+    }
+    return map;
+  }
+
   private async overwriteFspDisplayName(
     registration: RegistrationViewEntity,
-  ): Promise<string> {
+    fspDisplayNameMapping: Record<string, JSON>,
+  ): Promise<JSON> {
     if (registration.financialServiceProvider) {
-      const financialServiceProvider =
-        await this.financialServiceProviderRepository.findOne({
-          where: { fsp: registration.financialServiceProvider },
-        });
-
-      if (financialServiceProvider) {
-        const programFspDisplayNameConfig =
-          await this.programFspConfigurationService.findDisplayNameConfiguration(
-            registration.programId,
-            financialServiceProvider.id,
-          );
-
-        if (programFspDisplayNameConfig) {
-          registration.fspDisplayName = Object.assign(
-            {},
-            financialServiceProvider.displayName,
-            programFspDisplayNameConfig.value,
-          ) as string;
-        }
-      }
+      return fspDisplayNameMapping[registration.financialServiceProvider];
     }
-
-    return registration.fspDisplayName;
   }
 
   private mapRootRegistration(
