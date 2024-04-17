@@ -9,7 +9,6 @@ export interface PaMetrics {
   [RegistrationStatusEnum.validated]: number;
   [RegistrationStatusEnum.declined]: number;
   [RegistrationStatusEnum.included]: number;
-  [RegistrationStatusEnum.rejected]: number;
   [RegistrationStatusEnum.deleted]: number;
   [RegistrationStatusEnum.completed]: number;
   [RegistrationStatusEnum.paused]: number;

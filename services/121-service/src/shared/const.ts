@@ -28,7 +28,6 @@ export const nameConstraintQuestionsArray = [
   'paymentCount',
   'paymentCountRemaining',
   'registeredDate',
-  'rejectionDate',
   'validationDate',
   'inclusionDate',
   'deleteDate',

@@ -30,8 +30,7 @@
         "payment-reminder": "تذكير الدفع",
         "payment-templated": "إشعار الدفع",
         "payment-voucher": "قسيمة الدفع",
-        "registered": "تسجيل",
-        "rejected": "رفض"
+        "registered": "تسجيل"
       },
       "error-code-prefix": "رمز الخطأ تويليو:",
       "status": {
@@ -56,7 +55,7 @@
         "paused": "توقف",
         "registered": "المسجله",
         "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
-        "rejected": "نبيذ",
+        "startedRegistration": "بدأ التسجيل",
         "validated": "التحقق"
       }
     },
@@ -238,7 +237,7 @@
           "invited": "PAs التي تمت دعوتها (بعد الاستيراد).",
           "noLongerEligible": "PAs التي تم وضع علامة عليها على أنها \"لم تعد مؤهلة\". <br> هؤلاء هم PAs الذين تمت دعوتهم ولكنهم لم يسجلوا بعد وفي الوقت نفسه لم يعودوا مؤهلين.",
           "registered": "PAs التي أنهت التسجيل في تطبيق PA.",
-          "rejected": "PAs التي تم رفضها. <br> لن يتلقوا أي مدفوعات (أكثر) لجولة الدفع / الدفع التالية.",
+          "startedRegistration": "PAs التي بدأت التسجيل في تطبيق PA.",
           "validated": "PAs التي تم التحقق من صحتها."
         },
         "timeframe": {
@@ -378,7 +377,6 @@
           "invite": "دعوة للتسجيل",
           "markNoLongerEligible": "وضع علامة كغير مؤهل",
           "pause": "وقفة PA ثانية",
-          "reject": "رفض من البرنامج",
           "sendMessage": "إرسال رسالة إلى PA"
         },
         "apply-action": "تطبيق الإجراء",
@@ -389,7 +387,6 @@
           "invite": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مستورد</i> أو <i>لم تعد مؤهلة</i>.",
           "markNoLongerEligible": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مستورد</i> أو <i>مدعو</i>.",
           "pause": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مضمنة</i>.",
-          "reject": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات ذات الحالة <i>مسجل</i> أو <i>محدد للتحقق</i> من <i>الصحة أو تم التحقق من صحته</i> أو <i>تضمينه</i> أو لم يعد مؤهلا أو <i>مسجلا بينما لم يعد مؤهلا</i>. <i></i>",
           "sendMessage": "ملاحظة: لا ينطبق الإجراء <strong>{{action}}</strong> إلا على التسجيلات التي لها رقم هاتف مرتبط بها."
         },
         "bulk-action-response": {

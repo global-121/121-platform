@@ -188,23 +188,14 @@ export class RegistrationsService {
         result = [
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.paused,
           RegistrationStatusEnum.completed,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.rejected:
-        result = [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.included,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
         result = [
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.rejected,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.completed:
@@ -452,8 +443,6 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.validationDate;
       case RegistrationStatusEnum.included:
         return RegistrationStatusTimestampField.inclusionDate;
-      case RegistrationStatusEnum.rejected:
-        return RegistrationStatusTimestampField.rejectionDate;
       case RegistrationStatusEnum.deleted:
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
