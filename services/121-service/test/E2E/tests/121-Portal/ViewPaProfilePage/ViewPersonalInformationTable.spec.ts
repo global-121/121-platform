@@ -43,8 +43,15 @@ test('[27492] View Personal information table', async ({ page }) => {
   await test.step('Should validate PA profile includes Personal information with details', async () => {
     await registration.validatePaProfileOpened();
     // Reload the page to make asynchronous data available
-    // await page.reload();
+    await page.reload();
     // Reload should be removed after fixing the issue with the data not being available https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27568
-    await registration.validatePersonalInformationTable("PA #1", "Registered", await helpers.getTodaysDate(), "English", "+14155238886", "Visa debit card");
+    await registration.validatePersonalInformationTable(
+      "PA #1",
+      "Registered",
+      await helpers.getTodaysDate(),
+      "English",
+      "+14155238886",
+      "Visa debit card"
+    );
   });
 });
