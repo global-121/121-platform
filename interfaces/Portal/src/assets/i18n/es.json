@@ -30,8 +30,7 @@
         "payment-reminder": "Recordatorio de pago",
         "payment-templated": "Notificación de pago",
         "payment-voucher": "Comprobante de pago",
-        "registered": "Registro",
-        "rejected": "Rechazo"
+        "registered": "Registro"
       },
       "error-code-prefix": "Código de error de Twilio:",
       "status": {
@@ -56,7 +55,7 @@
         "paused": "Pausa",
         "registered": "Registrado",
         "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
-        "rejected": "Rechazado",
+        "startedRegistration": "Registro iniciado",
         "validated": "Validado"
       }
     },
@@ -238,7 +237,7 @@
           "invited": "PA que fueron invitados (después de la importación).",
           "noLongerEligible": "PA que fueron marcados como 'ya no elegibles'. <br> Se trata de PA personas que fueron invitadas pero que aún no se han registrado y, mientras tanto, ya no son elegibles.",
           "registered": "PA que terminaron de registrarse en la aplicación PA.",
-          "rejected": "PA que fueron rechazados. <br> No recibirán ningún (más) pago para la próxima ronda de pago/pago.",
+          "startedRegistration": "PAs que iniciaron el registro en la aplicación PA.",
           "validated": "PA que fueron validados."
         },
         "timeframe": {
@@ -378,7 +377,6 @@
           "invite": "Invitación para el registro",
           "markNoLongerEligible": "Marcar como ya no apto",
           "pause": "Pausa PAs",
-          "reject": "Rechazar del programa",
           "sendMessage": "Enviar mensaje a PAs"
         },
         "apply-action": "Aplicar acción",
@@ -389,7 +387,6 @@
           "invite": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Importado</i> o <i>Ya no elegible</i>.",
           "markNoLongerEligible": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Importado</i> o <i>Invitado</i>.",
           "pause": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Incluido</i>.",
-          "reject": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado Registrado, <i>Seleccionado para validación</i>, <i>Validado</i><i>,</i> <i>Incluido</i>, Ya no elegible o <i>Registrado mientras ya no es elegible</i>. <i></i>",
           "sendMessage": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros que tienen un número de teléfono asociado."
         },
         "bulk-action-response": {

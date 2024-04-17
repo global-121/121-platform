@@ -9,7 +9,6 @@ export default {
     [RegistrationStatus.validated]: getRandomInt(0, 100),
     [RegistrationStatus.declined]: getRandomInt(0, 100),
     [RegistrationStatus.included]: getRandomInt(0, 100),
-    [RegistrationStatus.rejected]: getRandomInt(0, 100),
     [RegistrationStatus.deleted]: getRandomInt(0, 100),
   },
 } as ProgramMetrics;

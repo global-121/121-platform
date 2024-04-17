@@ -81,52 +81,6 @@ describe('Send templated message', () => {
 
       expect(messageHistory[0].body).toEqual(processedTemplate);
     });
-
-    it('reject', async () => {
-      // Arrange > include first to be able to reject
-      const statusChange = RegistrationStatusEnum.rejected;
-      await awaitChangePaStatus(
-        programId,
-        [registrationAh.referenceId],
-        RegistrationStatusEnum.included,
-        accessToken,
-      );
-
-      // Act
-      await awaitChangePaStatus(
-        programId,
-        [registrationAh.referenceId],
-        statusChange,
-        accessToken,
-        null,
-        true, // check the checkbox for sending templated message about status change
-      );
-
-      await waitForMessagesToComplete(
-        programId,
-        [registrationAh.referenceId],
-        accessToken,
-        8000,
-      );
-
-      const messageHistory = (
-        await getMessageHistory(
-          programId,
-          registrationAh.referenceId,
-          accessToken,
-        )
-      ).body;
-
-      // Assert
-      const processedTemplate = processMessagePlaceholders(
-        messageTemplates,
-        registrationAh,
-        statusChange,
-        'namePartnerOrganization',
-      );
-
-      expect(messageHistory[0].body).toEqual(processedTemplate);
-    });
   });
 
   describe('on custom message', () => {
