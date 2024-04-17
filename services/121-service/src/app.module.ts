@@ -21,6 +21,7 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
 
 @Module({
+  // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
