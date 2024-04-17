@@ -46,6 +46,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
+import { FilterOperator } from '../../enums/filters.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import {
   MessageStatus,
@@ -57,7 +58,6 @@ import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
   Filter,
-  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -267,9 +267,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    this.tableFiltersPerColumn = this.createFilterPerAttibute(
-      this.filterService.DEFAULT_FILTER_OPTION,
-    );
+    this.tableFiltersPerColumn = this.createFiltersForAttibutes();
     this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
@@ -458,18 +456,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return attributeName;
   }
 
-  private createFilterPerAttibute(quickSearch?: Filter): Filter[] {
-    const allFilters = [];
-
-    if (quickSearch) {
-      allFilters.push(quickSearch);
-
-      allFilters.push({
-        name: 'divider',
-        label: '-',
-        disabled: true,
-      });
-    }
+  private createFiltersForAttibutes(): Filter[] {
+    const allFilters = [
+      this.filterService.SEARCH_FILTER_OPTION,
+      this.filterService.DIVIDER_FILTER_OPTION,
+    ];
 
     let groupIndex = 0;
     for (const group of this.program.filterableAttributes) {
@@ -491,11 +482,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
       // add divider line after each group except last
       if (groupIndex < this.program.filterableAttributes.length - 1) {
-        allFilters.push({
-          name: 'divider',
-          label: '-',
-          disabled: true,
-        });
+        allFilters.push(this.filterService.DIVIDER_FILTER_OPTION);
       }
       groupIndex += 1;
     }
@@ -873,7 +860,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: referenceId,
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.eq,
+          operator: FilterOperator.eq,
         },
       ];
     } else if (this.selectedPeople.length) {
@@ -883,7 +870,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.in,
+          operator: FilterOperator.in,
         },
       ];
     } else {
@@ -895,7 +882,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             name: 'status',
             label: 'status',
             value: this.tableStatusFilter.join(','),
-            operator: FilterOperatorEnum.in,
+            operator: FilterOperator.in,
           },
         ],
       ];

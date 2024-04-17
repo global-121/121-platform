@@ -1,4 +1,4 @@
-import { FilterOperatorEnum } from '../services/filter.service';
+import { FilterOperator } from '../enums/filters.enum';
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { LanguageEnum } from './person.model';
@@ -50,7 +50,7 @@ class FilterableAttributeGroup {
 
 class FilterableAttributeDefinition {
   name: string;
-  allowedOperators: FilterOperatorEnum[];
+  allowedOperators: FilterOperator[];
   paTableAttributes: PaTableAttribute[];
   isInteger: boolean;
 }

@@ -456,8 +456,11 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      mappedRegistration.fspDisplayName =
-        await this.overwriteFspDisplayName(mappedRegistration);
+      if (select?.includes('fspDisplayName')) {
+        mappedRegistration.fspDisplayName =
+          await this.overwriteFspDisplayName(mappedRegistration);
+      }
+
       mappedData.push(mappedRegistration);
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
