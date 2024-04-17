@@ -12,6 +12,8 @@ class RegistrationDetails {
   primaryLanguage = '//ion-item[contains(ion-label, "Primary language")]/ion-label/strong';
   phoneNumber = '//ion-item[contains(ion-label, "Phone number")]/ion-label/strong';
   financialServiceProvider = '//ion-item[contains(ion-label, "Financial")]/ion-label/strong';
+  showAllButton = 'ion-button:text("Show All")';
+  editPersonAffectedPopUp = 'app-edit-person-affected-popup';
 
   constructor(page: Page) {
     this.page = page;
@@ -35,6 +37,14 @@ class RegistrationDetails {
     expect(await this.page.locator(this.financialServiceProvider).textContent()).toContain(fsp);
   };
 
+  async openEditPaPopUp() {
+    await this.page.click(this.showAllButton);
+  };
+
+  async validateEditPaPopUpOpened() {
+    await this.page.waitForLoadState('networkidle');
+    expect(await this.page.locator(this.editPersonAffectedPopUp).isVisible()).toBe(true);
+  };
 }
 
 export default RegistrationDetails;
