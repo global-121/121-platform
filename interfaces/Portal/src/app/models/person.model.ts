@@ -95,7 +95,6 @@ export class PersonTableColumn {
 }
 
 export const PA_STATUS_ORDER = [
-  { id: 1, value: RegistrationStatus.startedRegistration },
   { id: 2, value: RegistrationStatus.registered },
   { id: 3, value: RegistrationStatus.validated },
   { id: 4, value: RegistrationStatus.included },
