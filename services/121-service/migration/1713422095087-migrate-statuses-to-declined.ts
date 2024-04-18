@@ -1,18 +1,16 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MigrateInclusionEndedToDeclined1711009396880
+export class MigrateStatusesToDeclined1713422095087
   implements MigrationInterface
 {
-  name = 'MigrateInclusionEndedToDeclined1711009396880';
+  name = 'MigrateStatusesToDeclined1713422095087';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.time('migrateInclusionEndedToDeclined');
     await queryRunner.query(
       `UPDATE "121-service"."registration"
              SET "registrationStatus" = 'declined'
-             WHERE "registrationStatus" = 'inclusionEnded'`,
+             WHERE "registrationStatus" IN ('inclusionEnded', 'rejected', 'noLongerEligible')`,
     );
-    console.timeEnd('migrateInclusionEndedToDeclined');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
