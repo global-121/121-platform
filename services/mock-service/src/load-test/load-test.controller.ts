@@ -1,5 +1,6 @@
-import { Controller, Post } from '@nestjs/common';
+import { BadRequestException, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { DEVELOPMENT } from '../config';
 import { LoadTestService } from './load-test.service';
 
 @Controller()
@@ -13,6 +14,11 @@ export class LoadTestController {
   })
   @Post('load-test/import-registrations')
   public async loadTest(): Promise<void> {
+    if (!DEVELOPMENT || !process.env.ENABLE_LOAD_TEST_121_SERVICE) {
+      throw new BadRequestException(
+        'Only available in DEVELOPMENT mode or when enabled with ENABLE_LOAD_TEST_121_SERVICE=TRUE',
+      );
+    }
     return await this.loadTestService.loadTest();
   }
 }
