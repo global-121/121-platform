@@ -4,8 +4,8 @@ import LoginPage from '../../../pages/Login/LoginPage';
 import TableModule from '../../../pages/Table/TableModule';
 import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
 import { SeedScript } from '../../../../../src/scripts/seed-script.enum';
-import { importRegistrationsCSV } from '../../../../API/helpers/registration.helper';
-import { getAccessToken, resetDB } from '../../../../API/helpers/utility.helper';
+import { importRegistrationsCSV } from '../../../../api/helpers/registration.helper';
+import { getAccessToken, resetDB } from '../../../../api/helpers/utility.helper';
 import Helpers from '../../../pages/Helpers/helpers';
 
 test.beforeEach(async ({ page }) => {
