@@ -87,7 +87,6 @@ export class ProgramService {
         where: { program: { id: programId } },
       });
 
-    console.time('editableAttributes');
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
     program['paTableAttributes'] =

@@ -469,7 +469,11 @@ export class ProgramsServiceApiService {
         );
       }
       if (allPeopleAffectedOptions.filters) {
-        params = this.filtersToParams(allPeopleAffectedOptions?.filters, false, params);
+        params = this.filtersToParams(
+          allPeopleAffectedOptions?.filters,
+          false,
+          params,
+        );
       }
       if (allPeopleAffectedOptions.sort) {
         params = params.append(
