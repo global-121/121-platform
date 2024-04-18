@@ -624,7 +624,7 @@ export class MetricsService {
       .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('registration."registrationStatus" != :status', {
-        status: RegistrationStatusEnum.rejected,
+        status: RegistrationStatusEnum.declined,
       })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
