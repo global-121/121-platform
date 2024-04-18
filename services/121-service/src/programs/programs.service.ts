@@ -81,7 +81,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // Program attributes are queries seperately because the performance is bad when using relations
+    // Program attributes are queried separately because the performance is bad when using relations
     program.programCustomAttributes =
       await this.programCustomAttributeRepository.find({
         where: { program: { id: programId } },
