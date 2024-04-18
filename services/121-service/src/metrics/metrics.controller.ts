@@ -107,6 +107,9 @@ export class MetricsController {
       const errors = 'toDate must be greater than fromDate';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+    if (queryParams['search']) {
+      paginationQuery.search = queryParams['search'];
+    }
     const result = await this.metricsService.getExportList(
       Number(programId),
       exportType as ExportType,

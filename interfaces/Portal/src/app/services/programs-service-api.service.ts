@@ -469,14 +469,7 @@ export class ProgramsServiceApiService {
         );
       }
       if (allPeopleAffectedOptions.filters) {
-        for (const filter of allPeopleAffectedOptions.filters) {
-          const defaultFilter = FilterOperator.ilike;
-          const operator = filter.operator ? filter.operator : defaultFilter;
-          params = params.append(
-            `filter.${filter.name}`,
-            `${operator}:${filter.value}`,
-          );
-        }
+        params = this.filtersToParams(allPeopleAffectedOptions?.filters, false, params);
       }
       if (allPeopleAffectedOptions.sort) {
         params = params.append(

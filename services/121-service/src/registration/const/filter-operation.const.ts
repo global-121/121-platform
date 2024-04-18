@@ -13,9 +13,11 @@ export const AllowedFilterOperatorsNumber = [
   FilterOperator.NULL,
 ];
 
+const dataSearchableColumn = 'data.(value)';
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
-    searchableColumns: ['dataSearchBy.(value)'],
+    searchableColumns: [dataSearchableColumn],
+    ignoreSearchByInQueryParam: true,
     maxLimit: 40000,
     sortableColumns: [
       'id',
