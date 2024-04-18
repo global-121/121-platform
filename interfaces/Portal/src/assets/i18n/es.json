@@ -51,10 +51,8 @@
         "imported": "Importado",
         "included": "Incluido",
         "invited": "Invitado",
-        "noLongerEligible": "Ya no es elegible",
         "paused": "Pausa",
         "registered": "Registrado",
-        "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
         "startedRegistration": "Registro iniciado",
         "validated": "Validado"
       }
@@ -235,7 +233,6 @@
           "imported": "PA que fueron importados, según el número de teléfono.",
           "included": "PA que se incluyeron. <br> Recibirán pagos a partir de la siguiente ronda de pagos.",
           "invited": "PA que fueron invitados (después de la importación).",
-          "noLongerEligible": "PA que fueron marcados como 'ya no elegibles'. <br> Se trata de PA personas que fueron invitadas pero que aún no se han registrado y, mientras tanto, ya no son elegibles.",
           "registered": "PA que terminaron de registrarse en la aplicación PA.",
           "startedRegistration": "PAs que iniciaron el registro en la aplicación PA.",
           "validated": "PA que fueron validados."
@@ -375,7 +372,6 @@
           "doPayment": "Realizar el pago #{{paymentNr}}",
           "include": "Incluir en el programa",
           "invite": "Invitación para el registro",
-          "markNoLongerEligible": "Marcar como ya no apto",
           "pause": "Pausa PAs",
           "sendMessage": "Enviar mensaje a PAs"
         },
@@ -385,7 +381,6 @@
           "doPayment": "Nota: La acción <strong>{{action}}</strong> solo es aplicable a las inscripciones que aún no han recibido el pago.",
           "include": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Registrado</i>, <i>Seleccionado para validación</i>, <i>Validado</i>, <i>Rechazado</i>, <i>Inclusión finalizada, En</i> <i>pausa</i> o <i>Completado</i>.",
           "invite": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Importado</i> o <i>Ya no elegible</i>.",
-          "markNoLongerEligible": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Importado</i> o <i>Invitado</i>.",
           "pause": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros con el estado <i>Incluido</i>.",
           "sendMessage": "Nota: La acción <strong>{{action}}</strong> solo se aplica a los registros que tienen un número de teléfono asociado."
         },
