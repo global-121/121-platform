@@ -52,10 +52,8 @@
         "imported": "Geïmporteerd",
         "included": "Actief",
         "invited": "Uitgenodigd",
-        "noLongerEligible": "Komt niet meer in aanmerking",
         "paused": "Gepauzeerd",
         "registered": "Aangemeld",
-        "registeredWhileNoLongerEligible": "Aangemeld maar komt niet meer in aanmerking",
         "startedRegistration": "Registratie gestart",
         "validated": "Goedgekeurd"
       }
@@ -242,7 +240,6 @@
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
           "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
           "invited": "Hulpvragers die zijn uitgenodigd (na import).",
-          "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
           "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
           "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
           "validated": "Hulpvragers die zijn goedgekeurd."
@@ -384,7 +381,6 @@
           "invite": "Uitnodigen voor registratie",
           "markAsDeclined": "Aanmelding afwijzen",
           "markAsValidated": "Aanmelding goedkeuren",
-          "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
           "sendMessage": "Stuur bericht"
         },
@@ -396,7 +392,6 @@
           "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Niet meer in aanmerking</i>.",
           "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i>.",
           "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i> of <i>Geweigerd</i>.",
-          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Uitgenodigd</i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> .",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
