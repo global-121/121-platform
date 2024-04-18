@@ -51,10 +51,8 @@
         "imported": "Importé",
         "included": "Inclus",
         "invited": "Invité",
-        "noLongerEligible": "N’est plus admissible",
         "paused": "Pause",
         "registered": "Recommandé",
-        "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
         "startedRegistration": "Début de l’inscription",
         "validated": "Validé"
       }
@@ -235,7 +233,6 @@
           "imported": "PA qui ont été importés, en fonction du numéro de téléphone.",
           "included": "PA qui ont été inclus. <br> Ils recevront les paiements à partir du prochain tour de paiement/versement.",
           "invited": "PA qui ont été invités (après l’importation).",
-          "noLongerEligible": "PA qui ont été marqués comme « n’étant plus éligibles ». <br> Il s’agit de PA personnes qui ont été invitées mais qui ne se sont pas encore inscrites et qui ne sont plus éligibles.",
           "registered": "PA qui ont terminé l’enregistrement dans l’application PA.",
           "startedRegistration": "PA qui ont commencé à s’inscrire dans l’application PA.",
           "validated": "PA qui ont été validés."
@@ -375,7 +372,6 @@
           "doPayment": "Effectuer le paiement #{{paymentNr}}",
           "include": "Inclure dans le programme",
           "invite": "Invitation à l’inscription",
-          "markNoLongerEligible": "Marquer comme n’étant plus éligible",
           "pause": "Pause PAs",
           "sendMessage": "Envoyer un message aux PA"
         },
@@ -385,7 +381,6 @@
           "doPayment": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions qui n’ont pas encore reçu le paiement.",
           "include": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux enregistrements dont le statut <i>est Enregistré,</i> <i>Sélectionné pour validation</i>, <i>Validé</i>, <i>Rejeté</i>, <i>Inclusion terminée</i>, <i>Suspendu</i> ou <i>Terminé</i>.",
           "invite": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions dont le statut est <i>Importé</i> ou <i>N’est plus admissible</i>.",
-          "markNoLongerEligible": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions dont le statut <i>est Importé</i> ou <i>Invité.</i>",
           "pause": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux enregistrements dont le statut <i>est Inclus</i>.",
           "sendMessage": "Remarque : L’action <strong>{{action}}</strong> ne s’applique qu’aux inscriptions auxquelles un numéro de téléphone est associé."
         },

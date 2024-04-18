@@ -144,7 +144,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
-          // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,  // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
@@ -182,7 +181,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationPersonalForValidationREAD, // Needed for AW-app
           PermissionEnum.RegistrationPersonalEXPORT,
           // PermissionEnum.RegistrationPersonalUPDATE,
-          // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,// assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
@@ -219,7 +217,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
-          // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusIncludedUPDATE,
           // PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
