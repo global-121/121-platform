@@ -1,0 +1,20 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/supertest": "^6.0.2",
+    "@playwright/test": "^1.43.0",
+    "@types/node": "^20.12.4",
+    "supertest": "^6.3.3"
+  },
+  "dependencies": {
+    "@alex_neo/playwright-azure-reporter": "^1.9.0",
+    "dotenv": "16.4.5"
+  }
+}
