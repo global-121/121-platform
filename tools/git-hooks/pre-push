@@ -23,8 +23,6 @@ check_if_need_to_test() {
 }
 
 # Include all packages/applications that support an `npm test` task:
-check_if_need_to_test "interfaces/PA-App/"
-check_if_need_to_test "interfaces/AW-App/"
 check_if_need_to_test "interfaces/Portal/"
 check_if_need_to_test "services/121-service/"
 check_if_need_to_test "services/mock-service/"

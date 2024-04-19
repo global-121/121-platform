@@ -123,8 +123,14 @@ export class UpdateFspComponent implements OnInit {
     this.selectedFspAttributes = [];
     this.attributesToSave = {};
     if (this.fspList) {
+      this.fspList = this.fspList.map((fspItem) => ({
+        ...fspItem,
+        displayName: this.translatableString.get(fspItem.displayName),
+      }));
+
       const selectedFsp = this.fspList.find(
-        (fspItem) => fspItem.fspDisplayNamePortal === fspString,
+        (fspItem) =>
+          fspItem.displayName === this.translatableString.get(fspString),
       );
 
       if (selectedFsp) {

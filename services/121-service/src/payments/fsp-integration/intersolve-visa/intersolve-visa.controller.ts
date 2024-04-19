@@ -1,7 +1,9 @@
 import {
   Controller,
   Get,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -15,22 +17,20 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Admin } from '../../../guards/admin.decorator';
-import { AdminAuthGuard } from '../../../guards/admin.guard';
-import { Permissions } from '../../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../../user/enum/permission.enum';
 import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')
 @Controller()
 export class IntersolveVisaController {
   public constructor(private intersolveVisaService: IntersolveVisaService) {}
 
-  @Permissions(PermissionEnum.FspDebitCardREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Get Intersolve Visa wallet data related to a registration',
@@ -38,7 +38,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Wallets data retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: GetWalletsResponseDto,
@@ -49,22 +49,23 @@ export class IntersolveVisaController {
   public async getVisaWalletsAndDetails(
     // TODO: REFACTOR: rename to registration.referenceid
     @Query('referenceId') referenceId,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<GetWalletsResponseDto> {
     return await this.intersolveVisaService.getVisaWalletsAndDetails(
       referenceId,
-      params.programId,
+      programId,
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardBLOCK)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
   @ApiOperation({
     summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -74,22 +75,24 @@ export class IntersolveVisaController {
   )
   public async blockWallet(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       true,
-      Number(params.programId),
+      programId,
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardUNBLOCK)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardUNBLOCK] })
   @ApiOperation({
     summary: '[SCOPED] Unblock Intersolve Visa wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
       'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -99,36 +102,42 @@ export class IntersolveVisaController {
   )
   public async unblockWallet(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       false,
-      Number(params.programId),
+      programId,
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Send FSP Visa Customer data of a registration to Intersolve',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Customer data updated',
   })
   // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/sync
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
   )
-  public async syncIntersolveCustomerWith121(@Param() params): Promise<any> {
+  public async syncIntersolveCustomerWith121(
+    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
     return await this.intersolveVisaService.syncIntersolveCustomerWith121(
       params.referenceId,
-      params.programId,
+      programId,
     );
   }
 
-  @Permissions(PermissionEnum.FspDebitCardCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary:
       '[SCOPED] Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
@@ -136,7 +145,7 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -146,19 +155,21 @@ export class IntersolveVisaController {
   )
   public async reissueWalletAndCard(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.reissueWalletAndCard(
       params.referenceId,
-      params.programId,
+      programId,
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Update all Visa wallet details',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Wallet and card replaced',
   })
   @Patch(

@@ -1,9 +1,25 @@
 import { LOCATION_INITIALIZED } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {
+  MsalBroadcastService,
+  MsalGuard,
+  MsalModule,
+  MsalService,
+} from '@azure/msal-angular';
+import {
+  BrowserCacheLocation,
+  InteractionType,
+  LogLevel,
+  PublicClientApplication,
+} from '@azure/msal-browser';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import {
   TranslateLoader,
@@ -14,6 +30,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LOGIN_ENDPOINT_PATH } from './auth/auth.service';
+import { AzureSsoExpireInterceptor } from './interceptors/azure-sso-expire.interceptor';
+import { MsalSkipInterceptor } from './interceptors/msal-skip.interceptor';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoggingService } from './services/logging.service';
 
@@ -73,6 +92,53 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.useServiceWorker && environment.production,
     }),
+    MsalModule.forRoot(
+      new PublicClientApplication({
+        auth: {
+          clientId: environment.azure_ad_client_id,
+          authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
+          redirectUri: `${window.location.origin}/auth`,
+          postLogoutRedirectUri: `${window.location.origin}/login`,
+          navigateToLoginRequestUrl: false,
+        },
+        cache: {
+          cacheLocation: BrowserCacheLocation.LocalStorage,
+        },
+        system: {
+          loggerOptions: {
+            loggerCallback: (level, message, containsPii) => {
+              console.log(
+                'MSAL Logging: ',
+                LogLevel[level],
+                message,
+                containsPii,
+              );
+            },
+            piiLoggingEnabled: true,
+            logLevel: LogLevel.Info,
+          },
+        },
+      }),
+      {
+        interactionType: InteractionType.Redirect,
+      },
+      {
+        protectedResourceMap: new Map([
+          [
+            'https://graph.microsoft.com/v1.0/me',
+            ['openid, offline_access, User.read'],
+          ],
+          // list open endpoints here first, without scopes
+          [`${environment.url_121_service_api}${LOGIN_ENDPOINT_PATH}`, null],
+          // then catch all other protected endpoints with this wildcard
+          [
+            `${environment.url_121_service_api}/*`,
+            [`api://${environment.azure_ad_client_id}/User.read`],
+          ],
+        ]),
+        interactionType: InteractionType.Redirect,
+      },
+    ),
   ],
   exports: [TranslateModule],
   providers: [
@@ -88,6 +154,19 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     ErrorHandlerService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalSkipInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AzureSsoExpireInterceptor,
+      multi: true,
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService,
   ],
   bootstrap: [AppComponent],
 })

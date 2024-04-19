@@ -13,6 +13,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -35,31 +36,24 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
-import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/enum/permission.enum';
 import { FinancialAttributes } from '../user/enum/registration-financial-attributes.const';
-import { User } from '../user/user.decorator';
-import { UserService } from '../user/user.service';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
 } from './const/filter-operation.const';
 import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
-import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -73,45 +67,19 @@ export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   public file: any;
 }
-@UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class RegistrationsController {
   public constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')
-  @ApiOperation({ summary: 'Create registration' })
-  @ApiResponse({ status: 201, description: 'Created registration' })
-  @ApiResponse({
-    status: 401,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations')
-  public async create(
-    @Body() createRegistrationDto: CreateRegistrationDto,
-    @Param('programId') programId,
-    @User('id') userId: number,
-  ): Promise<RegistrationViewEntity> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return await this.registrationsService.create(
-      createRegistrationDto,
-      Number(programId),
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: HttpStatus.CREATED })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
@@ -122,102 +90,7 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
-  @ApiOperation({
-    summary: 'Set custom data for registration (Used by Person Affected)',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Custom data set for registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/custom-data')
-  public async addCustomData(
-    @Body(new ParseArrayPipe({ items: CustomDataDto }))
-    customDataArray: CustomDataDto[],
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationsService.addRegistrationDataBulk(
-      customDataArray,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Set phone number' })
-  @ApiResponse({ status: 201, description: 'Phone set for registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/phone')
-  public async addPhone(
-    @Body() setPhoneRequest: SetPhoneRequestDto,
-  ): Promise<void> {
-    return await this.registrationsService.addPhone(
-      setPhoneRequest.referenceId,
-      setPhoneRequest.phonenumber,
-      setPhoneRequest.language,
-      setPhoneRequest.useForInvitationMatching,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
-  @ApiOperation({
-    summary:
-      'Person Affected switches from started registration to registered for program',
-  })
-  @ApiResponse({
-    status: 201,
-    description:
-      'Person Affected switched from started registration to registered for program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/register')
-  public async register(
-    @Body() referenceIdDto: ReferenceIdDto,
-  ): Promise<ReferenceIdDto | boolean> {
-    return await this.registrationsService.register(referenceIdDto.referenceId);
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationCREATE)
-  @ApiOperation({
-    summary: 'Import set of PAs to invite, based on CSV',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-bulk')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
-  public async importBulkAsImported(
-    @UploadedFile() csvFile,
-    @Param() params,
-    @User('id') userId: number,
-  ): Promise<ImportResult> {
-    return await this.registrationsService.importBulkAsImported(
-      csvFile,
-      Number(params.programId),
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
-  @ApiOperation({
-    summary: 'Get a CSV template for importing registrations',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'type', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/import-template/:type')
-  public async getImportRegistrationsTemplate(
-    @Param() params,
-  ): Promise<string[]> {
-    return await this.registrationsService.getImportRegistrationsTemplate(
-      Number(params.programId),
-      params.type,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
     summary: 'Import set of registered PAs, from CSV',
   })
@@ -228,18 +101,21 @@ export class RegistrationsController {
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
     @UploadedFile() csvFile,
-    @Param() params,
-    @User('id') userId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Req() req,
   ): Promise<ImportResult> {
+    const userId = req.user.id;
+
     return await this.registrationsService.importRegistrations(
       csvFile,
-      Number(params.programId),
+      programId,
       userId,
     );
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationCREATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
     summary: '[EXTERNALLY USED] Import set of registered PAs',
     description:
@@ -251,34 +127,37 @@ export class RegistrationsController {
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
     data: ImportRegistrationsDto[],
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<ImportResult> {
     const validation = !queryParams.validation ?? true;
+    const userId = req.user.id;
+
     if (validation) {
       const validatedData =
         await this.registrationsService.importJsonValidateRegistrations(
           data,
-          Number(params.programId),
+          programId,
           userId,
         );
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
-        Number(params.programId),
+        programId,
         userId,
       );
     } else {
       return await this.registrationsService.importValidatedRegistrations(
         data,
-        Number(params.programId),
+        programId,
         userId,
       );
     }
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
       '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
@@ -295,9 +174,11 @@ export class RegistrationsController {
   )
   public async findAll(
     @Paginate() query: PaginateQuery,
-    @User('id') userId: number,
+    @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<Paginated<RegistrationViewEntity>> {
+    const userId = req.user.id;
+
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
@@ -319,15 +200,39 @@ export class RegistrationsController {
     );
   }
 
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('programs/registrations')
+  @ApiOperation({
+    summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows`,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch('programs/:programId/registrations')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
+  @UseInterceptors(FileInterceptor('file'))
+  public async patchRegistrations(
+    @UploadedFile() csvFile: any,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Req() req,
+  ): Promise<void> {
+    const userId = req.user.id;
+    return await this.registrationsService.patchBulk(
+      csvFile,
+      programId,
+      userId,
+    );
+  }
+
+  @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for the registration status update - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'The registration status update was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -370,12 +275,13 @@ export class RegistrationsController {
   public async patchRegistrationsStatus(
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
-    @User('id') userId: number,
+    @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum;
     let messageContentType: MessageContentType;
+    const userId = req.user.id;
     const registrationStatus = statusUpdateDto.status;
     switch (registrationStatus) {
       case RegistrationStatusEnum.included:
@@ -393,13 +299,6 @@ export class RegistrationsController {
       case RegistrationStatusEnum.paused:
         permission = PermissionEnum.RegistrationStatusPausedUPDATE;
         messageContentType = MessageContentType.paused;
-        break;
-      case RegistrationStatusEnum.invited:
-        permission = PermissionEnum.RegistrationStatusInvitedUPDATE;
-        messageContentType = MessageContentType.invited;
-        break;
-      case RegistrationStatusEnum.noLongerEligible:
-        permission = PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE;
         break;
       case RegistrationStatusEnum.validated:
         permission = PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE;
@@ -459,13 +358,14 @@ export class RegistrationsController {
     return result;
   }
 
+  @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Updated provided attributes of registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -474,26 +374,28 @@ export class RegistrationsController {
   //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
-    @Param() params,
+    @Param('programId', new ParseIntPipe()) programId: number,
+    @Param('referenceId') referenceId: string,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<RegistrationViewEntity> {
+    const userId = req.user.id;
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeUPDATE,
       );
     const hasUpdateFinancialPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
-        params.programId,
+        programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
 
     if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {
       const errors = `User does not have permission to update attributes`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
     }
 
     const partialRegistration = updateRegistrationDataDto.data;
@@ -504,7 +406,7 @@ export class RegistrationsController {
           FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
         ) {
           const errors = `User does not have permission to update financial attributes`;
-          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       }
     }
@@ -517,7 +419,7 @@ export class RegistrationsController {
           )
         ) {
           const errors = `User does not have permission to update attributes`;
-          throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       }
     }
@@ -525,7 +427,7 @@ export class RegistrationsController {
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration)) {
       await this.registrationsService.validateAttribute(
-        params.referenceId,
+        referenceId,
         attributeKey,
         partialRegistration[attributeKey],
         userId,
@@ -534,12 +436,13 @@ export class RegistrationsController {
 
     // if all valid, process update
     return await this.registrationsService.updateRegistration(
-      params.programId,
-      params.referenceId,
+      programId,
+      referenceId,
       updateRegistrationDataDto,
     );
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
@@ -547,12 +450,12 @@ export class RegistrationsController {
       '[SCOPED] Find registration by phone-number for Redline integration and FieldValidation',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   @ApiQuery({
@@ -563,12 +466,9 @@ export class RegistrationsController {
   @Get('/registrations')
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<RegistrationViewEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const userId = req.user.id;
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -582,13 +482,13 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationFspUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspUPDATE] })
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.OK,
     description:
       'Updated fsp and attributes - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -598,8 +498,9 @@ export class RegistrationsController {
   public async updateChosenFsp(
     @Param() params,
     @Body() data: UpdateChosenFspDto,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<RegistrationViewEntity> {
+    const userId = req.user.id;
     return await this.registrationsService.updateChosenFsp(
       params.referenceId,
       data.newFspName,
@@ -610,13 +511,13 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for deleting set of registrations - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'Deleting set of registrations was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -650,16 +551,17 @@ export class RegistrationsController {
     deprecated: true,
   })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Permissions(PermissionEnum.RegistrationDELETE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationDELETE] })
   @ApiOperation({ summary: '[SCOPED] Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Delete('programs/:programId/registrations')
   public async delete(
     @Paginate() query: PaginateQuery,
-    @User('id') userId: number,
+    @Req() req,
     @Param('programId') programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
+    const userId = req.user.id;
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
@@ -681,40 +583,37 @@ export class RegistrationsController {
     return result;
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary: '[SCOPED] Download all program answers (for validation)',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Program answers downloaded - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   @Get('registrations/download/validation-data')
-  public async downloadValidationData(
-    @User('id') userId: number,
-  ): Promise<DownloadData> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+  public async downloadValidationData(@Req() req): Promise<DownloadData> {
+    const userId = req.user.id;
     return await this.registrationsService.downloadValidationData(userId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:
       '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
   })
-  @ApiResponse({ status: 200, description: 'A single registration' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'A single registration' })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   @ApiParam({
@@ -723,12 +622,9 @@ export class RegistrationsController {
   @Get('registrations/:referenceId')
   public async getRegistration(
     @Param() params,
-    @User('id') userId: number,
+    @Req() req,
   ): Promise<RegistrationEntity> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const userId = req.user.id;
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,
@@ -736,10 +632,10 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationFspREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspREAD] })
   @ApiOperation({ summary: '[SCOPED] Get FSP-attribute answers' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Retrieved FSP-attribute answers - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -755,10 +651,12 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
+  })
   @ApiOperation({ summary: '[SCOPED] Issue validationData (For AW)' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Validation Data issued - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -776,13 +674,13 @@ export class RegistrationsController {
 
   @ApiTags('programs/registrations')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Dry run result for sending a bulk message - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description:
       'Sending bulk message was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -821,15 +719,18 @@ export class RegistrationsController {
     deprecated: true,
   })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Permissions(PermissionEnum.RegistrationNotificationCREATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationNotificationCREATE],
+  })
   @Post('programs/:programId/registrations/message')
   public async sendCustomTextMessage(
     @Body() body: SendCustomTextDto,
     @Paginate() query: PaginateQuery,
-    @User('id') userId: number,
+    @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
+    const userId = req.user.id;
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
@@ -859,13 +760,15 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationNotificationREAD)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationNotificationREAD],
+  })
   @ApiOperation({
     summary: '[SCOPED] Get message history for one registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Message history retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -879,12 +782,12 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @PersonAffectedAuth()
+  @AuthenticatedUser()
   @ApiOperation({
     summary: 'Get registration status. Used by person affected only',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Registration status retrieved  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -900,12 +803,12 @@ export class RegistrationsController {
   }
 
   @ApiTags('programs/registrations')
-  @Permissions(PermissionEnum.RegistrationREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({ summary: '[SCOPED] Get Person Affected referenceId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'ReferenceId retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
@@ -914,6 +817,7 @@ export class RegistrationsController {
     if (isNaN(params.paId)) {
       throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
     }
+
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,

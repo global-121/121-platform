@@ -36,7 +36,7 @@ export class SafaricomMockService {
           : 'Mock error message',
     };
 
-    this.sendStatusCallback(transferResponse, mockScenario);
+    await this.sendStatusCallback(transferResponse, mockScenario);
 
     return transferResponse;
   }

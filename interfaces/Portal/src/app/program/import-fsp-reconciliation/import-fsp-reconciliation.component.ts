@@ -65,7 +65,12 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
       'page.program.import-fsp-reconciliation.confirm-message',
       { payment: this.payment },
     );
-    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
+    if (
+      await this.authService.hasPermission(
+        this.programId,
+        Permission.ActionREAD,
+      )
+    ) {
       const actionTimestamp =
         await this.latestActionService.getLatestActionTime(
           ActionType.importFspReconciliation,

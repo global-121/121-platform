@@ -52,6 +52,7 @@ export class HeaderComponent implements OnInit {
 
   public async ngOnInit() {
     await this.loadProgramDetails();
+
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isAdmin = user?.isAdmin;
     });

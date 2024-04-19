@@ -4,7 +4,9 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,13 +18,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
-import { Admin } from '../guards/admin.decorator';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
 import { sendXlsxReponse } from '../utils/send-xlsx-response';
 import {
   ExportDetailsQueryParamsDto,
@@ -33,7 +33,7 @@ import { RegistrationStatusStats } from './dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from './enum/export-file-format.enum';
 import { MetricsService } from './metrics.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('metrics')
 @Controller()
 export class MetricsController {
@@ -41,12 +41,15 @@ export class MetricsController {
   public constructor(metricsService: MetricsService) {
     this.metricsService = metricsService;
   }
-  @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalEXPORT],
+  })
   @ApiOperation({
     summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allPeopleAffected}`,
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Retrieved data for export',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -88,14 +91,16 @@ export class MetricsController {
     PaginateConfigRegistrationViewOnlyFilters,
   )
   public async getExportList(
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Param('exportType') exportType: ExportType,
     @Query() queryParams: ExportDetailsQueryParamsDto,
-    @User('id') userId: number,
     @Paginate() paginationQuery: PaginateQuery,
     @Query('format') format = 'json',
+    @Req() req,
     @Res() res,
   ): Promise<any> {
+    const userId = req.user.id;
     if (
       queryParams.toDate &&
       queryParams.fromDate &&
@@ -104,8 +109,11 @@ export class MetricsController {
       const errors = 'toDate must be greater than fromDate';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+    if (queryParams['search']) {
+      paginationQuery.search = queryParams['search'];
+    }
     const result = await this.metricsService.getExportList(
-      Number(programId),
+      programId,
       exportType as ExportType,
       userId,
       queryParams.minPayment,
@@ -123,12 +131,12 @@ export class MetricsController {
     return res.send(result);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Get list of vouchers to cancel, only used by admin',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Retrieved list of vouchers to cancel',
   })
   // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
@@ -137,7 +145,7 @@ export class MetricsController {
     return await this.metricsService.getToCancelVouchers();
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
     summary: '[SCOPED] Get payments with state sums by program-id',
   })
@@ -147,43 +155,46 @@ export class MetricsController {
     type: 'integer',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/payment-state-sums')
-  public async getPaymentsWithStateSums(@Param() params): Promise<any> {
-    return await this.metricsService.getPaymentsWithStateSums(
-      Number(params.programId),
-    );
+  public async getPaymentsWithStateSums(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
+    return await this.metricsService.getPaymentsWithStateSums(programId);
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Program stats summary',
   })
   @Get('programs/:programId/metrics/program-stats-summary')
-  public async getProgramStats(@Param() params): Promise<ProgramStats> {
-    return await this.metricsService.getProgramStats(Number(params.programId));
+  public async getProgramStats(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<ProgramStats> {
+    return await this.metricsService.getProgramStats(programId);
   }
 
-  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/registration-status')
   public async getRegistrationStatusStats(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<RegistrationStatusStats[]> {
-    return await this.metricsService.getRegistrationStatusStats(
-      Number(params.programId),
-    );
+    return await this.metricsService.getRegistrationStatusStats(programId);
   }
 }

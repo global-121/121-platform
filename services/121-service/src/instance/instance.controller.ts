@@ -1,15 +1,21 @@
-import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Admin } from '../guards/admin.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { AdminAuthGuard } from './../guards/admin.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
 import { UpdateMonitoringQuestionDto } from './dto/update-monitoring-question.dto';
 import { InstanceEntity } from './instance.entity';
 import { InstanceService } from './instance.service';
 import { MonitoringQuestionEntity } from './monitoring-question.entity';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('instance')
 @Controller('instance')
 export class InstanceController {
@@ -25,15 +31,15 @@ export class InstanceController {
   }
 
   // TODO: we assume only 1 instance. Therefore not patching by instance-id/name. This could be changed in the future.
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update instance data' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Successfully updated instance',
     type: InstanceEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No instance found',
     type: InstanceEntity,
   })
@@ -44,10 +50,10 @@ export class InstanceController {
     return await this.instanceService.updateInstance(updateInstanceDto);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update instance monitoring question' })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No instance found',
     type: InstanceEntity,
   })

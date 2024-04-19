@@ -177,7 +177,7 @@ describe('Send templated message', () => {
 
   describe('on custom message', () => {
     it('using the invite template', async () => {
-      const templateKey = RegistrationStatusEnum.invited;
+      const templateKey = RegistrationStatusEnum.included;
       // Act
       await sendMessage(
         accessToken,

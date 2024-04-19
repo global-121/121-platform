@@ -5,9 +5,110 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.114.1...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.116.8...main)
+
+### Removed
+
+- PA-App interface code and all related references
+- AW-App interface code and all related references
 
 ---
+
+## [1.116.8](https://github.com/global-121/121-platform/compare/v1.116.7...v1.116.8)- 2024-04-19
+
+### Disabled
+
+- Quick search in frontend
+
+## [1.116.7](https://github.com/global-121/121-platform/compare/v1.116.6...v1.116.7)- 2024-04-18
+
+### Fixed
+
+- Performance issues for PV program
+- Heap out of memory when exporting
+- Quick search not applied when using 'Export filtered view'
+
+## [1.116.6](https://github.com/global-121/121-platform/compare/v1.116.5...v1.116.6)- 2024-04-16
+
+## [1.116.5](https://github.com/global-121/121-platform/compare/v1.116.4...v1.116.5)- 2024-04-15
+
+## [1.116.4](https://github.com/global-121/121-platform/compare/v1.116.3...v1.116.4)- 2024-04-15
+
+### Fixed
+
+- Calculate payment amount memory error
+
+## [1.116.3](https://github.com/global-121/121-platform/compare/v1.116.2...v1.116.3)- 2024-04-15
+
+### Fixed
+
+- Export in smaller chunks to prevent memory error
+
+## [1.116.2](https://github.com/global-121/121-platform/compare/v1.116.1...v1.116.2)- 2024-04-10
+
+### Fixed
+
+- Search on fspName enum instead of display name
+- Store registrations status changes without userId
+- Export registration data changes without userId
+
+## [1.116.1](https://github.com/global-121/121-platform/compare/v1.116.0...v1.116.1)- 2024-04-10
+
+### Fixed
+
+- Migration: Only update usernames with '@'
+
+## [1.116.0](https://github.com/global-121/121-platform/compare/v1.115.5...v1.116.0)- 2024-04-10
+
+### Added
+
+- Single Sign-on with Microsoft Entra ID
+- Multi column filtering
+- Mass update through CSV
+- ENV-variable `KOBO_CONNECT_API_URL` for Kobo-Connect API URL needs to be set for the 121-service.
+
+### Changed
+
+- FSP name is now a translatable string & configurable per program
+
+### Removed
+
+- "Assigned aid workers" from Design tab
+- ENV-variable `CREATE_PROGRAM_ENDPOINT` for Kobo-Connect API URL is removed from the Portal.
+
+## [1.115.5](https://github.com/global-121/121-platform/compare/v1.115.4...v1.115.5)- 2024-04-08
+
+### Removed
+
+- Service-worker(offline/caching) features for the Portal from ALL instances.
+
+## [1.115.4](https://github.com/global-121/121-platform/compare/v1.115.3...v1.115.4)- 2024-04-08
+
+### Removed
+
+- Service-worker(offline/caching) features for the Portal of NLRC. To prevent (some) issues when rolling out SSO.
+
+## [1.115.3](https://github.com/global-121/121-platform/compare/v1.115.2...v1.115.3)- 2024-04-03
+
+### Fixed
+
+- firstName is empty string if it does not exist when creating visa debit
+
+## [1.115.2](https://github.com/global-121/121-platform/compare/v1.115.1...v1.115.2)- 2024-03-30
+
+### Fixed
+
+- Security policy rwanda
+
+## [1.115.1](https://github.com/global-121/121-platform/compare/v1.115.0...v1.115.1)- 2024-03-20
+
+## [1.115.0](https://github.com/global-121/121-platform/compare/v1.114.1...v1.115.0)- 2024-03-20
+
+### Added
+
+- Payment amount multiplier to export report
+- Vodacash made working again
+- Create program from kobo form
 
 ## [1.114.1](https://github.com/global-121/121-platform/compare/v1.114.0...v1.114.1)- 2024-03-18
 

@@ -1,9 +1,13 @@
+import { JOB_REF } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { Job } from 'bull';
+import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
 import { ScopedRepository } from '../scoped.repository';
-import { ScopedUserRequest } from '../shared/middleware/scope-user.middleware';
+import { ScopedUserRequest } from '../shared/scoped-user-request';
+import { UserType } from '../user/user-type-enum';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
 import { EventLogOptionsDto } from './dto/event-log-options.dto';
@@ -22,6 +26,7 @@ export class EventsService {
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
     @Inject(REQUEST) private request: ScopedUserRequest,
+    @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
   ) {}
 
@@ -99,24 +104,28 @@ export class EventsService {
       : [newRegistrationOrRegistrations];
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
+    // Get userId from request if it exists otherwise this update was done using a queue
+    // than get it from the request of the job of the queue
 
-    let userId = null;
+    const requestUserId = this.request?.user?.['id']
+      ? this.request?.user?.['id']
+      : this.jobRef?.data?.request?.userId;
 
-    if (this.request.userId) {
-      const user = await this.userService.findById(this.request.userId);
-
-      if (user && user.userType === 'aidWorker') {
-        userId = this.request.userId;
+    let userIdToStore = null;
+    if (requestUserId) {
+      const user = await this.userService.findById(requestUserId);
+      if (user && user.userType === UserType.aidWorker) {
+        userIdToStore = requestUserId;
       }
     }
 
+    // TODO: userIdToStore can be null, which causes an exception
     const allEventsForChange: EventEntity[] = this.createEventsForChanges(
       oldEntities,
       newEntities,
-      userId,
+      userIdToStore,
       eventLogOptions?.registrationAttributes,
     );
-
     const events = this.addAdditionalAttributesToEvents(
       allEventsForChange,
       eventLogOptions?.additionalLogAttributes,
@@ -249,16 +258,23 @@ export class EventsService {
 
     const events: EventEntity[] = [];
     for (const fieldName of fieldNames) {
-      if (oldEntity[fieldName] !== newEntity[fieldName]) {
-        const eventForChange = this.createEventForChange(
-          fieldName,
-          oldEntity[fieldName],
-          newEntity[fieldName],
-          oldEntity.id,
-        );
-        eventForChange.userId = userId;
-        events.push(eventForChange);
+      if (
+        oldEntity[fieldName] === newEntity[fieldName] ||
+        (isObject(oldEntity[fieldName]) &&
+          isObject(newEntity[fieldName]) &&
+          isMatch(oldEntity[fieldName], newEntity[fieldName]))
+      ) {
+        continue;
       }
+
+      const eventForChange = this.createEventForChange(
+        fieldName,
+        oldEntity[fieldName],
+        newEntity[fieldName],
+        oldEntity.id,
+      );
+      eventForChange.userId = userId;
+      events.push(eventForChange);
     }
 
     return events;
@@ -266,8 +282,8 @@ export class EventsService {
 
   private createEventForChange(
     fieldName: string,
-    oldValue: string,
-    newValue: string,
+    oldValue: EventAttributeEntity['value'],
+    newValue: EventAttributeEntity['value'],
     registrationdId: number,
   ): EventEntity {
     const event = new EventEntity();
@@ -286,7 +302,7 @@ export class EventsService {
   }
 
   private getAttributesForChange(attributesData: {
-    [key in EventAttributeKeyEnum]?: string;
+    [key in EventAttributeKeyEnum]?: EventAttributeEntity['value'];
   }): EventAttributeEntity[] {
     return Object.entries(attributesData)
       .filter(([_, value]) => value)
@@ -297,7 +313,7 @@ export class EventsService {
 
   private createEventAttributeEntity(
     key: EventAttributeKeyEnum,
-    value: string,
+    value: EventAttributeEntity['value'],
   ): EventAttributeEntity {
     const eventAttribute = new EventAttributeEntity();
     eventAttribute.key = key;
@@ -314,7 +330,7 @@ export class EventsService {
     const mergedArray = [
       ...new Set([...array1, ...array2]),
     ] as (keyof RegistrationViewEntity)[];
-    const irrelevantKeys: (keyof RegistrationViewEntity)[] = [
+    const irrelevantKeys: (keyof RegistrationViewEntity | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
@@ -325,6 +341,7 @@ export class EventsService {
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
+      'name',
       'inclusionScore',
     ];
     return mergedArray.filter((key) => !irrelevantKeys.includes(key));
@@ -332,7 +349,7 @@ export class EventsService {
 
   private getEventType(key: string): EventEnum {
     const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'fspDisplayNamePortal';
+      'fspDisplayName';
     if (key === financialServiceProviderKey) {
       return EventEnum.financialServiceProviderChange;
     }

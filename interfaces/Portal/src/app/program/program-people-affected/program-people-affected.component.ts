@@ -46,6 +46,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
+import { FilterOperator } from '../../enums/filters.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import {
   MessageStatus,
@@ -57,7 +58,6 @@ import { EnumService } from '../../services/enum.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import {
   Filter,
-  FilterOperatorEnum,
   FilterService,
   PaginationFilter,
 } from '../../services/filter.service';
@@ -267,7 +267,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     await this.updateBulkActions();
 
-    this.tableFiltersPerColumn = this.createFilterPerAttibute();
+    this.tableFiltersPerColumn = this.createFiltersForAttibutes();
     this.filterService.setAllAvailableFilters(this.tableFiltersPerColumn);
 
     this.submitPaymentProps = {
@@ -456,8 +456,13 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     return attributeName;
   }
 
-  private createFilterPerAttibute(): Filter[] {
-    const allFilters = [];
+  private createFiltersForAttibutes(): Filter[] {
+    const allFilters = [
+      // TODO: Reactivate this line when the search filter is fixed
+      // this.filterService.SEARCH_FILTER_OPTION,
+      // this.filterService.DIVIDER_FILTER_OPTION,
+    ];
+
     let groupIndex = 0;
     for (const group of this.program.filterableAttributes) {
       for (const columnName of group.filters) {
@@ -478,11 +483,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
       // add divider line after each group except last
       if (groupIndex < this.program.filterableAttributes.length - 1) {
-        allFilters.push({
-          name: 'divider',
-          label: '-',
-          disabled: true,
-        });
+        allFilters.push(this.filterService.DIVIDER_FILTER_OPTION);
       }
       groupIndex += 1;
     }
@@ -565,7 +566,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           }`
         : '',
       fsp: person.financialServiceProvider,
-      financialServiceProvider: person.fspDisplayNamePortal,
+      financialServiceProvider: this.translatableStringService.get(
+        person.fspDisplayName,
+      ),
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
     };
@@ -858,7 +861,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: referenceId,
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.eq,
+          operator: FilterOperator.eq,
         },
       ];
     } else if (this.selectedPeople.length) {
@@ -868,7 +871,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           value: this.selectedPeople.map((p) => p.referenceId).join(','),
           name: 'referenceId',
           label: 'referenceId',
-          operator: FilterOperatorEnum.in,
+          operator: FilterOperator.in,
         },
       ];
     } else {
@@ -880,7 +883,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
             name: 'status',
             label: 'status',
             value: this.tableStatusFilter.join(','),
-            operator: FilterOperatorEnum.in,
+            operator: FilterOperator.in,
           },
         ],
       ];
@@ -990,11 +993,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     customBulkActionInput: CustomBulkActionInput,
   ) {
     const statusRelatedBulkActions = [
-      BulkActionId.invite,
       BulkActionId.include,
       BulkActionId.endInclusion,
       BulkActionId.reject,
-      BulkActionId.markNoLongerEligible,
       BulkActionId.pause,
       BulkActionId.markAsValidated,
       BulkActionId.markAsDeclined,

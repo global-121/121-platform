@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -19,8 +20,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
-import { Permissions } from '../../guards/permissions.decorator';
-import { PermissionsGuard } from '../../guards/permissions.guard';
+import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
 import { PermissionEnum } from '../../user/enum/permission.enum';
 import {
   CreateMessageTemplateDto,
@@ -32,7 +33,7 @@ import {
 import { MessageTemplateEntity } from './message-template.entity';
 import { MessageTemplateService } from './message-template.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')
 @Controller('notifications')
 export class MessageTemplateController {
@@ -43,7 +44,7 @@ export class MessageTemplateController {
   @ApiOperation({ summary: 'Get all message templates per program' })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'All message templates',
     type: [MessageTemplateEntity],
   })
@@ -54,17 +55,18 @@ export class MessageTemplateController {
   })
   @Get(':programId/message-templates')
   public async getMessageTemplatesByProgramId(
-    @Param('programId') programId,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<MessageTemplateEntity[]> {
     return await this.messageTemplateService.getMessageTemplatesByProgramId(
-      Number(programId),
+      programId,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Created new message template',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -79,15 +81,15 @@ export class MessageTemplateController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: '[EXTERNALLY USED] Update message template' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Message template updated',
     type: MessageTemplateEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No message template found with given id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -106,12 +108,12 @@ export class MessageTemplateController {
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({
     summary: 'Delete message template(s) by type and optionally language',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Message template deleted',
     type: DeleteResult,
   })

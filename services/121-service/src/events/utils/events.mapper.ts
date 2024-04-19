@@ -18,7 +18,7 @@ export class EventsMapper {
       paId: event.registration.registrationProgramId,
       referenceId: event.registration.referenceId,
       changedAt: event.created,
-      changedBy: event.user.username,
+      changedBy: event?.user?.username ? event?.user?.username : '',
       type: event.type,
       ...attributes,
     };
@@ -41,7 +41,7 @@ export class EventsMapper {
   private static createAttributesObject(
     attributes: EventAttributeEntity[],
   ): Record<string, any> {
-    const attributesObject: Record<string, string> = {};
+    const attributesObject: Record<string, EventAttributeEntity['value']> = {};
     for (const attribute of attributes) {
       attributesObject[attribute.key] = attribute.value;
     }

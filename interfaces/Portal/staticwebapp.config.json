@@ -34,7 +34,7 @@
   "trailingSlash": "auto",
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["/assets/*"]
+    "exclude": ["/assets/*", "/*.json"]
   },
   "responseOverrides": {
     "404": {
@@ -42,7 +42,6 @@
     }
   },
   "globalHeaders": {
-    "Cross-Origin-Opener-Policy": "same-origin",
     "Referrer-Policy": "same-origin",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
   }

@@ -60,7 +60,6 @@ Feature: Navigate program menu
     Given "selected phase" is "Design"
     When user clicks the "Open for registration"-button
     Then the program will advance to the next phase (see scenario: "Advancing to next phase")
-    And the program will now appear as a selectable program in the PA-app
 
   Scenario: Open/Close a program for registration ("publishing"/"un-publishing")
     Given user views a "program" page
@@ -68,4 +67,3 @@ Feature: Navigate program menu
     Given "selected phase" is "Registration"
     When user clicks the "Allow new registrations"-toggle button
     Then the program will update to the "published/unpublished" state
-    And the program will now appear as selectable / will not be available for registration in PA-App based on its published or unpublished status in Portal.

@@ -110,7 +110,7 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fsp.fspDisplayNamePortal as "fspName"',
+        'fsp.displayName as "fspName"',
         'fsp.fsp as "fsp"',
         'fsp.integrationType as "fspIntegrationType"',
       ])

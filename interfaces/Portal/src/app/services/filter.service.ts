@@ -1,40 +1,46 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  FilterOperator,
+  FilterParameter,
+  SortDirection,
+} from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 
 export class Filter {
   name: string;
   label: string;
-  allowedOperators?: FilterOperatorEnum[];
+  allowedOperators?: FilterOperator[];
   isInteger?: boolean;
 }
 export class PaginationFilter extends Filter {
   value: string;
-  operator?: FilterOperatorEnum;
+  operator?: FilterOperator;
 }
 
 export class PaginationSort {
   column: string;
-  direction: SortDirectionEnum;
-}
-
-export enum SortDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export enum FilterOperatorEnum {
-  eq = '$eq',
-  in = '$in',
-  ilike = '$ilike',
-  null = '$null',
+  direction: SortDirection;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
+  public DIVIDER_FILTER_OPTION = {
+    name: 'divider',
+    label: '-',
+    disabled: true,
+  };
+
+  public SEARCH_FILTER_OPTION: Filter = {
+    name: FilterParameter.search,
+    label: '',
+    allowedOperators: [],
+  };
+
   private DEFAULT_TEXT_FILTER = [];
   private allAvailableFilters: Filter[] = [];
 
@@ -53,6 +59,7 @@ export class FilterService {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private translate: TranslateService,
   ) {
     this.resetTextFilterInternal();
 
@@ -70,6 +77,10 @@ export class FilterService {
   }
 
   private resetTextFilterInternal() {
+    this.SEARCH_FILTER_OPTION.label = this.translate.instant(
+      'page.program.table-filter-row.filter-quick-search',
+    );
+
     this.textFilter = new Map(this.DEFAULT_TEXT_FILTER);
   }
 
@@ -109,7 +120,7 @@ export class FilterService {
     this.publishTextFilter();
   }
 
-  private getFilterOperatorForName(name: string): FilterOperatorEnum[] {
+  private getFilterOperatorForName(name: string): FilterOperator[] {
     const filter = this.allAvailableFilters.find(
       (filter) => filter.name === name,
     );
@@ -141,7 +152,7 @@ export class FilterService {
   public setTextFilter(
     columnName: string,
     value: string,
-    allowedOperations: FilterOperatorEnum[],
+    allowedOperations: FilterOperator[],
     label?: string,
     publishChange = true,
   ) {
@@ -153,9 +164,9 @@ export class FilterService {
       name: columnName,
       label,
       value,
-      operator: allowedOperations.includes(FilterOperatorEnum.ilike)
-        ? FilterOperatorEnum.ilike
-        : FilterOperatorEnum.eq,
+      operator: allowedOperations.includes(FilterOperator.ilike)
+        ? FilterOperator.ilike
+        : FilterOperator.eq,
     });
 
     if (publishChange) {

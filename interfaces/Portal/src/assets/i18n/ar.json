@@ -311,7 +311,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "عمال الإغاثة المعينون",
         "distributionDuration": "مدة التوزيع",
         "distributionFrequency": "تردد التوزيع",
         "endDate": "انتهاء العرض",
@@ -412,7 +411,7 @@
           "custom-attribute-true": "نعم",
           "dob": "تاريخ الميلاد",
           "failedPayment": "فشل الدفع #",
-          "fspDisplayNamePortal": "مزود الخدمات المالية",
+          "fspDisplayName": "مزود الخدمات المالية",
           "hasNote": "لديه ملاحظة",
           "inclusionScore": "درجة التضمين",
           "lastMessageStatus": "آخر رسالة",

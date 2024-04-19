@@ -70,9 +70,11 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
+
   if (!process.env.REDIS_PREFIX) {
     throw new Error('REDIS_PREFIX not set');
   }
+
   const notAllowedRegex = /[\0\n\r :]/;
   if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
     throw new Error('REDIS_PREFIX contains one or more not allowed characters');
@@ -101,26 +103,6 @@ async function bootstrap(): Promise<void> {
     });
   }
 
-  if (!!process.env.REDIRECT_REGISTER_URL_HOST) {
-    expressInstance.get(`/register`, (_req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST);
-    });
-    expressInstance.get(`/app*`, (req: Request, res: Response) => {
-      const newPath = req.url.replace(`/app`, '');
-      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST + newPath);
-    });
-  }
-
-  if (!!process.env.REDIRECT_VERIFY_URL_HOST) {
-    expressInstance.get(`/verify`, (_req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST);
-    });
-    expressInstance.get(`/AW-app*`, (req: Request, res: Response) => {
-      const newPath = req.url.replace(`/AW-app`, '');
-      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST + newPath);
-    });
-  }
-
   expressInstance.disable('x-powered-by');
 
   app.setGlobalPrefix('api');
@@ -135,14 +117,22 @@ async function bootstrap(): Promise<void> {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
-    customJs: `data:text/javascript;base64,${Buffer.from(
-      SWAGGER_CUSTOM_JS,
-    ).toString('base64url')}`,
+    customJsStr: SWAGGER_CUSTOM_JS,
     swaggerOptions: {
-      persistAuthorization: true,
-      tagsSorter: 'alpha',
-      operationsSorter: 'alpha',
+      // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
+      deepLinking: true,
       defaultModelExpandDepth: 10,
+      defaultModelsExpandDepth: 1,
+      displayOperationId: true,
+      displayRequestDuration: true,
+      filter: true,
+      operationsSorter: 'alpha',
+      persistAuthorization: DEBUG,
+      queryConfigEnabled: DEBUG,
+      showCommonExtensions: true,
+      showExtensions: true,
+      tagsSorter: 'alpha',
+      tryItOutEnabled: DEBUG,
     },
   });
 
@@ -193,6 +183,7 @@ async function bootstrap(): Promise<void> {
     process.exit(1);
   });
 }
+
 void bootstrap();
 
 if (!!process.env.APPLICATION_INSIGHT_IKEY) {

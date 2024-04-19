@@ -43,7 +43,7 @@ import { RegistrationEntity } from './registration.entity';
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'financialServiceProvider')
-      .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
+      .addSelect('fsp.displayName', 'fspDisplayName')
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -103,7 +103,7 @@ export class RegistrationViewEntity {
   public financialServiceProvider: FspName;
 
   @ViewColumn()
-  public fspDisplayNamePortal: string;
+  public fspDisplayName: JSON;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
@@ -135,6 +135,15 @@ export class RegistrationViewEntity {
     },
   )
   public data: RegistrationDataEntity[];
+
+  @OneToMany(
+    () => RegistrationDataEntity,
+    (registrationData) => registrationData.registration,
+    {
+      eager: true,
+    },
+  )
+  public dataSearchBy: RegistrationDataEntity[];
 
   @OneToMany(
     () => LatestTransactionEntity,

@@ -27,18 +27,7 @@ This service uses [TypeORM](https://typeorm.io/) with a PostgreSQL database.
 
 ### Seed the database
 
-To create the database initially, you have to run a command once:
-
-    docker exex -it 121-service  npm run setup
-
-This will add 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
-
-To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.
-**NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
-
-See `services/121-service/package.json` for exact commands per program.
-
-The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
+You can seed the database by using the `api/reset` endpoint from the Swagger UI.
 
 ### API Sign-up/Log-in
 

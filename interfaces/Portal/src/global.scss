@@ -61,6 +61,12 @@
 ion-button {
   text-transform: none;
   --box-shadow: none;
+
+  ion-spinner {
+    width: 1em;
+    height: 1em;
+    margin-inline-start: 0.5em;
+  }
 }
 
 .input-element-with-border {

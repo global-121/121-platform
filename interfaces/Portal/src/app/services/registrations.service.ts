@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
+import { SortDirection } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { Person } from '../models/person.model';
-import {
-  PaginationFilter,
-  PaginationSort,
-  SortDirectionEnum,
-} from './filter.service';
+import { PaginationFilter, PaginationSort } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
@@ -21,7 +18,7 @@ export class RegistrationsService {
   public setSortBy(column: string, direction: string) {
     this.sortBy = {
       column,
-      direction: direction.toUpperCase() as SortDirectionEnum,
+      direction: direction.toUpperCase() as SortDirection,
     };
   }
 

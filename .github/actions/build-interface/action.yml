@@ -1,4 +1,5 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+# More specific about composite actions: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
 name: 'Build: Interface'
 description: 'Builds an Angular interface.'
@@ -26,7 +27,7 @@ inputs:
     description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
     required: false
     default: >-
-      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
       form-action https://*.121.global;
       frame-src blob: 'self';
       frame-ancestors 'self';
@@ -40,7 +41,7 @@ runs:
   using: composite
   steps:
     - name: Set up Node.js version
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version-file: '${{ inputs.interfacePath }}/.node-version'
         cache: 'npm'
@@ -71,13 +72,18 @@ runs:
       run: 'npm run build:prod'
       env:
         NG_PRODUCTION: 'true'
-        NG_USE_SERVICE_WORKER: 'true'
         NG_ENV_NAME: ${{ env.NG_ENV_NAME }}
         NG_URL_121_SERVICE_API: ${{ env.NG_URL_121_SERVICE_API }}
         NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
         NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
         NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+    - name: 'Add/Override safety-workaround for Service-worker'
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        cp -f -v node_modules/@angular/service-worker/safety-worker.js ./www/ngsw-worker.js
 
     - name: Add/Override environment-specific Content-Security-Policy
       if: ${{ inputs.envContentSecurityPolicy }} != ''
@@ -96,3 +102,9 @@ runs:
         echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
         echo '{"schemaVersion": 1,"label":"build","message":"${{ env.NG_BUILD_VERSION }}"}' >> www/VERSION.json
         echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT
+
+    - name: Output build contents
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        ls -la www/

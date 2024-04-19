@@ -32,7 +32,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////ACgcrgCLRiEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzEREREREREREREREREREREREREREREREREREREREREREiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
           envContentSecurityPolicy: >-
-            connect-src 'self' https://nlrc.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            connect-src 'self' https://nlrc.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
             form-action https://nlrc.121.global;
             frame-src blob: ;
             frame-ancestors 'self' https://flex.twilio.com;
@@ -43,6 +43,9 @@ jobs:
           NG_AI_IKEY: 'b6c16596-ecd4-4d3d-a639-2e542ce0d980'
           NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
           APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=b6c16596-ecd4-4d3d-a639-2e542ce0d980;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
+          AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
+          AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig

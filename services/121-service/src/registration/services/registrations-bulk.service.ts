@@ -6,10 +6,7 @@ import { EventsService } from '../../events/events.service';
 import { NoteEntity } from '../../notes/note.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '../../notifications/latest-message.entity';
-import {
-  MessageProcessType,
-  MessageProcessTypeExtension,
-} from '../../notifications/message-job.dto';
+import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
 import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
@@ -286,7 +283,7 @@ export class RegistrationsBulkService {
     includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
   ): PaginateQuery {
-    query.select = ['referenceId'];
+    query.select = ['referenceId', 'programId'];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
       query.select.push('financialServiceProvider');
@@ -418,10 +415,7 @@ export class RegistrationsBulkService {
         registration
       ) {
         const messageProcessType =
-          registrationStatus === RegistrationStatusEnum.invited &&
-          tryWhatsAppFirst
-            ? MessageProcessType.tryWhatsapp
-            : MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
+          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         const placeholderData = {};
         if (usedPlaceholders.length) {
           for (const placeholder of usedPlaceholders) {

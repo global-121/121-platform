@@ -10,10 +10,14 @@ import { PaTransactionResultDto } from '../../../payments/dto/payment-transactio
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { generateRandomString } from '../../../utils/getRandomValue.helper';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { ProcessName, QueueNamePayment } from '../../enum/queue.names.enum';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '../../enum/queue.names.enum';
 import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
@@ -52,7 +56,7 @@ export class SafaricomService
 
     for (const paPaymentData of paymentList) {
       const job = await this.paymentSafaricomQueue.add(
-        ProcessName.sendPayment,
+        ProcessNamePayment.sendPayment,
         {
           userInfo: userInfo,
           paPaymentData: paPaymentData,
@@ -168,7 +172,7 @@ export class SafaricomService
       Occassion: paymentData.referenceId,
       OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
         new Date(),
-      )}_${this.generateRandomString(3)}`,
+      )}_${generateRandomString(3)}`,
       IDType: process.env.SAFARICOM_IDTYPE,
       IDNumber: userInfo.value,
     };
@@ -276,20 +280,5 @@ export class SafaricomService
 
     await this.safaricomRequestRepository.save(safaricomDbRequest);
     await this.transactionRepository.save(safaricomDbRequest[0].transaction);
-  }
-
-  private generateRandomString(length: number): string {
-    const alphanumericCharacters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(
-        Math.random() * alphanumericCharacters.length,
-      );
-      result += alphanumericCharacters.charAt(randomIndex);
-    }
-
-    return result;
   }
 }

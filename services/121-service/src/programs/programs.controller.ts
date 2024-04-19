@@ -6,28 +6,32 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Admin } from '../guards/admin.decorator';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
+import { KoboConnectService } from '../kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/enum/permission.enum';
-import { User } from '../user/user.decorator';
-import { AdminAuthGuard } from './../guards/admin.guard';
 import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import {
@@ -42,151 +46,243 @@ import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
 import { ProgramService } from './programs.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
   public constructor(
     private readonly programService: ProgramService,
     private readonly programAttributesService: ProgramAttributesService,
+    private readonly koboConnectService: KoboConnectService,
   ) {}
 
+  // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
   // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
   // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
     name: 'formatProgramReturnDto',
     required: false,
     type: 'boolean',
-    description: `Set to 'true' to be able to use this as example body in POST /api/programs.`,
+    description:
+      'Return in a format to be used as a body for `POST /api/programs`.',
   })
-  @ApiResponse({ status: 200, description: 'Return program by id.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return program by id.',
+  })
   @Get(':programId')
   public async findOne(
-    @Param() params,
-    @Query() queryParams,
-    @User('id') userId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
+    formatProgramReturnDto: boolean,
+
+    @Req() req,
   ): Promise<ProgramEntity | ProgramReturnDto> {
-    const formatCreateProgramDto =
-      queryParams.formatCreateProgramDto === 'true';
-    if (formatCreateProgramDto) {
-      return this.programService.getProgramReturnDto(params.programId, userId);
+    const userId = req.user.id;
+    if (formatProgramReturnDto) {
+      return this.programService.getProgramReturnDto(programId, userId);
     } else {
-      return await this.programService.findProgramOrThrow(
-        Number(params.programId),
-        userId,
-      );
+      return await this.programService.findProgramOrThrow(programId, userId);
     }
   }
 
+  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
   @ApiOperation({ summary: 'Get published programs' })
-  @ApiResponse({ status: 200, description: 'Return all published programs.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return all published programs.',
+  })
   // TODO: REFACTOR: into GET /api/programs?published=true
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
     return await this.programService.getPublishedPrograms();
   }
 
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return all assigned programs for a user.',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
-  public async getAssignedPrograms(
-    @User('id') userId: number,
-  ): Promise<ProgramsRO> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+  public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
+    const userId = req.user.id;
     return await this.programService.getAssignedPrograms(userId);
   }
 
-  @Admin()
-  @ApiOperation({ summary: 'Create program' })
-  @ApiResponse({
-    status: 201,
-    description: 'The program has been successfully created.',
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: `Create a program.`,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The program has been successfully created.',
+    type: ProgramEntity,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
+  @ApiQuery({
+    name: 'importFromKobo',
+    required: false,
+    type: 'boolean',
+    description: `
+Create a program from an import using the Kobo-Connect API.  \n
+
+When set to \`true\`, you can overwrite any specified program-properties using the body.  \n
+You can also leave the body empty.`,
+  })
+  @ApiQuery({
+    name: 'koboToken',
+    required: false,
+    type: 'string',
+    description: 'A valid Kobo token (required when `importFromKobo=true`)',
+  })
+  @ApiQuery({
+    name: 'koboAssetId',
+    required: false,
+    type: 'string',
+    description: 'A valid Kobo asset-ID (required when `importFromKobo=true`)',
+  })
+  @ApiBody({
+    type: CreateProgramDto,
+    required: false,
+  })
   @Post()
   public async create(
-    @Body() programData: CreateProgramDto,
-    @User('id') userId: number,
+    @Body()
+    programData: CreateProgramDto | Partial<CreateProgramDto>,
+
+    @Query(
+      'importFromKobo',
+      new ParseBoolPipe({
+        optional: true,
+      }),
+    )
+    importFromKobo: boolean,
+
+    @Query('koboToken')
+    koboToken: string,
+
+    @Query('koboAssetId')
+    koboAssetId: string,
+
+    @Req() req,
   ): Promise<ProgramEntity> {
-    return this.programService.create(programData, userId);
+    const userId = req.user.id;
+
+    if (importFromKobo) {
+      if (koboToken && koboAssetId)
+        programData = await this.koboConnectService.create(
+          koboToken,
+          koboAssetId,
+          programData,
+        );
+      else {
+        throw new HttpException(
+          {
+            message: `If 'importFromKobo' is true you need to provide a 'koboToken' and 'koboAssetId'`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const errors = await validate(plainToClass(CreateProgramDto, programData));
+
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    return this.programService.create(programData as CreateProgramDto, userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
   })
   @ApiResponse({
-    status: 202,
+    status: HttpStatus.ACCEPTED,
     description: 'The program has been successfully deleted.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+  })
   @Delete(':programId')
   public async delete(
-    @Param() param,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Body() body: SecretDto,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== process.env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
-    await this.programService.deleteProgram(param.programId);
+    await this.programService.deleteProgram(programId);
     return res
       .status(HttpStatus.ACCEPTED)
       .send('The program has been successfully deleted.');
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Update program' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Representation of updated program',
     type: ProgramReturnDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch(':programId')
   public async updateProgram(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramReturnDto> {
-    return await this.programService.updateProgram(
-      Number(params.programId),
-      updateProgramDto,
-    );
+    return await this.programService.updateProgram(programId, updateProgramDto);
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/program-questions')
   public async createProgramQuestion(
     @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.createProgramQuestion(
-      Number(params.programId),
+      programId,
       updateProgramQuestionDto,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
   @ApiOperation({ summary: 'Update program question' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program question',
     type: ProgramQuestionEntity,
   })
@@ -195,16 +291,19 @@ export class ProgramController {
   @Patch(':programId/program-questions/:programQuestionId')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programQuestionId', ParseIntPipe)
+    programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
-      Number(params.programId),
-      Number(params.programQuestionId),
+      programId,
+      programQuestionId,
       updateProgramQuestionDto,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramQuestionDELETE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionDELETE] })
   @ApiOperation({ summary: 'Delete program question AND related answers' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -214,57 +313,67 @@ export class ProgramController {
   })
   @Delete(':programId/program-questions/:programQuestionId')
   public async deleteProgramQuestion(
-    @Param() params: any,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('programQuestionId', ParseIntPipe)
+    programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.deleteProgramQuestion(
-      params.programId,
-      params.programQuestionId,
+      programId,
+      programQuestionId,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create program custom attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/custom-attributes')
   public async createProgramCustomAttribute(
     @Body() createProgramQuestionDto: CreateProgramCustomAttributeDto,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.createProgramCustomAttribute(
-      Number(params.programId),
+      programId,
       createProgramQuestionDto,
     );
   }
 
-  @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramCustomAttributeUPDATE],
+  })
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return program custom attributes',
     type: ProgramCustomAttributeEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No attribute found for given program and custom attribute id',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'customAttributeId', required: true, type: 'integer' })
   @Patch(':programId/custom-attributes/:customAttributeId')
   public async updateProgramCustomAttributes(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('customAttributeId', ParseIntPipe)
+    customAttributeId: number,
     @Body() createProgramCustomAttributeDto: CreateProgramCustomAttributeDto,
   ): Promise<ProgramCustomAttributeEntity> {
     return await this.programService.updateProgramCustomAttributes(
-      Number(params.programId),
-      Number(params.customAttributeId),
+      programId,
+      customAttributeId,
       createProgramCustomAttributeDto,
     );
   }
 
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({ summary: 'Get attributes for given program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Return attributes by program-id.',
   })
   @ApiQuery({
@@ -292,18 +401,19 @@ export class ProgramController {
     required: false,
     type: 'boolean',
   })
-  @Permissions(PermissionEnum.RegistrationREAD)
   @Get(':programId/attributes')
   public async getAttributes(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams,
-    @User('id') userId: number,
+    @Req() req: any,
   ): Promise<Attribute[]> {
+    const userId = req.user.id;
     if (userId) {
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(
           Number(userId),
-          Number(params.programId),
+          programId,
         );
       if (!hasPersonalReadAccess) {
         // If a person does not have personal read permission we should
@@ -313,7 +423,7 @@ export class ProgramController {
     }
 
     return await this.programAttributesService.getAttributes(
-      Number(params.programId),
+      programId,
       queryParams.includeCustomAttributes === 'true',
       queryParams.includeProgramQuestions === 'true',
       queryParams.includeFspQuestions === 'true',

@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
-import { ActionService } from '../actions/action.service';
+import { ActionsService } from '../actions/actions.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../programs/program.entity';
 import {
-  BulkActionResultDto,
   BulkActionResultPaymentDto,
+  BulkActionResultRetryPaymentDto,
 } from '../registration/dto/bulk-action-result.dto';
 import {
   ImportResult,
@@ -67,7 +67,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly actionService: ActionService,
+    private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
@@ -243,7 +243,7 @@ export class PaymentsService {
     payment: number,
     paginateQuery: PaginateQuery,
   ): Promise<RegistrationViewEntity[]> {
-    const chunkSize = 50000;
+    const chunkSize = 4000;
 
     return await this.registrationsPaginationService.getRegistrationsChunked(
       programId,
@@ -310,7 +310,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
-  ): Promise<BulkActionResultDto> {
+  ): Promise<BulkActionResultRetryPaymentDto> {
     await this.checkPaymentInProgressAndThrow(programId);
 
     await this.getProgramWithFspOrThrow(programId);
@@ -345,10 +345,19 @@ export class PaymentsService {
         );
       });
 
+    const fspsInPayment = [];
+    // This loop is pretty fast: with 131k registrations it takes ~38ms
+    for (const registration of paPaymentDataList) {
+      if (!fspsInPayment.includes(registration.fspName)) {
+        fspsInPayment.push(registration.fspName);
+      }
+    }
+
     return {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
+      fspsInPayment,
     };
   }
 

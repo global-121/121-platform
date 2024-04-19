@@ -2,10 +2,11 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionEntity } from '../actions/action.entity';
-import { ActionModule } from '../actions/action.module';
+import { ActionsModule } from '../actions/actions.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
+import { KoboConnectModule } from '../kobo-connect/kobo-connect.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
 import { UserModule } from '../user/user.module';
@@ -29,13 +30,14 @@ import { ProgramService } from './programs.service';
       ProgramCustomAttributeEntity,
       ProgramFspConfigurationEntity,
     ]),
-    ActionModule,
+    ActionsModule,
     UserModule,
     FspModule,
     HttpModule,
     LookupModule,
     UserModule,
     ProgramAttributesModule,
+    KoboConnectModule,
   ],
   providers: [ProgramService, ProgramFspConfigurationService],
   controllers: [ProgramController, ProgramFspConfigurationController],

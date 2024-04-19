@@ -139,7 +139,11 @@
           "label": "Inloggen"
         }
       },
-      "portalTitle": "Portal"
+      "portalTitle": "Portal",
+      "sso": {
+        "btn-text": "Log in via SSO",
+        "label": "121 maakt gebruik van Single Sign-On (SSO) om u veilig te authenticeren en in te loggen in de portal. Klik op de knop om in te loggen via SSO."
+      }
     },
     "program": {
       "bulk-import": {
@@ -314,7 +318,6 @@
         }
       },
       "program-details": {
-        "aidworkerAssignments": "Toegewezen hulpverleners",
         "distributionDuration": "Distributieduur",
         "distributionFrequency": "Distributiefrequentie",
         "endDate": "Einddatum",
@@ -419,7 +422,8 @@
           "custom-attribute-true": "Ja",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
-          "fspDisplayNamePortal": "Type hulp",
+          "financialServiceProvider": "Type hulp",
+          "fspDisplayName": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",
           "lastMessageStatus": "Laatste bericht",
@@ -617,7 +621,7 @@
         "targeted": "Doel aantal registraties",
         "updated": "Laatst bijgewerkt: "
       },
-      "not-available": "Geen programma's beschikbaar. Neem contact op met je manager",
+      "not-available": "Er zijn momenteel geen programma's aan u toegewezen. Neem contact op met uw manager om te worden toegewezen aan de juiste programma's.",
       "pageSubtitle": "Je voert {{nrPrograms}} programma('s) uit.",
       "pageTitle": "Programma's"
     },

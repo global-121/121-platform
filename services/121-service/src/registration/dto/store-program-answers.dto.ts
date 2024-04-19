@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
+import { IsRegistrationDataValidType } from '../validators/registration-data-type.class.validator';
 
 export class ProgramAnswer {
   @ApiProperty()

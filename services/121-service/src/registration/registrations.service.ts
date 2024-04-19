@@ -2,16 +2,14 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { MessageProcessTypeExtension } from '../notifications/message-job.dto';
 import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -30,8 +28,6 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { ReferenceIdDto } from './dto/reference-id.dto';
-import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
@@ -45,11 +41,11 @@ import {
   AnswerTypes,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
-import { LanguageEnum } from './enum/language.enum';
 import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { ErrorEnum } from './errors/registration-data.error';
 import { RegistrationDataService } from './modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
 import { RegistrationDataEntity } from './registration-data.entity';
@@ -58,10 +54,7 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from './services/inclusion-score.service';
-import {
-  ImportType,
-  RegistrationsImportService,
-} from './services/registrations-import.service';
+import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 @Injectable()
@@ -183,33 +176,11 @@ export class RegistrationsService {
   ): boolean {
     let result = false;
     switch (newStatus) {
-      case RegistrationStatusEnum.startedRegistration ||
-        RegistrationStatusEnum.imported:
+      case RegistrationStatusEnum.startedRegistration:
         result = [null].includes(currentStatus);
         break;
-      case RegistrationStatusEnum.invited:
-        result = [
-          RegistrationStatusEnum.imported,
-          RegistrationStatusEnum.noLongerEligible,
-          null,
-        ].includes(currentStatus);
-        break;
       case RegistrationStatusEnum.registered:
-        result = [
-          RegistrationStatusEnum.imported,
-          RegistrationStatusEnum.startedRegistration,
-          null,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.noLongerEligible:
-        result = [
-          RegistrationStatusEnum.imported,
-          RegistrationStatusEnum.invited,
-          RegistrationStatusEnum.startedRegistration, // needed to transfer 'no longer eligible' status to registration from PA-app
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
-        result = [RegistrationStatusEnum.noLongerEligible].includes(
+        result = [RegistrationStatusEnum.startedRegistration, null].includes(
           currentStatus,
         );
         break;
@@ -244,15 +215,10 @@ export class RegistrationsService {
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.included,
-          RegistrationStatusEnum.noLongerEligible,
-          RegistrationStatusEnum.registeredWhileNoLongerEligible,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
         result = [
-          RegistrationStatusEnum.noLongerEligible,
-          RegistrationStatusEnum.invited,
-          RegistrationStatusEnum.imported,
           RegistrationStatusEnum.startedRegistration,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
@@ -478,236 +444,11 @@ export class RegistrationsService {
     }
   }
 
-  public async addPhone(
-    referenceId: string,
-    phoneNumber: string,
-    preferredLanguage: LanguageEnum,
-    useForInvitationMatching?: boolean,
-  ): Promise<void> {
-    const sanitizedPhoneNr =
-      await this.lookupService.lookupAndCorrect(phoneNumber);
-
-    const currentRegistration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['fsp'],
-    );
-
-    const importedRegistration =
-      await this.findImportedRegistrationByPhoneNumber(
-        sanitizedPhoneNr,
-        currentRegistration.programId,
-      );
-    if (!useForInvitationMatching || !importedRegistration) {
-      // If endpoint is used for other purpose OR no imported registration found  ..
-      // .. continue with current registration
-      // .. and store phone number and language
-      if (!currentRegistration.phoneNumber) {
-        currentRegistration.phoneNumber = sanitizedPhoneNr;
-      }
-      currentRegistration.preferredLanguage = preferredLanguage;
-      await this.registrationUtilsService.save(currentRegistration);
-      return;
-    }
-
-    // Remove old attributes (only relevant in edge case where Intersolve-voucher-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
-    const oldFsp = importedRegistration.fsp;
-    if (oldFsp) {
-      for (const attribute of oldFsp?.questions) {
-        const regData =
-          await this.registrationDataService.getRegistrationDataByName(
-            importedRegistration,
-            attribute.name,
-          );
-        await this.registrationDataScopedRepository.deleteUnscoped({
-          id: regData.id,
-        });
-      }
-    }
-
-    const registrationData = await this.registrationDataScopedRepository.find({
-      where: { registrationId: importedRegistration.id },
-    });
-
-    // If imported registration found ..
-    // .. then transfer relevant attributes from imported registration to current registration
-    for (const d of registrationData) {
-      const relation = new RegistrationDataRelation();
-      relation.fspQuestionId = d.fspQuestionId;
-      relation.programQuestionId = d.programQuestionId;
-      relation.monitoringQuestionId = d.monitoringQuestionId;
-      relation.programCustomAttributeId = d.programCustomAttributeId;
-      await this.registrationDataService.saveData(
-        currentRegistration,
-        d.value,
-        { relation },
-      );
-      await this.registrationDataScopedRepository.remove(d);
-    }
-    currentRegistration.paymentAmountMultiplier =
-      importedRegistration.paymentAmountMultiplier;
-    currentRegistration.maxPayments = importedRegistration.maxPayments;
-    currentRegistration.notes = importedRegistration.notes;
-    currentRegistration.scope = importedRegistration.scope;
-
-    // .. and store phone number and language
-    currentRegistration.phoneNumber = sanitizedPhoneNr;
-    currentRegistration.preferredLanguage = preferredLanguage;
-
-    // Update the 'imported' registration-changes to the current registration
-    const importedRegistrationEvents = await this.eventScopedRepository.find({
-      where: {
-        registrationId: importedRegistration.id,
-      },
-    });
-    importedRegistrationEvents.forEach(
-      (i) => (i.registration = currentRegistration),
-    );
-    await this.eventScopedRepository.save(importedRegistrationEvents);
-
-    // .. and save the updated import-registration
-    const updatedRegistration =
-      await this.registrationUtilsService.save(currentRegistration);
-
-    // .. and update the try whatsapp entity
-    const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
-      where: { registrationId: importedRegistration.id },
-    });
-    if (tryWhatsappEntity) {
-      tryWhatsappEntity.registration = updatedRegistration;
-      await this.tryWhatsappRepository.save(tryWhatsappEntity);
-    }
-
-    // .. and update the twilio messages (to keep history of the invite message etc.)
-    const twilioMessages = await this.twilioMessageScopedRepository.find({
-      where: { registrationId: importedRegistration.id },
-      order: { created: 'DESC' },
-    });
-    if (twilioMessages && twilioMessages.length > 0) {
-      for (const message of twilioMessages) {
-        message.registration = updatedRegistration;
-      }
-      await this.twilioMessageScopedRepository.save(twilioMessages);
-      // Update the last message status of the new registration
-      await this.lastMessageStatusService.updateLatestMessage(
-        twilioMessages[0],
-      );
-    }
-
-    // .. then delete the imported registration
-    await this.registrationScopedRepository.remove(importedRegistration);
-
-    // .. if imported registration status was noLongerEligible copy it, as this needs to be remembered
-    if (
-      importedRegistration.registrationStatus ===
-      RegistrationStatusEnum.noLongerEligible
-    ) {
-      await this.setRegistrationStatus(
-        updatedRegistration.referenceId,
-        importedRegistration.registrationStatus,
-      );
-    }
-  }
-
-  private async findImportedRegistrationByPhoneNumber(
-    phoneNumber: string,
-    programId: number,
-  ): Promise<RegistrationEntity> {
-    const importStatuses = [
-      RegistrationStatusEnum.imported,
-      RegistrationStatusEnum.invited,
-      RegistrationStatusEnum.noLongerEligible,
-    ];
-    return await this.registrationScopedRepository.findOne({
-      where: {
-        phoneNumber: phoneNumber,
-        registrationStatus: In(importStatuses),
-        programId: programId,
-      },
-      relations: ['fsp', 'data', 'fsp.questions', 'notes'],
-    });
-  }
-
-  public async register(
-    referenceId: string,
-  ): Promise<ReferenceIdDto | boolean> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['program'],
-    );
-
-    if (
-      ![
-        RegistrationStatusEnum.startedRegistration,
-        RegistrationStatusEnum.noLongerEligible,
-      ].includes(registration.registrationStatus)
-    ) {
-      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration} or ${RegistrationStatusEnum.noLongerEligible}'`;
-      throw new HttpException(errors, HttpStatus.NOT_FOUND);
-    }
-
-    // If status was 'no longer eligible', switch to 'registeredWhileNoLongerEligible', otherwise to 'registered'
-    let registerResult;
-    if (
-      registration.registrationStatus ===
-      RegistrationStatusEnum.noLongerEligible
-    ) {
-      registerResult = await this.setRegistrationStatus(
-        registration.referenceId,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
-      );
-    } else {
-      registerResult = await this.setRegistrationStatus(
-        referenceId,
-        RegistrationStatusEnum.registered,
-      );
-    }
-
-    await this.inclusionScoreService.calculateInclusionScore(referenceId);
-
-    await this.queueMessageService.addMessageToQueue(
-      registration,
-      null,
-      RegistrationStatusEnum.registered,
-      MessageContentType.registered,
-      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-    );
-
-    if (
-      !registerResult ||
-      ![
-        RegistrationStatusEnum.registered,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
-      ].includes(registerResult.registrationStatus)
-    ) {
-      return false;
-    }
-
-    return { referenceId: registerResult.referenceId };
-  }
-
-  public async importBulkAsImported(
-    csvFile,
-    programId: number,
-    userId: number,
-  ): Promise<ImportResult> {
-    const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importBulkAsImported(
-      csvFile,
-      program,
-      userId,
-    );
-  }
-
   public async getImportRegistrationsTemplate(
     programId: number,
-    type: ImportType,
   ): Promise<string[]> {
-    if (!Object.values(ImportType).includes(type)) {
-      throw new HttpException('Wrong import type', HttpStatus.BAD_REQUEST);
-    }
     return await this.registrationsImportService.getImportRegistrationsTemplate(
       programId,
-      type,
     );
   }
 
@@ -720,6 +461,18 @@ export class RegistrationsService {
     return await this.registrationsImportService.importRegistrations(
       csvFile,
       program,
+      userId,
+    );
+  }
+
+  public async patchBulk(
+    csvFile: any,
+    programId: number,
+    userId: number,
+  ): Promise<void> {
+    return await this.registrationsImportService.patchBulk(
+      csvFile,
+      programId,
       userId,
     );
   }
@@ -742,7 +495,7 @@ export class RegistrationsService {
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    return await this.registrationsImportService.validateRegistrationsInput(
+    return await this.registrationsImportService.validateImportAsRegisteredInput(
       validatedJsonData,
       programId,
       userId,
@@ -789,12 +542,6 @@ export class RegistrationsService {
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
     switch (filterStatus) {
-      case RegistrationStatusEnum.imported:
-        return RegistrationStatusTimestampField.importedDate;
-      case RegistrationStatusEnum.invited:
-        return RegistrationStatusTimestampField.invitedDate;
-      case RegistrationStatusEnum.noLongerEligible:
-        return RegistrationStatusTimestampField.noLongerEligibleDate;
       case RegistrationStatusEnum.startedRegistration:
         return RegistrationStatusTimestampField.startedRegistrationDate;
       case RegistrationStatusEnum.registered:
@@ -807,8 +554,6 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.inclusionEndDate;
       case RegistrationStatusEnum.rejected:
         return RegistrationStatusTimestampField.rejectionDate;
-      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
-        return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
       case RegistrationStatusEnum.deleted:
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
@@ -825,34 +570,21 @@ export class RegistrationsService {
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
   ): Promise<RegistrationViewEntity> {
-    const partialRegistration = updateRegistrationDto.data;
+    let nrAttributesUpdated = 0;
+    const { data: partialRegistration } = updateRegistrationDto;
+
     let registrationToUpdate = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
       programId,
     );
-
-    const oldFspData = {};
-    const newFspData = {};
-    let nrAttributesUpdated = 0;
-
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
     for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeValue = partialRegistration[attributeKey];
 
-      const registrationData =
-        await this.registrationDataService.getRegistrationDataEntityByName(
-          registrationToUpdate,
-          attributeKey,
-        );
-      if (registrationData && registrationData.fspQuestionId) {
-        oldFspData[attributeKey] = registrationData.value;
-      }
-
-      const oldValue =
-        oldViewRegistration[attributeKey] || oldFspData[attributeKey];
+      const oldValue = oldViewRegistration[attributeKey];
 
       if (String(oldValue) !== String(attributeValue)) {
         registrationToUpdate = await this.updateAttribute(
@@ -860,7 +592,6 @@ export class RegistrationsService {
           attributeValue,
           registrationToUpdate,
         );
-        newFspData[attributeKey] = attributeValue;
         nrAttributesUpdated++;
       }
     }
@@ -873,8 +604,8 @@ export class RegistrationsService {
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
       await this.eventsService.log(
-        { ...oldViewRegistration, ...oldFspData },
-        { ...newRegistration, ...newFspData },
+        { ...oldViewRegistration },
+        { ...newRegistration },
         {
           additionalLogAttributes: { reason: updateRegistrationDto.reason },
         },
@@ -919,7 +650,9 @@ export class RegistrationsService {
           registration.phoneNumber = value.toString();
           await this.registrationUtilsService.save(registration);
         } else {
-          throw error;
+          if (error.name !== ErrorEnum.RegistrationDataError) {
+            throw error;
+          }
         }
       }
     }
@@ -1082,23 +815,6 @@ export class RegistrationsService {
       }
     }
     return filteredRegistrations;
-  }
-
-  public async checkPermissionAndThrow(
-    userId: number,
-    permission: PermissionEnum,
-    programId: number,
-  ): Promise<void> {
-    const programIds = (
-      await this.userService.getProgramScopeIdsUserHasPermission(
-        userId,
-        permission,
-      )
-    ).map((p) => p.programId);
-    if (!programIds.includes(programId)) {
-      const error = `User does not have the ${permission} permission for this program`;
-      throw new HttpException({ error }, HttpStatus.UNAUTHORIZED);
-    }
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId)

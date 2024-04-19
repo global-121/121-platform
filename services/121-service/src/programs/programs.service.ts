@@ -24,10 +24,12 @@ import {
 import { ProgramReturnDto } from './dto/program-return.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
 import { ProgramsRO } from './program.interface';
+import { overwriteProgramFspDisplayName } from './utils/overwrite-fsp-display-name.helper';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -67,7 +69,7 @@ export class ProgramService {
       'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
-      'programCustomAttributes',
+      'programFspConfiguration',
     ];
 
     const program = await this.programRepository.findOne({
@@ -78,6 +80,12 @@ export class ProgramService {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    // Program attributes are queried separately because the performance is bad when using relations
+    program.programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
@@ -97,6 +105,16 @@ export class ProgramService {
     if (!includeMetricsUrl) {
       delete program.monitoringDashboardUrl;
       delete program.evaluationDashboardUrl;
+    }
+
+    // over write fsp displayname by program specific displayName
+    if (program.financialServiceProviders.length > 0) {
+      program.financialServiceProviders = overwriteProgramFspDisplayName(
+        program.financialServiceProviders,
+        program.programFspConfiguration,
+      );
+
+      delete program.programFspConfiguration;
     }
 
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
@@ -139,21 +157,48 @@ export class ProgramService {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
-    const programs = await this.programRepository.find({
+    let programs = await this.programRepository.find({
       where: { id: In(programIds) },
       relations: [
         'programQuestions',
         'programCustomAttributes',
         'financialServiceProviders',
         'financialServiceProviders.questions',
+        'programFspConfiguration',
       ],
     });
     const programsCount = programs.length;
+
+    if (programsCount > 0) {
+      programs = programs.map((program) => {
+        if (program.financialServiceProviders.length > 0) {
+          program.financialServiceProviders = overwriteProgramFspDisplayName(
+            program.financialServiceProviders,
+            program.programFspConfiguration,
+          );
+
+          delete program.programFspConfiguration;
+        }
+
+        return program;
+      });
+    }
 
     return { programs, programsCount };
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
+    if (
+      !programData.financialServiceProviders ||
+      !programData.programQuestions ||
+      !programData.programCustomAttributes ||
+      !programData.fullnameNamingConvention
+    ) {
+      const errors =
+        'Required properties missing: `financialServiceProviders`, `programQuestions`, `programCustomAttributes` or `fullnameNamingConvention`';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
     const fspAttributeNames = [];
     for (const fsp of programData.financialServiceProviders) {
       const fspEntity = await this.financialServiceProviderRepository.findOne({
@@ -164,6 +209,7 @@ export class ProgramService {
         fspAttributeNames.push(question.name);
       }
     }
+
     const programQuestionNames = programData.programQuestions.map(
       (q) => q.name,
     );
@@ -180,6 +226,7 @@ export class ProgramService {
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
+
     // Check if allAttributeNames has duplicate values
     const duplicateNames = allAttributeNames.filter(
       (item, index) => allAttributeNames.indexOf(item) !== index,
@@ -679,5 +726,21 @@ export class ProgramService {
       programId,
       userId,
     );
+  }
+
+  public async getFspConfigurations(
+    programId: number,
+    configName: string[],
+  ): Promise<ProgramFspConfigurationEntity[]> {
+    let programFspConfigurations =
+      await this.programFspConfigurationService.findByProgramId(programId);
+    if (configName.length > 0) {
+      programFspConfigurations = programFspConfigurations.filter(
+        (programFspConfiguration) =>
+          configName.includes(programFspConfiguration.name),
+      );
+    }
+
+    return programFspConfigurations;
   }
 }

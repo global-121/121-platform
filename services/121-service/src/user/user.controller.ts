@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -24,34 +25,30 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { DEBUG } from '../config';
-import { Admin } from '../guards/admin.decorator';
-import { AdminAuthGuard } from '../guards/admin.guard';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { CookieNames } from '../shared/enum/cookie.enums';
-import { LoginUserDto, UpdateUserDto } from './dto';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from './dto/assign-aw-to-program.dto';
+import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { FindUserReponseDto } from './dto/find-user-response.dto';
 import { GetUserReponseDto } from './dto/get-user-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,
 } from './dto/userrole-response.dto';
 import { PermissionEnum } from './enum/permission.enum';
-import { User } from './user.decorator';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { tokenExpirationDays, UserService } from './user.service';
+import { UserService } from './user.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class UserController {
   private readonly userService: UserService;
@@ -60,25 +57,25 @@ export class UserController {
   }
 
   //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
+  @AuthenticatedUser()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of roles and their permissions',
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(
-    @User('id') userId: number,
-  ): Promise<UserRoleResponseDTO[]> {
+  public async getUserRoles(@Req() req): Promise<UserRoleResponseDTO[]> {
+    const userId = req.user.id;
     return await this.userService.getUserRoles(userId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Create new user role' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the created role',
     type: UserRoleResponseDTO,
   })
@@ -89,17 +86,17 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the updated user role',
     type: UserRoleResponseDTO,
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Role already exists',
   })
   @Put('roles/:userRoleId')
@@ -113,35 +110,38 @@ export class UserController {
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   // TODO: REFACTOR: rename to /users/roles/
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns the deleted role',
     type: UserRoleResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
-    return await this.userService.deleteUserRole(params.userRoleId);
+  public async deleteUserRole(
+    @Param('userRoleId', ParseIntPipe)
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
+    return await this.userService.deleteUserRole(userRoleId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns all users',
+    type: [UserEntity],
+  })
   @Get('users')
-  public async getUsers(@User('id') userId: number): Promise<UserEntity[]> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+  public async getUsers(): Promise<UserEntity[]> {
     return await this.userService.getUsers();
   }
 
@@ -149,7 +149,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new Aid Worker user' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Created new Aid Worker user',
   })
   @Post('users')
@@ -159,47 +159,6 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
-  @ApiTags('users')
-  @ApiOperation({ summary: 'Sign-up new Person Affected user' })
-  @ApiResponse({
-    status: 201,
-    description: 'Created new Person Affected user',
-  })
-  @Post('users/person-affected')
-  public async createPA(
-    @Body() userData: CreateUserPersonAffectedDto,
-    @Res() res,
-    @Req() req,
-  ): Promise<UserRO> {
-    let sameSite = 'None';
-    let secure = true;
-
-    if (DEBUG) {
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
-      sameSite = serviceWorkerDebug ? 'None' : 'Lax';
-      secure = serviceWorkerDebug;
-    }
-
-    try {
-      const user = await this.userService.createPersonAffected(userData);
-      const exp = new Date(Date.now() + tokenExpirationDays * 24 * 3600000);
-      res.cookie(CookieNames.paApp, user.user.token, {
-        sameSite: sameSite,
-        secure: secure,
-        expires: exp,
-        httpOnly: true,
-      });
-      return res.send({
-        username: user.user.username,
-        permissions: user.user.permissions,
-        expires: exp,
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
-
   @Throttle(
     +process.env.HIGH_THROTTLING_LIMIT || 30,
     +process.env.HIGH_THROTTLING_TTL || 60,
@@ -207,11 +166,11 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Logged in successfully',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'Wrong username and/or password',
   })
   @Post('users/login')
@@ -245,12 +204,14 @@ export class UserController {
         access_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
+        isEntraUser: loginResponse.userRo.user.isEntraUser,
       });
     } catch (error) {
       throw error;
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
@@ -269,52 +230,58 @@ export class UserController {
     }
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })
   // TODO: Change this in to a PATCH request
   @Post('users/password')
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Changed password of user',
     type: UpdateUserDto,
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
   public async update(
-    @User('id') userId: number,
-    @Body() userData: UpdateUserDto,
+    @Body() userPasswordData: UpdateUserPasswordDto,
   ): Promise<any> {
-    if (!userId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return this.userService.update(userData);
+    return this.userService.updatePassword(userPasswordData);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Delete user by userId' })
-  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User deleted',
+    type: UserEntity,
+  })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  public async delete(@Param() params): Promise<UserEntity> {
-    return await this.userService.delete(Number(params.userId));
+  public async delete(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+  ): Promise<UserEntity> {
+    return await this.userService.delete(userId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'User deletes itself' })
   @Delete('users')
-  @ApiResponse({ status: 200, description: 'User deleted', type: UserEntity })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.OK,
+    description: 'User deleted',
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async deleteCurrentUser(
-    @User('id') deleterId: number,
-  ): Promise<UserEntity> {
+  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
+    const deleterId = req.user.id;
     if (!deleterId) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
@@ -322,172 +289,207 @@ export class UserController {
     return await this.userService.delete(deleterId);
   }
 
+  @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
-  @Get('users')
-  @ApiResponse({ status: 200, description: 'User returned' })
+  @Get('users/current')
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.OK,
+    description: 'User returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
     description: 'No user detectable from cookie or no cookie present',
   })
-  public async findMe(@User('username') username: string): Promise<UserRO> {
+  public async findMe(@Req() req): Promise<UserRO> {
+    const username = req.user.username;
     if (!username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.userService.findByUsername(username);
+    return await this.userService.getUserRoByUsernameOrThrow(username);
   }
 
   // This endpoint searches users accross all programs, which is needed to add a user to a program
   // We did not create an extra permission for this as it is always used in combination with adding new users to a program
   // ProgramId is therefore not needed in the service
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users')
   @ApiOperation({
     summary:
       'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of users that match the search criteria.',
     type: [FindUserReponseDto],
   })
   @Get('programs/:programId/users/search')
   public async getUsersByName(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('programId', ParseIntPipe)
+    _programId: number,
+
     @Query('username') username: string,
   ): Promise<FindUserReponseDto[]> {
     return await this.userService.findUsersByName(username);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns program assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No roles found for user',
   })
   @Get('programs/:programId/users/:userId')
   public async getAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.getAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary: 'Create or OVERWRITE program assignment including roles and scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Returns the created or overwritten program assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program or role(s) not found',
   })
   @Put('programs/:programId/users/:userId')
   public async assignAidworkerToProgram(
-    @Param() params,
-    @Body() assignAidworkerToProgram: CreateProgramAssignmentDto,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body()
+    assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.assignAidworkerToProgram(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
       'Update existing program assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns program assignment with all roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program or role(s) not found',
   })
   @Patch('programs/:programId/users/:userId')
   public async updateAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.updateAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
       'Remove roles from program-assignment (pass roles to delete in body) or remove assignment (no body)',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description:
       'Returns the program assignment with the remaining roles or nothing (if program assignment removed)',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'User, program, role(s) or assignment not found',
   })
   @Delete('programs/:programId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     return await this.userService.deleteAidworkerRolesOrAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
 
-  @Permissions(PermissionEnum.AidWorkerProgramREAD)
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Returns a list of users assigned to a program',
     type: [GetUserReponseDto],
   })
   @Get('programs/:programId/users')
   public async getUsersInProgram(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<GetUserReponseDto[]> {
-    return await this.userService.getUsersInProgram(Number(params.programId));
+    return await this.userService.getUsersInProgram(programId);
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Reset user password without current password' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Password has been updated',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch('users/password')
+  public async changePasswordWithoutCurrentPassword(
+    @Body() changePasswordDto: changePasswordWithoutCurrentPasswordDto,
+  ): Promise<void> {
+    await this.userService.changePasswordWithoutCurrentPassword(
+      changePasswordDto,
+    );
   }
 }

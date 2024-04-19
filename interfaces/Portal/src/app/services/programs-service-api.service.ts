@@ -2,7 +2,9 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
+import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
+import { FilterOperator, FilterParameter } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { Event } from '../models/event.model';
@@ -29,11 +31,7 @@ import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
-import {
-  FilterOperatorEnum,
-  PaginationFilter,
-  PaginationSort,
-} from './filter.service';
+import { PaginationFilter, PaginationSort } from './filter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -56,12 +54,7 @@ export class ProgramsServiceApiService {
       )
       .then((response) => {
         if (response) {
-          return {
-            username: response.username,
-            permissions: response.permissions,
-            expires: response.expires,
-            isAdmin: response.isAdmin,
-          };
+          return response;
         }
         return null;
       });
@@ -97,7 +90,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -114,6 +107,10 @@ export class ProgramsServiceApiService {
         if (response && response.programs) {
           return response.programs;
         }
+        return [];
+      })
+      .catch((error) => {
+        console.error('Error: ', error);
         return [];
       });
   }
@@ -295,7 +292,7 @@ export class ProgramsServiceApiService {
     dryRun = false,
     filters?: PaginationFilter[],
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/payments`,
@@ -331,7 +328,7 @@ export class ProgramsServiceApiService {
   ): Promise<void> {
     const downloadData: string[] = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/import-template/${type}`,
+      `/programs/${programId}/registrations/import-template`,
       false,
     );
 
@@ -344,19 +341,10 @@ export class ProgramsServiceApiService {
     return;
   }
 
-  import(
-    programId: number,
-    file: File,
-    destination: RegistrationStatus = RegistrationStatus.imported,
-  ): Promise<ImportResult> {
+  import(programId: number, file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
-
-    let path = `/programs/${programId}/registrations/import-bulk`;
-
-    if (destination === RegistrationStatus.registered) {
-      path = `/programs/${programId}/registrations/import-registrations`;
-    }
+    const path = `/programs/${programId}/registrations/import-registrations`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
@@ -481,14 +469,11 @@ export class ProgramsServiceApiService {
         );
       }
       if (allPeopleAffectedOptions.filters) {
-        for (const filter of allPeopleAffectedOptions.filters) {
-          const defaultFilter = FilterOperatorEnum.ilike;
-          const operator = filter.operator ? filter.operator : defaultFilter;
-          params = params.append(
-            `filter.${filter.name}`,
-            `${operator}:${filter.value}`,
-          );
-        }
+        params = this.filtersToParams(
+          allPeopleAffectedOptions?.filters,
+          false,
+          params,
+        );
       }
       if (allPeopleAffectedOptions.sort) {
         params = params.append(
@@ -607,11 +592,22 @@ export class ProgramsServiceApiService {
     statuses?: RegistrationStatus[],
     filters?: PaginationFilter[],
     sort?: PaginationSort,
-    // TODO: Fix the 'any' for the 'links' parameter
-  ): Promise<{ data: Person[]; meta: PaginationMetadata; links: any }> {
+  ): Promise<{
+    data: Person[];
+    meta: PaginationMetadata;
+    links: {
+      current: string;
+      first: string;
+      last: string;
+      next: string;
+      previous: string;
+    };
+  }> {
     let params = new HttpParams();
+
     params = params.append('limit', limit);
     params = params.append('page', page);
+
     // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
       params = params.append('filter.referenceId', referenceId);
@@ -623,21 +619,18 @@ export class ProgramsServiceApiService {
       params = params.append('select', attributes.join());
     }
     if (statuses) {
-      params = params.append('filter.status', `$in:${statuses.join(',')}`);
+      params = params.append(
+        'filter.status',
+        `${FilterOperator.in}:${statuses.join(',')}`,
+      );
     }
     if (filters) {
-      for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
-        const operator = filter.operator ? filter.operator : defaultFilter;
-        params = params.append(
-          `filter.${filter.name}`,
-          `${operator}:${filter.value}`,
-        );
-      }
+      params = this.filtersToParams(filters, false, params);
     }
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     }
+
     const { data, meta, links } = await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
@@ -656,7 +649,7 @@ export class ProgramsServiceApiService {
     message?: string,
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/status`,
@@ -695,36 +688,6 @@ export class ProgramsServiceApiService {
       programId,
       dryRun,
       filters,
-    );
-  }
-
-  markNoLongerEligible(
-    programId: number | string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.noLongerEligible,
-      programId,
-      dryRun,
-      filters,
-    );
-  }
-
-  invite(
-    programId: number | string,
-    message: string,
-    dryRun = false,
-    filters?: PaginationFilter[],
-    messageTemplateKey?: string,
-  ): Promise<any> {
-    return this.updatePaStatus(
-      RegistrationStatus.invited,
-      programId,
-      dryRun,
-      filters,
-      message,
-      messageTemplateKey,
     );
   }
 
@@ -803,7 +766,7 @@ export class ProgramsServiceApiService {
     filters?: PaginationFilter[],
     messageTemplateKey?: string,
   ): Promise<any> {
-    const params = this.filterToParams(filters, dryRun);
+    const params = this.filtersToParams(filters, dryRun);
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message`,
@@ -1008,15 +971,29 @@ export class ProgramsServiceApiService {
       });
   }
 
-  private filterToParams(
+  private filtersToParams(
     filters: PaginationFilter[],
     dryRun: boolean,
+    existingParams?: HttpParams,
   ): HttpParams {
-    let params = new HttpParams();
+    let params: HttpParams;
+
+    if (existingParams) {
+      params = existingParams;
+    } else {
+      params = new HttpParams();
+    }
+
     params = params.append('dryRun', dryRun);
+
     if (filters) {
       for (const filter of filters) {
-        const defaultFilter = FilterOperatorEnum.ilike;
+        if (filter.name === FilterParameter.search) {
+          params = params.append(FilterParameter.search, filter.value);
+          continue;
+        }
+
+        const defaultFilter = FilterOperator.ilike;
         const operator = filter.operator ? filter.operator : defaultFilter;
         params = params.append(
           `filter.${filter.name}`,
@@ -1024,6 +1001,7 @@ export class ProgramsServiceApiService {
         );
       }
     }
+
     return params;
   }
 
@@ -1031,6 +1009,30 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/notifications/${programId}/message-templates`,
+    );
+  }
+
+  public async getCurrentUser(): Promise<{ user: User }> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      CURRENT_USER_ENDPOINT_PATH,
+      false,
+    );
+  }
+
+  createProgramFromKobo(token: string, assetId: string): Promise<Program> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs?importFromKobo=true${token ? `&koboToken=${token}` : ''}${assetId ? `&koboAssetId=${assetId}` : ''}`,
+      {},
+    );
+  }
+
+  createProgram(program: Program): Promise<Program> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs',
+      program,
     );
   }
 }

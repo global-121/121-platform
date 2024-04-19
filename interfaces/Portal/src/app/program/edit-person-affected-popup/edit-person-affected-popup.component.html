@@ -200,12 +200,12 @@
         >
           <strong
             >{{
-              'page.program.program-people-affected.column.fspDisplayNamePortal'
+              'page.program.program-people-affected.column.fspDisplayName'
                 | translate
             }}:</strong
           >
           &nbsp;&nbsp;
-          <code>{{ person?.fspDisplayNamePortal }}</code>
+          <code>{{ person?.fspDisplayName }}</code>
         </div>
         <app-update-fsp
           *ngIf="
@@ -216,10 +216,10 @@
           "
           [fspList]="fspList"
           [label]="
-            'page.program.program-people-affected.column.fspDisplayNamePortal'
+            'page.program.program-people-affected.column.fspDisplayName'
               | translate
           "
-          [value]="person?.fspDisplayNamePortal"
+          [value]="person?.fspDisplayName"
           [attributeValues]="attributeValues"
           [referenceId]="person?.referenceId"
           [programId]="programId"

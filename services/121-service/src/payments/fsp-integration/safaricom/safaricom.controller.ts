@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SafaricomService } from './safaricom.service';
 
@@ -12,7 +12,7 @@ export class SafaricomController {
     summary:
       'Notification callback used by Safaricom to notify status of payment to us.',
   })
-  @ApiResponse({ status: 201, description: 'Notified' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
   @Post('transaction')
   public async resultCallback(
     @Body() safaricomPaymentResultData: any,

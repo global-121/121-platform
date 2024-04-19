@@ -3,15 +3,16 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Admin } from '../guards/admin.decorator';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { AdminAuthGuard } from './../guards/admin.guard';
+import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateFspAttributeDto,
   UpdateFspAttributeDto,
@@ -21,16 +22,16 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { FspQuestionEntity } from './fsp-question.entity';
 import { FspService } from './fsp.service';
 
-@UseGuards(PermissionsGuard, AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
 export class FspController {
   public constructor(private readonly fspService: FspService) {}
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'All Financial Service Providers with attributes',
     type: [FinancialServiceProviderEntity],
   })
@@ -42,46 +43,48 @@ export class FspController {
   @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId.' })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Fsp with attributes',
     type: FinancialServiceProviderEntity,
   })
   @Get(':fspId')
   public async getFspById(
-    @Param() param,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.getFspById(param.fspId);
+    return await this.fspService.getFspById(fspId);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update Financial Service Provider' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Financial Service Provicer updated',
     type: FinancialServiceProviderEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No Financial Service Provicer found with given id',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Patch(':fspId')
   public async updateFsp(
-    @Param('fspId') fspId: number,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspDto: UpdateFspDto,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.updateFsp(Number(fspId), updateFspDto);
+    return await this.fspService.updateFsp(fspId, updateFspDto);
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Update FSP attribute' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'FSP attribute updated',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description:
       'No attribute with given name found in Financial Service Provicer with given id',
   })
@@ -90,59 +93,66 @@ export class FspController {
   @Patch(':fspId/attribute/:attributeName')
   public async updateFspAttribute(
     @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() updateFspAttributeDto: UpdateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.updateFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
       updateFspAttributeDto,
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Create FSP attribute' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'FSP attribute created',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 403,
+    status: HttpStatus.FORBIDDEN,
     description: 'Attribute with given name already exists for given FSP',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No Financial Service Provicer found with given id',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @Post(':fspId/attribute')
   public async createFspAttribute(
-    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
     @Body() createFspAttributeDto: CreateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     return await this.fspService.createFspAttribute(
-      Number(params.fspId),
+      fspId,
       createFspAttributeDto,
     );
   }
 
-  @Admin()
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Delete FSP attribute' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'FSP attribute deleted',
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'No attribut with given name found for given fspId',
   })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiParam({ name: 'attributeName', required: true, type: 'string' })
   @Delete(':fspId/attribute/:attributeName')
-  public async deleteFspAttribute(@Param() params): Promise<FspQuestionEntity> {
+  public async deleteFspAttribute(
+    @Param() params,
+    @Param('fspId', ParseIntPipe)
+    fspId: number,
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.deleteFspAttribute(
-      Number(params.fspId),
+      fspId,
       params.attributeName,
     );
   }

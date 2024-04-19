@@ -4,7 +4,7 @@ import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
 import { In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { ActionService } from '../actions/action.service';
+import { ActionsService } from '../actions/actions.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
@@ -55,7 +55,7 @@ export class MetricsService {
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly actionService: ActionService,
+    private readonly actionService: ActionsService,
     private readonly paymentsService: PaymentsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
@@ -75,7 +75,11 @@ export class MetricsService {
     await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
-        return this.getAllPeopleAffectedList(programId, paginationQuery.filter);
+        return this.getAllPeopleAffectedList(
+          programId,
+          paginationQuery.filter,
+          paginationQuery.search,
+        );
       }
       case ExportType.included: {
         return this.getInclusionList(programId);
@@ -101,12 +105,14 @@ export class MetricsService {
   private async getAllPeopleAffectedList(
     programId: number,
     filter: PaginationFilter,
+    search?: string,
   ): Promise<FileDto> {
     const data = await this.getRegistrationsList(
       programId,
       ExportType.allPeopleAffected,
       null,
       filter,
+      search,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -166,6 +172,7 @@ export class MetricsService {
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
     filter?: PaginationFilter,
+    search?: string,
   ): Promise<object[]> {
     if (registrationStatus) {
       filter = { status: registrationStatus };
@@ -179,10 +186,15 @@ export class MetricsService {
       relationOptions,
       exportType,
       filter,
+      search,
     );
 
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'];
+
+      const preferredLanguage = row['preferredLanguage'] || 'en';
+      row['fspDisplayName'] = row['fspDisplayName'][preferredLanguage];
+
       delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
@@ -333,6 +345,7 @@ export class MetricsService {
     relationOptions: RegistrationDataOptions[],
     exportType?: ExportType,
     filter?: PaginationFilter,
+    search?: string,
   ): Promise<object[]> {
     // Create an empty scoped querybuilder object
     let queryBuilder = this.registrationScopedViewRepository
@@ -356,7 +369,7 @@ export class MetricsService {
       GenericAttributes.preferredLanguage,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.registrationCreatedDate,
-      GenericAttributes.fspDisplayNamePortal,
+      GenericAttributes.fspDisplayName,
     ] as string[];
 
     const program = await this.programRepository.findOneBy({
@@ -375,13 +388,14 @@ export class MetricsService {
       .map((r) => r.name)
       .filter((r) => r !== CustomDataAttributes.phoneNumber);
 
-    const chunkSize = 40000;
+    const chunkSize = 10000;
     const paginateQuery = {
       path: 'registration',
       filter: filter,
       limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
+      search: search,
     };
 
     const data =
@@ -405,7 +419,7 @@ export class MetricsService {
       .select([
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
-        `fsp."fspDisplayNamePortal" AS fsp`,
+        `fsp."displayName" AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
@@ -608,6 +622,9 @@ export class MetricsService {
       .innerJoin('registration_data.registration', 'registration')
       .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
+      .andWhere('registration."registrationStatus" != :status', {
+        status: RegistrationStatusEnum.rejected,
+      })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value');

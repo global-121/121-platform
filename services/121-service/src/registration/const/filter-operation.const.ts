@@ -13,8 +13,11 @@ export const AllowedFilterOperatorsNumber = [
   FilterOperator.NULL,
 ];
 
+const dataSearchableColumn = 'data.(value)';
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
+    searchableColumns: [dataSearchableColumn],
+    ignoreSearchByInQueryParam: true,
     maxLimit: 40000,
     sortableColumns: [
       'id',
@@ -44,7 +47,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       inclusionScore: AllowedFilterOperatorsNumber,
       paymentAmountMultiplier: AllowedFilterOperatorsNumber,
       financialServiceProvider: AllowedFilterOperatorsString,
-      fspDisplayNamePortal: AllowedFilterOperatorsString,
+      fspDisplayName: AllowedFilterOperatorsString,
       registrationProgramId: AllowedFilterOperatorsNumber,
       maxPayments: AllowedFilterOperatorsNumber,
       paymentCount: AllowedFilterOperatorsNumber,

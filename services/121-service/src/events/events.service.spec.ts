@@ -3,6 +3,7 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
@@ -65,7 +66,7 @@ function getViewRegistration(): RegistrationViewEntity {
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
     financialServiceProvider: FspName.intersolveVisa,
-    fspDisplayNamePortal: 'Visa debit card',
+    fspDisplayName: { en: 'Visa debit card' },
     registrationProgramId: 2,
     personAffectedSequence: 'PA #2',
     maxPayments: null,
@@ -101,7 +102,7 @@ describe('EventsService', () => {
     userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
-    eventsService['request']['userId'] = 2;
+    eventsService['request']['user']['id'] = 2;
 
     jest
       .spyOn(eventScopedRepository, 'find')
@@ -109,7 +110,7 @@ describe('EventsService', () => {
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
       id: 2,
-      userType: 'aidWorker',
+      userType: UserType.aidWorker,
       username: 'testUser',
       password: 'dummyPassword',
       hashPassword: async () => 'hashedPasswordDummy',
@@ -195,8 +196,9 @@ describe('EventsService', () => {
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
-    newViewRegistration['fspDisplayNamePortal'] =
-      'Albert Heijn voucher WhatsApp"';
+    newViewRegistration['fspDisplayName'] = {
+      en: 'Albert Heijn voucher WhatsApp',
+    } as unknown as JSON;
     delete newViewRegistration['addressCity'];
     delete newViewRegistration['addressPostalCode'];
     delete newViewRegistration['addressHouseNumberAddition'];
@@ -219,11 +221,11 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: oldViewRegistration['fspDisplayNamePortal'],
+            value: oldViewRegistration['fspDisplayName'],
           },
           {
             key: 'newValue',
-            value: newViewRegistration['fspDisplayNamePortal'],
+            value: newViewRegistration['fspDisplayName'],
           },
         ],
         userId: 2,

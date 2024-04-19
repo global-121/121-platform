@@ -152,7 +152,7 @@
           fill="outline"
           size="small"
           shape="round"
-          [disabled]="issueLoading || !canIssueNewCard()"
+          [disabled]="issueLoading || !canIssueNewCard"
           (confirm)="issueNewCardButtonClick()"
           [subHeader]="
             'registration-details.physical-cards-overview.issue-new-card'
@@ -171,10 +171,10 @@
             'registration-details.physical-cards-overview.issue-new-card'
               | translate
           }}
+
           <ion-spinner
-            color="portal-primary"
-            class="physical-card-button-spinner"
             *ngIf="issueLoading"
+            color="portal-primary"
           ></ion-spinner>
         </app-confirm-prompt>
       </ng-container>
@@ -214,10 +214,10 @@
               : ('registration-details.physical-cards-overview.pause-card'
                 | translate)
           }}
+
           <ion-spinner
-            color="portal-danger"
-            class="physical-card-button-spinner"
             *ngIf="pauseLoading"
+            color="portal-danger"
           ></ion-spinner>
         </app-confirm-prompt>
       </ng-container>
