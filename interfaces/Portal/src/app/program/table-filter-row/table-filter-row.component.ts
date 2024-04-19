@@ -39,7 +39,9 @@ export class TableFilterRowComponent {
   @ViewChild('statusTableFilter')
   public statusTableFilter: StatusTableFilterComponent;
 
-  public textFilterOption: Filter[] = [this.filterService.SEARCH_FILTER_OPTION];
+  // public textFilterOption: Filter[] = [this.filterService.SEARCH_FILTER_OPTION];
+  // TODO: Reactivate this line when the search filter is fixed
+  public textFilterOption: Filter[] = [];
 
   public textFilter: Observable<PaginationFilter[]>;
 
