@@ -177,23 +177,16 @@ export class UserController {
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
-    @Req() req,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
 
       res.cookie(
         loginResponse.cookieSettings.tokenKey,
         loginResponse.cookieSettings.tokenValue,
         {
-          sameSite: serviceWorkerDebug
-            ? 'None'
-            : loginResponse.cookieSettings.sameSite,
-          secure: serviceWorkerDebug
-            ? true
-            : loginResponse.cookieSettings.secure,
+          sameSite: loginResponse.cookieSettings.sameSite,
+          secure: loginResponse.cookieSettings.secure,
           expires: loginResponse.cookieSettings.expires,
           httpOnly: loginResponse.cookieSettings.httpOnly,
         },
