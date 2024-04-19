@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import HomePage from '../../../pages/Home/HomePage';
-import LoginPage from '../../../pages/Login/LoginPage';
-import TableModule from '../../../pages/Table/TableModule';
-import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import { getAccessToken, resetDB } from '@121-service/test/helpers/utility.helper';

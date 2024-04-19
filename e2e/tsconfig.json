@@ -25,7 +25,8 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@121-service/*": ["./../services/121-service/*"]
+      "@121-service/*": ["./../services/121-service/*"],
+      "@121-e2e/*": ["./*"]
     }
   },
   "watchOptions": {
