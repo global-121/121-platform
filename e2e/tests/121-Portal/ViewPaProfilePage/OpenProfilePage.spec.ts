@@ -1,12 +1,14 @@
-// @ts-nocheck
-import { test, expect } from '@playwright/test';
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
-import { getAccessToken, resetDB } from '@121-service/test/helpers/utility.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   // Reset the DB to the required state
@@ -23,7 +25,10 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');
-  await loginPage.login(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN, process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN);
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
 });
 
 test('[27411] Open PA profile page', async ({ page }) => {
@@ -37,7 +42,13 @@ test('[27411] Open PA profile page', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.verifyRowTableLeft(1, { personAffected: 'PA #1', firstName: undefined, lastName: undefined, phoneNumber: undefined, status: 'Registered' });
+    await table.verifyRowTableLeft(1, {
+      personAffected: 'PA #1',
+      firstName: undefined,
+      lastName: undefined,
+      phoneNumber: undefined,
+      status: 'Registered',
+    });
     await table.verifyRowTableRight(1, { preferredLanguage: 'English' });
     await table.clickOnPaNumber(1);
   });

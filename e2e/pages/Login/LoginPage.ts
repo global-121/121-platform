@@ -10,7 +10,11 @@ class LoginPage {
     this.page = page;
   }
 
-  async login(username: string, password: string) {
+  async login(username?: string, password?: string) {
+    if (!username || !password) {
+      throw new Error('Username and password are required');
+    }
+
     await this.page.fill(this.usernameInput, username);
     await this.page.fill(this.passwordInput, password);
     await this.page.click(this.loginButton);

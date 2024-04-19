@@ -1,12 +1,14 @@
-// @ts-nocheck
-import { test, expect } from '@playwright/test';
-import HomePage from '../../../pages/Home/HomePage';
-import LoginPage from '../../../pages/Login/LoginPage';
-import TableModule from '../../../pages/Table/TableModule';
-import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
-import { getAccessToken, resetDB } from '@121-service/test/helpers/utility.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { expect, test } from '@playwright/test';
+import HomePage from '../../../pages/Home/HomePage';
+import LoginPage from '../../../pages/Login/LoginPage';
+import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '../../../pages/Table/TableModule';
 
 test.beforeEach(async ({ page }) => {
   // Reset the DB to the required state
@@ -23,7 +25,10 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');
-  await loginPage.login(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN, process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN);
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
 });
 
 test('[27493] Open the edit PA popup', async ({ page }) => {
