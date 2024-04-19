@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Query,
   Req,
   Res,
@@ -90,7 +91,8 @@ export class MetricsController {
     PaginateConfigRegistrationViewOnlyFilters,
   )
   public async getExportList(
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Param('exportType') exportType: ExportType,
     @Query() queryParams: ExportDetailsQueryParamsDto,
     @Paginate() paginationQuery: PaginateQuery,
@@ -111,7 +113,7 @@ export class MetricsController {
       paginationQuery.search = queryParams['search'];
     }
     const result = await this.metricsService.getExportList(
-      Number(programId),
+      programId,
       exportType as ExportType,
       userId,
       queryParams.minPayment,
@@ -158,10 +160,11 @@ export class MetricsController {
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/metrics/payment-state-sums')
-  public async getPaymentsWithStateSums(@Param() params): Promise<any> {
-    return await this.metricsService.getPaymentsWithStateSums(
-      Number(params.programId),
-    );
+  public async getPaymentsWithStateSums(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
+    return await this.metricsService.getPaymentsWithStateSums(programId);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
@@ -172,8 +175,11 @@ export class MetricsController {
     description: 'Program stats summary',
   })
   @Get('programs/:programId/metrics/program-stats-summary')
-  public async getProgramStats(@Param() params): Promise<ProgramStats> {
-    return await this.metricsService.getProgramStats(Number(params.programId));
+  public async getProgramStats(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<ProgramStats> {
+    return await this.metricsService.getProgramStats(programId);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
@@ -186,10 +192,9 @@ export class MetricsController {
   })
   @Get('programs/:programId/metrics/registration-status')
   public async getRegistrationStatusStats(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<RegistrationStatusStats[]> {
-    return await this.metricsService.getRegistrationStatusStats(
-      Number(params.programId),
-    );
+    return await this.metricsService.getRegistrationStatusStats(programId);
   }
 }

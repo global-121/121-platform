@@ -55,10 +55,11 @@ export class MessageTemplateController {
   })
   @Get(':programId/message-templates')
   public async getMessageTemplatesByProgramId(
-    @Param('programId') programId,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<MessageTemplateEntity[]> {
     return await this.messageTemplateService.getMessageTemplatesByProgramId(
-      Number(programId),
+      programId,
     );
   }
 

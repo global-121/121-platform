@@ -3,6 +3,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -48,11 +49,12 @@ export class IntersolveVisaController {
   public async getVisaWalletsAndDetails(
     // TODO: REFACTOR: rename to registration.referenceid
     @Query('referenceId') referenceId,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<GetWalletsResponseDto> {
     return await this.intersolveVisaService.getVisaWalletsAndDetails(
       referenceId,
-      params.programId,
+      programId,
     );
   }
 
@@ -73,11 +75,13 @@ export class IntersolveVisaController {
   )
   public async blockWallet(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       true,
-      Number(params.programId),
+      programId,
     );
   }
 
@@ -98,11 +102,13 @@ export class IntersolveVisaController {
   )
   public async unblockWallet(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       false,
-      Number(params.programId),
+      programId,
     );
   }
 
@@ -120,10 +126,14 @@ export class IntersolveVisaController {
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
   )
-  public async syncIntersolveCustomerWith121(@Param() params): Promise<any> {
+  public async syncIntersolveCustomerWith121(
+    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
     return await this.intersolveVisaService.syncIntersolveCustomerWith121(
       params.referenceId,
-      params.programId,
+      programId,
     );
   }
 
@@ -145,10 +155,12 @@ export class IntersolveVisaController {
   )
   public async reissueWalletAndCard(
     @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.reissueWalletAndCard(
       params.referenceId,
-      params.programId,
+      programId,
     );
   }
 
