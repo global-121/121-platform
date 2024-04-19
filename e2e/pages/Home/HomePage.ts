@@ -10,17 +10,22 @@ class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-  };
+  }
 
   async validateNumberOfActivePrograms(amount: number) {
-    expect(await this.page.locator(this.activeProgramsBanner).textContent()).toContain(`You are running ${amount} program(s) actively`);
-  };
+    expect(
+      await this.page.locator(this.activeProgramsBanner).textContent(),
+    ).toContain(`You are running ${amount} program(s) actively`);
+  }
 
   async openPAsForRegistrationOcwProgram(programName: string) {
-    await this.page.locator(this.programCard).filter({ hasText: programName }).click();
+    await this.page
+      .locator(this.programCard)
+      .filter({ hasText: programName })
+      .click();
     await this.page.locator(this.openPAsForRegistrationButton).click();
     await this.page.locator(this.okButton).click();
-  };
+  }
 }
 
 export default HomePage;

@@ -1,7 +1,7 @@
-import { defineConfig } from '@playwright/test';
 import { AzureReporterOptions } from '@alex_neo/playwright-azure-reporter/dist/playwright-azure-reporter';
-import path from 'path';
+import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
+import path from 'path';
 
 const envPath = path.resolve(__dirname, '../services/.env');
 dotenv.config({ path: envPath });
@@ -46,14 +46,14 @@ export default defineConfig({
   timeout: 20000,
   use: {
     baseURL: process.env.BASE_URL,
-    video:'on-first-retry',
+    video: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: false,
     acceptDownloads: true,
     actionTimeout: 20000,
     launchOptions: {
-        downloadsPath: 'resources/downloads',
-        args: ['--start-maximized']
+      downloadsPath: 'resources/downloads',
+      args: ['--start-maximized'],
     },
     viewport: null,
     ignoreHTTPSErrors: true,
