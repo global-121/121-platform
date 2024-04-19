@@ -7,21 +7,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
+    "strict": true,
     "moduleResolution": "node",
-    "declaration": false,
-    "noImplicitAny": false,
-    "removeComments": true,
-    "noLib": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "sourceMap": true,
-    "allowJs": true,
-    "checkJs": true,
-    "incremental": true,
+    "noImplicitAny": true,
     "outDir": "./dist",
-    "types": ["express", "node", "jest"],
-    "typeRoots": ["./node_modules/@types"],
+    "checkJs": true,
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
@@ -29,10 +19,6 @@
       "@121-e2e/*": ["./*"]
     }
   },
-  "watchOptions": {
-    "watchFile": "fixedPollingInterval",
-    "excludeDirectories": ["node_modules", "dist"]
-  },
-  "include": ["**/*.spec.ts", "**/*.config.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

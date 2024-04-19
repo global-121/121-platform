@@ -1,0 +1,38 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test E2E: Linting'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - 'feat.*'
+    paths:
+      - '.github/workflows/test_e2e_linting.yml'
+      - 'e2e/**'
+
+env:
+  e2eTestsPath: 'e2e/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install
+        working-directory: ${{ env.e2eTestsPath }}
+        run: 'npm ci --omit=optional --no-fund --no-audit'
+
+      - name: Lint
+        working-directory: ${{ env.e2eTestsPath }}
+        run: 'npm run lint'
