@@ -1,8 +1,9 @@
 import { defineConfig } from '@playwright/test';
 import { AzureReporterOptions } from '@alex_neo/playwright-azure-reporter/dist/playwright-azure-reporter';
 import path from 'path';
-const envPath = path.resolve(__dirname, '.env');
 import dotenv from 'dotenv';
+
+const envPath = path.resolve(__dirname, '../services/.env');
 dotenv.config({ path: envPath });
 
 export default defineConfig({
@@ -20,13 +21,13 @@ export default defineConfig({
     [
       '@alex_neo/playwright-azure-reporter',
       {
-        orgUrl: 'https://dev.azure.com/redcrossnl',
+        orgUrl: process.env.AZURE_DEV_URL,
         token: process.env.AZURE_DEVOPS_TOKEN,
         planId: 27408,
         projectName: '121 Platform',
         environment: 'AQA',
         logging: true,
-        testRunTitle: 'Playwright Test Run',
+        testRunTitle: 'Playwright Test Suite',
         publishTestResultsMode: 'testRun',
         uploadAttachments: true,
         attachmentsType: ['screenshot', 'video', 'trace'],
@@ -34,7 +35,7 @@ export default defineConfig({
           owner: {
             displayName: 'Krajewski, Piotr',
           },
-          comment: 'Playwright Test Run',
+          comment: 'Playwright Test Suite',
           configurationIds: [],
         },
       } as AzureReporterOptions,
