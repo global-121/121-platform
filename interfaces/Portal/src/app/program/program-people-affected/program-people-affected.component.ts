@@ -458,8 +458,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private createFiltersForAttibutes(): Filter[] {
     const allFilters = [
-      this.filterService.SEARCH_FILTER_OPTION,
-      this.filterService.DIVIDER_FILTER_OPTION,
+      // TODO: Reactivate this line when the search filter is fixed
+      // this.filterService.SEARCH_FILTER_OPTION,
+      // this.filterService.DIVIDER_FILTER_OPTION,
     ];
 
     let groupIndex = 0;

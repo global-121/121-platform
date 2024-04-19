@@ -75,7 +75,11 @@ export class MetricsService {
     await this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
-        return this.getAllPeopleAffectedList(programId, paginationQuery.filter);
+        return this.getAllPeopleAffectedList(
+          programId,
+          paginationQuery.filter,
+          paginationQuery.search,
+        );
       }
       case ExportType.included: {
         return this.getInclusionList(programId);
@@ -101,12 +105,14 @@ export class MetricsService {
   private async getAllPeopleAffectedList(
     programId: number,
     filter: PaginationFilter,
+    search?: string,
   ): Promise<FileDto> {
     const data = await this.getRegistrationsList(
       programId,
       ExportType.allPeopleAffected,
       null,
       filter,
+      search,
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
@@ -166,6 +172,7 @@ export class MetricsService {
     exportType: ExportType,
     registrationStatus?: RegistrationStatusEnum,
     filter?: PaginationFilter,
+    search?: string,
   ): Promise<object[]> {
     if (registrationStatus) {
       filter = { status: registrationStatus };
@@ -179,10 +186,15 @@ export class MetricsService {
       relationOptions,
       exportType,
       filter,
+      search,
     );
 
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'];
+
+      const preferredLanguage = row['preferredLanguage'] || 'en';
+      row['fspDisplayName'] = row['fspDisplayName'][preferredLanguage];
+
       delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
@@ -333,6 +345,7 @@ export class MetricsService {
     relationOptions: RegistrationDataOptions[],
     exportType?: ExportType,
     filter?: PaginationFilter,
+    search?: string,
   ): Promise<object[]> {
     // Create an empty scoped querybuilder object
     let queryBuilder = this.registrationScopedViewRepository
@@ -382,6 +395,7 @@ export class MetricsService {
       limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
+      search: search,
     };
 
     const data =

@@ -69,7 +69,6 @@ export class ProgramService {
       'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
-      'programCustomAttributes',
       'programFspConfiguration',
     ];
 
@@ -81,6 +80,12 @@ export class ProgramService {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    // Program attributes are queried separately because the performance is bad when using relations
+    program.programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
