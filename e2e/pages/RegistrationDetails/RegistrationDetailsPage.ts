@@ -116,11 +116,15 @@ class RegistrationDetails {
 
   async issueNewVisaDebitCard() {
     try {
-      const activeCard = this.page.locator(this.debitCardStatus).filter({ hasText: 'Active' });
+      const activeCard = this.page
+        .locator(this.debitCardStatus)
+        .filter({ hasText: 'Active' });
       await activeCard.waitFor({ state: 'visible' });
       await activeCard.click();
 
-      const issueNewCardButton = this.page.getByRole('button', { name: 'Issue new card' });
+      const issueNewCardButton = this.page.getByRole('button', {
+        name: 'Issue new card',
+      });
       await issueNewCardButton.waitFor({ state: 'visible' });
       await issueNewCardButton.click();
 
