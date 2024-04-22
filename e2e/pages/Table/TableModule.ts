@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Page } from 'playwright';
 
 interface PersonLeft {
@@ -12,6 +13,11 @@ interface PersonRight {
 }
 
 class TableModule {
+  filterInput = 'input[type="text"]';
+  button = 'ion-button';
+  textLabel = 'ion-text';
+  bulkActionsDropdown = 'select[name="bulkActions"]';
+
   page: Page;
   static getRow(rowIndex: number) {
     return `//datatable-row-wrapper[${rowIndex}]`;
@@ -120,6 +126,63 @@ class TableModule {
     await this.page
       .locator(TableModule.getCellValueTableLeft(rowIndex, 2))
       .click();
+  }
+
+  async quickFilter(filter: string) {
+    try {
+      const filterInputLocator = this.page.locator(this.filterInput);
+      await filterInputLocator.waitFor({ state: 'visible' });
+      await filterInputLocator.fill(filter);
+
+      const applyFilterButtonLocator = this.page
+        .locator(this.button)
+        .filter({ hasText: 'Apply Filter' });
+      await applyFilterButtonLocator.waitFor({ state: 'visible' });
+      await applyFilterButtonLocator.click();
+    } catch (error) {
+      console.error(`Failed to apply quick filter: ${error}`);
+    }
+  }
+
+  async validateQuickFilterResultsNumber(
+    expectedNumber: number,
+    preferedLanguage: string,
+  ) {
+    await this.verifyRowTableRight(1, { preferredLanguage: preferedLanguage });
+    const textLocator = this.page
+      .locator(this.textLabel)
+      .filter({ hasText: 'Filtered recipients:' });
+    const textContent = await textLocator.textContent();
+
+    if (textContent !== null) {
+      const regex = new RegExp(`\\b${expectedNumber}\\b`);
+      expect(regex.test(textContent)).toBeTruthy();
+    } else {
+      console.error('Text content is null');
+    }
+  }
+
+  async applyBulkAction(option: string) {
+    await this.page.locator(this.bulkActionsDropdown).selectOption(option);
+    await this.page.getByLabel('Select', { exact: true }).click();
+    await this.page
+      .locator(this.button)
+      .filter({ hasText: 'Apply action' })
+      .click();
+  }
+
+  async validateBulkActionTargetedPasNumber(expectedNumber: number) {
+    const textLocator = this.page
+      .locator('p')
+      .filter({ hasText: 'Send Message to PAs' });
+    const textContent = await textLocator.textContent();
+
+    if (textContent !== null) {
+      const regex = new RegExp(`\\b${expectedNumber}\\b`);
+      expect(regex.test(textContent)).toBeTruthy();
+    } else {
+      console.error('Text content is null');
+    }
   }
 }
 
