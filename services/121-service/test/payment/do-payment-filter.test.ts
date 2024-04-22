@@ -210,7 +210,7 @@ describe('Do payment with filter', () => {
       {
         'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
         search: `str`, // select addressStreet of registrationOCW1, registrationOCW3, registrationOCW4
-      }, // This combination should only select registrationOCW3, registrationOCW4 since it is in both filters and included
+      }, // This combination should only be applicable to registrationOCW3, registrationOCW4 is filtered but not applicable because it is not included
     );
 
     await waitForPaymentTransactionsToComplete(
