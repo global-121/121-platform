@@ -26,6 +26,13 @@ class HomePage {
     await this.page.locator(this.openPAsForRegistrationButton).click();
     await this.page.locator(this.okButton).click();
   }
+
+  async navigateToProgramme(programName: string) {
+    await this.page
+      .locator(this.programCard)
+      .filter({ hasText: programName })
+      .click();
+  }
 }
 
 export default HomePage;

@@ -20,6 +20,8 @@ class RegistrationDetails {
   showAllButton = 'ion-button:text("Show All")';
   editPersonAffectedPopUp = 'app-edit-person-affected-popup';
   financialServiceProviderDropdown = 'app-update-fsp #select-label';
+  debitCardPaTable = 'ion-card-title';
+  debitCardStatus = 'ion-label';
 
   constructor(page: Page) {
     this.page = page;
@@ -92,6 +94,11 @@ class RegistrationDetails {
     const fspLocator = this.page.locator(this.financialServiceProviderDropdown).getByText(fspName);
     await fspLocator.scrollIntoViewIfNeeded();
     expect(await fspLocator.isVisible()).toBe(true);
+  };
+
+  async validateDebitCardStatus(status: string) {
+    expect(await this.page.locator(this.debitCardPaTable).filter({ hasText: 'Debit cards' }).isVisible()).toBe(true);
+    expect(await this.page.locator(this.debitCardStatus).filter({ hasText: status }).isVisible()).toBe(true);
   };
 
 }

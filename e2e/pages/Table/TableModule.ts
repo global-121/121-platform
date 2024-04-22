@@ -13,42 +13,45 @@ interface PersonRight {
 
 class TableModule {
   page: Page;
+
+  tableButton = 'ion-button';
+
   static getRow(rowIndex: number) {
     return `//datatable-row-wrapper[${rowIndex}]`;
-  }
+  };
   static getTable(tableIndex: number) {
     return `/datatable-body-row/div[${tableIndex}]/`;
-  }
+  };
   static getCollumn(collumnIndex: number) {
     return `datatable-body-cell[${collumnIndex}]`;
-  }
+  };
   static getCellValueTableLeft(row: number, collumn: number) {
     return (
       TableModule.getRow(row) +
       TableModule.getTable(1) +
       TableModule.getCollumn(collumn)
     );
-  }
+  };
   static getCellValueTableRight(row: number, collumn: number) {
     return (
       TableModule.getRow(row) +
       TableModule.getTable(2) +
       TableModule.getCollumn(collumn)
     );
-  }
+  };
 
   constructor(page: Page) {
     this.page = page;
-  }
+  };
 
   async waitForElementDisplayed(selector: string) {
     await this.page.waitForLoadState('networkidle');
     await this.page.locator(selector).waitFor({ state: 'visible' });
-  }
+  };
 
   async getElementText(locator: string) {
     return await this.page.locator(locator).textContent();
-  }
+  };
 
   async waitForElementToContainText(selector: string, text: string) {
     await this.waitForElementDisplayed(selector);
@@ -68,7 +71,7 @@ class TableModule {
         `Element ${selector} did not contain text "${text}", instead it contained "${content}"`,
       );
     }
-  }
+  };
 
   async verifyRowTableLeft(rowIndex: number, person: PersonLeft) {
     const { personAffected, firstName, lastName, phoneNumber, status } = person;
@@ -103,7 +106,7 @@ class TableModule {
         status,
       );
     }
-  }
+  };
 
   async verifyRowTableRight(rowIndex: number, person: PersonRight) {
     const { preferredLanguage } = person;
@@ -114,12 +117,16 @@ class TableModule {
         preferredLanguage,
       );
     }
-  }
+  };
 
   async clickOnPaNumber(rowIndex: number) {
     await this.page
       .locator(TableModule.getCellValueTableLeft(rowIndex, 2))
       .click();
+  };
+
+  async selectTable(tableName: string) {
+    await this.page.locator(this.tableButton).filter({ hasText: tableName }).click();
   }
 }
 
