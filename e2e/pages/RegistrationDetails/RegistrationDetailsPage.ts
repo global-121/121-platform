@@ -99,6 +99,7 @@ class RegistrationDetails {
   }
 
   async validateDebitCardStatus(status: string) {
+    await this.page.waitForLoadState('networkidle');
     expect(
       await this.page
         .locator(this.debitCardPaTable)
@@ -111,6 +112,26 @@ class RegistrationDetails {
         .filter({ hasText: status })
         .isVisible(),
     ).toBe(true);
+  }
+
+  async issueNewVisaDebitCard() {
+    try {
+      const activeCard = this.page.locator(this.debitCardStatus).filter({ hasText: 'Active' });
+      await activeCard.waitFor({ state: 'visible' });
+      await activeCard.click();
+
+      const issueNewCardButton = this.page.getByRole('button', { name: 'Issue new card' });
+      await issueNewCardButton.waitFor({ state: 'visible' });
+      await issueNewCardButton.click();
+
+      for (let i = 0; i < 2; i++) {
+        const okButton = this.page.getByRole('button', { name: 'OK' });
+        await okButton.waitFor({ state: 'visible' });
+        await okButton.click();
+      }
+    } catch (error) {
+      console.error(`Failed to issue new Visa debit card: ${error}`);
+    }
   }
 }
 

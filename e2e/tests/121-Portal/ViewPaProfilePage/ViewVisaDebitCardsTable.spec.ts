@@ -100,5 +100,7 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
   await test.step('Should validate PA profile opened succesfully and Visa Card Details are presented correctly with status: Active', async () => {
     await registration.validatePaProfileOpened();
     await registration.validateDebitCardStatus('Active');
+    await registration.issueNewVisaDebitCard();
+    await registration.validateDebitCardStatus('Blocked');
   });
 });
