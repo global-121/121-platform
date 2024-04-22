@@ -37,7 +37,9 @@ test('[27659] Open the edit PA popup', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.openPAsForRegistrationOcwProgram('NLRC Direct Digital Aid Program (PV)');
+    await homePage.openPAsForRegistrationOcwProgram(
+      'NLRC Direct Digital Aid Program (PV)',
+    );
   });
 
   await test.step('Should open first uploaded PA', async () => {
