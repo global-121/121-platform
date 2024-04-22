@@ -19,10 +19,11 @@ class RegistrationDetails {
     '//ion-item[contains(ion-label, "Financial")]/ion-label/strong';
   showAllButton = 'ion-button:text("Show All")';
   editPersonAffectedPopUp = 'app-edit-person-affected-popup';
+  financialServiceProviderDropdown = 'app-update-fsp #select-label';
 
   constructor(page: Page) {
     this.page = page;
-  }
+  };
 
   async validatePaProfileOpened() {
     await this.page.waitForURL(/\/registration\//);
@@ -37,7 +38,7 @@ class RegistrationDetails {
         .locator(this.personAffectedActivityOverviewHeader)
         .isVisible(),
     ).toBe(true);
-  }
+  };
 
   async validatePersonalInformationTable(
     name: string,
@@ -73,18 +74,26 @@ class RegistrationDetails {
     expect(
       await this.page.locator(this.financialServiceProvider).textContent(),
     ).toContain(fsp);
-  }
+  };
 
   async openEditPaPopUp() {
     await this.page.click(this.showAllButton);
-  }
+  };
 
   async validateEditPaPopUpOpened() {
     await this.page.waitForLoadState('networkidle');
     expect(
       await this.page.locator(this.editPersonAffectedPopUp).isVisible(),
     ).toBe(true);
-  }
+  };
+
+  async validateFspNamePresentInEditPopUp(fspName: string) {
+    await this.page.waitForLoadState('networkidle');
+    const fspLocator = this.page.locator(this.financialServiceProviderDropdown).getByText(fspName);
+    await fspLocator.scrollIntoViewIfNeeded();
+    expect(await fspLocator.isVisible()).toBe(true);
+  };
+
 }
 
 export default RegistrationDetails;
