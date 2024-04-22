@@ -49,9 +49,6 @@
   ],
   "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
-  "meetingDocuments": {
-    "en": ""
-  },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {

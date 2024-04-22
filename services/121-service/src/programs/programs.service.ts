@@ -265,7 +265,6 @@ export class ProgramService {
       programData.paymentAmountMultiplierFormula;
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.meetingDocuments = programData.meetingDocuments;
     program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.aboutProgram = programData.aboutProgram;
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
@@ -452,7 +451,6 @@ export class ProgramService {
       ),
       targetNrRegistrations: program.targetNrRegistrations,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
-      meetingDocuments: program.meetingDocuments,
       budget: program.budget,
       phoneNumberPlaceholder: program.phoneNumberPlaceholder,
       programCustomAttributes: program.programCustomAttributes.map(

@@ -27,9 +27,6 @@
   ],
   "targetNrRegistrations": 2850,
   "tryWhatsAppFirst": false,
-  "meetingDocuments": {
-    "en": "Photo; National ID card"
-  },
   "phoneNumberPlaceholder": "+254 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [

@@ -19,7 +19,6 @@ export class Program {
   targetNrRegistrations?: number;
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
-  meetingDocuments?: string | TranslatableString;
   financialServiceProviders?: Fsp[];
   aidworkerAssignments?: any[];
   created: string;

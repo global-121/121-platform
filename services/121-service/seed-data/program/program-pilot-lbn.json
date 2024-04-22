@@ -27,10 +27,6 @@
     }
   ],
   "targetNrRegistrations": 340,
-  "meetingDocuments": {
-    "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)",
-    "ar": "بطاقة الهوية الشخصية للشخص الذي قام بالتسجيل ; أخراج قيد عائلي ; أفادة سكن ; إثبات الحالة الطبية (إن وجد) "
-  },
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [

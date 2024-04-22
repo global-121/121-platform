@@ -32,11 +32,6 @@
     }
   ],
   "targetNrRegistrations": 340,
-  "meetingDocuments": {
-    "en": "N/A",
-    "uk": "Не відноситься",
-    "ru": "Не относится"
-  },
   "phoneNumberPlaceholder": "+380 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
