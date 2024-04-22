@@ -73,13 +73,6 @@
     }
   ],
   "targetNrRegistrations": 250,
-  "meetingDocuments": {
-    "ar": "شهادة رخصة التنين ; شهادة ميلاد البيت",
-    "en": "Dragon license certificate; House birth certificate",
-    "es": "Certificado de licencia de dragón; Certificado de nacimiento de la casa",
-    "fr": "Certificat de licence dragon; Acte de naissance maison",
-    "nl": "Draak-licentiecertificaat; Huisgeboortecertificaat"
-  },
   "phoneNumberPlaceholder": "+000 000 00 00",
   "programQuestions": [
     {

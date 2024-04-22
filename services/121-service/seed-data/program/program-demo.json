@@ -61,13 +61,6 @@
   ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": true,
-  "meetingDocuments": {
-    "ar": "الوثيقة 3; الوثيقة 2; الوثيقة 1",
-    "en": "Document 1; Document 2; Document 3",
-    "es": "Documento 1; Documento 2; Documento 3",
-    "fr": "Document 1; Document 2; Document 3",
-    "nl": "Document 1; Document 2; Document 3"
-  },
   "phoneNumberPlaceholder": "+31 600 00 00 00",
   "programCustomAttributes": [],
   "programQuestions": [

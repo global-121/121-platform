@@ -27,10 +27,6 @@
     }
   ],
   "targetNrRegistrations": 55,
-  "meetingDocuments": {
-    "en": "Photo; National ID card",
-    "am_ET": "ፎቶ; መታወቂያ "
-  },
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [
     {
