@@ -13,6 +13,9 @@ interface PersonRight {
 
 class TableModule {
   page: Page;
+
+  tableButton = 'ion-button';
+
   static getRow(rowIndex: number) {
     return `//datatable-row-wrapper[${rowIndex}]`;
   }
@@ -119,6 +122,13 @@ class TableModule {
   async clickOnPaNumber(rowIndex: number) {
     await this.page
       .locator(TableModule.getCellValueTableLeft(rowIndex, 2))
+      .click();
+  }
+
+  async selectTable(tableName: string) {
+    await this.page
+      .locator(this.tableButton)
+      .filter({ hasText: tableName })
       .click();
   }
 }
