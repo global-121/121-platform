@@ -566,7 +566,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : '',
       fsp: person.financialServiceProvider,
       financialServiceProvider: this.translatableStringService.get(
-        person.fspDisplayName,
+        this.program?.financialServiceProviders?.find(
+          (p) => p.fsp === person?.financialServiceProvider,
+        )?.displayName,
       ),
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
