@@ -192,9 +192,7 @@
 
         <div
           *ngIf="
-            (!canUpdatePaData || !canUpdatePaFsp) &&
-            fspList.length === programFspLength &&
-            person?.financialServiceProvider
+            (!canUpdatePaData || !canUpdatePaFsp) && person?.fspDisplayName
           "
           class="ion-margin-vertical"
         >
@@ -204,8 +202,8 @@
                 | translate
             }}:</strong
           >
-          &nbsp;&nbsp;
-          <code>{{ person?.fspDisplayName }}</code>
+          <br />
+          {{ person?.fspDisplayName }}
         </div>
         <app-update-fsp
           *ngIf="
@@ -219,7 +217,7 @@
             'page.program.program-people-affected.column.fspDisplayName'
               | translate
           "
-          [value]="person?.fspDisplayName"
+          [value]="person?.financialServiceProvider"
           [attributeValues]="attributeValues"
           [referenceId]="person?.referenceId"
           [programId]="programId"
