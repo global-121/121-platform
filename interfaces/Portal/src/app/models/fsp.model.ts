@@ -1,9 +1,11 @@
+import FspName from '../enums/fsp-name.enum';
 import { Attribute } from './attribute.model';
 import { ProgramPhase } from './program.model';
 import { TranslatableString } from './translatable-string.model';
+
 export class Fsp {
   id: number;
-  fsp: string;
+  fsp: FspName;
   displayName: TranslatableString | string;
   integrationType: FspIntegrationType;
   hasReconciliation: boolean;

@@ -1,6 +1,8 @@
 import Permission from '../auth/permission.enum';
+import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ProgramPhase } from './program.model';
+import { TranslatableString } from './translatable-string.model';
 
 // Model for data from the API
 export class Person {
@@ -13,8 +15,8 @@ export class Person {
   registrationCreated?: string;
   status: RegistrationStatus;
   note?: string;
-  financialServiceProvider?: string;
-  fspDisplayName?: string;
+  financialServiceProvider?: FspName;
+  fspDisplayName?: string | TranslatableString;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
@@ -46,7 +48,7 @@ export class PersonRow {
   inclusionScore?: number;
   name?: string | null;
   phoneNumber?: string | null;
-  fsp?: string | null;
+  fsp?: FspName;
   financialServiceProvider?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
