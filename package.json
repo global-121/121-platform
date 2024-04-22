@@ -11,6 +11,7 @@
     "start:all": "npx npm-run-all --npm-path npm --print-label --parallel start:services start:portal",
     "logs:services": "cd services/ && docker compose logs -f",
     "start:services": "cd services/ && docker compose -f docker-compose.yml -f docker-compose.development.yml up -d --build",
+    "start:services:appmap": "cd services/ && docker compose -f docker-compose.yml -f docker-compose.development.yml -f docker-compose.development-appmap.yml up -d --build",
     "start:portal": "npm start --prefix interfaces/Portal/ -- --port 8888",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:portal",
     "install:services": "cd services/ && docker compose -f docker-compose.yml build",
