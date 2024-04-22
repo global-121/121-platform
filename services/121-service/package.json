@@ -83,6 +83,7 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.0",
+    "@compodoc/compodoc": "^1.1.23",
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
     "@types/passport-azure-ad": "^4.3.6",
