@@ -106,14 +106,15 @@ export function HttpLoaderFactory(http: HttpClient) {
           cacheLocation: BrowserCacheLocation.LocalStorage,
         },
         system: {
+          allowRedirectInIframe: false,
           loggerOptions: {
             loggerCallback: (_level, message, containsPii) => {
               if (!environment.use_sso_azure_entra) {
                 return;
               }
-              console.log(`${containsPii ? '[PII] ' : ''}`, message);
+              console.log(`${containsPii ? '👤' : '🌐'}`, message);
             },
-            piiLoggingEnabled: true,
+            piiLoggingEnabled: !environment.production,
             logLevel: environment.use_sso_azure_entra ? LogLevel.Info : null,
           },
         },
