@@ -88,7 +88,6 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
-  shortLabel?: TranslatableString;
   phases: ProgramPhase[];
 }
 
@@ -101,7 +100,6 @@ export class ProgramQuestion {
   name: string;
   answerType: string;
   label: TranslatableString;
-  shortLabel: TranslatableString;
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];

@@ -142,20 +142,13 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
   }
 
   private getLabel(attribute: PaTableAttribute): string {
-    // Get label of attributes configured in the program
-    const attributeShortLabel = this.translatableString.get(
-      attribute.shortLabel,
-    );
-    if (attributeShortLabel) {
-      return attributeShortLabel;
-    }
-    const attributLabel = this.translatableString.get(attribute.shortLabel);
-    if (attributLabel) {
-      return attributLabel;
-    }
-    // Get label of default attributes
-    return this.translate.instant(
-      `page.program.program-people-affected.column.${attribute.name}`,
+    return (
+      // Get label of attributes configured in the program
+      this.translatableString.get(attribute.label) ??
+      // Get label of default attributes
+      this.translate.instant(
+        `page.program.program-people-affected.column.${attribute.name}`,
+      )
     );
   }
 

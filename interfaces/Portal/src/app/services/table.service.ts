@@ -198,10 +198,7 @@ export class TableService {
 
       const addCol: any = {
         prop: colPerPhase.name,
-        name: this.createColumnNameLabel(
-          colPerPhase.name,
-          colPerPhase.shortLabel,
-        ),
+        name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
         ...this.getColumnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
@@ -254,9 +251,7 @@ export class TableService {
         if (nameQuestion) {
           const addCol = {
             prop: nameColumn,
-            name: this.translatableStringService.get(
-              nameQuestion.shortLabel || nameQuestion.label,
-            ),
+            name: this.translatableStringService.get(nameQuestion.label),
             ...this.getColumnDefaults(),
             frozenLeft: this.platform.width() > 768,
             permissions: [Permission.RegistrationPersonalREAD],

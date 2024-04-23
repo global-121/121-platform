@@ -41,7 +41,7 @@
             <div>
               <ul>
                 <li *ngFor="let attr of attributeDifference">
-                  {{ attr.shortLabel | translate }}
+                  {{ attr.label | translate }}
                 </li>
               </ul>
             </div>
@@ -58,7 +58,7 @@
           >
             <app-update-property-item
               [type]="attribute.type"
-              [label]="attribute.shortLabel"
+              [label]="attribute.label"
               [value]="attributeValues[attribute.name]"
               [options]="attribute.options"
               [explanation]="explanation | translate"
