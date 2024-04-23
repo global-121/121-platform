@@ -54,6 +54,7 @@ export class PhasesAndEditableProperties1654693178991
   private async migrateData(manager: EntityManager): Promise<void> {
     let programPilotNL, programPilotNL2, fspIntersolve;
     try {
+      // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
       programPilotNL = JSON.parse(
         fs.readFileSync('seed-data/program/program-pilot-nl.json', 'utf8'),
       );
