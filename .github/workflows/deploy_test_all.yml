@@ -10,6 +10,9 @@ on:
   workflow_call:
   workflow_dispatch:
 
+env:
+  HUSKY: 0
+
 jobs:
   deploy_portal:
     name: 'Build + Deploy: Portal'

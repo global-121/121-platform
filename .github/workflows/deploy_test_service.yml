@@ -4,6 +4,7 @@
 name: 'Deploy [test] 121-service'
 
 env:
+  HUSKY: 0
   AZURE_WEBAPP_NAME: '121-test'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
 
@@ -57,5 +58,5 @@ jobs:
 
       - name: Finish
         run: |
-           echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
-           echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY

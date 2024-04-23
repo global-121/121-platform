@@ -8,7 +8,10 @@ on:
     branches:
       - main
     paths:
-      - '**/*.md'
+      - '**/*.{md,json,yml,scss,html}'
+
+env:
+  HUSKY: 0
 
 jobs:
   test:

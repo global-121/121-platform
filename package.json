@@ -21,13 +21,18 @@
     "code:121-service": "code ./services/121-service/",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
     "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:docs test:portal test:services",
-    "test:docs": "npx prettier --config=./.prettierrc.yml --check \"**/*.md\"",
+    "test:docs": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss,html}\"",
     "test:services": "npx npm-run-all --npm-path npm --print-label --parallel test:121-service",
     "test:121-service": "cd services/ && docker compose exec 121-service npm test",
     "test:portal": "npm test --prefix interfaces/Portal/",
-    "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1"
+    "prepare": "husky"
   },
-  "optionalDependencies": {
-    "prettier": "3.2.5"
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "*.{md,json,yml,scss,html}": "prettier --config=./.prettierrc.yml --write"
   }
 }

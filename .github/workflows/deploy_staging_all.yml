@@ -11,6 +11,9 @@ on:
   release:
     types: [published]
 
+env:
+  HUSKY: 0
+
 jobs:
   deploy_portal:
     name: 'Build + Deploy: Portal'

@@ -3,6 +3,7 @@
 name: 'Deploy [test] Interface: Portal'
 
 env:
+  HUSKY: 0
   workingDirectory: interfaces/Portal
 
 permissions:

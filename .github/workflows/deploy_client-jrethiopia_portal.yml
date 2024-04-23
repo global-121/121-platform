@@ -3,6 +3,7 @@
 name: 'Deploy [jrethiopia] Interface: Portal'
 
 env:
+  HUSKY: 0
   workingDirectory: interfaces/Portal
 
 permissions:

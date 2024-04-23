@@ -4,6 +4,7 @@
 name: 'Deploy [South Africa] 121-service'
 
 env:
+  HUSKY: 0
   AZURE_WEBAPP_NAME: '121-southafrica'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
 
