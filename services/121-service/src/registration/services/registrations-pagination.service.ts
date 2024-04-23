@@ -64,7 +64,7 @@ export class RegistrationsPaginationService {
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
     // Deep clone query here to prevent mutation out of this function
-    query = JSON.parse(JSON.stringify(query));
+    query = structuredClone(query);
 
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
