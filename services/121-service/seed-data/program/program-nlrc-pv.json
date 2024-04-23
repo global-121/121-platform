@@ -82,47 +82,41 @@
       },
       "name": "namePartnerOrganization",
       "type": "text",
-      "export": ["all-people-affected", "included", "payment"],
-      "phases": ["registrationValidation", "inclusion", "payment"]
+      "export": [
+        "all-people-affected",
+        "included",
+        "payment"
+      ],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [
     {
       "name": "fullName",
       "label": {
-        "ar": "الرجاء إدخال اسمك الكامل:",
-        "en": "Please enter your full name:",
-        "es": "Por favor introduzca su nombre completo:",
-        "fr": "Veuillez entrer votre nom complet:",
-        "in": "Silakan masukkan nama lengkap Anda:",
-        "nl": "Vul je volledige naam in:",
-        "pt_BR": "Por favor, digite seu nome completo:",
-        "tl": "Pakilagay ang iyong buong pangalan:"
+        "en": "Full Name"
       },
       "answerType": "text",
       "questionType": "standard",
       "pattern": null,
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "Full Name"
-      }
+      "editableInPortal": true
     },
     {
       "name": "phoneNumber",
       "label": {
-        "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "es": "Por favor comparta el número de teléfono donde pueda recibir los mensajes te texto. Utilizaremos éste numero de teléfono para informarle del programa de ayuda. <br><br>Deberá lucir así: <code>+31 6 00 00 00 00</code>",
-        "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à: <code>+31 6 00 00 00 00</code>",
-        "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
-        "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
-        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -136,10 +130,7 @@
       "scoring": {},
       "duplicateCheck": true,
       "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "editableInPortal": false
     }
   ],
   "aboutProgram": {
@@ -152,8 +143,19 @@
     "pt_BR": "Este <strong>programa de auxílio da Cruz Vermelha</strong>foi criado para apoiar as pessoas que necessitam de ajuda alimentar e que ainda não recebem esta ajuda de outra organização. Trabalhamos em conjunto com as seguintes organizações parceiras: <ul class='ion-padding-start'><li>Stap Verder </li> <li> Filipino LGBT Europe </li> <li> Opportunities in Amsterdam </li><li> Company of Friends </li><li> Steungroep Vrouwen zonder Verblijfsvergunning </li></ul> <br><br> O <strong>programa de auxílio da Cruz Vermelha</strong> visa ajudá-lo: <ul class='ion-padding-start'><li> Até que você receba ajuda de outra organização </li><li> Até que você não esteja mais registrado em nenhuma das organizações acima </li><li> Até receber a quantidade máxima de vouchers que foi acordada no início do apoio.</li> <li> Ou até o final do projeto (você será informado com duas semanas de antecedência). </li></ul> <br> O <strong>programa de auxílio da Cruz Vermelha</strong> irá ajudá-lo com o seguinte: <ul class='ion-padding-start'><li> Voucher semanal de 35 € para o supermercado Albert Heijn<br> O WhatsApp será usado para enviar seu voucher de supermercado. Caso não tenha WhatsApp, enviaremos uma mensagem sms com a localização para levantar o voucher.</li></ul>",
     "tl": "Ang <strong>Ang programang tulong ng Red Cross </strong> na ito ay nilikha upang suportahan ang mga taong nangangailangan ng tulong sa pagkain at hindi pa nakakatanggap ng tulong na tulad nito mula sa ibang organisasyon: <ul class='ion-padding-start'><li>Stap Verder</li><li>Stap Verder </li> <li> Filipino LGBT Europe </li> <li> Opportunities in Amsterdam </li><li> Company of Friends </li><li> Steungroep Vrouwen zonder Verblijfsvergunning </li></ul><br><br>   Hangad ng Red Cross aid program na tulungan ka:   <ul class='ion-padding-start'> <li> Hanggang sa hindi ka na suportado ng mga nabanggit na organisasyon. </li><li> Hanggang sa matanggap mo na ang maximum na halaga ng mga voucher na napagkasunduan sa simula ng suporta.</li><li> Sa pagtatapos ng programa, ikaw ay makakatanggap ng mensahe dalawang linggo bago ang pagtatapos. </li> </ul>   <br><br>   Ang <strong>Red Cross aid program</strong> ay susuportahan ka ng mga sumusunod:   <ul class='ion-padding-start'> <li> €15 Albert Heijn supermarket voucher lingguhan <br> WhatsApp ang gagamitin upang mapadala ang iyong supermarket voucher. Kung hindi mo maaaring makuha ang supermarket voucher sa WhatsApp, magpapadala kam saiyo  ng SMS at  kung saan ito maaaring pick-up-in. </li></ul>"
   },
-  "fullnameNamingConvention": ["fullName"],
-  "languages": ["ar", "en", "es", "fr", "in", "nl", "pt_BR", "tl"],
+  "fullnameNamingConvention": [
+    "fullName"
+  ],
+  "languages": [
+    "ar",
+    "en",
+    "es",
+    "fr",
+    "in",
+    "nl",
+    "pt_BR",
+    "tl"
+  ],
   "enableMaxPayments": true,
   "enableScope": true,
   "allowEmptyPhoneNumber": true

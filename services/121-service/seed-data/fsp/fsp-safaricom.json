@@ -8,17 +8,17 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your mobile money transfer from Safaricom on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+243000000000"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "tel",
-      "options": null,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "options": null
     }
   ]
 }

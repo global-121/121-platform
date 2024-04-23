@@ -50,7 +50,12 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+          "value": [
+            "name",
+            "birthdate",
+            "documentid",
+            "phoneNumber"
+          ]
         },
         {
           "name": "columnToMatch",
@@ -74,86 +79,74 @@
     {
       "name": "name",
       "label": {
-        "ar": "1. ما اسمك؟",
-        "en": "1. What is your name?",
-        "es": "1. ¿Cuál es tu nombre?",
-        "fr": "1. Quel est ton nom ?",
-        "nl": "1. Wat is je naam?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
         "ar": "الاسم",
         "en": "Name",
         "es": "Nombre",
         "fr": "Nom",
         "nl": "Naam"
-      }
-    },
-    {
-      "name": "middlename",
-      "label": {
-        "ar": "2. ما هو اسمك الأوسط؟",
-        "en": "2. What is your middle name?",
-        "es": "2. ¿Cuál es tu segundo nombre?",
-        "fr": "2. Quel est votre deuxième prénom ?",
-        "nl": "2. Wat is je tweede naam?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
+      "editableInPortal": true
+    },
+    {
+      "name": "middlename",
+      "label": {
         "ar": "الاسم الأوسط",
         "en": "Middle name",
         "es": "Segundo nombre",
         "fr": "Deuxième prénom",
         "nl": "Tweede naam"
-      }
-    },
-    {
-      "name": "firstname",
-      "label": {
-        "ar": "1. ما هو اسمك الأول؟",
-        "en": "3. What is your first name?",
-        "es": "1. ¿Cuál es tu nombre?",
-        "fr": "1. Quel est votre prénom ?",
-        "nl": "1. Wat is je voornaam?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
+      "editableInPortal": true
+    },
+    {
+      "name": "firstname",
+      "label": {
         "ar": "الاسم الأول",
         "en": "First Name",
         "es": "Nombre de pila",
         "fr": "Prénom",
         "nl": "Voornaam"
-      }
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true
     },
     {
       "name": "gender",
       "label": {
-        "ar": "4. ما هو جنسك؟",
-        "en": "4. What is your gender?",
-        "es": "4. ¿Cuál es tu género?",
-        "fr": "4. Quel est votre sexe ?",
-        "nl": "4. Wat is je geslacht?"
+        "ar": "جنس",
+        "en": "Gender",
+        "es": "Género",
+        "fr": "Genre",
+        "nl": "Geslacht"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -190,77 +183,69 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "جنس",
-        "en": "Gender",
-        "es": "Género",
-        "fr": "Genre",
-        "nl": "Geslacht"
-      }
+      "editableInPortal": true
     },
     {
       "name": "birthdate",
       "label": {
-        "ar": "5. ما هو تاريخ ميلادك؟",
-        "en": "5. What is your birth date?",
-        "es": "5. ¿Cuál es tu fecha de nacimiento?",
-        "fr": "5. Quelle est votre date de naissance ?",
-        "nl": "5. Wat is je geboortedatum?"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
         "ar": "تاريخ الميلاد",
         "en": "Birth date",
         "es": "Fecha de nacimiento",
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
-      }
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true
     },
     {
       "name": "documentid",
       "label": {
-        "ar": "6. ما هو رقم هوية المستند الخاص بك؟ (- إذا لم يكن هناك)",
-        "en": "6. What is your document ID number? (- if none)",
-        "es": "6. ¿Cuál es el número de identificación de su documento? (- si ninguno)",
-        "fr": "6. Quel est le numéro d'identification de votre document ? (- s'il n'y en a pas)",
-        "nl": "6. Wat is uw document-ID-nummer? (- indien geen)"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "editableInPortal": true,
-      "shortLabel": {
         "ar": "معرف المستند",
         "en": "Document ID",
         "es": "Número de identificación",
         "fr": "Numéro d'identification",
         "nl": "Document ID"
-      }
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
+      "scoring": {},
+      "duplicateCheck": true,
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
+      "editableInPortal": true
     },
     {
       "name": "headhousehold",
       "label": {
-        "ar": "7. هل أنت رب الأسرة؟",
-        "en": "7. Are you the head of household?",
-        "es": "7. ¿Es usted cabeza de familia?",
-        "fr": "7. Êtes-vous chef de famille ?",
-        "nl": "7. Bent u het hoofd van het huishouden?"
+        "ar": "رب الأسرة",
+        "en": "Household head",
+        "es": "Jefe de hogar",
+        "fr": "Chef de ménage",
+        "nl": "Hoofd huishouden"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -287,23 +272,19 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "رب الأسرة",
-        "en": "Household head",
-        "es": "Jefe de hogar",
-        "fr": "Chef de ménage",
-        "nl": "Hoofd huishouden"
-      }
+      "editableInPortal": true
     },
     {
       "name": "males",
       "label": {
         "ar": "",
-        "en": "8. How many male(s) of 18 or older live in your household? (0 if none)",
+        "en": "Men",
         "es": "",
         "fr": "",
         "nl": ""
@@ -312,23 +293,19 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Men",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "boys",
       "label": {
         "ar": "",
-        "en": "9. How many boy(s) of 17 or younger live in your household? (0 if none)",
+        "en": "Boys",
         "es": "",
         "fr": "",
         "nl": ""
@@ -337,25 +314,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 1
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Boys",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "women",
       "label": {
         "ar": "",
-        "en": "10. How many women of 18 or older live in your household? (0 if none)",
+        "en": "Women",
         "es": "",
         "fr": "",
         "nl": ""
@@ -364,23 +337,19 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Women",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "girls",
       "label": {
         "ar": "",
-        "en": "11. How many girl(s) of 17 or younger live in your household? (0 if none)",
+        "en": "Girls",
         "es": "",
         "fr": "",
         "nl": ""
@@ -389,25 +358,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 1
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Girls",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "householdsituation",
       "label": {
         "ar": "",
-        "en": "12. What is your household's situation?",
+        "en": "Household situation",
         "es": "",
         "fr": "",
         "nl": ""
@@ -457,7 +422,10 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "returnee": 2,
         "displaced": 2,
@@ -465,20 +433,13 @@
         "autochtonehost": 1
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Household situation",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "maritalsituation",
       "label": {
         "ar": "",
-        "en": "13. What is the marital situation of the head of your household?",
+        "en": "Marital situation",
         "es": "",
         "fr": "",
         "nl": ""
@@ -548,7 +509,10 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "widowed": 1,
         "married": 0,
@@ -558,20 +522,13 @@
         "girl": 3
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Marital situation",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "pregnant",
       "label": {
         "ar": "",
-        "en": "15. How many pregnant women are in your household? (0 if none)",
+        "en": "Pregnant women",
         "es": "",
         "fr": "",
         "nl": ""
@@ -580,25 +537,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 1
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Pregnant women",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "breastfeeding",
       "label": {
         "ar": "",
-        "en": "16. How many breastfeeding women are in your household? (0 if none)",
+        "en": "Breastfeeding women",
         "es": "",
         "fr": "",
         "nl": ""
@@ -607,25 +560,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 1
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Breastfeeding women",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "womendisabled",
       "label": {
         "ar": "",
-        "en": "17. How many women in your household aged 18 and over have a disability? (0 if none)",
+        "en": "Women disability",
         "es": "",
         "fr": "",
         "nl": ""
@@ -634,25 +583,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 2
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Women disability",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "mendisabled",
       "label": {
         "ar": "",
-        "en": "18. How many men in your household aged 18 and over have a disability? (0 if none)",
+        "en": "Men disability",
         "es": "",
         "fr": "",
         "nl": ""
@@ -661,25 +606,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 2
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Men disability",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "girlsdisabled",
       "label": {
         "ar": "",
-        "en": "19. How many girls in your household aged under 18 have a disability? (0 if none)",
+        "en": "Girls disability",
         "es": "",
         "fr": "",
         "nl": ""
@@ -688,25 +629,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 2
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Girls disability",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "boysdisabled",
       "label": {
         "ar": "",
-        "en": "20. How many boys in your household aged under 18 have a disability? (0 if none)",
+        "en": "Boys disability",
         "es": "",
         "fr": "",
         "nl": ""
@@ -715,25 +652,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 2
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Boys disability",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "childrenmalnourished",
       "label": {
         "ar": "",
-        "en": "21. How many malnourished children are in your household? (0 if none)",
+        "en": "Malnourished children",
         "es": "",
         "fr": "",
         "nl": ""
@@ -742,25 +675,21 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {
         "multiplier": 2
       },
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Malnourished children",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     },
     {
       "name": "malnourishedtreatment",
       "label": {
         "ar": "",
-        "en": "22. If there are malnourished children in your household are you pursuing treatment at the health center?",
+        "en": "Malnourished treatment",
         "es": "",
         "fr": "",
         "nl": ""
@@ -790,17 +719,13 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "ar": "",
-        "en": "Malnourished treatment",
-        "es": "",
-        "fr": "",
-        "nl": ""
-      }
+      "editableInPortal": true
     }
   ],
   "aboutProgram": {
@@ -810,7 +735,17 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": ["name", "middlename", "firstname"],
-  "languages": ["ar", "en", "es", "fr", "nl"],
+  "fullnameNamingConvention": [
+    "name",
+    "middlename",
+    "firstname"
+  ],
+  "languages": [
+    "ar",
+    "en",
+    "es",
+    "fr",
+    "nl"
+  ],
   "allowEmptyPhoneNumber": false
 }

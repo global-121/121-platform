@@ -8,21 +8,19 @@
     {
       "name": "phoneNumber",
       "label": {
-        "saq_KE": "Aa namba e simu niyeu ning'amarie ropiani te e Mpesa? (Na nje tiu <strong>+254 000 000 000</strong>)",
-        "tuv_KE": "A namba ani a diit ithaki yong taanyuneia SMS a M-PESA? (Ichamit ikoni ne <strong>+254 000 000 000</strong>)",
-        "en": "Which phone number do you want to receive your M-Pesa SMS on? (With country-code. It should look like: <strong>+254 000 000 000</strong>)"
+        "en": "Phone Number"
       },
       "placeholder": {
         "saq_KE": "+254 000 000 000",
         "tuv_KE": "+254 000 000 000",
         "en": "+254 000 000 000"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "tel",
-      "options": null,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "options": null
     }
   ]
 }

@@ -11,60 +11,60 @@
       "label": {
         "en": "Address street"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address street"
-      }
+      "phases": []
     },
     {
       "name": "addressHouseNumber",
       "label": {
         "en": "Address house number"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "numeric",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address house number"
-      }
+      "phases": []
     },
     {
       "name": "addressHouseNumberAddition",
       "label": {
         "en": "Address house number addition"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address house number addition"
-      }
+      "phases": []
     },
     {
       "name": "addressPostalCode",
       "label": {
         "en": "Address postal code"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address postal code"
-      }
+      "phases": []
     },
     {
       "name": "addressCity",
       "label": {
         "en": "Address city"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address city"
-      }
+      "phases": []
     },
     {
       "name": "whatsappPhoneNumber",
@@ -75,14 +75,14 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,
-      "phases": [],
-      "shortLabel": {
-        "en": "WhatsApp Nr."
-      }
+      "phases": []
     }
   ]
 }

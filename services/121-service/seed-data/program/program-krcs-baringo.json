@@ -36,19 +36,23 @@
     {
       "name": "fullName",
       "label": {
-        "en": "What is your first name?"
+        "en": "First Name"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "scoring": {},
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "First Name"
-      }
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
+      "editableInPortal": true
     },
     {
       "name": "gender",
@@ -74,12 +78,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Gender"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -94,19 +101,22 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Age"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
     {
       "name": "maritalStatus",
       "label": {
-        "en": "Marital status"
+        "en": "Marital status of beneficiary"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -141,10 +151,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Marital status of beneficiary"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -172,12 +182,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Registration Type"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -192,12 +206,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "ID number (MPESA)"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": true,
       "placeholder": null
     },
@@ -212,12 +230,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Name of Alternate"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -232,12 +254,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Total household size"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -252,12 +278,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Total household <5"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -272,12 +302,16 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Total household >60"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -305,12 +339,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Receiving other Social Assistance?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -325,12 +362,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "County"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -345,12 +385,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Sub County"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -365,12 +408,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Ward"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -385,12 +431,14 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
+      "phases": [
+        "registrationValidation"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Location"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -405,12 +453,14 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
+      "phases": [
+        "registrationValidation"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Sub location"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -425,12 +475,14 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
+      "phases": [
+        "registrationValidation"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Village"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -445,12 +497,14 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
+      "phases": [
+        "registrationValidation"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Nearest school"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -480,17 +534,17 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Area type"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
     {
       "name": "mainSourceLivelihood",
       "label": {
-        "en": "Main livelihood sources"
+        "en": "What are the main livelihood sources for the household?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -537,10 +591,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What are the main livelihood sources for the household?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -557,10 +611,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -577,10 +631,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many males 0 - 5 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -597,10 +651,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many females 0 - 5 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -617,10 +671,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many males 6 - 12 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -637,10 +691,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many females 6 - 12 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -657,10 +711,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many males 13 - 24 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -677,10 +731,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many females 13 - 24 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -697,10 +751,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many males 25 - 59 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -717,10 +771,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many females 25 - 59 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -737,10 +791,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many males over 60 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -757,10 +811,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many females over 60 years?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -777,10 +831,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Total males in household"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -797,10 +851,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Total females in household"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -830,10 +884,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Do you have household members living with disability?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -850,10 +904,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -883,10 +937,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Do you have household members living with chronic illness?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -903,10 +957,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -936,10 +990,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Do you have any pregnant or lactating woman in your household?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -956,10 +1010,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -976,10 +1030,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many habitable ROOMS does this dwelling unit contain?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1009,10 +1063,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1054,10 +1108,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If owner occupied, state whether:"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1074,10 +1128,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1137,10 +1191,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If rented or provided, stated whether:"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1157,10 +1211,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1232,10 +1286,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the main construction material used for the ROOF?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1252,10 +1306,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other ROOFING material state"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1333,10 +1387,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the main construction material used for the WALL?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1353,17 +1407,17 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other type of WALL state"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
     {
       "name": "constructionMaterialFloor",
       "label": {
-        "en": "What is the main construction material used for the FLOOR"
+        "en": "What is the main construction material used for the FLOOR?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1404,10 +1458,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the main construction material used for the FLOOR?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1424,10 +1478,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other type of FLOOR state"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1475,10 +1529,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "The dwelling unit is at RISK of:"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1495,10 +1549,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other type of RISK, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1606,10 +1660,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the main source of WATER?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1626,10 +1680,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Any other source of WATER, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1659,10 +1713,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own pigs?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1679,10 +1733,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1712,10 +1766,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own chicken?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1787,10 +1841,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1807,10 +1861,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If any other HUMAN WASTER Disposal mode, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1876,10 +1930,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the MAIN type of COOKING Fuel?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1896,10 +1950,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Specify other type of COOKING Fuel"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1965,10 +2019,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What is the MAIN type of LIGHTING?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -1985,10 +2039,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Specify other type of LIGHTING"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2054,10 +2108,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household OWN any of the following ITEMS?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2087,10 +2141,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own exotic cattle?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2107,10 +2161,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2140,10 +2194,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own indigenous cattle?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2160,10 +2214,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2193,10 +2247,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own sheep?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2213,10 +2267,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2246,10 +2300,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own goats?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2266,10 +2320,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2299,10 +2353,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own camels?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2319,10 +2373,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2352,10 +2406,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Does your household own donkeys?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2372,10 +2426,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2392,10 +2446,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, how many?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2412,10 +2466,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2432,10 +2486,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2477,17 +2531,17 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Currently, the CONDITIONS of your household are?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
     {
       "name": "skipMeals",
       "label": {
-        "en": "In the past 7 days, did anyone in this household reduce the size of the meals or skip meals because of lack of money to buy enough food?"
+        "en": "Did anyone reduce or skip meals?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -2510,17 +2564,17 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Did anyone reduce or skip meals?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
     {
       "name": "receivingBenefits",
       "label": {
-        "en": "Is anyone in this household receiving benefits from any of the following National Safety Net Programmes?"
+        "en": "Receiving benefits from any National Safety Net Programmes?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -2530,10 +2584,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Receiving benefits from any National Safety Net Programmes?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2548,12 +2602,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If Yes, Name the PROGRAMME and AGENCY"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2587,12 +2644,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "What type of BENEFIT do you receive?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2607,12 +2667,15 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
+      "phases": [
+        "registrationValidation",
+        "inclusion"
+      ],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If other, specify"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2629,10 +2692,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2649,10 +2712,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If in-kind specify the kind of benefit"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2682,10 +2745,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Do you have any feedback on response we are currently carrying out?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2702,10 +2765,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "If yes, share your feedback on response process"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2747,10 +2810,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Who in your family decides on how to spend the money?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2780,10 +2843,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Are there posibility of conflicts in the households over who receives Cash?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2813,10 +2876,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2833,10 +2896,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Kindly elaborate"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -2853,10 +2916,10 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "GPS location"
-      },
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "duplicateCheck": false,
       "placeholder": null
     }
@@ -2864,8 +2927,12 @@
   "aboutProgram": {
     "en": "KRCS BHA Scale-up Program June 23 - June 24"
   },
-  "fullnameNamingConvention": ["fullName"],
-  "languages": ["en"],
+  "fullnameNamingConvention": [
+    "fullName"
+  ],
+  "languages": [
+    "en"
+  ],
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false

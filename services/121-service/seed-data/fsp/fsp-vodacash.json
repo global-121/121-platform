@@ -9,19 +9,18 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your mobile money transfer from VodaCash on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)",
-        "fr": "Sur quel numéro de téléphone voulez-vous recevoir votre transfert d'argent mobile de VodaCash ? (Avec l'indicatif du pays, cela devrait ressembler à : +243 000 000 000)"
+        "en": "Phone Number",
+        "fr": "Numéro de téléphone"
       },
       "placeholder": {
         "en": "+243 000 000 000"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "tel",
-      "options": null,
-      "shortLabel": {
-        "en": "Phone Number",
-        "fr": "Numéro de téléphone"
-      }
+      "options": null
     },
     {
       "name": "healthArea",
@@ -32,11 +31,10 @@
       "answerType": "text",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Health area",
-        "fr": "Aire de santé"
-      }
+      "export": [
+        "all-people-affected",
+        "included"
+      ]
     }
   ]
 }

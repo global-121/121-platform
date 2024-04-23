@@ -8,27 +8,24 @@
     {
       "name": "whatsappPhoneNumber",
       "label": {
-        "ar": "إذا تم قبولك في البرنامج، سنقوم بإرسال قسيمة السوبر ماركت عبر واتس آب. <br><br> نرجو مشاركتنا رقمك على واتس آب. <br><br> يمكن أن يكون نفس رقم هاتفك الخاص بالرسائل النصية.",
-        "es": "Si esta usted incluido, le enviamos su recibo del supermercado via WhatsApp.<br><br>Por favor comparta el numero de teléfono que utiliza para WhatsApp. <br><br> Éste puede ser el mismo número que utiliza para SMS.",
-        "en": "If you are included, we send your Supermarket voucher via WhatsApp.   <br><br>   Please share the phone number you use for WhatsApp.   <br><br>   This can be the same number you use for SMS.",
-        "nl": "Als je bent toegelaten, sturen we jouw supermarkt voucher via WhatsApp.   <br><br>   Vul het nummer in dat je gebruikt voor WhatsApp.   <br><br>   Dit kan hetzelfde nummer zijn dat je gebruikt voor SMS.",
-        "pt_BR": "Se você estiver incluído, enviamos seu vale de supermercado via WhatsApp. <br><br> Por favor, digite o número de telefone que você usa para o WhatsApp. <br><br> Este pode ser o mesmo número que você usa para mensagens SMS.",
-        "tl": "Kung ikaw ay kasali, ipapadala namin ang iyong Supermarket voucher sa pamamagitan ng WhatsApp.   <br><br>   Paki bahagi ang iyong phone number sa WhatsApp.   <br><br>   Ito ay maaring pareho ng ginagamit mong phone number pang-SMS.",
-        "in": "Apabila anda sudah mendaftar dan sudah diterima oleh Red Cross, kami akan mengirim voucher Supermarket anda via WhatsApp <br><br> Harap men-share no HP yang anda pakai untuk WhatApp <br><br>Nomor ini bisa merupakan nomor yang sama yang anda pakai untuk SMS.",
-        "fr": "Si vous êtes inclus(e), nous envoyons votre bon de supermarché via WhatsApp.  <br><br>   Veuillez partager le numéro de téléphone que vous utilisez pour WhatsApp.   <br><br>   Ce peut être le même numéro que vous utilisez pour les SMS."
+        "en": "WhatsApp Nr."
       },
       "placeholder": {
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["all-people-affected", "included"],
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "shortLabel": {
-        "en": "WhatsApp Nr."
-      }
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ]
     }
   ]
 }

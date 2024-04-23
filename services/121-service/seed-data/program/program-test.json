@@ -63,7 +63,12 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": ["name", "dob", "house", "phoneNumber"]
+          "value": [
+            "name",
+            "dob",
+            "house",
+            "phoneNumber"
+          ]
         },
         {
           "name": "columnToMatch",
@@ -85,58 +90,50 @@
     {
       "name": "name",
       "label": {
-        "ar": "إسمي الكامل:",
-        "en": "My full name:",
-        "es": "Mi nombre completo:",
-        "fr": "Mon nom complet:",
-        "nl": "Mijn volledige naam:"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "shortLabel": {
         "ar": "الاسم",
         "en": "Name",
         "es": "Nombre",
         "fr": "Nom",
         "nl": "Naam"
-      }
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
+      "scoring": {}
     },
     {
       "name": "dob",
       "label": {
-        "ar": "تاريخ ميلادي: التنسيق هو يوم - شهر - سنة مثال: 31-12-1970",
-        "en": "My date of birth: Format is day-month-year example: 31-12-1970",
-        "es": "Mi fecha de nacimiento: El formato es día-mes-año ejemplo: 31-12-1970",
-        "fr": "Ma date de naissance : Le format est jour-mois-année, exemple : 31-12-1970",
-        "nl": "Mijn geboortedatum: Formaat is dag-maand-jaar, bijvoorbeeld: 31-12-1970"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "editableInPortal": true,
-      "shortLabel": {
         "ar": "تاريخ الميلاد",
         "en": "Birth date",
         "es": "Fecha de nacimiento",
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
-      }
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included"
+      ],
+      "scoring": {},
+      "editableInPortal": true
     },
     {
       "name": "house",
       "label": {
-        "ar": "1. أنا ..؟",
-        "en": "1. I am a..?",
-        "es": "1. ¿Soy un...?",
-        "fr": "1. Je suis un..?",
-        "nl": "1. Ik ben een..?"
+        "ar": "بيت العائلة",
+        "en": "House",
+        "es": "Casa",
+        "fr": "Maison",
+        "nl": "Huis"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -164,23 +161,16 @@
         "lannister": 3,
         "stark": 6,
         "greyjoy": 9
-      },
-      "shortLabel": {
-        "ar": "بيت العائلة",
-        "en": "House",
-        "es": "Casa",
-        "fr": "Maison",
-        "nl": "Huis"
       }
     },
     {
       "name": "dragon",
       "label": {
-        "ar": "2. كم عدد التنانين التي تمتلكها؟",
-        "en": "2. How many dragons do you own?",
-        "es": "2. ¿Cuántos dragones tienes?",
-        "fr": "2. Combien de dragons possédez-vous ?",
-        "nl": "2. Hoeveel draken bezit je?"
+        "ar": "عدد التنين",
+        "en": "Dragon count",
+        "es": "Recuento de dragones",
+        "fr": "Nombre de dragons",
+        "nl": "Aantal draken"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -188,13 +178,6 @@
       "editableInPortal": true,
       "scoring": {
         "multiplier": 2
-      },
-      "shortLabel": {
-        "ar": "عدد التنين",
-        "en": "Dragon count",
-        "es": "Recuento de dragones",
-        "fr": "Nombre de dragons",
-        "nl": "Aantal draken"
       }
     }
   ],
@@ -210,7 +193,9 @@
       "name": "knowsNothing",
       "type": "boolean",
       "editableInPortal": true,
-      "phases": ["registrationValidation"]
+      "phases": [
+        "registrationValidation"
+      ]
     },
     {
       "label": {
@@ -223,7 +208,9 @@
       "name": "motto",
       "type": "text",
       "editableInPortal": true,
-      "phases": ["registrationValidation"]
+      "phases": [
+        "registrationValidation"
+      ]
     }
   ],
   "aboutProgram": {
@@ -233,8 +220,16 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": ["name"],
-  "languages": ["ar", "en", "es", "fr", "nl"],
+  "fullnameNamingConvention": [
+    "name"
+  ],
+  "languages": [
+    "ar",
+    "en",
+    "es",
+    "fr",
+    "nl"
+  ],
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,
