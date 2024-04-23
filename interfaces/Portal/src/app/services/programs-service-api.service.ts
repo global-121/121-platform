@@ -95,7 +95,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
       null,
-      false,
       params,
     );
   }
@@ -659,7 +658,6 @@ export class ProgramsServiceApiService {
       },
       false,
       false,
-      false,
       params,
     );
   }
@@ -1015,7 +1013,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       ApiPath.usersCurrent,
-      false,
     );
   }
 

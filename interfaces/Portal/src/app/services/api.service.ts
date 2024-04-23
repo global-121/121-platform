@@ -65,10 +65,9 @@ export class ApiService {
               response,
             ),
           ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error, anonymous),
-          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error, anonymous);
+          }),
         )
         .toPromise()
         .then((response) => {
@@ -112,10 +111,9 @@ export class ApiService {
               response,
             ),
           ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error, anonymous),
-          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error, anonymous);
+          }),
         )
         .toPromise()
         .then((response) => {
@@ -128,22 +126,14 @@ export class ApiService {
     );
   }
 
-  put(
-    endpoint: string,
-    path: string,
-    body: object,
-    anonymous = false,
-    responseAsBlob = false,
-    isUpload = false,
-  ): Promise<any> {
-    const security = this.showSecurity(anonymous);
+  put(endpoint: string, path: string, body: object): Promise<any> {
+    const security = this.showSecurity(false);
     console.log(`ApiService PUT: ${security} ${endpoint}${path}`, body);
 
     return new Promise((resolve, reject) =>
       this.http
         .put(endpoint + path, body, {
-          headers: this.createHeaders(isUpload),
-          responseType: responseAsBlob ? 'blob' : null,
+          headers: this.createHeaders(false),
           withCredentials: true,
         })
         .pipe(
@@ -155,10 +145,9 @@ export class ApiService {
               response,
             ),
           ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error, anonymous),
-          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error);
+          }),
         )
         .toPromise()
         .then((response) => {
@@ -175,12 +164,11 @@ export class ApiService {
     endpoint: string,
     path: string,
     body: object,
-    anonymous = false,
     responseAsBlob = false,
     isUpload = false,
     params: HttpParams = null,
   ): Promise<any> {
-    const security = this.showSecurity(anonymous);
+    const security = this.showSecurity(false);
     console.log(`ApiService PATCH: ${security} ${endpoint}${path}`, body);
 
     return new Promise((resolve, reject) =>
@@ -202,10 +190,9 @@ export class ApiService {
               response,
             ),
           ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error, anonymous),
-          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error);
+          }),
         )
         .toPromise()
         .then((response) => {
@@ -222,10 +209,9 @@ export class ApiService {
     endpoint: string,
     path: string,
     body?: object,
-    anonymous = false,
     params: HttpParams = null,
   ): Promise<any> {
-    const security = this.showSecurity(anonymous);
+    const security = this.showSecurity(false);
 
     return new Promise((resolve, reject) =>
       this.http
@@ -245,10 +231,9 @@ export class ApiService {
               response,
             ),
           ),
-          catchError(
-            (error: HttpErrorResponse): Observable<any> =>
-              this.handleError(error, anonymous),
-          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error);
+          }),
         )
         .toPromise()
         .then((response) => {
@@ -261,7 +246,7 @@ export class ApiService {
     );
   }
 
-  handleError(error: HttpErrorResponse, anonymous: boolean) {
+  handleError(error: HttpErrorResponse, anonymous = false) {
     if (
       error.status === HttpStatusCode.TooManyRequests &&
       !this.isRateLimitErrorShown
