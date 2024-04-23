@@ -27,7 +27,7 @@ export class UpdateVodacash1710258612887 implements MigrationInterface {
               healthAreaQuestion.name,
               JSON.stringify(healthAreaQuestion.export),
               healthAreaQuestion.answerType,
-              JSON.stringify(healthAreaQuestion.shortLabel),
+              JSON.stringify(healthAreaQuestion.label), // shortLabel has been refactored into label since this was created
               JSON.stringify(healthAreaQuestion.label),
             ],
           );
