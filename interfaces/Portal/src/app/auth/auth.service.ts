@@ -226,6 +226,8 @@ export class AuthService {
           user.username,
         );
 
+        localStorage.removeItem(MSAL_COLLECTION_KEY);
+
         if (this.router.url.includes(AppRoutes.iframe)) {
           this.msalService.logoutPopup({
             account: currentUser,
@@ -236,8 +238,6 @@ export class AuthService {
             account: currentUser,
           });
         }
-
-        localStorage.removeItem(MSAL_COLLECTION_KEY);
       }
     }
 
