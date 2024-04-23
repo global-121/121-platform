@@ -13,25 +13,6 @@ See the [/features/](../features/)-directory in this repository.
 
 ## Development
 
-### Offline features
-
-For some 'offline' features it is required to run them in a specific way (i.e. to enable their service-worker) locally.  
-See the related Angular-documentation: <https://v16.angular.io/guide/service-worker-getting-started#serving-with-http-server>
-
-To use it locally:
-
-- Run: `npm run start:debug-production` instead of `npm start` (in each interfaces' specific folder).
-- This part is needed extra for the cookies to be correctly set and processed:
-  - In Chrome
-    - Go to `chrome://flags/#unsafely-treat-insecure-origin-as-secure`
-      - Enable it
-      - Add "`http://127.0.0.1`"
-      - Relaunch
-    - Change the values back to normal when switching to the normal local mode again
-  - Unfortunately no alternative for the below in other browsers have been identified at the moment
-- The interface will be available at: <http://localhost:8088/>.
-- Check the service-worker's status via: `Developer Tools > Application > Service Workers`.
-
 ### Specific requirements
 
 Every interface or app has their own requirements defined in their README file.
