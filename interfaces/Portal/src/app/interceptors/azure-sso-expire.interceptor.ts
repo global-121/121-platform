@@ -18,11 +18,15 @@ export class AzureSsoExpireInterceptor implements HttpInterceptor {
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+    if (!environment.use_sso_azure_entra) {
+      return next.handle(req);
+    }
+
     return from(this.handle(req, next));
   }
 
   async handle(request: HttpRequest<any>, next: HttpHandler) {
-    if (request.url.includes(environment.url_121_service_api)) {
+    if (request.url.startsWith(environment.url_121_service_api)) {
       if (
         !request.url.includes(ApiPath.usersCurrent) &&
         !request.url.includes(ApiPath.usersLogin) &&

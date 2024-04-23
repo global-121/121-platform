@@ -107,16 +107,14 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
         system: {
           loggerOptions: {
-            loggerCallback: (level, message, containsPii) => {
-              console.log(
-                'MSAL Logging: ',
-                LogLevel[level],
-                message,
-                containsPii,
-              );
+            loggerCallback: (_level, message, containsPii) => {
+              if (!environment.use_sso_azure_entra) {
+                return;
+              }
+              console.log(`${containsPii ? '[PII] ' : ''}`, message);
             },
             piiLoggingEnabled: true,
-            logLevel: LogLevel.Info,
+            logLevel: environment.use_sso_azure_entra ? LogLevel.Info : null,
           },
         },
       }),
