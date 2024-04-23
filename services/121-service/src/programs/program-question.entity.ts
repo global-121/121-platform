@@ -85,10 +85,6 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: false })
   public editableInPortal: boolean;
 
-  @Column('json', { nullable: true })
-  @ApiProperty({ example: { en: 'shortLabel' } })
-  public shortLabel: JSON;
-
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([

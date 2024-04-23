@@ -48,7 +48,6 @@ export class FspService {
         name: c.name,
         type: c.answerType,
         label: c.label,
-        shortLabel: c.shortLabel,
         options: c.options,
         pattern: c.pattern,
       };
