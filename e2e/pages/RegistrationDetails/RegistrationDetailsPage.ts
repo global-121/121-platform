@@ -22,6 +22,11 @@ class RegistrationDetails {
   financialServiceProviderDropdown = 'app-update-fsp #select-label';
   debitCardPaTable = 'ion-card-title';
   debitCardStatus = 'ion-label';
+  tabButton = 'ion-button';
+  historyTile = 'article';
+  historyTileText = 'span';
+  historyTileTimeStamp = 'time';
+  tileInformationPlaceHolder = 'strong';
 
   constructor(page: Page) {
     this.page = page;
@@ -136,6 +141,49 @@ class RegistrationDetails {
     } catch (error) {
       console.error(`Failed to issue new Visa debit card: ${error}`);
     }
+  }
+
+  async openActivityOverviewTab(tabName: string) {
+    await this.page
+      .locator(this.tabButton)
+      .filter({ hasText: tabName })
+      .click();
+  }
+
+  async validateStatusHistoryTab(
+    userName: string,
+    date: string,
+    oldValue: string,
+    newValue: string,
+  ) {
+    const historyTile = this.page.locator(this.historyTile).nth(0);
+    const oldValueHolder = this.page
+      .locator(this.tileInformationPlaceHolder)
+      .filter({ hasText: 'Old:' })
+      .nth(0);
+    const newValueHolder = this.page
+      .locator(this.tileInformationPlaceHolder)
+      .filter({ hasText: 'New:' })
+      .nth(0);
+
+    expect(await historyTile.isVisible()).toBe(true);
+    expect(
+      await historyTile
+        .locator(this.historyTileText)
+        .filter({ hasText: 'Status update' })
+        .textContent(),
+    ).toContain('Status update');
+    expect(
+      await historyTile
+        .locator(this.historyTileText)
+        .filter({ hasText: userName })
+        .textContent(),
+    ).toContain(userName);
+    expect(
+      await historyTile.locator(this.historyTileTimeStamp).textContent(),
+    ).toContain(date);
+    expect(await oldValueHolder.textContent()).toContain(oldValue);
+    expect(await newValueHolder.textContent()).toContain(newValue);
   }
 }
 
