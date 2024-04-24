@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.116.9](https://github.com/global-121/121-platform/compare/v1.116.8...v1.116.9)- 2024-04-22
+
+### Fixed
+
+- Handling of FSP's "Display names" in the "Edit PA"-popup
+
 ## [1.116.8](https://github.com/global-121/121-platform/compare/v1.116.7...v1.116.8)- 2024-04-19
 
 ### Disabled

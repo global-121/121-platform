@@ -79,6 +79,7 @@ const PaginateConfigRegistrationViewOnlyFilters: PaginateConfig<RegistrationView
     },
     sortableColumns: [],
     maxLimit: 0,
+    searchableColumns: [dataSearchableColumn],
   };
 
 // Define the object without additional filterable columns
