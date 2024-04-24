@@ -62,17 +62,6 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.markAsDeclined,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.markAsDeclined',
-      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: false,
-      confirmConditions: {
-        provideInput: false,
-      },
-    },
-    {
       id: BulkActionId.include,
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
@@ -89,6 +78,21 @@ export class BulkActionsService {
           length: 1,
           type: 'min',
         },
+      },
+    },
+    {
+      id: BulkActionId.markAsDeclined,
+      enabled: false,
+      label: 'page.program.program-people-affected.actions.markAsDeclined',
+      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+      ],
+      showIfNoValidation: false,
+      confirmConditions: {
+        provideInput: false,
       },
     },
     {
@@ -135,7 +139,11 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.deletePa',
       permissions: [Permission.RegistrationDELETE],
-      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+      ],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,

@@ -176,33 +176,47 @@ export class RegistrationsService {
         result = [null].includes(currentStatus);
         break;
       case RegistrationStatusEnum.validated:
-        result = [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.declined,
-        ].includes(currentStatus);
+        result = [RegistrationStatusEnum.registered].includes(currentStatus);
         break;
       case RegistrationStatusEnum.declined:
-        result = [RegistrationStatusEnum.registered].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.paused,
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.validated,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.included:
         result = [
+          RegistrationStatusEnum.completed,
+          RegistrationStatusEnum.declined,
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
         result = [
+          RegistrationStatusEnum.completed,
+          RegistrationStatusEnum.declined,
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.completed:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.included,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.paused:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.included,
+        ].includes(currentStatus);
         break;
     }
     return result;
