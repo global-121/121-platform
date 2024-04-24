@@ -6,11 +6,11 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { expect, test } from '@playwright/test';
+import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
 import Language from '../../../../../121-platform/interfaces/Portal/src/assets/i18n/en.json';
 import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import TableModule from '../../../pages/Table/TableModule';
-import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
 
 test.beforeEach(async ({ page }) => {
   // Reset the DB to the required state
