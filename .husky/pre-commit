@@ -21,24 +21,7 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
   exit 1
 fi
 
-
-check_if_need_to_lint() {
-  if git diff --cached --name-only | grep --quiet "$1*"
-  then
-    log "Found changes, linting $1"
-    cd "$(git rev-parse --show-toplevel)" || exit
-    npm run lint:fix --if-present --prefix "$1"
-    log "Finished linting $1"
-  fi
-}
-
-log "Running prettier on staged docs & static files"
+log "Running lint-staged"
 npx lint-staged
-
-# Include all packages/applications that support an `npm run lint` task:
-check_if_need_to_lint "e2e/"
-check_if_need_to_lint "interfaces/Portal/"
-check_if_need_to_lint "services/121-service/"
-check_if_need_to_lint "services/mock-service/"
 
 log "All done"

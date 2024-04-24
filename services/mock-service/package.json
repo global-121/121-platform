@@ -11,7 +11,6 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,js}\"",
-    "lint:fix": "npm run lint -- --fix",
     "test": "echo 'No tests available' && exit 0",
     "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit",
