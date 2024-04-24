@@ -259,7 +259,7 @@ export class AuthService {
   public async checkExpirationDate(): Promise<void> {
     const user = this.getUserFromStorage();
 
-    if (user?.isEntraUser !== true) {
+    if (!user || !user.isEntraUser) {
       return;
     }
 
@@ -268,13 +268,12 @@ export class AuthService {
     );
 
     const today = new Date();
-    const issuedDate = new Date(currentUser?.idTokenClaims?.iat * 1000);
+    const issuedDate = new Date(currentUser?.idTokenClaims?.iat * 1_000);
 
     if (
-      !!currentUser?.idTokenClaims?.iat &&
-      // Only allow tokens from the current day
-      today.toISOString().substring(0, 10) ===
-        issuedDate.toISOString().substring(0, 10)
+      currentUser?.idTokenClaims?.iat &&
+      // Only allow tokens issued on the same day (both are in UTC, so not comparing to local time/day)
+      today.getUTCDate() === issuedDate.getUTCDate()
     ) {
       return;
     }
