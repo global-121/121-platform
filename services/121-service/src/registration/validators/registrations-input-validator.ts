@@ -141,6 +141,10 @@ export class RegistrationsInputValidator {
       if (errorObj) {
         errors.push(errorObj);
       }
+
+      if (row.phoneNumber === undefined && program.allowEmptyPhoneNumber) {
+        row.phoneNumber = '';
+      }
       importRecord.phoneNumber = row.phoneNumber;
 
       /*
