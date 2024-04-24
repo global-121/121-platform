@@ -262,8 +262,6 @@ export class ApiService {
     }
 
     if (error.status === HttpStatusCode.Unauthorized) {
-      localStorage.removeItem(USER_KEY);
-      window.location.reload();
 
       const rawUser = localStorage.getItem(USER_KEY);
 
@@ -275,8 +273,6 @@ export class ApiService {
       const expires = Date.parse(user.expires);
 
       if (expires < Date.now()) {
-        localStorage.removeItem(USER_KEY);
-        window.location.reload();
         return of('Token expired');
       }
 
