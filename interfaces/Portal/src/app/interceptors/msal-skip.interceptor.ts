@@ -21,30 +21,32 @@ export class MsalSkipInterceptor
     request: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
-    if (
-      // Ignore if not using SSO
-      !environment.use_sso_azure_entra ||
-      // Ignore if not an API-request
-      !request.url.startsWith(environment.url_121_service_api) ||
-      // Ignore if request is to get current user
-      !request.url.endsWith(ApiPath.usersCurrent)
-    ) {
+
+    if (environment.use_sso_azure_entra) {
+      // Only potentially skip on 121-service API requests
+      if (request.url.includes(environment.url_121_service_api)) {
+        // Never skip on request to get current user, as we need it always to check if user is an Entra user
+        if (request.url.includes(ApiPath.usersCurrent)) {
+          return super.intercept(request, next);
+        }
+
+        // Otherwise, get user from local storage
+        const rawUser = localStorage.getItem(USER_KEY);
+        if (!rawUser) {
+          // If no user found (this should never happen), then skip to avoid SSO-redirect, and let it fail somewhere else
+          return next.handle(request);
+        }
+        // If user found ..
+        const user = JSON.parse(rawUser) as User;
+        // .. skip if not an entra-user
+        if (user?.isEntraUser === false) {
+          return next.handle(request);
+        }
+        // .. otherwise don't skip
+        return super.intercept(request, next);
+      }
       return next.handle(request);
     }
-
-    const rawUser = localStorage.getItem(USER_KEY);
-    if (!rawUser) {
-      // If no user found (this should never happen), then ignore to avoid SSO-redirect, and let it fail somewhere else
-      return next.handle(request);
-    }
-
-    // If user found ..
-    const user: User = JSON.parse(rawUser);
-    // .. ignore if not an entra-user
-    if (user?.isEntraUser === false) {
-      return next.handle(request);
-    }
-
-    return super.intercept(request, next);
+    return next.handle(request);
   }
 }
