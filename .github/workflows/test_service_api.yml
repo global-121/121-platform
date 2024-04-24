@@ -26,9 +26,6 @@ on:
       - 'services/mock-service/**'
       - '!**.md'
 
-env:
-  HUSKY: 0
-
 jobs:
   test:
     runs-on: ubuntu-latest

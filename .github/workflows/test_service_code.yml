@@ -13,7 +13,6 @@ on:
       - 'services/121-service/**'
 
 env:
-  HUSKY: 0
   workingDirectory: 'services/121-service/'
 
 jobs:

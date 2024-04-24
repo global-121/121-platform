@@ -4,7 +4,6 @@
 name: 'Deploy [KRCS] 121-service'
 
 env:
-  HUSKY: 0
   AZURE_WEBAPP_NAME: '121-krcs'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
 

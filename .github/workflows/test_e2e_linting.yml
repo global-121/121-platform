@@ -13,7 +13,6 @@ on:
       - 'e2e/**'
 
 env:
-  HUSKY: 0
   e2eTestsPath: 'e2e/'
 
 jobs:

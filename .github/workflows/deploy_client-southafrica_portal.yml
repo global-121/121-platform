@@ -3,7 +3,6 @@
 name: 'Deploy [South Africa] Interface: Portal'
 
 env:
-  HUSKY: 0
   workingDirectory: interfaces/Portal
 
 permissions:

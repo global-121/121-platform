@@ -11,9 +11,6 @@ on:
       - '.github/actions/*'
       - '.github/workflows/*'
 
-env:
-  HUSKY: 0
-
 jobs:
   test:
     runs-on: ubuntu-latest

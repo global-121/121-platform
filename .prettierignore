@@ -1,0 +1,12 @@
+# Make sure to keep contents aligned with all other interfaces!
+#
+# See .gitignore
+coverage/
+
+# Angular/Ionic related files
+.angular/
+www/
+dist/
+
+# Exclude (generated) package files
+package*.json

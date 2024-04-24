@@ -11,9 +11,6 @@ on:
   schedule:
     - cron: '21 1 * * 0'
 
-env:
-  HUSKY: 0
-
 jobs:
   analyze:
     name: Analyze

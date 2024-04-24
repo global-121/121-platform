@@ -13,7 +13,6 @@ on:
       - 'interfaces/Portal/**'
 
 env:
-  HUSKY: 0
   interfacePath: 'interfaces/Portal/'
 
 jobs:

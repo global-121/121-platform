@@ -3,7 +3,6 @@
 name: 'Deploy [Help a Child] Interface: Portal'
 
 env:
-  HUSKY: 0
   workingDirectory: interfaces/Portal
 
 permissions:

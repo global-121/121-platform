@@ -4,7 +4,6 @@
 name: 'Deploy [test] Mock-Service'
 
 env:
-  HUSKY: 0
   AZURE_WEBAPP_NAME: '121-mock'
   AZURE_WEBAPP_PACKAGE_PATH: services/mock-service
 

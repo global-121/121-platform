@@ -1,5 +1,5 @@
 <app-system-notification
-  [message]="'system-notifications.compatible-browsers'|translate"
+  [message]="'system-notifications.compatible-browsers' | translate"
   color="tertiary"
   [delay]="500"
   #systemNotification
@@ -22,7 +22,7 @@
               />
             </div>
             <h1 class="text-uppercase">
-              {{ 'page.login.portalTitle'|translate }}
+              {{ 'page.login.portalTitle' | translate }}
             </h1>
           </div>
           <app-language-switcher></app-language-switcher>
@@ -40,13 +40,13 @@
             <small>
               <strong>
                 <ion-text *ngSwitchCase="401">
-                  {{ 'page.login.form.error-messages.401'|translate }}
+                  {{ 'page.login.form.error-messages.401' | translate }}
                 </ion-text>
                 <ion-text *ngSwitchCase="500">
-                  {{ 'page.login.form.error-messages.500'|translate }}
+                  {{ 'page.login.form.error-messages.500' | translate }}
                 </ion-text>
                 <ion-text *ngSwitchDefault>
-                  {{ 'common.unknown-error'|translate }}
+                  {{ 'common.unknown-error' | translate }}
                 </ion-text>
               </strong>
             </small>
@@ -66,7 +66,7 @@
                   class="auth-label"
                   (click)="emailInput.setFocus()"
                 >
-                  {{ 'page.login.form.email.label'|translate }}
+                  {{ 'page.login.form.email.label' | translate }}
                 </label>
                 <div>
                   <ion-input
@@ -85,8 +85,8 @@
                     minlength="4"
                     class="ion-margin-vertical"
                     [ngClass]="{
-                    'invalid-border': showLoginFail.email || invalidEmail
-                  }"
+                      'invalid-border': showLoginFail.email || invalidEmail
+                    }"
                     (ionBlur)="onEmailBlur()"
                     fill="outline"
                   ></ion-input>
@@ -99,7 +99,8 @@
                     <small>
                       <strong>
                         {{
-                        'page.login.form.error-messages.invalid-email'|translate
+                          'page.login.form.error-messages.invalid-email'
+                            | translate
                         }}
                       </strong>
                     </small>
@@ -114,12 +115,14 @@
                   class="auth-label"
                   (click)="passwordInput.setFocus()"
                 >
-                  {{ 'page.login.form.password.label'|translate }}
+                  {{ 'page.login.form.password.label' | translate }}
                 </label>
                 <ion-item
                   class="ion-no-padding"
                   lines="none"
-                  [ngClass]="{ 'invalid-border': showLoginFail.password || emptyPassword}"
+                  [ngClass]="{
+                    'invalid-border': showLoginFail.password || emptyPassword
+                  }"
                 >
                   <ion-row>
                     <ion-input
@@ -145,7 +148,9 @@
                       size="small"
                       (click)="toggleInputType()"
                       [title]="isPassword() ? this.labelShow : this.labelHide"
-                      [attr.aria-label]="isPassword() ? this.labelShow : this.labelHide"
+                      [attr.aria-label]="
+                        isPassword() ? this.labelShow : this.labelHide
+                      "
                       style="position: absolute; inset-inline-end: 0"
                       class="ion-align-self-center"
                     >
@@ -172,7 +177,8 @@
                     <small>
                       <strong>
                         {{
-                        'page.login.form.error-messages.empty-password'|translate
+                          'page.login.form.error-messages.empty-password'
+                            | translate
                         }}
                       </strong>
                     </small>
@@ -188,15 +194,15 @@
                   class="auth-button"
                   color="primary"
                 >
-                  {{ 'page.login.form.submit.label'|translate }}
+                  {{ 'page.login.form.submit.label' | translate }}
                 </ion-button>
               </div>
             </ng-container>
           </form>
           <ng-container *ngIf="showSsoLogin()">
-            <ion-label class="ion-margin-bottom"
-              >{{ 'page.login.sso.label'|translate }}</ion-label
-            >
+            <ion-label class="ion-margin-bottom">{{
+              'page.login.sso.label' | translate
+            }}</ion-label>
             <br /><br /><br />
             <ion-button
               expand="block"
@@ -204,7 +210,7 @@
               color="primary"
               (click)="loginSso()"
             >
-              {{ 'page.login.sso.btn-text'|translate }}
+              {{ 'page.login.sso.btn-text' | translate }}
             </ion-button>
             <br />
             <ion-note

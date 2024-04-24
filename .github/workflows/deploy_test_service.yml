@@ -4,7 +4,6 @@
 name: 'Deploy [test] 121-service'
 
 env:
-  HUSKY: 0
   AZURE_WEBAPP_NAME: '121-test'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
 
