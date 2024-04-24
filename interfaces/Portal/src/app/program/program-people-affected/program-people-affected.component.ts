@@ -924,6 +924,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .catch((error) => {
         console.log('Error:', error);
         let err = error;
+        if (error.error?.message) {
+          err = error.error.message;
+        }
         if (error.error?.error) {
           err = error.error?.error;
         }
