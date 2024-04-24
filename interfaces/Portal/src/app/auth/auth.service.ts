@@ -256,25 +256,30 @@ export class AuthService {
     }
   }
 
-  public async checkExpirationDate() {
+  public async checkExpirationDate(): Promise<void> {
     const user = this.getUserFromStorage();
 
-    if (user?.isEntraUser === true) {
-      const currentUser = this.msalService.instance.getAccountByUsername(
-        user.username,
-      );
-      const iat = currentUser.idTokenClaims.iat;
-      const issuedDate = new Date(iat * 1000);
-      if (issuedDate) {
-        const today = new Date();
-        if (
-          today.getDate() !== issuedDate.getDate() ||
-          today.getMonth() !== issuedDate.getMonth() ||
-          today.getFullYear() !== issuedDate.getFullYear()
-        ) {
-          await this.logout();
-        }
-      }
+    if (user?.isEntraUser !== true) {
+      return;
     }
+
+    const currentUser = this.msalService.instance.getAccountByUsername(
+      user.username,
+    );
+
+    const today = new Date();
+    const issuedDate = new Date(currentUser?.idTokenClaims?.iat * 1000);
+
+    if (
+      !!currentUser?.idTokenClaims?.iat &&
+      // Only allow tokens from the current day
+      today.toISOString().substring(0, 10) ===
+        issuedDate.toISOString().substring(0, 10)
+    ) {
+      return;
+    }
+
+    // Force logout and redirect to login
+    await this.logout();
   }
 }
