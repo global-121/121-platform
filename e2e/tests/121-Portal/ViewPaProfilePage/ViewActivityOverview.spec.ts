@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetailsPage from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import {
   amountVisa,
