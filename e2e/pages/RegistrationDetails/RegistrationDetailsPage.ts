@@ -22,7 +22,7 @@ class RegistrationDetails {
   financialServiceProviderDropdown = 'app-update-fsp #select-label';
   debitCardPaTable = 'ion-card-title';
   debitCardStatus = 'ion-label';
-  tabButton = 'ion-button';
+  tabButton = 'ion-button[fill="clear"][size="small"]';
   historyTile = 'article';
   historyTileText = 'span';
   historyTileTimeStamp = 'time';
@@ -147,10 +147,12 @@ class RegistrationDetails {
     await this.page
       .locator(this.tabButton)
       .filter({ hasText: tabName })
+      .locator('button')
       .click();
   }
 
-  async validateStatusHistoryTab(
+  async validateChangeLogTile(
+    changeTitle: string,
     userName: string,
     date: string,
     oldValue: string,
@@ -170,9 +172,9 @@ class RegistrationDetails {
     expect(
       await historyTile
         .locator(this.historyTileText)
-        .filter({ hasText: 'Status update' })
+        .filter({ hasText: changeTitle })
         .textContent(),
-    ).toContain('Status update');
+    ).toContain(changeTitle);
     expect(
       await historyTile
         .locator(this.historyTileText)
