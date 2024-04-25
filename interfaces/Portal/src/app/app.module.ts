@@ -10,7 +10,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {
   MsalBroadcastService,
-  MsalGuard,
   MsalModule,
   MsalService,
 } from '@azure/msal-angular';
@@ -170,7 +169,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     MsalService,
-    MsalGuard,
     MsalBroadcastService,
   ],
   bootstrap: [AppComponent],
