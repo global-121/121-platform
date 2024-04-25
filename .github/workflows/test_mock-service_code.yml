@@ -5,9 +5,6 @@ name: 'Test Mock-Service: Code'
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
-      - 'feat.*'
     paths:
       - '.github/workflows/test_mock-service_code.yml'
       - 'services/mock-service/**'

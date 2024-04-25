@@ -5,8 +5,6 @@ name: 'Test Prettier'
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
     paths:
       - '**/*.{md,json,yml,scss}'
 
