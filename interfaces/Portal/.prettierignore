@@ -1,5 +1,0 @@
-# Don't reorder imports for polyfills:
-src/polyfills.ts
-
-# Exception for inline code/styles
-src/index.html
