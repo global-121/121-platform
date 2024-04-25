@@ -95,18 +95,6 @@ export class ProgramController {
     }
   }
 
-  // NOTE: PA-app only, so could already be removed, but leaving in as no conflict
-  @ApiOperation({ summary: 'Get published programs' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Return all published programs.',
-  })
-  // TODO: REFACTOR: into GET /api/programs?published=true
-  @Get('published/all')
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    return await this.programService.getPublishedPrograms();
-  }
-
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Get all assigned programs for a user' })
   @ApiResponse({

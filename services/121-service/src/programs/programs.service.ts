@@ -136,23 +136,6 @@ export class ProgramService {
     return programDto;
   }
 
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    const programs = await this.programRepository
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .where('program.published = :published', { published: true })
-      .orderBy('program.created', 'DESC')
-      .addOrderBy('programQuestion.id', 'ASC')
-      .getMany();
-    const programsCount = programs.length;
-    for (const program of programs) {
-      delete program.monitoringDashboardUrl;
-      delete program.evaluationDashboardUrl;
-    }
-
-    return { programs, programsCount };
-  }
-
   public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);

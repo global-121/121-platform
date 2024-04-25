@@ -10,10 +10,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { UpdateMonitoringQuestionDto } from './dto/update-monitoring-question.dto';
 import { InstanceEntity } from './instance.entity';
 import { InstanceService } from './instance.service';
-import { MonitoringQuestionEntity } from './monitoring-question.entity';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('instance')
@@ -48,21 +46,5 @@ export class InstanceController {
     @Body() updateInstanceDto: UpdateInstanceDto,
   ): Promise<InstanceEntity> {
     return await this.instanceService.updateInstance(updateInstanceDto);
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Update instance monitoring question' })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'No instance found',
-    type: InstanceEntity,
-  })
-  @Patch('monitoringQuestion')
-  public async updateMonitoringQuestion(
-    @Body() updateMonitoringQuestionDto: UpdateMonitoringQuestionDto,
-  ): Promise<MonitoringQuestionEntity> {
-    return await this.instanceService.updateMonitoringQuestion(
-      updateMonitoringQuestionDto,
-    );
   }
 }

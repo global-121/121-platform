@@ -51,7 +51,6 @@ export enum PermissionEnum {
   RegistrationAttributeUPDATE = 'registration:attribute.update',
   RegistrationAttributeFinancialUPDATE = 'registration:attribute:financial.update',
 
-  RegistrationFspREAD = 'registration:fsp.read',
   RegistrationFspUPDATE = 'registration:fsp.update',
 
   RegistrationNotificationREAD = 'registration:notification.read',
