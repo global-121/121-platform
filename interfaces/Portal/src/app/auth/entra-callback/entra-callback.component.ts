@@ -1,9 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MsalService } from '@azure/msal-angular';
+import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-entra-callback',
@@ -11,30 +8,8 @@ import { AuthService } from '../auth.service';
   imports: [CommonModule, IonicModule],
   templateUrl: './entra-callback.component.html',
 })
-export class EntraCallbackComponent implements OnInit, OnDestroy {
-  private msalSubscription: Subscription;
+export class EntraCallbackComponent {
+  constructor() {}
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly msalService: MsalService,
-  ) {}
 
-  async ngOnInit(): Promise<void> {
-    this.msalSubscription = this.msalService
-      .handleRedirectObservable()
-      .subscribe({
-        next: async () => {
-          await this.authService.processAzureAuthSuccess(true);
-        },
-        error: (error) => {
-          console.error('Error during Azure Entra authentication', error);
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    if (this.msalSubscription) {
-      this.msalSubscription.unsubscribe();
-    }
-  }
 }
