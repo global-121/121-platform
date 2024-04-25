@@ -36,6 +36,7 @@ import { AzureSsoExpireInterceptor } from './interceptors/azure-sso-expire.inter
 import { MsalSkipInterceptor } from './interceptors/msal-skip.interceptor';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoggingService } from './services/logging.service';
+import { isIframed } from './shared/utils/is-iframed.util';
 
 export function appInitializerFactory(
   translate: TranslateService,
@@ -120,7 +121,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
       }),
       {
-        interactionType: InteractionType.Redirect,
+        interactionType: isIframed()
+          ? InteractionType.Popup
+          : InteractionType.Redirect,
       },
       {
         protectedResourceMap: new Map([
@@ -136,7 +139,9 @@ export function HttpLoaderFactory(http: HttpClient) {
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
-        interactionType: InteractionType.Redirect,
+        interactionType: isIframed()
+          ? InteractionType.Popup
+          : InteractionType.Redirect,
       },
     ),
   ],
