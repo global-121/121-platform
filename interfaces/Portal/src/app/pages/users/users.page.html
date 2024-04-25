@@ -1,4 +1,4 @@
-<app-header [title]="'page.users.pageTitle'|translate"></app-header>
+<app-header [title]="'page.users.pageTitle' | translate"></app-header>
 <ion-content class="ion-padding-vertical">
   <!--page title-->
   <section>
@@ -57,10 +57,7 @@
         >
           <ion-icon
             name="search"
-            [attr.title]="
-            'page.users.search'
-              | translate
-          "
+            [attr.title]="'page.users.search' | translate"
             size="small"
             slot="start"
             class="ion-margin-end"
@@ -68,18 +65,9 @@
             color="black"
           ></ion-icon>
           <ion-input
-            [placeholder]="
-            'page.users.search'
-              | translate
-          "
-            [attr.title]="
-            'page.users.search'
-              | translate
-          "
-            [attr.aria-label]="
-            'page.users.search'
-              | translate
-          "
+            [placeholder]="'page.users.search' | translate"
+            [attr.title]="'page.users.search' | translate"
+            [attr.aria-label]="'page.users.search' | translate"
             (ionInput)="onInput($event.detail.value)"
             [debounce]="1000"
             [clearInput]="true"
@@ -95,9 +83,9 @@
           class="button"
           [disabled]="true"
           item-end
-          ><strong
-            >{{ 'page.users.add-new-user' | translate}}</strong
-          ></ion-button
+          ><strong>{{
+            'page.users.add-new-user' | translate
+          }}</strong></ion-button
         >
       </div>
 

@@ -1,4 +1,4 @@
-<app-header [title]="'registration-details.pageTitle'|translate"></app-header>
+<app-header [title]="'registration-details.pageTitle' | translate"></app-header>
 
 <app-program-navigation></app-program-navigation>
 
@@ -10,7 +10,7 @@
 
   <ng-container *ngIf="!loading">
     <ion-text *ngIf="!person">
-      {{ 'registration-details.error' | translate}}
+      {{ 'registration-details.error' | translate }}
     </ion-text>
 
     <app-registration-profile

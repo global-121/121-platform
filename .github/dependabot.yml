@@ -59,7 +59,6 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
 
-
   - package-ecosystem: npm
     directory: '/interfaces/Portal'
     schedule:
