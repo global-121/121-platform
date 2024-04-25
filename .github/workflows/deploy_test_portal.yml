@@ -55,7 +55,7 @@ jobs:
           envContentSecurityPolicy: >-
             connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
             form-action https://test.121.global;
-            frame-src blob: 'self' https://app.powerbi.com;
+            frame-src blob: 'self' https://app.powerbi.com https://*.ciamlogin.com;
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'test'

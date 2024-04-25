@@ -99,12 +99,14 @@ Following the configuration of the 121 Demo environment, the following CSP is se
 
 - `connect-src` and `form-action`:  
   Allows the hostname to make API-requests to. (i.e. `https://<instance-name>.121.global`), but also third-parties like Application-Insights.
+  - When SSO using Azure Entra will be used, `https://*.ciamlogin.com` should be included..
 - `frame-src`:  
   Allows the sources that can be shown in an `<iframe>`.
-  - When the FSP `Intersolve-voucher` will be used, `blob: 'self'` should be included. (for the Portal only)
-  - When any PowerBI-dashboard will be used, `https://app.powerbi.com` should be included. (for the Portal only)
+  - When the FSP `Intersolve-voucher` will be used, `blob: 'self'` should be included.
+  - When any PowerBI-dashboard will be used, `https://app.powerbi.com` should be included.
+  - When SSO using Azure Entra will be used, `https://*.ciamlogin.com` should be included..
 - `frame-ancestors`:  
   Allows an interface to be included in an `<iframe>` on some other web-site or -service.
-  - When the integration with Redline/Twilio Flex will be used, `https://flex.twilio.com` should be included. (for the Portal only)
+  - When the integration with Redline/Twilio Flex will be used, `https://flex.twilio.com` should be included.
 
 For each different interface, on each specific instance, other settings apply, depending on their (required) functionality.
