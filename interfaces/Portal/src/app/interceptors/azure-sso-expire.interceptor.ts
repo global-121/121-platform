@@ -32,7 +32,7 @@ export class AzureSsoExpireInterceptor implements HttpInterceptor {
         !request.url.includes(ApiPath.usersLogin) &&
         !request.url.includes(ApiPath.usersLogout)
       ) {
-        await this.authService.checkExpirationDate();
+        await this.authService.checkSsoTokenExpirationDate();
       }
     }
     return await lastValueFrom(next.handle(request));

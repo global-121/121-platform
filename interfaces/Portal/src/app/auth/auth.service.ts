@@ -256,7 +256,7 @@ export class AuthService {
     }
   }
 
-  public async checkExpirationDate(): Promise<void> {
+  public async checkSsoTokenExpirationDate(): Promise<void> {
     const user = this.getUserFromStorage();
 
     if (!user || !user.isEntraUser) {
