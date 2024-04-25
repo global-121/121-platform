@@ -16,6 +16,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
+  updateFinancialServiceProvider,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -27,7 +28,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
-import data from '../../../../../121-platform/interfaces/Portal/src/assets/i18n/en.json';
+import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
@@ -78,6 +79,19 @@ test.beforeEach(async ({ page }) => {
     Object.values(StatusEnum),
   );
 
+  await updateFinancialServiceProvider(
+    programIdVisa,
+    accessToken,
+    paymentReferenceIds,
+    'Intersolve-jumbo-physical',
+    '31600000000',
+    'a',
+    '2',
+    '3',
+    '1234CH',
+    'Waddinxveen',
+  );
+
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');
@@ -87,7 +101,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
+test('[27496] View Activity overview in FSP column on PA profile page', async ({
+  page,
+}) => {
   const helpers = new Helpers();
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
@@ -99,14 +115,15 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
     await table.clickOnPaNumber(1);
   });
 
-  await test.step('Validate the "Status history" tab on the PA Activity Overview table', async () => {
+  await test.step('Validate Status histor tab on PA Activity Overview table', async () => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
 
     await registration.validatePaProfileOpened();
-    await registration.openActivityOverviewTab('Status history');
+    await registration.openActivityOverviewTab('All');
     await registration.validateChangeLogTile(
-      data['registration-details']['activity-overview'].activities.status.label,
+      data['registration-details']['activity-overview'].activities['fsp-change']
+        .label,
       userName,
       await helpers.getTodaysDate(),
       data['registration-details']['activity-overview'].activities[
