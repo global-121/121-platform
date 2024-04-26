@@ -15,7 +15,6 @@ import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
 import { MessageModule } from './notifications/message.module';
-import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
@@ -28,7 +27,6 @@ import { TypeOrmModule } from './typeorm.module';
     HealthModule,
     CronjobModule,
     ScriptsModule,
-    PeopleAffectedModule,
     InstanceModule,
     MessageModule,
     MetricsModule,

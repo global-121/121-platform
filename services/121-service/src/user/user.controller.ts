@@ -262,28 +262,6 @@ export class UserController {
 
   @AuthenticatedUser()
   @ApiTags('users')
-  @ApiOperation({ summary: 'User deletes itself' })
-  @Delete('users')
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'User deleted',
-    type: UserEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
-    const deleterId = req.user.id;
-    if (!deleterId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return await this.userService.delete(deleterId);
-  }
-
-  @AuthenticatedUser()
-  @ApiTags('users')
   @ApiOperation({ summary: 'Get current user' })
   @Get('users/current')
   @ApiResponse({
