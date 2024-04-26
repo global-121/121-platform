@@ -406,3 +406,14 @@ export async function getRegistrationEvents(
     .set('Cookie', [accessToken])
     .send();
 }
+
+export async function getImportRegistrationsTemplate(
+  programId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/registrations/import-template`)
+    .set('Cookie', [accessToken])
+    .send();
+}

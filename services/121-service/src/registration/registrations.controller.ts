@@ -207,6 +207,23 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('programs/registrations')
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationImportTemplateREAD],
+  })
+  @ApiOperation({
+    summary: 'Get a CSV template for importing registrations',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('programs/:programId/registrations/import-template')
+  public async getImportRegistrationsTemplate(
+    @Param() params,
+  ): Promise<string[]> {
+    return await this.registrationsService.getImportRegistrationsTemplate(
+      Number(params.programId),
+    );
+  }
+
   @AuthenticatedUser()
   @ApiTags('programs/registrations')
   @ApiResponse({
