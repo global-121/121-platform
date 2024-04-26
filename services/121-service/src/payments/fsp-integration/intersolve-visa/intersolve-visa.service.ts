@@ -678,23 +678,15 @@ export class IntersolveVisaService
       ? formatPhoneNumber(paymentDetails.phoneNumber)
       : null;
     createDebitCardPayload.cardAddress = {
-      address1: `${
-        paymentDetails.addressStreet +
-        ' ' +
-        paymentDetails.addressHouseNumber +
-        paymentDetails.addressHouseNumberAddition
-      }`,
+      address1:
+        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
       city: paymentDetails.addressCity,
       country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
-      address1: `${
-        paymentDetails.addressStreet +
-        ' ' +
-        paymentDetails.addressHouseNumber +
-        paymentDetails.addressHouseNumberAddition
-      }`,
+      address1:
+        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
       city: paymentDetails.addressCity,
       country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
