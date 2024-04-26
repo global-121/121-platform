@@ -9,6 +9,7 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { adminOwnerDto } from '../fixtures/user-owner';
 import {
   changePhase,
@@ -441,7 +442,8 @@ describe('Do payment to 1 PA', () => {
 
       // retry payment
       await retryPayment(programIdVisa, paymentNrVisa, accessToken);
-      // await waitFor(2_000);
+      // TODO: refactor test to not rely on aribtrary pause
+      await waitFor(2_000);
 
       // Assert
       const transactionsResponse = await getTransactions(
@@ -500,7 +502,8 @@ describe('Do payment to 1 PA', () => {
 
       // retry payment
       await retryPayment(programIdVisa, paymentNrVisa, accessToken);
-      // await waitFor(2_000);
+      // TODO: refactor test to not rely on aribtrary pause
+      await waitFor(2_000);
 
       // Assert
       const transactionsResponse = await getTransactions(

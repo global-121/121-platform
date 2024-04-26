@@ -9,6 +9,7 @@ import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersol
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
+import { waitFor } from '../../src/utils/waitFor.helper';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
@@ -54,13 +55,15 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Act
-    // await waitFor(2_000);
+    // TODO: refactor test to not rely on aribtrary pause
+    await waitFor(2_000);
     await issueNewVisaCard(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
-    // await waitFor(2_000);
+    // TODO: refactor test to not rely on aribtrary pause
+    await waitFor(2_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
