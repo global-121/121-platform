@@ -11,7 +11,7 @@ import { ApplicationModule } from './app.module';
 import {
   APP_FAVICON,
   APP_TITLE,
-  DEBUG,
+  DEVELOPMENT,
   PORT,
   ROOT_URL,
   SWAGGER_CUSTOM_CSS,
@@ -55,11 +55,11 @@ async function bootstrap(): Promise<void> {
       displayRequestDuration: true,
       filter: true,
       operationsSorter: 'alpha',
-      queryConfigEnabled: DEBUG,
+      queryConfigEnabled: DEVELOPMENT,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
-      tryItOutEnabled: DEBUG,
+      tryItOutEnabled: DEVELOPMENT,
     },
   });
 

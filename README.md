@@ -81,6 +81,12 @@ Then install the required version of Node.js and `npm`:
 
 ---
 
+Now, make sure to run the following in the root folder to install the necessary pre-hooks:
+
+```bash
+npm install
+```
+
 ## Setup Services
 
 Switch to the repository folder
@@ -148,10 +154,6 @@ To start an individual interface/service in VS Code:
 - Run: (where `<package>` is one of `portal`, `121-service`)
 
       npm run code:<package>
-
-### Setup git pre-commit hooks
-
-To automatically check the (syntax of the) code, before committing/pushing, you can enable the [`githook`-scripts](tools/git-hooks/).
 
 ### Process for implementing data-model changes
 
@@ -375,7 +377,7 @@ This is how we create and publish a new release of the 121-platform.
   - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
   - [ ] Check the deployed release on the staging environment
   - [ ] Make any configuration changes (ENV-variables, etc.) on production-service(s)
-  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production (for each instance)
+  - [ ] Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
 
 ### Patch/Hotfix Checklist
 
@@ -388,8 +390,8 @@ This follows the same process as a regular release + deployment. With some small
 - Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
 - Push this branch to the upstream/origin repository.
 - Create a new release (see above) and publish it.
-- Use the [manual deployment-workflows](.github/workflows/) to deploy to production (to applicable instance(s))
-- After the hotfix-release, apply the same fix to the main-branch in a regular PR (by creating a PR from the hotfix-branch to `main`-branch)
+- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
+- After the hotfix-release, apply/include the fix by creating a PR from the hotfix-branch to `main`-branch
 
 ---
 
@@ -412,7 +414,8 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
 
-- A manual deploy can be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred branch.
+- Created releases are automatically deployed to the staging-environment
+- A manual deploy can also be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag`.
 
 ### Service(s)
 
@@ -431,14 +434,14 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 - [ ] Configure the service configurations based on [`.env.example`](./services/.env.example)
 - [ ] Create the necessary build/deploy-workflow files
 - [ ] Merge these new files into the `main`-branch
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-version `tag`
 
 #### On next deployments
 
 - [ ] Decide on what version to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](https://github.com/global-121/121-platform/actions) by selecting the target release-version `tag`
 
 ## Glossary
 

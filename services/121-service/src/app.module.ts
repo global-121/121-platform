@@ -6,57 +6,32 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { ActionsModule } from './actions/actions.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CronjobModule } from './cronjob/cronjob.module';
-import { EventsModule } from './events/events.module';
-import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
-import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
-import { LookupModule } from './notifications/lookup/lookup.module';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
-import { MessageTemplateModule } from './notifications/message-template/message-template.module';
 import { MessageModule } from './notifications/message.module';
-import { SmsModule } from './notifications/sms/sms.module';
-import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
-import { PeopleAffectedModule } from './people-affected/people-affected.module';
-import { ProgramAttributesModule } from './program-attributes/program-attributes.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
-import { ProgramModule } from './programs/programs.module';
-import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
-import { UserModule } from './user/user.module';
 
 @Module({
+  // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
   imports: [
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
-    ProgramModule,
-    ProgramAttributesModule,
-    MessageTemplateModule,
-    UserModule,
     HealthModule,
     CronjobModule,
-    SmsModule,
-    LookupModule,
     ScriptsModule,
-    ActionsModule,
-    PeopleAffectedModule,
-    FspModule,
     InstanceModule,
-    RegistrationsModule,
     MessageModule,
     MetricsModule,
-    WhatsappModule,
     MessageIncomingModule,
     NoteModule,
-    ExchangeRateModule,
-    EventsModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

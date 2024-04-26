@@ -3,26 +3,6 @@ import { twilioClient } from '../twilio.client';
 
 @Injectable()
 export class LookupService {
-  public async lookupPhoneNr(
-    phoneNumber: string,
-  ): Promise<{ result: boolean | undefined }> {
-    let numberCorrect: boolean;
-    try {
-      const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
-
-      await twilioClient.lookups.v1
-        .phoneNumbers(updatedPhone)
-        .fetch({ type: ['carrier'] });
-      numberCorrect = true;
-    } catch (e) {
-      console.log('e: ', e);
-      if (e.status === HttpStatus.NOT_FOUND) {
-        numberCorrect = false;
-      }
-    }
-    return { result: numberCorrect };
-  }
-
   public async lookupAndCorrect(
     phoneNumber: string,
     throwNoException?: boolean,

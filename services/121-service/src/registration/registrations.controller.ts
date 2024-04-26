@@ -35,7 +35,6 @@ import {
   PaginatedSwaggerDocs,
   PaginateQuery,
 } from 'nestjs-paginate';
-import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import { MessageContentType } from '../notifications/enum/message-type.enum';
@@ -48,14 +47,12 @@ import {
 } from './const/filter-operation.const';
 import { BulkActionResultDto } from './dto/bulk-action-result.dto';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
-import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
+import { UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
-import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -77,19 +74,6 @@ export class RegistrationsController {
   ) {}
 
   @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: HttpStatus.CREATED })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/fsp')
-  public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
-    return await this.registrationsService.addFsp(
-      setFsp.referenceId,
-      setFsp.fspId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
     summary: 'Import set of registered PAs, from CSV',
@@ -101,14 +85,15 @@ export class RegistrationsController {
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
     @UploadedFile() csvFile,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Req() req,
   ): Promise<ImportResult> {
     const userId = req.user.id;
 
     return await this.registrationsService.importRegistrations(
       csvFile,
-      Number(params.programId),
+      programId,
       userId,
     );
   }
@@ -126,7 +111,8 @@ export class RegistrationsController {
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
     data: ImportRegistrationsDto[],
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query() queryParams,
     @Req() req,
   ): Promise<ImportResult> {
@@ -137,18 +123,18 @@ export class RegistrationsController {
       const validatedData =
         await this.registrationsService.importJsonValidateRegistrations(
           data,
-          Number(params.programId),
+          programId,
           userId,
         );
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
-        Number(params.programId),
+        programId,
         userId,
       );
     } else {
       return await this.registrationsService.importValidatedRegistrations(
         data,
-        Number(params.programId),
+        programId,
         userId,
       );
     }
@@ -581,95 +567,6 @@ export class RegistrationsController {
     return result;
   }
 
-  @AuthenticatedUser()
-  @ApiTags('registrations')
-  // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({
-    summary: '[SCOPED] Download all program answers (for validation)',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Program answers downloaded - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @Get('registrations/download/validation-data')
-  public async downloadValidationData(@Req() req): Promise<DownloadData> {
-    const userId = req.user.id;
-    return await this.registrationsService.downloadValidationData(userId);
-  }
-
-  @AuthenticatedUser()
-  @ApiTags('registrations')
-  // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({
-    summary:
-      '[SCOPED] Get a registration with prefilled answers (for Verify/AW-App)',
-  })
-  @ApiResponse({ status: HttpStatus.OK, description: 'A single registration' })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  @ApiParam({
-    name: 'referenceId',
-  })
-  @Get('registrations/:referenceId')
-  public async getRegistration(
-    @Param() params,
-    @Req() req,
-  ): Promise<RegistrationEntity> {
-    const userId = req.user.id;
-    return await this.registrationsService.getRegistrationToValidate(
-      params.referenceId,
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get FSP-attribute answers' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Retrieved FSP-attribute answers - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/fsp-attributes')
-  public async getFspAnswersAttributes(
-    @Query() queryParams: ReferenceIdDto,
-  ): Promise<FspAnswersAttrInterface> {
-    return await this.registrationsService.getFspAnswersAttributes(
-      queryParams.referenceId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
-  })
-  @ApiOperation({ summary: '[SCOPED] Issue validationData (For AW)' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Validation Data issued - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/issue-validation')
-  public async issue(
-    @Body() validationIssueData: ValidationIssueDataDto,
-    @Param('programId') programId,
-  ): Promise<void> {
-    return await this.registrationsService.issueValidation(
-      validationIssueData,
-      programId,
-    );
-  }
-
   @ApiTags('programs/registrations')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -777,27 +674,6 @@ export class RegistrationsController {
     return await this.registrationsService.getMessageHistoryRegistration(
       params.referenceId,
     );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser()
-  @ApiOperation({
-    summary: 'Get registration status. Used by person affected only',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Registration status retrieved  - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registrations/status/:referenceId')
-  public async getRegistrationStatus(@Param() params): Promise<any> {
-    const status = await this.registrationsService.getRegistrationStatus(
-      params.referenceId,
-    );
-
-    return { status };
   }
 
   @ApiTags('programs/registrations')

@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import FspName from 'src/app/enums/fsp-name.enum';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { AnswerType } from '../../models/fsp.model';
+import { AnswerType, Fsp } from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -28,7 +29,7 @@ export class UpdateFspComponent implements OnInit {
   public type: string;
 
   @Input()
-  public value: string;
+  public value: FspName;
 
   @Input()
   public placeholder: string | undefined;
@@ -40,7 +41,7 @@ export class UpdateFspComponent implements OnInit {
   public inProgress: boolean;
 
   @Input()
-  public fspList: any[];
+  public fspList: Fsp[];
 
   @Input()
   public referenceId: string;
@@ -65,8 +66,8 @@ export class UpdateFspComponent implements OnInit {
   public startingAttributes: any[] = [];
   public selectedFspAttributes: any[] = [];
   public attributeDifference: any[] = [];
-  public startingFspName = '';
-  public selectedFspName = '';
+  public startingFspName: FspName;
+  public selectedFspName: FspName;
   public attributesToSave: object = {};
   public enableUpdateBtn = true;
 
@@ -119,7 +120,7 @@ export class UpdateFspComponent implements OnInit {
     }
   }
 
-  public getFspAttributes(fspString: string) {
+  public getFspAttributes(fspString: FspName) {
     this.selectedFspAttributes = [];
     this.attributesToSave = {};
     if (this.fspList) {
@@ -129,8 +130,7 @@ export class UpdateFspComponent implements OnInit {
       }));
 
       const selectedFsp = this.fspList.find(
-        (fspItem) =>
-          fspItem.displayName === this.translatableString.get(fspString),
+        (fspItem) => fspItem.fsp === fspString,
       );
 
       if (selectedFsp) {

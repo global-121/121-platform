@@ -2,43 +2,29 @@
 
 ```mermaid
 graph LR
+  CronjobModule-->ExchangeRateModule
+  MessageTemplateModule-->ProgramAttributesModule
   ProgramModule-->ActionsModule
   ProgramModule-->FspModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
-  MessageTemplateModule-->ProgramAttributesModule
-  CronjobModule-->ExchangeRateModule
-  RegistrationsModule-->LookupModule
-  RegistrationsModule-->ActionsModule
-  RegistrationsModule-->ProgramModule
-  RegistrationsModule-->FspModule
-  RegistrationsModule-->QueueMessageModule
+  MessageModule-->WhatsappModule
+  WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
+  MessageModule-->SmsModule
+  MessageModule-->QueueMessageModule
   QueueMessageModule-->ProgramAttributesModule
   QueueMessageModule-->RegistrationDataModule
-  RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
+  MessageModule-->IntersolveVoucherModule
+  IntersolveVoucherModule-->ImageCodeModule
+  IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->ActionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->EventsModule
-  IntersolveVisaModule-->QueueMessageModule
-  IntersolveVisaModule-->RegistrationDataModule
-  IntersolveVisaModule-->RedisModule
-  RegistrationsModule-->RegistrationDataModule
-  RegistrationsModule-->RegistrationUtilsModule
-  RegistrationsModule-->EventsModule
-  RegistrationsModule-->QueueRegistrationUpdateModule
-  MessageModule-->WhatsappModule
-  WhatsappModule-->ImageCodeModule
-  WhatsappModule-->MessageTemplateModule
-  MessageModule-->SmsModule
-  MessageModule-->QueueMessageModule
-  MessageModule-->IntersolveVoucherModule
-  IntersolveVoucherModule-->ImageCodeModule
-  IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -47,6 +33,20 @@ graph LR
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->RegistrationsModule
+  RegistrationsModule-->LookupModule
+  RegistrationsModule-->ActionsModule
+  RegistrationsModule-->ProgramModule
+  RegistrationsModule-->FspModule
+  RegistrationsModule-->QueueMessageModule
+  RegistrationsModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->QueueMessageModule
+  IntersolveVisaModule-->RegistrationDataModule
+  IntersolveVisaModule-->RedisModule
+  RegistrationsModule-->RegistrationDataModule
+  RegistrationsModule-->RegistrationUtilsModule
+  RegistrationsModule-->EventsModule
+  RegistrationsModule-->QueueRegistrationUpdateModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->ActionsModule

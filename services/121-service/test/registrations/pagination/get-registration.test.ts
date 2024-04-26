@@ -23,6 +23,8 @@ describe('Load PA table', () => {
     const attributeName = 'name';
     const attributeFirstName = 'firstName';
     const attributeLastName = 'lastName';
+    const attributeFspDisplayName = 'fspDisplayName';
+    const attributeFinancelServiceProvider = 'financialServiceProvider';
 
     beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
@@ -112,6 +114,23 @@ describe('Load PA table', () => {
       expect(data[0]).toHaveProperty(attributeName);
       expect(data[0]).not.toHaveProperty(attributeFirstName);
       expect(data[0]).not.toHaveProperty(attributeLastName);
+    });
+
+    it('should only return fspDisplayName', async () => {
+      // Arrange
+      const requestedDynamicAttributes = [attributeFspDisplayName];
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations(
+        programIdOCW,
+        requestedDynamicAttributes,
+        accessToken,
+      );
+      const data = getRegistrationsResponse.body.data;
+
+      // Assert
+      expect(data[0]).toHaveProperty(attributeFspDisplayName);
+      expect(data[0]).not.toHaveProperty(attributeFinancelServiceProvider);
     });
 
     it('Should return specified amount of PA per page', async () => {
