@@ -5,9 +5,6 @@ name: 'Test Interface: Portal'
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
-      - 'feat.*'
     paths:
       - '.github/workflows/test_interface_portal.yml'
       - 'interfaces/Portal/**'

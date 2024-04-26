@@ -5,9 +5,6 @@ name: 'Test E2E: Linting'
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
-      - 'feat.*'
     paths:
       - '.github/workflows/test_e2e_linting.yml'
       - 'e2e/**'
