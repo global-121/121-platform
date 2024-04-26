@@ -100,7 +100,7 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => ProgramFinancialServiceProviderDto) // TODO: SetFspDto is now imported from create-program.dto.ts, is that correct? Or put SetFspDto definition in a separate file?
+  @Type(() => ProgramFinancialServiceProviderDto)
   public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
 
   @ApiProperty()

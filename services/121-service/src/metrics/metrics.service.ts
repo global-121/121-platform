@@ -192,8 +192,10 @@ export class MetricsService {
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'];
 
-      const preferredLanguage = row['preferredLanguage'] || 'en';
-      row['fspDisplayName'] = row['fspDisplayName'][preferredLanguage];
+      const preferredLanguage = 'en';
+      row['fspDisplayName'] = row['fspDisplayName']?.[preferredLanguage]
+        ? row['fspDisplayName'][preferredLanguage]
+        : '';
 
       delete row['registrationProgramId'];
     }

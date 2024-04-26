@@ -81,6 +81,12 @@ Then install the required version of Node.js and `npm`:
 
 ---
 
+Now, make sure to run the following in the root folder to install the necessary pre-hooks:
+
+```bash
+npm install
+```
+
 ## Setup Services
 
 Switch to the repository folder
@@ -148,10 +154,6 @@ To start an individual interface/service in VS Code:
 - Run: (where `<package>` is one of `portal`, `121-service`)
 
       npm run code:<package>
-
-### Setup git pre-commit hooks
-
-To automatically check the (syntax of the) code, before committing/pushing, you can enable the [`githook`-scripts](tools/git-hooks/).
 
 ### Process for implementing data-model changes
 

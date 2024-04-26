@@ -10,10 +10,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "npm run lint:code && npm run lint:syntax",
-    "lint:code": "eslint \"src/**/*.{ts,js}\"",
-    "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
-    "fix": "npm run lint:code -- --fix && npm run lint:syntax -- --write",
+    "lint": "eslint \"src/**/*.{ts,js}\"",
+    "fix": "npm run lint -- --fix",
     "test": "echo 'No tests available' && exit 0",
     "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit",
