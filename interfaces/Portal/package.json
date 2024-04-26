@@ -43,7 +43,7 @@
     "@angular/router": "^16.2.12",
     "@angular/service-worker": "^16.2.12",
     "@azure/msal-angular": "^3.0.12",
-    "@azure/msal-browser": "^3.9.0",
+    "@azure/msal-browser": "^3.13.0",
     "@ionic/angular": "^7.8.5",
     "@microsoft/applicationinsights-web": "^3.2.0",
     "@ngx-translate/core": "^14.0.0",
