@@ -89,7 +89,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       const getTransactionsBody = getTransactionsRes.body;
       // Wait for registration to be updated
       const timeout = 80_000; // Timeout in milliseconds
-      const interval = 1_000; // Interval between retries in milliseconds
+      const interval = 200; // Interval between retries in milliseconds
       let elapsedTime = 0;
       let getRegistration = null;
       while (

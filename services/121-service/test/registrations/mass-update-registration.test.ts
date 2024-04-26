@@ -1,5 +1,4 @@
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import { assertRegistrationImport } from '../helpers/assert.helper';
 import {
   bulkUpdateRegistrationsCSV,
@@ -80,7 +79,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
-    await waitFor(2000);
+    // await waitFor(2000);
 
     const pa1patched = await searchRegistrationByReferenceId(
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',

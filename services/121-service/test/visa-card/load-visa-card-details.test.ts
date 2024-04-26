@@ -10,7 +10,6 @@ import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersol
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
@@ -33,7 +32,6 @@ describe('Load Visa debit cards and details', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-    await waitFor(2_000);
 
     await changePhase(
       programIdVisa,

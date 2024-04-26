@@ -9,7 +9,6 @@ import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersol
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
@@ -25,10 +24,8 @@ describe('Block visa debit card', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await waitFor(1_000);
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-    await waitFor(3_000);
 
     await changePhase(
       programIdVisa,
@@ -58,7 +55,7 @@ describe('Block visa debit card', () => {
     );
 
     // Act
-    await waitFor(2_000);
+    // await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
@@ -78,7 +75,7 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
-    await waitFor(2_000); // the last message otherwise was not in the db yet
+    // await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
@@ -113,7 +110,7 @@ describe('Block visa debit card', () => {
     );
 
     // Act
-    await waitFor(2_000);
+    // await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
@@ -133,7 +130,7 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
-    await waitFor(2_000); // the last message otherwise was not in the db yet
+    // await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,

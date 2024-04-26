@@ -291,7 +291,7 @@ export async function waitForPaymentTransactionsToComplete(
 
     // If not all transactions are successful, wait for a short interval before checking again
     if (!allTransactionsComplete) {
-      await waitFor(1_000); // Wait for 1 second (adjust as needed)
+      await waitFor(200);
     }
   }
 
@@ -327,7 +327,7 @@ export async function waitForStatusUpdateToComplete(
 
     // If not all transactions are successful, wait for a short interval before checking again
     if (!allStatusUpdatesSuccessful) {
-      await waitFor(1000); // Wait for 1 second (adjust as needed)
+      await waitFor(200);
     }
   }
 
@@ -381,7 +381,7 @@ export async function waitForMessagesToComplete(
 
     // If not all PAs received a message, wait for a short interval before checking again
     if (!allMessageUpdatesSuccessful) {
-      await waitFor(3_000);
+      await waitFor(200);
     }
   }
 

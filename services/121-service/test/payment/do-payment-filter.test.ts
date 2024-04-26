@@ -58,7 +58,6 @@ describe('Do payment with filter', () => {
       RegistrationStatusEnum.included,
       accessToken,
     );
-    // await waitFor(2_000);
   });
 
   it('should only pay included people', async () => {

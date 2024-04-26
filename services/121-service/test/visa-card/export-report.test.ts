@@ -4,7 +4,6 @@ import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import { changePhase, doPayment, exportList } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
@@ -39,7 +38,6 @@ describe('Export Visa debit card report', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-    await waitFor(2_000);
 
     await changePhase(
       programId,
@@ -69,7 +67,7 @@ describe('Export Visa debit card report', () => {
     );
 
     // Act
-    await waitFor(2_000);
+    // await waitFor(2_000);
 
     await getVisaWalletsAndDetails(
       programId,

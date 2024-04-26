@@ -91,7 +91,7 @@ describe('Do payment to 1 PA', () => {
           break;
         }
 
-        await waitFor(2_000);
+        await waitFor(200);
       }
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);

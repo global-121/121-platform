@@ -2,7 +2,6 @@ import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
 import {
   changePhase,
   getCbeValidationReport,
@@ -44,7 +43,6 @@ describe('Export CBE validation report', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.ethJointResponse);
     accessToken = await getAccessToken();
-    await waitFor(1_000);
 
     await changePhase(
       programId,
