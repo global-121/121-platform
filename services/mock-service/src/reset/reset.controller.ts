@@ -7,6 +7,6 @@ export class ResetController {
   @ApiOperation({ summary: 'Stop sending callbacks' })
   @Get('reset/callbacks')
   public stopCallbacks(): void {
-    global.queueCallbacks = {}
+    global.queueCallbacks = {};
   }
 }

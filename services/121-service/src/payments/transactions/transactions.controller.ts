@@ -3,6 +3,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -48,12 +49,13 @@ export class TransactionsController {
   })
   @Get('programs/:programId/transactions')
   public async getTransactions(
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe)
+    programId: number,
     @Query('referenceId') referenceId: string,
     @Query('payment') payment: number,
   ): Promise<AuditedTransactionReturnDto[]> {
     return await this.transactionsService.getAuditedTransactions(
-      Number(programId),
+      programId,
       Number(payment),
       referenceId,
     );

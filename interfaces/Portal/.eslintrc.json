@@ -13,7 +13,7 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
-        "prettier"
+        "plugin:prettier/recommended"
       ],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off",
@@ -43,13 +43,23 @@
     },
     {
       "files": ["*.html"],
-      "extends": ["plugin:@angular-eslint/template/recommended"],
-      "rules": {}
+      "extends": [
+        "plugin:@angular-eslint/template/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "parser": "angular"
+          }
+        ]
+      }
     },
     {
       "files": ["*.spec.ts"],
       "plugins": ["jasmine"],
-      "extends": ["plugin:jasmine/recommended"],
+      "extends": ["plugin:jasmine/recommended", "plugin:prettier/recommended"],
       "rules": {}
     },
     {
@@ -57,6 +67,7 @@
       "env": {
         "node": true
       },
+      "extends": ["plugin:prettier/recommended"],
       "parserOptions": {
         "ecmaVersion": 2022
       },

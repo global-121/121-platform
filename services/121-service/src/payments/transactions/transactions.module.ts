@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionModule } from '../../actions/action.module';
+import { ActionsModule } from '../../actions/actions.module';
 import { EventsModule } from '../../events/events.module';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
@@ -27,7 +27,7 @@ import { TransactionsService } from './transactions.service';
     ]),
     UserModule,
     HttpModule,
-    ActionModule,
+    ActionsModule,
     QueueMessageModule,
     MessageTemplateModule,
     RegistrationUtilsModule,
