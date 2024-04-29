@@ -423,6 +423,7 @@ export class MetricsService {
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
         `fsp."fsp" AS fsp`,
+        'registration."scope" AS scope',
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
