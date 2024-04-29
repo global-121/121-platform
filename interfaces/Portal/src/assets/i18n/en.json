@@ -59,8 +59,10 @@
         "declined": "Declined",
         "deleted": "Deleted",
         "included": "Included",
+        "inclusionEnded": "Inclusion ended",
         "paused": "Paused",
         "registered": "Registered",
+        "rejected": "Rejected",
         "startedRegistration": "Created",
         "validated": "Validated"
       }
