@@ -87,8 +87,8 @@
                   minlength="4"
                   class="ion-margin-vertical"
                   [ngClass]="{
-                      'invalid-border': showLoginFail.email || invalidEmail
-                    }"
+                    'invalid-border': showLoginFail.email || invalidEmail
+                  }"
                   (ionBlur)="onEmailBlur()"
                   fill="outline"
                 ></ion-input>
@@ -100,8 +100,10 @@
                 >
                   <small>
                     <strong>
-                      {{ 'page.login.form.error-messages.invalid-email' |
-                      translate }}
+                      {{
+                        'page.login.form.error-messages.invalid-email'
+                          | translate
+                      }}
                     </strong>
                   </small>
                 </ion-text>
@@ -121,8 +123,8 @@
                 class="ion-no-padding"
                 lines="none"
                 [ngClass]="{
-                    'invalid-border': showLoginFail.password || emptyPassword
-                  }"
+                  'invalid-border': showLoginFail.password || emptyPassword
+                }"
               >
                 <ion-row>
                   <ion-input
@@ -149,8 +151,8 @@
                     (click)="toggleInputType()"
                     [title]="isPassword() ? this.labelShow : this.labelHide"
                     [attr.aria-label]="
-                        isPassword() ? this.labelShow : this.labelHide
-                      "
+                      isPassword() ? this.labelShow : this.labelHide
+                    "
                     style="position: absolute; inset-inline-end: 0"
                     class="ion-align-self-center"
                   >
@@ -176,8 +178,10 @@
                 >
                   <small>
                     <strong>
-                      {{ 'page.login.form.error-messages.empty-password' |
-                      translate }}
+                      {{
+                        'page.login.form.error-messages.empty-password'
+                          | translate
+                      }}
                     </strong>
                   </small>
                 </ion-text>
