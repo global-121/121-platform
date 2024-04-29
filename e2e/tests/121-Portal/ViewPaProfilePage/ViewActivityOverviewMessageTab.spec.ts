@@ -2,32 +2,17 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
-import {
-  amountVisa,
-  paymentNrVisa,
-  programIdVisa,
-  registrationVisa as registrationVisaDefault,
-} from '@121-service/seed-data/mock/visa-card.data';
+import { registrationVisa as registrationVisaDefault } from '@121-service/seed-data/mock/visa-card.data';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import {
-  changePhase,
-  doPayment,
-  waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import {
-  awaitChangePaStatus,
-  importRegistrations,
-} from '@121-service/test/helpers/registration.helper';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 let accessToken: string;
 
@@ -41,40 +26,11 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   accessToken = await getAccessToken();
 
-  await changePhase(
-    programIdVisa,
-    ProgramPhase.registrationValidation,
-    accessToken,
-  );
-  await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-  await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
+  const programIdOCW = 3;
 
-  // Arrange
-  await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-  await awaitChangePaStatus(
-    programIdVisa,
-    [registrationVisa.referenceId],
-    RegistrationStatusEnum.included,
-    accessToken,
-  );
-  const paymentReferenceIds = [registrationVisa.referenceId];
+  const OcwProgramId = programIdOCW;
 
-  // Act
-  await doPayment(
-    programIdVisa,
-    paymentNrVisa,
-    amountVisa,
-    paymentReferenceIds,
-    accessToken,
-  );
-
-  await waitForPaymentTransactionsToComplete(
-    programIdVisa,
-    paymentReferenceIds,
-    accessToken,
-    3001,
-    Object.values(StatusEnum),
-  );
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -100,9 +56,9 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
     await registration.validatePaProfileOpened();
     await registration.openActivityOverviewTab('Messages');
     await registration.validateSentMessagesTab(
-      data.entity.message['content-type']['generic-templated'],
-      data.entity.message['content-type'].payment,
-      data.entity.message.type.whatsapp,
+      englishTranslations.entity.message['content-type']['generic-templated'],
+      englishTranslations.entity.message['content-type'].payment,
+      englishTranslations.entity.message.type.whatsapp,
     );
   });
 });
