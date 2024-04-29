@@ -33,7 +33,7 @@ export class MsalSkipInterceptor
       return super.intercept(request, next);
     }
 
-    // Otherwise, check the exiting user from local storage
+    // Otherwise, check the current user from local storage
     const rawUser = localStorage.getItem(USER_KEY);
 
     if (rawUser) {

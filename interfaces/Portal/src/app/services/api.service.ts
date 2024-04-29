@@ -262,7 +262,6 @@ export class ApiService {
     }
 
     if (error.status === HttpStatusCode.Unauthorized) {
-
       const rawUser = localStorage.getItem(USER_KEY);
 
       if (!rawUser) {
