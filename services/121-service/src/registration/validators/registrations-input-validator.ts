@@ -140,6 +140,8 @@ export class RegistrationsInputValidator {
       const errorObj = this.validatePhoneNumber(row, i, validationConfig);
       if (errorObj) {
         errors.push(errorObj);
+      } else {
+        importRecord.phoneNumber = row.phoneNumber ? row.phoneNumber : ''; // If the phone number is empty use an empty string
       }
 
       /*
