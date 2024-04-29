@@ -183,7 +183,6 @@ export class AuthService {
   public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
 
-
     this.setUserInStorage(userDto.user);
     this.updateAuthenticationState();
 
@@ -218,26 +217,24 @@ export class AuthService {
       return;
     }
 
-    // Logout from API first
-    await this.programsService.logout();
+    // Cleanup local state, to leave no trace of the user.
+    localStorage.removeItem(USER_KEY);
 
     if (this.useSso) {
-      // Continue Logout from Azure AD
-      await this.logoutSsoUser(user);
+      await this.logoutSsoUser(user.username);
 
       // No need to continue here, as the MSAL service will handle the redirect/clenaup/rest.
       return;
     }
 
-    localStorage.removeItem(USER_KEY);
+    await this.programsService.logout();
     this.updateAuthenticationState();
     this.router.navigate(['/', AppRoutes.login]);
   }
 
-  private async logoutSsoUser(user: User) {
-    const currentUser = this.msalService.instance.getAccountByUsername(
-      user.username,
-    );
+  private async logoutSsoUser(username: string) {
+    const currentUser =
+      this.msalService.instance.getAccountByUsername(username);
 
     if (!currentUser) {
       this.router.navigate(['/', AppRoutes.login]);
