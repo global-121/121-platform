@@ -732,6 +732,10 @@ export class MetricsService {
           JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
           registration,
         );
+      const preferredLanguage = 'en';
+      registration['fsp'] = registration['fsp']?.[preferredLanguage]
+        ? registration['fsp'][preferredLanguage]
+        : '';
       return {
         ...registration,
         duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),
