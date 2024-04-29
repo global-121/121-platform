@@ -52,11 +52,11 @@ export class AuthService {
     );
   }
 
-  public async hasPermission(
+  public hasPermission(
     programId: number,
     requiredPermission: Permission,
     user?: User | null,
-  ): Promise<boolean> {
+  ): boolean {
     if (!user) {
       user = this.getUserFromStorage();
     }
@@ -64,10 +64,6 @@ export class AuthService {
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-
-    if (this.useSso && (!user.permissions || !user.permissions[programId])) {
-      await this.processAzureAuthSuccess();
-    }
 
     return (
       user &&
@@ -183,6 +179,12 @@ export class AuthService {
   public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
 
+    if (!userDto || !userDto.user) {
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
+    this.checkSsoTokenExpirationDate();
     this.setUserInStorage(userDto.user);
     this.updateAuthenticationState();
 
@@ -265,7 +267,7 @@ export class AuthService {
   public async checkSsoTokenExpirationDate(): Promise<void> {
     const user = this.getUserFromStorage();
 
-    if (!user || !user.isEntraUser) {
+    if (!user || (user && user.isEntraUser === false)) {
       return;
     }
 

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
+    private route: ActivatedRoute,
     private authService?: AuthService,
     private msalService?: MsalService,
   ) {
@@ -34,7 +36,19 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     if (this.useSso) {
-      this.authService.logoutNonSSOUser();
+      this.authService.logoutNonSsoUser();
+
+      this.authService.authenticationState$.subscribe(async (user) => {
+        const programId = this.route.snapshot.params.programId;
+
+        // For valid users, but without any (program-specific) permissions or et all; do a refresh-check with Azure Entra.
+        if (
+          (user && !user?.permissions) ||
+          (user && programId && !user?.permissions[programId])
+        ) {
+          await this.authService.processAzureAuthSuccess();
+        }
+      });
 
       this.msalSubscription = this.msalService
         .handleRedirectObservable()
