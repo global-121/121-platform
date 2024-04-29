@@ -73,6 +73,24 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/');
 }
 
+let ssoInterceptors = [];
+
+// Only configure/load SSO dependencies when necessary
+if (environment.use_sso_azure_entra) {
+  ssoInterceptors = [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalSkipInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AzureSsoExpireInterceptor,
+      multi: true,
+    },
+  ];
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -158,16 +176,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     ErrorHandlerService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalSkipInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AzureSsoExpireInterceptor,
-      multi: true,
-    },
+    ...ssoInterceptors,
     MsalService,
     MsalBroadcastService,
   ],

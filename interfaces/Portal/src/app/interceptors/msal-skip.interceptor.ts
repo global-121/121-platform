@@ -22,7 +22,6 @@ export class MsalSkipInterceptor
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
     if (
-      environment.use_sso_azure_entra &&
       // Never intercept non-API requests
       !request.url.startsWith(environment.url_121_service_api)
     ) {
