@@ -118,7 +118,7 @@ describe('Import a registration', () => {
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
-    let registrationVisaCopy = { ...registrationVisa };
+    const registrationVisaCopy = { ...registrationVisa };
     delete registrationVisaCopy.phoneNumber;
 
     // Act
@@ -143,7 +143,7 @@ describe('Import a registration', () => {
   it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
-    let registrationVisaCopy = { ...registrationVisa };
+    const registrationVisaCopy = { ...registrationVisa };
     delete registrationVisaCopy.phoneNumber;
     const programUpdate = {
       allowEmptyPhoneNumber: true,
