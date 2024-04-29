@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[27659] Open the edit PA popup', async ({ page }) => {
+test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
