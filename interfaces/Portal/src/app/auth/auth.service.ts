@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { isIframed } from '../shared/utils/is-iframed.util';
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
@@ -228,7 +229,7 @@ export class AuthService {
 
         localStorage.removeItem(MSAL_COLLECTION_KEY);
 
-        if (this.router.url.includes(AppRoutes.iframe)) {
+        if (isIframed()) {
           this.msalService.logoutPopup({
             account: currentUser,
             mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
