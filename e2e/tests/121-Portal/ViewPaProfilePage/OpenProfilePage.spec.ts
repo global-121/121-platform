@@ -43,7 +43,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.verifyRowTableLeft(1, {
+    await table.verifiyProfilePersonalnformationTableLeft(1, {
       personAffected: 'PA #1',
       firstName: undefined,
       lastName: undefined,

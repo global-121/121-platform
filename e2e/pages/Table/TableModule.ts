@@ -73,7 +73,10 @@ class TableModule {
     }
   }
 
-  async verifyRowTableLeft(rowIndex: number, person: PersonLeft) {
+  async verifiyProfilePersonalnformationTableLeft(
+    rowIndex: number,
+    person: PersonLeft,
+  ) {
     const { personAffected, firstName, lastName, phoneNumber, status } = person;
 
     if (personAffected !== undefined) {
@@ -108,7 +111,7 @@ class TableModule {
     }
   }
 
-  async verifyRowTableRight(rowIndex: number, person: PersonRight) {
+  async verifiyProfilePersonalnformationTableRight(rowIndex: number, person: PersonRight) {
     const { preferredLanguage } = person;
 
     if (preferredLanguage !== undefined) {
