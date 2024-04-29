@@ -211,39 +211,52 @@ export class AuthService {
   }
 
   public async logout() {
+    const user = this.getUserFromStorage();
+
+    if (!user || !user.username) {
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
+    // Logout from API first
+    await this.programsService.logout();
+
     if (this.useSso) {
-      const user = this.getUserFromStorage();
+      // Continue Logout from Azure AD
+      await this.logoutSsoUser(user);
 
-      const azureLocalStorageDataToClear =
-        localStorage.getItem(MSAL_COLLECTION_KEY);
-
-      if (azureLocalStorageDataToClear && user) {
-        const currentUser = this.msalService.instance.getAccountByUsername(
-          user.username,
-        );
-
-        localStorage.removeItem(MSAL_COLLECTION_KEY);
-
-        if (isIframed()) {
-          this.msalService.logoutPopup({
-            account: currentUser,
-            mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
-          });
-        } else {
-          this.msalService.logoutRedirect({
-            account: currentUser,
-          });
-        }
-      }
+      // No need to continue here, as the MSAL service will handle the redirect/clenaup/rest.
+      return;
     }
 
     localStorage.removeItem(USER_KEY);
-    this.authenticationState.next(null);
-    await this.programsService.logout();
+    this.updateAuthenticationState();
     this.router.navigate(['/', AppRoutes.login]);
   }
 
-  public async logoutNonSSOUser() {
+  private async logoutSsoUser(user: User) {
+    const currentUser = this.msalService.instance.getAccountByUsername(
+      user.username,
+    );
+
+    if (!currentUser) {
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
+    if (isIframed()) {
+      this.msalService.logoutPopup({
+        account: currentUser,
+        mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      });
+    } else {
+      this.msalService.logoutRedirect({
+        account: currentUser,
+      });
+    }
+  }
+
+  public async logoutNonSsoUser() {
     const user = this.getUserFromStorage();
 
     if (user?.isEntraUser === false) {
