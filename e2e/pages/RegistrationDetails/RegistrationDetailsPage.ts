@@ -88,9 +88,11 @@ class RegistrationDetails {
   }
 
   async validateEditPaPopUpOpened() {
-    await this.page.waitForLoadState('domcontentloaded')
+    await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.editPersonAffectedPopUp);
-    const isVisible = await this.page.locator(this.editPersonAffectedPopUp).isVisible();
+    const isVisible = await this.page
+      .locator(this.editPersonAffectedPopUp)
+      .isVisible();
     expect(isVisible).toBe(true);
   }
 
@@ -188,20 +190,24 @@ class RegistrationDetails {
     expect(await newValueHolder.textContent()).toContain(newValue);
   }
 
-  async validateSentMessagesTab() {
+  async validateSentMessagesTab(
+    messageNotification: String,
+    messageContext: String,
+    messageType: String,
+  ) {
     const paymentNotificationLocator = this.page.locator(
-      ':text("Payment (WhatsApp)")',
+      `:text("${messageContext} (${messageType})")`,
     );
     const messageNotificationLocator = this.page.locator(
-      ':text("Message notification")',
+      `:text("${messageNotification}")`,
     );
     await paymentNotificationLocator.waitFor({ state: 'visible' });
     await messageNotificationLocator.waitFor({ state: 'visible' });
     expect(await messageNotificationLocator.textContent()).toContain(
-      'Message notification',
+      `${messageNotification}`,
     );
     expect(await paymentNotificationLocator.textContent()).toContain(
-      'Payment (WhatsApp)',
+      `${messageContext} (${messageType})`,
     );
   }
 }

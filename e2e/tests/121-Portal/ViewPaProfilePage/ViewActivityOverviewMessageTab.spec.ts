@@ -27,6 +27,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
+import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
@@ -97,9 +98,13 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
     await table.clickOnPaNumber(1);
   });
 
-  await test.step('Validate the "Messages" tab on the PA Activity Overview table', async () => {
+  await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {
     await registration.validatePaProfileOpened();
     await registration.openActivityOverviewTab('Messages');
-    await registration.validateSentMessagesTab();
+    await registration.validateSentMessagesTab(
+      data.entity.message['content-type']['generic-templated'],
+      data.entity.message['content-type'].payment,
+      data.entity.message.type.whatsapp,
+    );
   });
 });
