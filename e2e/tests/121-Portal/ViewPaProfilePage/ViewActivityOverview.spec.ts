@@ -8,6 +8,7 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/seed-data/mock/visa-card.data';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
@@ -92,7 +93,7 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme('NLRC OCW program');
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
     await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });
