@@ -137,7 +137,7 @@ export class RegistrationsInputValidator {
       }
       importRecord.referenceId = row.referenceId;
 
-      const errorObj = this.validatePhoneNumber(row, i, validationConfig);
+      const errorObj = this.validatePhoneNumberEmpty(row, i, validationConfig);
       if (errorObj) {
         errors.push(errorObj);
       } else {
@@ -398,7 +398,7 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private validatePhoneNumber(
+  private validatePhoneNumberEmpty(
     row: any,
     i: number,
     validationConfig: ValidationConfigDto,
