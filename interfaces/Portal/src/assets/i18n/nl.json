@@ -51,9 +51,13 @@
         "deleted": "Verwijderd",
         "imported": "Geïmporteerd",
         "included": "Actief",
+        "inclusionEnded": "Beëindigd",
         "invited": "Uitgenodigd",
+        "noLongerEligible": "Komt niet meer in aanmerking",
         "paused": "Gepauzeerd",
         "registered": "Aangemeld",
+        "registeredWhileNoLongerEligible": "Aangemeld maar komt niet meer in aanmerking",
+        "rejected": "Afgewezen",
         "startedRegistration": "Registratie gestart",
         "validated": "Goedgekeurd"
       }
