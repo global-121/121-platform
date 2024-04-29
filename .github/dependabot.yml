@@ -19,6 +19,8 @@ updates:
         patterns:
           - '@types/*'
           - '*eslint*'
+          - '*prettier*'
+          - 'tsc-watch'
       nestjs:
         patterns: ['@nestjs/*']
     ignore:
@@ -34,6 +36,30 @@ updates:
       - dependency-name: 'typescript'
 
   - package-ecosystem: npm
+    directory: '/services/mock-service'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 3
+    versioning-strategy: increase
+    groups:
+      development:
+        patterns:
+          - '@types/*'
+          - '*eslint*'
+          - '*prettier*'
+          - 'tsc-watch'
+      nestjs:
+        patterns: ['@nestjs/*']
+    ignore:
+      # Dependencies below are ordered alphabetically!
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+
+  - package-ecosystem: npm
     directory: '/interfaces/Portal'
     schedule:
       interval: weekly
@@ -45,6 +71,7 @@ updates:
         patterns:
           - '@types/*'
           - '*eslint*'
+          - '*prettier*'
         exclude-patterns: ['@angular-eslint/*']
     ignore:
       # Dependencies below are ordered alphabetically!

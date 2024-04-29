@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.116.11...main)
 
+### Removed
+
+- PA-App interface code and all related references
+- AW-App interface code and all related references
+
 ---
 
 ## [1.116.11](https://github.com/global-121/121-platform/compare/v1.116.10...v1.116.11)- 2024-04-29

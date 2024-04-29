@@ -6,10 +6,8 @@
   - [All features / scenario's](#all-features--scenarios)
     - [For Aid Workers](#for-aid-workers)
       - [Using 121-Portal](#using-121-portal)
-      - [Using AW-App](#using-aw-app)
       - [Using 3rd party systems](#using-3rd-party-systems)
     - [For Person/People Affected](#for-personpeople-affected)
-      - [Using PA-App](#using-pa-app)
       - [Using external tools/applications](#using-external-toolsapplications)
     - [For Admin-user](#for-admin-user)
       - [Using Swagger UI](#using-swagger-ui)
@@ -61,17 +59,6 @@ Features of the 121-platform are described in this folder in a standardized way 
   - [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
   - [Navigate program menu](121-Portal/Navigate_program_menu.feature)
 
-#### Using AW-App
-
-- [Download validation data](AW-App/Download_validation_data.feature)
-- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
-- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
-- [Upload validation data](AW-App/Upload_validation_data.feature)
-- Generic AW-App components/features
-  - Login
-  - Logout
-  - Change password
-
 #### Using 3rd party systems
 
 Using Redline WhatsApp Helpdesk
@@ -86,17 +73,6 @@ Using application such as EspoCRM to call our API
 - Update FSP of PA: Not tested yet.
 
 ### For Person/People Affected
-
-#### Using PA-App
-
-- [New registration](PA-App/New_registration.feature)
-- [Consent question](PA-App/Consent_question.feature)
-- [Answer program questions](PA-App/Answer_program_questions.feature)
-- [Fill payment details](PA-App/Fill_payment_details.feature)
-- Answer monitoring questions
-- Generic PA-App components
-  - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
-  - Changes based on instance-configuration/values
 
 #### Using external tools/applications
 
@@ -147,7 +123,7 @@ Using application such as EspoCRM to call our API
 Features can be added to this folder by:
 
 - Create a `.feature`-file, named after its title with `_` for spaces;
-  i.e. `View_all_PA-App_scenarios.feature`
+  i.e. `View_PA_profile_page.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@pa-app`, `@aw-app`, `@portal`, etc. (all lowercase)
+  i.e: `@portal`, etc. (all lowercase)

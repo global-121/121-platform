@@ -63,9 +63,12 @@ export class PaymentsController {
     description: 'Get past payments for program',
   })
   @Get('programs/:programId/payments')
-  public async getPayments(@Param() params): Promise<any> {
+  public async getPayments(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
     // TODO: REFACTOR: use a DTO to define stable structure of result body
-    return await this.paymentsService.getPayments(Number(params.programId));
+    return await this.paymentsService.getPayments(programId);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -77,11 +80,10 @@ export class PaymentsController {
   })
   @Get('programs/:programId/payments/status')
   public async getPaymentStatus(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<ProgramPaymentsStatusDto> {
-    return await this.paymentsService.getProgramPaymentsStatus(
-      Number(params.programId),
-    );
+    return await this.paymentsService.getProgramPaymentsStatus(programId);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
@@ -232,13 +234,16 @@ export class PaymentsController {
   })
   @Get('programs/:programId/payments/:payment/fsp-instructions')
   public async getFspInstructions(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('payment', ParseIntPipe)
+    payment: number,
     @Req() req,
   ): Promise<FspInstructions> {
     const userId = req.user.id;
     return await this.paymentsService.getFspInstructions(
-      Number(params.programId),
-      Number(params.payment),
+      programId,
+      payment,
       userId,
     );
   }
@@ -260,14 +265,17 @@ export class PaymentsController {
   @UseInterceptors(FileInterceptor('file'))
   public async importFspReconciliationData(
     @UploadedFile() file,
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('payment', ParseIntPipe)
+    payment: number,
     @Req() req,
   ): Promise<ImportResult> {
     const userId = req.user.id;
     return await this.paymentsService.importFspReconciliationData(
       file,
-      Number(params.programId),
-      Number(params.payment),
+      programId,
+      payment,
       userId,
     );
   }

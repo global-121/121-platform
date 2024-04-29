@@ -125,8 +125,11 @@ export class UserController {
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
-    return await this.userService.deleteUserRole(params.userRoleId);
+  public async deleteUserRole(
+    @Param('userRoleId', ParseIntPipe)
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
+    return await this.userService.deleteUserRole(userRoleId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -174,23 +177,16 @@ export class UserController {
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
-    @Req() req,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
 
       res.cookie(
         loginResponse.cookieSettings.tokenKey,
         loginResponse.cookieSettings.tokenValue,
         {
-          sameSite: serviceWorkerDebug
-            ? 'None'
-            : loginResponse.cookieSettings.sameSite,
-          secure: serviceWorkerDebug
-            ? true
-            : loginResponse.cookieSettings.secure,
+          sameSite: loginResponse.cookieSettings.sameSite,
+          secure: loginResponse.cookieSettings.secure,
           expires: loginResponse.cookieSettings.expires,
           httpOnly: loginResponse.cookieSettings.httpOnly,
         },
@@ -257,31 +253,11 @@ export class UserController {
   })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  public async delete(@Param() params): Promise<UserEntity> {
-    return await this.userService.delete(Number(params.userId));
-  }
-
-  @AuthenticatedUser()
-  @ApiTags('users')
-  @ApiOperation({ summary: 'User deletes itself' })
-  @Delete('users')
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'User deleted',
-    type: UserEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
-    const deleterId = req.user.id;
-    if (!deleterId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return await this.userService.delete(deleterId);
+  public async delete(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+  ): Promise<UserEntity> {
+    return await this.userService.delete(userId);
   }
 
   @AuthenticatedUser()
@@ -315,7 +291,6 @@ export class UserController {
       'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns a list of users that match the search criteria.',
@@ -323,7 +298,9 @@ export class UserController {
   })
   @Get('programs/:programId/users/search')
   public async getUsersByName(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('programId', ParseIntPipe)
+    _programId: number,
+
     @Query('username') username: string,
   ): Promise<FindUserReponseDto[]> {
     return await this.userService.findUsersByName(username);
@@ -332,8 +309,6 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get roles for given user program assignment' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns program assignment including roles and scope',
@@ -345,11 +320,15 @@ export class UserController {
   })
   @Get('programs/:programId/users/:userId')
   public async getAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.getAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
     );
   }
 
@@ -358,8 +337,6 @@ export class UserController {
   @ApiOperation({
     summary: 'Create or OVERWRITE program assignment including roles and scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -372,12 +349,18 @@ export class UserController {
   })
   @Put('programs/:programId/users/:userId')
   public async assignAidworkerToProgram(
-    @Param() params,
-    @Body() assignAidworkerToProgram: CreateProgramAssignmentDto,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body()
+    assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.assignAidworkerToProgram(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
@@ -388,8 +371,6 @@ export class UserController {
     summary:
       'Update existing program assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns program assignment with all roles and scope',
@@ -401,12 +382,17 @@ export class UserController {
   })
   @Patch('programs/:programId/users/:userId')
   public async updateAidworkerProgramAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     return await this.userService.updateAidworkerProgramAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
@@ -417,8 +403,6 @@ export class UserController {
     summary:
       'Remove roles from program-assignment (pass roles to delete in body) or remove assignment (no body)',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -432,12 +416,17 @@ export class UserController {
   })
   @Delete('programs/:programId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
     @Body() assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     return await this.userService.deleteAidworkerRolesOrAssignment(
-      Number(params.programId),
-      Number(params.userId),
+      programId,
+      userId,
       assignAidworkerToProgram,
     );
   }
@@ -445,7 +434,6 @@ export class UserController {
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiTags('users/assignments')
   @ApiOperation({ summary: 'Get all users by programId' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns a list of users assigned to a program',
@@ -453,9 +441,10 @@ export class UserController {
   })
   @Get('programs/:programId/users')
   public async getUsersInProgram(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<GetUserReponseDto[]> {
-    return await this.userService.getUsersInProgram(Number(params.programId));
+    return await this.userService.getUsersInProgram(programId);
   }
 
   @AuthenticatedUser({ isAdmin: true })

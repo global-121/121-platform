@@ -27,18 +27,7 @@ This service uses [TypeORM](https://typeorm.io/) with a PostgreSQL database.
 
 ### Seed the database
 
-To create the database initially, you have to run a command once:
-
-    docker exex -it 121-service  npm run setup
-
-This will add 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
-
-To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.
-**NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
-
-See `services/121-service/package.json` for exact commands per program.
-
-The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
+You can seed the database by using the `api/reset` endpoint from the Swagger UI.
 
 ### API Sign-up/Log-in
 
@@ -70,6 +59,10 @@ To run the API/Integration tests: (replace `:all` with `:watch` to run during de
 To run a single test suite, amend the name of the test file, for example:
 
     docker exec 121-service  npm run test:e2e:all update-program.test.ts
+
+To update snapshots, amend the `-- -u` option, for example:
+
+    docker exec 121-service  npm run test:e2e:all -- -u
 
 ### Debugging
 
@@ -131,6 +124,32 @@ Steps to rename a database table:
 19. Rinse and repeat until step 15 does not create a migration script anymore (it will "complain" that there are no changes).
 20. Do a smoke test on local dev: walk through happy flow main functions via the Portal.
 21. We chose not to implement the down function of the migration script for table renames.
+
+---
+
+### Analyzing code structure and behavior
+
+#### Compodoc
+
+Compodoc can generate static code diagrams and documentation and serve that as a website locally:
+
+1. From the 121-service folder run this command: `npx @compodoc/compodoc -p tsconfig.json -s`
+2. This creates a folder called 'documentation' and starts a website that is typically available under: http://127.0.0.1:8080/
+3. Most useful is the per-module diagram and documentation available under: http://127.0.0.1:8080/modules.html
+4. For more information, see: https://docs.nestjs.com/recipes/documentation
+
+#### AppMap
+
+AppMap is a very extensive static and dynamic code analysis tool which can be run as a Visual Studio Extension. It has many features, options, and comes with an AI chat bot to converse with:
+
+1. Install the AppMap Extension in Visual Studio Code. Reference: https://marketplace.visualstudio.com/items?itemName=appland.appmap
+2. Start the 121 Service node process under the appmap-node npx script by using: `npm run start:services:appmap` on your development environment.
+3. Create recordings by calling an API endpoint, or running test suites, or interacting via the 121 Portal. These recordings are stored in the tmp/appmap folder under the 121-service.
+4. Open the Appmaps from these recordings from the APPMAPS pane in the AppMap Extension in VS Code.
+5. Note: Docker creates new files as root. At least on Linux you need to run `sudo chown -R <your-username> .` in the 121-service folder so that the AppMap Extension can access the files of the recordings.
+6. AppMap creates Dependency Diagrams, Sequence Diagrams, Flame Graphs and more to get insight of the code's behavior.
+7. AppMap also as an AI bot called Navie AI to ask questions to.
+8. For more information: https://appmap.io/docs/appmap-overview.html or access the Slack channel: https://appmap.io/community
 
 ---
 
