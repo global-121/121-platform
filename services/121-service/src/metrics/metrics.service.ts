@@ -743,7 +743,7 @@ export class MetricsService {
         fspDisplayNameMapping[registration['fsp']];
       registration['fsp'] = fspDisplayNameForRegistrationFsp
         ? fspDisplayNameForRegistrationFsp[preferredLanguage]
-        : registration['fsp'].fsp;
+        : registration['fsp']?.fsp;
 
       return {
         ...registration,
