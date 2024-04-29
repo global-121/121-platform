@@ -2,32 +2,17 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
-import { registrationVisa as registrationVisaDefault } from '@121-service/seed-data/mock/visa-card.data';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-let accessToken: string;
-
 test.beforeEach(async ({ page }) => {
-  // Set WhatsApp-number for ALL tests in this suite only
-  const registrationVisa = {
-    ...registrationVisaDefault,
-    whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
-  };
-
   await resetDB(SeedScript.nlrcMultiple);
-  accessToken = await getAccessToken();
-
   const programIdOCW = 3;
-
   const OcwProgramId = programIdOCW;
 
   await seedPaidRegistrations(registrationsOCW, OcwProgramId);
