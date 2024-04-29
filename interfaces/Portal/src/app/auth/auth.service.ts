@@ -150,12 +150,11 @@ export class AuthService {
           }
 
           const user = this.getUserFromStorage();
+          this.updateAuthenticationState();
 
           if (!user) {
             return reject({ status: HttpStatusCode.Unauthorized });
           }
-
-          this.updateAuthenticationState();
 
           if (this.redirectUrl) {
             this.router.navigateByUrl(this.redirectUrl);
