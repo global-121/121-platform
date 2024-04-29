@@ -118,19 +118,20 @@ describe('Import a registration', () => {
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
-    delete registrationVisa.phoneNumber;
+    let registrationVisaCopy = { ...registrationVisa };
+    delete registrationVisaCopy.phoneNumber;
 
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisa],
+      [registrationVisaCopy],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       programIdOCW,
       accessToken,
     );
@@ -142,7 +143,8 @@ describe('Import a registration', () => {
   it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
-    delete registrationVisa.phoneNumber;
+    let registrationVisaCopy = { ...registrationVisa };
+    delete registrationVisaCopy.phoneNumber;
     const programUpdate = {
       allowEmptyPhoneNumber: true,
     };
@@ -151,27 +153,27 @@ describe('Import a registration', () => {
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisa],
+      [registrationVisaCopy],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       programIdOCW,
       accessToken,
     );
     const registration = result.body.data[0];
-    for (const key in registrationVisa) {
+    for (const key in registrationVisaCopy) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
         expect(registration['financialServiceProvider']).toBe(
-          registrationVisa[key],
+          registrationVisaCopy[key],
         );
       } else {
         // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisa[key]);
+        expect(registration[key]).toBe(registrationVisaCopy[key]);
       }
     }
   });
