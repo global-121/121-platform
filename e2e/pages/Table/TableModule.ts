@@ -111,7 +111,10 @@ class TableModule {
     }
   }
 
-  async verifiyProfilePersonalnformationTableRight(rowIndex: number, person: PersonRight) {
+  async verifiyProfilePersonalnformationTableRight(
+    rowIndex: number,
+    person: PersonRight,
+  ) {
     const { preferredLanguage } = person;
 
     if (preferredLanguage !== undefined) {
