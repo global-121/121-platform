@@ -42,10 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const programId = this.route.snapshot.params.programId;
 
         // For valid users, but without any (program-specific) permissions; do a refresh-check with Azure Entra.
-        if (
-          (user && !Object.keys(user?.permissions).length) ||
-          (user && programId && !user?.permissions[programId])
-        ) {
+        if (user && programId && !user.permissions[programId]) {
           await this.authService.processAzureAuthSuccess();
         }
       });
