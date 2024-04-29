@@ -50,9 +50,13 @@
         "deleted": "محذوف",
         "imported": "مستورد",
         "included": "متضمن",
+        "inclusionEnded": "انتهى التضمين",
         "invited": "مدعو",
+        "noLongerEligible": "لم يعد مؤهلا",
         "paused": "توقف",
         "registered": "المسجله",
+        "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
+        "rejected": "نبيذ",
         "startedRegistration": "بدأ التسجيل",
         "validated": "التحقق"
       }

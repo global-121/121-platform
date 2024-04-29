@@ -50,9 +50,13 @@
         "deleted": "Borrado",
         "imported": "Importado",
         "included": "Incluido",
+        "inclusionEnded": "Inclusión terminada",
         "invited": "Invitado",
+        "noLongerEligible": "Ya no es elegible",
         "paused": "Pausa",
         "registered": "Registrado",
+        "registeredWhileNoLongerEligible": "Registrado mientras ya no es elegible",
+        "rejected": "Rechazado",
         "startedRegistration": "Registro iniciado",
         "validated": "Validado"
       }
