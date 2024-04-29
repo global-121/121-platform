@@ -28,9 +28,9 @@ export class AzureSsoExpireInterceptor implements HttpInterceptor {
   async handle(request: HttpRequest<any>, next: HttpHandler) {
     if (request.url.startsWith(environment.url_121_service_api)) {
       if (
-        !request.url.includes(ApiPath.usersCurrent) &&
-        !request.url.includes(ApiPath.usersLogin) &&
-        !request.url.includes(ApiPath.usersLogout)
+        !request.url.endsWith(ApiPath.usersCurrent) &&
+        !request.url.endsWith(ApiPath.usersLogin) &&
+        !request.url.endsWith(ApiPath.usersLogout)
       ) {
         await this.authService.checkSsoTokenExpirationDate();
       }
