@@ -28,7 +28,6 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
 import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
-import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
 
@@ -87,7 +86,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
-  const helpers = new Helpers();
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);

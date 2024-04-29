@@ -191,9 +191,9 @@ class RegistrationDetails {
   }
 
   async validateSentMessagesTab(
-    messageNotification: String,
-    messageContext: String,
-    messageType: String,
+    messageNotification: string,
+    messageContext: string,
+    messageType: string,
   ) {
     const paymentNotificationLocator = this.page.locator(
       `:text("${messageContext} (${messageType})")`,
