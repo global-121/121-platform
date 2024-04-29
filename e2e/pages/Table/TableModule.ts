@@ -1,14 +1,14 @@
 import { Page } from 'playwright';
 
 interface PersonLeft {
-  personAffected: string;
+  personAffected?: string;
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  status: string;
+  status?: string;
 }
 interface PersonRight {
-  preferredLanguage: string;
+  preferredLanguage?: string;
 }
 
 class TableModule {

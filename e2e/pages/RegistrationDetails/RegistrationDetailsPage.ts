@@ -88,10 +88,10 @@ class RegistrationDetails {
   }
 
   async validateEditPaPopUpOpened() {
-    await this.page.waitForLoadState('networkidle');
-    expect(
-      await this.page.locator(this.editPersonAffectedPopUp).isVisible(),
-    ).toBe(true);
+    await this.page.waitForLoadState('domcontentloaded')
+    await this.page.waitForSelector(this.editPersonAffectedPopUp);
+    const isVisible = await this.page.locator(this.editPersonAffectedPopUp).isVisible();
+    expect(isVisible).toBe(true);
   }
 
   async validateFspNamePresentInEditPopUp(fspName: string) {
@@ -186,6 +186,23 @@ class RegistrationDetails {
     ).toContain(date);
     expect(await oldValueHolder.textContent()).toContain(oldValue);
     expect(await newValueHolder.textContent()).toContain(newValue);
+  }
+
+  async validateSentMessagesTab() {
+    const paymentNotificationLocator = this.page.locator(
+      ':text("Payment (WhatsApp)")',
+    );
+    const messageNotificationLocator = this.page.locator(
+      ':text("Message notification")',
+    );
+    await paymentNotificationLocator.waitFor({ state: 'visible' });
+    await messageNotificationLocator.waitFor({ state: 'visible' });
+    expect(await messageNotificationLocator.textContent()).toContain(
+      'Message notification',
+    );
+    expect(await paymentNotificationLocator.textContent()).toContain(
+      'Payment (WhatsApp)',
+    );
   }
 }
 

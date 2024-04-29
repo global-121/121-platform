@@ -12,7 +12,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,

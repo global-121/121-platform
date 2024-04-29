@@ -8,11 +8,11 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/seed-data/mock/visa-card.data';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
@@ -27,7 +27,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
-import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
@@ -93,27 +92,14 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme('NLRC OCW program');
+    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
     await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });
 
-  await test.step('Validate the "Status history" tab on the PA Activity Overview table', async () => {
-    const userName =
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
-
+  await test.step('Validate the "Messages" tab on the PA Activity Overview table', async () => {
     await registration.validatePaProfileOpened();
-    await registration.openActivityOverviewTab('Status history');
-    await registration.validateChangeLogTile(
-      data['registration-details']['activity-overview'].activities.status.label,
-      userName,
-      await helpers.getTodaysDate(),
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].old,
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].new,
-    );
+    await registration.openActivityOverviewTab('Messages');
+    await registration.validateSentMessagesTab();
   });
 });

@@ -118,7 +118,6 @@ test('[27496] View Activity overview in FSP column on PA profile page', async ({
   await test.step('Validate Status histor tab on PA Activity Overview table', async () => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
-
     await registration.validatePaProfileOpened();
     await registration.openActivityOverviewTab('All');
     await registration.validateChangeLogTile(

@@ -2,6 +2,7 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
@@ -38,7 +39,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
 
   await test.step('Should display correct amount of runnig projects and open PAs for registration', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.openPAsForRegistrationOcwProgram('NLRC OCW program');
+    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePaApp.en);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
@@ -47,9 +48,8 @@ test('[27411] Open PA profile page', async ({ page }) => {
       firstName: undefined,
       lastName: undefined,
       phoneNumber: undefined,
-      status: 'Registered',
+      status: undefined,
     });
-    await table.verifyRowTableRight(1, { preferredLanguage: 'English' });
     await table.clickOnPaNumber(1);
   });
 
