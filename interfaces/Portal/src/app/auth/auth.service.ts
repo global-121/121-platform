@@ -12,8 +12,6 @@ import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
 
-export const MSAL_COLLECTION_KEY = 'msal.account.keys';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -28,7 +26,7 @@ export class AuthService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private router: Router,
-    private msalService: MsalService,
+    private msalService?: MsalService,
   ) {
     this.updateAuthenticationState();
   }
@@ -185,11 +183,8 @@ export class AuthService {
   public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
 
-    this.processAzureUserSignIn(userDto.user, redirectToHome);
-  }
 
-  private processAzureUserSignIn(user: User, redirectToHome: boolean) {
-    this.setUserInStorage(user);
+    this.setUserInStorage(userDto.user);
     this.updateAuthenticationState();
 
     if (redirectToHome) {
