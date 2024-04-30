@@ -136,7 +136,7 @@ export class RegistrationsService {
     await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
-      RegistrationStatusEnum.startedRegistration,
+      RegistrationStatusEnum.registered,
     );
   }
 
@@ -172,13 +172,8 @@ export class RegistrationsService {
   ): boolean {
     let result = false;
     switch (newStatus) {
-      case RegistrationStatusEnum.startedRegistration:
-        result = [null].includes(currentStatus);
-        break;
       case RegistrationStatusEnum.registered:
-        result = [RegistrationStatusEnum.startedRegistration, null].includes(
-          currentStatus,
-        );
+        result = [null].includes(currentStatus);
         break;
       case RegistrationStatusEnum.validated:
         result = [
@@ -215,7 +210,6 @@ export class RegistrationsService {
         break;
       case RegistrationStatusEnum.deleted:
         result = [
-          RegistrationStatusEnum.startedRegistration,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
@@ -456,8 +450,6 @@ export class RegistrationsService {
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
     switch (filterStatus) {
-      case RegistrationStatusEnum.startedRegistration:
-        return RegistrationStatusTimestampField.startedRegistrationDate;
       case RegistrationStatusEnum.registered:
         return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.validated:
