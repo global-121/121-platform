@@ -19,7 +19,6 @@ import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-vis
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -58,7 +57,6 @@ import { RegistrationsInputValidator } from './validators/registrations-input-va
       ProgramCustomAttributeEntity,
       RegistrationEntity,
       LatestMessageEntity,
-      PersonAffectedAppDataEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
     ]),
