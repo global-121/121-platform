@@ -133,6 +133,7 @@ if (environment.use_sso_azure_entra) {
               console.log(`${containsPii ? '👤' : '🌐'}`, message);
             },
             piiLoggingEnabled: !environment.production,
+            // TODO: Log level should be lower then "Info"(So `LogLevel.Warning`) in production; but keep it noisy/verbose for now.
             logLevel: environment.use_sso_azure_entra ? LogLevel.Info : null,
           },
         },
