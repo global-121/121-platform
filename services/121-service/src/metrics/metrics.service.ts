@@ -14,6 +14,7 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { getFspDisplayNameMapping } from '../programs/utils/overwrite-fsp-display-name.helper';
 import { PaginationFilter } from '../registration/dto/filter-attribute.dto';
 import { RegistrationDataOptions } from '../registration/dto/registration-data-relation.model';
 import {
@@ -421,7 +422,8 @@ export class MetricsService {
       .select([
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
-        `fsp."displayName" AS fsp`,
+        `fsp."fsp" AS fsp`,
+        'registration."scope" AS scope',
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
@@ -590,7 +592,7 @@ export class MetricsService {
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
-      relations: ['financialServiceProviders'],
+      relations: ['financialServiceProviders', 'programFspConfiguration'],
     });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
@@ -726,12 +728,24 @@ export class MetricsService {
         );
       allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
     }
+
+    const fspDisplayNameMapping = getFspDisplayNameMapping(program);
+    const preferredLanguage = 'en';
+
     const result = allRegistrations.map((registration) => {
       registration =
         this.registrationsService.transformRegistrationByNamingConvention(
           JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
           registration,
         );
+
+      // If a mapping exists, get the display name for the preferred language else use the FSP name
+      const fspDisplayNameForRegistrationFsp =
+        fspDisplayNameMapping[registration['fsp']];
+      registration['fsp'] = fspDisplayNameForRegistrationFsp
+        ? fspDisplayNameForRegistrationFsp[preferredLanguage]
+        : registration['fsp']?.fsp;
+
       return {
         ...registration,
         duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),
