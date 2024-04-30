@@ -191,7 +191,6 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.type,
         label: c.label,
-        shortLabel: c.label,
       };
     });
     const programQuestions = (
@@ -203,7 +202,6 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.answerType,
         label: c.label,
-        shortLabel: c.shortLabel,
       };
     });
 
@@ -230,7 +228,6 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.answerType,
         label: c.label,
-        shortLabel: c.shortLabel,
         questionType: QuestionType.programQuestion,
       };
     });
@@ -257,7 +254,6 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.type,
         label: c.label,
-        shortLabel: c.label,
         questionType: QuestionType.programCustomAttribute,
       };
     });
@@ -290,7 +286,6 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.answerType,
         label: c.label,
-        shortLabel: c.shortLabel,
         questionType: QuestionType.fspQuestion,
       };
     });

@@ -59,7 +59,6 @@
         "registered": "المسجله",
         "registeredWhileNoLongerEligible": "مسجل بينما لم يعد مؤهلا",
         "rejected": "نبيذ",
-        "startedRegistration": "بدأ التسجيل",
         "validated": "التحقق"
       }
     },
@@ -243,7 +242,6 @@
           "noLongerEligible": "PAs التي تم وضع علامة عليها على أنها \"لم تعد مؤهلة\". <br> هؤلاء هم PAs الذين تمت دعوتهم ولكنهم لم يسجلوا بعد وفي الوقت نفسه لم يعودوا مؤهلين.",
           "registered": "PAs التي أنهت التسجيل في تطبيق PA.",
           "rejected": "PAs التي تم رفضها. <br> لن يتلقوا أي مدفوعات (أكثر) لجولة الدفع / الدفع التالية.",
-          "startedRegistration": "PAs التي بدأت التسجيل في تطبيق PA.",
           "validated": "PAs التي تم التحقق من صحتها."
         },
         "timeframe": {

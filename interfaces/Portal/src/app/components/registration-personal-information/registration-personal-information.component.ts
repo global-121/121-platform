@@ -149,7 +149,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         continue;
       }
 
-      const labelToTranslate = ta.shortLabel || ta.label;
+      const labelToTranslate = ta.label;
 
       let value = this.person[ta.name];
       if (value === null || value === undefined) {

@@ -113,6 +113,7 @@ export class registrationData1656412499569 implements MigrationInterface {
 
     let instancePilotLVV, instancePilotPV;
     try {
+      // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
       instancePilotLVV = JSON.parse(
         fs.readFileSync('seed-data/instance/instance-pilot-nl.json', 'utf8'),
       );

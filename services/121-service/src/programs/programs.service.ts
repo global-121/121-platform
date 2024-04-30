@@ -462,7 +462,6 @@ export class ProgramService {
           phases: programQuestion.phases,
           editableInPortal: programQuestion.editableInPortal,
           export: programQuestion.export as unknown as ExportType[],
-          shortLabel: programQuestion.shortLabel,
           duplicateCheck: programQuestion.duplicateCheck,
           placeholder: programQuestion.placeholder,
         };
@@ -601,7 +600,6 @@ export class ProgramService {
     programQuestion.phases = dto.phases;
     programQuestion.editableInPortal = dto.editableInPortal;
     programQuestion.export = dto.export as unknown as JSON;
-    programQuestion.shortLabel = dto.shortLabel;
     programQuestion.duplicateCheck = dto.duplicateCheck;
     programQuestion.placeholder = dto.placeholder;
     return programQuestion;

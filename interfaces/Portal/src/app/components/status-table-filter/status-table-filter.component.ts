@@ -31,7 +31,6 @@ export class StatusTableFilterComponent {
 
   public paStatusDefaultsPerPhase = {
     [ProgramPhase.registrationValidation]: [
-      RegistrationStatus.startedRegistration,
       RegistrationStatus.registered,
       RegistrationStatus.declined,
     ],
