@@ -10,9 +10,7 @@ export class InstanceService {
   private readonly instanceRepository: Repository<InstanceEntity>;
 
   public async getInstance(): Promise<InstanceEntity> {
-    const instances = await this.instanceRepository.find({
-      relations: ['monitoringQuestion'],
-    });
+    const instances = await this.instanceRepository.find();
     return instances[0];
   }
 

@@ -16,7 +16,6 @@ INSERT
 		"programQuestionId",
 		"fspQuestionId",
 		"programCustomAttributeId",
-		"monitoringQuestionId",
 		value,
 		updated
 	FROM

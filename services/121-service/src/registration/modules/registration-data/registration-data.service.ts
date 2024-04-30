@@ -69,7 +69,6 @@ export class RegistrationDataService {
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
-      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
       .leftJoin(
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
@@ -85,9 +84,6 @@ export class RegistrationDataService {
                 fsp: registration.fspId,
               },
             )
-            .orWhere(`monitoringQuestion.name = :name`, {
-              name: name,
-            })
             .orWhere(`programCustomAttribute.name = :name`, {
               name: name,
             });
@@ -104,7 +100,6 @@ export class RegistrationDataService {
       `CASE
           WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
-          WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
         END as name,
         value, "registrationData".id`,
@@ -170,16 +165,6 @@ export class RegistrationDataService {
       result.programCustomAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
-    const resultMonitoringQuestion = await this.instanceRepository
-      .createQueryBuilder('instance')
-      .leftJoin('instance.monitoringQuestion', 'question')
-      .andWhere('question.name = :name', { name: name })
-      .select('"question".id', 'id')
-      .getRawOne();
-    if (resultMonitoringQuestion) {
-      result.monitoringQuestionId = resultMonitoringQuestion.id;
-      return result;
-    }
     const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
     throw new RegistrationDataError(errorMessage);
   }
@@ -240,13 +225,6 @@ export class RegistrationDataService {
         relation.programCustomAttributeId,
       );
     }
-    if (relation.monitoringQuestionId) {
-      await this.saveMonitoringQuestionData(
-        registration,
-        value,
-        relation.monitoringQuestionId,
-      );
-    }
   }
 
   private async saveMultipleData(
@@ -273,13 +251,6 @@ export class RegistrationDataService {
         registration,
         value,
         relation.programCustomAttributeId,
-      );
-    }
-    if (relation.monitoringQuestionId) {
-      await this.saveMonitoringQuestionDataMultiSelect(
-        registration,
-        value,
-        relation.monitoringQuestionId,
       );
     }
   }
@@ -416,48 +387,6 @@ export class RegistrationDataService {
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
-      await this.registrationDataScopedRepository.save(newRegistrationData);
-    }
-  }
-
-  private async saveMonitoringQuestionData(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    value: string,
-    id: number,
-  ): Promise<void> {
-    const existingEntry = await this.registrationDataScopedRepository
-      .createQueryBuilder('registrationData')
-      .andWhere('"registrationId" = :regId', { regId: registration.id })
-      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
-      .andWhere('monitoringQuestion.id = :id', { id: id })
-      .getOne();
-    if (existingEntry) {
-      existingEntry.value = value;
-      await this.registrationDataScopedRepository.save(existingEntry);
-    } else {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.monitoringQuestionId = id;
-      await this.registrationDataScopedRepository.save(newRegistrationData);
-    }
-  }
-
-  private async saveMonitoringQuestionDataMultiSelect(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    values: string[],
-    id: number,
-  ): Promise<void> {
-    await this.registrationDataScopedRepository.deleteUnscoped({
-      registration: { id: registration.id },
-      monitoringQuestion: { id: id },
-    });
-
-    for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.monitoringQuestionId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
