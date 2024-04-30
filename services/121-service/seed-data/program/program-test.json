@@ -63,12 +63,7 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": [
-            "name",
-            "dob",
-            "house",
-            "phoneNumber"
-          ]
+          "value": ["name", "dob", "house", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
@@ -100,10 +95,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {}
     },
     {
@@ -119,10 +111,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true
     },
@@ -193,9 +182,7 @@
       "name": "knowsNothing",
       "type": "boolean",
       "editableInPortal": true,
-      "phases": [
-        "registrationValidation"
-      ]
+      "phases": ["registrationValidation"]
     },
     {
       "label": {
@@ -208,9 +195,7 @@
       "name": "motto",
       "type": "text",
       "editableInPortal": true,
-      "phases": [
-        "registrationValidation"
-      ]
+      "phases": ["registrationValidation"]
     }
   ],
   "aboutProgram": {
@@ -220,16 +205,8 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": [
-    "name"
-  ],
-  "languages": [
-    "ar",
-    "en",
-    "es",
-    "fr",
-    "nl"
-  ],
+  "fullnameNamingConvention": ["name"],
+  "languages": ["ar", "en", "es", "fr", "nl"],
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,

@@ -21,10 +21,7 @@
           }
         }
       ],
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "raion",
@@ -58,10 +55,7 @@
           }
         }
       ],
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "street",
@@ -69,10 +63,7 @@
         "en": "Street"
       },
       "answerType": "text",
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "house",
@@ -80,10 +71,7 @@
         "en": "House"
       },
       "answerType": "text",
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "apartmentOrOffice",
@@ -91,20 +79,14 @@
         "en": "Apt / Office"
       },
       "answerType": "text",
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "postalIndex",
       "label": {
         "en": "Postal Index"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     },
@@ -114,20 +96,14 @@
         "en": "City"
       },
       "answerType": "text",
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "lastName",
       "label": {
         "en": "Last Name"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     },
@@ -136,10 +112,7 @@
       "label": {
         "en": "First Name"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     },
@@ -148,10 +121,7 @@
       "label": {
         "en": "Father's Name"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     },
@@ -160,10 +130,7 @@
       "label": {
         "en": "Tax ID"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
       "duplicateCheck": true
@@ -173,10 +140,7 @@
       "label": {
         "en": "Telephone"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     }

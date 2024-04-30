@@ -11,10 +11,7 @@
       "label": {
         "en": "Address street"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "phases": []
     },
@@ -23,10 +20,7 @@
       "label": {
         "en": "Address house number"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "numeric",
       "phases": []
     },
@@ -35,10 +29,7 @@
       "label": {
         "en": "Address house number addition"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "phases": []
     },
@@ -47,10 +38,7 @@
       "label": {
         "en": "Address postal code"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "phases": []
     },
@@ -59,10 +47,7 @@
       "label": {
         "en": "Address city"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "phases": []
     },
@@ -75,10 +60,7 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,

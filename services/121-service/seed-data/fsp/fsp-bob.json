@@ -13,10 +13,7 @@
       "placeholder": {
         "en": "+961 000 000 000"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     },
@@ -25,10 +22,7 @@
       "label": {
         "en": "First Name"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     },
@@ -37,10 +31,7 @@
       "label": {
         "en": "Last Name"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null
     }

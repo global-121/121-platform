@@ -41,10 +41,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -73,10 +70,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -85,12 +79,8 @@
   "aboutProgram": {
     "en": "[about aid program]"
   },
-  "fullnameNamingConvention": [
-    "fullname"
-  ],
-  "languages": [
-    "en"
-  ],
+  "fullnameNamingConvention": ["fullname"],
+  "languages": ["en"],
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false

@@ -82,10 +82,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": false
@@ -103,10 +100,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": false
@@ -127,10 +121,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {}
     }
   ],
@@ -141,15 +132,6 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": [
-    "nameFirst",
-    "nameLast"
-  ],
-  "languages": [
-    "ar",
-    "en",
-    "es",
-    "fr",
-    "nl"
-  ]
+  "fullnameNamingConvention": ["nameFirst", "nameLast"],
+  "languages": ["ar", "en", "es", "fr", "nl"]
 }

@@ -48,10 +48,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -64,10 +61,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -80,10 +74,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -111,10 +102,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -149,10 +137,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -162,10 +147,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {}
     },
     {
@@ -177,10 +159,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -193,10 +172,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -209,10 +185,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -225,10 +198,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -270,10 +240,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "married": 0,
         "single-no-children": 1,
@@ -291,10 +258,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 3
       },
@@ -309,10 +273,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 3
       },
@@ -327,10 +288,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -345,10 +303,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -363,10 +318,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -381,10 +333,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -414,10 +363,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -448,10 +394,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -482,10 +425,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -516,10 +456,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -550,10 +487,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -584,10 +518,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 4,
         "no": 0
@@ -618,10 +549,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -666,10 +594,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -716,10 +641,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -766,10 +688,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -816,10 +735,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -866,10 +782,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -916,10 +829,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -952,10 +862,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 4,
         "no": 0
@@ -986,10 +893,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -1027,10 +931,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "below-500000": 0,
         "500000-1000000": 1,
@@ -1076,10 +977,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 2,
         "1000000-3000000": 4,
@@ -1126,10 +1024,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 2,
         "1000000-3000000": 4,
@@ -1162,10 +1057,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1196,10 +1088,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1230,10 +1119,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1264,10 +1150,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1298,10 +1181,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1332,10 +1212,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1366,10 +1243,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1400,10 +1274,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1455,10 +1326,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1513,10 +1381,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1571,10 +1436,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1629,10 +1491,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1687,10 +1546,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1738,10 +1594,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 4,
         "1000000-3000000": 3,
@@ -1816,10 +1669,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "salary-regular": 1,
         "salary-occasional": 4,
@@ -1877,10 +1727,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 1,
         "1000000-3000000": 2,
@@ -1914,10 +1761,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 4,
         "yes": 0
@@ -1948,10 +1792,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     },
@@ -1964,10 +1805,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false
     }
@@ -1976,13 +1814,7 @@
     "en": "This Dorcas-Tabitha cash aid program was created to support people living in Achrafieh and Batroun that experience difficulties in meeting their basic needs.<br><br>After registering for this project and answering questions, we may call you to make an appoint for a home visit to check your situation. After the home visit, we will send you an SMS to let you know if you are selected or not.<br><br>IF YOU ARE SELECTED the Dorcas-Tabitha cash aid program aims to help you:  <br> &bull; Until the Dorcas-Tabitha cash aid program ends, May 31, 2021.<br><br>IF YOU ARE SELECTED the Dorcas-Tabitha cash aid program will support you with the following:<br> &bull; A monthly cash grant of $50. You will receive an SMS from BoB finance. You can use this SMS and your ID card to pick up the cash grant at a BoB finance branch. <br><br>If you have any questions, feedback or a complaint please contact us via telephone or WhatsApp on one of the following phone numbers:  <br> &bull; Achrafieh: +961 81 232 710  <br> &bull; Batroun: +961 70 169 265  <br><br>You can also check our website:<br> &bull; www.tabithalb.org",
     "ar": "تم إنشاء برنامج دوركاس - طابيثا للمساعدات النقدية لدعم الأشخاص الذين يعيشون في الأشرفية والبترون الذين يواجهون صعوبات في تلبية احتياجاتهم الأساسية. بعد التسجيل في هذا المشروع والإجابة على الأسئلة ، قد نتصل بكم لتحديد موعد لزيارة منزلية للتحقق من وضعكم المعيشي. بعد الزيارة المنزلية ، سوف نرسل لكم رسالة نصية لإعلامكم إذا تم اختياركم أم لا ، حتى انتهاء برنامج المساعدة النقدية لدوركاس - طابيثا ، في 31  أيار 2021. إذا تم اختيارك ، فسوف يدعمكم برنامج المساعدة النقدية لدوركاس - طابيثا  بما يلي: & bull؛ منحة نقدية شهرية بقيمة 50 دولارًا. سوف تتلقى رسالة نصية قصيرة من BoB Finance. يمكنك استخدام هذه الرسالة النصية القصيرة وبطاقة الهوية الخاصة بك للحصول على المنحة النقدية من أحد فروع BoB Finance. إذا كانت لديك أي أسئلة أو ملاحظات أو شكوى ، فيرجى الاتصال بنا عبر الهاتف أو WhatsApp على أحد أرقام الهواتف التالية: & bull؛ الأشرفية:  96181232710+ & bull؛ البترون: 96170169265+ يمكنك أيضًا مراجعة موقعنا على الإنترنت: & bull؛ www.tabithalb.org "
   },
-  "fullnameNamingConvention": [
-    "nameFirst",
-    "nameLast"
-  ],
-  "languages": [
-    "en",
-    "ar"
-  ],
+  "fullnameNamingConvention": ["nameFirst", "nameLast"],
+  "languages": ["en", "ar"],
   "allowEmptyPhoneNumber": false
 }

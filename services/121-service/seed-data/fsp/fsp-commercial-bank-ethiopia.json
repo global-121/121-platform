@@ -13,17 +13,10 @@
       "placeholder": {
         "en": "Please type your bank account number"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "text",
       "pattern": ".+",
-      "phases": [
-        "registrationValidation",
-        "inclusion",
-        "payment"
-      ],
+      "phases": ["registrationValidation", "inclusion", "payment"],
       "options": null
     }
   ]

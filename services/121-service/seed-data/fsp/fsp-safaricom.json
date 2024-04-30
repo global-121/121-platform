@@ -13,10 +13,7 @@
       "placeholder": {
         "en": "+243000000000"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     }

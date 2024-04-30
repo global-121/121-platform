@@ -50,12 +50,7 @@
       "configuration": [
         {
           "name": "columnsToExport",
-          "value": [
-            "name",
-            "birthdate",
-            "documentid",
-            "phoneNumber"
-          ]
+          "value": ["name", "birthdate", "documentid", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
@@ -89,10 +84,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -110,10 +102,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -131,10 +120,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -183,10 +169,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -204,10 +187,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -225,17 +205,10 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
-      "phases": [
-        "registrationValidation",
-        "inclusion",
-        "payment"
-      ],
+      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true
     },
     {
@@ -272,10 +245,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -293,10 +263,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -314,10 +281,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -337,10 +301,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -358,10 +319,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -422,10 +380,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "returnee": 2,
         "displaced": 2,
@@ -509,10 +464,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "widowed": 1,
         "married": 0,
@@ -537,10 +489,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -560,10 +509,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
       },
@@ -583,10 +529,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -606,10 +549,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -629,10 +569,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -652,10 +589,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -675,10 +609,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
       },
@@ -719,10 +650,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true
@@ -735,17 +663,7 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": [
-    "name",
-    "middlename",
-    "firstname"
-  ],
-  "languages": [
-    "ar",
-    "en",
-    "es",
-    "fr",
-    "nl"
-  ],
+  "fullnameNamingConvention": ["name", "middlename", "firstname"],
+  "languages": ["ar", "en", "es", "fr", "nl"],
   "allowEmptyPhoneNumber": false
 }

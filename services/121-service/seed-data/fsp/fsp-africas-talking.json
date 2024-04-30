@@ -15,10 +15,7 @@
         "tuv_KE": "+254 000 000 000",
         "en": "+254 000 000 000"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     }

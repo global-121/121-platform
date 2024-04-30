@@ -45,10 +45,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -69,10 +66,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -90,10 +84,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": true,
       "placeholder": null
     },
@@ -111,10 +102,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -147,10 +135,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -168,10 +153,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -189,10 +171,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -210,10 +189,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -231,10 +207,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -252,10 +225,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -273,10 +243,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -294,10 +261,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -315,10 +279,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -336,10 +297,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -357,10 +315,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     },
@@ -378,10 +333,7 @@
       "pattern": null,
       "phases": [],
       "editableInPortal": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
       "placeholder": null
     }
@@ -389,13 +341,8 @@
   "aboutProgram": {
     "en": "DRA Joint Response Ethiopia 2023 - Dorcas"
   },
-  "fullnameNamingConvention": [
-    "fullName"
-  ],
-  "languages": [
-    "en",
-    "et_AM"
-  ],
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en", "et_AM"],
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false

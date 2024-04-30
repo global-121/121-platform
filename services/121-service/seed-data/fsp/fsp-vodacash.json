@@ -15,10 +15,7 @@
       "placeholder": {
         "en": "+243 000 000 000"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     },
@@ -31,10 +28,7 @@
       "answerType": "text",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ]
+      "export": ["all-people-affected", "included"]
     }
   ]
 }

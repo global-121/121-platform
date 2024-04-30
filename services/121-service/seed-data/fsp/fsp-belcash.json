@@ -14,10 +14,7 @@
         "en": "+251 000 000 000",
         "am_ET": "+251 000 000 000"
       },
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "answerType": "tel",
       "options": null
     },
@@ -52,10 +49,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included"
-      ],
+      "export": ["all-people-affected", "included"],
       "scoring": {}
     }
   ]
