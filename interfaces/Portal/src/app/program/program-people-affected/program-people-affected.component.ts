@@ -441,8 +441,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       (attribute) => attribute.name === attributeName,
     );
 
-    if (paAttribute && paAttribute?.shortLabel) {
-      return this.translatableStringService.get(paAttribute.shortLabel);
+    if (paAttribute && paAttribute?.label) {
+      return this.translatableStringService.get(paAttribute.label);
     }
 
     const availableTranslations = this.translate.instant(

@@ -8,44 +8,32 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "If you are included in the program, which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)",
-        "ar": "إذا تم تضمينك في البرنامج ، فما رقم الهاتف الذي تريد تلقي معلومات BoB Finance عليه؟ (مع رمز البلد. يجب أن يبدو بالشكل التالي:<strong>000 000 00 961+</strong>)"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+961 000 000 000"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "options": null
     },
     {
       "name": "nameFirst",
       "label": {
-        "en": "If you are included in the program, what is the <strong>first name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
-        "ar": "إذا تم تضمينك في البرنامج ، فما هو <strong>الاسم الأول</strong> على بطاقة الهوية الذي سيتم استخدامه لتحصيل الدفعة في BoB Finance؟ "
+        "en": "First Name"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "First Name"
-      }
+      "options": null
     },
     {
       "name": "nameLast",
       "label": {
-        "en": "If you are included in the program, what is the <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
-        "ar": "إذا تم تضمينك في البرنامج ، فما هو <strong>أسم العائلة</strong> على بطاقة الهوية الذي سيتم استخدامه لتحصيل الدفعة في BoB Finance؟ "
+        "en": "Last Name"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "Last Name"
-      }
+      "options": null
     }
   ]
 }

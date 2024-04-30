@@ -174,9 +174,6 @@ export class ProgramReturnDto {
     example: [
       {
         name: 'nameFirst',
-        label: {
-          en: 'What is your first name?',
-        },
         answerType: 'text',
         questionType: 'standard',
         options: null,
@@ -185,15 +182,12 @@ export class ProgramReturnDto {
         scoring: {},
         phases: [],
         editableInPortal: false,
-        shortLabel: {
+        label: {
           en: 'First Name',
         },
       },
       {
         name: 'nameLast',
-        label: {
-          en: 'What is your last name?',
-        },
         answerType: 'text',
         questionType: 'standard',
         options: null,
@@ -202,7 +196,7 @@ export class ProgramReturnDto {
         scoring: {},
         phases: [],
         editableInPortal: false,
-        shortLabel: {
+        label: {
           en: 'Last Name',
         },
       },

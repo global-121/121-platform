@@ -1,5 +1,21 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import fspVodaCash from '../seed-data/fsp/fsp-vodacash.json';
+
+const healthAreaQuestion = {
+  name: 'healthArea',
+  label: {
+    en: 'Health area',
+    fr: 'Aire de santé',
+  },
+  shortLabel: {
+    // FYI shortLabel has been refactored into label since this was created
+    en: 'Health area',
+    fr: 'Aire de santé',
+  },
+  answerType: 'text',
+  options: null,
+  persistence: true,
+  export: ['all-people-affected', 'included'],
+};
 
 export class UpdateVodacash1710258612887 implements MigrationInterface {
   name = 'UpdateVodacash1710258612887';
@@ -15,23 +31,17 @@ export class UpdateVodacash1710258612887 implements MigrationInterface {
       );
 
       if (!fspQuestionExists || fspQuestionExists.length === 0) {
-        const healthAreaQuestion = fspVodaCash.questions.find(
-          (question) => question.name === 'healthArea',
+        await queryRunner.query(
+          `INSERT INTO "121-service"."financial_service_provider_question" ("fspId", "name", "export", "answerType", "shortLabel", "label") VALUES ($1, $2, $3, $4, $5, $6)`,
+          [
+            id,
+            healthAreaQuestion.name,
+            JSON.stringify(healthAreaQuestion.export),
+            healthAreaQuestion.answerType,
+            JSON.stringify(healthAreaQuestion.shortLabel),
+            JSON.stringify(healthAreaQuestion.label),
+          ],
         );
-
-        if (healthAreaQuestion) {
-          await queryRunner.query(
-            `INSERT INTO "121-service"."financial_service_provider_question" ("fspId", "name", "export", "answerType", "shortLabel", "label") VALUES ($1, $2, $3, $4, $5, $6)`,
-            [
-              id,
-              healthAreaQuestion.name,
-              JSON.stringify(healthAreaQuestion.export),
-              healthAreaQuestion.answerType,
-              JSON.stringify(healthAreaQuestion.shortLabel),
-              JSON.stringify(healthAreaQuestion.label),
-            ],
-          );
-        }
       }
     }
   }
