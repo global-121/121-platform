@@ -219,9 +219,9 @@ class RegistrationDetails {
     date: string,
   ) {
     await expect(
-      this.page
-        .locator(this.historyTileText)
-        .filter({ hasText: `${paymentLabel} #${paymentNumber} ${statusLabel}` }),
+      this.page.locator(this.historyTileText).filter({
+        hasText: `${paymentLabel} #${paymentNumber} ${statusLabel}`,
+      }),
     ).toBeVisible();
     await this.page.getByTitle(userName).click();
     expect(
