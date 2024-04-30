@@ -320,7 +320,7 @@ export class RegistrationsImportService {
       } else {
         values.push(customData[att.name]);
       }
-      for (const value of values) {
+      for (const value of values.filter(Boolean)) {
         const registrationData = new RegistrationDataEntity();
         registrationData.registration = registration;
         registrationData.value = value;
