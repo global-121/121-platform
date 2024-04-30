@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { getFullISODate } from '../shared/utils/get-iso-date.util';
 import { isIframed } from '../shared/utils/is-iframed.util';
 import Permission from './permission.enum';
 
@@ -280,7 +281,7 @@ export class AuthService {
     if (
       currentUser?.idTokenClaims?.iat &&
       // Only allow tokens issued on the same day (both are in UTC, so not comparing to local time/day)
-      today.getUTCDate() === issuedDate.getUTCDate()
+      getFullISODate(today) === getFullISODate(issuedDate)
     ) {
       return;
     }
