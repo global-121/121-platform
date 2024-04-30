@@ -35,7 +35,7 @@
 **Install Playwright dependecies**
 
 ```shell
-cd services/121-service/test/E2E
+cd /121-platform/E2E
 ```
 Then:
 ```shell
@@ -43,13 +43,6 @@ npm install
 ```
 **Install missing dependencies**
 
-```shell
-cd services/121-service/test/API
-```
-Then:
-```shell
-npm install
-```
 ## Enviromental variables
 
 Base Url, Azure Token and test users data are stored in .env file.
