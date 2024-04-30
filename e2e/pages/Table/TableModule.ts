@@ -162,7 +162,7 @@ class TableModule {
     expectedNumber: number,
     preferedLanguage: string,
   ) {
-    await this.verifyRowTableRight(1, { preferredLanguage: preferedLanguage });
+    await this.verifiyProfilePersonalnformationTableRight(1, { preferredLanguage: preferedLanguage });
     const textLocator = this.page
       .locator(this.textLabel)
       .filter({ hasText: 'Filtered recipients:' });

@@ -210,6 +210,24 @@ class RegistrationDetails {
       `${messageContext} (${messageType})`,
     );
   }
+
+  async validatePaymentsTab(
+    paymentLabel: string,
+    paymentNumber: number,
+    statusLabel: string,
+    userName: string,
+    date: string,
+  ) {
+    await expect(
+      this.page
+        .locator(this.historyTileText)
+        .filter({ hasText: `${paymentLabel} #${paymentNumber} ${statusLabel}` }),
+    ).toBeVisible();
+    await this.page.getByTitle(userName).click();
+    expect(
+      await this.page.locator(this.historyTileTimeStamp).textContent(),
+    ).toContain(date);
+  }
 }
 
 export default RegistrationDetails;
