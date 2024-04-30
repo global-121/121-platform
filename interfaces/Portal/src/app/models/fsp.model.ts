@@ -29,7 +29,6 @@ export class FspQuestion {
   name: string;
   answerType: AnswerType;
   label: TranslatableString;
-  shortLabel: TranslatableString;
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
   duplicateCheck: boolean;

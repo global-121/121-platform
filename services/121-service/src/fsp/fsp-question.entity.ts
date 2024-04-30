@@ -67,6 +67,4 @@ export class FspQuestionEntity extends Base121Entity {
     (registrationData) => registrationData.fspQuestion,
   )
   public registrationData: RegistrationDataEntity[];
-  @Column('json', { nullable: true })
-  public shortLabel: JSON;
 }

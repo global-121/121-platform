@@ -1,0 +1,10 @@
+# See .gitignore
+coverage/
+
+# Angular/Ionic related files
+.angular/
+www/
+dist/
+
+# Exclude (generated) package files
+package*.json

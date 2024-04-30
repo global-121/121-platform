@@ -668,17 +668,19 @@ export class RegistrationsPaginationService {
     status: StatusEnum,
     paymentNumber: string,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
+    const paymentNumberKey = `${alias}PaymentNumber`;
+    const statusKey = `${alias}Status`;
     queryBuilder.leftJoin(
       'registration.latestTransactions',
       alias,
-      `"${alias}"."payment" = :paymentNumber`,
-      { paymentNumber: paymentNumber },
+      `"${alias}"."payment" = :${paymentNumberKey}`,
+      { [paymentNumberKey]: paymentNumber },
     );
     if (status) {
       queryBuilder
         .innerJoin(`${alias}.transaction`, `transaction${alias}`)
-        .andWhere(`"transaction${alias}"."status" = :status`, {
-          status: status,
+        .andWhere(`"transaction${alias}"."status" = :${statusKey}`, {
+          [statusKey]: status,
         });
     } else {
       queryBuilder.andWhere(`"${alias}"."id" IS NULL`);

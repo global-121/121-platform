@@ -64,7 +64,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE, // Maybe N.A. to ZOA as only 1 FSP??
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationNotificationCREATE,
@@ -104,7 +103,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationNotificationCREATE,
@@ -143,7 +141,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationNotificationCREATE,
@@ -184,7 +181,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationCREATE, // No importing
           PermissionEnum.RegistrationDELETE,
           // PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup
-          PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
           // PermissionEnum.RegistrationNotificationCREATE, // No sending messages
@@ -224,7 +220,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationCREATE, // No importing
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup // But can edit from AW
-          PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
           // PermissionEnum.RegistrationNotificationCREATE, // No sending messages

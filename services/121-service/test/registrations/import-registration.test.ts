@@ -8,6 +8,7 @@ import {
 } from '../fixtures/scoped-registrations';
 import { patchProgram } from '../helpers/program.helper';
 import {
+  getImportRegistrationsTemplate,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
@@ -172,5 +173,14 @@ describe('Import a registration', () => {
         expect(registration[key]).toBe(registrationVisa[key]);
       }
     }
+  });
+
+  it('should give me a CSV template when I request it', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+
+    const response = await getImportRegistrationsTemplate(programIdOCW);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.sort()).toMatchSnapshot();
   });
 });

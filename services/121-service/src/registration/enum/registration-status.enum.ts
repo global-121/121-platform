@@ -1,5 +1,4 @@
 export enum RegistrationStatusEnum {
-  startedRegistration = 'startedRegistration',
   registered = 'registered',
   validated = 'validated',
   included = 'included',
@@ -12,7 +11,6 @@ export enum RegistrationStatusEnum {
 }
 
 export enum RegistrationStatusTimestampField {
-  startedRegistrationDate = 'startedRegistrationDate',
   registeredDate = 'registeredDate',
   rejectionDate = 'rejectionDate',
   validationDate = 'validationDate',
@@ -25,7 +23,6 @@ export enum RegistrationStatusTimestampField {
 }
 
 export enum RegistrationStatusDateMap {
-  startedRegistration = RegistrationStatusTimestampField.startedRegistrationDate,
   registered = RegistrationStatusTimestampField.registeredDate,
   validated = RegistrationStatusTimestampField.validationDate,
   included = RegistrationStatusTimestampField.inclusionDate,

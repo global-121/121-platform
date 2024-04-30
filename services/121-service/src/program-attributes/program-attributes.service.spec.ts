@@ -88,7 +88,7 @@ describe('ProgramAttributesService', () => {
 
       expect(result).toBeDefined();
       // Test the mapping
-      expect(result[0].shortLabel).toBe(dbQueryResult[0].label);
+      expect(result[0].label).toBe(dbQueryResult[0].label);
       // Test the type assignment
       expect(result[0].questionType).toBe(QuestionType.programCustomAttribute);
       // Test no other types are included

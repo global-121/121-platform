@@ -161,6 +161,34 @@ export async function getFspInstructions(
     .query({ format: 'json' });
 }
 
+export async function updateFinancialServiceProvider(
+  programId: number,
+  accessToken: string,
+  paymentReferenceIds: string[],
+  newFspName: string,
+  whatsappPhoneNumber: string,
+  addressStreet: string,
+  addressHouseNumber: string,
+  addressHouseNumberAddition: string,
+  addressPostalCode: string,
+  addressCity: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/registrations/${paymentReferenceIds}/fsp`)
+    .set('Cookie', [accessToken])
+    .send({
+      newFspName: newFspName,
+      newFspAttributes: {
+        whatsappPhoneNumber: whatsappPhoneNumber,
+        addressStreet: addressStreet,
+        addressHouseNumber: addressHouseNumber,
+        addressHouseNumberAddition: addressHouseNumberAddition,
+        addressPostalCode: addressPostalCode,
+        addressCity: addressCity,
+      },
+    });
+}
+
 export async function importFspReconciliationData(
   programId: number,
   paymentNr: number,
@@ -353,7 +381,7 @@ export async function waitForMessagesToComplete(
 
     // If not all PAs received a message, wait for a short interval before checking again
     if (!allMessageUpdatesSuccessful) {
-      await waitFor(1000); // Wait for 1 second (adjust as needed)
+      await waitFor(3_000);
     }
   }
 

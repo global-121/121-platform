@@ -10,7 +10,6 @@ const programsArray: Program[] = [
   {
     id: 1,
     titlePortal: { en: 'Program Alpha' },
-    titlePaApp: { en: 'Program Alpha' },
     description: { en: 'Description of program' },
     location: 'Location',
     startDate: '1970-01-01T01:01:01Z',
@@ -48,7 +47,6 @@ const programsArray: Program[] = [
         options: null,
         phases: [],
         duplicateCheck: false,
-        shortLabel: { en: 'Phone Number' },
       },
     ],
     languages: [LanguageEnum.en],

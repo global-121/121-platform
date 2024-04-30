@@ -16,8 +16,6 @@ See: [status.121.global](https://status.121.global/)
 ### Tests Status
 
 [![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
-[![Test Interface: Register (PA)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_register.yml)
-[![Test Interface: Verify (AW)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_verify.yml)
 [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
 
@@ -83,6 +81,12 @@ Then install the required version of Node.js and `npm`:
 
 ---
 
+Now, make sure to run the following in the root folder to install the necessary pre-hooks:
+
+```bash
+npm install
+```
+
 ## Setup Services
 
 Switch to the repository folder
@@ -117,32 +121,24 @@ To verify the successful installation and setup of services, access their Swagge
 
 Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
 
-Install dependencies for all the interfaces at once, run:
+Install dependencies for the portal, run:
 
-    npm run install:interfaces
+    npm run install:portal
 
-Or from each of the individual interface directories(`interfaces/*`) run:
+Also, make sure to create an env file for each interface. For example:
 
-    npm ci
+    cp interfaces/Portal/.env.example interfaces/Portal/.env
 
 ## Start Interfaces
 
-To start all interfaces at once, from the root of this repository, run:
+To start the portal, from the root of this repository, run:
 
-    npm run start:interfaces
-
-To start an individual interface in development mode:
-
-- Run: (where `<interface-name>` is one of `pa`, `aw`, `portal`)
-
-      npm run start:<interface-name>
+    npm run start:portal
 
 - Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
 
-All individual Angular applications, when started will be available via:
+When started, the portal will be available via:
 
-- PA-App: <http://localhost:8008>
-- AW-App: <http://localhost:8080>
 - Portal: <http://localhost:8888>
 
 ---
@@ -155,13 +151,9 @@ When you use [VS Code](https://code.visualstudio.com/), you can start multiple e
 
 To start an individual interface/service in VS Code:
 
-- Run: (where `<package>` is one of `pa`, `aw`, `portal`, `121-service`)
+- Run: (where `<package>` is one of `portal`, `121-service`)
 
       npm run code:<package>
-
-### Setup git pre-commit hooks
-
-To automatically check the (syntax of the) code, before committing/pushing, you can enable the [`githook`-scripts](tools/git-hooks/).
 
 ### Process for implementing data-model changes
 
@@ -319,46 +311,6 @@ See the [Guide: Writing tests](./guide-Writing-Tests.md)
 
 ---
 
-## Contributing
-
-### Committing and creating a Pull Request (PR)
-
-We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".  
-When committing your changes, provide a commit message that starts with an appropriate keyword:
-
-- `feat`: new feature for the user
-- `fix`: bug fix for the user
-- `docs`: changes to the documentation
-- `style`: formatting, missing semi colons, etc; no production code change
-- `refactor`: refactoring production code, eg. renaming a variable
-- `test`: adding missing tests, refactoring tests; no production code change
-- `chore`: cleanups, version updates etc; no production code change
-
-Add an Azure DevOps task ID at the end of the commit message.  
-For example: "`feat: new feature added to the profile page AB#123456`".
-
-After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform/pulls>.  
-Add additional description for the PR only if required.
-
-### Updating dependencies
-
-Most (development-)dependencies in this repository are monitored by the GitHub [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) service, to keep them up-to-date.  
-The configuration of these updates is in [`.github/dependabot.yml`](../.github/dependabot.yml).  
-Unfortunately most individual dependencies are 'linked' to related dependencies that need to stay 'in sync'.
-
-> [!NOTE]  
-> `Sheetjs` is not monitored by Dependabot. Check the latest version of `Sheetjs`: [![`Sheetjs` latest version](https://img.shields.io/badge/dynamic/xml?url=https%3A%2f%2fgit.sheetjs.com%2fsheetjs%2fsheetjs%2ftags.rss&query=.%2f%2fchannel%2fitem%5B1%5D%2ftitle&logo=microsoftexcel&logoColor=white&label=sheetjs&color=lightgreen)](https://git.sheetjs.com/sheetjs/sheetjs/tags)
-
-Interface dependencies:
-
-To update all Angular and ESLint related dependencies together, run (in each individual interface's directory):
-
-    npm run upgrade:angular
-
-All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands and local testing.
-
----
-
 ## Releases
 
 See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).
@@ -385,7 +337,7 @@ This is how we create and publish a new release of the 121-platform.
   - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
   - [ ] Check the deployed release on the staging environment
   - [ ] Make any configuration changes (ENV-variables, etc.) on production-service(s)
-  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production (for each instance)
+  - [ ] Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
 
 ### Patch/Hotfix Checklist
 
@@ -398,8 +350,8 @@ This follows the same process as a regular release + deployment. With some small
 - Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
 - Push this branch to the upstream/origin repository.
 - Create a new release (see above) and publish it.
-- Use the [manual deployment-workflows](.github/workflows/) to deploy to production (to applicable instance(s))
-- After the hotfix-release, apply the same fix to the main-branch in a regular PR (by creating a PR from the hotfix-branch to `main`-branch)
+- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
+- After the hotfix-release, apply/include the fix by creating a PR from the hotfix-branch to `main`-branch
 
 ---
 
@@ -422,7 +374,8 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
 
-- A manual deploy can be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred branch.
+- Created releases are automatically deployed to the staging-environment
+- A manual deploy can also be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag`.
 
 ### Service(s)
 
@@ -441,14 +394,14 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 - [ ] Configure the service configurations based on [`.env.example`](./services/.env.example)
 - [ ] Create the necessary build/deploy-workflow files
 - [ ] Merge these new files into the `main`-branch
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-version `tag`
 
 #### On next deployments
 
 - [ ] Decide on what version to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](https://github.com/global-121/121-platform/actions) by selecting the target release-version `tag`
 
 ## Glossary
 

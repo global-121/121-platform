@@ -7,7 +7,9 @@ env:
 
 permissions:
   actions: read
-  pull-requests: write
+  # Disabling this to avoid spamming the PR with "Your stage site is ready!" comments
+  # https://github.com/Azure/static-web-apps/issues/1135#issuecomment-1750066331
+  # pull-requests: write
 
 on:
   workflow_call:

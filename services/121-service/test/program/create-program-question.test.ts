@@ -23,17 +23,13 @@ describe('Create program', () => {
     ],
     editableInPortal: true,
     export: [ExportType.allPeopleAffected, ExportType.included],
-    shortLabel: {
+    label: {
       en: 'Last Name',
     },
     placeholder: {
       en: '+31 6 00 00 00 00',
     },
     duplicateCheck: false,
-    label: {
-      en: 'Please enter your last name:',
-      fr: "Remplissez votre nom, s'il vous plaît:",
-    },
     answerType: 'text',
     questionType: 'standard',
   };

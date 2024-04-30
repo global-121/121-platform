@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
-import { ActionService } from '../actions/action.service';
+import { ActionsService } from '../actions/actions.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../programs/program.entity';
@@ -67,7 +67,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly actionService: ActionService,
+    private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,

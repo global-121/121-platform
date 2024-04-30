@@ -1,5 +1,10 @@
 <app-header
-  [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
+  [title]="
+    (program?.validation
+      ? 'page.program.phases.registrationValidation.label'
+      : 'page.program.phases.registrationValidation.label-no-validation'
+    ) | translate
+  "
 ></app-header>
 <div
   class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
@@ -18,7 +23,10 @@
     <ion-row>
       <ion-col class="ion-no-padding">
         <app-bulk-import
-          *appIfPermissions="[Permission.RegistrationCREATE, Permission.RegistrationImportTemplateREAD]"
+          *appIfPermissions="[
+            Permission.RegistrationCREATE,
+            Permission.RegistrationImportTemplateREAD
+          ]"
           [programId]="programId"
           [isTableLoading]="!isReady"
         ></app-bulk-import>

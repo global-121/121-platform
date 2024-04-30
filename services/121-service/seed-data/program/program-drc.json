@@ -35,8 +35,8 @@
     {
       "name": "lastName",
       "label": {
-        "en": "B.2. What is your name?",
-        "fr": "B.2. Quel est votre nom de famille ?"
+        "en": "B.2. Name",
+        "fr": "B.2. Nom de famille"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -45,17 +45,13 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "B.2. Name",
-        "fr": "B.2. Nom de famille"
-      }
+      "editableInPortal": true
     },
     {
       "name": "middleName ",
       "label": {
-        "en": "B.3. What is your middle name?",
-        "fr": "B.3. Quel est votre Post nom?"
+        "en": "B.3. Middle name",
+        "fr": "B.3. Deuxième prénom"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -64,17 +60,13 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "B.3. Middle name",
-        "fr": "B.3. Deuxième prénom"
-      }
+      "editableInPortal": true
     },
     {
       "name": "firstName",
       "label": {
-        "en": "B.4. What is your first name?",
-        "fr": "B.4. Quel est votre prénom ?"
+        "en": "B.4. First name",
+        "fr": "B.4. Prénom"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -83,11 +75,7 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "B.4. First name",
-        "fr": "B.4. Prénom"
-      }
+      "editableInPortal": true
     }
   ],
   "aboutProgram": {
