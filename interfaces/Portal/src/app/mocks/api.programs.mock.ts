@@ -47,7 +47,6 @@ const programsArray: Program[] = [
         options: null,
         phases: [],
         duplicateCheck: false,
-        shortLabel: { en: 'Phone Number' },
       },
     ],
     languages: [LanguageEnum.en],

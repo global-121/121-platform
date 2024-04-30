@@ -59,7 +59,6 @@
         "registered": "Recommandé",
         "registeredWhileNoLongerEligible": "Inscrit alors qu’il n’est plus admissible",
         "rejected": "Rejeté",
-        "startedRegistration": "Début de l’inscription",
         "validated": "Validé"
       }
     },
@@ -243,7 +242,6 @@
           "noLongerEligible": "PA qui ont été marqués comme « n’étant plus éligibles ». <br> Il s’agit de PA personnes qui ont été invitées mais qui ne se sont pas encore inscrites et qui ne sont plus éligibles.",
           "registered": "PA qui ont terminé l’enregistrement dans l’application PA.",
           "rejected": "PA qui ont été rejetés. <br> Ils ne recevront pas (plus) de paiements pour le prochain tour de paiement/versement.",
-          "startedRegistration": "PA qui ont commencé à s’inscrire dans l’application PA.",
           "validated": "PA qui ont été validés."
         },
         "timeframe": {

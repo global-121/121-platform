@@ -75,7 +75,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Phone number"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -88,10 +88,7 @@
       "scoring": {},
       "duplicateCheck": true,
       "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "editableInPortal": false
     }
   ],
   "aboutProgram": {

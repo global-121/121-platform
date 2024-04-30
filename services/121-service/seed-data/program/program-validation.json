@@ -72,36 +72,11 @@
     {
       "name": "nameFirst",
       "label": {
-        "ar": "يرجى ادخال الاسم الاول:",
-        "en": "Please enter your first name:",
-        "es": "Por favor, introduzca su nombre de pila:",
-        "fr": "Entrez votre prénom s'il vous plait:",
-        "nl": "Vul uw voornaam in:"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
         "ar": "الاسم الأول",
         "en": "First Name",
         "es": "Nombre de pila",
         "fr": "Prénom",
         "nl": "Voornaam"
-      }
-    },
-    {
-      "name": "nameLast",
-      "label": {
-        "ar": "الرجاء إدخال اسمك الأخير:",
-        "en": "Please enter your last name:",
-        "es": "Por favor introduce tu apellido:",
-        "fr": "Veuillez saisir votre nom de famille :",
-        "nl": "Vul je achternaam in:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -110,23 +85,34 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
+      "editableInPortal": false
+    },
+    {
+      "name": "nameLast",
+      "label": {
         "ar": "اسم العائلة",
         "en": "Last Name",
         "es": "Apellido",
         "fr": "Nom de famille",
         "nl": "Achternaam"
-      }
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "phoneNumber",
       "label": {
-        "ar": "يرجى مشاركة رقم الهاتف الذي يمكنك تلقي الرسائل القصيرة عليه. سوف نستخدم رقم الهاتف هذا لإبلاغك ببرنامج المساعدة. <br><br> يجب أن يبدو بالشكل التالي: <code>00 00 00 00 00+</code>",
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+00 00 00 00 00</code>",
-        "es": "Por favor, comparte el número de teléfono en el que puedes recibir un SMS. Usaremos este número de teléfono para informarle sobre el programa de ayuda. <br><br> Debería verse así: <code>+00 00 00 00 00</code>",
-        "fr": "Veuillez partager le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer sur le programme d'aide. <br><br> Cela devrait ressembler à : <code>+00 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+00 00 00 00 00</code>"
+        "ar": "رقم الهاتف.",
+        "en": "Phone Nr.",
+        "es": "Nr. teléfono",
+        "fr": "Nr. de téléphone",
+        "nl": "Telefoon Nr."
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -136,14 +122,7 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {},
-      "shortLabel": {
-        "ar": "رقم الهاتف.",
-        "en": "Phone Nr.",
-        "es": "Nr. teléfono",
-        "fr": "Nr. de téléphone",
-        "nl": "Telefoon Nr."
-      }
+      "scoring": {}
     }
   ],
   "aboutProgram": {

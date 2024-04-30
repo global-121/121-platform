@@ -8,9 +8,7 @@
     {
       "name": "oblast",
       "label": {
-        "en": "What oblast is your current location in?",
-        "uk": "У якій області ви зараз проживаєте?",
-        "ru": "В какой области вы сейчас проживаете?"
+        "en": "Oblast"
       },
       "answerType": "dropdown",
       "options": [
@@ -23,17 +21,12 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Oblast"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "raion",
       "label": {
-        "en": "What raion is your current location in?",
-        "uk": "У якому районі ви зараз проживаєте?",
-        "ru": "В каком районе вы сейчас проживаете?"
+        "en": "Raion"
       },
       "answerType": "dropdown",
       "options": [
@@ -62,147 +55,94 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Raion"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "street",
       "label": {
-        "en": "What is the streetname of your current residency location?",
-        "uk": "Вулиця, де ви зараз проживаєте",
-        "ru": "Улица, где вы проживаете в данный момент"
+        "en": "Street"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Street"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "house",
       "label": {
-        "en": "What is the housenumber of your current residency location?",
-        "uk": "Номер будинку",
-        "ru": "Номер дома"
+        "en": "House"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "House"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "apartmentOrOffice",
       "label": {
-        "en": "What is the apartment or office number of your current residency location? If it is not applicable, write '-'",
-        "uk": "Номер квартири",
-        "ru": "Номер квартиры"
+        "en": "Apt / Office"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "Apt / Office"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "postalIndex",
       "label": {
-        "en": "What is the postal index of your current residency location?",
-        "uk": "Ваш поштовий індекс",
-        "ru": "Укажите, пожалуйста, ваш почтовый индекс"
+        "en": "Postal Index"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "Postal Index"
-      }
+      "options": null
     },
     {
       "name": "city",
       "label": {
-        "en": "What city is your current residency location in?",
-        "uk": "Місто, де Ви зараз проживаєте",
-        "ru": "Населённый пункт, где вы сейчас проживаете"
+        "en": "City"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"],
-      "shortLabel": {
-        "en": "City"
-      }
+      "export": ["all-people-affected", "included"]
     },
     {
       "name": "lastName",
       "label": {
-        "en": "Please provide the Last name of the person that will be receiving the payment of UkrPoshta",
-        "uk": "Прізвище заявителя/людини, яка буде отримувати переказ від Укр Пошти",
-        "ru": "Фамилия заявителя/человека, который будет получать перевод от укр. Почты"
+        "en": "Last Name"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "Last Name"
-      }
+      "options": null
     },
     {
       "name": "firstName",
       "label": {
-        "en": "Please provide the First name of the person that will be receiving the payment of UkrPoshta",
-        "uk": "Ім'я заявителя",
-        "ru": "Имя заявителя"
+        "en": "First Name"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "First Name"
-      }
+      "options": null
     },
     {
       "name": "fathersName",
       "label": {
-        "en": "Please provide the Middle name (Father's name) of the person that will be receiving the payment of UkrPoshta",
-        "uk": "По-батькові заявителя",
-        "ru": "Отчество заявителя"
+        "en": "Father's Name"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null,
-      "shortLabel": {
-        "en": "Father's Name"
-      }
+      "options": null
     },
     {
       "name": "taxId",
       "label": {
-        "en": "Tax ID number",
-        "uk": "Ідентифікаційний код",
-        "ru": "Идентификационный код"
+        "en": "Tax ID"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
-      "duplicateCheck": true,
-      "shortLabel": {
-        "en": "Tax ID"
-      }
+      "duplicateCheck": true
     },
     {
       "name": "telephone",
       "label": {
-        "en": "Telephone",
-        "uk": "Номер телефону",
-        "ru": "Номер телефона"
+        "en": "Telephone"
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null,
-      "shortLabel": {
-        "en": "Telephone"
-      }
+      "options": null
     }
   ]
 }

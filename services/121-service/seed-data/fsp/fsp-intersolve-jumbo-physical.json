@@ -13,10 +13,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address street"
-      }
+      "phases": []
     },
     {
       "name": "addressHouseNumber",
@@ -25,10 +22,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "numeric",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address house number"
-      }
+      "phases": []
     },
     {
       "name": "addressHouseNumberAddition",
@@ -37,10 +31,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address house number addition"
-      }
+      "phases": []
     },
     {
       "name": "addressPostalCode",
@@ -49,10 +40,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address postal code"
-      }
+      "phases": []
     },
     {
       "name": "addressCity",
@@ -61,10 +49,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "phases": [],
-      "shortLabel": {
-        "en": "Address city"
-      }
+      "phases": []
     },
     {
       "name": "whatsappPhoneNumber",
@@ -79,10 +64,7 @@
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,
-      "phases": [],
-      "shortLabel": {
-        "en": "WhatsApp Nr."
-      }
+      "phases": []
     }
   ]
 }

@@ -59,14 +59,6 @@ class BaseProgramQuestionDto {
   public readonly export: ExportType[];
   @ApiProperty({
     example: {
-      en: 'Last Name',
-    },
-    required: false,
-  })
-  @IsOptional()
-  public shortLabel: JSON;
-  @ApiProperty({
-    example: {
       en: '+31 6 00 00 00 00',
     },
     required: false,
