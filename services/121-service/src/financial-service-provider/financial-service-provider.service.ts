@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import {
   CreateFspAttributeDto,
-  UpdateFspAttributeDto,
   UpdateFinancialServiceProviderDto,
+  UpdateFspAttributeDto,
 } from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspQuestionEntity } from './fsp-question.entity';

@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional } from 'class-validator';
 import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
 
-const fspArray = Object.values(FinancialServiceProviderName).map((item) => String(item));
+const fspArray = Object.values(FinancialServiceProviderName).map((item) =>
+  String(item),
+);
 
 export class UpdateChosenFspDto {
   @ApiProperty({

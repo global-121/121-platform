@@ -283,7 +283,8 @@ export class MessageIncomingService {
       });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
         (fsp) => {
-          return (fsp.fsp = FinancialServiceProviderName.intersolveVoucherWhatsapp);
+          return (fsp.fsp =
+            FinancialServiceProviderName.intersolveVoucherWhatsapp);
         },
       );
       tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;

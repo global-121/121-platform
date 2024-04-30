@@ -1,6 +1,9 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -69,8 +72,14 @@ describe('CommercialBankEthiopiaService', () => {
 
   it('should add payment to queue', async () => {
     const dbQueryResult = [
-      { name: FinancialServiceProviderConfigurationEnum.username, value: '1234' },
-      { name: FinancialServiceProviderConfigurationEnum.password, value: '1234' },
+      {
+        name: FinancialServiceProviderConfigurationEnum.username,
+        value: '1234',
+      },
+      {
+        name: FinancialServiceProviderConfigurationEnum.password,
+        value: '1234',
+      },
     ];
     const createQueryBuilder: any =
       generateMockCreateQueryBuilder(dbQueryResult);

@@ -4,7 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -77,7 +80,8 @@ export class CommercialBankEthiopiaService
 
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.commercialBankEthiopia;
+    fspTransactionResult.fspName =
+      FinancialServiceProviderName.commercialBankEthiopia;
 
     const referenceIds = paPaymentList.map(
       (paPayment) => paPayment.referenceId,
@@ -267,7 +271,8 @@ export class CommercialBankEthiopiaService
     credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.commercialBankEthiopia;
+    paTransactionResult.fspName =
+      FinancialServiceProviderName.commercialBankEthiopia;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
@@ -459,10 +464,12 @@ export class CommercialBankEthiopiaService
       .getRawMany();
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.username)
-        ?.value,
-      password: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.password)
-        ?.value,
+      username: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+      )?.value,
+      password: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+      )?.value,
     };
 
     return credentials;

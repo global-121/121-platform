@@ -292,7 +292,8 @@ export class IntersolveJumboService
     transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
-    transactionResult.fspName = FinancialServiceProviderName.intersolveJumboPhysical;
+    transactionResult.fspName =
+      FinancialServiceProviderName.intersolveJumboPhysical;
     transactionResult.notificationObjects = notificationObjects;
 
     return transactionResult;

@@ -43,7 +43,10 @@ export class TransactionReturnDto {
   public fspName: string;
   @ApiProperty({ example: 'Intersolve-visa', type: 'string' })
   public fsp: string;
-  @ApiProperty({ example: FinancialServiceProviderIntegrationType.api, type: 'string' })
+  @ApiProperty({
+    example: FinancialServiceProviderIntegrationType.api,
+    type: 'string',
+  })
   public fspIntegrationType: string;
 }
 

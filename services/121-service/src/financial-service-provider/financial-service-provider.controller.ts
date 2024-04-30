@@ -15,18 +15,20 @@ import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateFspAttributeDto,
-  UpdateFspAttributeDto,
   UpdateFinancialServiceProviderDto,
+  UpdateFspAttributeDto,
 } from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspQuestionEntity } from './fsp-question.entity';
 import { FinancialServiceProviderService } from './financial-service-provider.service';
+import { FspQuestionEntity } from './fsp-question.entity';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
 export class FinancialServiceProviderController {
-  public constructor(private readonly fspService: FinancialServiceProviderService) {}
+  public constructor(
+    private readonly fspService: FinancialServiceProviderService,
+  ) {}
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })

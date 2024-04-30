@@ -130,7 +130,10 @@ describe('RegistrationsInputValidator', () => {
 
   it('should report errors for rows missing mandatory fields', async () => {
     const csvArray = [
-      { fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp, preferredLanguage: 'en' },
+      {
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        preferredLanguage: 'en',
+      },
     ];
     const programId = 1;
     const userId = 1;

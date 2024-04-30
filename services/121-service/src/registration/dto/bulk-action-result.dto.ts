@@ -15,7 +15,12 @@ export class BulkActionResultDto {
 }
 
 export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
-  @ApiProperty({ example: [FinancialServiceProviderName.intersolveVisa, FinancialServiceProviderName.excel] })
+  @ApiProperty({
+    example: [
+      FinancialServiceProviderName.intersolveVisa,
+      FinancialServiceProviderName.excel,
+    ],
+  })
   public readonly fspsInPayment: string[];
 }
 

@@ -3,7 +3,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
 
 export class UpdateProgramFspConfigurationDto {
-  @ApiProperty({ example: FinancialServiceProviderConfigurationEnum.displayName })
+  @ApiProperty({
+    example: FinancialServiceProviderConfigurationEnum.displayName,
+  })
   @IsNotEmpty()
   @IsString()
   name: string;

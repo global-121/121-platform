@@ -82,10 +82,12 @@ export class IntersolveVoucherCronService {
     }
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.username)
-        ?.value,
-      password: config.find((c) => c.name === FinancialServiceProviderConfigurationEnum.password)
-        ?.value,
+      username: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+      )?.value,
+      password: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+      )?.value,
     };
 
     for (const intersolveRequest of failedIntersolveRquests) {

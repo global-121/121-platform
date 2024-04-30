@@ -26,7 +26,9 @@ export enum FinancialServiceProviderConfigurationEnum {
   displayName = 'displayName',
 }
 
-export const FinancialServiceProviderConfigurationMapping: { [key in FinancialServiceProviderName]?: any } = {
+export const FinancialServiceProviderConfigurationMapping: {
+  [key in FinancialServiceProviderName]?: any;
+} = {
   [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,
@@ -41,13 +43,27 @@ export const FinancialServiceProviderConfigurationMapping: { [key in FinancialSe
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.intersolveJumboPhysical]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.africasTalking]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.belcash]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.vodacash]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.bobFinance]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.ukrPoshta]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.safaricom]: [FinancialServiceProviderConfigurationEnum.displayName],
+  [FinancialServiceProviderName.intersolveJumboPhysical]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.africasTalking]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.belcash]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.vodacash]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.bobFinance]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.ukrPoshta]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.safaricom]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
   [FinancialServiceProviderName.commercialBankEthiopia]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,
@@ -59,7 +75,13 @@ export const FinancialServiceProviderConfigurationMapping: { [key in FinancialSe
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
   //The values below are for testing purposes
-  [FinancialServiceProviderName.fspAllAttributes]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.fspNoAttributes]: [FinancialServiceProviderConfigurationEnum.displayName],
-  [FinancialServiceProviderName.bankA]: [FinancialServiceProviderConfigurationEnum.displayName],
+  [FinancialServiceProviderName.fspAllAttributes]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.fspNoAttributes]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.bankA]: [
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
 };

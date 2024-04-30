@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { BulkImportResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
@@ -115,7 +118,9 @@ export class ExcelService
         'program.programFspConfiguration',
         'programFspConfiguration',
         'programFspConfiguration.name = :configName',
-        { configName: FinancialServiceProviderConfigurationEnum.columnsToExport },
+        {
+          configName: FinancialServiceProviderConfigurationEnum.columnsToExport,
+        },
       )
       .andWhere('program.id = :programId', {
         programId: programId,

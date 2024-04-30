@@ -1,9 +1,9 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { Base121Entity } from '../base.entity';
+import { FspQuestionEntity } from '../financial-service-provider/fsp-question.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from '../financial-service-provider/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationEntity } from './registration.entity';
 

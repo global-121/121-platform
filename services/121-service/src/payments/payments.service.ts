@@ -58,10 +58,13 @@ export class PaymentsService {
 
   private fspWithQueueServiceMapping = {
     [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-    [FinancialServiceProviderName.intersolveVoucherPaper]: this.intersolveVoucherService,
-    [FinancialServiceProviderName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
+    [FinancialServiceProviderName.intersolveVoucherPaper]:
+      this.intersolveVoucherService,
+    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+      this.intersolveVoucherService,
     [FinancialServiceProviderName.safaricom]: this.safaricomService,
-    [FinancialServiceProviderName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
+    [FinancialServiceProviderName.commercialBankEthiopia]:
+      this.commercialBankEthiopiaService,
     // Add more FSP mappings if they work queue-based
   };
 
@@ -490,27 +493,53 @@ export class PaymentsService {
     const commercialBankEthiopiaPaPayment = [];
     const excelPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
-      if (paPaymentData.fspName === FinancialServiceProviderName.intersolveVoucherWhatsapp) {
+      if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherWhatsapp
+      ) {
         intersolvePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.intersolveVoucherPaper) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherPaper
+      ) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.intersolveVisa) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.intersolveVisa
+      ) {
         intersolveVisaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.intersolveJumboPhysical) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveJumboPhysical
+      ) {
         intersolveJumboPhysicalPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.africasTalking) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.africasTalking
+      ) {
         africasTalkingPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.belcash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.belcash
+      ) {
         belcashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.bobFinance) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.bobFinance
+      ) {
         bobFinancePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.ukrPoshta) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.ukrPoshta
+      ) {
         ukrPoshtaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.vodacash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.vodacash
+      ) {
         vodacashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.safaricom) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.safaricom
+      ) {
         safaricomPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.commercialBankEthiopia) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.commercialBankEthiopia
+      ) {
         commercialBankEthiopiaPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FinancialServiceProviderName.excel) {
         excelPaPayment.push(paPaymentData);
@@ -787,7 +816,10 @@ export class PaymentsService {
   ): Promise<FspInstructions> {
     const exportPaymentTransactions = (
       await this.transactionsService.getLastTransactions(programId, payment)
-    ).filter((t) => t.fspIntegrationType !== FinancialServiceProviderIntegrationType.api);
+    ).filter(
+      (t) =>
+        t.fspIntegrationType !== FinancialServiceProviderIntegrationType.api,
+    );
 
     if (exportPaymentTransactions.length === 0) {
       throw new HttpException(
@@ -854,7 +886,9 @@ export class PaymentsService {
 
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
-      (t) => t.fsp === FinancialServiceProviderName.excel && t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
+      (t) =>
+        t.fsp === FinancialServiceProviderName.excel &&
+        t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(

@@ -48,7 +48,8 @@ export class ProgramFspConfigurationService {
         HttpStatus.NOT_FOUND,
       );
     } else {
-      const allowedConfigForFsp = FinancialServiceProviderConfigurationMapping[fsp.fsp];
+      const allowedConfigForFsp =
+        FinancialServiceProviderConfigurationMapping[fsp.fsp];
       if (!allowedConfigForFsp.includes(programFspConfigurationDto.name)) {
         throw new HttpException(
           `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${programFspConfigurationDto.name}`,
