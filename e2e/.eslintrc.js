@@ -32,12 +32,8 @@ module.exports = {
         tsconfigRootDir: __dirname,
       },
       rules: {
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/no-misused-promises': 'error',
-        '@typescript-eslint/no-parameter-properties': 'off',
         '@typescript-eslint/no-unused-vars': [
           'error',
           {
@@ -50,8 +46,8 @@ module.exports = {
         'promise/no-multiple-resolved': 'error',
         'promise/no-promise-in-callback': 'error',
         'promise/no-return-in-finally': 'error',
-        // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
-        // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
+        'promise/prefer-await-to-callbacks': 'error',
+        'promise/prefer-await-to-then': 'error',
         'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
       },
