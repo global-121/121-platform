@@ -165,7 +165,7 @@ export class RegistrationDataService {
       result.programCustomAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
-    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
+    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, and program custom attributes)`;
     throw new RegistrationDataError(errorMessage);
   }
 

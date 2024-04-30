@@ -19,20 +19,6 @@ In the 121-portal only PAs with certain status can be deleted, while the API end
 
 ---
 
-## Get monitoring data
-
-1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`program:metrics.read`"-permission
-2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test.121.global/docs/#/programs/get_programs_monitoring__programId_)
-   Fill in the `programId` = 1.
-
-   This will return all registrations, with attributes:
-
-   - Monitoring-question answer
-   - Registration duration (in seconds)
-   - PA status
-
----
-
 ## Get list of vouchers marked as 'to cancel' (Intersolve)
 
 Since 2022-01-04 (code-date not deploy-date) we are not canceling vouchers any more, but do keep marking them as 'to cancel'.
