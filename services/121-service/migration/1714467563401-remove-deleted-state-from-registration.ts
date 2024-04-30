@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-const registrationStatus = 'deleted';
-
 export class RemoveDeletedStateFromRegistration1714467563401
   implements MigrationInterface
 {
@@ -11,18 +9,38 @@ export class RemoveDeletedStateFromRegistration1714467563401
     console.time('RemoveDeletedStateFromRegistration1714467563401');
     await queryRunner.commitTransaction();
 
+    const queryCondition = `"fspId" is null AND "registrationStatus" = 'deleted'`;
+
     await queryRunner.query(`DELETE FROM "121-service".event_attribute WHERE "eventId" IN
       (SELECT id FROM "121-service"."event" WHERE "registrationId" IN
-      (SELECT "id" FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}'))`);
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition}))`);
 
     await queryRunner.query(`DELETE FROM "121-service"."event" WHERE "registrationId" IN
-      (SELECT "id" FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}')`);
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
 
     await queryRunner.query(`DELETE FROM "121-service".registration_data WHERE "registrationId" IN
-      (SELECT "id" FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}')`);
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
+
+    await queryRunner.query(`DELETE FROM "121-service".whatsapp_pending_message WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition});`);
+
+    await queryRunner.query(`DELETE FROM "121-service".try_whatsapp WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition});`);
+
+    await queryRunner.query(`DELETE FROM "121-service".note WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
+
+    await queryRunner.query(`DELETE FROM "121-service".program_answer WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
+
+    await queryRunner.query(`DELETE FROM "121-service".latest_message WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
+
+    await queryRunner.query(`DELETE FROM "121-service".twilio_message WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE ${queryCondition})`);
 
     await queryRunner.query(
-      `DELETE FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}'`,
+      `DELETE FROM "121-service"."registration" WHERE ${queryCondition}`,
     );
 
     await queryRunner.startTransaction();
