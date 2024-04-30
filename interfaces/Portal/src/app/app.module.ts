@@ -111,6 +111,7 @@ if (environment.use_sso_azure_entra) {
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.useServiceWorker && environment.production,
     }),
+    // See: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/msal-angular-v3.0.12/lib/msal-angular/docs/initialization.md
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {
