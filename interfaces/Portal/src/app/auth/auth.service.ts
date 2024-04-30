@@ -185,11 +185,12 @@ export class AuthService {
     const userDto = await this.programsService.getCurrentUser();
 
     if (!userDto || !userDto.user) {
+      localStorage.removeItem(USER_KEY);
       this.router.navigate(['/', AppRoutes.login]);
       return;
     }
 
-    this.checkSsoTokenExpirationDate();
+    await this.checkSsoTokenExpirationDate();
     this.setUserInStorage(userDto.user);
     this.updateAuthenticationState();
 
