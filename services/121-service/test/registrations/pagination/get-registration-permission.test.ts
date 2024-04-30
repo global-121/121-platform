@@ -1,4 +1,4 @@
-import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
 import { PermissionEnum } from '../../../src/user/enum/permission.enum';
@@ -58,7 +58,8 @@ describe('Load PA table', () => {
         referenceId: registrationOCW1.referenceId,
         paymentAmountMultiplier: 1,
         preferredLanguage: registrationOCW1.preferredLanguage,
-        financialServiceProvider: FspName.intersolveJumboPhysical,
+        financialServiceProvider:
+          FinancialServiceProviderName.intersolveJumboPhysical,
       };
       const notExpectedValueObject = {
         firstName: registrationOCW1.firstName,

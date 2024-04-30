@@ -1,3 +1,4 @@
+import { FinancialServiceProviderName } from '../../../../../services/121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { FilterOperator } from '../enums/filters.enum';
 import FspName from '../enums/fsp-name.enum';
@@ -43,14 +44,14 @@ export class PaymentUtils {
 
   static hasVoucherSupport(fsp: FspName | string): boolean {
     const supportedFsps = [
-      FspName.intersolveVoucherPaper,
-      FspName.intersolveVoucherWhatsapp,
+      FinancialServiceProviderName.intersolveVoucherPaper,
+      FinancialServiceProviderName.intersolveVoucherWhatsapp,
     ];
     return supportedFsps.includes(fsp as FspName);
   }
 
   static hasPhysicalCardSupport(fsp: FspName | string): boolean {
-    const supportedFsps = [FspName.intersolveVisa];
+    const supportedFsps = [FinancialServiceProviderName.intersolveVisa];
     return supportedFsps.includes(fsp as FspName);
   }
 
@@ -99,7 +100,10 @@ export class PaymentUtils {
   }
 
   static getCustomDataAttributesToShow(paymentRow: PaymentRowDetail) {
-    if (paymentRow.transaction?.fsp === FspName.intersolveVisa) {
+    if (
+      paymentRow.transaction?.fsp ===
+      FinancialServiceProviderName.intersolveVisa
+    ) {
       return [TransactionCustomDataAttributes.intersolveVisaWalletTokenCode];
     } else {
       return [];

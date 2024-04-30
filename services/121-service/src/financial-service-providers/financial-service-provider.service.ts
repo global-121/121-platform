@@ -4,14 +4,14 @@ import { Repository } from 'typeorm';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import {
   CreateFspAttributeDto,
+  UpdateFinancialServiceProviderDto,
   UpdateFspAttributeDto,
-  UpdateFspDto,
-} from './dto/update-fsp.dto';
+} from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspQuestionEntity } from './fsp-question.entity';
 
 @Injectable()
-export class FspService {
+export class FinancialServiceProvidersService {
   @InjectRepository(FinancialServiceProviderEntity)
   private financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
@@ -56,7 +56,7 @@ export class FspService {
 
   public async updateFsp(
     fspId: number,
-    updateFspDto: UpdateFspDto,
+    updateFspDto: UpdateFinancialServiceProviderDto,
   ): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { id: fspId },

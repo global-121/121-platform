@@ -11,7 +11,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 
@@ -84,10 +84,10 @@ export class UpdateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: FspName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FspName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
       },
     ],
     description:

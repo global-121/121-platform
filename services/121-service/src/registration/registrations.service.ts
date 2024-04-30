@@ -5,8 +5,9 @@ import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsService } from '../events/events.service';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '../financial-service-providers/fsp-question.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
@@ -20,7 +21,6 @@ import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
 import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -722,7 +722,7 @@ export class RegistrationsService {
 
   public async updateChosenFsp(
     referenceId: string,
-    newFspName: FspName,
+    newFspName: FinancialServiceProviderName,
     newFspAttributesRaw: object,
     userId: number,
   ): Promise<RegistrationViewEntity> {

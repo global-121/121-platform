@@ -17,7 +17,7 @@ import {
 } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import FspName from '../../enums/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../../../../services/121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
@@ -174,7 +174,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   async checkShowCbeValidation(): Promise<boolean> {
     const hasCbeProvider = this.program?.financialServiceProviders?.some(
-      (fsp) => fsp.fsp === FspName.commercialBankEthiopia,
+      (fsp) => fsp.fsp === FinancialServiceProviderName.commercialBankEthiopia,
     );
     const hasPermission = await this.authService.hasPermission(
       this.program.id,

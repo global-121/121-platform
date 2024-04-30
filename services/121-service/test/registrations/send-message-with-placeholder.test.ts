@@ -1,5 +1,5 @@
 import fspIntersolveJson from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { waitForMessagesToComplete } from '../helpers/program.helper';
@@ -19,7 +19,7 @@ describe('Send custom message with placeholders', () => {
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',
-    fspName: FspName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 

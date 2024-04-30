@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 
-const fspArray = Object.values(FspName).map((item) => String(item));
+const fspArray = Object.values(FinancialServiceProviderName).map((item) =>
+  String(item),
+);
 
 export class UpdateChosenFspDto {
   @ApiProperty({
@@ -10,7 +12,7 @@ export class UpdateChosenFspDto {
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
-  public readonly newFspName: FspName;
+  public readonly newFspName: FinancialServiceProviderName;
   @ApiProperty({
     example: {
       whatsappPhoneNumber: '31600000000',

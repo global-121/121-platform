@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserService } from '../../user/user.service';
@@ -415,7 +415,7 @@ export class RegistrationsInputValidator {
 
   private isDynamicAttributeForFsp(
     attribute: Attribute,
-    fspName: FspName,
+    fspName: FinancialServiceProviderName,
   ): boolean {
     // If the CSV does not have fspName all attributes may be relevant because a bulk PATCH may be for multiple FSPs
     if (!fspName) {

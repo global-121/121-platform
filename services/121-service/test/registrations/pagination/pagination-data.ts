@@ -1,4 +1,4 @@
-import { FspName } from '../../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../../../src/registration/enum/language.enum';
 import { RegistrationEntity } from '../../../src/registration/registration.entity';
 
@@ -29,7 +29,7 @@ export const registrationOCW1 = {
   firstName: 'John',
   lastName: 'Smith',
   phoneNumber: '14155236666',
-  fspName: FspName.intersolveJumboPhysical,
+  fspName: FinancialServiceProviderName.intersolveJumboPhysical,
   whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -45,7 +45,7 @@ export const registrationOCW2 = {
   firstName: 'Anna',
   lastName: 'Hello',
   phoneNumber: '14155237775',
-  fspName: FspName.intersolveVisa,
+  fspName: FinancialServiceProviderName.intersolveVisa,
   whatsappPhoneNumber: '14155237775',
   addressStreet: 'Teststeeg',
   addressHouseNumber: '2',
@@ -61,7 +61,7 @@ export const registrationOCW3 = {
   firstName: 'Sophia',
   lastName: 'Johnson',
   phoneNumber: '14155236666',
-  fspName: FspName.intersolveVisa,
+  fspName: FinancialServiceProviderName.intersolveVisa,
   whatsappPhoneNumber: '14155236666',
   addressStreet: 'DifferentStreet',
   addressHouseNumber: '3',
@@ -77,7 +77,7 @@ export const registrationOCW4 = {
   firstName: 'Luis',
   lastName: 'Garcia',
   phoneNumber: '14155235555',
-  fspName: FspName.intersolveVisa,
+  fspName: FinancialServiceProviderName.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
@@ -100,7 +100,7 @@ export const registrationPV5 = {
   firstName: 'Gemma',
   lastName: 'Houtenbos',
   phoneNumber: '14155235556',
-  fspName: FspName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
 };
 
@@ -111,7 +111,7 @@ export const registrationPV6 = {
   firstName: 'Jan',
   lastName: 'Janssen',
   phoneNumber: '14155235551',
-  fspName: FspName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
 };
 
@@ -122,7 +122,7 @@ export const registrationPvScoped = {
   firstName: 'Freya',
   lastName: 'Midgard',
   phoneNumber: '14155235554',
-  fspName: FspName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235554',
   scope: 'utrecht',
 };

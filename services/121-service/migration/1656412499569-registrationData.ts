@@ -10,12 +10,12 @@ import {
   QueryRunner,
 } from 'typeorm';
 import { CascadeDeleteEntity } from '../src/base.entity';
+import { FspQuestionEntity } from '../src/financial-service-providers/fsp-question.entity';
 import { InstanceEntity } from '../src/instance/instance.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
 import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
 import { NameConstraintQuestions } from '../src/shared/const';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 
 // This entity was copied here during the deletion of monitoringQuestions and everything related to it
 @Entity('monitoring_question')
