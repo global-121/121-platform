@@ -113,12 +113,6 @@ export class UpdateProgramDto {
   @IsBoolean()
   public readonly validation: boolean;
 
-  @ApiProperty({
-    example: { en: 'Identity card;Health Insurance;Proof of children' },
-  })
-  @IsOptional()
-  public readonly meetingDocuments: JSON;
-
   @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   @IsOptional()
