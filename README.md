@@ -165,16 +165,18 @@ The process is:
 2. To generate a migration-script run: `docker exec 121-service npm run migration:generate migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
-5. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
-6. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
-7. If ever running into issues with migrations locally, the reset process is:
+5. Do NOT import any files from our code base into your migrations. For example, do NOT import seed JSON files to get data to insert into the database, since the migration may break if ever these seed JSON files change. Instead, "hard code" the needed data in your migration file.
+6. Do NOT change migration files anymore after they have been merged to main, like commenting out parts of it, since there is a high probability this will result in bugs or faulty data on production instances. Instead, create a new migration file. The exception is bug fixing a migration file, for example if a file was imported that causes the migration to fail (see 5 above).
+7. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
+8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
+9. If ever running into issues with migrations locally, the reset process is:
 
 - Delete all tables in the `121-service` database schema
 - Restart `121-service` container
 - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
 - (Run seed)
 
-8. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
+10. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
 
