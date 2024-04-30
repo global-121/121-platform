@@ -7,7 +7,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Base121AuditedEntity } from '../../base-audited.entity';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../financial-service-provider/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserEntity } from '../../user/user.entity';

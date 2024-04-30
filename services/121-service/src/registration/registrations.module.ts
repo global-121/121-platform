@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '../actions/actions.module';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsModule } from '../events/events.module';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
+import { FinancialServiceProviderEntity } from '../financial-service-provider/financial-service-provider.entity';
+import { FspQuestionEntity } from '../financial-service-provider/fsp-question.entity';
+import { FinancialServiceProviderModule } from '../financial-service-provider/financial-service-provider.module';
 import { NoteEntity } from '../notes/note.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
@@ -65,7 +65,7 @@ import { RegistrationsInputValidator } from './validators/registrations-input-va
     LookupModule,
     ActionsModule,
     ProgramModule,
-    FspModule,
+    FinancialServiceProviderModule,
     QueueMessageModule,
     IntersolveVisaModule,
     RegistrationDataModule,

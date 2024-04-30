@@ -13,7 +13,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import {
@@ -98,10 +98,10 @@ export class ProgramReturnDto {
   @ApiProperty({
     example: [
       {
-        fsp: FspName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FspName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
       },
     ],
     description:

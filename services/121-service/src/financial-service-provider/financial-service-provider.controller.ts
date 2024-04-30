@@ -16,17 +16,17 @@ import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateFspAttributeDto,
   UpdateFspAttributeDto,
-  UpdateFspDto,
-} from './dto/update-fsp.dto';
+  UpdateFinancialServiceProviderDto,
+} from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspQuestionEntity } from './fsp-question.entity';
-import { FspService } from './fsp.service';
+import { FinancialServiceProviderService } from './financial-service-provider.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
-export class FspController {
-  public constructor(private readonly fspService: FspService) {}
+export class FinancialServiceProviderController {
+  public constructor(private readonly fspService: FinancialServiceProviderService) {}
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get all Financial Service Providers.' })
@@ -71,7 +71,7 @@ export class FspController {
   public async updateFsp(
     @Param('fspId', ParseIntPipe)
     fspId: number,
-    @Body() updateFspDto: UpdateFspDto,
+    @Body() updateFspDto: UpdateFinancialServiceProviderDto,
   ): Promise<FinancialServiceProviderEntity> {
     return await this.fspService.updateFsp(fspId, updateFspDto);
   }

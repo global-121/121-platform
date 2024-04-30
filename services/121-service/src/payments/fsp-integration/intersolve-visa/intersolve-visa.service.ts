@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
@@ -363,7 +363,7 @@ export class IntersolveVisaService
     paTransactionResult.referenceId = paymentDetails.referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = calculatedAmount;
-    paTransactionResult.fspName = FspName.intersolveVisa;
+    paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
 
     const transactionNotifications = [];
 
@@ -652,8 +652,8 @@ export class IntersolveVisaService
       await this.programFspConfigurationRepository.findOne({
         where: {
           programId: programId,
-          name: FspConfigurationEnum.brandCode,
-          fsp: { fsp: FspName.intersolveVisa },
+          name: FinancialServiceProviderConfigurationEnum.brandCode,
+          fsp: { fsp: FinancialServiceProviderName.intersolveVisa },
         },
         relations: ['fsp'],
       });
@@ -923,7 +923,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (registration.fsp.fsp !== FspName.intersolveVisa) {
+    if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

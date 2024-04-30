@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
@@ -39,7 +39,7 @@ export class BelcashService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.belcash;
+    fspTransactionResult.fspName = FinancialServiceProviderName.belcash;
 
     const program = await this.programRepository.findOneBy({
       id: programId,
@@ -119,7 +119,7 @@ export class BelcashService
     await waitFor(2_000);
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FspName.belcash;
+    paTransactionResult.fspName = FinancialServiceProviderName.belcash;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.amount;
@@ -171,7 +171,7 @@ export class BelcashService
         );
 
         const paTransactionResult = new PaTransactionResultDto();
-        paTransactionResult.fspName = FspName.belcash;
+        paTransactionResult.fspName = FinancialServiceProviderName.belcash;
         paTransactionResult.referenceId = referenceId;
         paTransactionResult.status = successStatuses.includes(
           belcashRequest.status,

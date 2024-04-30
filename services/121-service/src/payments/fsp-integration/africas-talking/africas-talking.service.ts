@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
@@ -34,7 +34,7 @@ export class AfricasTalkingService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.africasTalking;
+    fspTransactionResult.fspName = FinancialServiceProviderName.africasTalking;
 
     for (const payment of paymentList) {
       const payload = this.createPayloadPerPa(
@@ -117,7 +117,7 @@ export class AfricasTalkingService
     );
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FspName.africasTalking;
+    paTransactionResult.fspName = FinancialServiceProviderName.africasTalking;
     paTransactionResult.referenceId =
       notification.requestMetadata['referenceId'];
     paTransactionResult.status =

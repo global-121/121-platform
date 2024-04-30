@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { GenericAttributes } from '../enum/custom-data-attributes';
@@ -23,7 +23,7 @@ describe('RegistrationsImportService', () => {
       nameFirst: 'Test',
       nameLast: 'Test',
       phoneNumber: '31600000000',
-      fspName: FspName.intersolveVoucherPaper,
+      fspName: FinancialServiceProviderName.intersolveVoucherPaper,
       whatsappPhoneNumber: '',
     },
   ];

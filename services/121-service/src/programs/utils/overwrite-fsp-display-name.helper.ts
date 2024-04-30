@@ -1,5 +1,5 @@
-import { FspConfigurationEnum } from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../../financial-service-provider/financial-service-provider.entity';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { ProgramFspConfigurationEntity } from '../fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../program.entity';
@@ -20,7 +20,7 @@ export function overwriteProgramFspDisplayName(
               programFinancialServiceProviderConfiguration.fspId ===
                 financialServiceProvider.id &&
               programFinancialServiceProviderConfiguration.name ===
-                FspConfigurationEnum.displayName,
+                FinancialServiceProviderConfigurationEnum.displayName,
           );
 
         if (displayNameConfig.length > 0) {

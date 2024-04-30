@@ -8,7 +8,7 @@ import {
   ViewColumn,
   ViewEntity,
 } from 'typeorm';
-import { FspName } from '../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../financial-service-provider/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';
@@ -100,7 +100,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProvider: FspName;
+  public financialServiceProvider: FinancialServiceProviderName;
 
   @ViewColumn()
   public fspDisplayName: JSON;

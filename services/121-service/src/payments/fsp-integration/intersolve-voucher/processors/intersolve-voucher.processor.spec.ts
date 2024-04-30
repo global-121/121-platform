@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { FspName } from '../../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../../../../registration/enum/language.enum';
 import { IntersolveVoucherService } from '../intersolve-voucher.service';
 import { PaymentProcessorIntersolveVoucher } from './intersolve-voucher.processor';
@@ -13,7 +13,7 @@ const mockPaymentJob = {
   firstName: 'Test',
   lastName: 'mock-fail-create-debit-card',
   id: 11,
-  fspName: FspName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   paymentAddress: '14155238886',
   transactionAmount: 22,
   transactionId: 38,

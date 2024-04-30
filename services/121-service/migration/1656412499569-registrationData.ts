@@ -5,7 +5,7 @@ import { MonitoringQuestionEntity } from '../src/instance/monitoring-question.en
 import { ProgramEntity } from '../src/programs/program.entity';
 import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
+import { FspQuestionEntity } from '../src/financial-service-provider/fsp-question.entity';
 export class registrationData1656412499569 implements MigrationInterface {
   name = 'registrationData1656412499569';
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FspIntegrationType } from '../../../fsp/enum/fsp-integration-type.enum';
+import { FinancialServiceProviderIntegrationType } from '../../../financial-service-provider/enum/financial-service-provider-integration-type.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { UserOwnerDto } from '../../../user/dto/user-owner.dto';
 
@@ -43,7 +43,7 @@ export class TransactionReturnDto {
   public fspName: string;
   @ApiProperty({ example: 'Intersolve-visa', type: 'string' })
   public fsp: string;
-  @ApiProperty({ example: FspIntegrationType.api, type: 'string' })
+  @ApiProperty({ example: FinancialServiceProviderIntegrationType.api, type: 'string' })
   public fspIntegrationType: string;
 }
 

@@ -1,7 +1,7 @@
 import { isObject } from 'lodash';
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { CascadeDeleteEntity } from '../../base.entity';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../financial-service-provider/financial-service-provider.entity';
 import { ProgramEntity } from '../program.entity';
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])

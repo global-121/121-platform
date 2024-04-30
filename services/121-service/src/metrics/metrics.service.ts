@@ -5,8 +5,8 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { ActionsService } from '../actions/actions.service';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FspQuestionEntity } from '../financial-service-provider/fsp-question.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -901,7 +901,7 @@ export class MetricsService {
     });
     let fields = [];
     for (const fsp of program.financialServiceProviders) {
-      if (fsp.fsp === FspName.safaricom) {
+      if (fsp.fsp === FinancialServiceProviderName.safaricom) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
       }
     }

@@ -4,11 +4,10 @@ import { CascadeDeleteEntity } from '../base.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { Attribute } from './../registration/enum/custom-data-attributes';
-import { FspIntegrationType } from './enum/fsp-integration-type.enum';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { FinancialServiceProviderIntegrationType } from './enum/financial-service-provider-integration-type.enum';
 import { FspQuestionEntity } from './fsp-question.entity';
 
-// TODO: REFACTOR: rename table name into financial_service_provider so that aligns with the Entity class name
 @Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ unique: true })
@@ -19,9 +18,9 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: { en: 'FSP display name' } })
   public displayName: JSON;
 
-  @Column({ default: FspIntegrationType.api })
-  @ApiProperty({ example: FspIntegrationType.api })
-  public integrationType: FspIntegrationType;
+  @Column({ default: FinancialServiceProviderIntegrationType.api })
+  @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })
+  public integrationType: FinancialServiceProviderIntegrationType;
 
   @Column({ default: false })
   @ApiProperty({

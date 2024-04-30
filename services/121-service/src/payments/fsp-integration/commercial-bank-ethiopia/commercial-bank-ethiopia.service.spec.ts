@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
-import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderConfigurationEnum, FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
 import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
 import { getQueueName } from '../../../utils/unit-test.helpers';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -21,7 +21,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FspName.commercialBankEthiopia,
+    fspName: FinancialServiceProviderName.commercialBankEthiopia,
     bulkSize: 1,
     userId,
   },
@@ -69,8 +69,8 @@ describe('CommercialBankEthiopiaService', () => {
 
   it('should add payment to queue', async () => {
     const dbQueryResult = [
-      { name: FspConfigurationEnum.username, value: '1234' },
-      { name: FspConfigurationEnum.password, value: '1234' },
+      { name: FinancialServiceProviderConfigurationEnum.username, value: '1234' },
+      { name: FinancialServiceProviderConfigurationEnum.password, value: '1234' },
     ];
     const createQueryBuilder: any =
       generateMockCreateQueryBuilder(dbQueryResult);

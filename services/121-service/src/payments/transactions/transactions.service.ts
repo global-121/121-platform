@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { EventsService } from '../../events/events.service';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../../financial-service-provider/financial-service-provider.entity';
 import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
 import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
@@ -82,7 +82,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
-    fspName?: FspName,
+    fspName?: FinancialServiceProviderName,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
@@ -98,7 +98,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
-    fspName?: FspName,
+    fspName?: FinancialServiceProviderName,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')

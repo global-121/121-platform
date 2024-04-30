@@ -4,8 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspQuestionEntity } from './fsp-question.entity';
-import { FspController } from './fsp.controller';
-import { FspService } from './fsp.service';
+import { FinancialServiceProviderController } from './financial-service-provider.controller';
+import { FinancialServiceProviderService } from './financial-service-provider.service';
 
 @Module({
   imports: [
@@ -16,8 +16,8 @@ import { FspService } from './fsp.service';
       FspQuestionEntity,
     ]),
   ],
-  providers: [FspService],
-  controllers: [FspController],
-  exports: [FspService],
+  providers: [FinancialServiceProviderService],
+  controllers: [FinancialServiceProviderController],
+  exports: [FinancialServiceProviderService],
 })
-export class FspModule {}
+export class FinancialServiceProviderModule {}

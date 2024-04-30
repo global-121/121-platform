@@ -59,7 +59,7 @@ export class CreateFspAttributeDto extends UpdateFspAttributeDto {
   public readonly name: string;
 }
 
-export class UpdateFspDto {
+export class UpdateFinancialServiceProviderDto {
   @ApiProperty({
     example: { en: 'FSP PA-app display name', nl: 'FSP PA-app weergavenaam' },
   })
