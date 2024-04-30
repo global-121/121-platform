@@ -35,7 +35,7 @@
 **Install Playwright dependecies**
 
 ```shell
-cd /121-platform/E2E
+cd /121-platform/e2e
 ```
 Then:
 ```shell
