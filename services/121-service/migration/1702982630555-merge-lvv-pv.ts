@@ -244,6 +244,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
       FROM "121-service".program_question
       WHERE name = 'phoneNumber' and "programId" = 2
     `);
+    // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
     const programPv = fs.readFileSync(
       'seed-data/program/program-nlrc-pv.json',
       'utf8',
@@ -304,6 +305,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
 
     // // update first name question to full name
     // const fs = require('fs');
+    // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
     const programPv = fs.readFileSync(
       'seed-data/program/program-nlrc-pv.json',
       'utf8',

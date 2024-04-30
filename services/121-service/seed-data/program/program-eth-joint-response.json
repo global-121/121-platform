@@ -18,7 +18,7 @@
   "currency": "ETB",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 1.0,
+  "fixedTransferValue": 1,
   "financialServiceProviders": [
     {
       "fsp": "Commercial-bank-ethiopia"
@@ -35,7 +35,7 @@
     {
       "name": "fullname",
       "label": {
-        "en": "What is your first name?"
+        "en": "First name"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -44,15 +44,12 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "First name"
-      }
+      "editableInPortal": true
     },
     {
       "name": "gender",
       "label": {
-        "en": "4. What is your gender?"
+        "en": "Gender"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -76,10 +73,7 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "Gender"
-      }
+      "editableInPortal": true
     }
   ],
   "aboutProgram": {

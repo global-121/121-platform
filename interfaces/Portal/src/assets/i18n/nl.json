@@ -60,7 +60,6 @@
         "registered": "Aangemeld",
         "registeredWhileNoLongerEligible": "Aangemeld maar komt niet meer in aanmerking",
         "rejected": "Afgewezen",
-        "startedRegistration": "Registratie gestart",
         "validated": "Goedgekeurd"
       }
     },
@@ -250,7 +249,6 @@
           "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
           "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
           "rejected": "Hulpvragers die zijn afgewezen. <br> Ze zullen geen betalingen (meer) ontvangen voor de volgende betalings-/uitbetalingsronde.",
-          "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
           "validated": "Hulpvragers die zijn goedgekeurd."
         },
         "timeframe": {
