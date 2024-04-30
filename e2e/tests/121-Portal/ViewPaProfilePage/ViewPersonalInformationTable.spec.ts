@@ -1,3 +1,4 @@
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
@@ -39,7 +40,7 @@ test('[27492] View Personal information table', async ({ page }) => {
   const helpers = new Helpers();
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.openPAsForRegistrationOcwProgram('NLRC OCW program');
+    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePaApp.en);
   });
 
   await test.step('Should open first uploaded PA', async () => {
