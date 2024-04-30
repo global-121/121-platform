@@ -1,8 +1,4 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { EventAttributeEntity } from '../src/events/entities/event-attribute.entity';
-import { EventEntity } from '../src/events/entities/event.entity';
-import { EventAttributeKeyEnum } from '../src/events/enum/event-attribute-key.enum';
-import { EventEnum } from '../src/events/enum/event.enum';
 
 export class MigrateStatusesToDeclined1713422095087
   implements MigrationInterface
@@ -30,8 +26,6 @@ export class MigrateStatusesToDeclined1713422095087
     queryRunner: QueryRunner,
   ): Promise<void> {
     console.time('migrateStatusChanges');
-    const manager = queryRunner.manager;
-    const eventRepo = manager.getRepository(EventEntity);
     const adminUser = await queryRunner.query(
       `SELECT * FROM "121-service"."user" WHERE admin = true AND username LIKE '%admin%' ORDER BY id LIMIT 1`,
     );
@@ -40,27 +34,49 @@ export class MigrateStatusesToDeclined1713422095087
       `SELECT * FROM "121-service"."registration" WHERE "registrationStatus" IN ('inclusionEnded', 'rejected', 'noLongerEligible')`,
     );
 
-    const events = registrationsToChange.map((registration: any) => {
-      const event = new EventEntity();
-      event.userId = adminUser[0]?.id ? adminUser[0].id : 1;
-      event.registrationId = registration.id;
-      event.type = EventEnum.registrationStatusChange;
-      event.attributes = [];
+    const adminUserId = adminUser[0]?.id ? adminUser[0].id : 1;
+    await Promise.all(
+      registrationsToChange.map(async (registration: any) => {
+        const insertedId = await queryRunner.query(
+          `INSERT INTO "121-service".event(created, updated, "userId", type, "registrationId") VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+          [
+            'NOW()',
+            'NOW()',
+            adminUserId,
+            'registrationStatusChange',
+            registration.id,
+          ],
+        );
 
-      const attributeOldValue = new EventAttributeEntity();
-      attributeOldValue.key = EventAttributeKeyEnum.oldValue;
-      attributeOldValue.value = registration.registrationStatus;
-      event.attributes.push(attributeOldValue);
+        await queryRunner.query(
+          `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
+          ['NOW()', 'NOW()', insertedId[0].id, 'newValue', 'declined'],
+        );
 
-      const attributeNewValue = new EventAttributeEntity();
-      attributeNewValue.key = EventAttributeKeyEnum.newValue;
-      attributeNewValue.value = 'declined';
-      event.attributes.push(attributeNewValue);
+        await queryRunner.query(
+          `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
+          [
+            'NOW()',
+            'NOW()',
+            insertedId[0].id,
+            'oldValue',
+            registration.registrationStatus,
+          ],
+        );
 
-      return event;
-    });
+        await queryRunner.query(
+          `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
+          [
+            'NOW()',
+            'NOW()',
+            insertedId[0].id,
+            'reason',
+            'Status changed to declined by 121 team to simplify registration states',
+          ],
+        );
+      }),
+    );
 
-    await eventRepo.save(events, { chunk: 300 });
     console.timeEnd('migrateStatusChanges');
   }
 }
