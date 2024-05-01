@@ -209,10 +209,18 @@ export function sendMessage(
   referenceIds: string[],
   message?: string,
   messageTemplateKey?: string,
+  additionalQueryParam?: Record<string, string>,
 ): Promise<request.Response> {
-  const queryParams = {
-    ['filter.referenceId']: `$in:${referenceIds.join(',')}`,
-  };
+  const queryParams = {};
+  if (additionalQueryParam) {
+    for (const [key, value] of Object.entries(additionalQueryParam)) {
+      queryParams[key] = value;
+    }
+  }
+
+  if (referenceIds && referenceIds.length > 0) {
+    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+  }
 
   return getServer()
     .post(`/programs/${programId}/registrations/message`)

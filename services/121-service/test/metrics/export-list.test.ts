@@ -137,6 +137,36 @@ describe('Metric export list', () => {
     );
   });
 
+  it('should return all filtered registrations from 1 program using a filter and search query', async () => {
+    // Arrange
+    accessToken = await getAccessToken(); // gets admin access token
+
+    // Act
+    // 8 registrations in total are registered
+    // 4 registrations are in include in program PV
+    // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
+    // 1 of those 2 registrations has status registered
+    const getRegistrationsResponse = await getServer()
+      .get(`/programs/${PvProgramId}/metrics/export-list/all-people-affected`)
+      .set('Cookie', [accessToken])
+      .query({
+        ['filter.status']: `$ilike:registered`,
+        search: `011`,
+      })
+      .send();
+
+    // Assert
+    const data = getRegistrationsResponse.body.data;
+    expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
+    expect(data.length).toBe(1);
+
+    const exportRegistration = data[0];
+
+    expect(exportRegistration).toMatchObject(
+      createExportObject(registrationScopedGoesPv),
+    );
+  });
+
   it('should export in excel format', async () => {
     // Arrange
     const testScope = DebugScope.Zeeland;
