@@ -2,7 +2,7 @@ import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserService } from '../../user/user.service';

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as africastalking from 'africastalking';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { waitFor } from '../../../utils/waitFor.helper';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';

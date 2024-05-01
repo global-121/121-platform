@@ -1,5 +1,5 @@
-import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../../financial-service-provider/financial-service-provider.entity';
+import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
 import { ProgramFspConfigurationEntity } from '../fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../program.entity';

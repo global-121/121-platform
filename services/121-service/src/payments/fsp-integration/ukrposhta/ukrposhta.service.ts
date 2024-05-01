@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../../registration/registration.entity';

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { BulkImportResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';

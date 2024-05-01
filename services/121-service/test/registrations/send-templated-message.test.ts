@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';

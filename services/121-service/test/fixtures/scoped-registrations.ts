@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';

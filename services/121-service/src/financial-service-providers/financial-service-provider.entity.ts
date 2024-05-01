@@ -5,7 +5,7 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { Attribute } from '../registration/enum/custom-data-attributes';
-import { FinancialServiceProviderIntegrationType } from './enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FspQuestionEntity } from './fsp-question.entity';
 
 @Entity('financial_service_provider')

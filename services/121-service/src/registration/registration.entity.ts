@@ -20,7 +20,7 @@ import {
 } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
 import { EventEntity } from '../events/entities/event.entity';
-import { FinancialServiceProviderEntity } from '../financial-service-provider/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { LatestMessageEntity } from '../notifications/latest-message.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';

@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import { GenericAttributes } from '../enum/custom-data-attributes';

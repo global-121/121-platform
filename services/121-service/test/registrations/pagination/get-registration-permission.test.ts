@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
 import { PermissionEnum } from '../../../src/user/enum/permission.enum';

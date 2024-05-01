@@ -19,15 +19,15 @@ import {
   UpdateFspAttributeDto,
 } from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FinancialServiceProviderService } from './financial-service-provider.service';
+import { FinancialServiceProvidersService } from './financial-service-provider.service';
 import { FspQuestionEntity } from './fsp-question.entity';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')
 @Controller('financial-service-providers')
-export class FinancialServiceProviderController {
+export class FinancialServiceProvidersController {
   public constructor(
-    private readonly fspService: FinancialServiceProviderService,
+    private readonly fspService: FinancialServiceProvidersService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })

@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';

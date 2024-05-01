@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';

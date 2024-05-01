@@ -3,9 +3,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { ActionsModule } from '../actions/actions.module';
-import { FinancialServiceProviderEntity } from '../financial-service-provider/financial-service-provider.entity';
-import { FinancialServiceProviderModule } from '../financial-service-provider/financial-service-provider.module';
-import { FspQuestionEntity } from '../financial-service-provider/fsp-question.entity';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProvidersModule } from '../financial-service-providers/financial-service-provider.module';
+import { FspQuestionEntity } from '../financial-service-providers/fsp-question.entity';
 import { KoboConnectModule } from '../kobo-connect/kobo-connect.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
@@ -32,7 +32,7 @@ import { ProgramService } from './programs.service';
     ]),
     ActionsModule,
     UserModule,
-    FinancialServiceProviderModule,
+    FinancialServiceProvidersModule,
     HttpModule,
     LookupModule,
     UserModule,

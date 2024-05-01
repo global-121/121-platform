@@ -1,5 +1,5 @@
 import fspIntersolveJson from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
-import { FinancialServiceProviderName } from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { waitForMessagesToComplete } from '../helpers/program.helper';

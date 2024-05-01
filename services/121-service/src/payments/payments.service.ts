@@ -4,8 +4,8 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionsService } from '../actions/actions.service';
-import { FinancialServiceProviderIntegrationType } from '../financial-service-provider/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviderName } from '../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../programs/program.entity';
 import {
   BulkActionResultPaymentDto,

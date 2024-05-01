@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { FinancialServiceProviderName } from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '../../src/programs/dto/update-program.dto';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { assertObjectsAreEqual } from '../helpers/assert.helper';

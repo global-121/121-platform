@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserService } from '../../user/user.service';

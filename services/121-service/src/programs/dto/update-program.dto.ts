@@ -11,7 +11,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 

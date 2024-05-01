@@ -11,7 +11,7 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { FspQuestionEntity } from './fsp-question.entity';
 
 @Injectable()
-export class FinancialServiceProviderService {
+export class FinancialServiceProvidersService {
   @InjectRepository(FinancialServiceProviderEntity)
   private financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)

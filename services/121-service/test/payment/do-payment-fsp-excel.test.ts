@@ -3,7 +3,7 @@ import programTest from '../../seed-data/program/program-test.json';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
+} from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportStatus } from '../../src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';

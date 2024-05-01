@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',

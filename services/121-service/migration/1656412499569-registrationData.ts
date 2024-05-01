@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { FspQuestionEntity } from '../src/financial-service-provider/fsp-question.entity';
+import { FspQuestionEntity } from '../src/financial-service-providers/fsp-question.entity';
 import { InstanceEntity } from '../src/instance/instance.entity';
 import { MonitoringQuestionEntity } from '../src/instance/monitoring-question.entity';
 import { ProgramEntity } from '../src/programs/program.entity';

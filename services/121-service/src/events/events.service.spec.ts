@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { FinancialServiceProviderName } from '../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';

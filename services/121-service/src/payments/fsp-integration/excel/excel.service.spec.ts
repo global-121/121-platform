@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionsService } from '../../../payments/transactions/transactions.service';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationViewEntity } from '../../../registration/registration-view.entity';

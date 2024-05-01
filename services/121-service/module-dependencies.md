@@ -5,7 +5,7 @@ graph LR
   CronjobModule-->ExchangeRateModule
   MessageTemplateModule-->ProgramAttributesModule
   ProgramModule-->ActionsModule
-  ProgramModule-->FinancialServiceProviderModule
+  ProgramModule-->FinancialServiceProvidersModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
@@ -36,7 +36,7 @@ graph LR
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
-  RegistrationsModule-->FinancialServiceProviderModule
+  RegistrationsModule-->FinancialServiceProvidersModule
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule

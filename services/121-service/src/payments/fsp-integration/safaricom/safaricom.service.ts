@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../../config';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaTransactionResultDto } from '../../../payments/dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';

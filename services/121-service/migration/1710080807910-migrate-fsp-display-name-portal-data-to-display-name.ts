@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { FinancialServiceProviderEntity } from '../src/financial-service-provider/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../src/financial-service-providers/financial-service-provider.entity';
 
 export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
   implements MigrationInterface

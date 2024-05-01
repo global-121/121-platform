@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';

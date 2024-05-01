@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../../financial-service-provider/enum/financial-service-provider-name.enum';
+} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageProcessType } from '../../../notifications/message-job.dto';

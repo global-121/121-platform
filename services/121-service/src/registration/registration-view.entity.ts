@@ -8,7 +8,7 @@ import {
   ViewColumn,
   ViewEntity,
 } from 'typeorm';
-import { FinancialServiceProviderName } from '../financial-service-provider/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { LanguageEnum } from './enum/language.enum';

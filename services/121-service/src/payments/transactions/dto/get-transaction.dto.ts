@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FinancialServiceProviderIntegrationType } from '../../../financial-service-provider/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderIntegrationType } from '../../../financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { UserOwnerDto } from '../../../user/dto/user-owner.dto';
 
