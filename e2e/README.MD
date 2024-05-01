@@ -37,10 +37,13 @@
 ```shell
 cd /121-platform/e2e
 ```
+
 Then:
+
 ```shell
 npm install
 ```
+
 **Install missing dependencies**
 
 ## Enviromental variables
@@ -50,7 +53,13 @@ Base Url, Azure Token and test users data are stored in .env file.
 ### Run tests via console
 
 ```shell
-npx playwright test
+npm test
+```
+
+Or run them in "headed" mode (you can see the browser)
+
+```shell
+npm test -- --headed
 ```
 
  <h2>
