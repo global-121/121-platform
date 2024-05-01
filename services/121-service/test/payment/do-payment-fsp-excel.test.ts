@@ -1,9 +1,9 @@
 /* eslint-disable jest/no-conditional-expect */
 import programTest from '../../seed-data/program/program-test.json';
 import {
-  FspConfigurationEnum,
-  FspName,
-} from '../../src/fsp/enum/fsp-name.enum';
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
 import { ImportStatus } from '../../src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
@@ -124,9 +124,9 @@ describe('Do payment with Excel FSP', () => {
     it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
       // Arrange
       const configValue = programTest.financialServiceProviders
-        .find((fsp) => fsp.fsp === FspName.excel)
+        .find((fsp) => fsp.fsp === FinancialServiceProviderName.excel)
         .configuration.find(
-          (c) => c.name === FspConfigurationEnum.columnsToExport,
+          (c) => c.name === FinancialServiceProviderConfigurationEnum.columnsToExport,
         );
       const columns = Array.isArray(configValue.value)
         ? [...configValue.value, 'amount']
@@ -198,7 +198,7 @@ describe('Do payment with Excel FSP', () => {
         accessToken,
       );
       const columnsToExportFspConfigRecord = fspConfig.body.find(
-        (c) => c.name === FspConfigurationEnum.columnsToExport,
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.columnsToExport,
       );
       await deleteFspConfiguration(
         programIdWesteros,

@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-provider/enum/financial-service-provider-name.enum';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
@@ -29,7 +29,7 @@ describe('Do payment to 1 PA', () => {
     firstName: 'John',
     lastName: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FspName.intersolveJumboPhysical,
+    fspName: FinancialServiceProviderName.intersolveJumboPhysical,
     whatsappPhoneNumber: '14155238886',
     addressStreet: 'Teststraat',
     addressHouseNumber: '1',
