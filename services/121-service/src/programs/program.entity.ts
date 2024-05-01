@@ -10,7 +10,6 @@ import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { InstanceEntity } from '../instance/instance.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attributes } from '../registration/dto/update-registration.dto';
