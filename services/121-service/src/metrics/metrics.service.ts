@@ -309,9 +309,6 @@ export class MetricsService {
   private async getUnusedVouchers(programId?: number): Promise<FileDto> {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
-    for (const v of unusedVouchers) {
-      delete v.referenceId;
-    }
 
     const response = {
       fileName: ExportType.unusedVouchers,
