@@ -554,7 +554,6 @@ export class RegistrationsPaginationService {
         'programQuestionId',
         'fspQuestionId',
         'programCustomAttributeId',
-        'monitoringQuestionId',
       ];
       for (const property of propertiesToCheck) {
         if (

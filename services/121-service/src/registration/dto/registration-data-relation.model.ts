@@ -1,7 +1,6 @@
 export class RegistrationDataRelation {
   public programQuestionId?: number;
   public fspQuestionId?: number;
-  public monitoringQuestionId?: number;
   public programCustomAttributeId?: number;
 }
 

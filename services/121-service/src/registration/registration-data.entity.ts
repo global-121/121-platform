@@ -21,10 +21,6 @@ import { RegistrationEntity } from './registration.entity';
   'registrationId',
   'programCustomAttributeId',
 ])
-@Unique('registrationMonitoringQuestionUnique', [
-  'registrationId',
-  'monitoringQuestionId',
-])
 @Entity('registration_data')
 export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne((_type) => RegistrationEntity, (registration) => registration.data)
@@ -61,15 +57,6 @@ export class RegistrationDataEntity extends Base121Entity {
   @Column({ nullable: true })
   public programCustomAttributeId: number;
 
-  @ManyToOne(
-    (_type) => MonitoringQuestionEntity,
-    (monitoringQuestion) => monitoringQuestion.registrationData,
-  )
-  @JoinColumn({ name: 'monitoringQuestionId' })
-  public monitoringQuestion: MonitoringQuestionEntity;
-  @Column({ nullable: true })
-  public monitoringQuestionId: number;
-
   @Index()
   @Column()
   public value: string;
@@ -78,12 +65,7 @@ export class RegistrationDataEntity extends Base121Entity {
     const repo = AppDataSource.getRepository(RegistrationDataEntity);
     const dataWithRelations = await repo.findOne({
       where: { id: this.id },
-      relations: [
-        'programQuestion',
-        'fspQuestion',
-        'programCustomAttribute',
-        'monitoringQuestion',
-      ],
+      relations: ['programQuestion', 'fspQuestion', 'programCustomAttribute'],
     });
     if (dataWithRelations.programQuestion) {
       return dataWithRelations.programQuestion.name;
@@ -93,9 +75,6 @@ export class RegistrationDataEntity extends Base121Entity {
     }
     if (dataWithRelations.programCustomAttribute) {
       return dataWithRelations.programCustomAttribute.name;
-    }
-    if (dataWithRelations.monitoringQuestion) {
-      return dataWithRelations.monitoringQuestion.name;
     }
   }
 }
