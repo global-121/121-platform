@@ -51,6 +51,9 @@ Below is a list of other guidelines we try to follow for PRs.
   - If the author wishes for the PR not to be merged after review, this must be explicitly stated in the PR description.
 - PRs must be up-to-date with their target branch before being merged. Preferably, through the means of a rebase. (Currently not enforced but soon to become the default).
 - Only the PR author can make changes to their PR/branch. If a reviewer wants changes to be made, they request changes via a review.
+  - As an exception to this rule, a reviewer who has just approved a PR can decide to rebase the branch via the GitHub UI if
+    - the author has enabled auto-merge and
+    - a branch update (without conflicts) is the only thing stopping the auto-merge
 - For substantial changes, we prefer creating a "parent/feature" PR which receives multiple smaller PRs. For the parent PR and all the smaller child PRs, all the general guidelines apply.
 
 Some useful reading:
