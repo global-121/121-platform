@@ -56,7 +56,6 @@ export enum QuestionType {
   programQuestion = 'programQuestion',
   fspQuestion = 'fspQuestion',
   programCustomAttribute = 'programCustomAttribute',
-  monitoringQuestion = 'monitoringQuestion',
 }
 
 export enum AnswerTypes {

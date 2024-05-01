@@ -14,38 +14,5 @@
   "contactDetails": {
     "en": "If you have any questions you can contact:<br>Achrafieh: +961 81 232 710<br>Batroun: +961 70 169 265",
     "ar": "إذا كان لديك أي أسئلة ، يمكنكم الاتصال بـ : الأشرفية: 710 232 81 961+ البترون: 265 169 70 961+ "
-  },
-  "monitoringQuestion": {
-    "intro": {
-      "en": "To improve this digital registration process, please answer this last question:   <br><br>   I did this registration...",
-      "ar": "لتحسين عملية التسجيل الإلكترونية، الرجاء الإجابة عن السؤال التالي: <br><br> لقد قمت بهذا التسجيل..."
-    },
-    "options": [
-      {
-        "option": "no-help",
-        "label": {
-          "en": "without help",
-          "ar": "دون مساعدة"
-        }
-      },
-      {
-        "option": "some-help",
-        "label": {
-          "en": "with a little bit of help",
-          "ar": "مع قليل من المساعدة"
-        }
-      },
-      {
-        "option": "lot-of-help",
-        "label": {
-          "en": "with a lot of help",
-          "ar": "احتجت الكثير من المساعدة"
-        }
-      }
-    ],
-    "conclusion": {
-      "en": "Thank you for the feedback.",
-      "ar": "شكراً على مشاركتنا برأيك."
-    }
   }
 }

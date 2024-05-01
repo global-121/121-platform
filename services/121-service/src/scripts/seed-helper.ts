@@ -149,9 +149,6 @@ export class SeedHelper {
     const instanceRepository = this.dataSource.getRepository(InstanceEntity);
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
-    if (instance.monitoringQuestion) {
-      instance.monitoringQuestion.name = 'monitoringAnswer';
-    }
     await instanceRepository.save(instance);
   }
 
