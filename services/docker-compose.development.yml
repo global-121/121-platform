@@ -29,6 +29,7 @@ services:
     volumes:
       - 'mock_service_node_modules:/home/node/app/node_modules'
       - './mock-service:/home/node/app'
+    restart: unless-stopped
 
 volumes:
   121_service_node_modules:
