@@ -90,7 +90,7 @@ export class BulkActionsService {
         ProgramPhase.inclusion,
         ProgramPhase.payment,
       ],
-      showIfNoValidation: false,
+      showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
       },
