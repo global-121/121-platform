@@ -53,10 +53,6 @@ export class ProgramReturnDto {
   @IsNotEmpty()
   public readonly titlePortal: JSON;
 
-  @ApiProperty({ example: { en: 'title' } })
-  @IsNotEmpty()
-  public readonly titlePaApp: JSON;
-
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description?: JSON;

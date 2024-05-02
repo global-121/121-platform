@@ -39,10 +39,6 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly titlePortal: JSON;
 
-  @ApiProperty({ example: { en: 'title' } })
-  @IsOptional()
-  public readonly titlePaApp: JSON;
-
   @ApiProperty()
   @IsOptional()
   @IsString()

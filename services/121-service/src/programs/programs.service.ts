@@ -236,7 +236,6 @@ export class ProgramService {
     program.location = programData.location;
     program.ngo = programData.ngo;
     program.titlePortal = programData.titlePortal;
-    program.titlePaApp = programData.titlePaApp;
     program.description = programData.description;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -415,7 +414,6 @@ export class ProgramService {
       location: program.location,
       ngo: program.ngo,
       titlePortal: program.titlePortal,
-      titlePaApp: program.titlePaApp,
       description: program.description,
       startDate: program.startDate,
       endDate: program.endDate,

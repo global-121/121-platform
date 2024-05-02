@@ -32,7 +32,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
 
   await test.step('Should display correct amount of runnig projects and open PAs for registration', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {

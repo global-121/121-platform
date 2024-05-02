@@ -35,7 +35,7 @@ test('[27492] View Personal information table', async ({ page }) => {
   const helpers = new Helpers();
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Should open first uploaded PA', async () => {

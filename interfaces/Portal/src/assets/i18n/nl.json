@@ -244,7 +244,7 @@
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
           "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
           "invited": "Hulpvragers die zijn uitgenodigd (na import).",
-          "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
+          "registered": "Hulpvragers die hun registratie hebben voltooid.",
           "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
           "validated": "Hulpvragers die zijn goedgekeurd."
         },
