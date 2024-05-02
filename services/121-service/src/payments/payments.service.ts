@@ -611,6 +611,11 @@ export class PaymentsService {
     }
 
     if (paLists.intersolveVisaPaPayment.length) {
+      // TODO: REFACTOR: Pretend like there's only referenceIds in paLists.intersolveVisaPaPayment so move getPaPaymentDetails in sendPayment to this service
+      // TODO: REFACTOR: Get brandcode & coverLetterCode
+      // TODO: REFACTOR: Map PA data, brancode, coverLetterCode to FSP specific DTO
+      // TODO: REFACTOR: See Miro for how the DTO will look like
+
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
         programId,

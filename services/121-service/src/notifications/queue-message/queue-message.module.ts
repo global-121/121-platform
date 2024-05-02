@@ -82,4 +82,5 @@ import { QueueMessageService } from './queue-message.service';
   controllers: [],
   exports: [QueueMessageService, BullModule],
 })
+// TODO: REFACTOR: Rename to MessageQueuesModule
 export class QueueMessageModule {}
