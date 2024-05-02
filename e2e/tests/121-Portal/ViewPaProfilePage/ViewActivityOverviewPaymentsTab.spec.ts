@@ -36,7 +36,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
     await table.selectTable('Payment');
-    await table.clickOnPaNumber(1);
+    await table.clickOnPaNumber(2);
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
