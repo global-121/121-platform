@@ -4,25 +4,18 @@ import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/Registration
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
-import { expect, test } from '@playwright/test';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  // Reset the DB to the required state
-  const response = await resetDB(SeedScript.nlrcMultiple);
-  expect(response.status).toBe(202);
-  // Upload registration from the file
-  const programIdOcw = 3;
-  const accessToken = await getAccessToken();
-  await importRegistrationsCSV(
-    programIdOcw,
-    './fixtures/test-registrations-OCW.csv',
-    accessToken,
-  );
+  await resetDB(SeedScript.nlrcMultiple);
+  const programIdOCW = 3;
+  const OcwProgramId = programIdOCW;
+
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');
@@ -39,7 +32,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
 
   await test.step('Should display correct amount of runnig projects and open PAs for registration', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {

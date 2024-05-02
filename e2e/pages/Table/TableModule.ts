@@ -158,13 +158,7 @@ class TableModule {
     }
   }
 
-  async validateQuickFilterResultsNumber(
-    expectedNumber: number,
-    preferedLanguage: string,
-  ) {
-    await this.verifiyProfilePersonalnformationTableRight(1, {
-      preferredLanguage: preferedLanguage,
-    });
+  async validateQuickFilterResultsNumber(expectedNumber: number) {
     const textLocator = this.page
       .locator(this.textLabel)
       .filter({ hasText: 'Filtered recipients:' });
