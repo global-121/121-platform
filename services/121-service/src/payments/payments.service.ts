@@ -168,9 +168,11 @@ export class PaymentsService {
       await this.checkPaymentInProgressAndThrow(programId);
     }
 
+    // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
 
+    // Fill bulkActionResultDto with meta data of the payment being done
     const bulkActionResultDto =
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
@@ -178,6 +180,7 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
+    // TODO: What is happening here? In which situation(s) does !amount evaluate to TRUE and what happens then?
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -186,6 +189,7 @@ export class PaymentsService {
       };
     }
 
+    // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(
         programId,
@@ -193,6 +197,7 @@ export class PaymentsService {
         paginateQuery,
       );
 
+    // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
     const fspsInPayment = [];
@@ -207,17 +212,21 @@ export class PaymentsService {
         fspsInPayment.push(registration.financialServiceProvider);
       }
     }
+
+    // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
       fspsInPayment: fspsInPayment,
     };
 
+    // Create an array of referenceIds to be paid
     const referenceIds = registrationsForPayment.map(
       (registration) => registration.referenceId,
     );
 
     if (!dryRun && referenceIds.length > 0) {
+      // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment(
         userId,
         programId,
@@ -288,11 +297,14 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
+    // Split the referenceIds into chunks of 1000, to prevent heap out of memory errors
     const BATCH_SIZE = 1000;
     const paymentChunks = splitArrayIntoChunks(referenceIds, BATCH_SIZE);
 
     let paymentTransactionResult = 0;
     for (const chunk of paymentChunks) {
+      // TODO: REFACTOR: Registration and related data was already retrieved in postPayment, why first strip it down to referenceids and then retrieve it again?
+      // Get the PA data for the payment
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,
@@ -384,6 +396,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
   ): Promise<number> {
+    // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
     await this.makePaymentRequest(paLists, programId, payment);
@@ -391,6 +404,7 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
+  // TODO: REFACTOR: This method can be private
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
@@ -438,6 +452,7 @@ export class PaymentsService {
       programId,
       AdditionalActionType.paymentStarted,
     );
+    // TODO: REFACTOR: Use the Redis way of determining if a payment is in progress, see function this.checkFspQueueProgress
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
@@ -564,6 +579,7 @@ export class PaymentsService {
     };
   }
 
+  // TODO: REFACTOR: This method does not make payment requests, but results in jobs added to queues. Rename to reflect this.
   private async makePaymentRequest(
     paLists: any,
     programId: number,
