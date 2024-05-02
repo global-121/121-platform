@@ -9,9 +9,12 @@ on:
       - '.github/workflows/test_e2e.yml'
       - 'e2e/**'
       - 'services/.env.example'
-      - 'services/121-service/**'
-      - 'services/mock-service/**'
+      - 'services/**'
+      - '!services/**.test.ts'
+      - '!services/**.spec.ts'
       - 'interfaces/Portal/**'
+      - '!interfaces/Portal/**.test.ts'
+      - '!interfaces/Portal/**.spec.ts'
       - '!**.md'
 
 env:
