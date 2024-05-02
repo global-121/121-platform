@@ -25,7 +25,6 @@ export class MigrateStatusesToDeclined1713422095087
   private async migrateRegistrationsStatus(
     queryRunner: QueryRunner,
   ): Promise<void> {
-    console.time('migrateStatusChanges');
     const adminUser = await queryRunner.query(
       `SELECT * FROM "121-service"."user" WHERE admin = true AND username LIKE '%admin%' ORDER BY id LIMIT 1`,
     );
@@ -63,20 +62,7 @@ export class MigrateStatusesToDeclined1713422095087
             registration.registrationStatus,
           ],
         );
-
-        await queryRunner.query(
-          `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
-          [
-            'NOW()',
-            'NOW()',
-            insertedId[0].id,
-            'reason',
-            'Status changed to declined by 121 team to simplify registration states',
-          ],
-        );
       }),
     );
-
-    console.timeEnd('migrateStatusChanges');
   }
 }
