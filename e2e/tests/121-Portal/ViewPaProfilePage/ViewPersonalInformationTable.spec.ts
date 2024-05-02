@@ -1,3 +1,4 @@
+import jumboFspTranslations from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -10,7 +11,6 @@ import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '../../../pages/Table/TableModule';
-import jumboFspTranslations from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json'
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
