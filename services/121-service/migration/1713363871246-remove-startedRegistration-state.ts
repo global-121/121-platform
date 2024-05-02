@@ -21,6 +21,9 @@ export class RemoveStartedRegistrationState1713363871246
     await queryRunner.query(`DELETE FROM "121-service".registration_data WHERE "registrationId" IN
       (SELECT "id" FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}')`);
 
+    await queryRunner.query(`DELETE FROM "121-service".note WHERE "registrationId" IN
+      (SELECT "id" FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}')`);
+
     await queryRunner.query(
       `DELETE FROM "121-service"."registration" WHERE "registrationStatus" = '${registrationStatus}'`,
     );
