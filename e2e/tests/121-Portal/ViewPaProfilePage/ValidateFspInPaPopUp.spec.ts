@@ -1,3 +1,4 @@
+import visaFspIntersolve from '@121-service/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-pv.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
@@ -49,6 +50,8 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
     await registration.validatePaProfileOpened();
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
-    await registration.validateFspNamePresentInEditPopUp('Visa debit card');
+    await registration.validateFspNamePresentInEditPopUp(
+      visaFspIntersolve.displayName.en,
+    );
   });
 });

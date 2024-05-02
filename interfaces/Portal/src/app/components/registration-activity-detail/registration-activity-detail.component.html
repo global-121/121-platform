@@ -14,7 +14,7 @@
       class="activity-detail--header util--flex-row ion-justify-content-between ion-align-items-baseline"
     >
       <span>
-        <strong>
+        <strong data-testid="activity-detail-message-title">
           {{ activity.label }}
           <span *ngIf="activity.subLabel"> - {{ activity.subLabel }}</span>
         </strong>
