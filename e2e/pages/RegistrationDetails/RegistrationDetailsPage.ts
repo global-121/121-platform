@@ -22,11 +22,13 @@ class RegistrationDetails {
   financialServiceProviderDropdown = 'app-update-fsp #select-label';
   debitCardPaTable = 'ion-card-title';
   debitCardStatus = 'ion-label';
-  tabButton = 'ion-button[fill="clear"][size="small"]';
-  historyTile = 'article';
-  historyTileText = 'span';
-  historyTileTimeStamp = 'time';
-  tileInformationPlaceHolder = 'strong';
+  tabButton = '[data-testid="activity-detail-tab-button"]';
+  historyTile = '[data-testid="activity-detail-tile"]';
+  historyTileTitle = '[data-testid="activity-detail-label"]';
+  historyTileUserName = '[data-testid="activity-detail-username"]';
+  historyTileTimeStamp = '[data-testid="activity-detail-date"]';
+  tileInformationPlaceHolder = '[data-testid="activity-detail-change"]';
+  tileInformationStatus = '[data-testid="activity-detail-status"]';
 
   constructor(page: Page) {
     this.page = page;
@@ -173,13 +175,13 @@ class RegistrationDetails {
     expect(await historyTile.isVisible()).toBe(true);
     expect(
       await historyTile
-        .locator(this.historyTileText)
+        .locator(this.historyTileTitle)
         .filter({ hasText: changeTitle })
         .textContent(),
     ).toContain(changeTitle);
     expect(
       await historyTile
-        .locator(this.historyTileText)
+        .locator(this.historyTileUserName)
         .filter({ hasText: userName })
         .textContent(),
     ).toContain(userName);
@@ -218,15 +220,24 @@ class RegistrationDetails {
     userName: string,
     date: string,
   ) {
-    await expect(
-      this.page.locator(this.historyTileText).filter({
-        hasText: `${paymentLabel} #${paymentNumber} ${statusLabel}`,
-      }),
-    ).toBeVisible();
-    await this.page.getByTitle(userName).click();
+    const historyTile = this.page.locator(this.historyTile).nth(0);
+    const paymentLocator = this.page.locator(this.historyTileTitle).filter({
+      hasText: `${paymentLabel} #${paymentNumber}`,
+    });
+    const statusLocator = this.page.locator(this.tileInformationStatus).filter({
+      hasText: statusLabel,
+    });
+    const timeStampLocator = this.page.locator(this.historyTileTimeStamp);
+
+    expect(await paymentLocator.textContent()).toContain(paymentLabel);
+    expect(await statusLocator.textContent()).toContain(statusLabel);
     expect(
-      await this.page.locator(this.historyTileTimeStamp).textContent(),
-    ).toContain(date);
+      await historyTile
+        .locator(this.historyTileUserName)
+        .filter({ hasText: userName })
+        .textContent(),
+    ).toContain(userName);
+    expect(await timeStampLocator.textContent()).toContain(date);
   }
 }
 
