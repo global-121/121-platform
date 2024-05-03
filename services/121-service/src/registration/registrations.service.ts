@@ -391,6 +391,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
+    if (!program?.published) {
+      const errors =
+        'Registrations are not allowed for this program yet, try again later.';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
