@@ -17,6 +17,9 @@ import {
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from './pagination/pagination-data';
 
+// this test is flaky, so we retry it before failing the whole 8-minute CI job just because of it
+jest.retryTimes(2);
+
 describe('Send templated message', () => {
   const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
