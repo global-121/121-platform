@@ -156,7 +156,7 @@
       "portalTitle": "Portal",
       "sso": {
         "btn-text": "Log in via SSO",
-        "label": "121 uses Single Sign-On (SSO) to securely authenticate and log you in to the portal. Click on the button to log in via SSO."
+        "label": "121 Portal uses Single Sign-On (SSO) to securely authenticate and log in all (121 & Redline) users."
       }
     },
     "program": {

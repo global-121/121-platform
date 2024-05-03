@@ -2,8 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
-import { CURRENT_USER_ENDPOINT_PATH } from '../auth/auth.service';
 import { UserRole } from '../auth/user-role.enum';
+import { ApiPath } from '../enums/api-path.enum';
 import { FilterOperator, FilterParameter } from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
@@ -45,7 +45,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/users/login',
+        ApiPath.usersLogin,
         {
           username,
           password,
@@ -95,7 +95,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
       null,
-      false,
       params,
     );
   }
@@ -262,7 +261,6 @@ export class ProgramsServiceApiService {
         referenceId,
         text: note,
       },
-      false,
     );
   }
 
@@ -660,7 +658,6 @@ export class ProgramsServiceApiService {
       },
       false,
       false,
-      false,
       params,
     );
   }
@@ -1015,8 +1012,7 @@ export class ProgramsServiceApiService {
   public async getCurrentUser(): Promise<{ user: User }> {
     return this.apiService.get(
       environment.url_121_service_api,
-      CURRENT_USER_ENDPOINT_PATH,
-      false,
+      ApiPath.usersCurrent,
     );
   }
 

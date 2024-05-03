@@ -52,176 +52,169 @@
             </small>
           </ng-container>
         </ion-item>
-        <div class="ion-padding auth-form-container">
+        <div
+          class="ion-padding auth-form-container"
+          *ngIf="!useSso"
+        >
           <form
             method="POST"
             #loginForm="ngForm"
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
           >
-            <ng-container *ngIf="!showSsoLogin()">
-              <div class="auth-item ion-margin-bottom email-field">
-                <label
-                  color="medium"
-                  class="auth-label"
-                  (click)="emailInput.setFocus()"
-                >
-                  {{ 'page.login.form.email.label' | translate }}
-                </label>
-                <div>
-                  <ion-input
-                    #emailInput
-                    type="email"
-                    inputmode="email"
-                    autocomplete="username email"
-                    autocapitalize="off"
-                    autofocus="true"
-                    clearInput="true"
-                    required
-                    name="email"
-                    [(ngModel)]="email"
-                    ngDefaultControl
-                    pattern=".+@.+\.[a-z]+"
-                    minlength="4"
-                    class="ion-margin-vertical"
-                    [ngClass]="{
-                      'invalid-border': showLoginFail.email || invalidEmail
-                    }"
-                    (ionBlur)="onEmailBlur()"
-                    fill="outline"
-                  ></ion-input>
-                </div>
-                <div class="validation-message">
-                  <ion-text
-                    *ngIf="invalidEmail"
-                    color="danger"
-                  >
-                    <small>
-                      <strong>
-                        {{
-                          'page.login.form.error-messages.invalid-email'
-                            | translate
-                        }}
-                      </strong>
-                    </small>
-                  </ion-text>
-                </div>
-              </div>
-              <div
-                class="auth-item ion-margin-bottom ion-padding-bottom password-field"
+            <div class="auth-item ion-margin-bottom email-field">
+              <label
+                color="medium"
+                class="auth-label"
+                (click)="emailInput.setFocus()"
               >
-                <label
-                  color="medium"
-                  class="auth-label"
-                  (click)="passwordInput.setFocus()"
-                >
-                  {{ 'page.login.form.password.label' | translate }}
-                </label>
-                <ion-item
-                  class="ion-no-padding"
-                  lines="none"
+                {{ 'page.login.form.email.label' | translate }}
+              </label>
+              <div>
+                <ion-input
+                  #emailInput
+                  type="email"
+                  inputmode="email"
+                  autocomplete="username email"
+                  autocapitalize="off"
+                  autofocus="true"
+                  clearInput="true"
+                  required
+                  name="email"
+                  [(ngModel)]="email"
+                  ngDefaultControl
+                  pattern=".+@.+\.[a-z]+"
+                  minlength="4"
+                  class="ion-margin-vertical"
                   [ngClass]="{
-                    'invalid-border': showLoginFail.password || emptyPassword
+                    'invalid-border': showLoginFail.email || invalidEmail
                   }"
+                  (ionBlur)="onEmailBlur()"
+                  fill="outline"
+                ></ion-input>
+              </div>
+              <div class="validation-message">
+                <ion-text
+                  *ngIf="invalidEmail"
+                  color="danger"
                 >
-                  <ion-row>
-                    <ion-input
-                      #passwordInput
-                      [type]="inputType"
-                      autocomplete="current-password"
-                      autocapitalize="off"
-                      clearInput="false"
-                      clearOnEdit="false"
-                      required
-                      name="password"
-                      [(ngModel)]="password"
-                      ngDefaultControl
-                      class="ion-margin-vertical"
-                      (ionBlur)="onPasswordBlur()"
-                      fill="outline"
-                    >
-                    </ion-input>
-                    <ion-button
-                      type="button"
-                      color="secondary"
-                      fill="clear"
-                      size="small"
-                      (click)="toggleInputType()"
-                      [title]="isPassword() ? this.labelShow : this.labelHide"
-                      [attr.aria-label]="
-                        isPassword() ? this.labelShow : this.labelHide
-                      "
-                      style="position: absolute; inset-inline-end: 0"
-                      class="ion-align-self-center"
-                    >
-                      <ion-icon
-                        *ngIf="isPassword()"
-                        slot="icon-only"
-                        name="eye"
-                        aria-hidden="true"
-                      ></ion-icon>
-                      <ion-icon
-                        *ngIf="!isPassword()"
-                        slot="icon-only"
-                        name="eye-off"
-                        aria-hidden="true"
-                      ></ion-icon>
-                    </ion-button>
-                  </ion-row>
-                </ion-item>
-                <div class="validation-message">
-                  <ion-text
-                    *ngIf="emptyPassword"
-                    color="danger"
+                  <small>
+                    <strong>
+                      {{
+                        'page.login.form.error-messages.invalid-email'
+                          | translate
+                      }}
+                    </strong>
+                  </small>
+                </ion-text>
+              </div>
+            </div>
+            <div
+              class="auth-item ion-margin-bottom ion-padding-bottom password-field"
+            >
+              <label
+                color="medium"
+                class="auth-label"
+                (click)="passwordInput.setFocus()"
+              >
+                {{ 'page.login.form.password.label' | translate }}
+              </label>
+              <ion-item
+                class="ion-no-padding"
+                lines="none"
+                [ngClass]="{
+                  'invalid-border': showLoginFail.password || emptyPassword
+                }"
+              >
+                <ion-row>
+                  <ion-input
+                    #passwordInput
+                    [type]="inputType"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="false"
+                    clearOnEdit="false"
+                    required
+                    name="password"
+                    [(ngModel)]="password"
+                    ngDefaultControl
+                    class="ion-margin-vertical"
+                    (ionBlur)="onPasswordBlur()"
+                    fill="outline"
                   >
-                    <small>
-                      <strong>
-                        {{
-                          'page.login.form.error-messages.empty-password'
-                            | translate
-                        }}
-                      </strong>
-                    </small>
-                  </ion-text>
-                </div>
-              </div>
-
-              <div class="ion-margin-top ion-no-padding">
-                <ion-button
-                  type="submit"
-                  expand="block"
-                  [disabled]="!loginForm?.form?.valid"
-                  class="auth-button"
-                  color="primary"
+                  </ion-input>
+                  <ion-button
+                    type="button"
+                    color="secondary"
+                    fill="clear"
+                    size="small"
+                    (click)="toggleInputType()"
+                    [title]="isPassword() ? this.labelShow : this.labelHide"
+                    [attr.aria-label]="
+                      isPassword() ? this.labelShow : this.labelHide
+                    "
+                    style="position: absolute; inset-inline-end: 0"
+                    class="ion-align-self-center"
+                  >
+                    <ion-icon
+                      *ngIf="isPassword()"
+                      slot="icon-only"
+                      name="eye"
+                      aria-hidden="true"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngIf="!isPassword()"
+                      slot="icon-only"
+                      name="eye-off"
+                      aria-hidden="true"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-row>
+              </ion-item>
+              <div class="validation-message">
+                <ion-text
+                  *ngIf="emptyPassword"
+                  color="danger"
                 >
-                  {{ 'page.login.form.submit.label' | translate }}
-                </ion-button>
+                  <small>
+                    <strong>
+                      {{
+                        'page.login.form.error-messages.empty-password'
+                          | translate
+                      }}
+                    </strong>
+                  </small>
+                </ion-text>
               </div>
-            </ng-container>
+            </div>
+
+            <div class="ion-margin-top ion-no-padding">
+              <ion-button
+                type="submit"
+                expand="block"
+                [disabled]="!loginForm?.form?.valid"
+                color="primary"
+              >
+                {{ 'page.login.form.submit.label' | translate }}
+              </ion-button>
+            </div>
           </form>
-          <ng-container *ngIf="showSsoLogin()">
-            <ion-label class="ion-margin-bottom">{{
-              'page.login.sso.label' | translate
-            }}</ion-label>
-            <br /><br /><br />
+        </div>
+        <div
+          class="ion-padding auth-form-container"
+          *ngIf="useSso"
+        >
+          <form>
+            <p>{{ 'page.login.sso.label' | translate }}</p>
+            <br />
             <ion-button
-              expand="block"
-              class="auth-button"
-              color="primary"
               (click)="loginSso()"
+              expand="block"
+              color="primary"
             >
               {{ 'page.login.sso.btn-text' | translate }}
             </ion-button>
-            <br />
-            <ion-note
-              >Redline users:
-              <span
-                class="clickable"
-                (click)="openAzurePopup()"
-                >click here</span
-              ></ion-note
-            >
-          </ng-container>
+          </form>
         </div>
       </div>
     </ion-row>

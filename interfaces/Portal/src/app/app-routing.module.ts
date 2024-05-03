@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { AppRoutes } from './app-routes.enum';
 import { AuthGuard } from './auth/auth.guard';
 import { ProgramPhase } from './models/program.model';
@@ -21,6 +22,7 @@ const routes: Routes = [
       import('./auth/entra-callback/entra-callback.component').then(
         (m) => m.EntraCallbackComponent,
       ),
+    canActivate: [() => !!environment.use_sso_azure_entra],
   },
   {
     path: AppRoutes.user,

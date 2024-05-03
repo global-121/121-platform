@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver';
+import { getFullISODate } from './utils/get-iso-date.util';
 
 export function arrayToCsv(array: any[]): string {
   if (array.length === 0) {
@@ -25,6 +26,6 @@ export function downloadAsCsv(array: any[], filename: string): void {
     new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), csvFileString], {
       type: 'text/csv;charset=utf-8',
     }),
-    `${filename}-${new Date().toISOString().substring(0, 10)}.csv`,
+    `${filename}-${getFullISODate(new Date())}.csv`,
   );
 }

@@ -27,6 +27,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
+import { CookieNames } from '../shared/enum/cookie.enums';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -194,7 +195,7 @@ export class UserController {
       return res.send({
         username: loginResponse.userRo.user.username,
         permissions: loginResponse.userRo.user.permissions,
-        access_token_general: loginResponse.token,
+        [CookieNames.general]: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
         isEntraUser: loginResponse.userRo.user.isEntraUser,

@@ -5,7 +5,7 @@ export class User {
   permissions: {
     [programId: number]: Permission[];
   };
-  expires: string;
+  expires?: string;
   isAdmin?: boolean;
   isEntraUser?: boolean;
 }

@@ -10,7 +10,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {
   MsalBroadcastService,
-  MsalGuard,
   MsalModule,
   MsalService,
 } from '@azure/msal-angular';
@@ -28,13 +27,15 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
+import { AppRoutes } from './app-routes.enum';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LOGIN_ENDPOINT_PATH } from './auth/auth.service';
+import { ApiPath } from './enums/api-path.enum';
 import { AzureSsoExpireInterceptor } from './interceptors/azure-sso-expire.interceptor';
 import { MsalSkipInterceptor } from './interceptors/msal-skip.interceptor';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoggingService } from './services/logging.service';
+import { isIframed } from './shared/utils/is-iframed.util';
 
 export function appInitializerFactory(
   translate: TranslateService,
@@ -72,6 +73,24 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/');
 }
 
+let ssoInterceptors = [];
+
+// Only configure/load SSO dependencies when necessary
+if (environment.use_sso_azure_entra) {
+  ssoInterceptors = [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalSkipInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AzureSsoExpireInterceptor,
+      multi: true,
+    },
+  ];
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -92,35 +111,38 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.useServiceWorker && environment.production,
     }),
+    // See: https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/msal-angular-v3.0.12/lib/msal-angular/docs/initialization.md
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {
           clientId: environment.azure_ad_client_id,
           authority: `https://${environment.azure_ad_tenant_id}.ciamlogin.com/${environment.azure_ad_tenant_id}/v2.0`,
-          redirectUri: `${window.location.origin}/auth`,
-          postLogoutRedirectUri: `${window.location.origin}/login`,
+          redirectUri: `${window.location.origin}/${AppRoutes.auth}`,
+          postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
           navigateToLoginRequestUrl: false,
         },
         cache: {
           cacheLocation: BrowserCacheLocation.LocalStorage,
         },
         system: {
+          allowRedirectInIframe: false,
           loggerOptions: {
-            loggerCallback: (level, message, containsPii) => {
-              console.log(
-                'MSAL Logging: ',
-                LogLevel[level],
-                message,
-                containsPii,
-              );
+            loggerCallback: (_level, message, containsPii) => {
+              if (!environment.use_sso_azure_entra) {
+                return;
+              }
+              console.log(`${containsPii ? '👤' : '🌐'}`, message);
             },
-            piiLoggingEnabled: true,
-            logLevel: LogLevel.Info,
+            piiLoggingEnabled: !environment.production,
+            // TODO: Log level should be lower then "Info"(So `LogLevel.Warning`) in production; but keep it noisy/verbose for now.
+            logLevel: environment.use_sso_azure_entra ? LogLevel.Info : null,
           },
         },
       }),
       {
-        interactionType: InteractionType.Redirect,
+        interactionType: isIframed()
+          ? InteractionType.Popup
+          : InteractionType.Redirect,
       },
       {
         protectedResourceMap: new Map([
@@ -129,14 +151,16 @@ export function HttpLoaderFactory(http: HttpClient) {
             ['openid, offline_access, User.read'],
           ],
           // list open endpoints here first, without scopes
-          [`${environment.url_121_service_api}${LOGIN_ENDPOINT_PATH}`, null],
+          [`${environment.url_121_service_api}${ApiPath.usersLogin}`, null],
           // then catch all other protected endpoints with this wildcard
           [
             `${environment.url_121_service_api}/*`,
             [`api://${environment.azure_ad_client_id}/User.read`],
           ],
         ]),
-        interactionType: InteractionType.Redirect,
+        interactionType: isIframed()
+          ? InteractionType.Popup
+          : InteractionType.Redirect,
       },
     ),
   ],
@@ -154,18 +178,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
     ErrorHandlerService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalSkipInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AzureSsoExpireInterceptor,
-      multi: true,
-    },
+    ...ssoInterceptors,
     MsalService,
-    MsalGuard,
     MsalBroadcastService,
   ],
   bootstrap: [AppComponent],
