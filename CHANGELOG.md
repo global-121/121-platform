@@ -5,14 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.116.13...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.117.0...main)
+
+---
+
+## [1.117.0](https://github.com/global-121/121-platform/compare/v1.116.13...v1.117.0)- 2024-05-03
 
 ### Removed
 
 - PA-App interface code and all related references
 - AW-App interface code and all related references
 
----
+### Changed
+
+- Refactored SSO to improve Redline integration
 
 ## [1.116.13](https://github.com/global-121/121-platform/compare/v1.116.12...v1.116.13)- 2024-04-29
 
