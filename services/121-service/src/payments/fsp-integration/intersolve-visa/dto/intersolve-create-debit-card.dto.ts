@@ -24,6 +24,7 @@ export class IntersolveCreateDebitCardDto {
     year: number;
   };
   public pinStatus: 'D';
+  public coverLetterCode: string;
 }
 
 export class IntersolveCreateDebitCardResponseDto {
