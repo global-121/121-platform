@@ -214,6 +214,7 @@ export class PaymentsService {
     }
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
+    // TODO: REFACTOR: The definition of this DTO should live in its own file.
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
@@ -611,11 +612,13 @@ export class PaymentsService {
     }
 
     if (paLists.intersolveVisaPaPayment.length) {
-      // TODO: REFACTOR: Pretend like there's only referenceIds in paLists.intersolveVisaPaPayment so move getPaPaymentDetails in sendPayment to this service
-      // TODO: REFACTOR: Get brandcode & coverLetterCode
-      // TODO: REFACTOR: Map PA data, brancode, coverLetterCode to FSP specific DTO
-      // TODO: REFACTOR: See Miro for how the DTO will look like
-
+      /* TODO: REFACTOR: 
+         - Pretend like there's only referenceIds in paLists.intersolveVisaPaPayment so move getPaPaymentDetails in sendPayment to this service
+         - Get brandcode & coverLetterCode from ProgramFinancialServiceProvidersModule
+         - Add amount as attribute to this function makePaymentRequest
+         - Map PA data, brandcode, coverLetterCode to FSP specific DTO: CreateIntersolveVisaTransferJobDto, see Miro for how the DTO will look like
+         - Call to be created TransferQueues.addIntersolveVisaTransferJobs(createIntersolveVisaTransferJobDto[])
+      */
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
         programId,
