@@ -6,19 +6,5 @@
     "es": "Demo NGO",
     "fr": "NGO Démo",
     "nl": "Demo NGO"
-  },
-  "dataPolicy": {
-    "ar": "[نص سياسة البيانات]",
-    "en": "[text of data-policy]",
-    "es": "[texto de la política de datos]",
-    "fr": "[texte de la politique de données]",
-    "nl": "[tekst van gegevensbeleid]"
-  },
-  "contactDetails": {
-    "ar": "تواصل معنا عبر الواتساب : <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>",
-    "en": "Contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>",
-    "es": "Contáctanos vía WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>",
-    "fr": "Contactez-nous via WhatsApp : <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>",
-    "nl": "Neem contact met ons op via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>"
   }
 }

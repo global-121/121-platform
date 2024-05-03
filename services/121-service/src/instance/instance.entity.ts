@@ -12,16 +12,4 @@ export class InstanceEntity extends Base121Entity {
   @Column('json')
   @ApiProperty({ example: { en: 'display name' } })
   public displayName: JSON;
-
-  @Column('json', { nullable: true, default: null })
-  @ApiProperty({ example: { en: 'logoURL' } })
-  public logoUrl: JSON;
-
-  @Column('json', { nullable: true, default: null })
-  @ApiProperty({ example: { en: 'data policy' } })
-  public dataPolicy: JSON;
-
-  @Column('json', { nullable: true, default: null })
-  @ApiProperty({ example: { en: 'contact details' } })
-  public contactDetails: JSON;
 }
