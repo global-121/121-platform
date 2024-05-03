@@ -6,7 +6,7 @@ import {
   registrationScopedGoesPv,
   registrationScopedUtrechtPv,
 } from '../fixtures/scoped-registrations';
-import { patchProgram } from '../helpers/program.helper';
+import { patchProgram, unpublishProgram } from '../helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
   importRegistrations,
@@ -56,6 +56,25 @@ describe('Import a registration', () => {
         expect(registration[key]).toBe(registrationVisa[key]);
       }
     }
+  });
+
+  it('should fail import registrations due to program is not published yet', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+
+    // unpublish a program
+    await unpublishProgram(programIdOCW, accessToken);
+
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.errors).toBe(
+      `Registrations are not allowed for this program yet, try again later.`,
+    );
   });
 
   it('should import registration scoped', async () => {

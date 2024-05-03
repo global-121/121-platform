@@ -76,6 +76,18 @@ export async function publishProgram(
     .send({ phase: 'registrationValidation' });
 }
 
+export async function unpublishProgram(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}`)
+    .set('Cookie', [accessToken])
+    .send({
+      published: false,
+    });
+}
+
 export async function changePhase(
   programId: number,
   newPhase: ProgramPhase,
