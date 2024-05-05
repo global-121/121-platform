@@ -43,6 +43,10 @@
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "RC01"
         }
       ]
     }
