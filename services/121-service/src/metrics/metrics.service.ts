@@ -626,6 +626,9 @@ export class MetricsService {
       .andWhere('registration."registrationStatus" != :status', {
         status: RegistrationStatusEnum.rejected,
       })
+      .andWhere('registration."registrationStatus" != :deletedStatus', {
+        deletedStatus: RegistrationStatusEnum.deleted,
+      })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value');
