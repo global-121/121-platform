@@ -5,9 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.117.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.118.0...main)
 
 ---
+
+## [1.118.0](https://github.com/global-121/121-platform/compare/v1.117.0...v1.118.0)- 2024-05-06
+
+### Added
+
+- 'coverLetterCode' support for Intersolve Visa
+
+### Changed
+
+- Several statuses were merged into 'Declined'
+
+### Fixed
+
+- Deleted PA's are no longer included in a duplicates export
 
 ## [1.117.0](https://github.com/global-121/121-platform/compare/v1.116.13...v1.117.0)- 2024-05-03
 
