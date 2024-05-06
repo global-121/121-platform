@@ -624,7 +624,7 @@ export class MetricsService {
       .andWhere(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('registration."registrationStatus" != :status', {
-        status: RegistrationStatusEnum.rejected,
+        status: RegistrationStatusEnum.declined,
       })
       .andWhere('registration."registrationStatus" != :deletedStatus', {
         deletedStatus: RegistrationStatusEnum.deleted,

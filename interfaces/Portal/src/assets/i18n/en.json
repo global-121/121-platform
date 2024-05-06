@@ -25,15 +25,13 @@
         "default-reply": "Default reply",
         "generic-templated": "Message notification",
         "included": "Inclusion",
-        "inclusion-ended": "Inclusion ended",
         "invited": "Invitation for registration",
         "payment": "Payment",
         "payment-instructions": "Payment instructions",
         "payment-reminder": "Payment reminder",
         "payment-templated": "Payment notification",
         "payment-voucher": "Payment voucher",
-        "registered": "Registration",
-        "rejected": "Rejection"
+        "registered": "Registration"
       },
       "error-code-prefix": "Twilio error code:",
       "status": {
@@ -65,6 +63,7 @@
         "paused": "Paused",
         "registered": "Registered",
         "rejected": "Rejected",
+        "startedRegistration": "Created",
         "validated": "Validated"
       }
     },
@@ -349,24 +348,20 @@
         "actions": {
           "deletePa": "Delete PA",
           "doPayment": "Do payment #{{paymentNr}}",
-          "endInclusion": "End inclusion in program",
           "include": "Include in program",
           "markAsDeclined": "Mark as declined",
           "markAsValidated": "Mark as validated",
           "pause": "Pause PAs",
-          "reject": "Reject from program",
           "sendMessage": "Send Message to PAs"
         },
         "apply-action": "Apply action",
         "bulk-action-conditions": {
           "deletePa": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that do not have status <i>Included</i>.",
           "doPayment": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have not yet received the payment.",
-          "endInclusion": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i> or <i>Completed</i>.",
-          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Rejected</i>, <i>Inclusion Ended</i>, <i>Paused</i>, or <i>Completed</i>.",
+          "include": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Paused</i>, or <i>Completed</i>.",
           "markAsDeclined": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>.",
           "markAsValidated": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i> or <i>Validated</i>.",
           "pause": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Included</i>.",
-          "reject": "Note: The <strong>{{action}}</strong> action is only applicable to registrations with the status <i>Registered</i>, <i>Selected for Validation</i>, <i>Validated</i>, <i>Included</i>, <i>No Longer Eligible</i>, or <i>Registered While No Longer Eligible</i>.",
           "sendMessage": "Note: The <strong>{{action}}</strong> action is only applicable to registrations that have a phone number associated with them."
         },
         "bulk-action-response": {

@@ -417,14 +417,7 @@ export class CommercialBankEthiopiaService
         },
       )
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
-        statusValues: [
-          'deleted',
-          'inclusionEnded',
-          'reject',
-          'noLongerEligible',
-          'registeredWhileNoLongerEligible',
-          'paused',
-        ],
+        statusValues: ['deleted', 'paused'],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
@@ -495,14 +488,7 @@ export class CommercialBankEthiopiaService
           programId: programId,
         })
         .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
-          statusValues: [
-            'deleted',
-            'inclusionEnded',
-            'reject',
-            'noLongerEligible',
-            'registeredWhileNoLongerEligible',
-            'paused',
-          ],
+          statusValues: ['deleted', 'paused'],
         })
         .select([
           'registration.registrationProgramId as "registrationProgramId"',
