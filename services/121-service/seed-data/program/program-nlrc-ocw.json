@@ -46,7 +46,7 @@
         },
         {
           "name": "coverLetterCode",
-          "value": "RC01"
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
         }
       ]
     }
