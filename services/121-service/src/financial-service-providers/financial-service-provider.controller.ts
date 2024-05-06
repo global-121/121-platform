@@ -16,7 +16,7 @@ import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
 import {
   CreateFspAttributeDto,
   UpdateFinancialServiceProviderDto,
-  UpdateFspAttributeDto,
+  UpdateFinancialServiceProviderQuestionDto,
 } from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FinancialServiceProvidersService } from './financial-service-provider.service';
@@ -27,7 +27,7 @@ import { FspQuestionEntity } from './fsp-question.entity';
 @Controller('financial-service-providers')
 export class FinancialServiceProvidersController {
   public constructor(
-    private readonly fspService: FinancialServiceProvidersService,
+    private readonly financialServiceProvidersService: FinancialServiceProvidersService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -39,7 +39,7 @@ export class FinancialServiceProvidersController {
   })
   @Get()
   public async getAllFsps(): Promise<FinancialServiceProviderEntity[]> {
-    return await this.fspService.getAllFsps();
+    return await this.financialServiceProvidersService.getAllFinancialServiceProviders();
   }
 
   @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId.' })
@@ -54,7 +54,7 @@ export class FinancialServiceProvidersController {
     @Param('fspId', ParseIntPipe)
     fspId: number,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.getFspById(fspId);
+    return await this.financialServiceProvidersService.getById(fspId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -75,7 +75,10 @@ export class FinancialServiceProvidersController {
     fspId: number,
     @Body() updateFspDto: UpdateFinancialServiceProviderDto,
   ): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.updateFsp(fspId, updateFspDto);
+    return await this.financialServiceProvidersService.update(
+      fspId,
+      updateFspDto,
+    );
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -97,9 +100,9 @@ export class FinancialServiceProvidersController {
     @Param() params,
     @Param('fspId', ParseIntPipe)
     fspId: number,
-    @Body() updateFspAttributeDto: UpdateFspAttributeDto,
+    @Body() updateFspAttributeDto: UpdateFinancialServiceProviderQuestionDto,
   ): Promise<FspQuestionEntity> {
-    return await this.fspService.updateFspAttribute(
+    return await this.financialServiceProvidersService.updateFinancialServiceProviderQuestion(
       fspId,
       params.attributeName,
       updateFspAttributeDto,
@@ -128,7 +131,7 @@ export class FinancialServiceProvidersController {
     fspId: number,
     @Body() createFspAttributeDto: CreateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
-    return await this.fspService.createFspAttribute(
+    return await this.financialServiceProvidersService.createFspAttribute(
       fspId,
       createFspAttributeDto,
     );
@@ -153,7 +156,7 @@ export class FinancialServiceProvidersController {
     @Param('fspId', ParseIntPipe)
     fspId: number,
   ): Promise<FspQuestionEntity> {
-    return await this.fspService.deleteFspAttribute(
+    return await this.financialServiceProvidersService.deleteFspAttribute(
       fspId,
       params.attributeName,
     );

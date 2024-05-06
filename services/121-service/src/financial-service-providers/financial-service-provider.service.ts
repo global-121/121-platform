@@ -5,7 +5,7 @@ import { Attribute } from '../registration/enum/custom-data-attributes';
 import {
   CreateFspAttributeDto,
   UpdateFinancialServiceProviderDto,
-  UpdateFspAttributeDto,
+  UpdateFinancialServiceProviderQuestionDto,
 } from './dto/update-financial-service-provider.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspQuestionEntity } from './fsp-question.entity';
@@ -15,20 +15,24 @@ export class FinancialServiceProvidersService {
   @InjectRepository(FinancialServiceProviderEntity)
   private financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
-  public fspAttributeRepository: Repository<FspQuestionEntity>;
+  public financialServiceProviderQuestionRepository: Repository<FspQuestionEntity>;
 
-  public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { id: id },
-      relations: ['questions'],
-    });
-    if (fsp) {
-      fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
+  public async getById(id: number): Promise<FinancialServiceProviderEntity> {
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.findOne({
+        where: { id: id },
+        relations: ['questions'],
+      });
+    if (financialServiceProvider) {
+      financialServiceProvider.editableAttributes =
+        await this.getPaEditableAttributesFsp(financialServiceProvider.id);
     }
-    return fsp;
+    return financialServiceProvider;
   }
 
-  public async getAllFsps(): Promise<FinancialServiceProviderEntity[]> {
+  public async getAllFinancialServiceProviders(): Promise<
+    FinancialServiceProviderEntity[]
+  > {
     const fsps = await this.financialServiceProviderRepository.find({
       relations: ['questions'],
     });
@@ -38,10 +42,13 @@ export class FinancialServiceProvidersService {
     return fsps;
   }
 
-  private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
+  // TODO: REFACTOR: What does "PAEditable" mean? Are not all questions editable for...?
+  private async getPaEditableAttributesFsp(
+    financialServiceProviderId,
+  ): Promise<Attribute[]> {
     return (
-      await this.fspAttributeRepository.find({
-        where: { fspId: fspId },
+      await this.financialServiceProviderQuestionRepository.find({
+        where: { fspId: financialServiceProviderId },
       })
     ).map((c) => {
       return {
@@ -54,49 +61,55 @@ export class FinancialServiceProvidersService {
     });
   }
 
-  public async updateFsp(
-    fspId: number,
-    updateFspDto: UpdateFinancialServiceProviderDto,
+  public async update(
+    financialServiceProviderId: number,
+    updateFinancialServiceProvderDto: UpdateFinancialServiceProviderDto,
   ): Promise<FinancialServiceProviderEntity> {
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { id: fspId },
-    });
-    if (!fsp) {
-      const errors = `No fsp found with id ${fspId}`;
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.findOne({
+        where: { id: financialServiceProviderId },
+      });
+    if (!financialServiceProvider) {
+      const errors = `No fsp found with id ${financialServiceProviderId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (const key in updateFspDto) {
+    for (const key in updateFinancialServiceProvderDto) {
       if (key !== 'fsp') {
-        fsp[key] = updateFspDto[key];
+        financialServiceProvider[key] = updateFinancialServiceProvderDto[key];
       }
     }
 
-    await this.financialServiceProviderRepository.save(fsp);
-    return fsp;
+    await this.financialServiceProviderRepository.save(
+      financialServiceProvider,
+    );
+    return financialServiceProvider;
   }
 
-  public async updateFspAttribute(
-    fspId: number,
+  public async updateFinancialServiceProviderQuestion(
+    financialServiceProviderId: number,
     attributeName: string,
-    fspAttributeDto: UpdateFspAttributeDto,
+    updateQuestionDto: UpdateFinancialServiceProviderQuestionDto,
   ): Promise<FspQuestionEntity> {
-    const fspAttributes = await this.fspAttributeRepository.find({
-      where: { name: attributeName },
-      relations: ['fsp'],
-    });
+    const fspAttributes =
+      await this.financialServiceProviderQuestionRepository.find({
+        where: { name: attributeName },
+        relations: ['fsp'],
+      });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
-    const fspAttribute = fspAttributes.find((a) => a.fsp.id === fspId);
+    const fspAttribute = fspAttributes.find(
+      (a) => a.fsp.id === financialServiceProviderId,
+    );
     if (!fspAttribute) {
-      const errors = `No fspAttribute found with name ${attributeName} in fsp with id ${fspId}`;
+      const errors = `No fspAttribute found with name ${attributeName} in fsp with id ${financialServiceProviderId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (const key in fspAttributeDto) {
-      fspAttribute[key] = fspAttributeDto[key];
+    for (const key in updateQuestionDto) {
+      fspAttribute[key] = updateQuestionDto[key];
     }
 
-    await this.fspAttributeRepository.save(fspAttribute);
+    await this.financialServiceProviderQuestionRepository.save(fspAttribute);
     return fspAttribute;
   }
 
@@ -112,10 +125,11 @@ export class FinancialServiceProvidersService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const fspAttributes = await this.fspAttributeRepository.find({
-      where: { name: fspAttributeDto.name },
-      relations: ['fsp'],
-    });
+    const fspAttributes =
+      await this.financialServiceProviderQuestionRepository.find({
+        where: { name: fspAttributeDto.name },
+        relations: ['fsp'],
+      });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
     const oldFspAttribute = fspAttributes.find((a) => a.fsp.id === fspId);
     if (oldFspAttribute) {
@@ -127,7 +141,7 @@ export class FinancialServiceProvidersService {
       fspAttribute[key] = fspAttributeDto[key];
     }
     fspAttribute.fsp = fsp;
-    await this.fspAttributeRepository.save(fspAttribute);
+    await this.financialServiceProviderQuestionRepository.save(fspAttribute);
     return fspAttribute;
   }
 
@@ -135,14 +149,17 @@ export class FinancialServiceProvidersService {
     fspId: number,
     attributeName: string,
   ): Promise<FspQuestionEntity> {
-    const fspAttribute = await this.fspAttributeRepository.findOne({
-      where: { name: attributeName, fsp: { id: fspId } },
-      relations: ['fsp'],
-    });
+    const fspAttribute =
+      await this.financialServiceProviderQuestionRepository.findOne({
+        where: { name: attributeName, fsp: { id: fspId } },
+        relations: ['fsp'],
+      });
     if (!fspAttribute) {
       const errors = `Attribute with name: '${attributeName}' not found for fsp with id ${fspId}.'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return await this.fspAttributeRepository.remove(fspAttribute);
+    return await this.financialServiceProviderQuestionRepository.remove(
+      fspAttribute,
+    );
   }
 }
