@@ -99,23 +99,18 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
       return;
     }
 
-    const content = hasWaiting
-      ? paymentRow.errorMessage
-      : hasError
-        ? this.translate.instant(
-            'page.program.program-people-affected.payment-status-popup.error-message',
-          ) +
-          ': <strong>' +
-          paymentRow.errorMessage +
-          '</strong><br><br>' +
-          this.translate.instant(
-            'page.program.program-people-affected.payment-status-popup.fix-error',
-          )
-        : isSinglePayment
-          ? this.translate.instant(
-              'page.program.program-people-affected.payment-status-popup.single-payment.intro',
-            )
-          : null;
+    let content = null;
+
+    if (hasWaiting) {
+      content = paymentRow.errorMessage;
+    } else if (hasError) {
+      content = `${this.translate.instant('page.program.program-people-affected.payment-status-popup.error-message')}: <strong>${paymentRow.errorMessage}</strong>
+      ${this.canDoSinglePayment ? `<br><br>${this.translate.instant('page.program.program-people-affected.payment-status-popup.fix-error')}` : ''}`;
+    } else if (isSinglePayment) {
+      content = this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.single-payment.intro',
+      );
+    }
 
     if (
       this.canViewVouchers &&
