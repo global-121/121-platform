@@ -39,7 +39,7 @@ test.skip('[27614] Quick filter through available PAs and apply bulk action', as
   const homePage = new HomePage(page);
 
   await test.step('Should open popup to send message to correct amount of filtered PAs', async () => {
-    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePaApp.en);
+    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePortal.en);
     await table.quickFilter('succeed');
     // Really bad solution to tackle flickering issue of FE
     await page.waitForTimeout(5000);

@@ -8,10 +8,6 @@
     "en": "Dorcas-Tabitha cash aid program",
     "ar": "برنامج دوركاس طابيثا للمساعدات النقدية "
   },
-  "titlePaApp": {
-    "en": "Dorcas-Tabitha cash aid program",
-    "ar": "برنامج دوركاس طابيثا للمساعدات النقدية "
-  },
   "description": {
     "en": ""
   },
@@ -27,7 +23,6 @@
     }
   ],
   "targetNrRegistrations": 340,
-  "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {

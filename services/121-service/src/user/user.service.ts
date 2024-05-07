@@ -531,10 +531,6 @@ export class UserService {
     switch (originInterface) {
       case InterfaceNames.portal:
         return CookieNames.portal;
-      case InterfaceNames.awApp:
-        return CookieNames.awApp;
-      case InterfaceNames.paApp:
-        return CookieNames.paApp;
       default:
         return CookieNames.general;
     }

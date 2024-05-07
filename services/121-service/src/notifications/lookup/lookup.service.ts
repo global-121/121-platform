@@ -57,19 +57,16 @@ export class LookupService {
   }
 
   public sanitizePhoneNrExtra(phoneNumber: string): string {
-    // TODO: REFACTOR: Remove code that adds 31 to numbers starting with 06, as phone numbers in other countries can also start with 06 (problem that surfaces for South Africa). However, only after the PA App has been decomissioned, as it could be that PAs in the PV Program depend on this to work.
     const sanitizedPhoneNr =
       phoneNumber.substring(0, 2) == '00'
         ? phoneNumber.substring(2)
-        : phoneNumber.substring(0, 2) == '06'
-          ? '31' + phoneNumber
-          : phoneNumber.substring(0, 3) == '+00'
-            ? phoneNumber.substring(3)
-            : phoneNumber.substring(0, 2) == '+0'
-              ? phoneNumber.substring(2)
-              : phoneNumber.substring(0, 1) == '+'
-                ? phoneNumber.substring(1)
-                : phoneNumber;
+        : phoneNumber.substring(0, 3) == '+00'
+          ? phoneNumber.substring(3)
+          : phoneNumber.substring(0, 2) == '+0'
+            ? phoneNumber.substring(2)
+            : phoneNumber.substring(0, 1) == '+'
+              ? phoneNumber.substring(1)
+              : phoneNumber;
     return `+${sanitizedPhoneNr}`;
   }
 }

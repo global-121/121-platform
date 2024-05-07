@@ -7,10 +7,6 @@
   "titlePortal": {
     "en": "NLRC OCW program"
   },
-  "titlePaApp": {
-    "en": "NLRC OCW program",
-    "nl": "NLRC OCW programma"
-  },
   "description": {
     "en": ""
   },
@@ -53,7 +49,6 @@
   ],
   "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
-  "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {
       "name": "firstName",

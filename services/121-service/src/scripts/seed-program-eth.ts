@@ -178,7 +178,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationNotificationREAD,
           // PermissionEnum.RegistrationNotificationCREATE, // No sending messages
           PermissionEnum.RegistrationPersonalREAD,
-          // PermissionEnum.RegistrationPersonalForValidationREAD, // Needed for AW-app
           PermissionEnum.RegistrationPersonalEXPORT,
           // PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusIncludedUPDATE,

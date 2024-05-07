@@ -236,7 +236,6 @@ export class ProgramService {
     program.location = programData.location;
     program.ngo = programData.ngo;
     program.titlePortal = programData.titlePortal;
-    program.titlePaApp = programData.titlePaApp;
     program.description = programData.description;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -248,7 +247,6 @@ export class ProgramService {
       programData.paymentAmountMultiplierFormula;
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.aboutProgram = programData.aboutProgram;
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
@@ -415,7 +413,6 @@ export class ProgramService {
       location: program.location,
       ngo: program.ngo,
       titlePortal: program.titlePortal,
-      titlePaApp: program.titlePaApp,
       description: program.description,
       startDate: program.startDate,
       endDate: program.endDate,
@@ -435,7 +432,6 @@ export class ProgramService {
       targetNrRegistrations: program.targetNrRegistrations,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
       budget: program.budget,
-      phoneNumberPlaceholder: program.phoneNumberPlaceholder,
       programCustomAttributes: program.programCustomAttributes.map(
         (programCustomAttribute) => {
           return {

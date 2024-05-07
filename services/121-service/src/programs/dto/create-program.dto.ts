@@ -63,10 +63,6 @@ export class CreateProgramDto {
   @IsNotEmpty()
   public readonly titlePortal: JSON;
 
-  @ApiProperty({ example: { en: 'title' } })
-  @IsNotEmpty()
-  public readonly titlePaApp: JSON;
-
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description?: JSON;
@@ -130,10 +126,6 @@ export class CreateProgramDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
-
-  @ApiProperty({ example: '+000 000 00 00' })
-  @IsString()
-  public readonly phoneNumberPlaceholder: string;
 
   @ApiProperty({
     example: [
