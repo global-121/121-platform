@@ -146,7 +146,10 @@ if (environment.use_sso_azure_entra) {
       },
       {
         protectedResourceMap: new Map([
-          ['https://graph.microsoft.com/v1.0/me', ['openid, User.read']],
+          [
+            'https://graph.microsoft.com/v1.0/me',
+            ['openid, offline_access, User.read'],
+          ],
           // list open endpoints here first, without scopes
           [`${environment.url_121_service_api}${ApiPath.usersLogin}`, null],
           // then catch all other protected endpoints with this wildcard
