@@ -1,5 +1,5 @@
 {
-  "published": false,
+  "published": true,
   "validation": true,
   "phase": "design",
   "location": "Nederland",
@@ -53,6 +53,10 @@
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
         }
       ]
     },
@@ -71,9 +75,6 @@
   ],
   "targetNrRegistrations": 250,
   "tryWhatsAppFirst": true,
-  "meetingDocuments": {
-    "en": ""
-  },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {
@@ -90,14 +91,7 @@
     {
       "name": "fullName",
       "label": {
-        "ar": "الرجاء إدخال اسمك الكامل:",
-        "en": "Please enter your full name:",
-        "es": "Por favor introduzca su nombre completo:",
-        "fr": "Veuillez entrer votre nom complet:",
-        "in": "Silakan masukkan nama lengkap Anda:",
-        "nl": "Vul je volledige naam in:",
-        "pt_BR": "Por favor, digite seu nome completo:",
-        "tl": "Pakilagay ang iyong buong pangalan:"
+        "en": "Full Name"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -107,22 +101,12 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "Full Name"
-      }
+      "editableInPortal": true
     },
     {
       "name": "phoneNumber",
       "label": {
-        "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "es": "Por favor comparta el número de teléfono donde pueda recibir los mensajes te texto. Utilizaremos éste numero de teléfono para informarle del programa de ayuda. <br><br>Deberá lucir así: <code>+31 6 00 00 00 00</code>",
-        "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à: <code>+31 6 00 00 00 00</code>",
-        "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
-        "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
-        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -136,10 +120,7 @@
       "scoring": {},
       "duplicateCheck": true,
       "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "editableInPortal": false
     }
   ],
   "aboutProgram": {

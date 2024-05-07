@@ -51,10 +51,6 @@ export class RegistrationDataScopedQueryService {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
       );
-    } else if (relation.monitoringQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."monitoringQuestionId" = ${relation.monitoringQuestionId}`,
-      );
     } else if (relation.programCustomAttributeId) {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,

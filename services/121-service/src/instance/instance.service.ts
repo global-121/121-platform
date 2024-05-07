@@ -2,9 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { UpdateMonitoringQuestionDto } from './dto/update-monitoring-question.dto';
 import { InstanceEntity } from './instance.entity';
-import { MonitoringQuestionEntity } from './monitoring-question.entity';
 
 @Injectable()
 export class InstanceService {
@@ -12,9 +10,7 @@ export class InstanceService {
   private readonly instanceRepository: Repository<InstanceEntity>;
 
   public async getInstance(): Promise<InstanceEntity> {
-    const instances = await this.instanceRepository.find({
-      relations: ['monitoringQuestion'],
-    });
+    const instances = await this.instanceRepository.find();
     return instances[0];
   }
 
@@ -29,20 +25,6 @@ export class InstanceService {
 
     await this.instanceRepository.save(instance);
     return instance;
-  }
-
-  public async updateMonitoringQuestion(
-    updateMonitoringQuestion: UpdateMonitoringQuestionDto,
-  ): Promise<MonitoringQuestionEntity> {
-    const instance = await this.getInstanceOrThrow(['monitoringQuestion']);
-
-    for (const attribute in updateMonitoringQuestion) {
-      instance.monitoringQuestion[attribute] =
-        updateMonitoringQuestion[attribute];
-    }
-
-    const updatedInstance = await this.instanceRepository.save(instance);
-    return updatedInstance.monitoringQuestion;
   }
 
   private async getInstanceOrThrow(

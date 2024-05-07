@@ -131,11 +131,6 @@ export class CreateProgramDto {
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
 
-  @ApiProperty({
-    example: { en: 'Identity card;Health Insurance;Proof of children' },
-  })
-  public readonly meetingDocuments: JSON;
-
   @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   public readonly phoneNumberPlaceholder: string;
@@ -184,9 +179,6 @@ export class CreateProgramDto {
     example: [
       {
         name: 'nameFirst',
-        label: {
-          en: 'What is your first name?',
-        },
         answerType: 'text',
         questionType: 'standard',
         options: null,
@@ -195,15 +187,12 @@ export class CreateProgramDto {
         scoring: {},
         phases: [],
         editableInPortal: false,
-        shortLabel: {
+        label: {
           en: 'First Name',
         },
       },
       {
         name: 'nameLast',
-        label: {
-          en: 'What is your last name?',
-        },
         answerType: 'text',
         questionType: 'standard',
         options: null,
@@ -212,7 +201,7 @@ export class CreateProgramDto {
         scoring: {},
         phases: [],
         editableInPortal: false,
-        shortLabel: {
+        label: {
           en: 'Last Name',
         },
       },

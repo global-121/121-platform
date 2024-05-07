@@ -15,7 +15,6 @@ import { WhatsappPendingMessageEntity } from '../../notifications/whatsapp/whats
 import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
-import { PersonAffectedAppDataEntity } from '../../people-affected/person-affected-app-data.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
 import { AzureLogService } from '../../shared/services/azure-log.service';
@@ -38,8 +37,6 @@ export class RegistrationsBulkService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
-  @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(LatestMessageEntity)
   private readonly latestMessageRepository: Repository<LatestMessageEntity>;
   // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
@@ -496,18 +493,6 @@ export class RegistrationsBulkService {
 
     await this.registrationDataScopedRepository.deleteUnscoped({
       registrationId: In(registrationsIds),
-    });
-
-    const userIdsQueryResult = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoin('registration.user', 'user')
-      .select('user.id as userId')
-      .andWhere({ id: In(registrationsIds) })
-      .andWhere('user.id IS NOT NULL')
-      .getRawMany();
-    const userIds = userIdsQueryResult.map((u) => u.userId);
-    await this.personAffectedAppDataRepository.delete({
-      user: { id: In(userIds) },
     });
 
     await this.latestMessageRepository.delete({

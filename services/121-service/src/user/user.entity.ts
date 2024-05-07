@@ -12,7 +12,6 @@ import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { NoteEntity } from '../notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { UserType } from './user-type-enum';
 
@@ -47,12 +46,6 @@ export class UserEntity extends CascadeDeleteEntity {
   @OneToMany(() => RegistrationEntity, (registration) => registration.user)
   public registrations: RegistrationEntity[];
 
-  @OneToMany(
-    () => PersonAffectedAppDataEntity,
-    (personAffectedAppData) => personAffectedAppData.user,
-  )
-  public personAffectedAppData: PersonAffectedAppDataEntity[];
-
   @OneToMany(() => NoteEntity, (notes) => notes.user)
   public notes: NoteEntity[];
 
@@ -73,10 +66,6 @@ export class UserEntity extends CascadeDeleteEntity {
     await this.deleteAllOneToMany([
       {
         entityClass: RegistrationEntity,
-        columnName: 'user',
-      },
-      {
-        entityClass: PersonAffectedAppDataEntity,
         columnName: 'user',
       },
       {

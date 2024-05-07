@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
@@ -45,9 +46,11 @@ export class RecipientPage implements OnInit, OnDestroy {
     );
   }
   async ngOnInit(): Promise<void> {
-    // If there is no phone number provided by Redline, it will not do an API call.
-    // And thus this is needed to do an API call always for the 'automatic' logout on a 401 to work.
-    await this.authService.processAzureAuthSuccess(false);
+    // If there is no phone number provided by Redline, it will not do an API call, so check 'manually' instead
+    // TODO: This check should happen (in a generic way) on all pages, not just this one
+    if (environment.use_sso_azure_entra) {
+      await this.authService.processAzureAuthSuccess();
+    }
   }
 
   ngOnDestroy(): void {

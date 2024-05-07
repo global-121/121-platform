@@ -16,7 +16,6 @@ describe('User mapper', () => {
       programAssignments: [],
       actions: [],
       registrations: [],
-      personAffectedAppData: [],
       notes: [],
       userType: UserType.aidWorker,
       admin: false,

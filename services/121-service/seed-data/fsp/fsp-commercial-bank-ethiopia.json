@@ -8,7 +8,7 @@
     {
       "name": "bankAccountNumber",
       "label": {
-        "en": "What is your CBE bank account number?"
+        "en": "Bank Account Number"
       },
       "placeholder": {
         "en": "Please type your bank account number"
@@ -17,10 +17,7 @@
       "answerType": "text",
       "pattern": ".+",
       "phases": ["registrationValidation", "inclusion", "payment"],
-      "options": null,
-      "shortLabel": {
-        "en": "Bank Account Number"
-      }
+      "options": null
     }
   ]
 }

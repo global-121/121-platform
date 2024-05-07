@@ -7,7 +7,9 @@ env:
 
 permissions:
   actions: read
-  pull-requests: write
+  # Disabling this to avoid spamming the PR with "Your stage site is ready!" comments
+  # https://github.com/Azure/static-web-apps/issues/1135#issuecomment-1750066331
+  # pull-requests: write
 
 on:
   workflow_call:
@@ -53,7 +55,7 @@ jobs:
           envContentSecurityPolicy: >-
             connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
             form-action https://test.121.global;
-            frame-src blob: 'self' https://app.powerbi.com;
+            frame-src blob: 'self' https://app.powerbi.com https://*.ciamlogin.com;
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'test'
@@ -65,7 +67,6 @@ jobs:
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
-          URL_PORTAL: 'https://portal.test.121.global'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig

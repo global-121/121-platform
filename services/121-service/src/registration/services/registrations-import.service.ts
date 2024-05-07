@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '../../actions/action.entity';
-import { ActionService } from '../../actions/action.service';
+import { ActionsService } from '../../actions/actions.service';
 import { EventsService } from '../../events/events.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
@@ -52,7 +52,7 @@ export class RegistrationsImportService {
   private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
-    private readonly actionService: ActionService,
+    private readonly actionService: ActionsService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly fileImportService: FileImportService,

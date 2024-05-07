@@ -45,7 +45,6 @@ export class Attribute {
   public name: string;
   public type: string;
   public label: object;
-  public shortLabel?: object;
   public options?: JSON;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
   public fspNames?: FspName[];
@@ -57,7 +56,6 @@ export enum QuestionType {
   programQuestion = 'programQuestion',
   fspQuestion = 'fspQuestion',
   programCustomAttribute = 'programCustomAttribute',
-  monitoringQuestion = 'monitoringQuestion',
 }
 
 export enum AnswerTypes {

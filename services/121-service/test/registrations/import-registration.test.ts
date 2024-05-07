@@ -6,8 +6,9 @@ import {
   registrationScopedGoesPv,
   registrationScopedUtrechtPv,
 } from '../fixtures/scoped-registrations';
-import { patchProgram } from '../helpers/program.helper';
+import { patchProgram, unpublishProgram } from '../helpers/program.helper';
 import {
+  getImportRegistrationsTemplate,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
@@ -55,6 +56,25 @@ describe('Import a registration', () => {
         expect(registration[key]).toBe(registrationVisa[key]);
       }
     }
+  });
+
+  it('should fail import registrations due to program is not published yet', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+
+    // unpublish a program
+    await unpublishProgram(programIdOCW, accessToken);
+
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.errors).toBe(
+      `Registrations are not allowed for this program yet, try again later.`,
+    );
   });
 
   it('should import registration scoped', async () => {
@@ -117,19 +137,20 @@ describe('Import a registration', () => {
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
-    registrationVisa.phoneNumber = '';
+    const registrationVisaCopy = { ...registrationVisa };
+    delete registrationVisaCopy.phoneNumber;
 
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisa],
+      [registrationVisaCopy],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       programIdOCW,
       accessToken,
     );
@@ -141,6 +162,8 @@ describe('Import a registration', () => {
   it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
     accessToken = await getAccessToken();
+    const registrationVisaCopy = { ...registrationVisa };
+    delete registrationVisaCopy.phoneNumber;
     const programUpdate = {
       allowEmptyPhoneNumber: true,
     };
@@ -149,28 +172,37 @@ describe('Import a registration', () => {
     // Act
     const response = await importRegistrations(
       programIdOCW,
-      [registrationVisa],
+      [registrationVisaCopy],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       programIdOCW,
       accessToken,
     );
     const registration = result.body.data[0];
-    for (const key in registrationVisa) {
+    for (const key in registrationVisaCopy) {
       if (key === 'fspName') {
         // eslint-disable-next-line jest/no-conditional-expect
         expect(registration['financialServiceProvider']).toBe(
-          registrationVisa[key],
+          registrationVisaCopy[key],
         );
       } else {
         // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisa[key]);
+        expect(registration[key]).toBe(registrationVisaCopy[key]);
       }
     }
+  });
+
+  it('should give me a CSV template when I request it', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+
+    const response = await getImportRegistrationsTemplate(programIdOCW);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.sort()).toMatchSnapshot();
   });
 });

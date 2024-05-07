@@ -10,7 +10,6 @@ import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { InstanceEntity } from '../instance/instance.entity';
 import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attributes } from '../registration/dto/update-registration.dto';
@@ -74,9 +73,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   public targetNrRegistrations: number;
-
-  @Column('json', { nullable: true })
-  public meetingDocuments: JSON;
 
   @Column({ nullable: true })
   public phoneNumberPlaceholder: string;
@@ -250,25 +246,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .select('"programCustomAttribute".type', 'type')
       .getRawOne();
 
-    const repoInstance = AppDataSource.getRepository(InstanceEntity);
-    const resultMonitoringQuestion = await repoInstance
-      .createQueryBuilder('instance')
-      .leftJoin('instance.monitoringQuestion', 'question')
-      .andWhere('question.name = :name', { name: name })
-      .select('"question".options', 'options')
-      .getRawOne();
-
-    if (resultMonitoringQuestion) {
-      resultMonitoringQuestion.type = resultMonitoringQuestion.options
-        ? AnswerTypes.dropdown
-        : undefined;
-    }
-
     if (
       Number(!!resultProgramQuestion) +
         Number(!!resultFspQuestion) +
-        Number(!!resultProgramCustomAttribute) +
-        Number(!!resultMonitoringQuestion) >
+        Number(!!resultProgramCustomAttribute) >
       1
     ) {
       throw new Error(
@@ -290,11 +271,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
     ) {
       return {
         type: resultProgramCustomAttribute.type as CustomAttributeType,
-      };
-    } else if (resultMonitoringQuestion && resultMonitoringQuestion.type) {
-      return {
-        type: resultMonitoringQuestion.type,
-        options: resultMonitoringQuestion.options,
       };
     } else {
       return new ValidationInfo();

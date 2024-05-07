@@ -111,7 +111,7 @@ describe('RegistrationBulkService', () => {
           paginateQuery,
           programId,
           null,
-          RegistrationStatusEnum.startedRegistration,
+          'randomNotDefinedStatus',
           false,
         ),
       ).rejects.toHaveProperty('status', 404);

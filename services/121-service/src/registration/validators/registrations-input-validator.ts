@@ -137,11 +137,12 @@ export class RegistrationsInputValidator {
       }
       importRecord.referenceId = row.referenceId;
 
-      const errorObj = this.validatePhoneNumber(row, i, validationConfig);
+      const errorObj = this.validatePhoneNumberEmpty(row, i, validationConfig);
       if (errorObj) {
         errors.push(errorObj);
+      } else {
+        importRecord.phoneNumber = row.phoneNumber ? row.phoneNumber : ''; // If the phone number is empty use an empty string
       }
-      importRecord.phoneNumber = row.phoneNumber;
 
       /*
        * =============================================
@@ -156,23 +157,34 @@ export class RegistrationsInputValidator {
 
       await Promise.all(
         dynamicAttributesForFsp.map(async (att) => {
-          if (
-            att.type === AnswerTypes.tel &&
-            row[att.name] &&
-            validationConfig.validatePhoneNumberLookup
-          ) {
-            const { errorObj, sanitized } =
-              await this.validateLookupPhoneNumber(
-                row[att.name],
-                i,
-                phoneNumberLookupResults,
-              );
-            if (errorObj) {
-              errors.push(errorObj);
+          if (att.type === AnswerTypes.tel) {
+            /*
+             * ==================================================================
+             * If an attribute is a phone number, validate it using Twilio lookup
+             * ==================================================================
+             */
+
+            if (row[att.name] && validationConfig.validatePhoneNumberLookup) {
+              const { errorObj, sanitized } =
+                await this.validateLookupPhoneNumber(
+                  row[att.name],
+                  i,
+                  phoneNumberLookupResults,
+                );
+              if (errorObj) {
+                errors.push(errorObj);
+              } else {
+                phoneNumberLookupResults[row[att.name]] = sanitized;
+                importRecord[att.name] = sanitized;
+              }
             } else {
-              phoneNumberLookupResults[row[att.name]] = sanitized;
-              importRecord[att.name] = sanitized;
+              importRecord[att.name] = row[att.name] ? row[att.name] : ''; // If the phone number is empty use an empty string
             }
+            /*
+             * ============================================================
+             * If an attribute is a numeric or boolean, validate it as such
+             * ============================================================
+             */
           } else if (validationConfig.validateDynamicAttributes) {
             const errorObj = this.validateNumericOrBoolean(
               row[att.name],
@@ -386,7 +398,7 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private validatePhoneNumber(
+  private validatePhoneNumberEmpty(
     row: any,
     i: number,
     validationConfig: ValidationConfigDto,

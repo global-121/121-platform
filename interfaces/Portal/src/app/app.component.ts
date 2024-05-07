@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
-import { Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth/auth.service';
 import { LanguageService } from './services/language.service';
@@ -11,18 +11,15 @@ import { LoggingService } from './services/logging.service';
   templateUrl: 'app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly _destroying$ = new Subject<void>();
+  private useSso = environment.use_sso_azure_entra;
+  private msalSubscription: Subscription;
 
   constructor(
     public languageService: LanguageService, // Required to load as early as possible in the lifecycle of the page to prevent incorrect languages shown in some components
     private loggingService: LoggingService,
-    private msalService: MsalService,
-    private authService: AuthService,
+    private authService?: AuthService,
+    private msalService?: MsalService,
   ) {
-    // Logout non-SSO users
-    if (environment.use_sso_azure_entra === true) {
-      this.authService.logoutNonSSOUser();
-    }
     // Initialize storage of preferred language
     this.languageService.setup();
 
@@ -35,14 +32,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    if (environment.use_sso_azure_entra) {
-      this.msalService.handleRedirectObservable().subscribe();
+  public ngOnInit(): void {
+    if (this.useSso) {
+      this.authService.logoutNonSsoUser();
+
+      this.msalSubscription = this.msalService
+        .handleRedirectObservable()
+        .subscribe();
     }
   }
 
-  ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
+  public ngOnDestroy(): void {
+    if (this.useSso && this.msalSubscription) {
+      this.msalSubscription.unsubscribe();
+    }
   }
 }

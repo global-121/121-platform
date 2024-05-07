@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionModule } from '../actions/action.module';
+import { ActionsModule } from '../actions/actions.module';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsModule } from '../events/events.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -19,7 +19,6 @@ import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-vis
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -58,14 +57,13 @@ import { RegistrationsInputValidator } from './validators/registrations-input-va
       ProgramCustomAttributeEntity,
       RegistrationEntity,
       LatestMessageEntity,
-      PersonAffectedAppDataEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
     ]),
     UserModule,
     HttpModule,
     LookupModule,
-    ActionModule,
+    ActionsModule,
     ProgramModule,
     FspModule,
     QueueMessageModule,

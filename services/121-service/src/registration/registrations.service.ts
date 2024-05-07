@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventsService } from '../events/events.service';
 import { FspName } from '../fsp/enum/fsp-name.enum';
-import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LastMessageStatusService } from '../notifications/last-message-status.service';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -26,17 +25,14 @@ import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.enti
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
-import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
-import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
   Attributes,
   UpdateAttributeDto,
   UpdateRegistrationDto,
 } from './dto/update-registration.dto';
-import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
   CustomDataAttributes,
@@ -140,7 +136,7 @@ export class RegistrationsService {
     await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
-      RegistrationStatusEnum.startedRegistration,
+      RegistrationStatusEnum.registered,
     );
   }
 
@@ -176,61 +172,51 @@ export class RegistrationsService {
   ): boolean {
     let result = false;
     switch (newStatus) {
-      case RegistrationStatusEnum.startedRegistration:
+      case RegistrationStatusEnum.registered:
         result = [null].includes(currentStatus);
         break;
-      case RegistrationStatusEnum.registered:
-        result = [RegistrationStatusEnum.startedRegistration, null].includes(
-          currentStatus,
-        );
-        break;
       case RegistrationStatusEnum.validated:
-        result = [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.declined,
-        ].includes(currentStatus);
+        result = [RegistrationStatusEnum.registered].includes(currentStatus);
         break;
       case RegistrationStatusEnum.declined:
-        result = [RegistrationStatusEnum.registered].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.paused,
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.validated,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.included:
         result = [
+          RegistrationStatusEnum.completed,
+          RegistrationStatusEnum.declined,
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.rejected,
-          RegistrationStatusEnum.inclusionEnded,
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.completed,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.inclusionEnded:
-        result = [
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.included,
-          RegistrationStatusEnum.completed,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.rejected:
-        result = [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.included,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.deleted:
         result = [
-          RegistrationStatusEnum.startedRegistration,
+          RegistrationStatusEnum.completed,
+          RegistrationStatusEnum.declined,
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.rejected,
-          RegistrationStatusEnum.inclusionEnded,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.completed:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.included,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.paused:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.deleted,
+          RegistrationStatusEnum.included,
+        ].includes(currentStatus);
         break;
     }
     return result;
@@ -257,88 +243,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
-  }
-
-  public async storeProgramAnswers(
-    referenceId: string,
-    rawProgramAnswers: ProgramAnswer[],
-    programId: number,
-  ): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['program'],
-    );
-    const programAnswers = await this.cleanAnswers(
-      rawProgramAnswers,
-      programId,
-    );
-    for (const answer of programAnswers) {
-      const programQuestion = await this.programQuestionRepository.findOne({
-        where: { name: answer.programQuestionName },
-      });
-      if (programQuestion) {
-        const data = {};
-        data[answer.programQuestionName] = answer.programAnswer;
-        await this.updateRegistration(programId, referenceId, {
-          data,
-          reason: 'Changed from field validation app.',
-        });
-      }
-    }
-    await this.storePhoneNumberInRegistration(programAnswers, referenceId);
-    await this.inclusionScoreService.calculateInclusionScore(referenceId);
-    await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      registration.program,
-      referenceId,
-    );
-  }
-
-  public async cleanAnswers(
-    programAnswers: ProgramAnswer[],
-    programId: number,
-  ): Promise<ProgramAnswer[]> {
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['programQuestions'],
-    });
-    const phonenumberTypedAnswers = [];
-    for (const programQuestion of program.programQuestions) {
-      if (programQuestion.answerType == AnswerTypes.tel) {
-        phonenumberTypedAnswers.push(programQuestion.name);
-      }
-    }
-
-    const cleanedAnswers = [];
-    for (const programAnswer of programAnswers) {
-      if (
-        typeof programAnswer.programAnswer === 'string' &&
-        phonenumberTypedAnswers.includes(programAnswer.programQuestionName)
-      ) {
-        programAnswer.programAnswer = await this.lookupService.lookupAndCorrect(
-          programAnswer.programAnswer,
-        );
-      }
-      cleanedAnswers.push(programAnswer);
-    }
-    return cleanedAnswers;
-  }
-
-  public async storePhoneNumberInRegistration(
-    programAnswers: ProgramAnswer[],
-    referenceId: string,
-  ): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['program'],
-    );
-    const phoneAnswer = programAnswers.find(
-      (answer) =>
-        answer.programQuestionName === CustomDataAttributes.phoneNumber,
-    );
-    if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
-      registration.phoneNumber = phoneAnswer.programAnswer;
-      await this.registrationUtilsService.save(registration);
-    }
   }
 
   public async addFsp(
@@ -483,6 +387,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
+    if (!program?.published) {
+      const errors =
+        'Registrations are not allowed for this program yet, try again later.';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     return await this.registrationsImportService.importValidatedRegistrations(
       validatedImportRecords,
       program,
@@ -542,18 +451,12 @@ export class RegistrationsService {
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
     switch (filterStatus) {
-      case RegistrationStatusEnum.startedRegistration:
-        return RegistrationStatusTimestampField.startedRegistrationDate;
       case RegistrationStatusEnum.registered:
         return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.validated:
         return RegistrationStatusTimestampField.validationDate;
       case RegistrationStatusEnum.included:
         return RegistrationStatusTimestampField.inclusionDate;
-      case RegistrationStatusEnum.inclusionEnded:
-        return RegistrationStatusTimestampField.inclusionEndDate;
-      case RegistrationStatusEnum.rejected:
-        return RegistrationStatusTimestampField.rejectionDate;
       case RegistrationStatusEnum.deleted:
         return RegistrationStatusTimestampField.deleteDate;
       case RegistrationStatusEnum.completed:
@@ -817,56 +720,6 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId)
-  public async getRegistrationToValidate(
-    referenceId: string,
-    userId: number,
-  ): Promise<RegistrationEntity> {
-    await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    let registration = await this.getRegistrationFromReferenceId(referenceId, [
-      'program',
-      'program.programQuestions',
-      'data',
-      'data.programQuestion',
-      'data.fspQuestion',
-    ]);
-
-    const registrationsScoped = await this.filterRegistrationsByProgramScope(
-      [registration],
-      userId,
-    );
-    if (registrationsScoped.length !== 1) {
-      return null;
-    }
-
-    registration = registrationsScoped[0];
-
-    const programAnswers = [];
-    for (const d of registration.data) {
-      if (d.programQuestionId) {
-        d['name'] = await d.getDataName();
-        if (d.programQuestion.answerType === AnswerTypes.multiSelect) {
-          const existingQuestion = programAnswers.find(
-            (a) => a.programQuestionId === d.programQuestionId,
-          );
-          if (!existingQuestion) {
-            programAnswers.push(d);
-            programAnswers.find(
-              (a) => a.programQuestionId === d.programQuestionId,
-            ).value = [d.value];
-          } else {
-            existingQuestion.value.push(d.value);
-          }
-        } else {
-          programAnswers.push(d);
-        }
-      }
-    }
-    registration['data'] = null;
-    registration['programAnswers'] = programAnswers;
-    return registration;
-  }
-
   public async updateChosenFsp(
     referenceId: string,
     newFspName: FspName,
@@ -997,196 +850,6 @@ export class RegistrationsService {
     }
   }
 
-  public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user =
-      await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const data = {
-      answers: await this.getAllProgramAnswers(user.id),
-      fspData: await this.getAllFspAnswers(user.id),
-      programIds: user.programAssignments.map((assignment) => {
-        return assignment.program.id;
-      }),
-    };
-    return data;
-  }
-
-  public async getAllProgramAnswers(
-    userId: number,
-  ): Promise<RegistrationDataEntity[]> {
-    const registrationsToValidate = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .addSelect([
-        '"referenceId"',
-        'registration."programId" AS "programId"',
-        'scope',
-      ])
-      .leftJoinAndSelect('registration.program', 'program')
-      .leftJoinAndSelect('registration.data', 'data')
-      .leftJoinAndSelect('data.programQuestion', 'programQuestion')
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [RegistrationStatusEnum.registered],
-      })
-      .andWhere('data.programQuestionId is not null')
-      .getMany();
-
-    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
-      registrationsToValidate,
-      userId,
-    );
-
-    let answers = [];
-    for (const r of filteredRegistrations) {
-      const uniqueQuestions = [];
-      for (const a of r.data) {
-        a['referenceId'] = r.referenceId;
-        a['programId'] = r.program.id;
-        a['name'] = await a.getDataName();
-        if (a.programQuestion.answerType === AnswerTypes.multiSelect) {
-          const existingQuestion = uniqueQuestions.find(
-            (q) => q.programQuestionId === a.programQuestionId,
-          );
-          if (!existingQuestion) {
-            uniqueQuestions.push(a);
-            uniqueQuestions.find(
-              (q) => q.programQuestionId === a.programQuestionId,
-            ).value = [a.value];
-          } else {
-            existingQuestion.value.push(a.value);
-          }
-        } else {
-          uniqueQuestions.push(a);
-        }
-      }
-      answers = [...answers, ...uniqueQuestions];
-    }
-    return answers;
-  }
-
-  public async getAllFspAnswers(
-    userId: number,
-  ): Promise<FspAnswersAttrInterface[]> {
-    const registrations = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .addSelect([
-        '"referenceId"',
-        'registration."programId" AS "programId"',
-        'scope',
-      ])
-      .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
-      .leftJoin('registration.program', 'program')
-      .andWhere('registration.fsp IS NOT NULL')
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [RegistrationStatusEnum.registered],
-      })
-      .getMany();
-
-    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
-      registrations,
-      userId,
-    );
-
-    const fspDataPerRegistration = [];
-    for (const registration of filteredRegistrations) {
-      const answers = await this.getFspAnswers(registration.referenceId);
-      const fspData = {
-        attributes: registration.fsp.questions,
-        answers: answers,
-        referenceId: registration.referenceId,
-      };
-      fspDataPerRegistration.push(fspData);
-    }
-    return fspDataPerRegistration;
-  }
-
-  public async getFspAnswers(referenceId: string): Promise<AnswerSet> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      [
-        'program',
-        'program.programQuestions',
-        'data',
-        'data.programQuestion',
-        'data.fspQuestion',
-      ],
-    );
-    const fspAnswers = {};
-    for (const d of registration.data) {
-      if (d.fspQuestionId) {
-        const code = await d.getDataName();
-        if (d.fspQuestion.answerType === AnswerTypes.multiSelect) {
-          if (!fspAnswers[code]) {
-            const answer = {
-              code: code,
-              value: [d.value],
-              label: d.fspQuestion.label['en'],
-            };
-            fspAnswers[code] = answer;
-          } else {
-            fspAnswers[code].value.push(d.value);
-          }
-        } else {
-          const answer = {
-            code: code,
-            value: d.value,
-            label: d.fspQuestion.label['en'],
-          };
-          fspAnswers[code] = answer;
-        }
-      }
-    }
-    return fspAnswers;
-  }
-
-  public async getFspAnswersAttributes(
-    referenceId: string,
-  ): Promise<FspAnswersAttrInterface> {
-    const qb = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
-      .andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
-      });
-    const registration = await qb.getOne();
-    const fspAnswers = await this.getFspAnswers(registration.referenceId);
-    return {
-      attributes: registration.fsp.questions,
-      answers: fspAnswers,
-      referenceId: referenceId,
-    };
-  }
-
-  // Used by Aidworker
-  public async issueValidation(
-    payload: ValidationIssueDataDto,
-    programId: number,
-  ): Promise<void> {
-    await this.storeProgramAnswers(
-      payload.referenceId,
-      payload.programAnswers,
-      programId,
-    );
-    await this.setRegistrationStatus(
-      payload.referenceId,
-      RegistrationStatusEnum.validated,
-    );
-    // Removing non-persistent answers is done after storing the answers because storing the answers also calculate the inclusion store
-    await this.removeNonPersistentProgramAnswers(payload.referenceId);
-  }
-
-  private async removeNonPersistentProgramAnswers(referenceId): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['data', 'data.programQuestion'],
-    );
-    for (const data of registration.data) {
-      if (data.programQuestion && data.programQuestion.persistence === false) {
-        await this.registrationDataScopedRepository.remove(data);
-      }
-    }
-  }
-
   public async getMessageHistoryRegistration(
     referenceId: string,
   ): Promise<MessageHistoryDto[]> {
@@ -1217,13 +880,6 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
-  }
-
-  public async getRegistrationStatus(
-    referenceId: string,
-  ): Promise<RegistrationStatusEnum> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-    return registration.registrationStatus;
   }
 
   public async getReferenceId(

@@ -69,7 +69,6 @@ export class ProgramService {
       'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
-      'programCustomAttributes',
       'programFspConfiguration',
     ];
 
@@ -81,6 +80,12 @@ export class ProgramService {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    // Program attributes are queried separately because the performance is bad when using relations
+    program.programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
@@ -129,23 +134,6 @@ export class ProgramService {
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(programEntity);
     return programDto;
-  }
-
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    const programs = await this.programRepository
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .where('program.published = :published', { published: true })
-      .orderBy('program.created', 'DESC')
-      .addOrderBy('programQuestion.id', 'ASC')
-      .getMany();
-    const programsCount = programs.length;
-    for (const program of programs) {
-      delete program.monitoringDashboardUrl;
-      delete program.evaluationDashboardUrl;
-    }
-
-    return { programs, programsCount };
   }
 
   public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
@@ -260,7 +248,6 @@ export class ProgramService {
       programData.paymentAmountMultiplierFormula;
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.meetingDocuments = programData.meetingDocuments;
     program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.aboutProgram = programData.aboutProgram;
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
@@ -447,7 +434,6 @@ export class ProgramService {
       ),
       targetNrRegistrations: program.targetNrRegistrations,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
-      meetingDocuments: program.meetingDocuments,
       budget: program.budget,
       phoneNumberPlaceholder: program.phoneNumberPlaceholder,
       programCustomAttributes: program.programCustomAttributes.map(
@@ -474,7 +460,6 @@ export class ProgramService {
           phases: programQuestion.phases,
           editableInPortal: programQuestion.editableInPortal,
           export: programQuestion.export as unknown as ExportType[],
-          shortLabel: programQuestion.shortLabel,
           duplicateCheck: programQuestion.duplicateCheck,
           placeholder: programQuestion.placeholder,
         };
@@ -613,7 +598,6 @@ export class ProgramService {
     programQuestion.phases = dto.phases;
     programQuestion.editableInPortal = dto.editableInPortal;
     programQuestion.export = dto.export as unknown as JSON;
-    programQuestion.shortLabel = dto.shortLabel;
     programQuestion.duplicateCheck = dto.duplicateCheck;
     programQuestion.placeholder = dto.placeholder;
     return programQuestion;

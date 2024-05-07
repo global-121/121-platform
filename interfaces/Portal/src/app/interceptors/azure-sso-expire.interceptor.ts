@@ -7,12 +7,8 @@ import {
 import { Injectable } from '@angular/core';
 import { from, lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import {
-  AuthService,
-  CURRENT_USER_ENDPOINT_PATH,
-  LOGIN_ENDPOINT_PATH,
-  LOGOUT_ENDPOINT_PATH,
-} from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
+import { ApiPath } from '../enums/api-path.enum';
 
 @Injectable()
 export class AzureSsoExpireInterceptor implements HttpInterceptor {
@@ -22,17 +18,21 @@ export class AzureSsoExpireInterceptor implements HttpInterceptor {
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+    if (!environment.use_sso_azure_entra) {
+      return next.handle(req);
+    }
+
     return from(this.handle(req, next));
   }
 
   async handle(request: HttpRequest<any>, next: HttpHandler) {
-    if (request.url.includes(environment.url_121_service_api)) {
+    if (request.url.startsWith(environment.url_121_service_api)) {
       if (
-        !request.url.includes(CURRENT_USER_ENDPOINT_PATH) &&
-        !request.url.includes(LOGIN_ENDPOINT_PATH) &&
-        !request.url.includes(LOGOUT_ENDPOINT_PATH)
+        !request.url.endsWith(ApiPath.usersCurrent) &&
+        !request.url.endsWith(ApiPath.usersLogin) &&
+        !request.url.endsWith(ApiPath.usersLogout)
       ) {
-        await this.authService.checkExpirationDate();
+        await this.authService.checkSsoTokenExpirationDate();
       }
     }
     return await lastValueFrom(next.handle(request));

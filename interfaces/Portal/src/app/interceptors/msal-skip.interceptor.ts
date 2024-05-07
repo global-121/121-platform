@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import { MsalInterceptor } from '@azure/msal-angular';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CURRENT_USER_ENDPOINT_PATH, USER_KEY } from '../auth/auth.service';
+import { USER_KEY } from '../auth/auth.service';
+import { ApiPath } from '../enums/api-path.enum';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -20,31 +21,31 @@ export class MsalSkipInterceptor
     request: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
-    if (environment.use_sso_azure_entra) {
-      // Only potentially skip on 121-service API requests
-      if (request.url.includes(environment.url_121_service_api)) {
-        // Never skip on request to get current user, as we need it always to check if user is an Entra user
-        if (request.url.includes(CURRENT_USER_ENDPOINT_PATH)) {
-          return super.intercept(request, next);
-        }
-
-        // Otherwise, get user from local storage
-        const rawUser = localStorage.getItem(USER_KEY);
-        if (!rawUser) {
-          // If no user found (this should never happen), then skip to avoid SSO-redirect, and let it fail somewhere else
-          return next.handle(request);
-        }
-        // If user found ..
-        const user = JSON.parse(rawUser) as User;
-        // .. skip if not an entra-user
-        if (user?.isEntraUser === false) {
-          return next.handle(request);
-        }
-        // .. otherwise don't skip
-        return super.intercept(request, next);
-      }
+    if (
+      // Never intercept non-API requests
+      !request.url.startsWith(environment.url_121_service_api)
+    ) {
       return next.handle(request);
     }
+
+    // Always intercept request for current user, as we need to check if user is an Entra user
+    if (request.url.endsWith(ApiPath.usersCurrent)) {
+      return super.intercept(request, next);
+    }
+
+    // Otherwise, check the current user from local storage
+    const rawUser = localStorage.getItem(USER_KEY);
+
+    if (rawUser) {
+      const user = JSON.parse(rawUser) as User;
+
+      // Only intercept Entra users
+      if (user && user.isEntraUser) {
+        return super.intercept(request, next);
+      }
+    }
+
+    // In all other cases, move along, nothing to intercept here
     return next.handle(request);
   }
 }

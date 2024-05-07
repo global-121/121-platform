@@ -1,4 +1,4 @@
-import { FilterOperatorEnum } from '../services/filter.service';
+import { FilterOperator } from '../enums/filters.enum';
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { LanguageEnum } from './person.model';
@@ -7,7 +7,6 @@ import { TranslatableString } from './translatable-string.model';
 export class Program {
   id: number;
   author: object;
-  contactDetails?: string | TranslatableString;
   startDate: string;
   endDate?: string;
   titlePortal: string | TranslatableString;
@@ -19,7 +18,6 @@ export class Program {
   targetNrRegistrations?: number;
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
-  meetingDocuments?: string | TranslatableString;
   financialServiceProviders?: Fsp[];
   aidworkerAssignments?: any[];
   created: string;
@@ -50,7 +48,7 @@ class FilterableAttributeGroup {
 
 class FilterableAttributeDefinition {
   name: string;
-  allowedOperators: FilterOperatorEnum[];
+  allowedOperators: FilterOperator[];
   paTableAttributes: PaTableAttribute[];
   isInteger: boolean;
 }
@@ -88,7 +86,6 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
-  shortLabel?: TranslatableString;
   phases: ProgramPhase[];
 }
 
@@ -101,7 +98,6 @@ export class ProgramQuestion {
   name: string;
   answerType: string;
   label: TranslatableString;
-  shortLabel: TranslatableString;
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];

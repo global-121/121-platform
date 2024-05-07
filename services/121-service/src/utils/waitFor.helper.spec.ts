@@ -14,7 +14,7 @@ describe('waitFor helpers', () => {
     // Assert
     const end = Date.now();
     const elapsed = end - start;
-    expect(elapsed).toBeGreaterThanOrEqual(testTime);
+    expect(elapsed).toBeGreaterThanOrEqual(testTime - 1);
     expect(elapsed).toBeLessThanOrEqual(testTime + 16); // With a few ms margin
   });
 

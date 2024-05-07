@@ -22,12 +22,14 @@ services:
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
+    command: 'npm run start:dev'
   mock-service:
     build:
       target: development
     volumes:
       - 'mock_service_node_modules:/home/node/app/node_modules'
       - './mock-service:/home/node/app'
+    restart: unless-stopped
 
 volumes:
   121_service_node_modules:

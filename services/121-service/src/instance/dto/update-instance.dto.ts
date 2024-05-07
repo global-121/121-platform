@@ -12,20 +12,8 @@ export class UpdateInstanceDto {
   public readonly displayName: JSON;
 
   @ApiProperty({
-    example: { en: '<data policy>' },
-  })
-  @IsOptional()
-  public readonly dataPolicy: JSON;
-
-  @ApiProperty({
     example: { en: '<about program>' },
   })
   @IsOptional()
   public readonly aboutProgram: JSON;
-
-  @ApiProperty({
-    example: { en: '<contact details>' },
-  })
-  @IsOptional()
-  public readonly contactDetails: JSON;
 }

@@ -1,11 +1,50 @@
 import fs from 'fs';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import {
+  Check,
+  Column,
+  Entity,
+  EntityManager,
+  MigrationInterface,
+  OneToMany,
+  OneToOne,
+  QueryRunner,
+} from 'typeorm';
+import { CascadeDeleteEntity } from '../src/base.entity';
 import { InstanceEntity } from '../src/instance/instance.entity';
-import { MonitoringQuestionEntity } from '../src/instance/monitoring-question.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
 import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
+import { NameConstraintQuestions } from '../src/shared/const';
 import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
+
+// This entity was copied here during the deletion of monitoringQuestions and everything related to it
+@Entity('monitoring_question')
+@Check(`"name" NOT IN (${NameConstraintQuestions})`)
+class MonitoringQuestionEntity extends CascadeDeleteEntity {
+  @Column()
+  public name: string;
+
+  @Column('json')
+  public intro: JSON;
+
+  @Column('json')
+  public conclusion: JSON;
+
+  @Column('json', { nullable: true })
+  public options: JSON;
+
+  // @ts-expect-error monitoringQuestion has been removed since
+  @OneToOne(() => InstanceEntity, (instance) => instance.monitoringQuestion)
+  public instance: InstanceEntity;
+
+  @OneToMany(
+    () => RegistrationDataEntity,
+    // @ts-expect-error monitoringQuestion has been removed since
+    (registrationData) => registrationData.monitoringQuestion,
+  )
+  public registrationData: RegistrationDataEntity[];
+}
+
 export class registrationData1656412499569 implements MigrationInterface {
   name = 'registrationData1656412499569';
 
@@ -113,6 +152,7 @@ export class registrationData1656412499569 implements MigrationInterface {
 
     let instancePilotLVV, instancePilotPV;
     try {
+      // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
       instancePilotLVV = JSON.parse(
         fs.readFileSync('seed-data/instance/instance-pilot-nl.json', 'utf8'),
       );
@@ -175,6 +215,7 @@ export class registrationData1656412499569 implements MigrationInterface {
           monitoringQuestion.options = monQuestion['options'];
           monitoringQuestion.conclusion = monQuestion['conclusion'];
 
+          // @ts-expect-error monitoringQuestion has been removed since
           instance.monitoringQuestion = monitoringQuestion;
           await monQuestionRepo.save(monitoringQuestion);
           await instanceRepo.save(instance);
@@ -185,6 +226,7 @@ export class registrationData1656412499569 implements MigrationInterface {
           monitoringQuestion.options = monQuestion['options'];
           monitoringQuestion.conclusion = monQuestion['conclusion'];
 
+          // @ts-expect-error monitoringQuestion has been removed since
           instance.monitoringQuestion = monitoringQuestion;
           await monQuestionRepo.save(monitoringQuestion);
           await instanceRepo.save(instance);
@@ -230,6 +272,7 @@ export class registrationData1656412499569 implements MigrationInterface {
                 break;
               // Monitoring question
               case 'monitoringAnswer':
+                // @ts-expect-error monitoringQuestion has been removed since
                 registrationData.monitoringQuestion = monitoringQuestion;
                 registrationData.value = registration.customData[key];
 

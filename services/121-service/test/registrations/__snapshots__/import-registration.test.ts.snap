@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Import a registration should give me a CSV template when I request it 1`] = `
+[
+  "addressCity",
+  "addressHouseNumber",
+  "addressHouseNumberAddition",
+  "addressPostalCode",
+  "addressStreet",
+  "firstName",
+  "fspName",
+  "lastName",
+  "paymentAmountMultiplier",
+  "phoneNumber",
+  "preferredLanguage",
+  "referenceId",
+  "whatsappPhoneNumber",
+]
+`;

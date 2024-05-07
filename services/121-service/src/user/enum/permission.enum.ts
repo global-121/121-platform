@@ -51,7 +51,6 @@ export enum PermissionEnum {
   RegistrationAttributeUPDATE = 'registration:attribute.update',
   RegistrationAttributeFinancialUPDATE = 'registration:attribute:financial.update',
 
-  RegistrationFspREAD = 'registration:fsp.read',
   RegistrationFspUPDATE = 'registration:fsp.update',
 
   RegistrationNotificationREAD = 'registration:notification.read',
@@ -68,8 +67,6 @@ export enum PermissionEnum {
   RegistrationStatusMarkAsValidatedUPDATE = 'registration:status:markAsValidated.update',
   RegistrationStatusMarkAsDeclinedUPDATE = 'registration:status:markAsDeclined.update',
   RegistrationStatusIncludedUPDATE = 'registration:status:included.update',
-  RegistrationStatusRejectedUPDATE = 'registration:status:rejected.update',
-  RegistrationStatusInclusionEndedUPDATE = 'registration:status:inclusionEnded.update',
   RegistrationStatusPausedUPDATE = 'registration:status:paused.update',
 
   // Registration(s) - Import

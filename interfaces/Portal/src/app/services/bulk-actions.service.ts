@@ -62,17 +62,6 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.markAsDeclined,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.markAsDeclined',
-      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
-      phases: [ProgramPhase.registrationValidation],
-      showIfNoValidation: false,
-      confirmConditions: {
-        provideInput: false,
-      },
-    },
-    {
       id: BulkActionId.include,
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
@@ -92,41 +81,18 @@ export class BulkActionsService {
       },
     },
     {
-      id: BulkActionId.reject,
+      id: BulkActionId.markAsDeclined,
       enabled: false,
-      label: 'page.program.program-people-affected.actions.reject',
-      permissions: [Permission.RegistrationStatusRejectedUPDATE],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
+      label: 'page.program.program-people-affected.actions.markAsDeclined',
+      permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+      ],
       showIfNoValidation: true,
       confirmConditions: {
-        promptType: PromptType.actionWithMessage,
-        checkbox:
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        checkboxChecked: true,
-        inputRequired: true,
-        inputConstraint: {
-          length: 1,
-          type: 'min',
-        },
-      },
-    },
-    {
-      id: BulkActionId.endInclusion,
-      enabled: false,
-      label: 'page.program.program-people-affected.actions.endInclusion',
-      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        promptType: PromptType.actionWithMessage,
-        checkbox:
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        checkboxChecked: true,
-        inputRequired: true,
-        inputConstraint: {
-          length: 1,
-          type: 'min',
-        },
+        provideInput: false,
       },
     },
     {
@@ -173,7 +139,11 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.deletePa',
       permissions: [Permission.RegistrationDELETE],
-      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+      ],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
@@ -201,22 +171,6 @@ export class BulkActionsService {
     switch (action) {
       case BulkActionId.include:
         return await this.programsService.include(
-          programId,
-          customBulkActionInput?.message,
-          dryRun,
-          filters,
-          customBulkActionInput?.messageTemplateKey,
-        );
-      case BulkActionId.endInclusion:
-        return await this.programsService.end(
-          programId,
-          customBulkActionInput?.message,
-          dryRun,
-          filters,
-          customBulkActionInput?.messageTemplateKey,
-        );
-      case BulkActionId.reject:
-        return await this.programsService.reject(
           programId,
           customBulkActionInput?.message,
           dryRun,

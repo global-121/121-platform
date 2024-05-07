@@ -665,11 +665,11 @@ export class IntersolveVoucherService
     for await (const voucher of unusedVouchersEntities) {
       if (voucher.lastRequestedBalance === voucher.amount) {
         const unusedVoucher = new UnusedVoucherDto();
+        unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
         unusedVoucher.payment = voucher.payment;
         unusedVoucher.issueDate = voucher.created;
         unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
         unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-        unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
         unusedVoucher.lastExternalUpdate = voucher.updatedLastRequestedBalance;
         unusedVouchersDtos.push(unusedVoucher);
       }

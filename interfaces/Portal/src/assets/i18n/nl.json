@@ -24,15 +24,13 @@
         "default-reply": "Standaard antwoord",
         "generic-templated": "Berichtmelding",
         "included": "Actief",
-        "inclusion-ended": "Beëindigd",
         "invited": "Uitnodiging voor registratie",
         "payment": "Betaling",
         "payment-instructions": "Betalingsinstructies",
         "payment-reminder": "Betalingsherinnering",
         "payment-templated": "Betalings melding",
         "payment-voucher": "Betalingsvoucher",
-        "registered": "Registratie",
-        "rejected": "Afwijzing"
+        "registered": "Registratie"
       },
       "error-code-prefix": "Twilio foutcode:",
       "status": {
@@ -245,11 +243,8 @@
           "deleted": "Hulpvragers die zijn verwijderd. <br> Dit kunnen bijvoorbeeld verwijderde hulpvragers zijn na een onjuiste import, maar ook hulpvragers die betalingen hebben ontvangen, niet langer zijn opgenomen en vervolgens na enige tijd worden verwijderd.",
           "imported": "Hulpvragers die zijn geïmporteerd, op basis van telefoonnummer.",
           "included": "Nieuwe hulpvragers die actief zijn. <br> Zij zullen betalingen ontvangen vanaf de volgende betalings-/uitbetalingsronde.",
-          "inclusionEnded": "Hulpvragers waarvoor de opname is beëindigd. <br> Zij ontvangen geen (meer) betalingen voor de volgende betalings-/uitbetalingsronde.",
           "invited": "Hulpvragers die zijn uitgenodigd (na import).",
-          "noLongerEligible": "De hulpvragers die werden gemarkeerd als 'niet langer in aanmerking komend'. <br> Dit zijn hulpvragerss die waren uitgenodigd maar zich nog niet hadden geregistreerd en inmiddels niet meer in aanmerking komen.",
           "registered": "Hulpvragers die hun registratie in de PA-app hebben voltooid.",
-          "rejected": "Hulpvragers die zijn afgewezen. <br> Ze zullen geen betalingen (meer) ontvangen voor de volgende betalings-/uitbetalingsronde.",
           "startedRegistration": "Hulpvragers die zijn gestart met de registratie in de PA-app.",
           "validated": "Hulpvragers die zijn goedgekeurd."
         },
@@ -386,28 +381,22 @@
         "actions": {
           "deletePa": "Verwijder hulpvrager(s)",
           "doPayment": "Doe betaling #{{paymentNr}}",
-          "endInclusion": "Beëindig deelname aan programma",
           "include": "Activeer hulpvrager(s)",
           "invite": "Uitnodigen voor registratie",
           "markAsDeclined": "Aanmelding afwijzen",
           "markAsValidated": "Aanmelding goedkeuren",
-          "markNoLongerEligible": "Markeer als niet langer in aanmerking komend",
           "pause": "Pauzeer hulpvragers",
-          "reject": "Afwijzen voor programma",
           "sendMessage": "Stuur bericht"
         },
         "apply-action": "Actie toepassen",
         "bulk-action-conditions": {
           "deletePa": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties die niet de status <i>Actief</i> hebben.",
           "doPayment": "Let op: De actie <strong>{{action}}</strong> is alleen van toepassing op registraties die de betaling nog niet hebben ontvangen.",
-          "endInclusion": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> of <i>Voltooid</i> .",
           "include": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i>, <i>Geselecteerd voor goedkeuring</i>, <i>Goedgekeurd</i>, <i>Afgewezen</i>, <i>Opname beëindigd</i>, <i>Gepauzeerd</i> of <i>Voltooid</i>.",
           "invite": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Niet meer in aanmerking</i>.",
           "markAsDeclined": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i>.",
           "markAsValidated": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i> of <i>Geweigerd</i>.",
-          "markNoLongerEligible": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Geïmporteerd</i> of <i>Uitgenodigd</i>.",
           "pause": "Let op: de actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Actief</i> .",
-          "reject": "Let op: De actie <strong> {{action}} </strong> is alleen van toepassing op registraties met de status <i>Aangemeld</i> , <i>Geselecteerd voor goedkeuring</i> , <i>Goedgekeurd</i> , <i>Actief</i> , <i>Niet meer in aanmerking komend</i> , of <i>Aangemeld terwijl niet langer in aanmerking komend</i> .",
           "sendMessage": "Let op: De <strong>{{action}}</strong> actie is alleen van toepassing op registraties waaraan een telefoonnummer is gekoppeld."
         },
         "bulk-action-response": {

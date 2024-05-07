@@ -27,6 +27,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
+import { CookieNames } from '../shared/enum/cookie.enums';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -125,8 +126,11 @@ export class UserController {
     description: 'No role found',
   })
   @Delete('roles/:userRoleId')
-  public async deleteUserRole(@Param() params): Promise<UserRoleResponseDTO> {
-    return await this.userService.deleteUserRole(params.userRoleId);
+  public async deleteUserRole(
+    @Param('userRoleId', ParseIntPipe)
+    userRoleId: number,
+  ): Promise<UserRoleResponseDTO> {
+    return await this.userService.deleteUserRole(userRoleId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -174,23 +178,16 @@ export class UserController {
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
-    @Req() req,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
-      const origin = req.get('origin');
-      const serviceWorkerDebug = origin?.includes('8088');
 
       res.cookie(
         loginResponse.cookieSettings.tokenKey,
         loginResponse.cookieSettings.tokenValue,
         {
-          sameSite: serviceWorkerDebug
-            ? 'None'
-            : loginResponse.cookieSettings.sameSite,
-          secure: serviceWorkerDebug
-            ? true
-            : loginResponse.cookieSettings.secure,
+          sameSite: loginResponse.cookieSettings.sameSite,
+          secure: loginResponse.cookieSettings.secure,
           expires: loginResponse.cookieSettings.expires,
           httpOnly: loginResponse.cookieSettings.httpOnly,
         },
@@ -198,7 +195,7 @@ export class UserController {
       return res.send({
         username: loginResponse.userRo.user.username,
         permissions: loginResponse.userRo.user.permissions,
-        access_token_general: loginResponse.token,
+        [CookieNames.general]: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
         isEntraUser: loginResponse.userRo.user.isEntraUser,
@@ -257,31 +254,11 @@ export class UserController {
   })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
-  @ApiParam({ name: 'userId', required: true, type: 'integer' })
-  public async delete(@Param() params): Promise<UserEntity> {
-    return await this.userService.delete(Number(params.userId));
-  }
-
-  @AuthenticatedUser()
-  @ApiTags('users')
-  @ApiOperation({ summary: 'User deletes itself' })
-  @Delete('users')
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'User deleted',
-    type: UserEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  public async deleteCurrentUser(@Req() req): Promise<UserEntity> {
-    const deleterId = req.user.id;
-    if (!deleterId) {
-      const errors = `No user detectable from cookie or no cookie present'`;
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    return await this.userService.delete(deleterId);
+  public async delete(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+  ): Promise<UserEntity> {
+    return await this.userService.delete(userId);
   }
 
   @AuthenticatedUser()

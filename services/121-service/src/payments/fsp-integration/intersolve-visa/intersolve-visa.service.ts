@@ -666,6 +666,28 @@ export class IntersolveVisaService
     return brandCodeConfig?.value as string;
   }
 
+  private async getCoverLetterCodeForProgram(
+    programId: number,
+  ): Promise<string> {
+    const coverLetterCodeConfig =
+      await this.programFspConfigurationRepository.findOne({
+        where: {
+          programId: programId,
+          name: FspConfigurationEnum.coverLetterCode,
+          fsp: { fsp: FspName.intersolveVisa },
+        },
+        relations: ['fsp'],
+      });
+
+    if (!coverLetterCodeConfig) {
+      throw new Error(
+        `No coverLetterCode found for financial service provider under program ${programId}. Please update the program's financial service provider cofinguration.`,
+      );
+    }
+
+    return coverLetterCodeConfig?.value as string;
+  }
+
   private async createDebitCard(
     paymentDetails: PaymentDetailsDto,
     intersolveVisaWallet: IntersolveVisaWalletEntity,
@@ -678,28 +700,37 @@ export class IntersolveVisaService
       ? formatPhoneNumber(paymentDetails.phoneNumber)
       : null;
     createDebitCardPayload.cardAddress = {
-      address1: `${
-        paymentDetails.addressStreet +
-        ' ' +
-        paymentDetails.addressHouseNumber +
-        paymentDetails.addressHouseNumberAddition
-      }`,
+      address1:
+        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
       city: paymentDetails.addressCity,
       country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
-      address1: `${
-        paymentDetails.addressStreet +
-        ' ' +
-        paymentDetails.addressHouseNumber +
-        paymentDetails.addressHouseNumberAddition
-      }`,
+      address1:
+        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
       city: paymentDetails.addressCity,
       country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinStatus = 'D';
+
+    try {
+      // Added cover letter code during create debit card call
+      const coverLetterCode = await this.getCoverLetterCodeForProgram(
+        paymentDetails.programId,
+      );
+      createDebitCardPayload.coverLetterCode = coverLetterCode;
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: error.message,
+        data: {
+          success: false,
+        },
+      };
+    }
+
     return await this.intersolveVisaApiService.createDebitCard(
       intersolveVisaWallet.tokenCode,
       createDebitCardPayload,

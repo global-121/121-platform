@@ -14,7 +14,7 @@ import { LanguageEnum } from '../../../registration/enum/language.enum';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
-    description: `Some types are use for registration status changes, for example: invite, include, endInclusion, reject and pause. Other values can be used to send custom messages.`,
+    description: `Some types are use for registration status changes, for example: invite, include, reject and pause. Other values can be used to send custom messages.`,
   })
   @IsString()
   @Length(1, 255)

@@ -1,5 +1,5 @@
 {
-  "published": false,
+  "published": true,
   "validation": true,
   "phase": "design",
   "location": "Lebanon",
@@ -27,19 +27,11 @@
     }
   ],
   "targetNrRegistrations": 340,
-  "meetingDocuments": {
-    "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)",
-    "ar": "بطاقة الهوية الشخصية للشخص الذي قام بالتسجيل ; أخراج قيد عائلي ; أفادة سكن ; إثبات الحالة الطبية (إن وجد) "
-  },
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {
       "name": "invited-by-dorcas",
-      "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Has your household been informed by a Dorcas/Tabitha employee about the possibility to participate in this program?<br><br><small>Note: If you have NOT been informed by a Dorcas/Tabitha employee about this program, you can close this website now. Your household will NOT be considered for participation, regardless of whether you answer the questions or not.</small>",
-        "ar": "يجب الإجابة على الأسئلة بصدق. قد نتصل بكم لتحديد موعد لزيارة منزلية للتحقق من وضعكم<br><br>. هل تم إبلاغ أسرتكم من قبل موظف دوركاس / طابيثا بإمكانية المشاركة في هذا البرنامج؟ <br><br><small>ملاحظة: أذا لم يتم أبلاغكم من قبل موظف من دوركاس-طابيثا  حول هذا البرنامج ، يمكنك إغلاق هذا الموقع الآن. لن يتم الأخذ بطلب أسرتكم للمشاركة ، بغض النظر عما إذا كنت تجيب على الأسئلة أم لا. </small>"
-      },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
@@ -59,8 +51,7 @@
     {
       "name": "name",
       "label": {
-        "en": "What is your name? (First name, Father's name, Last name)",
-        "ar": "الاسم الثلاثي؟ (الاسم الأول ، اسم الأب ، اسم العائلة) "
+        "en": "Name"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -68,16 +59,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Name"
-      }
+      "editableInPortal": false
     },
     {
       "name": "age",
       "label": {
-        "en": "How old are you?",
-        "ar": "كم عمرك؟ "
+        "en": "Age"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -85,16 +72,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Age"
-      }
+      "editableInPortal": false
     },
     {
       "name": "gender",
       "label": {
-        "en": "What is your gender?",
-        "ar": "الجنس؟"
+        "en": "Gender"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -117,16 +100,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Gender"
-      }
+      "editableInPortal": false
     },
     {
       "name": "nationality",
       "label": {
-        "en": "What is your nationality?",
-        "ar": "ما هي جنسيتك؟"
+        "en": "Nationality"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -156,17 +135,10 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Nationality"
-      }
+      "editableInPortal": false
     },
     {
       "name": "address-city",
-      "label": {
-        "en": "In which city do you live?",
-        "ar": "عنوان السكن - المدينة؟"
-      },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
@@ -177,8 +149,7 @@
     {
       "name": "address-street",
       "label": {
-        "en": "In which street do you live?",
-        "ar": "عنوان السكن - الشارع؟"
+        "en": "City"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -186,16 +157,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "City"
-      }
+      "editableInPortal": false
     },
     {
       "name": "address-building",
       "label": {
-        "en": "In which building do you live?",
-        "ar": "عنوان السكن - البناية؟"
+        "en": "Building"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -203,16 +170,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Building"
-      }
+      "editableInPortal": false
     },
     {
       "name": "address-floor",
       "label": {
-        "en": "On what floor do you live?",
-        "ar": "عنوان السكن - الطابق؟"
+        "en": "Floor"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -220,16 +183,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Floor"
-      }
+      "editableInPortal": false
     },
     {
       "name": "social-registry",
       "label": {
-        "en": "What is your social registry number?",
-        "ar": "رقم أخراج القيد؟"
+        "en": "Social registry number"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -237,16 +196,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Social registry number"
-      }
+      "editableInPortal": false
     },
     {
       "name": "family-status",
       "label": {
-        "en": "What is your family status?",
-        "ar": "الوضع العائلي؟"
+        "en": "Family status"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -288,16 +243,12 @@
         "single-parent": 3,
         "child-headed": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Family status"
-      }
+      "editableInPortal": false
     },
     {
       "name": "men-60+",
       "label": {
-        "en": "How many elderly men (60+ years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد الرجال المسنين (60 سنة و ما فوق ) في منزلك؟ (أدخل 0 في حال لا يوجد) "
+        "en": "Men 60+"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -307,16 +258,12 @@
       "scoring": {
         "multiplier": 3
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Men 60+"
-      }
+      "editableInPortal": false
     },
     {
       "name": "women-60+",
       "label": {
-        "en": "How many elderly women (60+ years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد النساء المسنين (60 سنة و ما فوق ) في منزلك؟ (أدخل 0 في حال لا يوجد) "
+        "en": "Women 60+"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -326,16 +273,12 @@
       "scoring": {
         "multiplier": 3
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Women 60+"
-      }
+      "editableInPortal": false
     },
     {
       "name": "men-18-15",
       "label": {
-        "en": "How many adult men (18-59 years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد الرجال البالغين (18-59 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
+        "en": "Men 18-59"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -345,16 +288,12 @@
       "scoring": {
         "multiplier": 1
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Men 18-59"
-      }
+      "editableInPortal": false
     },
     {
       "name": "women-18-59",
       "label": {
-        "en": "How many adult women (18-59 years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد النساء البالغين (18-59 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
+        "en": "Women 18-59"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -364,16 +303,12 @@
       "scoring": {
         "multiplier": 1
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Women 18-59"
-      }
+      "editableInPortal": false
     },
     {
       "name": "men-18-",
       "label": {
-        "en": "How many boys (0-17 years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد الصبيان (0-17 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
+        "en": "Men 0-18"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -383,16 +318,12 @@
       "scoring": {
         "multiplier": 2
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Men 0-18"
-      }
+      "editableInPortal": false
     },
     {
       "name": "woman-18-",
       "label": {
-        "en": "How many girls (0-17 years old) are in your household? (enter 0 when none)",
-        "ar": "كم عدد الفتيات (0-17 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
+        "en": "Women 0-18"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -402,16 +333,12 @@
       "scoring": {
         "multiplier": 2
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Women 0-18"
-      }
+      "editableInPortal": false
     },
     {
       "name": "woman-pregnant",
       "label": {
-        "en": "Are there any pregnant or lactating women in your household?",
-        "ar": "هل يوجد أي امرأة حامل أو مرضعة في منزلك؟ "
+        "en": "Women pregnant"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -437,16 +364,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Women pregnant"
-      }
+      "editableInPortal": false
     },
     {
       "name": "children-3-",
       "label": {
-        "en": "Are there any children younger than 3 years old in your household?",
-        "ar": "هل يوجد في منزلك أي أطفال تقل أعمارهم عن 3 سنوات؟ "
+        "en": "Children"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -472,16 +395,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Children"
-      }
+      "editableInPortal": false
     },
     {
       "name": "beirut-blast-affected",
       "label": {
-        "en": "Were you affected by the Beirut blast?",
-        "ar": "هل تضررت من انفجار بيروت؟"
+        "en": "Beirut blast"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -507,16 +426,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Beirut blast"
-      }
+      "editableInPortal": false
     },
     {
       "name": "beirut-blast-move",
       "label": {
-        "en": "Did the blast force you to move?",
-        "ar": "هل أرغمك الانفجار على ترك منزلك؟ "
+        "en": "Forced moved"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -542,16 +457,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Forced moved"
-      }
+      "editableInPortal": false
     },
     {
       "name": "foster-family",
       "label": {
-        "en": "Are you living with a foster family?",
-        "ar": "هل تعيش مع أسرة حاضنة؟ "
+        "en": "Foster family"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -577,16 +488,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Foster family"
-      }
+      "editableInPortal": false
     },
     {
       "name": "hospital-child",
       "label": {
-        "en": "Are there any children (younger than 18) in the hospital?",
-        "ar": "هل يوجد أطفال (أقل من 18 سنة) في المستشفى؟ "
+        "en": "Children hospital"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -612,16 +519,12 @@
         "yes": 4,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Children hospital"
-      }
+      "editableInPortal": false
     },
     {
       "name": "hospital-adult",
       "label": {
-        "en": "Are there any adults (18 or older) in the hospital?",
-        "ar": "هل يوجد أي بالغين (18 عامًا أو أكبر) في المستشفى؟ "
+        "en": "Adult hospital"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -647,16 +550,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Adult hospital"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-seeing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>seeing, even when wearing glasses</b>?",
-        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في<b> الرؤية ، حتى عند ارتداء النظارات</b>؟ "
+        "en": "Disability seeing"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -698,16 +597,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability seeing"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-hearing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>hearing, even when using a hearing aid</b>?",
-        "ar": "هل تواجه أنت أو أي فرد آخر من أفراد أسرتك صعوبة في<b> السمع ، حتى عند استخدام المعينات السمعية</b>؟ "
+        "en": "Disability hearing"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -749,16 +644,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability hearing"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-walking",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>walking or climbing steps</b>?",
-        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>المشي أو صعود السلم</b>؟ "
+        "en": "Disability walking"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -800,16 +691,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability walking"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-remembering",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>remembering or concentrating</b>?",
-        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>التذكر أو التركيز</b>؟ "
+        "en": "Disability remembering"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -851,16 +738,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability remembering"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-self-care",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>self-care such as washing or dressing</b>?",
-        "ar": "هل تعاني أنت أو أي فرد آخر من أفراد أسرتك من صعوبة في<b> العناية بالذات مثل الاغتسال أو ارتداء الملابس</b>؟ "
+        "en": "Disability self-care"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -902,16 +785,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability self-care"
-      }
+      "editableInPortal": false
     },
     {
       "name": "disability-adult-self-communicating",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>communicating, when using your (customary) language</b>?",
-        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>التواصل عند استخدام لغتك (العرفية)</b>؟ "
+        "en": "Disability communicating"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -953,16 +832,12 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Disability communicating"
-      }
+      "editableInPortal": false
     },
     {
       "name": "chronic-disease-child",
       "label": {
-        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?",
-        "ar": "هل يعاني أي طفل (أقل من 18 عامًا) من أسرتك من مرض مزمن أو حالات طبية خطيرة غير الإعاقة؟ "
+        "en": "Children chronic disease"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -988,16 +863,12 @@
         "yes": 4,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Children chronic disease"
-      }
+      "editableInPortal": false
     },
     {
       "name": "chronic-disease-adult",
       "label": {
-        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?",
-        "ar": "هل يعاني أي شخص بالغ (18 عامًا و ما فوق) من أسرتك من مرض مزمن أو حالات طبية خطيرة بخلاف الإعاقة؟ "
+        "en": "Adult chronic disease"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1023,16 +894,12 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Adult chronic disease"
-      }
+      "editableInPortal": false
     },
     {
       "name": "expenses-health",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>health</strong>?",
-        "ar": "ما هي نفقات أسرتكم الشهرية على<strong> الامور الصحية</strong>؟ "
+        "en": "Health expenses"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1066,16 +933,12 @@
         "500000-1000000": 1,
         "above-1000000": 2
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Health expenses"
-      }
+      "editableInPortal": false
     },
     {
       "name": "expenses-shelter",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>shelter</strong>?",
-        "ar": "ما هي نفقات أسرتكم الشهرية على <strong>المأوى</strong>؟ "
+        "en": "Shelter expenses"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1117,16 +980,12 @@
         "3000000-5000000": 6,
         "above-5000000": 8
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Shelter expenses"
-      }
+      "editableInPortal": false
     },
     {
       "name": "expenses-food",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>food</strong>?",
-        "ar": "ما هي نفقات أسرتكم الشهرية على <strong>الطعام</strong>؟ "
+        "en": "Food expenses"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1168,16 +1027,12 @@
         "3000000-5000000": 6,
         "above-5000000": 8
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Food expenses"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-sold-assests",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>sell household assets/goods (radio, furniture, refrigerator, television, etc..)</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي شخص في  أسرتكم <strong> ببيع ممتلكات / سلع منزلية (راديو ، أثاث ، ثلاجة ، تلفزيون ، إلخ ..)</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Sold household goods"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1203,16 +1058,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Sold household goods"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-spent-saving",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>spend savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل أنفق أي شخص في أسرتكم<strong> مدخرات (على سبيل المثال ، بيع المجوهرات ، والمدخرات النقدية)</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Spend savings"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1238,16 +1089,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Spend savings"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-borrowed-money",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>borrow money/food from formal lender/bank</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل أي شخص في أسرتكم<strong>  اقترض المال / الطعام من المقرض / البنك الرسمي</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Borrowed money"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1273,16 +1120,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Borrowed money"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-recuded-expenses",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>reduce expenses on health (including medication) and education</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي شخص في أسرتكم <strong>بتخفيض نفقات الصحة (بما في ذلك الأدوية) والتعليم </strong>، بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Reduced expenses"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1308,16 +1151,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Reduced expenses"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-withdraw-school",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>withdraw children from school</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي فرد في أسرتكم<strong> بسحب الأطفال من المدرسة </strong>بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Withdraw food"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1343,16 +1182,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Withdraw food"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-child-labor",
       "label": {
-        "en": "During the last 30 days, did any child in your household <strong>get involved in labor</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل  أي طفل في أسرتكم<strong> انخرط في العمل</strong> بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Child labor"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1378,16 +1213,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Child labor"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-household-migrated",
       "label": {
-        "en": "During the last 30 days, did your entire household <strong>migrate</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل <strong>نزحت</strong> أسرتكم بأكملها بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Household migrated"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1413,16 +1244,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Household migrated"
-      }
+      "editableInPortal": false
     },
     {
       "name": "food-sold-real-estate",
       "label": {
-        "en": "During the last 30 days, did anyone of your household <strong>sell a house or land</strong>, due to the lack of food or of money to buy food?",
-        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي فرد من أسرتك <strong>ببيع منزل أو أرض</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
+        "en": "Sold real estate"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1448,16 +1275,12 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Sold real estate"
-      }
+      "editableInPortal": false
     },
     {
       "name": "7-days-eat-less",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself eating less preferred/expensive foods?</strong>",
-        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها نفسك كعائلة <strong>تتناول أطعمة أقل تفضيلاً / باهظة الثمن</strong>؟ "
+        "en": "Eating less"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1507,16 +1330,12 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Eating less"
-      }
+      "editableInPortal": false
     },
     {
       "name": "7-days-borrowed-food",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself borrowing food or relying on help from friends and relatives?</strong>",
-        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيه أسرتكم نفسها<strong> تقترض طعامًا أو تعتمد على مساعدة الأصدقاء والأقارب</strong>؟ "
+        "en": "Borrowed food"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1566,16 +1385,12 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Borrowed food"
-      }
+      "editableInPortal": false
     },
     {
       "name": "7-days-reduce-portions",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting portion size at mealtime?</strong>",
-        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها أسرتكم نفسها ، <strong> تحد من حجم الوجبة</strong>؟ "
+        "en": "Reduced portions"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1625,16 +1440,12 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Reduced portions"
-      }
+      "editableInPortal": false
     },
     {
       "name": "7-days-reduce-portions-adults",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting adult intake in order for small children to eat?</strong>",
-        "ar": "خلال السبعة أيام الماضية ، كم عدد الأيام التي وجدت فيها  أسرتكم نفسها ،<strong> تحد من تناول البالغين الطعام حتى يأكل الأطفال الصغار</strong>؟ "
+        "en": "Reduced intake adults"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1684,16 +1495,12 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Reduced intake adults"
-      }
+      "editableInPortal": false
     },
     {
       "name": "7-days-reduce-nr-meals",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself reducing the number of meals per day?</strong>",
-        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها  أسرتكم نفسها ، <strong>تقلل من عدد الوجبات في اليوم</strong>؟ "
+        "en": "Reduced meals"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1743,16 +1550,12 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Reduced meals"
-      }
+      "editableInPortal": false
     },
     {
       "name": "income",
       "label": {
-        "en": "What is your household's income?",
-        "ar": "ما هو دخل أسرتكم الشهري؟ "
+        "en": "Household income"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1794,16 +1597,12 @@
         "3000000-5000000": 2,
         "above-5000000": 1
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Household income"
-      }
+      "editableInPortal": false
     },
     {
       "name": "income-source",
       "label": {
-        "en": "What is your household's main source of income?",
-        "ar": "ما هو مصدر الدخل الرئيسي لأسرتكم؟ "
+        "en": "Income source"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1877,16 +1676,12 @@
         "pension": 2,
         "humanitarian-assistance": 4
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Income source"
-      }
+      "editableInPortal": false
     },
     {
       "name": "debt",
       "label": {
-        "en": "Does your household have any debt?",
-        "ar": "هل يتكبد أسرتكم أي ديون؟ "
+        "en": "Debt"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1936,16 +1731,12 @@
         "above-5000000": 4,
         "no": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Debt"
-      }
+      "editableInPortal": false
     },
     {
       "name": "other-help",
       "label": {
-        "en": "Have you received any help from other organizations during the last 3 months or do you expect it within 3 months?",
-        "ar": "هل تلقيت أي مساعدة من منظمات أخرى خلال الأشهر الثلاثة الماضية أو هل تتوقعها في غضون 3 أشهر المقبلة؟ "
+        "en": "Other help"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1971,16 +1762,12 @@
         "no": 4,
         "yes": 0
       },
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Other help"
-      }
+      "editableInPortal": false
     },
     {
       "name": "where-register",
       "label": {
-        "en": "Did you register:",
-        "ar": "هل قمت بالتسجيل: "
+        "en": "Where registered"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -2003,16 +1790,12 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Where registered"
-      }
+      "editableInPortal": false
     },
     {
       "name": "name-social-worker",
       "label": {
-        "en": "What is the name of the social worker that helped you? (Type 'none' if not applicable)",
-        "ar": "ما هو اسم المساعدة الاجتماعية الذي ساعدتكم؟ (اكتب \"لا أحد\" إذا لا يوجد) "
+        "en": "Social worker"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -2020,10 +1803,7 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Social worker"
-      }
+      "editableInPortal": false
     }
   ],
   "aboutProgram": {

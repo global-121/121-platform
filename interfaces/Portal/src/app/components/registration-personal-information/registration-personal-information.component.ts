@@ -126,57 +126,60 @@ export class RegistrationPersonalInformationComponent implements OnInit {
           : '',
       });
     }
-    this.personalInfoTable.push({
-      label: this.getLabel('primaryLanguage'),
-      value: this.enumService.getEnumLabel(
-        'preferredLanguage',
-        this.person.preferredLanguage,
-      ),
-    });
 
-    if (this.canViewPersonalData) {
+    if (this.person.preferredLanguage) {
       this.personalInfoTable.push({
-        label: this.getLabel('phone'),
-        value:
-          this.person.phoneNumber === ''
-            ? this.person.phoneNumber
-            : `+${this.person.phoneNumber}`,
+        label: this.getLabel('primaryLanguage'),
+        value: this.enumService.getEnumLabel(
+          'preferredLanguage',
+          this.person.preferredLanguage,
+        ),
       });
     }
 
-    if (this.person) {
-      for (const ta of this.tableAttributes) {
-        if (!this.tableAttributesToShow.includes(ta.name)) {
-          continue;
-        }
+    if (this.canViewPersonalData && this.person.phoneNumber) {
+      this.personalInfoTable.push({
+        label: this.getLabel('phone'),
+        value: !this.person.phoneNumber ? '' : `+${this.person.phoneNumber}`,
+      });
+    }
 
-        const labelToTranslate = ta.shortLabel || ta.label;
-
-        let value = this.person[ta.name];
-        if (value === null || value === undefined) {
-          continue;
-        }
-        if (ta.type === 'tel') {
-          value = value === '' ? value : `+${value}`;
-        }
-
-        this.personalInfoTable.push({
-          label: this.translatableString.get(labelToTranslate),
-          value,
-        });
+    for (const ta of this.tableAttributes) {
+      if (!this.tableAttributesToShow.includes(ta.name)) {
+        continue;
       }
+
+      const labelToTranslate = ta.label;
+
+      let value = this.person[ta.name];
+      if (value === null || value === undefined) {
+        continue;
+      }
+      if (ta.type === 'tel') {
+        value = value === '' ? value : `+${value}`;
+      }
+
+      this.personalInfoTable.push({
+        label: this.translatableString.get(labelToTranslate),
+        value,
+      });
     }
 
-    if (!this.person.financialServiceProvider) {
-      return;
+    if (
+      this.person.financialServiceProvider &&
+      this.program.financialServiceProviders
+    ) {
+      this.personalInfoTable.push({
+        label: this.getLabel('fsp'),
+        value: this.translatableString.get(
+          this.program.financialServiceProviders.find(
+            (i) => i.fsp === this.person.financialServiceProvider,
+          )?.displayName,
+        ),
+      });
     }
 
-    this.personalInfoTable.push({
-      label: this.getLabel('fsp'),
-      value: this.translatableString.get(this.person.fspDisplayName),
-    });
-
-    if (this.program.enableScope) {
+    if (this.program.enableScope && this.person.scope) {
       this.personalInfoTable.push({
         label: this.getLabel('scope'),
         value: this.person.scope,

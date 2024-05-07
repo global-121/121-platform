@@ -1,9 +1,11 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { isIframed } from 'src/app/shared/utils/is-iframed.util';
 import { environment } from '../../../environments/environment';
 import { AppRoutes } from '../../app-routes.enum';
 import { AuthService } from '../../auth/auth.service';
@@ -15,7 +17,9 @@ import { SystemNotificationComponent } from '../../components/system-notificatio
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnDestroy {
-  @ViewChild('loginForm', { static: true })
+  public useSso = environment.use_sso_azure_entra;
+
+  @ViewChild('loginForm')
   public loginForm: NgForm;
 
   @ViewChild('systemNotification', { static: false })
@@ -45,8 +49,8 @@ export class LoginPage implements OnDestroy {
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
-    private msalService: MsalService,
     private router: Router,
+    private msalService?: MsalService,
   ) {}
 
   ngOnDestroy(): void {
@@ -80,7 +84,7 @@ export class LoginPage implements OnDestroy {
       .catch(({ error }) => {
         console.error(error);
         this.errorStatusCode = error?.statusCode;
-        if (error?.statusCode === 401) {
+        if (error?.statusCode === HttpStatusCode.Unauthorized) {
           this.showLoginFail.email = true;
           this.showLoginFail.password = true;
         }
@@ -114,18 +118,19 @@ export class LoginPage implements OnDestroy {
   }
 
   public loginSso() {
-    this.msalService.loginRedirect();
-  }
+    if (!isIframed()) {
+      this.msalService.loginRedirect();
+      return;
+    }
 
-  public showSsoLogin(): boolean {
-    return environment.use_sso_azure_entra === true;
-  }
-
-  public openAzurePopup() {
     this.msalSubscription = this.msalService.loginPopup().subscribe({
       next: async () => {
-        await this.authService.processAzureAuthSuccess(false);
-        await this.router.navigate(['/', AppRoutes.iframe, 'recipient']);
+        await this.authService.processAzureAuthSuccess();
+        await this.router.navigate([
+          '/',
+          AppRoutes.iframe,
+          AppRoutes.iframeRecipient,
+        ]);
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);

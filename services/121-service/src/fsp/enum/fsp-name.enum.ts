@@ -24,6 +24,7 @@ export enum FspConfigurationEnum {
   columnToMatch = 'columnToMatch',
   brandCode = 'brandCode',
   displayName = 'displayName',
+  coverLetterCode = 'coverLetterCode',
 }
 
 export const FspConfigurationMapping: { [key in FspName]?: any } = {
@@ -39,6 +40,7 @@ export const FspConfigurationMapping: { [key in FspName]?: any } = {
   ],
   [FspName.intersolveVisa]: [
     FspConfigurationEnum.brandCode,
+    FspConfigurationEnum.coverLetterCode,
     FspConfigurationEnum.displayName,
   ],
   [FspName.intersolveJumboPhysical]: [FspConfigurationEnum.displayName],

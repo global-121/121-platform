@@ -1,4 +1,4 @@
-<app-header [title]="'page.user.pageTitle'|translate"></app-header>
+<app-header [title]="'page.user.pageTitle' | translate"></app-header>
 
 <ion-content>
   <ion-grid class="util--full-height">
@@ -22,7 +22,7 @@
             <small>
               <strong>
                 <ion-text>
-                  {{ 'page.user.change-password.failed'|translate }}
+                  {{ 'page.user.change-password.failed' | translate }}
                 </ion-text>
               </strong>
             </small>
@@ -34,7 +34,7 @@
             <small>
               <strong>
                 <ion-text>
-                  {{ 'page.user.change-password.success'|translate }}
+                  {{ 'page.user.change-password.success' | translate }}
                 </ion-text>
               </strong>
             </small>
@@ -57,7 +57,7 @@
                 class="input-item--label auth-label"
                 (click)="passwordInput.setFocus()"
               >
-                {{ 'page.user.change-password.current-password'|translate }}
+                {{ 'page.user.change-password.current-password' | translate }}
               </label>
               <div class="input-item--content">
                 <ion-input
@@ -83,11 +83,10 @@
               >
                 <ion-text color="danger"
                   ><small
-                    ><strong
-                      >{{
-                      'page.login.form.error-messages.empty-password'|translate
-                      }}</strong
-                    ></small
+                    ><strong>{{
+                      'page.login.form.error-messages.empty-password'
+                        | translate
+                    }}</strong></small
                   ></ion-text
                 >
               </div>
@@ -102,7 +101,7 @@
                 class="input-item--label auth-label"
                 (click)="newPasswordInput.setFocus()"
               >
-                {{ 'page.user.change-password.new-password'|translate }}
+                {{ 'page.user.change-password.new-password' | translate }}
               </label>
               <div class="input-item--content">
                 <ion-input
@@ -128,11 +127,10 @@
                 <div class="validation-message">
                   <ion-note [color]="!validPassword ? 'danger' : 'medium'"
                     ><small
-                      ><strong
-                        >{{
-                        'page.user.notification-messages.password-requirements'|translate:
-                        {minLength: minLength} }}</strong
-                      ></small
+                      ><strong>{{
+                        'page.user.notification-messages.password-requirements'
+                          | translate: { minLength: minLength }
+                      }}</strong></small
                     ></ion-note
                   >
                 </div>
@@ -148,7 +146,7 @@
                 class="input-item--label auth-label"
                 (click)="confirmPasswordInput.setFocus()"
               >
-                {{ 'page.user.change-password.confirm-password'|translate }}
+                {{ 'page.user.change-password.confirm-password' | translate }}
               </label>
               <div class="input-item--content">
                 <ion-input
@@ -178,8 +176,10 @@
                   *ngIf="!samePassword"
                   ><small
                     ><strong
-                      >{{ "page.user.notification-messages.different-passwords"
-                      |translate }}
+                      >{{
+                        'page.user.notification-messages.different-passwords'
+                          | translate
+                      }}
                     </strong></small
                   ></ion-note
                 >
@@ -195,7 +195,7 @@
                 [disabled]="!newPasswordForm?.form?.valid || !samePassword"
                 color="secondary"
               >
-                {{ 'common.save'|translate }}
+                {{ 'common.save' | translate }}
               </ion-button>
             </div>
           </form>

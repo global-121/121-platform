@@ -1,23 +1,25 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { getFullISODate } from '../shared/utils/get-iso-date.util';
+import { isIframed } from '../shared/utils/is-iframed.util';
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
-export const CURRENT_USER_ENDPOINT_PATH = '/users/current';
-export const LOGIN_ENDPOINT_PATH = '/users/login';
-export const LOGOUT_ENDPOINT_PATH = '/users/logout';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private useSso = environment.use_sso_azure_entra;
+
   public redirectUrl: string;
-  private msalCollectionKey = 'msal.account.keys';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
@@ -25,12 +27,12 @@ export class AuthService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private router: Router,
-    private msalService: MsalService,
+    private msalService?: MsalService,
   ) {
-    this.checkAuthenticationState();
+    this.updateAuthenticationState();
   }
 
-  private checkAuthenticationState() {
+  private updateAuthenticationState() {
     const user = this.getUserFromStorage();
 
     this.authenticationState.next(user);
@@ -51,24 +53,25 @@ export class AuthService {
     );
   }
 
-  public async hasPermission(
+  public hasPermission(
     programId: number,
     requiredPermission: Permission,
     user?: User | null,
-  ): Promise<boolean> {
+  ): boolean {
     if (!user) {
       user = this.getUserFromStorage();
     }
-    // Use this to simulate a user not having a certain permission
+    // During development: Use this to simulate a user not having a certain permission
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-    const hasPermissionsInUserObject = Object.keys(user.permissions).includes(
-      programId.toString(),
-    );
-    if (!hasPermissionsInUserObject) {
-      await this.processAzureAuthSuccess(false);
+
+    // TODO: Move this to a better place in the flow, so it doesn't have to be checked this often
+    // Check with Azure (again) when user has no permissions (yet)
+    if (!this.isAssignedToProgram(programId, user)) {
+      this.processAzureAuthSuccess(); // Don't await, as it will block all permission-checks
     }
+
     return (
       user &&
       user.permissions &&
@@ -91,6 +94,21 @@ export class AuthService {
     );
   }
 
+  private setUserInStorage(user: User): void {
+    const userToStore: User = {
+      username: user.username,
+      permissions: user.permissions,
+      isAdmin: user.isAdmin,
+      isEntraUser: user.isEntraUser,
+    };
+
+    if (user.expires) {
+      userToStore.expires = user.expires;
+    }
+
+    localStorage.setItem(USER_KEY, JSON.stringify(userToStore));
+  }
+
   private getUserFromStorage(): User | null {
     const rawUser = localStorage.getItem(USER_KEY);
 
@@ -106,14 +124,25 @@ export class AuthService {
       console.warn('AuthService: Invalid token');
       return null;
     }
+
     if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
+
+    if (
+      // Only check for non-SSO users
+      !environment.use_sso_azure_entra &&
+      (!user.expires || Date.parse(user.expires) < Date.now())
+    ) {
+      console.warn('AuthService: Expired token');
+      return null;
+    }
+
     return {
       username: user.username,
       permissions: user.permissions,
-      expires: user.expires,
+      expires: user.expires ? user.expires : '',
       isAdmin: user.isAdmin,
       isEntraUser: user.isEntraUser,
     };
@@ -124,14 +153,14 @@ export class AuthService {
       this.programsService.login(username, password).then(
         (response) => {
           if (response) {
-            localStorage.setItem(USER_KEY, JSON.stringify(response));
+            this.setUserInStorage(response);
           }
 
           const user = this.getUserFromStorage();
-          this.authenticationState.next(user);
+          this.updateAuthenticationState();
 
           if (!user) {
-            return reject({ status: 401 });
+            return reject({ status: HttpStatusCode.Unauthorized });
           }
 
           if (this.redirectUrl) {
@@ -153,18 +182,23 @@ export class AuthService {
   }
 
   // TODO: Think of a better name for this method
-  public async processAzureAuthSuccess(redirectToHome = true): Promise<void> {
+  public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
     const userDto = await this.programsService.getCurrentUser();
-    this.processAzureUserSignIn(userDto.user, redirectToHome);
-  }
 
-  private processAzureUserSignIn(userRO: any, redirectToHome: boolean) {
-    localStorage.setItem(USER_KEY, JSON.stringify(userRO));
-    this.authenticationState.next(userRO);
+    if (!userDto || !userDto.user) {
+      localStorage.removeItem(USER_KEY);
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
+    await this.checkSsoTokenExpirationDate();
+    this.setUserInStorage(userDto.user);
+    this.updateAuthenticationState();
+
     if (redirectToHome) {
       setTimeout(() => {
         this.router.navigate(['/', AppRoutes.home]);
-      }, 2000);
+      }, 2_000);
     }
   }
 
@@ -186,55 +220,80 @@ export class AuthService {
 
   public async logout() {
     const user = this.getUserFromStorage();
-    const azureLocalStorageDataToClear = localStorage.getItem(
-      this.msalCollectionKey,
-    );
-    if (azureLocalStorageDataToClear && user) {
-      const currentUser = this.msalService.instance.getAccountByUsername(
-        user.username,
-      );
-      if (this.router.url.includes('iframe')) {
-        this.msalService.logoutPopup({
-          account: currentUser,
-          mainWindowRedirectUri: `${window.location.origin}/login`,
-        });
-      } else {
-        this.msalService.logoutRedirect({ account: currentUser });
-      }
-      localStorage.removeItem(this.msalCollectionKey);
+
+    if (!user || !user.username) {
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
     }
+
+    // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(USER_KEY);
-    this.authenticationState.next(null);
+
+    if (this.useSso) {
+      await this.logoutSsoUser(user.username);
+
+      // No need to continue here, as the MSAL service will handle the redirect/clenaup/rest.
+      return;
+    }
+
     await this.programsService.logout();
+    this.updateAuthenticationState();
     this.router.navigate(['/', AppRoutes.login]);
   }
 
-  public async logoutNonSSOUser() {
+  private async logoutSsoUser(username: string) {
+    const currentUser =
+      this.msalService.instance.getAccountByUsername(username);
+
+    if (!currentUser) {
+      this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
+    if (isIframed()) {
+      this.msalService.logoutPopup({
+        account: currentUser,
+        mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      });
+    } else {
+      this.msalService.logoutRedirect({
+        account: currentUser,
+      });
+    }
+  }
+
+  public async logoutNonSsoUser() {
     const user = this.getUserFromStorage();
+
     if (user?.isEntraUser === false) {
       console.log('Logging out non-SSO user', user.username);
       await this.logout();
     }
   }
 
-  async checkExpirationDate() {
+  public async checkSsoTokenExpirationDate(): Promise<void> {
     const user = this.getUserFromStorage();
-    if (user?.isEntraUser === true) {
-      const currentUser = this.msalService.instance.getAccountByUsername(
-        user.username,
-      );
-      const iat = currentUser.idTokenClaims.iat;
-      const issuedDate = new Date(iat * 1000);
-      if (issuedDate) {
-        const today = new Date();
-        if (
-          today.getDate() !== issuedDate.getDate() ||
-          today.getMonth() !== issuedDate.getMonth() ||
-          today.getFullYear() !== issuedDate.getFullYear()
-        ) {
-          await this.logout();
-        }
-      }
+
+    if (!user || (user && user.isEntraUser === false)) {
+      return;
     }
+
+    const currentUser = this.msalService.instance.getAccountByUsername(
+      user.username,
+    );
+
+    const today = new Date();
+    const issuedDate = new Date(currentUser?.idTokenClaims?.iat * 1_000);
+
+    if (
+      currentUser?.idTokenClaims?.iat &&
+      // Only allow tokens issued on the same day (both are in UTC, so not comparing to local time/day)
+      getFullISODate(today) === getFullISODate(issuedDate)
+    ) {
+      return;
+    }
+
+    // Force logout and redirect to login
+    await this.logout();
   }
 }

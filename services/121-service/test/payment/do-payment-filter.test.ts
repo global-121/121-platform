@@ -124,6 +124,9 @@ describe('Do payment with filter', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       includedRefrenceIds.length,
     );
+    expect(doPaymentResponse.body.totalFilterCount).toBe(
+      includedRefrenceIds.length,
+    );
     // Also check if the right amount of transactions are created
     expect(transactionsResponse.body.length).toBe(includedRefrenceIds.length);
   });
@@ -157,6 +160,7 @@ describe('Do payment with filter', () => {
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
+    expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
     expect(transactionsResponse.body.length).toBe(1);
   });
@@ -170,16 +174,14 @@ describe('Do payment with filter', () => {
       [],
       accessToken,
       {
-        // 'filter.status': '$ilike:included',
-        'filter.whatsappPhoneNumber': `$ilike:1415523777`,
-        // 'filter.paymentAmountMultiplier': `1`,
-        // sort: `firstName`,
-      },
+        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
+        'filter.lastName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
+      }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
-      [registrationOCW2.referenceId],
+      [registrationOCW3.referenceId],
       accessToken,
       10_000,
     );
@@ -192,6 +194,41 @@ describe('Do payment with filter', () => {
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
+    expect(doPaymentResponse.body.totalFilterCount).toBe(1);
+    // Also check if the right amount of transactions are created
+    expect(transactionsResponse.body.length).toBe(1);
+  });
+
+  it('should only pay included people with a combi of filter and search', async () => {
+    // Act
+    const doPaymentResponse = await doPayment(
+      programIdVisa,
+      paymentNrVisa,
+      amountVisa,
+      [],
+      accessToken,
+      {
+        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
+        search: `str`, // select addressStreet of registrationOCW1, registrationOCW3, registrationOCW4
+      }, // This combination should only be applicable to registrationOCW3, registrationOCW4 is filtered but not applicable because it is not included
+    );
+
+    await waitForPaymentTransactionsToComplete(
+      programIdVisa,
+      [registrationOCW3.referenceId],
+      accessToken,
+      10_000,
+    );
+    const transactionsResponse = await getTransactions(
+      programIdVisa,
+      paymentNrVisa,
+      null,
+      accessToken,
+    );
+    // Assert
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
+    expect(doPaymentResponse.body.totalFilterCount).toBe(2);
     // Also check if the right amount of transactions are created
     expect(transactionsResponse.body.length).toBe(1);
   });

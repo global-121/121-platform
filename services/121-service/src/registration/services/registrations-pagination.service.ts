@@ -15,10 +15,12 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { ProgramFspConfigurationService } from '../../programs/fsp-configuration/fsp-configuration.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import {
+  getFspDisplayNameMapping,
+  overwriteFspDisplayName,
+} from '../../programs/utils/overwrite-fsp-display-name.helper';
 import { ScopedQueryBuilder } from '../../scoped.repository';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { PermissionEnum } from '../../user/enum/permission.enum';
@@ -51,13 +53,10 @@ export class RegistrationsPaginationService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async getPaginate(
@@ -67,6 +66,9 @@ export class RegistrationsPaginationService {
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<Paginated<RegistrationViewEntity>> {
+    // Deep clone query here to prevent mutation out of this function
+    query = structuredClone(query);
+
     let paginateConfigCopy = { ...PaginateConfigRegistrationView };
     if (noLimit) {
       // These setting are needed to get all registrations
@@ -82,6 +84,13 @@ export class RegistrationsPaginationService {
     if (query.select && query.select.includes('name')) {
       if (fullnameNamingConvention) {
         query.select = query.select.concat(fullnameNamingConvention);
+      }
+    }
+
+    // If you want to select fspDisplayName, you also need to get financialServiceProvider because we need this to find the correct fspDisplayName
+    if (query.select && query.select.includes('fspDisplayName')) {
+      if (fullnameNamingConvention) {
+        query.select.push('financialServiceProvider');
       }
     }
 
@@ -118,6 +127,11 @@ export class RegistrationsPaginationService {
       );
     }
 
+    if (query.search) {
+      queryBuilder = this.addSearchToQueryBuilder(queryBuilder, query.search);
+      delete query.search;
+    }
+
     // Check if the sort contains at least one registration data name
     // At the moment we only support sorting on one field
     if (
@@ -133,7 +147,7 @@ export class RegistrationsPaginationService {
     }
 
     if (hasPersonalReadPermission) {
-      paginateConfigCopy.relations = ['data', 'dataSearchBy'];
+      paginateConfigCopy.relations = ['data'];
     } else {
       paginateConfigCopy.searchableColumns = [];
     }
@@ -163,6 +177,7 @@ export class RegistrationsPaginationService {
       orignalSelect,
       fullnameNamingConvention,
       hasPersonalReadPermission,
+      programId,
     );
     return result;
   }
@@ -209,6 +224,17 @@ export class RegistrationsPaginationService {
       programId,
       paginateQuery,
     );
+  }
+
+  private addSearchToQueryBuilder(
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
+    search: string,
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    queryBuilder.leftJoin('registration.data', 'registrationDataSearch');
+    queryBuilder.andWhere('registrationDataSearch.value ILIKE :search', {
+      search: `%${search}%`,
+    });
+    return queryBuilder;
   }
 
   private async throwIfNoTransactionReadPermission(
@@ -442,7 +468,13 @@ export class RegistrationsPaginationService {
     orignalSelect: string[],
     fullnameNamingConvention: string[],
     hasPersonalReadPermission: boolean,
+    programId: number,
   ): Promise<RegistrationViewEntity[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders', 'programFspConfiguration'],
+    });
+    const fspDisplayNameMapping = getFspDisplayNameMapping(program);
     const mappedData: RegistrationViewEntity[] = [];
     for (const registration of paginatedResult.data) {
       const mappedRootRegistration = this.mapRootRegistration(
@@ -456,8 +488,19 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      mappedRegistration.fspDisplayName =
-        await this.overwriteFspDisplayName(mappedRegistration);
+      if (!orignalSelect || orignalSelect?.includes('fspDisplayName')) {
+        mappedRegistration.fspDisplayName = overwriteFspDisplayName(
+          mappedRegistration,
+          fspDisplayNameMapping,
+        );
+        if (
+          orignalSelect &&
+          !orignalSelect.includes('financialServiceProvider')
+        ) {
+          delete mappedRegistration.financialServiceProvider;
+        }
+      }
+
       mappedData.push(mappedRegistration);
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
@@ -470,35 +513,6 @@ export class RegistrationsPaginationService {
       }
     }
     return mappedData;
-  }
-
-  private async overwriteFspDisplayName(
-    registration: RegistrationViewEntity,
-  ): Promise<string> {
-    if (registration.financialServiceProvider) {
-      const financialServiceProvider =
-        await this.financialServiceProviderRepository.findOne({
-          where: { fsp: registration.financialServiceProvider },
-        });
-
-      if (financialServiceProvider) {
-        const programFspDisplayNameConfig =
-          await this.programFspConfigurationService.findDisplayNameConfiguration(
-            registration.programId,
-            financialServiceProvider.id,
-          );
-
-        if (programFspDisplayNameConfig) {
-          registration.fspDisplayName = Object.assign(
-            {},
-            financialServiceProvider.displayName,
-            programFspDisplayNameConfig.value,
-          ) as string;
-        }
-      }
-    }
-
-    return registration.fspDisplayName;
   }
 
   private mapRootRegistration(
@@ -518,7 +532,6 @@ export class RegistrationsPaginationService {
       mappedRegistration = { ...registration };
     }
     delete mappedRegistration.data;
-    delete mappedRegistration.dataSearchBy;
     if (!hasPersonalReadPermission) {
       delete mappedRegistration.phoneNumber;
     }
@@ -541,7 +554,6 @@ export class RegistrationsPaginationService {
         'programQuestionId',
         'fspQuestionId',
         'programCustomAttributeId',
-        'monitoringQuestionId',
       ];
       for (const property of propertiesToCheck) {
         if (
@@ -655,17 +667,19 @@ export class RegistrationsPaginationService {
     status: StatusEnum,
     paymentNumber: string,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
+    const paymentNumberKey = `${alias}PaymentNumber`;
+    const statusKey = `${alias}Status`;
     queryBuilder.leftJoin(
       'registration.latestTransactions',
       alias,
-      `"${alias}"."payment" = :paymentNumber`,
-      { paymentNumber: paymentNumber },
+      `"${alias}"."payment" = :${paymentNumberKey}`,
+      { [paymentNumberKey]: paymentNumber },
     );
     if (status) {
       queryBuilder
         .innerJoin(`${alias}.transaction`, `transaction${alias}`)
-        .andWhere(`"transaction${alias}"."status" = :status`, {
-          status: status,
+        .andWhere(`"transaction${alias}"."status" = :${statusKey}`, {
+          [statusKey]: status,
         });
     } else {
       queryBuilder.andWhere(`"${alias}"."id" IS NULL`);

@@ -95,13 +95,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
-        const fspDeatils = await this.programsService.getFspById(fsp.id);
-        fspDeatils.displayName = Object.assign(
+        const fspDetails = await this.programsService.getFspById(fsp.id);
+        fspDetails.displayName = Object.assign(
           {},
-          fspDeatils.displayName,
+          fspDetails.displayName,
           fsp.displayName,
         );
-        this.fspList.push(fspDeatils);
+        this.fspList.push(fspDetails);
       }
     }
 
@@ -285,9 +285,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           options = this.getDropdownOptions(paTableAttribute);
         }
         const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;
-        let label = this.translate.instant(translationKey).shortLabel;
+        let label = this.translate.instant(translationKey).label;
         if (!label) {
-          label = this.translatableString.get(paTableAttribute.shortLabel);
+          label = this.translatableString.get(paTableAttribute.label);
         }
         return {
           name: paTableAttribute.name,

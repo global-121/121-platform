@@ -1,5 +1,5 @@
 {
-  "published": false,
+  "published": true,
   "validation": false,
   "phase": "design",
   "location": "Nederland",
@@ -43,15 +43,16 @@
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
         }
       ]
     }
   ],
   "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
-  "meetingDocuments": {
-    "en": ""
-  },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {
@@ -75,7 +76,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Phone number"
+        "en": "Phone Number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -88,10 +89,7 @@
       "scoring": {},
       "duplicateCheck": true,
       "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Phone Number"
-      }
+      "editableInPortal": false
     }
   ],
   "aboutProgram": {

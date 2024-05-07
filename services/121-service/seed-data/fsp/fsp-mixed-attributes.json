@@ -12,91 +12,63 @@
     {
       "name": "phoneNumber",
       "label": {
-        "ar": "رقم الهاتف مع رمز البلد. يجب أن يبدو مثل: <strong>+000 000 00 00</strong>",
-        "en": "Phone number with country-code. It should look like: <strong>+000 000 00 00</strong>",
-        "es": "Número de teléfono con código de país. Debería verse así: <strong>+000 000 00 00</strong>",
-        "fr": "Numéro de téléphone avec indicatif du pays. Cela devrait ressembler à : <strong>+000 000 00 00</strong>",
-        "nl": "Telefoonnummer met landcode. Het zou er zo uit moeten zien: <strong>+000 000 00 00</strong>"
-      },
-      "placeholder": {
-        "en": "+000 000 00 00"
-      },
-      "answerType": "tel",
-      "options": null,
-      "shortLabel": {
         "ar": "الهاتف.",
         "en": "Phone Nr.",
         "es": "Nr. teléfono",
         "fr": "Nr. de téléphone",
         "nl": "Telefoonnr."
-      }
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
+      },
+      "answerType": "tel",
+      "options": null
     },
     {
       "name": "accountId",
       "label": {
-        "ar": "رقم حسابك",
-        "en": "Your account number",
-        "es": "Tu numero de cuenta",
-        "fr": "Votre numéro de compte",
-        "nl": "Uw rekeningnummer"
-      },
-      "answerType": "numeric",
-      "options": null,
-      "shortLabel": {
         "ar": "حسابك",
         "en": "Account Nr.",
         "es": "Num. de cuenta",
         "fr": "Num. de compte",
         "nl": "Rekeningnr."
-      }
+      },
+      "answerType": "numeric",
+      "options": null
     },
     {
       "name": "date",
       "label": {
-        "ar": "تاريخك",
-        "en": "Your date",
-        "es": "Tu fecha",
-        "fr": "Votre date",
-        "nl": "Uw datum"
-      },
-      "answerType": "date",
-      "options": null,
-      "shortLabel": {
         "ar": "تاريخ",
         "en": "Date",
         "es": "Fecha",
         "fr": "Date",
         "nl": "Datum"
-      }
+      },
+      "answerType": "date",
+      "options": null
     },
     {
       "name": "openAnswer",
       "label": {
-        "ar": "إجابتك",
-        "en": "Your answer",
-        "es": "Tu respuesta",
-        "fr": "Votre Réponse",
-        "nl": "Uw antwoord"
-      },
-      "answerType": "text",
-      "pattern": ".+",
-      "options": null,
-      "shortLabel": {
         "ar": "إجابة مفتوحة",
         "en": "Open Answer",
         "es": "Abrir respuesta",
         "fr": "Réponse ouverte",
         "nl": "Open antwoord"
-      }
+      },
+      "answerType": "text",
+      "pattern": ".+",
+      "options": null
     },
     {
       "name": "fixedChoice",
       "label": {
-        "ar": "اختيارك",
-        "en": "Your choice",
-        "es": "Tu elección",
-        "fr": "Votre choix",
-        "nl": "Uw keuze"
+        "ar": "خيار",
+        "en": "Choice",
+        "es": "Elección",
+        "fr": "Choix",
+        "nl": "Keuze"
       },
       "answerType": "dropdown",
       "options": [
@@ -120,14 +92,7 @@
             "nl": "Nee"
           }
         }
-      ],
-      "shortLabel": {
-        "ar": "خيار",
-        "en": "Choice",
-        "es": "Elección",
-        "fr": "Choix",
-        "nl": "Keuze"
-      }
+      ]
     }
   ]
 }

@@ -1,9 +1,10 @@
 import { TranslateService } from '@ngx-translate/core';
+import FspName from '../enums/fsp-name.enum';
 import { FspIntegrationType } from '../models/fsp.model';
 import { Program } from '../models/program.model';
 
 export function getFspIntegrationType(
-  fspsInPayment: string[],
+  fspsInPayment: FspName[],
   program: Program,
 ) {
   // In case of multiple FSPs default integrationType to API, but overwrite if any FSP has a different integration type

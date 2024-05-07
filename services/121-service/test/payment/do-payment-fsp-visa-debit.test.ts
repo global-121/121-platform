@@ -5,6 +5,7 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '../../seed-data/mock/visa-card.data';
+import { FspConfigurationEnum } from '../../src/fsp/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -13,7 +14,9 @@ import { waitFor } from '../../src/utils/waitFor.helper';
 import { adminOwnerDto } from '../fixtures/user-owner';
 import {
   changePhase,
+  deleteFspConfiguration,
   doPayment,
+  getFspConfiguration,
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -641,6 +644,61 @@ describe('Do payment to 1 PA', () => {
         150 - (6000 * 2) / 100 - 0, // = 30
       );
       expect(transactionsResponse4.text).toContain(StatusEnum.success);
+    });
+
+    it('should faild pay-out by visa debit if coverletterCode is not configured for the program', async () => {
+      // Arrange
+      await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+      await awaitChangePaStatus(
+        programIdVisa,
+        [registrationVisa.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationVisa.referenceId];
+
+      const fspConfig = await getFspConfiguration(programIdVisa, accessToken);
+      const coverLetterCodeForFspConfigRecord = fspConfig.body.find(
+        (fspConfig) => fspConfig.name === FspConfigurationEnum.coverLetterCode,
+      );
+      await deleteFspConfiguration(
+        programIdVisa,
+        coverLetterCodeForFspConfigRecord.id,
+        accessToken,
+      );
+
+      // Act
+      const doPaymentResponse = await doPayment(
+        programIdVisa,
+        paymentNrVisa,
+        amountVisa,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitForPaymentTransactionsToComplete(
+        programIdVisa,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+      );
+
+      // Assert
+      const transactionsResponse = await getTransactions(
+        programIdVisa,
+        paymentNrVisa,
+        registrationVisa.referenceId,
+        accessToken,
+      );
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(transactionsResponse.text).toContain(
+        "CREATE DEBIT CARD ERROR: 400 - No coverLetterCode found for financial service provider under program 3. Please update the program's financial service provider cofinguration.",
+      );
     });
   });
 

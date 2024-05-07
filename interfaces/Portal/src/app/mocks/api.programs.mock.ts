@@ -22,7 +22,7 @@ const programsArray: Program[] = [
     phase: ProgramPhase.design,
     validation: false,
     author: {},
-    published: false,
+    published: true,
     notifications: { en: 'Notification text' },
     programCustomAttributes: [
       {
@@ -47,7 +47,6 @@ const programsArray: Program[] = [
         options: null,
         phases: [],
         duplicateCheck: false,
-        shortLabel: { en: 'Phone Number' },
       },
     ],
     languages: [LanguageEnum.en],
