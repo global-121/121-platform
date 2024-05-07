@@ -7,6 +7,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { expect, test } from '@playwright/test';
+import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
@@ -47,7 +48,9 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   });
 
   await test.step('Should open PA profile and open edit pop-up', async () => {
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      data['registration-details'].pageTitle,
+    );
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
     await registration.validateFspNamePresentInEditPopUp(

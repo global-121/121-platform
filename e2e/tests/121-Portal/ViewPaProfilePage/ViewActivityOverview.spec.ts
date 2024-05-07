@@ -43,7 +43,9 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
 
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      data['registration-details'].pageTitle,
+    );
     await registration.openActivityOverviewTab('Status history');
     await registration.validateChangeLogTile(
       data['registration-details']['activity-overview'].activities.status.label,

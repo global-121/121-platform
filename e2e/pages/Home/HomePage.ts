@@ -11,7 +11,7 @@ class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.activeProgramsBanner = this.page.locator('p.ion-no-margin');
-    this.programCard = this.page.locator('app-program-card');
+    this.programCard = this.page.locator('[data-testid="program-card"]');
     this.openPAsForRegistrationButton = this.page.locator(
       'ion-button.ion-margin-start',
     );

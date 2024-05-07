@@ -3,8 +3,6 @@ import { Page } from 'playwright';
 
 class RegistrationDetails {
   readonly page: Page;
-  readonly personAffectedActivityOverviewHeader: Locator;
-  readonly registratrationDetailsHeader: Locator;
   readonly personalInformationTable: Locator;
   readonly personAffectedName: Locator;
   readonly personAffectedStatus: Locator;
@@ -27,16 +25,12 @@ class RegistrationDetails {
 
   constructor(page: Page) {
     this.page = page;
-    this.registratrationDetailsHeader = this.page.locator(
-      'h1.ion-no-margin:has-text("Registration details")',
-    );
-    this.personAffectedActivityOverviewHeader = this.page.locator(
-      'h1.ion-padding-start.ion-no-margin',
-    );
     this.personalInformationTable = this.page.locator(
-      'app-registration-personal-information',
+      '[data-testid="personal-information-data"]',
     );
-    this.personAffectedName = this.page.locator('ion-card-subtitle ion-note');
+    this.personAffectedName = this.page.locator(
+      '[data-testid="registration-details-name"]',
+    );
     this.personAffectedStatus = this.page.locator('ion-label:text("Status")');
     this.personAffectedStatusDateUpdate = this.page.locator(
       'ion-item:has(ion-label:has-text("Status")) ion-label strong',
@@ -50,15 +44,19 @@ class RegistrationDetails {
     this.financialServiceProvider = this.page.locator(
       'ion-item:has(ion-label:has-text("Financial")) ion-label strong',
     );
-    this.showAllButton = this.page.locator('ion-button:text("Show All")');
+    this.showAllButton = this.page.locator('[data-testid="show-all-button"]');
     this.editPersonAffectedPopUp = this.page.locator(
       'app-edit-person-affected-popup',
     );
     this.financialServiceProviderDropdown = this.page.locator(
       'app-update-fsp #select-label',
     );
-    this.debitCardPaTable = this.page.locator('ion-card-title');
-    this.debitCardStatus = this.page.locator('ion-label');
+    this.debitCardPaTable = this.page.locator(
+      '[data-testid="physical-cards-overview-title"]',
+    );
+    this.debitCardStatus = this.page.locator(
+      '[data-testid="card-status-chip"]',
+    );
     this.tabButton = this.page.locator(
       '[data-testid="activity-detail-tab-button"]',
     );
@@ -82,15 +80,9 @@ class RegistrationDetails {
     );
   }
 
-  async validatePaProfileOpened() {
+  async validateHeaderToContainText(headerTitle: string) {
     await this.page.waitForURL(/\/registration\//);
-    expect(await this.registratrationDetailsHeader.textContent()).toContain(
-      `Registration details`,
-    );
-    await expect(this.personAffectedActivityOverviewHeader).toBeVisible();
-    expect(await this.personAffectedActivityOverviewHeader.isVisible()).toBe(
-      true,
-    );
+    await expect(this.page.getByText(headerTitle)).toBeVisible();
   }
 
   async validatePersonalInformationTable(
@@ -132,16 +124,13 @@ class RegistrationDetails {
     expect(await fspLocator.isVisible()).toBe(true);
   }
 
-  async validateDebitCardStatus(status: string) {
+  async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
     await this.page.waitForLoadState('networkidle');
-    expect(
-      await this.debitCardPaTable
-        .filter({ hasText: 'Debit cards' })
-        .isVisible(),
-    ).toBe(true);
-    expect(
-      await this.debitCardStatus.filter({ hasText: status }).isVisible(),
-    ).toBe(true);
+    const activeCard = this.debitCardStatus.filter({ hasText: status });
+    expect(await this.debitCardPaTable.textContent()).toContain(
+      cardOverviewTitle,
+    );
+    expect(await activeCard.textContent()).toContain(status);
   }
 
   async issueNewVisaDebitCard() {

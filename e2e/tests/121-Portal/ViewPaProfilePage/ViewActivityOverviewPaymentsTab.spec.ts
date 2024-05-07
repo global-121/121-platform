@@ -8,7 +8,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import { default as englishTranslations } from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 test.beforeEach(async ({ page }) => {
@@ -42,7 +42,9 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      englishTranslations['registration-details'].pageTitle,
+    );
     await registration.openActivityOverviewTab('Payments');
     await registration.validatePaymentsTab(
       englishTranslations.page.program.phases.payment.label,
