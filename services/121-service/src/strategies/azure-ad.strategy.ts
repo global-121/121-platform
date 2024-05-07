@@ -67,7 +67,9 @@ export class AzureAdStrategy
     }
 
     let user: UserEntity;
-    const usernamePayload: string = payload.preferred_username?.toLowerCase();
+    const usernamePayload: string =
+      payload.unique_name?.toLowerCase() ||
+      payload.preferred_username?.toLowerCase();
     const splitUsernamePayload = usernamePayload.split('mail#');
     const username =
       splitUsernamePayload.length > 1
