@@ -14,7 +14,7 @@ const mockMessageJob: MessageJobDto = {
   phoneNumber: '1234567890',
   programId: 1,
   message: 'test message',
-  key: 'key',
+  messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,
   messageProcessType: MessageProcessType.whatsappTemplateGeneric,
 };

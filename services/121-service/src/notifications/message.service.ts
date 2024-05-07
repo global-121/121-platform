@@ -42,7 +42,7 @@ export class MessageService {
         ? messageJobDto.message
         : await this.getNotificationText(
             messageJobDto.preferredLanguage,
-            messageJobDto.key,
+            messageJobDto.messageTemplateKey,
             messageJobDto.programId,
           );
       if (messageJobDto.customData?.placeholderData) {
@@ -256,12 +256,12 @@ export class MessageService {
 
   private async getNotificationText(
     language: string,
-    key: string,
+    messageTemplateKey: string,
     programId: number,
   ): Promise<string> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
       program: { id: programId },
-      type: key,
+      type: messageTemplateKey,
     });
 
     const notification = messageTemplates.find(

@@ -21,7 +21,7 @@ const defaultMessageJob = {
   preferredLanguage: LanguageEnum.en,
   referenceId: 'ref-test',
   message: 'test message',
-  key: 'key',
+  messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,
 } as MessageJobDto;
 
@@ -62,7 +62,7 @@ describe('QueueMessageService', () => {
     await queueMessageService.addMessageToQueue(
       registration,
       'test message',
-      'key',
+      defaultMessageJob.messageTemplateKey,
       MessageContentType.custom,
       MessageProcessType.whatsappTemplateGeneric,
     );
@@ -100,7 +100,7 @@ describe('QueueMessageService', () => {
     await queueMessageService.addMessageToQueue(
       registration,
       'test message',
-      'key',
+      defaultMessageJob.messageTemplateKey,
       MessageContentType.custom,
       MessageProcessType.whatsappTemplateGeneric,
     );
