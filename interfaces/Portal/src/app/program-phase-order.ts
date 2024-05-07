@@ -7,11 +7,7 @@ export const PROGRAM_PHASE_ORDER = [
   },
   {
     id: 2,
-    name: ProgramPhase.registrationValidation,
-  },
-  {
-    id: 3,
-    name: ProgramPhase.inclusion,
+    name: ProgramPhase.peopleAffected,
   },
   {
     id: 4,

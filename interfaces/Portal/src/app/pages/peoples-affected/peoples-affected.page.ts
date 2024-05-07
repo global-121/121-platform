@@ -7,16 +7,16 @@ import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-a
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
-  selector: 'app-registration-validation',
-  templateUrl: './registration-validation.page.html',
-  styleUrls: ['./registration-validation.page.scss'],
+  selector: 'app-peoples-affected',
+  templateUrl: './peoples-affected.page.html',
+  styleUrls: ['./peoples-affected.page.scss'],
 })
-export class RegistrationValidationPage implements OnInit {
+export class PeoplesAffectedPage implements OnInit {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
   public program: Program;
-  public thisPhase = ProgramPhase.registrationValidation;
+  public thisPhase = ProgramPhase.peopleAffected;
   public isReady: boolean;
 
   public enumExportType = ExportType;

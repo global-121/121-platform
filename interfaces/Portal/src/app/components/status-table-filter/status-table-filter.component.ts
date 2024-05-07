@@ -30,7 +30,12 @@ export class StatusTableFilterComponent {
   public selectAll: boolean;
 
   public paStatusDefaultsPerPhase = {
-    [ProgramPhase.registrationValidation]: [RegistrationStatus.registered],
+    [ProgramPhase.peopleAffected]: [
+      RegistrationStatus.validated,
+      RegistrationStatus.registered,
+      RegistrationStatus.paused,
+      RegistrationStatus.declined,
+    ],
     [ProgramPhase.inclusion]: [
       RegistrationStatus.validated,
       RegistrationStatus.registered,
