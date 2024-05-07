@@ -44,7 +44,11 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
 
     await registration.validateHeaderToContainText(
+<<<<<<< HEAD
       englishTranslations['registration-details'].pageTitle,
+=======
+      data['registration-details'].pageTitle,
+>>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     await registration.openActivityOverviewTab('Status history');
     await registration.validateChangeLogTile(

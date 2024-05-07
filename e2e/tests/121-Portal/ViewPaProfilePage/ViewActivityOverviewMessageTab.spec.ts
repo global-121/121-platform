@@ -8,6 +8,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
+import data from '../../../../../121-platform/interfaces/Portal/src/assets/i18n/en.json';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
@@ -39,7 +40,11 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
 
   await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {
     await registration.validateHeaderToContainText(
+<<<<<<< HEAD
       englishTranslations['registration-details'].pageTitle,
+=======
+      data['registration-details'].pageTitle,
+>>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     await registration.openActivityOverviewTab('Messages');
     await registration.validateSentMessagesTab(
