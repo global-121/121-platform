@@ -1,52 +1,96 @@
-import { expect } from '@playwright/test';
+import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 
 class RegistrationDetails {
-  page: Page;
-  personAffectedActivityOverviewHeader = 'h1.ion-padding-start.ion-no-margin';
-  registratrationDetailsHeader =
-    'h1.ion-no-margin:has-text("Registration details")';
-  personalInformationTable = 'app-registration-personal-information';
-  personAffectedName = 'ion-card-subtitle ion-note';
-  personAffectedStatus = '//ion-label[contains(text(), "Status")]';
-  personAffectedStatusDateUpdate =
-    '//ion-item[contains(ion-label, "Status")]/ion-label/strong';
-  primaryLanguage =
-    '//ion-item[contains(ion-label, "Primary language")]/ion-label/strong';
-  phoneNumber =
-    '//ion-item[contains(ion-label, "Phone number")]/ion-label/strong';
-  financialServiceProvider =
-    '//ion-item[contains(ion-label, "Financial")]/ion-label/strong';
-  showAllButton = 'ion-button:text("Show All")';
-  editPersonAffectedPopUp = 'app-edit-person-affected-popup';
-  financialServiceProviderDropdown = 'app-update-fsp #select-label';
-  debitCardPaTable = 'ion-card-title';
-  debitCardStatus = 'ion-label';
-  tabButton = '[data-testid="activity-detail-tab-button"]';
-  historyTile = '[data-testid="activity-detail-tile"]';
-  historyTileTitle = '[data-testid="activity-detail-label"]';
-  historyTileUserName = '[data-testid="activity-detail-username"]';
-  historyTileTimeStamp = '[data-testid="activity-detail-date"]';
-  tileInformationPlaceHolder = '[data-testid="activity-detail-change"]';
-  tileInformationStatus = '[data-testid="activity-detail-status"]';
+  readonly page: Page;
+  readonly personAffectedActivityOverviewHeader: Locator;
+  readonly registratrationDetailsHeader: Locator;
+  readonly personalInformationTable: Locator;
+  readonly personAffectedName: Locator;
+  readonly personAffectedStatus: Locator;
+  readonly personAffectedStatusDateUpdate: Locator;
+  readonly primaryLanguage: Locator;
+  readonly phoneNumber: Locator;
+  readonly financialServiceProvider: Locator;
+  readonly showAllButton: Locator;
+  readonly editPersonAffectedPopUp: Locator;
+  readonly financialServiceProviderDropdown: Locator;
+  readonly debitCardPaTable: Locator;
+  readonly debitCardStatus: Locator;
+  readonly tabButton: Locator;
+  readonly historyTile: Locator;
+  readonly historyTileTitle: Locator;
+  readonly historyTileUserName: Locator;
+  readonly historyTileTimeStamp: Locator;
+  readonly tileInformationPlaceHolder: Locator;
+  readonly tileInformationStatus: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.registratrationDetailsHeader = this.page.locator(
+      'h1.ion-no-margin:has-text("Registration details")',
+    );
+    this.personAffectedActivityOverviewHeader = this.page.locator(
+      'h1.ion-padding-start.ion-no-margin',
+    );
+    this.personalInformationTable = this.page.locator(
+      'app-registration-personal-information',
+    );
+    this.personAffectedName = this.page.locator('ion-card-subtitle ion-note');
+    this.personAffectedStatus = this.page.locator('ion-label:text("Status")');
+    this.personAffectedStatusDateUpdate = this.page.locator(
+      'ion-item:has(ion-label:has-text("Status")) ion-label strong',
+    );
+    this.primaryLanguage = this.page.locator(
+      'ion-item:has(ion-label:has-text("Primary language")) ion-label strong',
+    );
+    this.phoneNumber = this.page.locator(
+      'ion-item:has(ion-label:has-text("Phone number")) ion-label strong',
+    );
+    this.financialServiceProvider = this.page.locator(
+      'ion-item:has(ion-label:has-text("Financial")) ion-label strong',
+    );
+    this.showAllButton = this.page.locator('ion-button:text("Show All")');
+    this.editPersonAffectedPopUp = this.page.locator(
+      'app-edit-person-affected-popup',
+    );
+    this.financialServiceProviderDropdown = this.page.locator(
+      'app-update-fsp #select-label',
+    );
+    this.debitCardPaTable = this.page.locator('ion-card-title');
+    this.debitCardStatus = this.page.locator('ion-label');
+    this.tabButton = this.page.locator(
+      '[data-testid="activity-detail-tab-button"]',
+    );
+    this.historyTile = this.page.locator(
+      '[data-testid="activity-detail-tile"]',
+    );
+    this.historyTileTitle = this.page.locator(
+      '[data-testid="activity-detail-label"]',
+    );
+    this.historyTileUserName = this.page.locator(
+      '[data-testid="activity-detail-username"]',
+    );
+    this.historyTileTimeStamp = this.page.locator(
+      '[data-testid="activity-detail-date"]',
+    );
+    this.tileInformationPlaceHolder = this.page.locator(
+      '[data-testid="activity-detail-change"]',
+    );
+    this.tileInformationStatus = this.page.locator(
+      '[data-testid="activity-detail-status"]',
+    );
   }
 
   async validatePaProfileOpened() {
     await this.page.waitForURL(/\/registration\//);
-    expect(
-      await this.page.locator(this.registratrationDetailsHeader).textContent(),
-    ).toContain(`Registration details`);
-    await expect(
-      this.page.locator(this.personAffectedActivityOverviewHeader),
-    ).toBeVisible();
-    expect(
-      await this.page
-        .locator(this.personAffectedActivityOverviewHeader)
-        .isVisible(),
-    ).toBe(true);
+    expect(await this.registratrationDetailsHeader.textContent()).toContain(
+      `Registration details`,
+    );
+    await expect(this.personAffectedActivityOverviewHeader).toBeVisible();
+    expect(await this.personAffectedActivityOverviewHeader.isVisible()).toBe(
+      true,
+    );
   }
 
   async validatePersonalInformationTable(
@@ -57,52 +101,33 @@ class RegistrationDetails {
     phoneNumber: string,
     fsp: string,
   ) {
-    await expect(
-      this.page.locator(this.personalInformationTable),
-    ).toBeVisible();
-    expect(
-      await this.page.locator(this.personalInformationTable).isVisible(),
-    ).toBe(true);
-    expect(
-      await this.page.locator(this.personAffectedName).textContent(),
-    ).toContain(name);
-    expect(
-      await this.page.locator(this.personAffectedStatus).textContent(),
-    ).toContain(status);
-    expect(
-      await this.page
-        .locator(this.personAffectedStatusDateUpdate)
-        .textContent(),
-    ).toContain(date);
-    expect(
-      await this.page.locator(this.primaryLanguage).textContent(),
-    ).toContain(language);
-    expect(await this.page.locator(this.phoneNumber).textContent()).toContain(
-      phoneNumber,
+    await expect(this.personalInformationTable).toBeVisible();
+    expect(await this.personalInformationTable.isVisible()).toBe(true);
+    expect(await this.personAffectedName.textContent()).toContain(name);
+    expect(await this.personAffectedStatus.textContent()).toContain(status);
+    expect(await this.personAffectedStatusDateUpdate.textContent()).toContain(
+      date,
     );
-    expect(
-      await this.page.locator(this.financialServiceProvider).textContent(),
-    ).toContain(fsp);
+    expect(await this.primaryLanguage.textContent()).toContain(language);
+    expect(await this.phoneNumber.textContent()).toContain(phoneNumber);
+    expect(await this.financialServiceProvider.textContent()).toContain(fsp);
   }
 
   async openEditPaPopUp() {
-    await this.page.click(this.showAllButton);
+    const showAllButton = this.page.getByTestId('show-all-button');
+    await showAllButton.click();
   }
 
   async validateEditPaPopUpOpened() {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.editPersonAffectedPopUp);
-    const isVisible = await this.page
-      .locator(this.editPersonAffectedPopUp)
-      .isVisible();
+    await this.editPersonAffectedPopUp.waitFor({ state: 'visible' });
+    const isVisible = await this.editPersonAffectedPopUp.isVisible();
     expect(isVisible).toBe(true);
   }
 
   async validateFspNamePresentInEditPopUp(fspName: string) {
     await this.page.waitForLoadState('networkidle');
-    const fspLocator = this.page
-      .locator(this.financialServiceProviderDropdown)
-      .getByText(fspName);
+    const fspLocator = this.financialServiceProviderDropdown.getByText(fspName);
     await fspLocator.scrollIntoViewIfNeeded();
     expect(await fspLocator.isVisible()).toBe(true);
   }
@@ -110,24 +135,18 @@ class RegistrationDetails {
   async validateDebitCardStatus(status: string) {
     await this.page.waitForLoadState('networkidle');
     expect(
-      await this.page
-        .locator(this.debitCardPaTable)
+      await this.debitCardPaTable
         .filter({ hasText: 'Debit cards' })
         .isVisible(),
     ).toBe(true);
     expect(
-      await this.page
-        .locator(this.debitCardStatus)
-        .filter({ hasText: status })
-        .isVisible(),
+      await this.debitCardStatus.filter({ hasText: status }).isVisible(),
     ).toBe(true);
   }
 
   async issueNewVisaDebitCard() {
     try {
-      const activeCard = this.page
-        .locator(this.debitCardStatus)
-        .filter({ hasText: 'Active' });
+      const activeCard = this.debitCardStatus.filter({ hasText: 'Active' });
       await activeCard.waitFor({ state: 'visible' });
       await activeCard.click();
 
@@ -148,11 +167,7 @@ class RegistrationDetails {
   }
 
   async openActivityOverviewTab(tabName: string) {
-    await this.page
-      .locator(this.tabButton)
-      .filter({ hasText: tabName })
-      .locator('button')
-      .click();
+    await this.tabButton.filter({ hasText: tabName }).locator('button').click();
   }
 
   async validateChangeLogTile(
@@ -162,13 +177,11 @@ class RegistrationDetails {
     oldValue: string,
     newValue: string,
   ) {
-    const historyTile = this.page.locator(this.historyTile).nth(0);
-    const oldValueHolder = this.page
-      .locator(this.tileInformationPlaceHolder)
+    const historyTile = this.historyTile.nth(0);
+    const oldValueHolder = this.tileInformationPlaceHolder
       .filter({ hasText: 'Old:' })
       .nth(0);
-    const newValueHolder = this.page
-      .locator(this.tileInformationPlaceHolder)
+    const newValueHolder = this.tileInformationPlaceHolder
       .filter({ hasText: 'New:' })
       .nth(0);
 
@@ -220,14 +233,14 @@ class RegistrationDetails {
     userName: string,
     date: string,
   ) {
-    const historyTile = this.page.locator(this.historyTile).nth(0);
-    const paymentLocator = this.page.locator(this.historyTileTitle).filter({
+    const historyTile = this.historyTile.nth(0);
+    const paymentLocator = this.historyTileTitle.filter({
       hasText: `${paymentLabel} #${paymentNumber}`,
     });
-    const statusLocator = this.page.locator(this.tileInformationStatus).filter({
+    const statusLocator = this.tileInformationStatus.filter({
       hasText: statusLabel,
     });
-    const timeStampLocator = this.page.locator(this.historyTileTimeStamp);
+    const timeStampLocator = this.historyTileTimeStamp;
 
     expect(await paymentLocator.textContent()).toContain(paymentLabel);
     expect(await statusLocator.textContent()).toContain(statusLabel);
