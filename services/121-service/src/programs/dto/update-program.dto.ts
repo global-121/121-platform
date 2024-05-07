@@ -109,11 +109,6 @@ export class UpdateProgramDto {
   @IsBoolean()
   public readonly validation: boolean;
 
-  @ApiProperty({ example: '+000 000 00 00' })
-  @IsString()
-  @IsOptional()
-  public readonly phoneNumberPlaceholder: string;
-
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description: JSON;

@@ -117,10 +117,6 @@ export class ProgramReturnDto {
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
 
-  @ApiProperty({ example: '+000 000 00 00' })
-  @IsString()
-  public readonly phoneNumberPlaceholder: string;
-
   @ApiProperty({
     example: [
       {

@@ -71,9 +71,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public targetNrRegistrations: number;
 
-  @Column({ nullable: true })
-  public phoneNumberPlaceholder: string;
-
   @Column('json', { nullable: true })
   public description: JSON;
 

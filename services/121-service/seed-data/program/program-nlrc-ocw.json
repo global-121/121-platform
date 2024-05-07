@@ -49,7 +49,6 @@
   ],
   "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
-  "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {
       "name": "firstName",

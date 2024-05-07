@@ -24,7 +24,6 @@
   ],
   "targetNrRegistrations": 4000,
   "tryWhatsAppFirst": false,
-  "phoneNumberPlaceholder": "+254 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {
