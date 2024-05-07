@@ -10,7 +10,7 @@ export class MessageJobDto {
   phoneNumber: string;
   programId: number;
   message?: string;
-  key?: string;
+  messageTemplateKey?: string;
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;

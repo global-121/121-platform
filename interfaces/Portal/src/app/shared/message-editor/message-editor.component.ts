@@ -211,7 +211,6 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
     ) {
       this.modalController.dismiss(
         {
-          message: this.preview,
           messageTemplateKey: this.selectedTemplateType,
         },
         null,
