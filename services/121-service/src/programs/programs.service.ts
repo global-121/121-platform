@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '../financial-service-providers/fsp-question.entity';
 import { ExportType } from '../metrics/dto/export-details.dto';
 import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
 import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
@@ -424,7 +424,7 @@ export class ProgramService {
       financialServiceProviders: program.financialServiceProviders.map(
         (fsp) => {
           return {
-            fsp: fsp.fsp as FspName,
+            fsp: fsp.fsp as FinancialServiceProviderName,
             configuration: fsp.configuration,
           };
         },

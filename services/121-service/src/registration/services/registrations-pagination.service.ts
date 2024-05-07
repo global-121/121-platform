@@ -14,7 +14,7 @@ import {
   Repository,
   WhereExpressionBuilder,
 } from 'typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
 import {
@@ -690,7 +690,7 @@ export class RegistrationsPaginationService {
   public getQueryBuilderForFsp(
     programId: number,
     payment: number,
-    fspName: FspName,
+    fspName: FinancialServiceProviderName,
     status?: StatusEnum,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.registrationViewScopedRepository

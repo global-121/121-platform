@@ -4,8 +4,8 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionsService } from '../actions/actions.service';
-import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
-import { FspName } from '../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../programs/program.entity';
 import {
   BulkActionResultPaymentDto,
@@ -57,11 +57,14 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private fspWithQueueServiceMapping = {
-    [FspName.intersolveVisa]: this.intersolveVisaService,
-    [FspName.intersolveVoucherPaper]: this.intersolveVoucherService,
-    [FspName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
-    [FspName.safaricom]: this.safaricomService,
-    [FspName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
+    [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
+    [FinancialServiceProviderName.intersolveVoucherPaper]:
+      this.intersolveVoucherService,
+    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+      this.intersolveVoucherService,
+    [FinancialServiceProviderName.safaricom]: this.safaricomService,
+    [FinancialServiceProviderName.commercialBankEthiopia]:
+      this.commercialBankEthiopiaService,
     // Add more FSP mappings if they work queue-based
   };
 
@@ -490,29 +493,55 @@ export class PaymentsService {
     const commercialBankEthiopiaPaPayment = [];
     const excelPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
-      if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
+      if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherWhatsapp
+      ) {
         intersolvePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveVoucherPaper) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherPaper
+      ) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveVisa) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.intersolveVisa
+      ) {
         intersolveVisaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveJumboPhysical) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveJumboPhysical
+      ) {
         intersolveJumboPhysicalPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.africasTalking) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.africasTalking
+      ) {
         africasTalkingPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.belcash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.belcash
+      ) {
         belcashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.bobFinance) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.bobFinance
+      ) {
         bobFinancePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.ukrPoshta) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.ukrPoshta
+      ) {
         ukrPoshtaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.vodacash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.vodacash
+      ) {
         vodacashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.safaricom) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.safaricom
+      ) {
         safaricomPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.commercialBankEthiopia) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.commercialBankEthiopia
+      ) {
         commercialBankEthiopiaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.excel) {
+      } else if (paPaymentData.fspName === FinancialServiceProviderName.excel) {
         excelPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
@@ -787,7 +816,10 @@ export class PaymentsService {
   ): Promise<FspInstructions> {
     const exportPaymentTransactions = (
       await this.transactionsService.getLastTransactions(programId, payment)
-    ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
+    ).filter(
+      (t) =>
+        t.fspIntegrationType !== FinancialServiceProviderIntegrationType.api,
+    );
 
     if (exportPaymentTransactions.length === 0) {
       throw new HttpException(
@@ -803,7 +835,7 @@ export class PaymentsService {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
-      (t) => t.fsp !== FspName.excel,
+      (t) => t.fsp !== FinancialServiceProviderName.excel,
     )) {
       const registration = await this.registrationScopedRepository.findOne({
         where: { referenceId: transaction.referenceId },
@@ -818,7 +850,7 @@ export class PaymentsService {
         continue;
       }
 
-      if (registration.fsp.fsp === FspName.bobFinance) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.bobFinance) {
         const instruction = await this.bobFinanceService.getFspInstructions(
           registration,
           transaction,
@@ -828,7 +860,7 @@ export class PaymentsService {
           fileType = ExportFileType.csv;
         }
       }
-      if (registration.fsp.fsp === FspName.ukrPoshta) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.ukrPoshta) {
         const instruction = await this.ukrPoshtaService.getFspInstructions(
           registration,
           transaction,
@@ -840,7 +872,7 @@ export class PaymentsService {
           csvInstructions.push(instruction);
         }
       }
-      if (registration.fsp.fsp === FspName.vodacash) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
         xmlInstructions = await this.vodacashService.getFspInstructions(
           registration,
           transaction,
@@ -854,7 +886,9 @@ export class PaymentsService {
 
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
-      (t) => t.fsp === FspName.excel && t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
+      (t) =>
+        t.fsp === FinancialServiceProviderName.excel &&
+        t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(
@@ -894,7 +928,7 @@ export class PaymentsService {
 
     let importResponseRecords = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FspName.vodacash) {
+      if (fsp.fsp === FinancialServiceProviderName.vodacash) {
         const vodacashRegistrations =
           await this.vodacashService.getRegistrationsForReconciliation(
             programId,
@@ -925,7 +959,7 @@ export class PaymentsService {
         }
       }
 
-      if (fsp.fsp === FspName.excel) {
+      if (fsp.fsp === FinancialServiceProviderName.excel) {
         const maxRecords = 10000;
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
@@ -947,7 +981,7 @@ export class PaymentsService {
           payment,
           null,
           null,
-          FspName.excel,
+          FinancialServiceProviderName.excel,
         );
         importResponseRecords =
           this.excelService.joinRegistrationsAndImportRecords(

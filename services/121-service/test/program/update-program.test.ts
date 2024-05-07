@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '../../src/programs/dto/update-program.dto';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { assertObjectsAreEqual } from '../helpers/assert.helper';
@@ -56,7 +56,7 @@ describe('Update program', () => {
     // Arrange
     const program = {
       financialServiceProviders: JSON.parse(
-        JSON.stringify([{ fsp: FspName.excel }]),
+        JSON.stringify([{ fsp: FinancialServiceProviderName.excel }]),
       ),
     };
 
@@ -71,7 +71,7 @@ describe('Update program', () => {
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
     const hasSpecificKeyValue =
       updateProgramResponse.body.financialServiceProviders.some(
-        (fsp) => fsp.fsp === FspName.excel,
+        (fsp) => fsp.fsp === FinancialServiceProviderName.excel,
       );
     expect(hasSpecificKeyValue).toBeTruthy();
   });

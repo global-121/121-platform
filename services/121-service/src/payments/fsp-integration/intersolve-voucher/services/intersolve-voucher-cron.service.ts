@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import {
-  FspConfigurationEnum,
-  FspName,
-} from '../../../../fsp/enum/fsp-name.enum';
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
 import { MessageProcessType } from '../../../../notifications/message-job.dto';
@@ -71,7 +71,7 @@ export class IntersolveVoucherCronService {
       .select('name')
       .addSelect('value')
       .andWhere('fsp.fsp = :fspName', {
-        fspName: FspName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
@@ -82,10 +82,12 @@ export class IntersolveVoucherCronService {
     }
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FspConfigurationEnum.username)
-        ?.value,
-      password: config.find((c) => c.name === FspConfigurationEnum.password)
-        ?.value,
+      username: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+      )?.value,
+      password: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+      )?.value,
     };
 
     for (const intersolveRequest of failedIntersolveRquests) {

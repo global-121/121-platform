@@ -1,4 +1,4 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
@@ -29,7 +29,7 @@ describe('Send templated message', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FspName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 

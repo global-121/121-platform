@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
@@ -31,7 +31,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FspName.intersolveVoucherWhatsapp,
+    fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
     maxPayments: 1,
   };

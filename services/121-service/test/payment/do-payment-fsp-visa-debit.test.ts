@@ -5,7 +5,7 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '../../seed-data/mock/visa-card.data';
-import { FspConfigurationEnum } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderConfigurationEnum } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -659,7 +659,9 @@ describe('Do payment to 1 PA', () => {
 
       const fspConfig = await getFspConfiguration(programIdVisa, accessToken);
       const coverLetterCodeForFspConfigRecord = fspConfig.body.find(
-        (fspConfig) => fspConfig.name === FspConfigurationEnum.coverLetterCode,
+        (fspConfig) =>
+          fspConfig.name ===
+          FinancialServiceProviderConfigurationEnum.coverLetterCode,
       );
       await deleteFspConfiguration(
         programIdVisa,

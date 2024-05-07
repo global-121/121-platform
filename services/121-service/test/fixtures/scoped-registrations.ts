@@ -1,4 +1,4 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
@@ -12,7 +12,7 @@ export const registrationScopedGoesPv = {
   preferredLanguage: LanguageEnum.en,
   [CustomDataAttributes.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
-  fspName: FspName.intersolveVoucherPaper,
+  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
@@ -21,7 +21,7 @@ export const registrationScopedMiddelburgPv = {
   preferredLanguage: LanguageEnum.en,
   [CustomDataAttributes.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
-  fspName: FspName.intersolveVoucherPaper,
+  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
@@ -30,7 +30,7 @@ export const registrationScopedUtrechtPv = {
   scope: DebugScope.UtrechtHouten,
   [CustomDataAttributes.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
-  fspName: FspName.intersolveVoucherPaper,
+  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
@@ -39,7 +39,7 @@ export const registrationNotScopedPv = {
   preferredLanguage: LanguageEnum.en,
   [CustomDataAttributes.phoneNumber]: '15005550200',
   fullName: 'Nick Brouwers',
-  fspName: FspName.intersolveVoucherPaper,
+  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationsPV = [

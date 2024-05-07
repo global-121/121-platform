@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '../../actions/actions.module';
 import { EventsModule } from '../../events/events.module';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
 import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
 import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
