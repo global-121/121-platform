@@ -31,7 +31,7 @@ test('[27493] Open the edit PA popup', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Should open first uploaded PA', async () => {

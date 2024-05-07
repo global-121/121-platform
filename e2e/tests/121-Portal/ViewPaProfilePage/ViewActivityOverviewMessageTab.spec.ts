@@ -32,7 +32,7 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
     await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });

@@ -37,9 +37,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public titlePortal: JSON;
 
-  @Column('json', { nullable: true })
-  public titlePaApp: JSON;
-
   @Column({ nullable: true })
   public ngo: string;
 
@@ -73,9 +70,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   public targetNrRegistrations: number;
-
-  @Column({ nullable: true })
-  public phoneNumberPlaceholder: string;
 
   @Column('json', { nullable: true })
   public description: JSON;

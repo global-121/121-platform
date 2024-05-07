@@ -9,11 +9,6 @@
     "uk": "Програма грошової допомоги Доркас Україна",
     "ru": "Программа денежной помощи Доркас Украина"
   },
-  "titlePaApp": {
-    "en": "Dorcas Ukraine cash aid program",
-    "uk": "Програма грошової допомоги Доркас Україна",
-    "ru": "Программа денежной помощи Доркас Украина"
-  },
   "description": {
     "en": "",
     "uk": "",
@@ -32,7 +27,6 @@
     }
   ],
   "targetNrRegistrations": 340,
-  "phoneNumberPlaceholder": "+380 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {

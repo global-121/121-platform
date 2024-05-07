@@ -34,7 +34,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   const helpers = new Helpers();
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePaApp.en);
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
     await table.selectTable('Payment');
     await table.clickOnPaNumber(2);
   });

@@ -8,10 +8,6 @@
     "en": "DRA Joint Response 2023 Ethiopia - ANE",
     "et_AM": "የዲአርኤ የጋራ ምላሽ 2023 ኢትዮጵያ - አኔ"
   },
-  "titlePaApp": {
-    "en": "DRA Joint Response 2023 Ethiopia - ANE",
-    "et_AM": "የዲአርኤ የጋራ ምላሽ 2023 ኢትዮጵያ - አኔ"
-  },
   "description": {
     "en": ""
   },
@@ -29,7 +25,6 @@
     }
   ],
   "targetNrRegistrations": 250,
-  "phoneNumberPlaceholder": "+251 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
     {

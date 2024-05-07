@@ -32,12 +32,6 @@ export class CookieJwtStrategy
             case InterfaceNames.portal:
               token = req.cookies[CookieNames.portal];
               break;
-            case InterfaceNames.awApp:
-              token = req.cookies[CookieNames.awApp];
-              break;
-            case InterfaceNames.paApp:
-              token = req.cookies[CookieNames.paApp];
-              break;
 
             default:
               token = req.cookies[CookieNames.general];

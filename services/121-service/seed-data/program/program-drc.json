@@ -7,9 +7,6 @@
   "titlePortal": {
     "en": "Help a Child Digital Aid DRC"
   },
-  "titlePaApp": {
-    "en": "Help a Child DRC Cash Support"
-  },
   "description": {
     "en": ""
   },
@@ -26,7 +23,6 @@
   ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": false,
-  "phoneNumberPlaceholder": "+24 300 00 00 00",
   "programCustomAttributes": [],
   "programQuestions": [
     {

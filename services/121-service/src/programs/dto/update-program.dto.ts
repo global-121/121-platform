@@ -39,10 +39,6 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly titlePortal: JSON;
 
-  @ApiProperty({ example: { en: 'title' } })
-  @IsOptional()
-  public readonly titlePaApp: JSON;
-
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -112,11 +108,6 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsBoolean()
   public readonly validation: boolean;
-
-  @ApiProperty({ example: '+000 000 00 00' })
-  @IsString()
-  @IsOptional()
-  public readonly phoneNumberPlaceholder: string;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()

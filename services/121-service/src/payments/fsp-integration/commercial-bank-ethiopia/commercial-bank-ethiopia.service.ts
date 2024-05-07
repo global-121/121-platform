@@ -254,7 +254,7 @@ export class CommercialBankEthiopiaService
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
-      remitterName: program.titlePaApp['en'].substring(0, 35),
+      remitterName: program.titlePortal['en'].substring(0, 35),
       beneficiaryName: `${fullName}`,
     };
 
