@@ -393,7 +393,7 @@ export async function waitForMessagesToComplete(
 
     // If not all PAs received a message, wait for a short interval before checking again
     if (!allMessageUpdatesSuccessful) {
-      await waitFor(3_000);
+      await waitFor(1_000);
     }
   }
 

@@ -14,7 +14,7 @@ import { programIdPV } from './pagination/pagination-data';
 describe('Send custom message with placeholders', () => {
   const programId = programIdPV;
   const registrationAh = {
-    referenceId: '63e62864557597e0d-AH',
+    referenceId: '63e62864557597e0c-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',

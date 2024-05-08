@@ -63,7 +63,7 @@ describe('Send templated message', () => {
         programId,
         [registrationAh.referenceId],
         accessToken,
-        8000,
+        15_000,
       );
 
       const messageHistory = (
@@ -102,7 +102,7 @@ describe('Send templated message', () => {
         programId,
         [registrationAh.referenceId],
         accessToken,
-        8000,
+        15_000,
       );
 
       const messageHistory = (

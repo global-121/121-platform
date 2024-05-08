@@ -24,7 +24,7 @@ describe('Do payment to 1 PA', () => {
   const payment = 1;
   const amount = 22;
   const registrationAh = {
-    referenceId: '63e62864557597e0d-AH',
+    referenceId: '63e62864557597e0a-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
