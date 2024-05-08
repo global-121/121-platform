@@ -3,7 +3,6 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { QuestionOption } from 'src/shared/enum/question.enums';
 import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
@@ -44,14 +43,10 @@ export class UpdateFspAttributeDto {
   public answerType: string;
 
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    example: false,
   })
   @IsOptional()
-  public phases: ProgramPhase[];
+  public showInPeopleAffectedTable: boolean;
 }
 
 export class CreateFspAttributeDto extends UpdateFspAttributeDto {

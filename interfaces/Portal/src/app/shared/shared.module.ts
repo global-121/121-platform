@@ -27,7 +27,6 @@ import { ExportListComponent } from '../program/export-list/export-list.componen
 import { ExportSelectComponent } from '../program/export-select/export-select.component';
 import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
-import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
 import { RegistrationActivityDetailAccordionComponent } from '../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
@@ -54,7 +53,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     InputPromptComponent,
     OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
-    PhaseNextComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
     SystemNotificationComponent,
@@ -100,7 +98,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     NgxDatatableModule,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
-    PhaseNextComponent,
     ProgramNavigationComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,

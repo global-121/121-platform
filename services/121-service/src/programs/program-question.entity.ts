@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
 import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   BeforeRemove,
@@ -74,9 +73,9 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: false })
   public duplicateCheck: boolean;
 
-  @Column('json', { default: [] })
-  @ApiProperty({ example: [] })
-  public phases: ProgramPhase[];
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public showInPeopleAffectedTable: boolean;
 
   @OneToMany(
     () => RegistrationDataEntity,

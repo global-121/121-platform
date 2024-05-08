@@ -244,7 +244,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
-      { phase: this.thisPhase },
     );
 
     this.activePhase = this.program.phase;

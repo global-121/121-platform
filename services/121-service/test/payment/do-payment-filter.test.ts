@@ -6,9 +6,7 @@ import {
 } from '../../seed-data/mock/visa-card.data';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import {
-  changePhase,
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
@@ -39,13 +37,6 @@ describe('Do payment with filter', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await changePhase(
-      programIdVisa,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-    await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
     await importRegistrations(
       programIdOCW,
       [registrationOCW1, registrationOCW2, registrationOCW3, registrationOCW4],

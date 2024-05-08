@@ -1,13 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 import { DebugScope } from '../../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,
   registrationsPV,
 } from '../../fixtures/scoped-registrations';
-import { changePhase } from '../../helpers/program.helper';
 import { importRegistrations } from '../../helpers/registration.helper';
 import {
   getAccessToken,
@@ -29,12 +27,6 @@ describe('Registrations - [Scoped]', () => {
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-
-    await changePhase(
-      OcwProgramId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
 
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await importRegistrations(PvProgramId, registrationsPV, accessToken);

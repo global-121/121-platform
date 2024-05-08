@@ -14,7 +14,6 @@ import { LocalizedString } from 'src/shared/enum/language.enums';
 import { QuestionOption } from 'src/shared/enum/question.enums';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { CreateOptionsDto } from './create-options.dto';
 
 class BaseProgramQuestionDto {
@@ -40,15 +39,10 @@ class BaseProgramQuestionDto {
   @IsOptional()
   public pattern: string;
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
-    required: false,
+    example: false,
   })
   @IsOptional()
-  public phases: ProgramPhase[];
+  public showInPeopleAffectedTable: boolean;
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly editableInPortal: boolean;

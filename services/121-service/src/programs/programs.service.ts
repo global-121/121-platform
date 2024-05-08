@@ -232,7 +232,6 @@ export class ProgramService {
     const program = new ProgramEntity();
     program.published = programData.published;
     program.validation = programData.validation;
-    program.phase = programData.phase;
     program.location = programData.location;
     program.ngo = programData.ngo;
     program.titlePortal = programData.titlePortal;
@@ -409,7 +408,6 @@ export class ProgramService {
       id: program.id,
       published: program.published,
       validation: program.validation,
-      phase: program.phase,
       location: program.location,
       ngo: program.ngo,
       titlePortal: program.titlePortal,
@@ -438,7 +436,8 @@ export class ProgramService {
             name: programCustomAttribute.name,
             type: programCustomAttribute.type,
             label: programCustomAttribute.label,
-            phases: programCustomAttribute.phases,
+            showInPeopleAffectedTable:
+              programCustomAttribute.showInPeopleAffectedTable,
             duplicateCheck: programCustomAttribute.duplicateCheck,
           };
         },
@@ -453,7 +452,7 @@ export class ProgramService {
           scoring: programQuestion.scoring,
           persistence: programQuestion.persistence,
           pattern: programQuestion.pattern,
-          phases: programQuestion.phases,
+          showInPeopleAffectedTable: programQuestion.showInPeopleAffectedTable,
           editableInPortal: programQuestion.editableInPortal,
           export: programQuestion.export as unknown as ExportType[],
           duplicateCheck: programQuestion.duplicateCheck,
@@ -554,7 +553,6 @@ export class ProgramService {
     programCustomAttribute.name = dto.name;
     programCustomAttribute.type = dto.type;
     programCustomAttribute.label = dto.label;
-    programCustomAttribute.phases = dto.phases;
     programCustomAttribute.duplicateCheck = dto.duplicateCheck;
     return programCustomAttribute;
   }
@@ -591,7 +589,6 @@ export class ProgramService {
     programQuestion.scoring = dto.scoring;
     programQuestion.persistence = dto.persistence;
     programQuestion.pattern = dto.pattern;
-    programQuestion.phases = dto.phases;
     programQuestion.editableInPortal = dto.editableInPortal;
     programQuestion.export = dto.export;
     programQuestion.duplicateCheck = dto.duplicateCheck;
