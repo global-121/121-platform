@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
@@ -42,14 +41,10 @@ export class UpdateFspAttributeDto {
   public answerType: string;
 
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    example: false,
   })
   @IsOptional()
-  public phases: JSON;
+  public showInPeopleAffectedTable: boolean;
 }
 
 export class CreateFspAttributeDto extends UpdateFspAttributeDto {

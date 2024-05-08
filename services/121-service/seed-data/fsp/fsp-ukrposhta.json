@@ -21,7 +21,8 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "raion",
@@ -55,7 +56,8 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "street",
@@ -63,7 +65,8 @@
         "en": "Street"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "house",
@@ -71,7 +74,8 @@
         "en": "House"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "apartmentOrOffice",
@@ -79,7 +83,8 @@
         "en": "Apt / Office"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "postalIndex",
@@ -88,7 +93,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "city",
@@ -96,7 +102,8 @@
         "en": "City"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "lastName",
@@ -105,7 +112,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "firstName",
@@ -114,7 +122,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "fathersName",
@@ -123,7 +132,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "taxId",
@@ -133,7 +143,8 @@
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "options": null,
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "telephone",
@@ -142,7 +153,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     }
   ]
 }

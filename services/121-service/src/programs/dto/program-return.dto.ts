@@ -5,7 +5,6 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -15,7 +14,6 @@ import {
 } from 'class-validator';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
@@ -34,10 +32,6 @@ export class ProgramReturnDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly validation: boolean;
-
-  @ApiProperty({ example: ProgramPhase.design })
-  @IsEnum(ProgramPhase)
-  public readonly phase: ProgramPhase;
 
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
@@ -128,11 +122,7 @@ export class ProgramReturnDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
       {
         name: 'exampleBoolean',
@@ -143,11 +133,7 @@ export class ProgramReturnDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
     ],
   })
@@ -167,7 +153,7 @@ export class ProgramReturnDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'First Name',
@@ -181,7 +167,7 @@ export class ProgramReturnDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'Last Name',
@@ -200,7 +186,7 @@ export class ProgramReturnDto {
           '19-65': 0,
           '65>': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
       },
       {
@@ -230,7 +216,7 @@ export class ProgramReturnDto {
           '0': 3,
           '1': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: true,
       },
     ],

@@ -108,7 +108,7 @@ describe('Create program questions', () => {
         en: 'string',
         fr: 'string',
       },
-      phases: ['registrationValidation', 'inclusion', 'payment'],
+      showInPeopleAffectedTable: true,
       duplicateCheck: true,
     };
     programEthJson.programCustomAttributes.push(attribute);

@@ -27,8 +27,8 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column('json')
   public label: JSON;
 
-  @Column('json', { default: [] })
-  public phases: JSON;
+  @Column({ default: false })
+  public showInPeopleAffectedTable: boolean;
 
   @Column({ default: false })
   public duplicateCheck: boolean;

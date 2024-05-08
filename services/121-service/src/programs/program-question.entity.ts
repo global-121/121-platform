@@ -71,9 +71,9 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: false })
   public duplicateCheck: boolean;
 
-  @Column('json', { default: [] })
-  @ApiProperty({ example: [] })
-  public phases: JSON;
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public showInPeopleAffectedTable: boolean;
 
   @OneToMany(
     () => RegistrationDataEntity,

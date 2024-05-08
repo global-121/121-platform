@@ -15,7 +15,6 @@ import {
 } from 'class-validator';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
@@ -44,10 +43,6 @@ export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly validation: boolean;
-
-  @ApiProperty({ example: ProgramPhase.design })
-  @IsEnum(ProgramPhase)
-  public readonly phase: ProgramPhase;
 
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
@@ -138,11 +133,7 @@ export class CreateProgramDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
       {
         name: 'exampleBoolean',
@@ -153,11 +144,7 @@ export class CreateProgramDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
     ],
   })
@@ -177,7 +164,7 @@ export class CreateProgramDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'First Name',
@@ -191,7 +178,7 @@ export class CreateProgramDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'Last Name',
@@ -210,7 +197,7 @@ export class CreateProgramDto {
           '19-65': 0,
           '65>': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: false,
         editableInPortal: false,
       },
       {
@@ -240,7 +227,7 @@ export class CreateProgramDto {
           '0': 3,
           '1': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: false,
         editableInPortal: true,
       },
     ],

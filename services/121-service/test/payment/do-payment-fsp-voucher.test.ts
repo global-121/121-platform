@@ -3,15 +3,10 @@ import { FinancialServiceProviderName } from '../../src/financial-service-provid
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import { adminOwnerDto } from '../fixtures/user-owner';
-import {
-  changePhase,
-  doPayment,
-  getTransactions,
-} from '../helpers/program.helper';
+import { doPayment, getTransactions } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
@@ -40,14 +35,6 @@ describe('Do payment to 1 PA', () => {
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
-
-      await changePhase(
-        programId,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
-      await changePhase(programId, ProgramPhase.inclusion, accessToken);
-      await changePhase(programId, ProgramPhase.payment, accessToken);
     });
 
     it('should succesfully pay-out', async () => {
