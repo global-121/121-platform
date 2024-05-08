@@ -623,10 +623,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public showInclusionScore(): boolean {
     let show = false;
-    for (const pa of this.visiblePeopleAffected) {
-      show = !!pa.inclusionScore;
-      if (show) {
-        break;
+    if (this.program?.programQuestions) {
+      for (const question of this.program.programQuestions) {
+        if (question['scoring']) {
+          show = true;
+          break;
+        }
       }
     }
     return show;
