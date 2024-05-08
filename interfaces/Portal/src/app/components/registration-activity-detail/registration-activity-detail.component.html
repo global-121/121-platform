@@ -1,5 +1,5 @@
 <article
-  data-testid="activity-detail-tile"
+  data-testid="registration-activity-detail-tile"
   class="activity-detail ion-padding"
   style="font-size: 0.875rem"
 >
@@ -15,13 +15,13 @@
       class="activity-detail--header util--flex-row ion-justify-content-between ion-align-items-baseline"
     >
       <span>
-        <strong data-testid="activity-detail-label">
+        <strong data-testid="registration-activity-detail-label">
           {{ activity.label }}
           <span *ngIf="activity.subLabel"> - {{ activity.subLabel }}</span>
         </strong>
 
         <span
-          data-testid="activity-detail-status"
+          data-testid="registration-activity-detail-status"
           *ngIf="activity.activityStatus"
           [class]="
             'activity-detail--status util--half-margin-start badge' +
@@ -39,7 +39,7 @@
       </span>
 
       <span
-        data-testid="activity-detail-username"
+        data-testid="registration-activity-detail-username"
         *ngIf="activity.user"
         class="activity-detail--user badge username util--overflow-ellipsis"
         style="max-width: 20em"
@@ -50,7 +50,7 @@
     </div>
     <div *ngIf="activity.date">
       <ion-note
-        data-testid="activity-detail-date"
+        data-testid="registration-activity-detail-date"
         color="medium"
       >
         <small>
@@ -61,7 +61,7 @@
       </ion-note>
     </div>
     <div
-      data-testid="activity-detail-change"
+      data-testid="registration-activity-detail-change"
       class="activity-detail--body"
     >
       <ng-content select="[body]"></ng-content>

@@ -26,7 +26,7 @@ class RegistrationDetails {
   constructor(page: Page) {
     this.page = page;
     this.personalInformationTable = this.page.getByTestId(
-      'personal-information-data',
+      'registration-personal-information-data',
     );
     this.personAffectedName = this.page.getByTestId(
       'registration-details-name',
@@ -44,7 +44,7 @@ class RegistrationDetails {
     this.financialServiceProvider = this.page.locator(
       'ion-item:has(ion-label:has-text("Financial")) ion-label strong',
     );
-    this.showAllButton = this.page.locator('[data-testid="show-all-button"]');
+    this.showAllButton = this.page.getByTestId('show-all-button');
     this.editPersonAffectedPopUp = this.page.locator(
       'app-edit-person-affected-popup',
     );
@@ -55,15 +55,23 @@ class RegistrationDetails {
       'physical-cards-overview-title',
     );
     this.debitCardStatus = this.page.getByTestId('card-status-chip');
-    this.tabButton = this.page.getByTestId('activity-detail-tab-button');
-    this.historyTile = this.page.getByTestId('activity-detail-tile');
-    this.historyTileTitle = this.page.getByTestId('activity-detail-label');
-    this.historyTileUserName = this.page.getByTestId(
-      'activity-detail-username',
+    this.tabButton = this.page.getByTestId(
+      'registration-activity-detail-tab-button',
     );
-    this.historyTileTimeStamp = this.page.getByTestId('activity-detail-date');
+    this.historyTile = this.page.getByTestId(
+      'registration-activity-detail-tile',
+    );
+    this.historyTileTitle = this.page.getByTestId(
+      'registration-activity-detail-label',
+    );
+    this.historyTileUserName = this.page.getByTestId(
+      'registration-activity-detail-username',
+    );
+    this.historyTileTimeStamp = this.page.getByTestId(
+      'registration-activity-detail-date',
+    );
     this.tileInformationPlaceHolder = this.page.getByTestId(
-      'activity-detail-change',
+      'registration-activity-detail-change',
     );
     this.tileInformationStatus = this.page.getByTestId(
       'activity-detail-status',
@@ -96,8 +104,7 @@ class RegistrationDetails {
   }
 
   async openEditPaPopUp() {
-    const showAllButton = this.page.getByTestId('show-all-button');
-    await showAllButton.click();
+    await this.showAllButton.click();
   }
 
   async validateEditPaPopUpOpened() {
