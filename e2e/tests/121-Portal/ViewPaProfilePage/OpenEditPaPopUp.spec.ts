@@ -8,11 +8,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-<<<<<<< HEAD
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
-=======
-import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -45,11 +41,7 @@ test('[27493] Open the edit PA popup', async ({ page }) => {
 
   await test.step('Should open PA profile and open edit pop-up', async () => {
     await registration.validateHeaderToContainText(
-<<<<<<< HEAD
       englishTranslations['registration-details'].pageTitle,
-=======
-      data['registration-details'].pageTitle,
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();

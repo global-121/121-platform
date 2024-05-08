@@ -120,11 +120,7 @@ test('[27496] View Activity overview in FSP column on PA profile page', async ({
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
     await registration.validateHeaderToContainText(
-<<<<<<< HEAD
       englishTranslations['registration-details'].pageTitle,
-=======
-      data['registration-details'].pageTitle,
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     await registration.openActivityOverviewTab('All');
     await registration.validateChangeLogTile(
