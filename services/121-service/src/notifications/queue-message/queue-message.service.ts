@@ -31,6 +31,7 @@ import { MessageTemplateEntity } from '../message-template/message-template.enti
 export class QueueMessageService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+  private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
@@ -45,12 +46,21 @@ export class QueueMessageService {
     private readonly messageProcessorLargeBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.lowPriority)
     private readonly messageProcessorLowPriority: Queue,
-  ) {}
+  ) {
+    this.queueNameToQueueMap = {
+      [QueueNameCreateMessage.replyOnIncoming]:
+        this.messageProcessorReplyOnIncoming,
+      [QueueNameCreateMessage.smallBulk]: this.messageProcessorSmallBulk,
+      [QueueNameCreateMessage.mediumBulk]: this.messageProcessorMediumBulk,
+      [QueueNameCreateMessage.largeBulk]: this.messageProcessorLargeBulk,
+      [QueueNameCreateMessage.lowPriority]: this.messageProcessorLowPriority,
+    };
+  }
 
   public async addMessageToQueue(
     registration: RegistrationEntity | RegistrationViewEntity,
     message: string,
-    key: string,
+    messageTemplateKey: string,
     messageContentType: MessageContentType,
     messageProcessType: ExtendedMessageProccessType,
     mediaUrl?: string,
@@ -88,38 +98,14 @@ export class QueueMessageService {
       phoneNumber: registration.phoneNumber,
       programId: registration.programId,
       message,
-      key,
+      messageTemplateKey,
       messageContentType,
       mediaUrl,
       customData,
     };
     try {
-      if (queueName === QueueNameCreateMessage.replyOnIncoming) {
-        await this.messageProcessorReplyOnIncoming.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.smallBulk) {
-        await this.messageProcessorSmallBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.mediumBulk) {
-        await this.messageProcessorMediumBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.largeBulk) {
-        await this.messageProcessorLargeBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.lowPriority) {
-        await this.messageProcessorLowPriority.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      }
+      const queue = this.queueNameToQueueMap[queueName];
+      await queue.add(ProcessNameMessage.send, messageJob);
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }

@@ -17,7 +17,7 @@ const defaultMessageJob = {
   referenceId: 'ref-test',
   programId: 1,
   message: 'test message',
-  key: 'key',
+  messageTemplateKey: 'messageTemplateKey',
   customData: {},
 } as MessageJobDto;
 const mockDefaultNotificationText = 'default notification';
