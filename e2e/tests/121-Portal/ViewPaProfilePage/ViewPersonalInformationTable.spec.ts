@@ -43,12 +43,14 @@ test('[27492] View Personal information table', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile includes Personal information with details', async () => {
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      englishTranslations['registration-details'].pageTitle,
+    );
     // Reload the page to make asynchronous data available
     await page.reload();
     // Reload should be removed after fixing the issue with the data not being available https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27568
     await registration.validatePersonalInformationTable(
-      'PA #1',
+      'John Smith',
       englishTranslations.entity.registration.status.included,
       await helpers.getTodaysDate(),
       englishTranslations.page.program['program-people-affected'].language.en,

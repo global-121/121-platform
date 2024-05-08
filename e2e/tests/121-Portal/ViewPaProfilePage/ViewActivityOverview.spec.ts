@@ -8,7 +8,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-import data from '../../../../../121-platform/interfaces/Portal/src/assets/i18n/en.json';
+import englishTranslations from '../../../../../121-platform/interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 test.beforeEach(async ({ page }) => {
@@ -43,18 +43,19 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
 
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      englishTranslations['registration-details'].pageTitle,
+    );
     await registration.openActivityOverviewTab('Status history');
     await registration.validateChangeLogTile(
-      data['registration-details']['activity-overview'].activities.status.label,
+      englishTranslations['registration-details']['activity-overview']
+        .activities.status.label,
       userName,
       await helpers.getTodaysDate(),
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].old,
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].new,
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].old,
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].new,
     );
   });
 });

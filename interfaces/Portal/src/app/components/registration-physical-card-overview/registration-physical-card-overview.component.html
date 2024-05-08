@@ -1,6 +1,6 @@
 <ion-card>
   <ion-card-header>
-    <ion-card-title>
+    <ion-card-title data-testid="physical-cards-overview-title">
       {{ 'registration-details.physical-cards-overview.title' | translate }}
     </ion-card-title>
   </ion-card-header>
@@ -25,7 +25,9 @@
           <ion-label class="card">
             <code>{{ card.tokenCode }}</code>
           </ion-label>
-          <ion-label class="ion-text-right"
+          <ion-label
+            data-testid="card-status-chip"
+            class="ion-text-right"
             ><ion-chip
               class="physical-card-status-chip"
               [ngClass]="
