@@ -74,7 +74,7 @@ class RegistrationDetails {
       'registration-activity-detail-change',
     );
     this.tileInformationStatus = this.page.getByTestId(
-      'activity-detail-status',
+      'registration-activity-detail-status',
     );
   }
 
