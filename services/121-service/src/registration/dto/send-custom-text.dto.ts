@@ -7,8 +7,8 @@ export class SendCustomTextDto {
   @ApiProperty({
     example: 'Your voucher can be picked up at the location',
   })
-  @IsNotBothPresent('messageTemplateKey')
-  @IsNotBothEmpty('messageTemplateKey')
+  @IsNotBothPresent<SendCustomTextDto>('messageTemplateKey')
+  @IsNotBothEmpty<SendCustomTextDto>('messageTemplateKey')
   @ValidateIf((o) => !o.skipMessageValidation)
   public readonly message: string;
 

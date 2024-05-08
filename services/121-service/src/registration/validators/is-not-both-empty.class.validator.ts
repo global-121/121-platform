@@ -4,26 +4,31 @@ import {
   ValidationOptions,
 } from 'class-validator';
 
-export function IsNotBothEmpty(
-  property: string,
+/**
+ * IsNotBothEmpty decorator.
+ * Please provide a type when using IsNotBothEmpty decorator.
+ * Example: @IsNotBothEmpty<MyClass>('myOtherProperty')
+ */
+export function IsNotBothEmpty<T extends object>(
+  property: keyof T,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: Record<string, any>, propertyName: string) {
+  return function (object: T, propertyName: keyof T) {
     registerDecorator({
       name: 'IsNotBothEmpty',
       target: object.constructor,
-      propertyName: propertyName,
-      constraints: [property],
+      propertyName: propertyName.toString(),
+      constraints: [property.toString()],
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: string, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
           return !(!value && !relatedValue);
         },
         defaultMessage(args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          return `${propertyName} and ${relatedPropertyName} cannot both be empty`;
+          return `${propertyName.toString()} and ${relatedPropertyName} cannot both be empty`;
         },
       },
     });

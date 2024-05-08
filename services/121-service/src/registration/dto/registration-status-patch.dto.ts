@@ -11,7 +11,7 @@ export class RegistrationStatusPatchDto {
   public readonly status: RegistrationStatusEnum;
 
   @ApiProperty({ example: 'Long enough rejection message', required: false })
-  @IsNotBothPresent('messageTemplateKey')
+  @IsNotBothPresent<RegistrationStatusPatchDto>('messageTemplateKey')
   public readonly message: string;
 
   @ApiProperty({
