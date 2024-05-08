@@ -365,12 +365,14 @@ export async function waitForMessagesToComplete(
     // Get message histories
     const messageHistories = [];
     for (const referenceId of referenceIds) {
+      console.log('🚀 ~ get history for referenceId:', referenceId);
       const response = await getMessageHistory(
         programId,
         referenceId,
         accessToken,
       );
       const messages = response.body;
+      console.log('🚀 ~ messages:', messages);
       messageHistories.push(messages);
     }
 
