@@ -3,9 +3,7 @@ import { registrationVisa } from '../../seed-data/mock/visa-card.data';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { registrationNotScopedPv } from '../fixtures/scoped-registrations';
-import { changePhase } from '../helpers/program.helper';
 import {
   importRegistrations,
   searchRegistrationByPhoneNumber,
@@ -42,18 +40,6 @@ describe('/ Registrations - by phone-number', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-
-    await changePhase(
-      programIdPV,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-
-    await changePhase(
-      programIdOCW,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
 
     await importRegistrations(
       programIdPV,

@@ -15,7 +15,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nameFirst",
@@ -24,7 +25,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nameLast",
@@ -33,7 +35,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     }
   ]
 }

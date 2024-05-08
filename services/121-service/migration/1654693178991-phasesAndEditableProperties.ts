@@ -104,15 +104,13 @@ export class PhasesAndEditableProperties1654693178991
           const qJson = programJson.programQuestions.find(
             (qJson) => qJson.name === q.name,
           );
-          q.phases = qJson.phases;
           q.editableInPortal = qJson.editableInPortal;
           await programQuestionsRepo.save(q);
         }
         for (const ca of program.programCustomAttributes) {
-          const caJson = programJson.programCustomAttributes.find(
+          programJson.programCustomAttributes.find(
             (caJson) => caJson.name === ca.name,
           );
-          ca.phases = caJson.phases;
           await customAttributesRepo.save(ca);
         }
       }
@@ -128,7 +126,6 @@ export class PhasesAndEditableProperties1654693178991
 
       for (const fspAttribute of fspAttributes) {
         if (fspAttribute.name === fspIntersolve.attributes[0].name) {
-          fspAttribute.phases = fspIntersolve.attributes[0].phases;
           await fspAttributeRepo.save(fspAttribute);
         }
       }

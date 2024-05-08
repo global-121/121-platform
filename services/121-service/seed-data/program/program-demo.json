@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Demoland",
   "ngo": "Demo NGO",
   "titlePortal": {
@@ -79,8 +78,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "middlename",
@@ -97,8 +96,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "firstname",
@@ -115,8 +114,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "gender",
@@ -164,8 +163,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "birthdate",
@@ -182,8 +181,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "documentid",
@@ -201,8 +200,8 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "headhousehold",
@@ -240,8 +239,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "males",
@@ -258,8 +257,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "boys",
@@ -278,8 +277,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "women",
@@ -296,8 +295,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "girls",
@@ -316,8 +315,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdsituation",
@@ -380,8 +379,8 @@
         "autochtoneprivate": 0,
         "autochtonehost": 1
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "maritalsituation",
@@ -466,8 +465,8 @@
         "divorced": 1,
         "girl": 3
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "pregnant",
@@ -486,8 +485,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "breastfeeding",
@@ -506,8 +505,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "womendisabled",
@@ -526,8 +525,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "mendisabled",
@@ -546,8 +545,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "girlsdisabled",
@@ -566,8 +565,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "boysdisabled",
@@ -586,8 +585,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "childrenmalnourished",
@@ -606,8 +605,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "malnourishedtreatment",
@@ -645,8 +644,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

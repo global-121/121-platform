@@ -15,7 +15,6 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attributes } from '../registration/dto/update-registration.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import {
   AnswerTypes,
   CustomAttributeType,
@@ -28,9 +27,6 @@ import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
-  @Column({ default: ProgramPhase.design })
-  public phase: ProgramPhase;
-
   @Column({ nullable: true })
   public location: string;
 

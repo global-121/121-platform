@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export enum CustomAttributeType {
   text = 'text',
@@ -31,14 +30,10 @@ export class UpdateProgramCustomAttributeDto {
   public label: JSON;
 
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    example: true,
   })
   @IsNotEmpty()
-  public phases: JSON;
+  public showInPeopleAffectedTable: boolean;
 
   @ApiProperty({ example: true, required: false })
   @IsOptional()

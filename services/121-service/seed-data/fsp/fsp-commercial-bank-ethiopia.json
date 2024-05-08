@@ -16,8 +16,8 @@
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "pattern": ".+",
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": true
     }
   ]
 }

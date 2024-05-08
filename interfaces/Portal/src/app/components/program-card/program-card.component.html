@@ -29,8 +29,9 @@
 
 <ion-card
   *ngIf="program"
-  [routerLink]="['/program', program.id, program.phase]"
+  [routerLink]="['/program', program.id, 'registrationValidation']"
 >
+  <!-- Hardcode registrationValidation this should change when other phase related changes are ready -->
   <ion-card-header>
     <ion-card-title color="primary">
       <strong class="program-title">{{ program.titlePortal }}</strong>
@@ -119,15 +120,5 @@
         </ion-row>
       </ion-grid>
     </div>
-  </ion-card-content>
-  <ion-card-content>
-    <ion-text>
-      <small>
-        <strong>
-          {{ 'page.programs-list.card.status' | translate }}
-          {{ phase?.labelKey | translate }}
-        </strong>
-      </small>
-    </ion-text>
   </ion-card-content>
 </ion-card>

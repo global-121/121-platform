@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Lebanon",
   "ngo": "Dorcas",
   "titlePortal": {
@@ -46,7 +45,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "name",
@@ -59,7 +59,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "age",
@@ -72,7 +73,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "gender",
@@ -100,7 +102,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nationality",
@@ -135,7 +138,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "address-city",
@@ -144,7 +148,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "address-street",
@@ -157,7 +162,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "address-building",
@@ -170,7 +176,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "address-floor",
@@ -183,7 +190,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "social-registry",
@@ -196,7 +204,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "family-status",
@@ -243,7 +252,8 @@
         "single-parent": 3,
         "child-headed": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "men-60+",
@@ -258,7 +268,8 @@
       "scoring": {
         "multiplier": 3
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "women-60+",
@@ -273,7 +284,8 @@
       "scoring": {
         "multiplier": 3
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "men-18-15",
@@ -288,7 +300,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "women-18-59",
@@ -303,7 +316,8 @@
       "scoring": {
         "multiplier": 1
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "men-18-",
@@ -318,7 +332,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "woman-18-",
@@ -333,7 +348,8 @@
       "scoring": {
         "multiplier": 2
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "woman-pregnant",
@@ -364,7 +380,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "children-3-",
@@ -395,7 +412,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "beirut-blast-affected",
@@ -426,7 +444,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "beirut-blast-move",
@@ -457,7 +476,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "foster-family",
@@ -488,7 +508,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "hospital-child",
@@ -519,7 +540,8 @@
         "yes": 4,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "hospital-adult",
@@ -550,7 +572,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-seeing",
@@ -597,7 +620,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-hearing",
@@ -644,7 +668,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-walking",
@@ -691,7 +716,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-remembering",
@@ -738,7 +764,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-self-care",
@@ -785,7 +812,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disability-adult-self-communicating",
@@ -832,7 +860,8 @@
         "yes-lot": 4,
         "yes-completely": 6
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "chronic-disease-child",
@@ -863,7 +892,8 @@
         "yes": 4,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "chronic-disease-adult",
@@ -894,7 +924,8 @@
         "yes": 2,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "expenses-health",
@@ -933,7 +964,8 @@
         "500000-1000000": 1,
         "above-1000000": 2
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "expenses-shelter",
@@ -980,7 +1012,8 @@
         "3000000-5000000": 6,
         "above-5000000": 8
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "expenses-food",
@@ -1027,7 +1060,8 @@
         "3000000-5000000": 6,
         "above-5000000": 8
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-sold-assests",
@@ -1058,7 +1092,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-spent-saving",
@@ -1089,7 +1124,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-borrowed-money",
@@ -1120,7 +1156,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-recuded-expenses",
@@ -1151,7 +1188,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-withdraw-school",
@@ -1182,7 +1220,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-child-labor",
@@ -1213,7 +1252,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-household-migrated",
@@ -1244,7 +1284,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "food-sold-real-estate",
@@ -1275,7 +1316,8 @@
         "yes": 1,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "7-days-eat-less",
@@ -1330,7 +1372,8 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "7-days-borrowed-food",
@@ -1385,7 +1428,8 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "7-days-reduce-portions",
@@ -1440,7 +1484,8 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "7-days-reduce-portions-adults",
@@ -1495,7 +1540,8 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "7-days-reduce-nr-meals",
@@ -1550,7 +1596,8 @@
         "yes-5-6": 3,
         "yes-7": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "income",
@@ -1597,7 +1644,8 @@
         "3000000-5000000": 2,
         "above-5000000": 1
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "income-source",
@@ -1676,7 +1724,8 @@
         "pension": 2,
         "humanitarian-assistance": 4
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "debt",
@@ -1731,7 +1780,8 @@
         "above-5000000": 4,
         "no": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "other-help",
@@ -1762,7 +1812,8 @@
         "no": 4,
         "yes": 0
       },
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "where-register",
@@ -1790,7 +1841,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "name-social-worker",
@@ -1803,7 +1855,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {
