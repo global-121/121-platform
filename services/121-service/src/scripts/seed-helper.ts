@@ -10,7 +10,6 @@ import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
@@ -182,7 +181,6 @@ export class SeedHelper {
     const program = JSON.parse(programExampleDump);
 
     if (DEBUG && !isApiTests) {
-      program.phase = ProgramPhase.payment;
       program.published = true;
     }
 

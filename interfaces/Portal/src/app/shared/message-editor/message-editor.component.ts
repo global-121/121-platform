@@ -119,7 +119,11 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
 
     this.attributes = await this.programsService.getPaTableAttributes(
       this.inputProps.programId,
-      { includeFspQuestions: false, includeTemplateDefaultAttributes: true },
+      {
+        includeFspQuestions: false,
+        includeTemplateDefaultAttributes: true,
+        filterShowInPeopleAffectedTable: false,
+      },
     );
 
     if (this.attributes) {

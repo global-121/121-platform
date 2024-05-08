@@ -24,8 +24,6 @@ export class PhaseNavigationComponent implements OnInit {
   constructor(private programPhaseService: ProgramPhaseService) {}
 
   async ngOnInit() {
-    this.programPhases = await this.programPhaseService.getPhases(
-      this.programId,
-    );
+    this.programPhases = await this.programPhaseService.getPhases();
   }
 }

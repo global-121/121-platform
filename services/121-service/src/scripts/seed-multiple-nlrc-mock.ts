@@ -7,7 +7,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -115,21 +114,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     registration: any,
   ): Promise<void> {
     const accessToken = await this.axiosCallsService.getAccessToken();
-    await this.seedMockHelper.changePhase(
-      programId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await this.seedMockHelper.changePhase(
-      programId,
-      ProgramPhase.inclusion,
-      accessToken,
-    );
-    await this.seedMockHelper.changePhase(
-      programId,
-      ProgramPhase.payment,
-      accessToken,
-    );
     await this.seedMockHelper.importRegistrations(
       programId,
       [registration],

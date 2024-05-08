@@ -1,13 +1,11 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsDateString,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -17,15 +15,6 @@ import {
 import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export class UpdateProgramDto {
-  @ApiProperty({
-    enum: ProgramPhase,
-    example: ProgramPhase.registrationValidation,
-  })
-  @IsString()
-  @IsEnum(ProgramPhase)
-  @IsOptional()
-  public readonly phase?: ProgramPhase;
-
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
