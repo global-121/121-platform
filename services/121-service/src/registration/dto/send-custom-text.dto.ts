@@ -1,26 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsOptional,
-  IsString,
-  MinLength,
-  ValidateIf,
-} from 'class-validator';
+import { IsBoolean, IsOptional, ValidateIf } from 'class-validator';
+import { IsNotBothEmpty } from '../validators/is-not-both-empty.class.validator';
+import { IsNotBothPresent } from '../validators/is-not-both-present.class.validator';
 
 export class SendCustomTextDto {
   @ApiProperty({
     example: 'Your voucher can be picked up at the location',
   })
-  @IsString()
-  @MinLength(1)
-  @ValidateIf((o) => !o.skipMessageValidation && !o.messageTemplateKey)
+  @IsNotBothPresent('messageTemplateKey')
+  @IsNotBothEmpty('messageTemplateKey')
+  @ValidateIf((o) => !o.skipMessageValidation)
   public readonly message: string;
 
   @ApiProperty({
     example: 'voucher-pickup-location',
   })
-  @IsString()
-  @ValidateIf((o) => !o.skipMessageValidation && !o.message)
+  @ValidateIf((o) => !o.skipMessageValidation)
   public readonly messageTemplateKey: string;
 
   @ApiProperty({
