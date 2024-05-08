@@ -6,7 +6,6 @@ import {
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -14,7 +13,6 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -35,10 +33,6 @@ export class ProgramReturnDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly validation: boolean;
-
-  @ApiProperty({ example: ProgramPhase.design })
-  @IsEnum(ProgramPhase)
-  public readonly phase: ProgramPhase;
 
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
@@ -129,11 +123,7 @@ export class ProgramReturnDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
       {
         name: 'exampleBoolean',
@@ -144,11 +134,7 @@ export class ProgramReturnDto {
           ExportType.included,
           ExportType.payment,
         ],
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
+        showInPeopleAffectedTable: true,
       },
     ],
   })
@@ -168,7 +154,7 @@ export class ProgramReturnDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'First Name',
@@ -182,7 +168,7 @@ export class ProgramReturnDto {
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
         scoring: {},
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
         label: {
           en: 'Last Name',
@@ -201,7 +187,7 @@ export class ProgramReturnDto {
           '19-65': 0,
           '65>': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: false,
       },
       {
@@ -231,7 +217,7 @@ export class ProgramReturnDto {
           '0': 3,
           '1': 6,
         },
-        phases: [],
+        showInPeopleAffectedTable: true,
         editableInPortal: true,
       },
     ],

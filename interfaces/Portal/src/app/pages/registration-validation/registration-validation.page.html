@@ -10,12 +10,6 @@
   class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
 >
   <app-program-navigation></app-program-navigation>
-  <app-phase-next
-    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
-    [programId]="programId"
-    [thisPhaseName]="thisPhase"
-    [phaseReady]="isReady"
-  ></app-phase-next>
 </div>
 
 <ion-content class="ion-padding">

@@ -16,7 +16,6 @@ import {
   CustomAttributeType,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import {
   BeforeRemove,
@@ -29,9 +28,6 @@ import {
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
-  @Column({ default: ProgramPhase.design })
-  public phase: ProgramPhase;
-
   @Column({ nullable: true })
   public location: string | null;
 

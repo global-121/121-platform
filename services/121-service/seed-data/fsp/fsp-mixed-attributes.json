@@ -22,7 +22,8 @@
         "en": "+000 000 00 00"
       },
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "accountId",
@@ -34,7 +35,8 @@
         "nl": "Rekeningnr."
       },
       "answerType": "numeric",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "date",
@@ -46,7 +48,8 @@
         "nl": "Datum"
       },
       "answerType": "date",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "openAnswer",
@@ -59,7 +62,8 @@
       },
       "answerType": "text",
       "pattern": ".+",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "fixedChoice",
@@ -92,7 +96,8 @@
             "nl": "Nee"
           }
         }
-      ]
+      ],
+      "showInPeopleAffectedTable": false
     }
   ]
 }

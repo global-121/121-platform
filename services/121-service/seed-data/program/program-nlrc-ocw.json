@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": false,
-  "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
@@ -56,7 +55,7 @@
         "en": "First name"
       },
       "type": "text",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "lastName",
@@ -64,7 +63,7 @@
         "en": "Last name"
       },
       "type": "text",
-      "phases": []
+      "showInPeopleAffectedTable": false
     }
   ],
   "programQuestions": [
@@ -83,8 +82,8 @@
       "export": [],
       "scoring": {},
       "duplicateCheck": true,
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

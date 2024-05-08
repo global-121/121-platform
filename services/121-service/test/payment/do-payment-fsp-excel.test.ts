@@ -7,10 +7,8 @@ import {
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
-  changePhase,
   deleteFspConfiguration,
   doPayment,
   getFspConfiguration,
@@ -60,8 +58,6 @@ describe('Do payment with Excel FSP', () => {
     //////////////////////////
     // Setup Westeros program
     //////////////////////////
-    await changePhase(programIdWesteros, ProgramPhase.payment, accessToken);
-
     await importRegistrations(
       programIdWesteros,
       registrationsWesteros,
@@ -90,11 +86,6 @@ describe('Do payment with Excel FSP', () => {
 
     // Do more tests with multiple programs, to include data isolation in tests
     // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
-    await changePhase(
-      programIdWithValidation,
-      ProgramPhase.payment,
-      accessToken,
-    );
     await importRegistrations(
       programIdWithValidation,
       registrationsProgramWithValidation,
