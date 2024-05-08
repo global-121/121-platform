@@ -7,7 +7,6 @@ import {
   IsString,
 } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export enum CustomAttributeType {
   text = 'text',
@@ -32,14 +31,10 @@ export class UpdateProgramCustomAttributeDto {
   public label: LocalizedString;
 
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    example: true,
   })
   @IsNotEmpty()
-  public phases: ProgramPhase[];
+  public showInPeopleAffectedTable: boolean;
 
   @ApiProperty({ example: true, required: false })
   @IsOptional()

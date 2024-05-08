@@ -8,12 +8,10 @@ import {
 import { FinancialServiceProviderConfigurationEnum } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import { adminOwnerDto } from '../fixtures/user-owner';
 import {
-  changePhase,
   deleteFspConfiguration,
   doPayment,
   getFspConfiguration,
@@ -48,14 +46,6 @@ describe('Do payment to 1 PA', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
       await waitFor(2_000);
-
-      await changePhase(
-        programIdVisa,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
-      await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-      await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
     });
 
     it('should succesfully pay-out Visa Debit', async () => {

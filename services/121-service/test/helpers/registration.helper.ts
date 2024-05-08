@@ -1,9 +1,7 @@
 import * as request from 'supertest';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
 import {
-  changePhase,
   doPayment,
   waitForPaymentTransactionsToComplete,
 } from './program.helper';
@@ -355,16 +353,7 @@ export async function seedIncludedRegistrations(
   programId: number,
   accessToken: string,
 ): Promise<void> {
-  await changePhase(
-    programId,
-    ProgramPhase.registrationValidation,
-    accessToken,
-  );
-
   await importRegistrations(programId, registrations, accessToken);
-
-  await changePhase(programId, ProgramPhase.inclusion, accessToken);
-  await changePhase(programId, ProgramPhase.payment, accessToken);
 
   await awaitChangePaStatus(
     programId,

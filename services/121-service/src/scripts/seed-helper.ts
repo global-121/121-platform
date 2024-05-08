@@ -13,7 +13,6 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { AnswerTypes } from '../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
@@ -172,7 +171,6 @@ export class SeedHelper {
     const program = JSON.parse(programExampleDump);
 
     if (DEBUG && !isApiTests) {
-      program.phase = ProgramPhase.payment;
       program.published = true;
     }
 

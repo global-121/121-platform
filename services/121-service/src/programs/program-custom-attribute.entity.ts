@@ -1,5 +1,4 @@
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
 import {
   BeforeRemove,
   Check,
@@ -29,8 +28,8 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column('json')
   public label: LocalizedString;
 
-  @Column('json', { default: [] })
-  public phases: ProgramPhase[];
+  @Column({ default: false })
+  public showInPeopleAffectedTable: boolean;
 
   @Column({ default: false })
   public duplicateCheck: boolean;

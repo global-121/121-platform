@@ -1,9 +1,7 @@
 import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
 import { PermissionEnum } from '../../../src/user/enum/permission.enum';
 import { DefaultUserRole } from '../../../src/user/user-role.enum';
-import { changePhase } from '../../helpers/program.helper';
 import {
   getRegistrations,
   importRegistrations,
@@ -23,11 +21,6 @@ describe('Load PA table', () => {
       await resetDB(SeedScript.nlrcMultiple);
       const accessTokenAdmin = await getAccessToken();
 
-      await changePhase(
-        programIdOCW,
-        ProgramPhase.registrationValidation,
-        accessTokenAdmin,
-      );
       await importRegistrations(
         programIdOCW,
         [registrationOCW1],

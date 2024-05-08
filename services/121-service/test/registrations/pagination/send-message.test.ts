@@ -1,9 +1,5 @@
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import {
-  changePhase,
-  waitForMessagesToComplete,
-} from '../../helpers/program.helper';
+import { waitForMessagesToComplete } from '../../helpers/program.helper';
 import {
   getMessageHistory,
   importRegistrations,
@@ -31,11 +27,6 @@ describe('send arbitrary messages to set of registrations', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await changePhase(
-      programIdOCW,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
     await importRegistrations(programIdOCW, registrations, accessToken);
   });
 

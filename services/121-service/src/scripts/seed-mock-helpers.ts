@@ -1,25 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
 import { CustomHttpService } from '../shared/services/custom-http.service';
 import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
 export class SeedMockHelper {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
-
-  public async changePhase(
-    programId: number,
-    newPhase: ProgramPhase,
-    accessToken: string,
-  ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}`;
-    // const headers = [{ Cookie: [accessToken] }];
-    const body = { phase: newPhase };
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-
-    return await this.httpService.patch(url, body, headers);
-  }
 
   public async importRegistrations(
     programId: number,

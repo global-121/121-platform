@@ -16,7 +16,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "typePhoneNumber",
@@ -50,7 +51,8 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     }
   ]
 }

@@ -4,7 +4,6 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -13,19 +12,9 @@ import {
 } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 
 export class UpdateProgramDto {
-  @ApiProperty({
-    enum: ProgramPhase,
-    example: ProgramPhase.registrationValidation,
-  })
-  @IsString()
-  @IsEnum(ProgramPhase)
-  @IsOptional()
-  public readonly phase?: ProgramPhase;
-
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
