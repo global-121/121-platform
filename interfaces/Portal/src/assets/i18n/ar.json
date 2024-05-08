@@ -287,21 +287,17 @@
           "btnText": "إنهاء البرنامج",
           "label": "تقييم"
         },
-        "inclusion": {
-          "btnText": "الانتقال إلى: الدفع",
-          "label": "ادراج"
-        },
         "payment": {
           "btnText": "الانتقال إلى: التقييم",
           "label": "دفع"
         },
-        "registrationValidation": {
+        "people-affected": {
           "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
           "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
-          "btnText": "الانتقال إلى: التضمين",
-          "btnText-no-validation": "الانتقال إلى: التضمين",
-          "label": "التسجيل والتحقق من الصحة",
-          "label-no-validation": "تسجيل",
+          "btnText": "الانتقال إلى: الدفع",
+          "btnText-no-validation": "الانتقال إلى: الدفع",
+          "label": "الأشخاص المتأثرون والتحقق",
+          "label-no-validation": "الأشخاص المتأثرون",
           "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
         }
       },
