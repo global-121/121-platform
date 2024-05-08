@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-navigation.component';
+import { ProgramTabsNavigationComponent } from '../../program/program-tabs-navigation/program-tabs-navigation.component';
 
 @Component({
   standalone: true,
@@ -15,7 +15,7 @@ import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-n
     IonicModule,
     TranslateModule,
     RouterModule,
-    PhaseNavigationComponent,
+    ProgramTabsNavigationComponent,
   ],
   selector: 'app-program-navigation',
   templateUrl: './program-navigation.component.html',

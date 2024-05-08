@@ -26,8 +26,8 @@ import { ExportFspInstructionsComponent } from '../program/export-fsp-instructio
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { ExportSelectComponent } from '../program/export-select/export-select.component';
 import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
-import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { ProgramTabsNavigationComponent } from '../program/program-tabs-navigation/program-tabs-navigation.component';
 import { RegistrationActivityDetailAccordionComponent } from '../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
@@ -77,7 +77,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     HeaderComponent,
     UserStateComponent,
     ProgramNavigationComponent,
-    PhaseNavigationComponent,
+    ProgramTabsNavigationComponent,
     SelectTypeaheadComponent,
     LanguageSwitcherComponent,
     RegistrationActivityDetailComponent,
@@ -97,7 +97,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     InputPromptComponent,
     NgxDatatableModule,
     PasswordToggleInputComponent,
-    PhaseNavigationComponent,
+    ProgramTabsNavigationComponent,
     ProgramNavigationComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,

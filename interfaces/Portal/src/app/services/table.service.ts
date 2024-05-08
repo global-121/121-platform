@@ -44,7 +44,7 @@ export class TableService {
       comparator: undefined,
       frozenLeft: false,
       phases: [
-        ProgramPhase.registrationValidation,
+        ProgramPhase.peopleAffected,
         ProgramPhase.inclusion,
         ProgramPhase.payment,
       ],
@@ -103,7 +103,7 @@ export class TableService {
         ),
         ...this.getColumnDefaults(),
         phases: [
-          ProgramPhase.registrationValidation,
+          ProgramPhase.peopleAffected,
           ProgramPhase.inclusion,
           ProgramPhase.payment,
         ],
@@ -145,7 +145,7 @@ export class TableService {
         ),
         ...this.getColumnDefaults(),
         phases: [
-          ProgramPhase.registrationValidation,
+          ProgramPhase.peopleAffected,
           ProgramPhase.inclusion,
           ProgramPhase.payment,
         ],
