@@ -282,8 +282,7 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'lastMessageStatus' &&
-          column.prop !== 'name'
+          !isColumnWithSpecialFormatting(column.prop)
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
