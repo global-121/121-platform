@@ -287,21 +287,17 @@
           "btnText": "Terminar el programa",
           "label": "Evaluación"
         },
-        "inclusion": {
-          "btnText": "Mover a: Pago",
-          "label": "Inclusión"
-        },
         "payment": {
           "btnText": "Pasar a: Evaluación",
           "label": "Pago"
         },
-        "registrationValidation": {
+        "people-affected": {
           "actionText-disabled-registrations": "Las inscripciones ahora están deshabilitadas para este programa",
           "actionText-enabled-registrations": "Las inscripciones ya están habilitadas para este programa",
-          "btnText": "Pasar a: Inclusión",
-          "btnText-no-validation": "Pasar a: Inclusión",
-          "label": "Registro y validación",
-          "label-no-validation": "Registro",
+          "btnText": "Mover a: Pago",
+          "btnText-no-validation": "Mover a: Pago",
+          "label": "Personas Afectadas y validación",
+          "label-no-validation": "Personas Afectadas",
           "toggleText-enable-registrations": "Permitir nuevos registros"
         }
       },
