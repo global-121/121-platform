@@ -25,11 +25,11 @@ class RegistrationDetails {
 
   constructor(page: Page) {
     this.page = page;
-    this.personalInformationTable = this.page.locator(
-      '[data-testid="personal-information-data"]',
+    this.personalInformationTable = this.page.getByTestId(
+      'personal-information-data',
     );
-    this.personAffectedName = this.page.locator(
-      '[data-testid="registration-details-name"]',
+    this.personAffectedName = this.page.getByTestId(
+      'registration-details-name',
     );
     this.personAffectedStatus = this.page.locator('ion-label:text("Status")');
     this.personAffectedStatusDateUpdate = this.page.locator(
@@ -51,32 +51,22 @@ class RegistrationDetails {
     this.financialServiceProviderDropdown = this.page.locator(
       'app-update-fsp #select-label',
     );
-    this.debitCardPaTable = this.page.locator(
-      '[data-testid="physical-cards-overview-title"]',
+    this.debitCardPaTable = this.page.getByTestId(
+      'physical-cards-overview-title',
     );
-    this.debitCardStatus = this.page.locator(
-      '[data-testid="card-status-chip"]',
+    this.debitCardStatus = this.page.getByTestId('card-status-chip');
+    this.tabButton = this.page.getByTestId('activity-detail-tab-button');
+    this.historyTile = this.page.getByTestId('activity-detail-tile');
+    this.historyTileTitle = this.page.getByTestId('activity-detail-label');
+    this.historyTileUserName = this.page.getByTestId(
+      'activity-detail-username',
     );
-    this.tabButton = this.page.locator(
-      '[data-testid="activity-detail-tab-button"]',
+    this.historyTileTimeStamp = this.page.getByTestId('activity-detail-date');
+    this.tileInformationPlaceHolder = this.page.getByTestId(
+      'activity-detail-change',
     );
-    this.historyTile = this.page.locator(
-      '[data-testid="activity-detail-tile"]',
-    );
-    this.historyTileTitle = this.page.locator(
-      '[data-testid="activity-detail-label"]',
-    );
-    this.historyTileUserName = this.page.locator(
-      '[data-testid="activity-detail-username"]',
-    );
-    this.historyTileTimeStamp = this.page.locator(
-      '[data-testid="activity-detail-date"]',
-    );
-    this.tileInformationPlaceHolder = this.page.locator(
-      '[data-testid="activity-detail-change"]',
-    );
-    this.tileInformationStatus = this.page.locator(
-      '[data-testid="activity-detail-status"]',
+    this.tileInformationStatus = this.page.getByTestId(
+      'activity-detail-status',
     );
   }
 
