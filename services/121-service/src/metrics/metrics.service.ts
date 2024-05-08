@@ -812,6 +812,7 @@ export class MetricsService {
         'transaction.status as "status"',
         'transaction.payment as "payment"',
         'transaction.created as "timestamp"',
+        'registration.registrationStatus as "registrationStatus"',
         'registration.phoneNumber as "phoneNumber"',
         'registration.paymentAmountMultiplier as "paymentAmountMultiplier"',
         'transaction.amount as "amount"',
