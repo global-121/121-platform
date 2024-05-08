@@ -55,7 +55,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsValidated',
       permissions: [Permission.RegistrationStatusMarkAsValidatedUPDATE],
-      phases: [ProgramPhase.registrationValidation],
+      phases: [ProgramPhase.peopleAffected],
       showIfNoValidation: false,
       confirmConditions: {
         provideInput: false,
@@ -66,7 +66,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
+      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
@@ -85,11 +85,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsDeclined',
       permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
+      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
@@ -119,11 +115,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.sendMessage',
       permissions: [Permission.RegistrationNotificationCREATE],
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
+      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
@@ -139,11 +131,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.deletePa',
       permissions: [Permission.RegistrationDELETE],
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
+      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,

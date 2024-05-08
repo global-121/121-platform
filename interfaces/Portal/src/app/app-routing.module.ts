@@ -87,11 +87,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.registrationValidation,
+        path: ProgramPhase.peopleAffected,
         loadChildren: () =>
-          import(
-            './pages/registration-validation/registration-validation.module'
-          ).then((m) => m.RegistrationValidationPageModule),
+          import('./pages/peoples-affected/peoples-affected.module').then(
+            (m) => m.PeoplesAffectedPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
@@ -130,7 +130,7 @@ const routes: Routes = [
         // Fallback for change in url, from old to new syntax:
         path: 'registration-validation',
         pathMatch: 'full',
-        redirectTo: ProgramPhase.registrationValidation,
+        redirectTo: ProgramPhase.peopleAffected,
       },
     ],
   },
