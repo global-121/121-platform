@@ -320,9 +320,7 @@
   <ngx-datatable-column
     *ngIf="
       showInclusionScore() &&
-      [phaseEnum.registrationValidation, phaseEnum.inclusion].includes(
-        thisPhase
-      )
+      [phaseEnum.peopleAffected, phaseEnum.inclusion].includes(thisPhase)
     "
     prop="inclusionScore"
     [name]="

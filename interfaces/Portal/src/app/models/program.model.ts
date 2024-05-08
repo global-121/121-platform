@@ -70,6 +70,7 @@ export enum DistributionFrequency {
 export enum ProgramPhase {
   design = 'design',
   registrationValidation = 'registrationValidation',
+  peopleAffected = 'people-affected',
   inclusion = 'inclusion',
   payment = 'payment',
   evaluation = 'evaluation',
