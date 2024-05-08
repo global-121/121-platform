@@ -25,19 +25,11 @@ class RegistrationDetails {
 
   constructor(page: Page) {
     this.page = page;
-<<<<<<< HEAD
     this.personalInformationTable = this.page.getByTestId(
       'registration-personal-information-data',
     );
     this.personAffectedName = this.page.getByTestId(
       'registration-details-name',
-=======
-    this.personalInformationTable = this.page.locator(
-      '[data-testid="personal-information-data"]',
-    );
-    this.personAffectedName = this.page.locator(
-      '[data-testid="registration-details-name"]',
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     this.personAffectedStatus = this.page.locator('ion-label:text("Status")');
     this.personAffectedStatusDateUpdate = this.page.locator(
@@ -52,30 +44,15 @@ class RegistrationDetails {
     this.financialServiceProvider = this.page.locator(
       'ion-item:has(ion-label:has-text("Financial")) ion-label strong',
     );
-<<<<<<< HEAD
     this.showAllButton = this.page.getByTestId('show-all-button');
-=======
-    this.showAllButton = this.page.locator('[data-testid="show-all-button"]');
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     this.editPersonAffectedPopUp = this.page.locator(
       'app-edit-person-affected-popup',
     );
     this.financialServiceProviderDropdown = this.page.locator(
       'app-update-fsp #select-label',
     );
-<<<<<<< HEAD
     this.debitCardPaTable = this.page.getByTestId(
       'physical-cards-overview-title',
-=======
-    this.debitCardPaTable = this.page.locator(
-      '[data-testid="physical-cards-overview-title"]',
-    );
-    this.debitCardStatus = this.page.locator(
-      '[data-testid="card-status-chip"]',
-    );
-    this.tabButton = this.page.locator(
-      '[data-testid="activity-detail-tab-button"]',
->>>>>>> 759e0f73b (AB#27896 add test ids, refactor functions, add translations)
     );
     this.debitCardStatus = this.page.getByTestId('card-status-chip');
     this.tabButton = this.page.getByTestId(
