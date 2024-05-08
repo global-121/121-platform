@@ -317,6 +317,13 @@
           {{ value }}
         </span>
       </ng-container>
+      <ng-container *ngIf="column.prop === 'status'">
+        <span
+          class="badge"
+          [ngClass]="'registration-status-' + row.registrationStatus"
+          >{{ value }}</span
+        >
+      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
