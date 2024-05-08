@@ -4,7 +4,6 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -12,19 +11,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { ProgramFinancialServiceProviderDto } from './create-program.dto';
 
 export class UpdateProgramDto {
-  @ApiProperty({
-    enum: ProgramPhase,
-    example: ProgramPhase.registrationValidation,
-  })
-  @IsString()
-  @IsEnum(ProgramPhase)
-  @IsOptional()
-  public readonly phase: ProgramPhase;
-
   @ApiProperty()
   @IsOptional()
   @IsBoolean()

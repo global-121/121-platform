@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": false,
-  "phase": "registrationValidation",
   "location": "Kenya",
   "ngo": "KRCS",
   "titlePortal": {
@@ -41,8 +40,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": ["registrationValidation", "inclusion", "payment"],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "gender",
@@ -68,11 +67,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "age",
@@ -85,11 +84,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "maritalStatus",
@@ -127,11 +126,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "registrationType",
@@ -157,11 +156,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "nationalId",
@@ -174,11 +173,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": true,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "nameAlternate",
@@ -191,11 +190,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "totalHH",
@@ -208,11 +207,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "totalSub5",
@@ -225,11 +224,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "totalAbove60",
@@ -242,11 +241,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "otherSocialAssistance",
@@ -272,11 +271,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "county",
@@ -289,11 +288,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "subCounty",
@@ -306,11 +305,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "ward",
@@ -323,11 +322,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "location",
@@ -340,11 +339,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "subLocation",
@@ -357,11 +356,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "village",
@@ -374,11 +373,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "nearestSchool",
@@ -391,11 +390,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "areaType",
@@ -421,11 +420,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "mainSourceLivelihood",
@@ -475,11 +474,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "mainSourceLivelihoodOther",
@@ -492,11 +491,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Male05",
@@ -509,11 +508,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Female05",
@@ -526,11 +525,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Male612",
@@ -543,11 +542,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Female612",
@@ -560,11 +559,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Male1324",
@@ -577,11 +576,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Female1324",
@@ -594,11 +593,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Male2559",
@@ -611,11 +610,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Female2559",
@@ -628,11 +627,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Male60",
@@ -645,11 +644,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Female60",
@@ -662,11 +661,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "maleTotal",
@@ -679,11 +678,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "femaleTotal",
@@ -696,11 +695,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdMembersDisability",
@@ -726,11 +725,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "disabilityAmount",
@@ -743,11 +742,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdMembersChronicIllness",
@@ -773,11 +772,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "chronicIllnessAmount",
@@ -790,11 +789,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdMembersPregnantLactating",
@@ -820,11 +819,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "pregnantLactatingAmount",
@@ -837,11 +836,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "habitableRooms",
@@ -854,11 +853,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "tenureStatusOfDwelling",
@@ -884,11 +883,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ownerOccupiedState",
@@ -926,11 +925,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ownerOccupiedStateOther",
@@ -943,11 +942,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "rentedFrom",
@@ -1003,11 +1002,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "rentedFromOther",
@@ -1020,11 +1019,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "constructionMaterialRoof",
@@ -1092,11 +1091,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifRoofOtherSpecify",
@@ -1109,11 +1108,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "constructionMaterialWall",
@@ -1187,11 +1186,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifWallOtherSpecify",
@@ -1204,11 +1203,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "constructionMaterialFloor",
@@ -1252,11 +1251,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifFloorOtherSpecify",
@@ -1269,11 +1268,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "dwellingRisk",
@@ -1317,11 +1316,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifRiskOtherSpecify",
@@ -1334,11 +1333,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "mainSourceOfWater",
@@ -1442,11 +1441,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifWaterOtherSpecify",
@@ -1459,11 +1458,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "pigs",
@@ -1489,11 +1488,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesPigs",
@@ -1506,11 +1505,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "chicken",
@@ -1536,11 +1535,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "mainModeHumanWasteDisposal",
@@ -1608,11 +1607,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifHumanWasteOtherSpecify",
@@ -1625,11 +1624,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "cookingFuel",
@@ -1691,11 +1690,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifFuelOtherSpecify",
@@ -1708,11 +1707,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "Lighting",
@@ -1774,11 +1773,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifLightingOtherSpecify",
@@ -1791,11 +1790,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdItems",
@@ -1857,11 +1856,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "excoticCattle",
@@ -1887,11 +1886,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesExoticCattle",
@@ -1904,11 +1903,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "IndigenousCattle",
@@ -1934,11 +1933,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesIndigenousCattle",
@@ -1951,11 +1950,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "sheep",
@@ -1981,11 +1980,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesSheep",
@@ -1998,11 +1997,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "goats",
@@ -2028,11 +2027,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesGoats",
@@ -2045,11 +2044,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "camels",
@@ -2075,11 +2074,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesCamels",
@@ -2092,11 +2091,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "donkeys",
@@ -2122,11 +2121,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesDonkeys",
@@ -2139,11 +2138,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesChicken",
@@ -2156,11 +2155,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyBirths",
@@ -2173,11 +2172,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyDeaths",
@@ -2190,11 +2189,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdConditions",
@@ -2232,11 +2231,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "skipMeals",
@@ -2262,11 +2261,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "receivingBenefits",
@@ -2279,11 +2278,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesNameProgramme",
@@ -2296,11 +2295,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "typeOfBenefit",
@@ -2332,11 +2331,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "ifOtherBenefit",
@@ -2349,11 +2348,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": ["registrationValidation", "inclusion"],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": true
     },
     {
       "name": "ifCash",
@@ -2366,11 +2365,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifInKind",
@@ -2383,11 +2382,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "feedbackOnRespons",
@@ -2413,11 +2412,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesFeedback",
@@ -2430,11 +2429,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "whoDecidesHowToSpend",
@@ -2472,11 +2471,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "possibilityForConflicts",
@@ -2502,11 +2501,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "genderedDivision",
@@ -2532,11 +2531,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ifYesElaborate",
@@ -2549,11 +2548,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "geopoint",
@@ -2566,11 +2565,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

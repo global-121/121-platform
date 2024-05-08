@@ -12,7 +12,6 @@ import {
 } from 'class-validator';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { CreateOptionsDto } from './create-options.dto';
 
 class BaseProgramQuestionDto {
@@ -38,15 +37,10 @@ class BaseProgramQuestionDto {
   @IsOptional()
   public pattern: string;
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
-    required: false,
+    example: false,
   })
   @IsOptional()
-  public phases: JSON;
+  public showInPeopleAffectedTable: boolean;
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly editableInPortal: boolean;

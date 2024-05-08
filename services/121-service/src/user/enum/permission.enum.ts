@@ -21,7 +21,6 @@
 export enum PermissionEnum {
   // Program(s)
   ProgramUPDATE = 'program.update',
-  ProgramPhaseUPDATE = 'program:phase.update',
   ProgramQuestionUPDATE = 'program:question.update',
   ProgramQuestionDELETE = 'program:question.delete',
   ProgramCustomAttributeUPDATE = 'program:custom-attribute.update',

@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "registrationValidation",
   "location": "Westeros",
   "ngo": "Yellow Cross",
   "titlePortal": {
@@ -89,7 +88,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "dob",
@@ -106,7 +106,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "house",
@@ -143,7 +144,8 @@
         "lannister": 3,
         "stark": 6,
         "greyjoy": 9
-      }
+      },
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "dragon",
@@ -160,7 +162,8 @@
       "editableInPortal": true,
       "scoring": {
         "multiplier": 2
-      }
+      },
+      "showInPeopleAffectedTable": false
     }
   ],
   "programCustomAttributes": [
@@ -175,7 +178,7 @@
       "name": "knowsNothing",
       "type": "boolean",
       "editableInPortal": true,
-      "phases": ["registrationValidation"]
+      "showInPeopleAffectedTable": true
     },
     {
       "label": {
@@ -188,7 +191,7 @@
       "name": "motto",
       "type": "text",
       "editableInPortal": true,
-      "phases": ["registrationValidation"]
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {

@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
@@ -84,7 +83,7 @@
       "name": "namePartnerOrganization",
       "type": "text",
       "export": ["all-people-affected", "included", "payment"],
-      "phases": ["registrationValidation", "inclusion", "payment"]
+      "showInPeopleAffectedTable": true
     }
   ],
   "programQuestions": [
@@ -100,8 +99,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "phoneNumber",
@@ -119,8 +118,8 @@
       "export": [],
       "scoring": {},
       "duplicateCheck": true,
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

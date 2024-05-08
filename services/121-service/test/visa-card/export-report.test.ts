@@ -3,9 +3,8 @@ import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersol
 import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';
-import { changePhase, doPayment, exportList } from '../helpers/program.helper';
+import { doPayment, exportList } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   getVisaWalletsAndDetails,
@@ -40,14 +39,6 @@ describe('Export Visa debit card report', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     await waitFor(2_000);
-
-    await changePhase(
-      programId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await changePhase(programId, ProgramPhase.inclusion, accessToken);
-    await changePhase(programId, ProgramPhase.payment, accessToken);
   });
 
   it('should succesfully generate a report of all Visa Debit cards', async () => {

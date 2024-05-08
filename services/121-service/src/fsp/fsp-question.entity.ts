@@ -52,9 +52,9 @@ export class FspQuestionEntity extends Base121Entity {
   @ApiProperty({ example: false })
   public duplicateCheck: boolean;
 
-  @Column('json', { default: [] })
-  @ApiProperty({ example: [] })
-  public phases: JSON;
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public showInPeopleAffectedTable: boolean;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity, (fsp) => fsp.questions)
   @JoinColumn({ name: 'fspId' })
