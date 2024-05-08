@@ -49,7 +49,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.ProgramCREATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramPhaseUPDATE,
           // PermissionEnum.ProgramQuestionUPDATE, // Admin-only
           PermissionEnum.ProgramMetricsREAD,
           // PermissionEnum.FspUPDATE,
@@ -89,7 +88,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           // PermissionEnum.FspUPDATE, Moved to admin
@@ -125,7 +123,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' is allowed, so all phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           // PermissionEnum.FspUPDATE, Moved to admin
@@ -162,7 +159,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           // PermissionEnum.FspUPDATE,  Moved to admin
@@ -197,7 +193,6 @@ export class SeedProgramEth implements InterfaceScript {
           // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
           // PermissionEnum.InstanceUPDATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
-          // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           // PermissionEnum.FspUPDATE,  Moved to admin

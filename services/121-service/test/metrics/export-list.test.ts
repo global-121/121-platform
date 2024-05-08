@@ -3,13 +3,11 @@ import { RegistrationStatusEnum } from '../../src/registration/enum/registration
 import { RegistrationEntity } from '../../src/registration/registration.entity';
 import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,
   registrationsPV,
 } from '../fixtures/scoped-registrations';
-import { changePhase } from '../helpers/program.helper';
 import {
   awaitChangePaStatus,
   deleteRegistrations,
@@ -48,14 +46,8 @@ describe('Metric export list', () => {
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
+
     accessToken = await getAccessToken();
-
-    await changePhase(
-      OcwProgramId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await deleteRegistrations(
       OcwProgramId,

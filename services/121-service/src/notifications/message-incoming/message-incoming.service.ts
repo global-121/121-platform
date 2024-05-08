@@ -12,7 +12,6 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { waitFor } from '../../utils/waitFor.helper';
 import {
   MessageContentType,
@@ -403,18 +402,10 @@ export class MessageIncomingService {
       registrationsWithPendingMessage.length === 0
     ) {
       let program: ProgramEntity;
-      // If phonenumber is found in active programs but the registration has no outstanding vouchers/messages use the corresponding program
-      const registrationsWithPhoneNumberInActivePrograms =
-        registrationsWithPhoneNumber.filter((registration) =>
-          [
-            ProgramPhase.registrationValidation,
-            ProgramPhase.inclusion,
-            ProgramPhase.payment,
-            ProgramPhase.evaluation,
-          ].includes(registration.program.phase),
-        );
-      if (registrationsWithPhoneNumberInActivePrograms.length > 0) {
-        program = registrationsWithPhoneNumberInActivePrograms[0].program;
+      // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
+
+      if (registrationsWithPhoneNumber.length > 0) {
+        program = registrationsWithPhoneNumber[0].program;
       } else {
         // If only 1 program in database: use default reply of that program
         const programs = await this.programRepository.find();

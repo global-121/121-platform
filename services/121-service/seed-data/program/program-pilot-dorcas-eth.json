@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Ethiopia",
   "ngo": "Dorcas",
   "titlePortal": {
@@ -58,8 +57,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "age",
@@ -98,8 +97,8 @@
         "18-30": 5,
         "31-": 3
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "education",
@@ -141,8 +140,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nationalIdNumber",
@@ -155,8 +154,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfFamilyMembers",
@@ -169,8 +168,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfFemale",
@@ -183,8 +182,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfMale",
@@ -197,8 +196,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "hasHusband",
@@ -226,8 +225,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "whenReturnee",
@@ -274,8 +273,8 @@
         "2-4years": 3,
         "more4years": 1
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "isHouseholdLeader",
@@ -306,8 +305,8 @@
         "yes": 3,
         "no": 1
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "business",
@@ -338,8 +337,8 @@
         "yes": 5,
         "no": 0
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "businessLicenseAddis",
@@ -370,8 +369,8 @@
         "yes": 5,
         "no": 2
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "typeBusiness",
@@ -434,8 +433,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "typeBusinessOther",
@@ -448,8 +447,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "businessGoal",
@@ -488,8 +487,8 @@
         "no": 0,
         "limited": 3
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "businessPlan",
@@ -502,8 +501,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "ageBusiness",
@@ -550,8 +549,8 @@
         "3-4years": 2,
         "4years+": 3
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "incomeBusiness",
@@ -564,8 +563,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "costBusiness",
@@ -578,8 +577,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "committedToTraining",
@@ -618,8 +617,8 @@
         "no": 0,
         "notSure": 2
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "vocationalCourses",
@@ -666,8 +665,8 @@
         "usefulSkills": 2,
         "none": 1
       },
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "savingMethod",
@@ -716,8 +715,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

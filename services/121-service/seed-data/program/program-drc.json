@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Democratic Republic of the Congo",
   "ngo": "Help a Child",
   "titlePortal": {
@@ -37,8 +36,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "middleName ",
@@ -52,8 +51,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "firstName",
@@ -67,8 +66,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

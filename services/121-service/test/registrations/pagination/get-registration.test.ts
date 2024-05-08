@@ -1,6 +1,4 @@
 import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import { changePhase } from '../../helpers/program.helper';
 import {
   getRegistrations,
   importRegistrations,
@@ -29,12 +27,6 @@ describe('Load PA table', () => {
     beforeAll(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
-
-      await changePhase(
-        programIdOCW,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
 
       await importRegistrations(programIdOCW, [registrationOCW1], accessToken);
     });
