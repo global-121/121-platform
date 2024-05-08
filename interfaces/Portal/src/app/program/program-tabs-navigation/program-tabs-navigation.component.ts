@@ -11,11 +11,11 @@ import {
 @Component({
   standalone: true,
   imports: [CommonModule, IonicModule, TranslateModule, RouterModule],
-  selector: 'app-phase-navigation',
-  templateUrl: './phase-navigation.component.html',
-  styleUrls: ['./phase-navigation.component.scss'],
+  selector: 'app-program-tabs-navigation',
+  templateUrl: './program-tabs-navigation.component.html',
+  styleUrls: ['./program-tabs-navigation.component.scss'],
 })
-export class PhaseNavigationComponent implements OnInit {
+export class ProgramTabsNavigationComponent implements OnInit {
   @Input()
   public programId: number;
 

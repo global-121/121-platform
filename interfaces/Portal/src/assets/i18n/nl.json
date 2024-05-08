@@ -294,21 +294,17 @@
           "btnText": "Programma beëindigen",
           "label": "Evaluatie"
         },
-        "inclusion": {
-          "btnText": "Ga naar: Betaling",
-          "label": "Deelname"
-        },
         "payment": {
           "btnText": "Ga naar: Evaluatie",
           "label": "Betaling"
         },
-        "registrationValidation": {
+        "people-affected": {
           "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
           "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
-          "btnText": "Ga naar: Deelname",
-          "btnText-no-validation": "Ga naar: Deelname",
-          "label": "Aanmeldingen beoordelen",
-          "label-no-validation": "Registratie",
+          "btnText": "Ga naar: Betaling",
+          "btnText-no-validation": "Ga naar: Betaling",
+          "label": "Hulpvragers",
+          "label-no-validation": "Hulpvragers",
           "toggleText-enable-registrations": "Nieuwe registraties toestaan"
         }
       },
