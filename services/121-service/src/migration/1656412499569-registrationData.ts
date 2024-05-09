@@ -200,7 +200,7 @@ export class registrationData1656412499569 implements MigrationInterface {
         .getOne();
 
       if (fspAttributes && program && instance) {
-        const programTitle = Object.assign(program.titlePortal);
+        const programTitle = Object.assign(program.titlePortal!);
         const titleString = programTitle['en'];
         const monitoringQuestion = new MonitoringQuestionEntity();
         monitoringQuestion.name = 'monitoringAnswer';

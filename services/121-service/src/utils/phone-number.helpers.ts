@@ -4,7 +4,7 @@
  * @param phoneNumber - The phone number to format
  * @returns The formatted phone number, including "+"-prefix
  */
-export function formatPhoneNumber(phoneNumber: string): string {
+export function formatPhoneNumber(phoneNumber?: string | null): string {
   if (!phoneNumber) {
     throw new Error('No phone number provided');
   }
@@ -26,7 +26,7 @@ export function formatPhoneNumber(phoneNumber: string): string {
  * @param phoneNumber - The phone number to format
  * @returns The formatted phone number, including "whatsapp:+"-prefix
  */
-export function formatWhatsAppNumber(phoneNumber: string): string {
+export function formatWhatsAppNumber(phoneNumber?: string | null): string {
   const phoneNumberWithPlus = formatPhoneNumber(phoneNumber);
 
   // Return in the format Twilio expects

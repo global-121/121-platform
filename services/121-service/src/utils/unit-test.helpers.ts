@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm';
  * @param name Of the queue to be mocked
  * @returns Queue name to be used for mocking
  */
-export function getQueueName(name: string): string {
+export function getQueueName(name: string | undefined): string {
   return `BullQueue_${name}`;
 }
 

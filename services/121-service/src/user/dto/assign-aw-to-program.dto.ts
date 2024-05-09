@@ -13,7 +13,8 @@ export class CreateProgramAssignmentDto {
 
   @ApiProperty()
   @IsString()
-  public readonly scope: string;
+  @IsOptional()
+  public readonly scope?: string;
 }
 
 export class UpdateProgramAssignmentDto {

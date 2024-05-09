@@ -9,7 +9,8 @@ export class FspTransactionResultDto {
 export class PaTransactionResultDto {
   public referenceId: string;
   public status: StatusEnum;
-  public message: string;
+  // XXX: not sure about this one. Happened becuase of logic in sendPaymentToPa
+  public message: string | null;
   public notificationObjects?: TransactionNotificationObject[];
   public date?: Date;
   public customData?: any;

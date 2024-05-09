@@ -10,7 +10,7 @@ export class UserRoleResponseDTO {
   public role: string;
 
   @ApiProperty({ example: 'Do Field Validation' })
-  public label: string;
+  public label: string | null;
 
   @ApiProperty({
     example: ['registration:attribute.update', 'registration:fsp.read'],

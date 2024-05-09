@@ -89,7 +89,7 @@ export class RegistrationViewEntity {
   public referenceId: string;
 
   @ViewColumn()
-  public phoneNumber: string;
+  public phoneNumber?: string;
 
   @ViewColumn()
   public preferredLanguage: LanguageEnum;
@@ -101,7 +101,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProvider: FinancialServiceProviderName;
+  public financialServiceProvider?: FinancialServiceProviderName;
 
   @ViewColumn()
   public fspDisplayName: LocalizedString;

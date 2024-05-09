@@ -1,8 +1,11 @@
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import {
-  FindOptionsCombined,
+  ScopedUserRequest,
+  ScopedUserRequestWithUser,
+} from '@121-service/src/shared/scoped-user-request';
+import {
   convertToScopedOptions,
+  FindOptionsCombined,
 } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
@@ -15,6 +18,7 @@ import {
   FindOptionsWhere,
   InsertResult,
   ObjectId,
+  ObjectLiteral,
   RemoveOptions,
   Repository,
   SaveOptions,
@@ -24,13 +28,15 @@ import {
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {
+export class ScopedQueryBuilder<
+  T extends ObjectLiteral,
+> extends SelectQueryBuilder<T> {
   constructor(query: SelectQueryBuilder<T>) {
     super(query);
     // Copy other properties if needed
   }
-  // Would be better if there was a way to give an error before compile time
-  where(_condition?: string, _parameters?: any): this {
+  // Would be better if there was a way to give an error before runtime
+  where(): this {
     // The reason for this error is that you else overwrite the .where of the scoped repository
     const errorText =
       'ERROR: The .where method is not allowed for scope repositories. Use .andWhere instead.';
@@ -47,12 +53,14 @@ const indirectRelationConfig: EntityRelations = {
   IntersolveVoucherEntity: ['image', 'registration'],
 };
 
-export function hasNoUserScope(req: any): boolean {
-  return !req?.user?.scope || req.user.scope === '';
+export function hasUserScope(
+  req: ScopedUserRequest,
+): req is ScopedUserRequestWithUser {
+  return req?.user != undefined && req.user.scope !== '';
 }
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
-export class ScopedRepository<T> {
+export class ScopedRepository<T extends ObjectLiteral> {
   private repository: Repository<T>;
 
   // Use for entities that have an INDIRECT relation to registration
@@ -70,9 +78,12 @@ export class ScopedRepository<T> {
       this.relationArrayToRegistration =
         indirectRelationConfig[this.repository.metadata.name];
     } else {
-      this.relationArrayToRegistration = [
-        this.findDirectRelationToRegistration(this.repository.metadata),
-      ];
+      this.relationArrayToRegistration = [];
+      const directRelationToRegistration =
+        this.findDirectRelationToRegistration(this.repository.metadata);
+      if (directRelationToRegistration) {
+        this.relationArrayToRegistration.push(directRelationToRegistration);
+      }
     }
   }
 
@@ -80,8 +91,8 @@ export class ScopedRepository<T> {
   // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
 
-  public async find(options?: FindOptionsCombined<T>): Promise<T[]> {
-    if (hasNoUserScope(this.request)) {
+  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
+    if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -95,7 +106,7 @@ export class ScopedRepository<T> {
   public async findAndCount(
     options: FindOptionsCombined<T>,
   ): Promise<[T[], number]> {
-    if (hasNoUserScope(this.request)) {
+    if (!hasUserScope(this.request)) {
       return this.repository.findAndCount(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -106,8 +117,8 @@ export class ScopedRepository<T> {
     return this.repository.findAndCount(scopedOptions);
   }
 
-  public async findOne(options: FindOptionsCombined<T>): Promise<T> {
-    if (hasNoUserScope(this.request)) {
+  public async findOne(options: FindOptionsCombined<T>): Promise<T | null> {
+    if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -118,10 +129,22 @@ export class ScopedRepository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
+  public async findOneOrFail(options: FindOptionsCombined<T>): Promise<T> {
+    if (!hasUserScope(this.request)) {
+      return this.repository.findOneOrFail(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      this.relationArrayToRegistration,
+      this.request.user.scope,
+    );
+    return this.repository.findOneOrFail(scopedOptions);
+  }
+
   public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
-    if (hasNoUserScope(this.request)) {
+    if (!hasUserScope(this.request)) {
       return new ScopedQueryBuilder(qb);
     }
 
@@ -169,7 +192,7 @@ export class ScopedRepository<T> {
   public async insert(
     entityOrEntities: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
   ): Promise<InsertResult> {
-    return this.repository.insert(entityOrEntities as any);
+    return this.repository.insert(entityOrEntities);
   }
 
   public async remove(entity: T, options?: RemoveOptions): Promise<T>;
@@ -236,7 +259,9 @@ export class ScopedRepository<T> {
   // PRIVATE METHODS TO ENABLE SCOPED QUERIES ///////////////////
   //////////////////////////////////////////////////////////////
 
-  private findDirectRelationToRegistration(metadata: EntityMetadata): string {
+  private findDirectRelationToRegistration(
+    metadata: EntityMetadata,
+  ): string | undefined {
     // Gets the relations of the entity for which this repository is created
     const relations = metadata.relations.map(
       (relation) => relation.propertyName,

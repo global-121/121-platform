@@ -14,11 +14,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetWalletDetailsResponseDto {
   @ApiProperty()
-  public tokenCode: string;
+  public tokenCode?: string;
   @ApiProperty({ enum: WalletCardStatus121 })
   public status: WrapperType<WalletCardStatus121>;
   @ApiProperty()
-  public balance: number;
+  public balance?: number;
   @ApiProperty()
   public issuedDate: Date;
   @ApiProperty()
@@ -32,9 +32,9 @@ export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public maxToSpendPerMonth: number;
   @ApiProperty()
-  public intersolveVisaCardStatus: WrapperType<IntersolveVisaCardStatus>;
+  public intersolveVisaCardStatus?: WrapperType<IntersolveVisaCardStatus>;
   @ApiProperty()
-  public intersolveVisaWalletStatus: WrapperType<IntersolveVisaWalletStatus>;
+  public intersolveVisaWalletStatus?: WrapperType<IntersolveVisaWalletStatus>;
 }
 
 export class GetWalletsResponseDto {

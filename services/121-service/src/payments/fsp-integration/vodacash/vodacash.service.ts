@@ -8,12 +8,10 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
@@ -53,7 +51,7 @@ export class VodacashService
         message: null,
       };
 
-      const transactionRelationDetails: TransactionRelationDetailsDto = {
+      const transactionRelationDetails = {
         programId: programId,
         paymentNr: paymentNr,
         userId: payment.userId,
@@ -76,7 +74,7 @@ export class VodacashService
   public async getFspInstructions(
     registration: RegistrationEntity,
     transaction: TransactionReturnDto,
-    vodacashInstructionsXml: string,
+    vodacashInstructionsXml?: string,
   ): Promise<any> {
     const locationBaseXml =
       './src/payments/fsp-integration/vodacash/xml/vodacash-base.xml';
@@ -97,7 +95,7 @@ export class VodacashService
 
     const phonenumber = registration.phoneNumber;
     const drcCountrycode = '243';
-    if (phonenumber.startsWith(drcCountrycode)) {
+    if (phonenumber?.startsWith(drcCountrycode)) {
       const vodcashFormatPhonenumber = phonenumber.replace(drcCountrycode, '');
       this.setValue(
         vodcashInstructionCustomer,
@@ -160,7 +158,7 @@ export class VodacashService
   public async getRegistrationsForReconciliation(
     programId: number,
     payment: number,
-  ): Promise<RegistrationViewEntity[]> {
+  ) {
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
@@ -180,8 +178,10 @@ export class VodacashService
 
   public async findReconciliationRegistration(
     importRecord: ImportFspReconciliationArrayDto,
-    registrations: RegistrationViewEntity[],
-  ): Promise<RegistrationViewEntity> {
+    registrations: Awaited<
+      ReturnType<VodacashService['getRegistrationsForReconciliation']>
+    >,
+  ) {
     for (const registration of registrations) {
       if (importRecord.phoneNumber === registration.phoneNumber) {
         return registration;
@@ -232,7 +232,7 @@ export class VodacashService
     xml: any,
     elementName: string,
     attributeName: string,
-    value: string,
+    value: string | null,
   ): any {
     for (const el of xml.elements) {
       if (el.name === elementName) {
@@ -253,7 +253,7 @@ export class VodacashService
   private async validateFspReconciliationXmlInput(
     xmlArray,
   ): Promise<ImportFspReconciliationDto> {
-    const validatedArray = [];
+    const validatedArray: ImportFspReconciliationArrayDto[] = [];
     let recordsCount = 0;
     for (const row of xmlArray) {
       recordsCount += 1;

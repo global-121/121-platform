@@ -42,8 +42,8 @@ describe('EventsMapper', () => {
     const dto = result[0];
     expect(dto.id).toEqual(eventEntity.id);
     expect(dto.created).toEqual(eventEntity.created);
-    expect(dto.user.id).toEqual(eventEntity.userId);
-    expect(dto.user.username).toEqual(eventEntity.user.username);
+    expect(dto.user?.id).toEqual(eventEntity.userId);
+    expect(dto.user?.username).toEqual(eventEntity.user.username);
     expect(dto.registrationId).toEqual(eventEntity.registrationId);
     expect(dto.type).toEqual(eventEntity.type);
     expect(dto.attributes).toEqual({

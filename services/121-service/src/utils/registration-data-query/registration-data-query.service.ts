@@ -41,21 +41,21 @@ export class RegistrationDataScopedQueryService {
 
   public customDataEntrySubQuery(
     subQuery: SelectQueryBuilder<any>,
-    relation: RegistrationDataRelation,
+    relation?: RegistrationDataRelation,
   ): SelectQueryBuilder<any> {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
     subQuery = subQuery
       .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
       .from(RegistrationDataEntity, uniqueSubQueryId);
-    if (relation.programQuestionId) {
+    if (relation?.programQuestionId) {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
       );
-    } else if (relation.programCustomAttributeId) {
+    } else if (relation?.programCustomAttributeId) {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
       );
-    } else if (relation.fspQuestionId) {
+    } else if (relation?.fspQuestionId) {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
       );

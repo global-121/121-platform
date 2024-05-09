@@ -9,11 +9,11 @@ import { TokenSet } from 'openid-client';
 
 @Injectable()
 export class SafaricomApiService {
-  public tokenSet: TokenSet;
+  public tokenSet: TokenSet | null;
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async authenticate(): Promise<string> {
+  public async authenticate(): Promise<string | undefined> {
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = !!process.env.MOCK_SAFARICOM
@@ -24,33 +24,28 @@ export class SafaricomApiService {
     );
 
     this.tokenSet = null;
-    if (this.tokenSet && this.tokenSet.expires_at > Date.now()) {
-      // Return cached token
-      return this.tokenSet.access_token;
-    } else {
-      // If not valid, request new token
-      try {
-        const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
 
-        const { data } = await this.httpService.get<SafaricomAuthResponseDto>(
-          `${accessTokenUrl}`,
-          headers,
-        );
+    try {
+      const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
 
-        const datetime = new Date();
-        // Cache tokenSet and expires_at
-        const tokenSet = new TokenSet({
-          access_token: data.access_token,
-          expires_at: datetime.setMinutes(datetime.getMinutes() + 55),
-        });
+      const { data } = await this.httpService.get<SafaricomAuthResponseDto>(
+        `${accessTokenUrl}`,
+        headers,
+      );
 
-        this.tokenSet = tokenSet;
+      const datetime = new Date();
+      // Cache tokenSet and expires_at
+      const tokenSet = new TokenSet({
+        access_token: data.access_token,
+        expires_at: datetime.setMinutes(datetime.getMinutes() + 55),
+      });
 
-        return tokenSet.access_token;
-      } catch (error) {
-        console.log(error, 'authenticate');
-        console.error('Failed to make OAuth Access Token payment API call');
-      }
+      this.tokenSet = tokenSet;
+
+      return tokenSet.access_token;
+    } catch (error) {
+      console.log(error, 'authenticate');
+      console.error('Failed to make OAuth Access Token payment API call');
     }
   }
 
@@ -62,7 +57,7 @@ export class SafaricomApiService {
       const headers = [
         {
           name: 'Authorization',
-          value: `Bearer ${this.tokenSet.access_token}`,
+          value: `Bearer ${this.tokenSet?.access_token}`,
         },
       ];
 

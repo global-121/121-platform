@@ -44,7 +44,7 @@ class CreateCustomerResponseIndividualDto {
 
 export class CreateCustomerResponseExtensionDto {
   public type: string;
-  public value: string;
+  public value: string | null;
 }
 
 export class IntersolveLinkWalletCustomerResponseDto {

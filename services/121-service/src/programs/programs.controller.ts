@@ -86,7 +86,7 @@ export class ProgramController {
     formatProgramReturnDto: boolean,
 
     @Req() req,
-  ): Promise<ProgramEntity | ProgramReturnDto> {
+  ) {
     const userId = req.user.id;
     if (formatProgramReturnDto) {
       return this.programService.getProgramReturnDto(programId, userId);
@@ -260,7 +260,7 @@ You can also leave the body empty.`,
     @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramQuestionEntity> {
+  ): Promise<ProgramQuestionEntity | undefined> {
     return await this.programService.createProgramQuestion(
       programId,
       updateProgramQuestionDto,
@@ -320,7 +320,7 @@ You can also leave the body empty.`,
     @Body() createProgramQuestionDto: CreateProgramCustomAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramCustomAttributeEntity> {
+  ): Promise<ProgramCustomAttributeEntity | undefined> {
     return await this.programService.createProgramCustomAttribute(
       programId,
       createProgramQuestionDto,

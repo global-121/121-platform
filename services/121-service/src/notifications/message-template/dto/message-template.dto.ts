@@ -58,9 +58,8 @@ export class UpdateTemplateParamDto {
   @IsString()
   @Length(1, 255)
   public readonly type: string;
-  @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language?: WrapperType<LanguageEnum>;
+  public readonly language: WrapperType<LanguageEnum>;
 }
 
 export class UpdateTemplateBodyDto {

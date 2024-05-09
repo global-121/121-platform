@@ -5,7 +5,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { BobFinanceFspInstructions } from '@121-service/src/payments/fsp-integration/bob-finance/dto/bob-finance-fsp-instructions.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
@@ -42,7 +41,7 @@ export class BobFinanceService
       transactionResult.status = StatusEnum.success;
       fspTransactionResult.paList.push(transactionResult);
     }
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId,
       paymentNr,
       userId: paymentList[0].userId,
@@ -83,15 +82,20 @@ export class BobFinanceService
         CustomDataAttributes.nameLast,
       ),
     );
-    bobFinanceFspInstructions.Email = null;
+    bobFinanceFspInstructions.Email = undefined;
     bobFinanceFspInstructions.Amount = transaction.amount;
     bobFinanceFspInstructions.Currency = 'USD';
-    bobFinanceFspInstructions['Expiry Date'] = null;
+    bobFinanceFspInstructions['Expiry Date'] = undefined;
 
     return bobFinanceFspInstructions;
   }
 
-  private async formatToLocalNumber(phonenumber: string): Promise<number> {
+  private async formatToLocalNumber(
+    phonenumber: string | null,
+  ): Promise<number | undefined> {
+    if (!phonenumber) {
+      return undefined;
+    }
     return await this.lookupService.getLocalNumber(`+${phonenumber}`);
   }
 }

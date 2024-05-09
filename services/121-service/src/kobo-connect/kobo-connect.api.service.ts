@@ -41,7 +41,7 @@ export class KoboConnectApiService {
           return response.data;
         }
 
-        const errors = [];
+        const errors: unknown[] = [];
 
         if (response && response.data && response.data.detail) {
           errors.push(response.data.detail);

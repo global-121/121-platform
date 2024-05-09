@@ -162,7 +162,7 @@ export class IntersolveVoucherCronService {
 
       for (const unsentIntersolveVoucher of unsentIntersolveVouchers) {
         const referenceId = unsentIntersolveVoucher.referenceId;
-        const registration = await this.registrationRepository.findOne({
+        const registration = await this.registrationRepository.findOneOrFail({
           where: { referenceId: referenceId },
           relations: ['program'],
         });
@@ -189,18 +189,20 @@ export class IntersolveVoucherCronService {
           .split('[[amount]]')
           .join(unsentIntersolveVoucher.amount);
 
-        await this.queueMessageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue({
           registration,
-          whatsappPayment,
-          null,
-          MessageContentType.paymentReminder,
-          MessageProcessType.whatsappTemplateVoucherReminder,
-        );
-        const reminderVoucher = await this.intersolveVoucherRepository.findOne({
-          where: { id: unsentIntersolveVoucher.id },
+          message: whatsappPayment,
+          messageContentType: MessageContentType.paymentReminder,
+          messageProcessType:
+            MessageProcessType.whatsappTemplateVoucherReminder,
         });
+        const reminderVoucher =
+          await this.intersolveVoucherRepository.findOneOrFail({
+            where: { id: unsentIntersolveVoucher.id },
+          });
 
-        reminderVoucher.reminderCount += 1;
+        reminderVoucher.reminderCount =
+          (reminderVoucher.reminderCount ?? 0) + 1;
         await this.intersolveVoucherRepository.save(reminderVoucher);
       }
 

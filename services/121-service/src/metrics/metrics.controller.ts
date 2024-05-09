@@ -113,15 +113,15 @@ export class MetricsController {
     if (queryParams['search']) {
       paginationQuery.search = queryParams['search'];
     }
-    const result = await this.metricsService.getExportList(
+    const result = await this.metricsService.getExportList({
       programId,
-      exportType as ExportType,
+      type: exportType,
       userId,
-      queryParams.minPayment,
-      queryParams.maxPayment,
+      minPayment: queryParams.minPayment ?? null,
+      maxPayment: queryParams.maxPayment ?? null,
       paginationQuery,
-    );
-    if (result.data.length === 0) {
+    });
+    if (!result || result?.data.length === 0) {
       const errors = 'There is currently no data to export';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

@@ -4,7 +4,7 @@ export class IntersolveCreateDebitCardDto {
   public brand: 'VISA_CARD';
   public firstName: string;
   public lastName: string;
-  public mobileNumber: string;
+  public mobileNumber: string | null;
   public cardAddress: {
     address1: string;
     city: string;

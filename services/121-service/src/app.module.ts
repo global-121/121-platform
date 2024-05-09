@@ -37,17 +37,15 @@ import { DataSource } from 'typeorm';
       dest: './files',
     }),
     ThrottlerModule.forRoot({
-      ttl: +process.env.GENERIC_THROTTLING_TTL || 60,
-      limit: +process.env.GENERIC_THROTTLING_LIMIT || 3000,
+      ttl: parseInt(process.env.GENERIC_THROTTLING_TTL ?? '60'),
+      limit: parseInt(process.env.GENERIC_THROTTLING_LIMIT ?? '3000'),
     }),
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
-        password: process.env.REDIS_PASSWORD
-          ? process.env.REDIS_PASSWORD
-          : null,
-        tls: process.env.REDIS_PASSWORD ? {} : null, // This enables SSL
+        password: process.env.REDIS_PASSWORD,
+        tls: process.env.REDIS_PASSWORD ? {} : undefined, // This enables SSL
       },
       prefix: process.env.REDIS_PREFIX,
       defaultJobOptions: {

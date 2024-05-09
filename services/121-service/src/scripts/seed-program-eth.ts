@@ -17,7 +17,7 @@ export class SeedProgramEth implements InterfaceScript {
     private dataSource: DataSource,
   ) {}
 
-  public async run(isApiTests?: boolean): Promise<void> {
+  public async run(isApiTests = false): Promise<void> {
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(
       programPilotEth,
@@ -241,16 +241,16 @@ export class SeedProgramEth implements InterfaceScript {
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
     const permissionRepository =
       this.dataSource.getRepository(PermissionEntity);
-    const userRoleEntities = [];
+    const userRoleEntities: UserRoleEntity[] = [];
     for (const customRole of customRoles) {
       const customRoleEntity = new UserRoleEntity();
       customRoleEntity.role = customRole.role;
       customRoleEntity.label = customRole.label;
 
-      const permissionEntities = [];
+      const permissionEntities: PermissionEntity[] = [];
       for (const permission of customRole.permissions) {
         permissionEntities.push(
-          await permissionRepository.findOneBy({ name: permission }),
+          await permissionRepository.findOneByOrFail({ name: permission }),
         );
       }
       customRoleEntity.permissions = permissionEntities;

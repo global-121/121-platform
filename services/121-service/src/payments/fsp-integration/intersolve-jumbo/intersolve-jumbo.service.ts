@@ -99,7 +99,7 @@ export class IntersolveJumboService
   private async getRelationOptionsForJumbo(
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationRepository.findOneOrFail({
       where: { referenceId: referenceId },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
@@ -282,7 +282,7 @@ export class IntersolveJumboService
   private createTransactionResult(
     amount: number,
     referenceId: string,
-    errorMessage: string,
+    errorMessage: string | null,
     status: StatusEnum,
     notificationObjects?: TransactionNotificationObject[],
   ): PaTransactionResultDto {

@@ -173,7 +173,7 @@ export class PaymentsController {
     );
     const dryRun = queryParams.dryRun === 'true';
 
-    if (!dryRun && !(data.amount > 0)) {
+    if (!dryRun && (data.amount === undefined || data.amount <= 0)) {
       throw new HttpException(
         'Amount should be larger than 0 when not using dry run',
         HttpStatus.BAD_REQUEST,

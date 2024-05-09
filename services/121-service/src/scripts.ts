@@ -30,7 +30,7 @@ function confirmRun(scriptName): any {
   process.stdin.resume();
 
   process.stdin.on('data', function (data) {
-    prompt.emit(current, data.toString().trim());
+    prompt.emit(current ?? '[empty current]', data.toString().trim());
   });
 
   prompt.on(':new', function (name, question) {

@@ -110,7 +110,7 @@ describe('RegistrationBulkService', () => {
         registrationsBulkService.postMessages(
           paginateQuery,
           programId,
-          null,
+          'randomMessage',
           'randomNotDefinedStatus',
           false,
         ),
@@ -124,7 +124,7 @@ describe('RegistrationBulkService', () => {
       const postMessageResult = await registrationsBulkService.postMessages(
         paginateQuery,
         programId,
-        null,
+        'randomMessage',
         RegistrationStatusEnum.registered,
         true,
       );
@@ -143,7 +143,7 @@ describe('RegistrationBulkService', () => {
       const postMessageResult = await registrationsBulkService.postMessages(
         paginateQuery,
         programId,
-        null,
+        'randomMessage',
         RegistrationStatusEnum.registered,
         false,
       );

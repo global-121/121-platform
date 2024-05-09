@@ -96,7 +96,7 @@ export class MessageIncomingService {
     return '';
   }
 
-  public async findOne(sid: string): Promise<TwilioMessageEntity> {
+  public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
       sid: sid,
     };
@@ -202,7 +202,7 @@ export class MessageIncomingService {
           select: ['transactionId'],
         },
       );
-      if (messageWithTransaction) {
+      if (messageWithTransaction?.transactionId) {
         await this.intersolveVoucherService.processStatus(
           callbackData,
           messageWithTransaction.transactionId,
@@ -225,28 +225,47 @@ export class MessageIncomingService {
     );
     // Wait before retrying
     await waitFor(30_000);
-    const registration = await this.registrationRepository.findOne({
+
+    if (!message.registrationId) {
+      throw new Error(
+        `Message with sid ${message.sid} has no registrationId attached`,
+      );
+    }
+
+    const registration = await this.registrationRepository.findOneOrFail({
       where: { id: message.registrationId },
     });
 
-    await this.queueMessageService.addMessageToQueue(
+    if (!message.processType) {
+      // XXX: does this make sense?
+      throw new Error(
+        `Message with sid ${message.sid} has no processType attached`,
+      );
+    }
+
+    await this.queueMessageService.addMessageToQueue({
       registration,
-      message.body,
-      null,
-      message.contentType,
-      message.processType,
-      message.mediaUrl,
-      {
+      message: message.body,
+      messageContentType: message.contentType,
+      messageProcessType: message.processType,
+      mediaUrl: message.mediaUrl,
+      customData: {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
-    );
+    });
   }
 
   private async handleTryWhatsappResult(
     callbackData: TwilioStatusCallbackDto,
     tryWhatsapp: TryWhatsappEntity,
   ): Promise<void> {
+    if (!tryWhatsapp.registration.phoneNumber) {
+      // XXX: should we fail silently instead?
+      throw new Error(
+        `TryWhatsapp with sid ${tryWhatsapp.sid} has no whatsappnumber and no phonenumber attached`,
+      );
+    }
     if (
       callbackData.MessageStatus === TwilioStatus.failed &&
       callbackData.ErrorCode === '63003'
@@ -259,13 +278,12 @@ export class MessageIncomingService {
           relations: ['registration'],
         });
       for (const w of whatsappPendingMessages) {
-        await this.queueMessageService.addMessageToQueue(
-          w.registration,
-          w.body,
-          null,
-          MessageContentType.invited,
-          MessageProcessType.sms,
-        );
+        await this.queueMessageService.addMessageToQueue({
+          registration: w.registration,
+          message: w.body,
+          messageContentType: MessageContentType.invited,
+          messageProcessType: MessageProcessType.sms,
+        });
         await this.whatsappPendingMessageRepo.remove(w);
       }
       await this.tryWhatsappRepository.remove(tryWhatsapp);
@@ -276,7 +294,7 @@ export class MessageIncomingService {
       // Since it is for now impossible to store a whatsapp number without a chosen FSP
       // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
       // This should be refactored later
-      const program = await this.programRepository.findOne({
+      const program = await this.programRepository.findOneOrFail({
         where: { id: tryWhatsapp.registration.programId },
         relations: ['financialServiceProviders'],
       });
@@ -285,7 +303,7 @@ export class MessageIncomingService {
           return (fsp.fsp =
             FinancialServiceProviderName.intersolveVoucherWhatsapp);
         },
-      );
+      )!;
       tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
@@ -359,7 +377,9 @@ export class MessageIncomingService {
 
       r.images = r.images.filter(
         (image) =>
-          !image.voucher.send && image.voucher.payment >= minimumPayment,
+          !image.voucher.send &&
+          image.voucher.payment &&
+          image.voucher.payment >= minimumPayment,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
@@ -401,7 +421,7 @@ export class MessageIncomingService {
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
-      let program: ProgramEntity;
+      let program: ProgramEntity | undefined;
       // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
 
       if (registrationsWithPhoneNumber.length > 0) {
@@ -425,13 +445,12 @@ export class MessageIncomingService {
             language,
           )
         )[0];
-        await this.queueMessageService.addMessageToQueue(
-          registrationsWithPhoneNumber[0],
-          whatsappDefaultReply.message,
-          null,
-          MessageContentType.defaultReply,
-          MessageProcessType.whatsappDefaultReply,
-        );
+        await this.queueMessageService.addMessageToQueue({
+          registration: registrationsWithPhoneNumber[0],
+          message: whatsappDefaultReply.message,
+          messageContentType: MessageContentType.defaultReply,
+          messageProcessType: MessageProcessType.whatsappDefaultReply,
+        });
         return;
       } else {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
@@ -439,7 +458,7 @@ export class MessageIncomingService {
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,
           null,
-          null,
+          undefined,
           MessageContentType.defaultReply,
           MessageProcessType.whatsappDefaultReply,
         );
@@ -453,7 +472,7 @@ export class MessageIncomingService {
       const intersolveVouchersPerPa = registration.images.map(
         (image) => image.voucher,
       );
-      const program = await this.programRepository.findOneBy({
+      const program = await this.programRepository.findOneByOrFail({
         id: registration.programId,
       });
       const language = registration.preferredLanguage || this.fallbackLanguage;
@@ -487,19 +506,18 @@ export class MessageIncomingService {
           }
         }
 
-        await this.queueMessageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue({
           registration,
           message,
-          null,
-          MessageContentType.paymentVoucher,
-          MessageProcessType.whatsappPendingVoucher,
+          messageContentType: MessageContentType.paymentVoucher,
+          messageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
-          {
-            payment: intersolveVoucher.payment,
-            amount: intersolveVoucher.amount,
+          customData: {
+            payment: intersolveVoucher.payment ?? undefined,
+            amount: intersolveVoucher.amount ?? undefined,
             intersolveVoucherId: intersolveVoucher.id,
           },
-        );
+        });
         firstVoucherSent = true;
 
         // Add small delay to ensure the order in which messages are received
@@ -508,14 +526,13 @@ export class MessageIncomingService {
 
       // Send instruction message only once (outside of loops)
       if (registrationsWithOpenVouchers.length > 0) {
-        await this.queueMessageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue({
           registration,
-          '',
-          null,
-          MessageContentType.paymentInstructions,
-          MessageProcessType.whatsappVoucherInstructions,
-          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
-        );
+          message: '',
+          messageContentType: MessageContentType.paymentInstructions,
+          messageProcessType: MessageProcessType.whatsappVoucherInstructions,
+          mediaUrl: `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
+        });
       }
     }
     if (
@@ -532,15 +549,14 @@ export class MessageIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.queueMessageService.addMessageToQueue(
+          await this.queueMessageService.addMessageToQueue({
             registration,
-            message.body,
-            null,
-            message.contentType,
-            MessageProcessType.whatsappPendingMessage,
-            message.mediaUrl,
-            { pendingMessageId: message.id },
-          );
+            message: message.body,
+            messageContentType: message.contentType,
+            messageProcessType: MessageProcessType.whatsappPendingMessage,
+            mediaUrl: message.mediaUrl,
+            customData: { pendingMessageId: message.id },
+          });
           await waitFor(2_000);
         }
       }

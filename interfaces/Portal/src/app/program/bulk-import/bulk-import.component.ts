@@ -121,11 +121,19 @@ export class BulkImportComponent implements OnInit {
       .catch((err) => {
         this.isInProgress = false;
         console.log('err: ', err);
+        let errorMessage = '-';
+        if (err.error) {
+          if (err.error.message) {
+            errorMessage = err.error.message;
+          } else if (err.error[0]) {
+            errorMessage = JSON.stringify(err.error[0]);
+          }
+        }
         actionResult(
           this.alertController,
           this.translate,
           this.translate.instant('page.program.bulk-import.import-error', {
-            specific: err.error[0] ? JSON.stringify(err.error[0]) : '-',
+            specific: errorMessage,
           }),
         );
       });

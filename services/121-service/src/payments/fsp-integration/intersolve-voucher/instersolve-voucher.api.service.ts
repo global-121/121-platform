@@ -46,7 +46,7 @@ export class IntersolveVoucherApiService {
       payload,
       IntersolveVoucherSoapElements.IssueCard,
       ['EAN'],
-      process.env.INTERSOLVE_EAN,
+      process.env.INTERSOLVE_EAN!,
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -57,7 +57,7 @@ export class IntersolveVoucherApiService {
 
     const intersolveRequest = new IntersolveIssueVoucherRequestEntity();
     intersolveRequest.refPos = refPos;
-    intersolveRequest.EAN = process.env.INTERSOLVE_EAN;
+    intersolveRequest.EAN = process.env.INTERSOLVE_EAN!;
     intersolveRequest.value = amount;
 
     let result = new IntersolveIssueCardResponse();
@@ -69,7 +69,7 @@ export class IntersolveVoucherApiService {
             IntersolveVoucherSoapElements.LoyaltyHeader,
             username,
             password,
-            process.env.INTERSOLVE_URL,
+            process.env.INTERSOLVE_URL!,
           );
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
@@ -126,7 +126,7 @@ export class IntersolveVoucherApiService {
           IntersolveVoucherSoapElements.LoyaltyHeader,
           username,
           password,
-          process.env.INTERSOLVE_URL,
+          process.env.INTERSOLVE_URL!,
         );
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
@@ -141,11 +141,10 @@ export class IntersolveVoucherApiService {
   }
 
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
-    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-      {
+    const intersolveRequest =
+      await this.intersolveVoucherRequestRepo.findOneByOrFail({
         refPos: refPos,
-      },
-    );
+      });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
     intersolveRequest.toCancel = true;
@@ -157,12 +156,11 @@ export class IntersolveVoucherApiService {
     transactionIdString: string,
   ): Promise<void> {
     const transactionId = Number(transactionIdString);
-    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-      {
+    const intersolveRequest =
+      await this.intersolveVoucherRequestRepo.findOneByOrFail({
         cardId: cardId,
         transactionId: transactionId,
-      },
-    );
+      });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
     intersolveRequest.toCancel = true;
@@ -181,7 +179,7 @@ export class IntersolveVoucherApiService {
       payload,
       IntersolveVoucherSoapElements.CancelTransactionByRefPos,
       ['EAN'],
-      process.env.INTERSOLVE_EAN,
+      process.env.INTERSOLVE_EAN!,
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -195,7 +193,7 @@ export class IntersolveVoucherApiService {
       IntersolveVoucherSoapElements.LoyaltyHeader,
       username,
       password,
-      process.env.INTERSOLVE_URL,
+      process.env.INTERSOLVE_URL!,
     );
     const result = {
       resultCode:
@@ -203,11 +201,10 @@ export class IntersolveVoucherApiService {
       resultDescription:
         responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
     };
-    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-      {
+    const intersolveRequest =
+      await this.intersolveVoucherRequestRepo.findOneByOrFail({
         refPos: refPos,
-      },
-    );
+      });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled =
       result.resultCode == IntersolveVoucherResultCode.Ok;

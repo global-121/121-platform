@@ -294,7 +294,7 @@ export class RegistrationsBulkService {
       query.select.push('whatsappPhoneNumber');
       query.select.push('phoneNumber');
     }
-    if (usedPlaceholders?.length > 0) {
+    if (usedPlaceholders && usedPlaceholders?.length > 0) {
       query.select = [...query.select, ...usedPlaceholders];
     }
     if (includeStatusChangeProperties) {
@@ -303,7 +303,7 @@ export class RegistrationsBulkService {
     }
     // Remove duplicates from select
     query.select = [...new Set(query.select)];
-    query.page = null;
+    query.page = undefined;
     return query;
   }
 
@@ -347,10 +347,6 @@ export class RegistrationsBulkService {
         ),
       );
 
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-    });
-
     for (let i = 0; i < registrationForUpdateMeta.meta.totalPages; i++) {
       const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
@@ -366,7 +362,6 @@ export class RegistrationsBulkService {
       await this.updateRegistrationStatusChunk(
         registrationsForUpdate.data,
         registrationStatus,
-        program.tryWhatsAppFirst,
         {
           message,
           messageTemplateKey,
@@ -379,10 +374,11 @@ export class RegistrationsBulkService {
   }
 
   private async updateRegistrationStatusChunk(
-    filteredRegistrations: RegistrationViewEntity[],
+    filteredRegistrations: Awaited<
+      ReturnType<RegistrationsPaginationService['getPaginate']>
+    >['data'],
     registrationStatus: RegistrationStatusEnum,
-    tryWhatsAppFirst: boolean,
-    messageSizeType?: MessageSizeTypeDto,
+    messageSizeType?: Partial<MessageSizeTypeDto>,
     usedPlaceholders?: string[],
   ): Promise<void> {
     const filteredRegistrationsIds = filteredRegistrations.map((r) => r.id);
@@ -417,22 +413,24 @@ export class RegistrationsBulkService {
         const messageProcessType =
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
         const placeholderData = {};
-        if (usedPlaceholders.length) {
+        if (usedPlaceholders && usedPlaceholders.length) {
           for (const placeholder of usedPlaceholders) {
             placeholderData[placeholder] = registration[placeholder];
           }
         }
         try {
-          await this.queueMessageService.addMessageToQueue(
+          const { message, messageTemplateKey, messageContentType, bulkSize } =
+            messageSizeType;
+          await this.queueMessageService.addMessageToQueue({
+            ...messageSizeType,
             registration,
-            messageSizeType.message,
-            messageSizeType.messageTemplateKey,
-            messageSizeType.messageContentType,
+            message,
+            messageTemplateKey,
+            messageContentType: messageContentType ?? MessageContentType.custom,
             messageProcessType,
-            null,
-            { placeholderData },
-            messageSizeType.bulkSize,
-          );
+            customData: { placeholderData },
+            bulksize: bulkSize,
+          });
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
             throw error;
@@ -481,12 +479,13 @@ export class RegistrationsBulkService {
   }
 
   private async deleteRegistrationsChunk(
-    registrationsForDelete: RegistrationViewEntity[],
+    registrationsForDelete: Awaited<
+      ReturnType<RegistrationsPaginationService['getPaginate']>
+    >['data'],
   ): Promise<void> {
     await this.updateRegistrationStatusChunk(
       registrationsForDelete,
       RegistrationStatusEnum.deleted,
-      false,
     );
     const registrationsIds = registrationsForDelete.map((r) => r.id);
 
@@ -568,9 +567,11 @@ export class RegistrationsBulkService {
   }
 
   private async sendCustomTextMessagePerChunk(
-    registrations: RegistrationViewEntity[],
+    registrations: Awaited<
+      ReturnType<RegistrationsPaginationService['getPaginate']>
+    >['data'],
     message: string,
-    bulkSize: number,
+    bulksize: number,
     usedPlaceholders: string[],
     messageTemplateKey?: string,
   ): Promise<void> {
@@ -579,16 +580,16 @@ export class RegistrationsBulkService {
       for (const placeholder of usedPlaceholders) {
         placeholderData[placeholder] = registration[placeholder];
       }
-      await this.queueMessageService.addMessageToQueue(
+      await this.queueMessageService.addMessageToQueue({
         registration,
         message,
         messageTemplateKey,
-        MessageContentType.custom,
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-        null,
-        { placeholderData },
-        bulkSize,
-      );
+        messageContentType: MessageContentType.custom,
+        messageProcessType:
+          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+        customData: { placeholderData },
+        bulksize,
+      });
     }
   }
 

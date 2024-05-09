@@ -7,10 +7,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
+    "strict": true,
+    // Sadly, no way around this, because of TypeORM limitations: https://github.com/typeorm/typeorm/issues/2797#issuecomment-644769490
+    "strictPropertyInitialization": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419
+    "noImplicitAny": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718
+    "useUnknownInCatchVariables": false,
     "moduleResolution": "node",
     "declaration": false,
-    "noImplicitAny": false,
     "removeComments": true,
     "noLib": false,
     "emitDecoratorMetadata": true,

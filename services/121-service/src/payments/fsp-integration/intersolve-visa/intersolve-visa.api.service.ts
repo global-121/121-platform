@@ -29,7 +29,7 @@ export class IntersolveVisaApiService {
   public tokenSet: TokenSet;
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async getAuthenticationToken(): Promise<string> {
+  public async getAuthenticationToken() {
     if (process.env.MOCK_INTERSOLVE) {
       return 'mocked-token';
     }
@@ -42,8 +42,8 @@ export class IntersolveVisaApiService {
       `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
     );
     const client = new trustIssuer.Client({
-      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
-      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
+      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID!,
+      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET!,
     });
     const tokenSet = await client.grant({
       grant_type: 'client_credentials',
@@ -53,7 +53,9 @@ export class IntersolveVisaApiService {
     return tokenSet.access_token;
   }
 
-  private isTokenValid(tokenSet: TokenSet): boolean {
+  private isTokenValid(
+    tokenSet: TokenSet,
+  ): tokenSet is TokenSet & Required<Pick<TokenSet, 'access_token'>> {
     if (!tokenSet || !tokenSet.expires_at) {
       return false;
     }
@@ -106,7 +108,7 @@ export class IntersolveVisaApiService {
   }
 
   public async getWallet(
-    tokenCode: string,
+    tokenCode: string | null,
   ): Promise<IntersolveGetWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
@@ -125,7 +127,7 @@ export class IntersolveVisaApiService {
 
   // Swagger docs https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
   public async getCard(
-    tokenCode: string,
+    tokenCode: string | null,
   ): Promise<IntersolveGetCardResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
@@ -140,7 +142,7 @@ export class IntersolveVisaApiService {
   }
 
   public async getTransactions(
-    tokenCode: string,
+    tokenCode: string | null,
     dateFrom?: Date,
   ): Promise<GetTransactionsDetailsResponseDto> {
     const authToken = await this.getAuthenticationToken();
@@ -159,9 +161,9 @@ export class IntersolveVisaApiService {
 
   public async linkCustomerToWallet(
     payload: {
-      holderId: string;
+      holderId: string | null;
     },
-    tokenCode: string,
+    tokenCode: string | null,
   ): Promise<any> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
@@ -177,7 +179,7 @@ export class IntersolveVisaApiService {
   }
 
   public async createDebitCard(
-    tokenCode: string,
+    tokenCode: string | null,
     payload: IntersolveCreateDebitCardDto,
   ): Promise<any> {
     const authToken = await this.getAuthenticationToken();
@@ -191,7 +193,7 @@ export class IntersolveVisaApiService {
   }
 
   public async loadBalanceCard(
-    tokenCode: string,
+    tokenCode: string | null,
     payload: IntersolveLoadDto,
   ): Promise<IntersolveLoadResponseDto> {
     const authToken = await this.getAuthenticationToken();
@@ -211,7 +213,7 @@ export class IntersolveVisaApiService {
   }
 
   public async unloadBalanceCard(
-    tokenCode: string,
+    tokenCode: string | null,
     payload: IntersolveLoadDto,
   ): Promise<IntersolveLoadResponseDto> {
     const authToken = await this.getAuthenticationToken();
@@ -231,7 +233,7 @@ export class IntersolveVisaApiService {
   }
 
   public async toggleBlockWallet(
-    tokenCode: string,
+    tokenCode: string | null,
     payload: IntersolveBlockWalletDto,
     block: boolean,
   ): Promise<IntersolveBlockWalletResponseDto> {
@@ -256,7 +258,7 @@ export class IntersolveVisaApiService {
   }
 
   public async updateCustomerPhoneNumber(
-    holderId: string,
+    holderId: string | null,
     payload: IntersolveTypeValue,
   ): Promise<any> {
     const authToken = await this.getAuthenticationToken();
@@ -278,7 +280,7 @@ export class IntersolveVisaApiService {
   }
 
   public async updateCustomerAddress(
-    holderId: string,
+    holderId: string | null,
     payload: IntersolveAddressDto,
   ): Promise<any> {
     const authToken = await this.getAuthenticationToken();
@@ -300,7 +302,7 @@ export class IntersolveVisaApiService {
   }
 
   public async activateWallet(
-    tokenCode: string,
+    tokenCode: string | null,
     payload: { reference: string },
   ): Promise<IntersolveGetWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();

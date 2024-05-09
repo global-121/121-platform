@@ -39,7 +39,7 @@ describe('Payment processor(s)', () => {
 
   it('should call sendQueuePayment', async () => {
     // Arrannge
-    safaricomService.processQueuedPayment.mockResolvedValue(null);
+    safaricomService.processQueuedPayment.mockResolvedValue();
 
     // Act
     await paymentProcessor.handleSendPayment(testJob);

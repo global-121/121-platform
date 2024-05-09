@@ -6,8 +6,8 @@ export class MessageJobDto {
   registrationId: number;
   referenceId: string;
   preferredLanguage: LanguageEnum;
-  whatsappPhoneNumber: string;
-  phoneNumber: string;
+  whatsappPhoneNumber?: string;
+  phoneNumber?: string;
   programId: number;
   message?: string;
   messageTemplateKey?: string;

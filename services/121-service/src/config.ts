@@ -1,16 +1,16 @@
 import packageJson = require('../package.json');
 
-export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV);
-export const PORT = process.env.PORT_121_SERVICE;
+export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV!);
+export const PORT = process.env.PORT_121_SERVICE!;
 
 const rootUrl =
   process.env.NODE_ENV === 'development'
     ? `http://localhost:${PORT}/`
-    : process.env.EXTERNAL_121_SERVICE_URL;
+    : process.env.EXTERNAL_121_SERVICE_URL!;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
-export const APP_VERSION = process.env.GLOBAL_121_VERSION;
+export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
 
 let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {

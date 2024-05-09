@@ -68,7 +68,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Assert
-      let getTransactionsBody = [];
+      let getTransactionsBody: any[] = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
           await getTransactions(
@@ -114,7 +114,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Assert
-      let getTransactionsBody = [];
+      let getTransactionsBody: any[] = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
           await getTransactions(

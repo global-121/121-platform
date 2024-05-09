@@ -33,6 +33,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class TransactionsService {
@@ -154,13 +155,13 @@ export class TransactionsService {
     relationDetails: TransactionRelationDetailsDto,
     transactionStep?: number,
   ): Promise<TransactionEntity> {
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: relationDetails.programId,
     });
-    const fsp = await this.financialServiceProviderRepository.findOne({
+    const fsp = await this.financialServiceProviderRepository.findOneOrFail({
       where: { fsp: transactionResponse.fspName },
     });
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: transactionResponse.referenceId },
     });
 
@@ -171,7 +172,8 @@ export class TransactionsService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.payment = relationDetails.paymentNr;
-    transaction.userId = relationDetails.userId;
+    // XXX: this is a hack to get around the fact that the userId is not always available in relationDetails
+    transaction.userId = relationDetails.userId!;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
@@ -203,30 +205,28 @@ export class TransactionsService {
       // loop over notification objects and send a message for each
       for (const transactionNotification of transactionResponse.notificationObjects) {
         const message = await this.getMessageText(
-          registration.preferredLanguage,
+          registration.preferredLanguage ?? undefined,
           program.id,
           transactionNotification,
         );
-        await this.queueMessageService.addMessageToQueue(
+        await this.queueMessageService.addMessageToQueue({
           registration,
           message,
-          null,
-          MessageContentType.payment,
-          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-          null,
-          null,
-          transactionNotification.bulkSize,
-        );
+          messageContentType: MessageContentType.payment,
+          messageProcessType:
+            MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+          bulksize: transactionNotification.bulkSize,
+        });
       }
     }
     return resultTransaction;
   }
 
   private async getMessageText(
-    language: LanguageEnum,
+    language: LanguageEnum = LanguageEnum.en,
     programId: number,
     transactionNotification: TransactionNotificationObject,
-  ): Promise<string> {
+  ) {
     const key = transactionNotification.notificationKey;
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
@@ -242,15 +242,15 @@ export class TransactionsService {
     );
     let message = notification
       ? notification.message
-      : fallbackNotification.message;
+      : fallbackNotification?.message;
 
-    if (transactionNotification.dynamicContent.length > 0) {
+    if (transactionNotification?.dynamicContent?.length) {
       for (const [
         i,
         dynamicContent,
       ] of transactionNotification.dynamicContent.entries()) {
         const replaceString = `[[${i + 1}]]`;
-        if (message.includes(replaceString)) {
+        if (message?.includes(replaceString)) {
           message = message.replace(replaceString, dynamicContent);
         }
       }
@@ -261,7 +261,8 @@ export class TransactionsService {
   private async updateLatestTransaction(
     transaction: TransactionEntity,
   ): Promise<void> {
-    const latestTransaction = new LatestTransactionEntity();
+    const latestTransaction =
+      new LatestTransactionEntity() as QueryDeepPartialEntity<LatestTransactionEntity>;
     latestTransaction.registrationId = transaction.registrationId;
     latestTransaction.payment = transaction.payment;
     latestTransaction.transactionId = transaction.id;
@@ -274,8 +275,8 @@ export class TransactionsService {
         // If a unique constraint violation occurred, update the existing LatestTransactionEntity
         await this.latestTransactionRepository.update(
           {
-            registrationId: latestTransaction.registrationId,
-            payment: latestTransaction.payment,
+            registrationId: latestTransaction.registrationId ?? undefined,
+            payment: latestTransaction.payment ?? undefined,
           },
           latestTransaction,
         );
@@ -317,11 +318,11 @@ export class TransactionsService {
       await this.eventsService.log(
         {
           id: registrationsBeforeUpdate.id,
-          status: registrationsBeforeUpdate.registrationStatus,
+          status: registrationsBeforeUpdate.registrationStatus ?? undefined,
         },
         {
           id: registrationsAfterUpdate.id,
-          status: registrationsAfterUpdate.registrationStatus,
+          status: registrationsAfterUpdate.registrationStatus ?? undefined,
         },
         {
           registrationAttributes: ['status'],
@@ -336,7 +337,7 @@ export class TransactionsService {
 
   public async storeAllTransactions(
     transactionResults: { paList: PaTransactionResultDto[] },
-    transactionRelationDetails: TransactionRelationDetailsDto,
+    transactionRelationDetails: Required<TransactionRelationDetailsDto>,
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
@@ -392,7 +393,7 @@ export class TransactionsService {
         .createQueryBuilder('transaction')
         .insert()
         .into(TransactionEntity)
-        .values(chunk)
+        .values(chunk as QueryDeepPartialEntity<TransactionEntity>)
         .execute();
       const savedTransactionEntities =
         await this.transactionScopedRepository.find({
@@ -435,7 +436,7 @@ export class TransactionsService {
       }
       if (status === StatusEnum.error) {
         foundTransaction.status = status;
-        foundTransaction.errorMessage = errorMessage;
+        foundTransaction.errorMessage = errorMessage ?? null;
         await this.transactionScopedRepository.save(foundTransaction);
       }
     }

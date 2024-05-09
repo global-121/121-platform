@@ -57,13 +57,10 @@ describe('change the status of a set of registrations', () => {
       50_000,
       newStatus,
     );
-    const getRegistrationsResponse = await getRegistrations(
-      programIdOCW,
-      null,
+    const getRegistrationsResponse = await getRegistrations({
+      programId: programIdOCW,
       accessToken,
-      null,
-      null,
-    );
+    });
     const data = getRegistrationsResponse.body.data;
 
     // Assert
@@ -89,11 +86,10 @@ describe('change the status of a set of registrations', () => {
       newStatus,
       accessToken,
     );
-    const getRegistrationsResponse = await getRegistrations(
-      programIdOCW,
-      null,
+    const getRegistrationsResponse = await getRegistrations({
+      programId: programIdOCW,
       accessToken,
-    );
+    });
     const data = getRegistrationsResponse.body.data;
 
     // Assert
@@ -121,13 +117,10 @@ describe('change the status of a set of registrations', () => {
       accessToken,
       filter,
     );
-    const getRegistrationsResponse = await getRegistrations(
-      programIdOCW,
-      null,
+    const getRegistrationsResponse = await getRegistrations({
+      programId: programIdOCW,
       accessToken,
-      null,
-      null,
-    );
+    });
     const data = getRegistrationsResponse.body.data;
 
     // Assert

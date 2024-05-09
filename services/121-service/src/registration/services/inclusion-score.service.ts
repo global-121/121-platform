@@ -23,12 +23,12 @@ export class InclusionScoreService {
   public async calculatePaymentAmountMultiplier(
     program: ProgramEntity,
     referenceId: string,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationEntity | undefined> {
     if (!program.paymentAmountMultiplierFormula) {
       return;
     }
 
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId },
       relations: ['data'],
     });
@@ -53,14 +53,14 @@ export class InclusionScoreService {
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId },
       relations: ['program'],
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
-    const program = await this.programRepository.findOne({
+    const program = await this.programRepository.findOneOrFail({
       where: { id: registration.program.id },
       relations: ['programQuestions'],
     });
@@ -77,7 +77,7 @@ export class InclusionScoreService {
   private async createQuestionAnswerListPrefilled(
     referenceId: string,
   ): Promise<object> {
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId },
       relations: ['data', 'data.programQuestion'],
     });

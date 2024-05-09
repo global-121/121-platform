@@ -179,10 +179,12 @@ export class UserService {
     const userRoleEntity = new UserRoleEntity();
     userRoleEntity.role = userRoleData.role;
     userRoleEntity.label = userRoleData.label;
-    const permissionEntities = [];
+    const permissionEntities: PermissionEntity[] = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOneBy({ name: permission }),
+        await this.permissionRepository.findOneByOrFail({
+          name: permission,
+        }),
       );
     }
     userRoleEntity.permissions = permissionEntities;
@@ -197,10 +199,12 @@ export class UserService {
   ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
     existingRole.label = userRoleData.label;
-    const permissionEntities = [];
+    const permissionEntities: PermissionEntity[] = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOneBy({ name: permission }),
+        await this.permissionRepository.findOneByOrFail({
+          name: permission,
+        }),
       );
     }
     existingRole.permissions = permissionEntities;
@@ -433,7 +437,7 @@ export class UserService {
   }
 
   public async delete(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOneOrFail({
       where: { id: userId },
       relations: ['programAssignments', 'programAssignments.roles'],
     });
@@ -525,7 +529,7 @@ export class UserService {
         exp: exp.getTime() / 1000,
         admin: user.admin,
       },
-      process.env.SECRETS_121_SERVICE_SECRET,
+      process.env.SECRETS_121_SERVICE_SECRET!,
     );
 
     return result;
@@ -547,17 +551,17 @@ export class UserService {
 
     const userRO = {
       id: user.id,
-      username: user.username,
+      username: user.username ?? undefined,
       permissions,
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
-      lastLogin: user.lastLogin,
+      lastLogin: user.lastLogin ?? undefined,
     };
     return { user: userRO };
   }
 
   private async buildPermissionsObject(userId: number): Promise<any> {
-    const user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOneOrFail({
       where: { id: userId },
       relations: [
         'programAssignments',
@@ -570,7 +574,7 @@ export class UserService {
     const permissionsObject = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
-        let permissions = [];
+        let permissions: PermissionEnum[] = [];
         for (const role of programAssignment.roles) {
           const permissionNames = role.permissions.map((a) => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];
@@ -582,15 +586,11 @@ export class UserService {
   }
 
   private buildCookieByRequest(token: string): CookieSettingsDto {
-    let domain: string;
-    let path: string;
     const tokenKey: string = this.getInterfaceKeyByHeader();
 
     return {
       tokenKey,
       tokenValue: token,
-      domain,
-      path,
       sameSite: DEBUG ? 'Lax' : 'None',
       secure: !DEBUG,
       expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
@@ -598,7 +598,9 @@ export class UserService {
     };
   }
 
-  public async matchPassword(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  public async matchPassword(
+    loginUserDto: LoginUserDto,
+  ): Promise<UserEntity | null> {
     const username = loginUserDto.username.toLowerCase();
     const saltCheck = await this.userRepository
       .createQueryBuilder('user')
@@ -814,6 +816,12 @@ export class UserService {
     const assignment = user.programAssignments.find(
       (a) => a.programId === programId,
     );
+    if (!assignment) {
+      throw new HttpException(
+        'User assignment not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     return assignment.scope;
   }
 

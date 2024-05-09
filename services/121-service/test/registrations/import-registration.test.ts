@@ -144,6 +144,7 @@ describe('Import a registration', () => {
     // Arrange
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
+    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
     delete registrationVisaCopy.phoneNumber;
 
     // Act
@@ -169,6 +170,7 @@ describe('Import a registration', () => {
     // Arrange
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
+    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
     delete registrationVisaCopy.phoneNumber;
     const programUpdate = {
       allowEmptyPhoneNumber: true,

@@ -40,7 +40,7 @@ export class SoapService {
           { url, payload: jsonSoapBody },
           {
             status: response.statusCode,
-            statusText: null,
+            statusText: undefined,
             data: response.body,
           },
         );
@@ -52,8 +52,8 @@ export class SoapService {
         this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
           {
-            status: null,
-            statusText: null,
+            status: undefined,
+            statusText: undefined,
             data: { error: err },
           },
         );
@@ -121,6 +121,9 @@ export class SoapService {
 
   private setValue(xml: any, indices: number[], value: string): any {
     const firstIndex = indices.shift();
+    if (firstIndex == undefined) {
+      throw new Error('Invalid indices array.');
+    }
     if (indices.length > 0) {
       xml['elements'][firstIndex] = this.setValue(
         this.getChild(xml, firstIndex),
@@ -133,7 +136,7 @@ export class SoapService {
     return xml;
   }
 
-  public setValueByName(xml: any, attributeName: string, value: string): any {
+  public setValueByName(xml: any, attributeName: string, value?: string): any {
     for (const el of xml.elements) {
       if (el.name === attributeName) {
         el.elements[0].text = value;
@@ -157,7 +160,7 @@ export class SoapService {
 
     let agent;
     try {
-      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH!;
       const cert = fs.readFileSync(certPath);
       agent = new https.Agent({
         ca: cert,
@@ -181,7 +184,7 @@ export class SoapService {
           { url: soapUrl, payload: soapRequestXml },
           {
             status: response.statusCode,
-            statusText: null,
+            statusText: undefined,
             data: response.body,
           },
         );
@@ -216,8 +219,8 @@ export class SoapService {
         this.httpService.logErrorRequest(
           { url: soapUrl, payload: soapRequestXml },
           {
-            status: null,
-            statusText: null,
+            status: undefined,
+            statusText: undefined,
             data: { error: err },
           },
         );

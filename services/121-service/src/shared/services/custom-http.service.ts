@@ -5,7 +5,7 @@ import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 export class Header {
   public name: string;
-  public value: string;
+  public value?: string;
 }
 
 class Request {
@@ -165,7 +165,10 @@ export class CustomHttpService {
     };
   }
 
-  public logMessageRequest(request: Request, response: Response): void {
+  public logMessageRequest(
+    request: Partial<Request>,
+    response: Partial<Response>,
+  ): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
@@ -189,7 +192,10 @@ export class CustomHttpService {
     }
   }
 
-  public logErrorRequest(request: Request, error: Response): void {
+  public logErrorRequest(
+    request: Partial<Request>,
+    error: Partial<Response>,
+  ): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${this.stringify(
@@ -215,11 +221,11 @@ export class CustomHttpService {
     }
   }
 
-  public stringify(obj): string {
-    let cache = [];
+  private stringify(obj: object): string {
+    let cache: object[] | null = [];
     const str = JSON.stringify(obj, (key, value) => {
       if (typeof value === 'object' && value !== null) {
-        if (cache.indexOf(value) !== -1) {
+        if (cache?.indexOf(value) !== -1) {
           // Circular reference found, discard key
           return;
         }

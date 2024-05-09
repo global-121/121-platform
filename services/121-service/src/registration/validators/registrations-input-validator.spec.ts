@@ -48,7 +48,7 @@ describe('RegistrationsInputValidator', () => {
     );
 
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
-    mockProgramRepository.findOneBy = jest.fn().mockResolvedValue({
+    mockProgramRepository.findOneByOrFail = jest.fn().mockResolvedValue({
       id: 1,
       name: 'Test Program',
       languages: ['en'],
